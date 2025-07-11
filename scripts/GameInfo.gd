@@ -1,6 +1,6 @@
 extends Node
 
-# Persistent game data manager - should be AutoLoad
+# Persistent game data manager - AutoLoad
 # This holds all player data permanently, separate from UI
 
 # Signals for UI updates (like Unity events)
@@ -8,9 +8,16 @@ signal gold_changed(new_gold)
 signal currency_changed(new_currency)
 signal stats_changed(stats)
 signal on_player_data_loaded
+signal current_panel_changed(new_panel)  # Signal for panel switching
 
 # Current player data structure
 var current_player = {}
+
+# UI state tracking
+var current_panel: Control = null:
+	set(value):
+		current_panel = value
+		current_panel_changed.emit(value)
 
 # Properties with getters/setters that emit signals
 var player_gold: int = 0:
@@ -114,25 +121,9 @@ var mock_character_data = {
 func add_gold(amount: int):
 	player_gold += amount
 
-func subtract_gold(amount: int):
-	player_gold = max(0, player_gold - amount)
-
 func add_currency(amount: int):
 	player_currency += amount
 
-func subtract_currency(amount: int):
-	player_currency = max(0, player_currency - amount)
-
-# Helper function to check if player has a specific talent
-func has_talent(talent_id: int) -> bool:
-	for talent in current_player.talents:
-		if talent.talent_id == talent_id:
-			return true
-	return false
-
-# Helper function to get current player data
-func get_current_player() -> Dictionary:
-	return current_player
 
 # Helper function to get player stats for UI
 func get_player_stats() -> Dictionary:
@@ -148,3 +139,10 @@ func get_player_stats() -> Dictionary:
 		"talent_points": current_player.talent_points,
 		"perk_points": current_player.perk_points
 	}
+
+# UI Panel management functions
+func set_current_panel(panel: Control):
+	current_panel = panel
+
+func get_current_panel() -> Control:
+	return current_panel

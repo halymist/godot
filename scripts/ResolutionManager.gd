@@ -43,7 +43,7 @@ func switch_layout(new_layout: Control):
 	current_layout.process_mode = Node.PROCESS_MODE_INHERIT
 	layout_changed.emit(current_layout)
 
-# Simple user font scale preference - only scales Label fonts
+# user font scale preference - only scales Label fonts
 func set_user_font_scale(new_scale: float):
 	user_font_scale = new_scale
 	

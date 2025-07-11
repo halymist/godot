@@ -1,10 +1,17 @@
-[gd_scene load_steps=12 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=20 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="2_7jktm"]
 [ext_resource type="Script" uid="uid://b466u286qbikc" path="res://scripts/Character.gd" id="2_e2o6t"]
 [ext_resource type="FontFile" uid="uid://bapt2viuub0ha" path="res://assets/Spectral-Regular.ttf" id="2_fc0e3"]
-[ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://phone_theme.tres" id="2_ryrav"]
+[ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_ryrav"]
+[ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="4_7jktm"]
+[ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_iotsf"]
+[ext_resource type="Texture2D" uid="uid://blij632fyb3sg" path="res://assets/images/ui/background_parch.png" id="5_lc2xo"]
+[ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="7_hve3p"]
+[ext_resource type="Texture2D" uid="uid://dslllm3eu8erj" path="res://assets/images/ui/map.png" id="8_mfdv2"]
+[ext_resource type="Texture2D" uid="uid://busbwafdwvl0h" path="res://assets/images/ui/arena.png" id="9_iotsf"]
+[ext_resource type="Texture2D" uid="uid://do7kcopjw84ob" path="res://assets/images/ui/home.png" id="10_lc2xo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_80nbo"]
 bg_color = Color(0.821516, 0.517265, 0.289894, 1)
@@ -13,6 +20,9 @@ bg_color = Color(0.821516, 0.517265, 0.289894, 1)
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_215e1"]
+texture = ExtResource("5_lc2xo")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
 bg_color = Color(0.758581, 0.56579, 1.92523e-07, 1)
@@ -38,7 +48,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_ryrav")
 aspect_ratio_threshold = 0.8
 
-[node name="Portrait" type="Control" parent="."]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "map_button", "map_panel", "back_button")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,6 +56,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryrav")
+script = ExtResource("3_ryrav")
+home_panel = NodePath("GameScene/Home")
+home_button = NodePath("BottomUI/Buttons/Home/Button")
+arena_panel = NodePath("GameScene/Arena")
+arena_button = NodePath("BottomUI/Buttons/Arena/Button")
+character_button = NodePath("TopUI/HBoxContainer/Character/Button")
+character_panel = NodePath("GameScene/Character")
+map_button = NodePath("BottomUI/Buttons/Map/Button")
+map_panel = NodePath("GameScene/Map")
+back_button = NodePath("TopUI/HBoxContainer/Back/Button")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -56,54 +76,47 @@ grow_horizontal = 2
 size_flags_horizontal = 4
 theme = ExtResource("2_ryrav")
 
-[node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/TopUI"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.836
-anchor_top = 0.755
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 0
-grow_vertical = 0
-size_flags_horizontal = 3
-
-[node name="Button" type="Button" parent="Portrait/TopUI/Back"]
-layout_mode = 2
-
-[node name="Character" type="AspectRatioContainer" parent="Portrait/TopUI"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.45
-anchor_bottom = 1.0
+anchor_left = 0.025
+anchor_top = 0.1
+anchor_right = 0.975
+anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Character" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer"]
+layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 alignment_horizontal = 0
 
-[node name="Button" type="Button" parent="Portrait/TopUI/Character"]
+[node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Character"]
 layout_mode = 2
 
-[node name="Gold" type="Label" parent="Portrait/TopUI"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.45
-anchor_right = 0.55
-offset_left = 10.5
-offset_top = 86.0
-offset_right = 85.5
-offset_bottom = 163.0
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/TopUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Runes" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Runes: "
+
+[node name="Gold" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+layout_mode = 2
 text = "Gold: "
 
-[node name="Runes" type="Label" parent="Portrait/TopUI"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.45
-anchor_right = 0.55
-offset_left = 5.5
-offset_top = 8.0
-offset_right = 105.5
-offset_bottom = 77.0
-text = "Runes: "
+[node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment_vertical = 2
+
+[node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Back"]
+layout_mode = 2
+icon = ExtResource("4_iotsf")
+expand_icon = true
 
 [node name="GameScene" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -141,9 +154,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_215e1")
 script = ExtResource("2_e2o6t")
 
-[node name="Character" type="AspectRatioContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "character_manager")]
+[node name="Character" type="TextureRect" parent="Portrait/GameScene/Character"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 1
 anchors_preset = 5
@@ -154,19 +168,6 @@ offset_right = 62.5
 offset_bottom = 125.0
 grow_horizontal = 2
 size_flags_horizontal = 3
-script = ExtResource("4_7jktm")
-gold_label = NodePath("../../../TopUI/Gold")
-currency_label = NodePath("../../../TopUI/Runes")
-player_name_label = NodePath("../Name")
-strength_label = NodePath("../VBoxContainer/Panel/Strength")
-stamina_label = NodePath("../VBoxContainer/Panel2/Stamina")
-agility_label = NodePath("../VBoxContainer/Panel3/Agility")
-luck_label = NodePath("../VBoxContainer/Panel4/Luck")
-character_manager = NodePath("..")
-
-[node name="Button" type="Button" parent="Portrait/GameScene/Character/Character"]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
 
 [node name="Name" type="Label" parent="Portrait/GameScene/Character"]
 layout_mode = 1
@@ -181,7 +182,7 @@ theme_override_fonts/font = ExtResource("2_fc0e3")
 theme_override_font_sizes/font_size = 30
 text = "Name"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Character"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -189,6 +190,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
+script = ExtResource("4_7jktm")
+gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Gold")
+currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
+player_name_label = NodePath("../Name")
+strength_label = NodePath("Panel/Strength")
+stamina_label = NodePath("Panel2/Stamina")
+agility_label = NodePath("Panel3/Agility")
+luck_label = NodePath("Panel4/Luck")
 
 [node name="Panel" type="Panel" parent="Portrait/GameScene/Character/VBoxContainer"]
 clip_contents = true
@@ -324,6 +333,8 @@ size_flags_horizontal = 3
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Chat"]
 layout_mode = 2
+icon = ExtResource("7_hve3p")
+expand_icon = true
 
 [node name="Map" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
@@ -331,6 +342,8 @@ size_flags_horizontal = 3
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Map"]
 layout_mode = 2
+icon = ExtResource("8_mfdv2")
+expand_icon = true
 
 [node name="Arena" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
@@ -338,6 +351,8 @@ size_flags_horizontal = 3
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Arena"]
 layout_mode = 2
+icon = ExtResource("9_iotsf")
+expand_icon = true
 
 [node name="Home" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
@@ -345,6 +360,8 @@ size_flags_horizontal = 3
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Home"]
 layout_mode = 2
+icon = ExtResource("10_lc2xo")
+expand_icon = true
 
 [node name="Wide" type="AspectRatioContainer" parent="."]
 visible = false
