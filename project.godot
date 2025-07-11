@@ -21,8 +21,10 @@ GameInfo="*res://scripts/GameInfo.gd"
 
 [display]
 
-window/size/viewport_width=335
-window/size/viewport_height=667
+window/size/viewport_width=450
+window/size/viewport_height=1000
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/handheld/orientation=1
 window/size/min_width=200
 window/size/min_height=300
