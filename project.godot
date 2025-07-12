@@ -13,12 +13,12 @@ config_version=5
 config/name="game"
 run/main_scene="uid://cggugbbbhxwry"
 config/features=PackedStringArray("4.4", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://assets/images/icon.svg"
 
 [autoload]
 
-GameInfo="*res://scripts/global/GameInfo.gd"
 Websocket="*res://scripts/global/Websocket.gd"
+GameInfo="*res://scripts/global/GameInfo.gd"
 
 [display]
 
