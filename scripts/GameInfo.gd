@@ -3,21 +3,26 @@ extends Node
 # Persistent game data manager - AutoLoad
 # This holds all player data permanently, separate from UI
 
-# Signals for UI updates (like Unity events)
+# Signals for UI updates
 signal gold_changed(new_gold)
 signal currency_changed(new_currency)
 signal stats_changed(stats)
 signal on_player_data_loaded
-signal current_panel_changed(new_panel)  # Signal for panel switching
+signal current_panel_changed(new_panel)
+signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
 
 # Current player data structure
 var current_player = {}
 
-# UI state tracking
 var current_panel: Control = null:
 	set(value):
 		current_panel = value
 		current_panel_changed.emit(value)
+
+var current_panel_overlay: Control = null:
+	set(value):
+		current_panel_overlay = value
+		current_panel_overlay_changed.emit(value)
 
 # Properties with getters/setters that emit signals
 var player_gold: int = 0:
@@ -146,3 +151,9 @@ func set_current_panel(panel: Control):
 
 func get_current_panel() -> Control:
 	return current_panel
+
+func set_current_panel_overlay(panel: Control):
+	current_panel_overlay = panel
+
+func get_current_panel_overlay() -> Control:
+	return current_panel_overlay

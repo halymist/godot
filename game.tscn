@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=24 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="2_7jktm"]
 [ext_resource type="Script" uid="uid://b466u286qbikc" path="res://scripts/Character.gd" id="2_e2o6t"]
@@ -8,13 +8,15 @@
 [ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="4_7jktm"]
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_iotsf"]
 [ext_resource type="Texture2D" uid="uid://blij632fyb3sg" path="res://assets/images/ui/background_parch.png" id="5_lc2xo"]
+[ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="7_215e1"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="7_hve3p"]
 [ext_resource type="Texture2D" uid="uid://dslllm3eu8erj" path="res://assets/images/ui/map.png" id="8_mfdv2"]
 [ext_resource type="Texture2D" uid="uid://busbwafdwvl0h" path="res://assets/images/ui/arena.png" id="9_iotsf"]
+[ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="10_7sc4i"]
 [ext_resource type="Texture2D" uid="uid://do7kcopjw84ob" path="res://assets/images/ui/home.png" id="10_lc2xo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_80nbo"]
-bg_color = Color(0.821516, 0.517265, 0.289894, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
+bg_color = Color(0.936635, 0.300484, 0.782811, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
@@ -25,7 +27,13 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 texture = ExtResource("5_lc2xo")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
-bg_color = Color(0.758581, 0.56579, 1.92523e-07, 1)
+bg_color = Color(0.64014, 0.614233, 0.287706, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_80cx4"]
+bg_color = Color(0.6, 0.117647, 0.6, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sc4i"]
+bg_color = Color(0.91713, 0.421878, 0.438724, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
 bg_color = Color(0.326126, 0.755287, 0.623061, 1)
@@ -46,9 +54,9 @@ script = ExtResource("2_7jktm")
 phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_ryrav")
-aspect_ratio_threshold = 0.8
+aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "map_button", "map_panel", "back_button")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,9 +71,13 @@ arena_panel = NodePath("GameScene/Arena")
 arena_button = NodePath("BottomUI/Buttons/Arena/Button")
 character_button = NodePath("TopUI/HBoxContainer/Character/Button")
 character_panel = NodePath("GameScene/Character")
+talents_button = NodePath("GameScene/Character/Talents/Button")
+talents_panel = NodePath("GameScene/Talents")
 map_button = NodePath("BottomUI/Buttons/Map/Button")
 map_panel = NodePath("GameScene/Map")
 back_button = NodePath("TopUI/HBoxContainer/Back/Button")
+chat_button = NodePath("BottomUI/Buttons/Chat/Button")
+chat_panel = NodePath("GameScene/Chat")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -75,6 +87,7 @@ anchor_bottom = 0.2
 grow_horizontal = 2
 size_flags_horizontal = 4
 theme = ExtResource("2_ryrav")
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Portrait/TopUI"]
 layout_mode = 1
@@ -125,7 +138,6 @@ anchor_top = 0.2
 anchor_right = 1.0
 anchor_bottom = 0.9
 grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_80nbo")
 
 [node name="Home" type="Panel" parent="Portrait/GameScene"]
 layout_mode = 1
@@ -157,55 +169,197 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_215e1")
 script = ExtResource("2_e2o6t")
 
-[node name="Character" type="TextureRect" parent="Portrait/GameScene/Character"]
-custom_minimum_size = Vector2(100, 100)
+[node name="Hbox" type="HBoxContainer" parent="Portrait/GameScene/Character"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -62.5
-offset_right = 62.5
-offset_bottom = 125.0
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.6
 grow_horizontal = 2
-size_flags_horizontal = 3
+alignment = 1
 
-[node name="Name" type="Label" parent="Portrait/GameScene/Character"]
+[node name="Left" type="VBoxContainer" parent="Portrait/GameScene/Character/Hbox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 2
+alignment = 1
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Left/AspectRatioContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot2" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Left/AspectRatioContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="AspectRatioContainer3" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot3" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Left/AspectRatioContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="AspectRatioContainer4" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot4" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Left/AspectRatioContainer4"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="Middle" type="VBoxContainer" parent="Portrait/GameScene/Character/Hbox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Panel" type="Panel" parent="Portrait/GameScene/Character/Hbox/Middle"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Portrait/GameScene/Character/Hbox/Middle/Panel"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -44.5
-offset_right = 44.5
-offset_bottom = 58.0
+anchor_bottom = 1.0
+offset_left = -39.5
+offset_right = 39.5
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_fc0e3")
 theme_override_font_sizes/font_size = 30
 text = "Name"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label")]
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Middle"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.5
+
+[node name="Character" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Middle/AspectRatioContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("7_215e1")
+expand_mode = 1
+
+[node name="Weapons" type="HBoxContainer" parent="Portrait/GameScene/Character/Hbox/Middle"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Middle/Weapons"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment_vertical = 2
+
+[node name="Slot" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Middle/Weapons/AspectRatioContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Middle/Weapons"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment_vertical = 2
+
+[node name="Slot" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Middle/Weapons/AspectRatioContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="Right" type="VBoxContainer" parent="Portrait/GameScene/Character/Hbox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 2
+alignment = 1
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Right/AspectRatioContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot2" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Right/AspectRatioContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="AspectRatioContainer3" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot3" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Right/AspectRatioContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="AspectRatioContainer4" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Hbox/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Slot4" type="TextureRect" parent="Portrait/GameScene/Character/Hbox/Right/AspectRatioContainer4"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("10_7sc4i")
+expand_mode = 1
+
+[node name="Stats" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.8
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("4_7jktm")
 gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Gold")
 currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
-player_name_label = NodePath("../Name")
+player_name_label = NodePath("../Hbox/Middle/Panel/Name")
 strength_label = NodePath("Panel/Strength")
 stamina_label = NodePath("Panel2/Stamina")
 agility_label = NodePath("Panel3/Agility")
 luck_label = NodePath("Panel4/Luck")
 
-[node name="Panel" type="Panel" parent="Portrait/GameScene/Character/VBoxContainer"]
+[node name="Panel" type="Panel" parent="Portrait/GameScene/Character/Stats"]
 clip_contents = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Strength" type="Label" parent="Portrait/GameScene/Character/VBoxContainer/Panel"]
+[node name="Strength" type="Label" parent="Portrait/GameScene/Character/Stats/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -220,12 +374,12 @@ autowrap_mode = 3
 clip_text = true
 text_overrun_behavior = 1
 
-[node name="Panel2" type="Panel" parent="Portrait/GameScene/Character/VBoxContainer"]
+[node name="Panel2" type="Panel" parent="Portrait/GameScene/Character/Stats"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Stamina" type="Label" parent="Portrait/GameScene/Character/VBoxContainer/Panel2"]
+[node name="Stamina" type="Label" parent="Portrait/GameScene/Character/Stats/Panel2"]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -238,13 +392,13 @@ theme_override_font_sizes/font_size = 20
 text = "Stamina"
 vertical_alignment = 1
 
-[node name="Panel3" type="Panel" parent="Portrait/GameScene/Character/VBoxContainer"]
+[node name="Panel3" type="Panel" parent="Portrait/GameScene/Character/Stats"]
 clip_contents = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Agility" type="Label" parent="Portrait/GameScene/Character/VBoxContainer/Panel3"]
+[node name="Agility" type="Label" parent="Portrait/GameScene/Character/Stats/Panel3"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -256,13 +410,13 @@ theme_override_font_sizes/font_size = 20
 text = "Agility"
 vertical_alignment = 1
 
-[node name="Panel4" type="Panel" parent="Portrait/GameScene/Character/VBoxContainer"]
+[node name="Panel4" type="Panel" parent="Portrait/GameScene/Character/Stats"]
 clip_contents = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Luck" type="Label" parent="Portrait/GameScene/Character/VBoxContainer/Panel4"]
+[node name="Luck" type="Label" parent="Portrait/GameScene/Character/Stats/Panel4"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -274,13 +428,13 @@ theme_override_font_sizes/font_size = 20
 text = "Lcukw"
 vertical_alignment = 1
 
-[node name="Panel5" type="Panel" parent="Portrait/GameScene/Character/VBoxContainer"]
+[node name="Panel5" type="Panel" parent="Portrait/GameScene/Character/Stats"]
 clip_contents = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Armor" type="Label" parent="Portrait/GameScene/Character/VBoxContainer/Panel5"]
+[node name="Armor" type="Label" parent="Portrait/GameScene/Character/Stats/Panel5"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -291,6 +445,24 @@ theme_override_fonts/font = ExtResource("2_fc0e3")
 theme_override_font_sizes/font_size = 20
 text = "Armor"
 vertical_alignment = 1
+
+[node name="Talents" type="AspectRatioContainer" parent="Portrait/GameScene/Character"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.9
+anchor_top = 0.7
+anchor_right = 1.0
+anchor_bottom = 0.8
+offset_left = -8.0
+offset_top = -4.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 2
+ratio = 0.5
+alignment_horizontal = 2
+
+[node name="Button" type="Button" parent="Portrait/GameScene/Character/Talents"]
+layout_mode = 2
 
 [node name="Combat" type="Panel" parent="Portrait/GameScene"]
 visible = false
@@ -310,6 +482,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
+
+[node name="Talents" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_80cx4")
+
+[node name="Chat" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.7
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7sc4i")
 
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -371,7 +563,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-ratio = 1.77
+ratio = 1.3
 
 [node name="Panel" type="Panel" parent="Wide"]
 layout_mode = 2

@@ -11,6 +11,7 @@ var current_scale_factor = 1.0
 @export var desktop_ui_root: Control
 @export var base_theme: Theme
 @export var aspect_ratio_threshold: float = 0.6  # Below this = phone, above = desktop
+var min_phone_aspect_ratio: float = 0.4
 
 # Store current layout as direct reference to the active UI root
 var current_layout: Control = null
@@ -25,10 +26,39 @@ func _ready():
 
 func calculate_layout():
 	var window_size = DisplayServer.window_get_size()
-	
-	# Calculate aspect ratio for layout switching
 	var aspect_ratio = float(window_size.x) / float(window_size.y)
 	var new_layout = phone_ui_root if aspect_ratio < aspect_ratio_threshold else desktop_ui_root
+
+	# Enforce minimum aspect ratio for phone layout
+	if new_layout == phone_ui_root:
+		var min_aspect = min_phone_aspect_ratio
+		var min_width = int(window_size.y * min_aspect)
+		if window_size.x < min_width:
+			# Can't enforce min width, so enforce min aspect by reducing height
+			var enforced_height = int(window_size.x / min_aspect)
+			phone_ui_root.custom_minimum_size.x = window_size.x
+			phone_ui_root.custom_minimum_size.y = enforced_height
+			phone_ui_root.anchor_left = 0
+			phone_ui_root.anchor_right = 1
+			phone_ui_root.anchor_top = 1.0 - (enforced_height / float(window_size.y))
+			phone_ui_root.anchor_bottom = 1.0
+		else:
+			# Reset to default
+			phone_ui_root.custom_minimum_size.x = 0
+			phone_ui_root.custom_minimum_size.y = 0
+			phone_ui_root.anchor_left = 0
+			phone_ui_root.anchor_right = 1
+			phone_ui_root.anchor_top = 0
+			phone_ui_root.anchor_bottom = 1
+	else:
+		# Reset phone UI if not active
+		phone_ui_root.custom_minimum_size.x = 0
+		phone_ui_root.custom_minimum_size.y = 0
+		phone_ui_root.anchor_left = 0
+		phone_ui_root.anchor_right = 1
+		phone_ui_root.anchor_top = 0
+		phone_ui_root.anchor_bottom = 1
+
 	if new_layout != current_layout:
 		switch_layout(new_layout)
 
