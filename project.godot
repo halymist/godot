@@ -17,7 +17,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameInfo="*res://scripts/GameInfo.gd"
+GameInfo="*res://scripts/global/GameInfo.gd"
+Websocket="*res://scripts/global/Websocket.gd"
 
 [display]
 
