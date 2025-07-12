@@ -76,13 +76,7 @@ func switch_layout(new_layout: Control):
 # user font scale preference - only scales Label fonts
 func set_user_font_scale(new_scale: float):
 	user_font_scale = new_scale
-	
-	# Store original Label font size if not already stored
-	if not base_theme.has_meta("original_label_size"):
-		var original_size = base_theme.get_font_size("font_size", "Label")
-		if original_size > 0:
-			base_theme.set_meta("original_label_size", original_size)
-	
+		
 	# Scale the Label font size
 	var original_size = base_theme.get_meta("original_label_size")
 	var scaled_size = int(original_size * user_font_scale)

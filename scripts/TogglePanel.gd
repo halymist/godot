@@ -33,11 +33,9 @@ func show_panel(panel_to_show: Control):
 		print("Panel is already active: ", panel_to_show.name)
 	else:
 		print("show_panel called with: ", panel_to_show.name)
-		print("Current panel before switch: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "None")
 		panel_to_show.visible = true
 		GameInfo.get_current_panel().hide()  
 		GameInfo.set_current_panel(panel_to_show)
-
 	
 func show_panel_overlay(panel_to_toggle: Control):
 	var is_active = GameInfo.get_current_panel_overlay() == panel_to_toggle and panel_to_toggle.visible
