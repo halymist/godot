@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=29 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -7,10 +7,12 @@
 [ext_resource type="Texture2D" uid="uid://blij632fyb3sg" path="res://assets/images/ui/background_parch.png" id="5_85qyi"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
+[ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://Scenes/InventorySlot.gd" id="8_85qyi"]
 [ext_resource type="FontFile" uid="uid://bapt2viuub0ha" path="res://assets/Spectral-Regular.ttf" id="8_exi56"]
 [ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="9_7t8sx"]
+[ext_resource type="Texture2D" uid="uid://btgcwrcimqh8b" path="res://assets/images/ui/belt_outline.png" id="9_nnt18"]
 [ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="10_mg4q0"]
-[ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/Item.tscn" id="11_ewbju"]
+[ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="11_ewbju"]
 [ext_resource type="Script" uid="uid://vjwc7sxddhqd" path="res://scripts/ItemDrag.gd" id="11_nnt18"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="11_vm72l"]
 [ext_resource type="Texture2D" uid="uid://dslllm3eu8erj" path="res://assets/images/ui/map.png" id="12_22asu"]
@@ -190,7 +192,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 alignment = 1
 script = ExtResource("6_iivbl")
-inventory_slots = [NodePath("Left/AspectRatioContainer/Item"), NodePath("Left/AspectRatioContainer2/Item"), NodePath("Left/AspectRatioContainer3/Item"), NodePath("Left/AspectRatioContainer4/Item"), NodePath("Right/AspectRatioContainer/Item"), NodePath("Right/AspectRatioContainer2/Item"), NodePath("Right/AspectRatioContainer3/Item"), NodePath("Right/AspectRatioContainer4/Item"), NodePath("Middle/Weapons/AspectRatioContainer/Item"), NodePath("Middle/Weapons/AspectRatioContainer2/Item")]
+inventory_slots = [NodePath("Left/Head/ItemContainer"), NodePath("Left/Chest/ItemContainer"), NodePath("Left/Hand/ItemContainer"), NodePath("Left/Foot/ItemContainer"), NodePath("Right/Belt/ItemContainer"), NodePath("Right/Legs/ItemContainer"), NodePath("Right/Ring/ItemContainer"), NodePath("Right/Talisman/ItemContainer"), NodePath("Middle/Weapons/Weapon1/ItemContainer"), NodePath("Middle/Weapons/Weapon2/ItemContainer")]
 item_prefab = SubResource("PackedScene_85qyi")
 
 [node name="Left" type="VBoxContainer" parent="Portrait/GameScene/Character/Equip"]
@@ -199,62 +201,94 @@ layout_mode = 2
 size_flags_horizontal = 2
 alignment = 1
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="Head" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Head"
 
-[node name="Head" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Head"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer" instance=ExtResource("11_ewbju")]
-layout_mode = 2
-mouse_filter = 0
-
-[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Head"]
 layout_mode = 2
 size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
 
-[node name="Chest" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer2"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Left/Head"]
+layout_mode = 2
+
+[node name="Chest" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Chest"
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Chest"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer2" instance=ExtResource("11_ewbju")]
-layout_mode = 2
-mouse_filter = 0
-
-[node name="AspectRatioContainer3" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Chest"]
 layout_mode = 2
 size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
 
-[node name="Hand" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer3"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Left/Chest"]
+layout_mode = 2
+
+[node name="Hand" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Hand"
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Hand"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer3" instance=ExtResource("11_ewbju")]
-layout_mode = 2
-mouse_filter = 0
-
-[node name="AspectRatioContainer4" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Hand"]
 layout_mode = 2
 size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
 
-[node name="Foot" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer4"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Left/Hand"]
+layout_mode = 2
+
+[node name="Foot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Foot"
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Foot"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Left/AspectRatioContainer4" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/Foot"]
 layout_mode = 2
-mouse_filter = 0
+size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Left/Foot"]
+layout_mode = 2
 
 [node name="Middle" type="VBoxContainer" parent="Portrait/GameScene/Character/Equip"]
 layout_mode = 2
@@ -297,36 +331,52 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 2
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle/Weapons"]
+[node name="Weapon1" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle/Weapons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment_vertical = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Weapon"
 
-[node name="W1" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/AspectRatioContainer"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/AspectRatioContainer" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1"]
 layout_mode = 2
-mouse_filter = 0
+size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
 
-[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle/Weapons"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1"]
+layout_mode = 2
+
+[node name="Weapon2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle/Weapons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Weapon"
 
-[node name="W2" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/AspectRatioContainer2"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/AspectRatioContainer2" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2"]
 layout_mode = 2
-mouse_filter = 0
+size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2"]
+layout_mode = 2
 
 [node name="Right" type="VBoxContainer" parent="Portrait/GameScene/Character/Equip"]
 custom_minimum_size = Vector2(100, 100)
@@ -334,62 +384,94 @@ layout_mode = 2
 size_flags_horizontal = 2
 alignment = 1
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="Belt" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Belt"
 
-[node name="Belt" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Belt"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer" instance=ExtResource("11_ewbju")]
-layout_mode = 2
-mouse_filter = 0
-
-[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Belt"]
 layout_mode = 2
 size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
 
-[node name="Legs" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer2"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Right/Belt"]
+layout_mode = 2
+
+[node name="Legs" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Legs"
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Legs"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer2" instance=ExtResource("11_ewbju")]
-layout_mode = 2
-mouse_filter = 0
-
-[node name="AspectRatioContainer3" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Legs"]
 layout_mode = 2
 size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
 
-[node name="Ring" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer3"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Right/Legs"]
+layout_mode = 2
+
+[node name="Ring" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Ring"
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Ring"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer3" instance=ExtResource("11_ewbju")]
-layout_mode = 2
-mouse_filter = 0
-
-[node name="AspectRatioContainer4" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Ring"]
 layout_mode = 2
 size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
 
-[node name="Talisman" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer4"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Right/Ring"]
+layout_mode = 2
+
+[node name="Talisman" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Talisman"
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Talisman"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Equip/Right/AspectRatioContainer4" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/Talisman"]
 layout_mode = 2
-mouse_filter = 0
+size_flags_vertical = 3
+texture = ExtResource("9_nnt18")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Equip/Right/Talisman"]
+layout_mode = 2
 
 [node name="Bag" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
@@ -401,91 +483,130 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 script = ExtResource("6_iivbl")
-inventory_slots = [NodePath("AspectRatioContainer/Item"), NodePath("AspectRatioContainer2/Item"), NodePath("AspectRatioContainer3/Item"), NodePath("AspectRatioContainer4/Item"), NodePath("AspectRatioContainer5/Item")]
+inventory_slots = [NodePath("Bag1/ItemContainer"), NodePath("Bag2/ItemContainer"), NodePath("Bag3/ItemContainer"), NodePath("Bag4/ItemContainer"), NodePath("Bag5/ItemContainer")]
 item_prefab = SubResource("PackedScene_85qyi")
 is_bag = true
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
+[node name="Bag1" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
 
-[node name="Bag1" type="TextureRect" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag1"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag1"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag1"]
 layout_mode = 2
 
-[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
+[node name="Bag2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
 show_behind_parent = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
 
-[node name="Bag2" type="TextureRect" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer2"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag2"]
 show_behind_parent = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
-script = ExtResource("11_nnt18")
 
-[node name="Item" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer2" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag2"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag2"]
 layout_mode = 2
 
-[node name="AspectRatioContainer3" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
+[node name="Bag3" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
 
-[node name="Bag3" type="TextureRect" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer3"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag3"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer3" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag3"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag3"]
 layout_mode = 2
 
-[node name="AspectRatioContainer4" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
+[node name="Bag4" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
 
-[node name="Bag4" type="TextureRect" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer4"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag4"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer4" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag4"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag4"]
 layout_mode = 2
 
-[node name="AspectRatioContainer5" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
+[node name="Bag5" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
 
-[node name="Bag5" type="TextureRect" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer5"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag5"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Item" parent="Portrait/GameScene/Character/Bag/AspectRatioContainer5" instance=ExtResource("11_ewbju")]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag5"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag5"]
 layout_mode = 2
 
 [node name="Stats" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]

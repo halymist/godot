@@ -1,5 +1,5 @@
 extends HBoxContainer
-@export var inventory_slots: Array[TextureRect]
+@export var inventory_slots: Array[Control]
 @export var item_prefab: PackedScene
 @export var is_bag: bool = false
 
@@ -7,10 +7,10 @@ func _ready():
 	update_equip_slots()
 
 func update_equip_slots():
-	# Clear all slots
+	# Clear only the ItemContainer, preserve backgrounds and outlines
 	for slot in inventory_slots:
-		for child in slot.get_children():
-			child.queue_free()
+		if slot.has_method("clear_slot"):
+			slot.clear_slot()
 
 	#eq slotsID: 0-9, bagslots: 10-14
 	for item in GameInfo.current_player.bag_slots:
@@ -26,5 +26,7 @@ func update_equip_slots():
 
 		if valid:
 			var tex = item.get("texture", null)
-			if tex:
-				inventory_slots[slot_id].texture = tex
+			if tex and item_prefab:
+				var icon = item_prefab.instantiate()
+				icon.set_item_data(item)
+				inventory_slots[slot_id].add_child(icon)

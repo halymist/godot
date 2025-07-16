@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://ce1c7j3wvxrs3"]
+[gd_scene load_steps=2 format=3 uid="uid://ce1c7j3wvxrs3"]
 
 [ext_resource type="Script" uid="uid://vjwc7sxddhqd" path="res://scripts/ItemDrag.gd" id="1_ys0gr"]
-[ext_resource type="Script" uid="uid://dcua1v446fc43" path="res://scripts/ItemDescription.gd" id="2_76mu4"]
 
 [node name="Item" type="TextureRect"]
 anchors_preset = -1
@@ -13,14 +12,3 @@ grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
 script = ExtResource("1_ys0gr")
-
-[node name="Description" type="Panel" parent="."]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-script = ExtResource("2_76mu4")
