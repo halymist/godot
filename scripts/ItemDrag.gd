@@ -1,7 +1,21 @@
 extends TextureRect
-
 # Store the complete item data
+var description_panel: Panel 
 var item_data: Dictionary = {}
+
+func _ready():
+	description_panel = get_tree().root.get_node("Game/Portrait/GameScene/ItemDescription")
+	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
+	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
+	description_panel.visible = false
+
+
+func _on_mouse_entered():
+	description_panel.show_description(item_data)
+
+func _on_mouse_exited():
+	description_panel.hide_description()
+
 
 func set_item_data(data: Dictionary):
 	item_data = data
