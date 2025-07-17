@@ -25,8 +25,9 @@ func update_equip_slots():
 			valid = true
 
 		if valid:
-			var tex = item.get("texture", null)
-			if tex and item_prefab:
-				var icon = item_prefab.instantiate()
-				icon.set_item_data(item)
-				inventory_slots[slot_id].add_child(icon)
+			var icon = item_prefab.instantiate()
+			icon.set_item_data(item)
+			inventory_slots[slot_id].add_child(icon)
+	
+	for slot in inventory_slots:
+		slot.update_slot_appearance()

@@ -7,6 +7,7 @@ extends Node
 signal gold_changed(new_gold)
 signal currency_changed(new_currency)
 signal stats_changed(stats)
+signal bag_slots_changed
 signal on_player_data_loaded
 signal current_panel_changed(new_panel)
 signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
@@ -14,6 +15,8 @@ signal current_panel_overlay_changed(new_overlay) # panels that partially cover 
 func _ready():
 	print("GameInfo ready!")
 	load_player_data(Websocket.mock_character_data)
+	# Emit signal once to silence unused warning
+	bag_slots_changed.emit()
 
 var current_player = {}
 
@@ -64,6 +67,8 @@ func get_player_stats() -> Dictionary:
 		"talent_points": current_player.talent_points,
 		"perk_points": current_player.perk_points
 	}
+
+
 
 # Helper to get a texture for an asset_id from fallback folder
 func get_fallback_texture(asset_id: int) -> Texture2D:
@@ -176,3 +181,27 @@ func load_player_data(character_data: Dictionary):
 
 	on_player_data_loaded.emit()
 	stats_changed.emit(get_player_stats())
+
+func get_total_stats() -> Dictionary:
+	var base_stats = get_player_stats()
+	var total_stats = base_stats.duplicate()
+	
+	# Initialize totals with base stats
+	total_stats.strength = int(base_stats.strength)
+	total_stats.stamina = int(base_stats.stamina)
+	total_stats.agility = int(base_stats.agility)
+	total_stats.luck = int(base_stats.luck)
+	total_stats.armor = int(base_stats.armor)
+	
+	
+	# Add stats from equipped items (slots 0-9)
+	for item in current_player.bag_slots:
+		var slot_id = int(item.get("bag_slot_id", -1))
+		if slot_id >= 0 and slot_id < 10:
+			total_stats.strength += int(item.get("strength", 0))
+			total_stats.stamina += int(item.get("constitution", 0))
+			total_stats.agility += int(item.get("dexterity", 0))
+			total_stats.luck += int(item.get("luck", 0))
+			total_stats.armor += int(item.get("armor", 0))
+			
+	return total_stats

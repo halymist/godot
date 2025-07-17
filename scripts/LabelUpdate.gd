@@ -14,6 +14,7 @@ func _ready():
 	GameInfo.gold_changed.connect(_on_gold_changed)
 	GameInfo.currency_changed.connect(_on_currency_changed)
 	GameInfo.stats_changed.connect(_on_stats_changed)
+	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
 
 	_on_gold_changed(GameInfo.player_gold)
 	_on_currency_changed(GameInfo.player_currency)
@@ -27,10 +28,22 @@ func _on_gold_changed(new_gold: int):
 func _on_currency_changed(new_currency: int):
 	currency_label.text = "Currency: " + str(new_currency)
 
-func _on_stats_changed(stats: Dictionary):
-	player_name_label.text = str(stats.name)
-	strength_label.text = "STRENGHT: " + str(stats.strength)
-	stamina_label.text = "STAMINA: " + str(stats.stamina)
-	agility_label.text = "AGILITY: " + str(stats.agility)
-	luck_label.text = "LUCK: " + str(stats.luck)
-	armor_label.text = "ARMOR: " + str(stats.armor)
+func _on_stats_changed(_stats: Dictionary):
+	print("Stats changed: ", _stats)
+	var total_stats = GameInfo.get_total_stats()
+	player_name_label.text = str(total_stats.name)
+	strength_label.text = "STRENGTH: " + str(total_stats.strength)
+	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
+	agility_label.text = "AGILITY: " + str(total_stats.agility)
+	luck_label.text = "LUCK: " + str(total_stats.luck)
+	armor_label.text = "ARMOR: " + str(total_stats.armor)
+
+func _on_bag_slots_changed():
+	print("Bag slots changed - updating stats display")
+	var total_stats = GameInfo.get_total_stats()
+	player_name_label.text = str(total_stats.name)
+	strength_label.text = "STRENGTH: " + str(total_stats.strength)
+	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
+	agility_label.text = "AGILITY: " + str(total_stats.agility)
+	luck_label.text = "LUCK: " + str(total_stats.luck)
+	armor_label.text = "ARMOR: " + str(total_stats.armor)

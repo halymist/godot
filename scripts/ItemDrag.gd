@@ -10,10 +10,7 @@ func set_item_data(data: Dictionary):
 func _get_drag_data(_at_position):
 	if item_data.is_empty():
 		return null
-		
-	print("Dragging item: ", item_data.get("item_name", "Unknown"))
-	print("Dragging type: ", item_data.get("type", "Unknown"))
-	
+			
 	# Create a preview for dragging
 	var preview_texture = TextureRect.new()
 	preview_texture.texture = texture
@@ -37,7 +34,6 @@ func _notification(what):
 		# Restore full opacity - drag ended
 		modulate.a = 1.0
 
-# Slots now handle _can_drop_data and _drop_data
 
 # Helper function to get item data
 func get_item_data() -> Dictionary:
