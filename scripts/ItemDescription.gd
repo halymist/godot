@@ -7,15 +7,18 @@ extends Panel
 @export var armor: Label
 @export var effect: Label
 
-func show_description(item_data: Dictionary):
-	name_label.text = item_data.get("item_name", "Unknown")
-	strength.text = str(item_data.get("strength", 0))
-	stamina.text = str(item_data.get("constitution", 0))
-	agility.text = str(item_data.get("dexterity", 0))
-	luck.text = str(item_data.get("luck", 0))
-	armor.text = str(item_data.get("armor", 0))
-	effect.text = item_data.get("effect_description", "")
-	visible = true
+func show_description(item_data: GameInfo.Item):
+	if item_data:
+		name_label.text = item_data.item_name
+		strength.text = str(item_data.strength)
+		stamina.text = str(item_data.constitution)
+		agility.text = str(item_data.dexterity)
+		luck.text = str(item_data.luck)
+		armor.text = str(item_data.armor)
+		effect.text = item_data.effect_description
+		visible = true
+	else:
+		visible = false
 
 func hide_description():
 	visible = false

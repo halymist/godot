@@ -14,7 +14,7 @@ var mock_character_data = {
 	"dexterity": 18,
 	"luck": 10,
 	"armor": 5,
-	"talent_points": 3,
+	"talent_points": 10,
 	"perk_points": 2,
 	"dungeon": false,
 	"traveling": null,
@@ -99,7 +99,7 @@ var mock_character_data = {
 	"talents": [
 		{
 			"talent_id": 1,
-			"points": 3
+			"points": 1
 		},
 		{
 			"talent_id": 2,

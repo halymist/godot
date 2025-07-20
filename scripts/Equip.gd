@@ -14,7 +14,7 @@ func update_equip_slots():
 
 	#eq slotsID: 0-9, bagslots: 10-14
 	for item in GameInfo.current_player.bag_slots:
-		var bag_slot_id = int(item["bag_slot_id"])
+		var bag_slot_id = item.bag_slot_id  # Use property instead of dictionary access
 		var valid = false
 		var slot_id = 0
 		if is_bag and bag_slot_id >= 10:

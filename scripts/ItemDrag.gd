@@ -1,7 +1,7 @@
 extends TextureRect
 # Store the complete item data
 var description_panel: Panel 
-var item_data: Dictionary = {}
+var item_data: GameInfo.Item = null
 
 func _ready():
 	description_panel = get_tree().root.get_node("Game/Portrait/GameScene/ItemDescription")
@@ -11,18 +11,20 @@ func _ready():
 
 
 func _on_mouse_entered():
-	description_panel.show_description(item_data)
+	if item_data:
+		description_panel.show_description(item_data)
 
 func _on_mouse_exited():
 	description_panel.hide_description()
 
 
-func set_item_data(data: Dictionary):
+func set_item_data(data: GameInfo.Item):
 	item_data = data
-	texture = data.get("texture", null)
+	if data:
+		texture = data.texture
 
 func _get_drag_data(_at_position):
-	if item_data.is_empty():
+	if not item_data:
 		return null
 			
 	# Create a preview for dragging
@@ -36,11 +38,13 @@ func _get_drag_data(_at_position):
 	preview.add_child(preview_texture)
 	set_drag_preview(preview)
 
-	# Store the source for restoration if needed
-	var dragged_data = item_data.duplicate()
-	dragged_data["_source_item"] = self  # Store reference to this item
+	# Create a drag data package with item and source reference
+	var drag_package = {
+		"item": item_data,
+		"source_container": get_parent()
+	}
 	modulate.a = 0
-	return dragged_data
+	return drag_package
 
 # Add this method to handle failed drops
 func _notification(what):
@@ -48,7 +52,5 @@ func _notification(what):
 		# Restore full opacity - drag ended
 		modulate.a = 1.0
 
-
-# Helper function to get item data
-func get_item_data() -> Dictionary:
+func get_item_data() -> GameInfo.Item:
 	return item_data
