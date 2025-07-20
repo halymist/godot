@@ -3070,8 +3070,7 @@ offset_right = 4.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="PerkScreen" type="Button" parent="Portrait/GameScene/Talents"]
-visible = false
+[node name="PerkScreen" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("active_panel", "inactive_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3082,6 +3081,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
 theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
 script = ExtResource("21_fkdbe")
+active_panel = NodePath("PerkPanel/Active")
+inactive_panel = NodePath("PerkPanel/Inactive")
 
 [node name="PerkPanel" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen"]
 layout_mode = 1
@@ -3102,7 +3103,12 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_81klo")
 
-[node name="Panel" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
+[node name="Perk" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Active" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
