@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=43 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
+[ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="22_81klo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.936635, 0.300484, 0.782811, 1)
@@ -3104,9 +3105,36 @@ grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_81klo")
 
 [node name="Perk" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_bottom = 70.0
+grow_horizontal = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
+layout_mode = 2
+offset_bottom = 70.0
+stretch_mode = 1
+alignment_horizontal = 0
+
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk/AspectRatioContainer"]
+layout_mode = 2
+texture = ExtResource("22_81klo")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 20
+text = "bladadasdadasdsadasdaassdasdsssssssssssssssssssssssasdasdsadasd"
+text_overrun_behavior = 3
 
 [node name="Active" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
 layout_mode = 1
