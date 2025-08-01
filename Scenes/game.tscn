@@ -3105,13 +3105,13 @@ grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_81klo")
 
 [node name="Perk" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive"]
+clip_contents = true
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 offset_bottom = 70.0
 grow_horizontal = 2
-clip_contents = true
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
 layout_mode = 1
@@ -3119,7 +3119,6 @@ anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 70.0
 grow_vertical = 2
-ratio = 1.0
 
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk/AspectRatioContainer"]
 layout_mode = 2
@@ -3130,10 +3129,7 @@ expand_mode = 1
 clip_contents = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.0
 anchor_right = 1.0
-anchor_top = 0.0
-anchor_bottom = 0.0
 offset_left = 75.0
 offset_bottom = 70.0
 grow_horizontal = 2
@@ -3141,9 +3137,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 16
 text = "Perk Name
-sadsad
-sadas
-sda"
+does so much more damage and also some other cool stuff"
 autowrap_mode = 3
 
 [node name="Active" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
