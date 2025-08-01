@@ -94,6 +94,17 @@ var mock_character_data = {
 			"factor1": 2.0,
 			"effect2": "",
 			"factor2": 0.0
+		},
+		{
+			"perk_name": "Test",
+			"active": false,
+			"description": "Increases strength by 10",
+			"asset_id": 8,
+			"slot": 1,
+			"effect1": "Strength",
+			"factor1": 10.0,
+			"effect2": "",
+			"factor2": 0.0
 		}
 	],
 	"talents": [

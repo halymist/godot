@@ -9,7 +9,7 @@ extends AspectRatioContainer
 @export var description: String = ""
 @export var factor: float = 1.0
 
-@export var isPerk: bool = false  # True if this is a perk talent, false if it's a regular talent
+@export var perk_slot: int = 0  # 0 = regular talent, >0 = perk talent with this slot ID
 
 @export var button: Button
 @export var upgrade: Button
@@ -46,9 +46,11 @@ func update_button_appearance():
 
 func _on_button_pressed():
 	var eligible_for_upgrade = can_upgrade()
-	if isPerk and points >= maxPoints:
+	if perk_slot > 0 and points >= maxPoints:
 		GameInfo.current_panel_overlay = perkScreen
 		perkScreen.visible = true
+		# Load active perks for the specific slot that was clicked
+		perkScreen.load_active_perks_for_slot(perk_slot)
 	else:
 		GameInfo.current_panel_overlay = upgrade
 		upgrade.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)

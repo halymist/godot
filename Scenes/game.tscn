@@ -26,7 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
-[ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="22_81klo"]
+[ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.936635, 0.300484, 0.782811, 1)
@@ -2486,7 +2486,6 @@ talentID = 12
 talentName = "Not random"
 maxPoints = 5
 description = "not epic"
-isPerk = true
 button = NodePath("Button")
 upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
@@ -2554,7 +2553,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2563,10 +2562,12 @@ alignment_vertical = 2
 script = ExtResource("14_7t8sx")
 talentID = 10
 talentName = "Random Name"
-maxPoints = 3
+maxPoints = 1
 description = "Yep thta is an epic talent"
+perk_slot = 2
 button = NodePath("Button")
 upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent45"), NodePath("../Talent47"), NodePath("../Talent39"), NodePath("../Talent53")]
 
@@ -2643,7 +2644,6 @@ talentID = 8
 talentName = "Random Name"
 maxPoints = 3
 description = "Yep thta is an epic talent"
-isPerk = true
 button = NodePath("Button")
 upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
@@ -2847,7 +2847,7 @@ talentName = "Random Name"
 maxPoints = 1
 isStarter = true
 description = "Yep thta is an epic talent"
-isPerk = true
+perk_slot = 1
 button = NodePath("Button")
 upgrade = NodePath("../../Upgrade")
 perkScreen = NodePath("../../PerkScreen")
@@ -3072,6 +3072,7 @@ grow_horizontal = 2
 grow_vertical = 0
 
 [node name="PerkScreen" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("active_panel", "inactive_panel")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3084,6 +3085,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
 script = ExtResource("21_fkdbe")
 active_panel = NodePath("PerkPanel/Active")
 inactive_panel = NodePath("PerkPanel/Inactive")
+perk_scene = ExtResource("22_81klo")
 
 [node name="PerkPanel" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen"]
 layout_mode = 1
@@ -3103,42 +3105,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_81klo")
-
-[node name="Perk" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive"]
-clip_contents = true
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-offset_bottom = 70.0
-grow_horizontal = 2
-
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 70.0
-grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk/AspectRatioContainer"]
-layout_mode = 2
-texture = ExtResource("22_81klo")
-expand_mode = 1
-
-[node name="Label" type="Label" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
-clip_contents = true
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-offset_left = 75.0
-offset_bottom = 70.0
-grow_horizontal = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_font_sizes/font_size = 16
-text = "Perk Name
-does so much more damage and also some other cool stuff"
-autowrap_mode = 3
 
 [node name="Active" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
 layout_mode = 1
