@@ -3112,29 +3112,35 @@ anchor_right = 1.0
 offset_bottom = 70.0
 grow_horizontal = 2
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
-layout_mode = 2
-offset_bottom = 70.0
-stretch_mode = 1
-alignment_horizontal = 0
-
-[node name="TextureRect" type="TextureRect" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk/AspectRatioContainer"]
-layout_mode = 2
-texture = ExtResource("22_81klo")
-expand_mode = 1
-
-[node name="Label" type="Label" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+ratio = 1.0
+
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk/HBoxContainer/AspectRatioContainer"]
+layout_mode = 2
+texture = ExtResource("22_81klo")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel/Inactive/Perk/HBoxContainer"]
+clip_contents = true
+layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 1
-theme_override_font_sizes/font_size = 20
-text = "bladadasdadasdsadasdaassdasdsssssssssssssssssssssssasdasdsadasd"
-text_overrun_behavior = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 16
+text = "Perk Name
+This is a longer description that should wrap to multiple lines instead of overflowing and covering the icon on the left side."
+vertical_alignment = 0
+autowrap_mode = 3
 
 [node name="Active" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
 layout_mode = 1
