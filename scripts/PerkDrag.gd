@@ -28,14 +28,16 @@ func _get_drag_data(_at_position):
 		"source_container": get_parent(),
 		"source_node": self  # Include reference to the dragged node
 	}
-	modulate.a = 0  # Make original completely invisible during drag
+	
+	# Hide the original node by making it take no space
+	visible = false
 	return drag_package
 
 # Add this method to handle failed drops
 func _notification(what):
 	if what == NOTIFICATION_DRAG_END:
-		# Restore full opacity - drag ended
-		modulate.a = 1.0
+		# Restore visibility - drag ended
+		visible = true
 		print("Drag ended for perk: ", perk_data.perk_name if perk_data else "unknown")
 
 func get_perk_data() -> GameInfo.Perk:

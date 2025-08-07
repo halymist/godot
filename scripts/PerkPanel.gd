@@ -31,6 +31,19 @@ func _can_drop_data(pos, data):
 	
 	return false
 
+# Override mouse exit to remove placeholder when mouse leaves the panel
+func _input(event):
+	if event is InputEventMouseMotion and is_dragging_over:
+		var panel_rect = Rect2(Vector2.ZERO, size)
+		var global_mouse_pos = event.global_position
+		var local_mouse_pos = global_mouse_pos - global_position
+		
+		# If mouse is outside the panel, remove placeholder
+		if not panel_rect.has_point(local_mouse_pos):
+			print("Mouse left panel, removing placeholder")
+			_remove_placeholder()
+			is_dragging_over = false
+
 func _drop_data(_pos, data):
 	# Remove placeholder and reset drag state
 	_remove_placeholder()
@@ -59,6 +72,9 @@ func _drop_data(_pos, data):
 		_handle_inactive_drop(perk, source_container, data)
 
 func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: Dictionary):
+	# Update perk data to be active
+	perk.active = true
+	
 	# Check if active panel already has a perk (need to swap)
 	var existing_children = get_children()
 	if existing_children.size() > 0:
@@ -66,6 +82,9 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		var existing_perk_data = existing_perk_node.get_perk_data()
 		
 		print("Active panel has existing perk, swapping...")
+		
+		# Update existing perk to be inactive
+		existing_perk_data.active = false
 		
 		# Place existing perk in source container
 		if source_container:
@@ -99,6 +118,10 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 
 func _handle_inactive_drop(perk: GameInfo.Perk, source_container: Control, data: Dictionary):
 	print("Moving perk to inactive panel")
+	
+	# Update perk data to be inactive
+	perk.active = false
+	
 	# Place perk in inactive panel
 	place_perk_in_panel(perk)
 	
@@ -162,11 +185,17 @@ func place_perk_in_panel(perk_data: GameInfo.Perk):
 	add_child(new_perk)
 	
 	print("Perk placed successfully, panel now has ", get_child_count(), " children")
+	
+	# Update active perks display in character screen
+	_update_character_active_perks()
 
 func clear_panel():
 	for child in get_children():
 		if child != drag_placeholder:  # Don't clear the placeholder
 			child.queue_free()
+	
+	# Update active perks display when clearing
+	_update_character_active_perks()
 
 func set_slot_filter(slot: int):
 	slot_filter = slot
@@ -202,33 +231,35 @@ func _update_placeholder_position(pos: Vector2):
 	if drag_placeholder.get_parent() != self:
 		add_child(drag_placeholder)
 		
-	# Find the best insertion point based on mouse position
+	# Simple logic: find which perk we're over and place placeholder accordingly
 	var children = get_children()
-	var insert_index = 0  # Default to start
+	var insert_index = 0
+	var found_target = false
 	
-	# If no children (except placeholder), place at start
-	if children.size() <= 1:
-		insert_index = 0
-	else:
-		# Check each child to find where to insert
-		for i in range(children.size()):
-			var child = children[i]
-			if child == drag_placeholder:
-				continue
-				
-			var child_global_rect = child.get_global_rect()
-			var child_mid_y = child_global_rect.position.y + child_global_rect.size.y / 2
+	for i in range(children.size()):
+		var child = children[i]
+		if child == drag_placeholder:
+			continue
 			
-			# Convert mouse position to global for comparison
-			var global_mouse_y = global_position.y + pos.y
-			
-			if global_mouse_y < child_mid_y:
-				insert_index = i
-				break
+		var child_rect = child.get_rect()
+		
+		# Check if mouse is anywhere over this child
+		if pos.y >= child_rect.position.y and pos.y <= child_rect.position.y + child_rect.size.y:
+			found_target = true
+			# Top half = before, bottom half = after
+			if pos.y < child_rect.position.y + child_rect.size.y / 2:
+				insert_index = i  # Insert before this child
+				print("Mouse over TOP of perk, inserting BEFORE at index: ", insert_index)
 			else:
-				insert_index = i + 1
+				insert_index = i + 1  # Insert after this child
+				print("Mouse over BOTTOM of perk, inserting AFTER at index: ", insert_index)
+			break
 	
-	# Move placeholder to correct position
+	# If not over any child, place at end
+	if not found_target:
+		insert_index = children.size()
+		print("Mouse not over any perk, placing at END: ", insert_index)
+	
 	move_child(drag_placeholder, insert_index)
 
 # Handle drag exit to clean up placeholder
@@ -236,3 +267,11 @@ func _notification(what):
 	if what == NOTIFICATION_DRAG_END:
 		_remove_placeholder()
 		is_dragging_over = false
+
+func _update_character_active_perks():
+	# Find and update the active perks display in character screen
+	var character_panel = get_tree().root.get_node("Game/Portrait/GameScene/Character")
+	if character_panel:
+		var active_perks_display = character_panel.get_node("ActivePerks")
+		if active_perks_display and active_perks_display.has_method("update_active_perks"):
+			active_perks_display.update_active_perks()

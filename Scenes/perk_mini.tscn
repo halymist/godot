@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8sq28m2fbaok"]
+
+[ext_resource type="Texture2D" uid="uid://dvc0hmsoblrmb" path="res://assets/images/fallback/1.png" id="1_oe18w"]
+
+[node name="perkMini" type="AspectRatioContainer"]
+custom_minimum_size = Vector2(50, 50)
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("1_oe18w")
+expand_mode = 1

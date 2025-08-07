@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=45 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://ltahebix3ehj" path="res://scripts/Talent.gd" id="14_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://do7kcopjw84ob" path="res://assets/images/ui/home.png" id="14_81klo"]
 [ext_resource type="Script" uid="uid://bib0u7na61nim" path="res://scripts/ItemDescription.gd" id="14_85qyi"]
+[ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="14_mucmn"]
 [ext_resource type="Script" uid="uid://df5c7at0y6dnh" path="res://scripts/SetTalents.gd" id="14_vm72l"]
 [ext_resource type="Texture2D" uid="uid://drrca05nqixdx" path="res://assets/images/ui/talents/survive.png" id="15_7nbq1"]
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
@@ -190,7 +191,6 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fc0e3")
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -639,33 +639,24 @@ script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_id = 14
 
-[node name="ActivePerks" type="VBoxContainer" parent="Portrait/GameScene/Character"]
+[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameScene/Character"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.5
+anchor_top = 0.85
 anchor_right = 1.0
-anchor_bottom = 0.7
+anchor_bottom = 1.0
+offset_top = 44.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_active_perks")
-
-[node name="Label" type="Label" parent="Portrait/GameScene/Character/ActivePerks"]
-layout_mode = 2
-text = "Active Perks"
-horizontal_alignment = 1
-
-[node name="PerkIcons" type="HBoxContainer" parent="Portrait/GameScene/Character/ActivePerks"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-alignment = 1
+perk_mini_scene = ExtResource("14_mucmn")
 
 [node name="Stats" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.7
 anchor_right = 0.8
-anchor_bottom = 1.0
+anchor_bottom = 0.85
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("10_mg4q0")
@@ -804,6 +795,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
