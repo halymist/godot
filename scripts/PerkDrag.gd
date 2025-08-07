@@ -27,7 +27,7 @@ func _get_drag_data(_at_position):
 		"perk": perk_data,
 		"source_container": get_parent()
 	}
-	modulate.a = 0.5  # Make original semi-transparent during drag
+	modulate.a = 0  # Make original completely invisible during drag
 	return drag_package
 
 # Add this method to handle failed drops
@@ -35,6 +35,7 @@ func _notification(what):
 	if what == NOTIFICATION_DRAG_END:
 		# Restore full opacity - drag ended
 		modulate.a = 1.0
+		print("Drag ended for perk: ", perk_data.perk_name if perk_data else "unknown")
 
 func get_perk_data() -> GameInfo.Perk:
 	return perk_data
