@@ -27,6 +27,7 @@
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
+[ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.936635, 0.300484, 0.782811, 1)
@@ -58,9 +59,6 @@ border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vm72l"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_81klo"]
-bg_color = Color(0.720139, 0.571716, 0.370317, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgy6u"]
 
@@ -3096,7 +3094,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Inactive" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
+[node name="Inactive" type="VBoxContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.3
@@ -3104,7 +3102,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_81klo")
+script = ExtResource("23_tgy6u")
+panel_type = "Inactive"
+perk_scene = ExtResource("22_81klo")
 
 [node name="Active" type="Panel" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
 layout_mode = 1
@@ -3112,6 +3112,8 @@ anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.3
 theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
+script = ExtResource("23_tgy6u")
+perk_scene = ExtResource("22_81klo")
 
 [node name="Chat" type="Panel" parent="Portrait/GameScene"]
 visible = false

@@ -25,7 +25,8 @@ func _get_drag_data(_at_position):
 	var drag_package = {
 		"type": "perk",
 		"perk": perk_data,
-		"source_container": get_parent()
+		"source_container": get_parent(),
+		"source_node": self  # Include reference to the dragged node
 	}
 	modulate.a = 0  # Make original completely invisible during drag
 	return drag_package

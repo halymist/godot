@@ -105,6 +105,17 @@ var mock_character_data = {
 			"factor1": 10.0,
 			"effect2": "",
 			"factor2": 0.0
+		},
+				{
+			"perk_name": "Test2",
+			"active": false,
+			"description": "Increases stamina by 10",
+			"asset_id": 8,
+			"slot": 2,
+			"effect1": "Stamina",
+			"factor1": 10.0,
+			"effect2": "",
+			"factor2": 0.0
 		}
 	],
 	"talents": [

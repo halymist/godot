@@ -1,7 +1,7 @@
 extends Button
 
-@export var active_panel: Panel
-@export var inactive_panel: Panel
+@export var active_panel: Control
+@export var inactive_panel: Control
 @export var perk_scene: PackedScene
 
 var perks: Array = []
@@ -10,28 +10,15 @@ func _ready():
 	pressed.connect(_on_button_pressed)
 	visible = false
 	
-	# Set up panels with proper scripts
-	_setup_panel_scripts()
 	
 	load_inactive_perks()  # Load inactive perks once
 
-func _setup_panel_scripts():
-	# Set up active panel
-	if not active_panel.get_script():
-		var active_script = load("res://scripts/PerkPanel.gd")
-		active_panel.set_script(active_script)
-		active_panel.panel_type = "Active"
-		active_panel.perk_scene = perk_scene
-	
-	# Set up inactive panel
-	if not inactive_panel.get_script():
-		var inactive_script = load("res://scripts/PerkPanel.gd")
-		inactive_panel.set_script(inactive_script)
-		inactive_panel.panel_type = "Inactive"
-		inactive_panel.perk_scene = perk_scene
-
 func load_inactive_perks():
 	print("Loading all inactive perks...")
+	
+	if not inactive_panel:
+		print("Error: inactive_panel is null")
+		return
 	
 	# Clear existing inactive perk nodes
 	_clear_panel_children(inactive_panel)
@@ -52,6 +39,11 @@ func load_inactive_perks():
 
 func load_active_perks_for_slot(slot: int):
 	print("Loading active perks for slot: ", slot)
+	
+	if not active_panel:
+		print("Error: active_panel is null")
+		return
+	
 	_clear_panel_children(active_panel)
 	
 	# Get active perks for the specific slot from GameInfo
@@ -68,7 +60,7 @@ func load_active_perks_for_slot(slot: int):
 	
 	print("Loaded ", active_count, " active perks for slot ", slot)
 
-func _clear_panel_children(panel: Panel):
+func _clear_panel_children(panel: Control):
 	for child in panel.get_children():
 		child.queue_free()
 
