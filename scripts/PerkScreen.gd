@@ -9,7 +9,26 @@ var perks: Array = []
 func _ready():
 	pressed.connect(_on_button_pressed)
 	visible = false
+	
+	# Set up panels with proper scripts
+	_setup_panel_scripts()
+	
 	load_inactive_perks()  # Load inactive perks once
+
+func _setup_panel_scripts():
+	# Set up active panel
+	if not active_panel.get_script():
+		var active_script = load("res://scripts/PerkPanel.gd")
+		active_panel.set_script(active_script)
+		active_panel.panel_type = "Active"
+		active_panel.perk_scene = perk_scene
+	
+	# Set up inactive panel
+	if not inactive_panel.get_script():
+		var inactive_script = load("res://scripts/PerkPanel.gd")
+		inactive_panel.set_script(inactive_script)
+		inactive_panel.panel_type = "Inactive"
+		inactive_panel.perk_scene = perk_scene
 
 func load_inactive_perks():
 	print("Loading all inactive perks...")
@@ -54,13 +73,13 @@ func _clear_panel_children(panel: Panel):
 		child.queue_free()
 
 func _setup_perk_instance(perk_instance: Node, perk: GameInfo.Perk):
-	# Set the perk name and description
-	var label = perk_instance.get_node("Label")
-	label.text = perk.perk_name + "\n" + perk.description
+	# Set up the perk instance with the PerkDrag script
+	if not perk_instance.get_script():
+		var perk_script = load("res://scripts/PerkDrag.gd")
+		perk_instance.set_script(perk_script)
 	
-	# Set the icon using the texture already loaded in the Perk object
-	var texture_rect = perk_instance.get_node("AspectRatioContainer/TextureRect")
-	texture_rect.texture = perk.texture
+	# Set the perk data using the script's method
+	perk_instance.set_perk_data(perk)
 
 func _on_button_pressed():
 	visible = false
