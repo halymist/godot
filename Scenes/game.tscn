@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=44 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -28,6 +28,7 @@
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
+[ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.936635, 0.300484, 0.782811, 1)
@@ -637,6 +638,27 @@ layout_mode = 2
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_id = 14
+
+[node name="ActivePerks" type="VBoxContainer" parent="Portrait/GameScene/Character"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("24_active_perks")
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Character/ActivePerks"]
+layout_mode = 2
+text = "Active Perks"
+horizontal_alignment = 1
+
+[node name="PerkIcons" type="HBoxContainer" parent="Portrait/GameScene/Character/ActivePerks"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
 
 [node name="Stats" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1

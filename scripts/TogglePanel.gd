@@ -28,14 +28,16 @@ func _ready():
 	chat_button.pressed.connect(show_panel_overlay.bind(chat_panel))
 	back_button.pressed.connect(go_back)
 
-func show_panel(panel_to_show: Control):
-	if panel_to_show == GameInfo.get_current_panel():
-		print("Panel is already active: ", panel_to_show.name)
-	else:
-		print("show_panel called with: ", panel_to_show.name)
-		panel_to_show.visible = true
-		GameInfo.get_current_panel().hide()  
-		GameInfo.set_current_panel(panel_to_show)
+func show_panel(panel: Control):
+	hide_all_panels()
+	panel.visible = true
+	GameInfo.set_current_panel(panel)
+	
+	# Update active perks display when character panel is shown
+	if panel == character_panel:
+		var active_perks_display = character_panel.get_node("ActivePerks")
+		if active_perks_display and active_perks_display.has_method("update_active_perks"):
+			active_perks_display.update_active_perks()
 	
 func show_panel_overlay(panel_to_toggle: Control):
 	var is_active = GameInfo.get_current_panel_overlay() == panel_to_toggle and panel_to_toggle.visible

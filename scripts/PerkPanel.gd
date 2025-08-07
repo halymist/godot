@@ -197,29 +197,39 @@ func _remove_placeholder():
 func _update_placeholder_position(pos: Vector2):
 	if panel_type != "Inactive" or not drag_placeholder:
 		return
+	
+	# Ensure placeholder is added first
+	if drag_placeholder.get_parent() != self:
+		add_child(drag_placeholder)
 		
 	# Find the best insertion point based on mouse position
 	var children = get_children()
-	var insert_index = children.size()  # Default to end
+	var insert_index = 0  # Default to start
 	
-	for i in range(children.size()):
-		var child = children[i]
-		if child == drag_placeholder:
-			continue
+	# If no children (except placeholder), place at start
+	if children.size() <= 1:
+		insert_index = 0
+	else:
+		# Check each child to find where to insert
+		for i in range(children.size()):
+			var child = children[i]
+			if child == drag_placeholder:
+				continue
+				
+			var child_global_rect = child.get_global_rect()
+			var child_mid_y = child_global_rect.position.y + child_global_rect.size.y / 2
 			
-		var child_rect = child.get_rect()
-		var child_center_y = child_rect.position.y + child_rect.size.y / 2
-		
-		if pos.y < child_center_y:
-			insert_index = i
-			break
+			# Convert mouse position to global for comparison
+			var global_mouse_y = global_position.y + pos.y
+			
+			if global_mouse_y < child_mid_y:
+				insert_index = i
+				break
+			else:
+				insert_index = i + 1
 	
 	# Move placeholder to correct position
-	if drag_placeholder.get_parent() == self:
-		move_child(drag_placeholder, insert_index)
-	else:
-		add_child(drag_placeholder)
-		move_child(drag_placeholder, insert_index)
+	move_child(drag_placeholder, insert_index)
 
 # Handle drag exit to clean up placeholder
 func _notification(what):
