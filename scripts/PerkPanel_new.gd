@@ -54,11 +54,11 @@ func _drop_data(_pos, data):
 			return
 	
 	if panel_type == "Active":
-		_handle_active_drop(perk, source_container, data)
+		_handle_active_drop(perk, source_container)
 	elif panel_type == "Inactive":
-		_handle_inactive_drop(perk, source_container, data)
+		_handle_inactive_drop(perk, source_container)
 
-func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: Dictionary):
+func _handle_active_drop(perk: GameInfo.Perk, source_container: Control):
 	# Check if active panel already has a perk (need to swap)
 	var existing_children = get_children()
 	if existing_children.size() > 0:
@@ -77,12 +77,7 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		
 		# Only clear the source container if it's different from this panel
 		if source_container and source_container != self:
-			# Remove only the specific perk that was dragged
-			var source_node = data.get("source_node", null)
-			if source_node and source_node.get_parent() == source_container:
-				source_node.queue_free()
-			else:
-				print("Warning: Could not find source node to remove for swap")
+			source_container.clear_panel()
 	else:
 		print("Active panel is empty, moving perk...")
 		# Just place the perk in active panel
@@ -90,26 +85,16 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		
 		# Only clear the source container if it's different from this panel
 		if source_container and source_container != self:
-			# Remove only the specific perk that was dragged
-			var source_node = data.get("source_node", null)
-			if source_node and source_node.get_parent() == source_container:
-				source_node.queue_free()
-			else:
-				print("Warning: Could not find source node to remove for move")
+			source_container.clear_panel()
 
-func _handle_inactive_drop(perk: GameInfo.Perk, source_container: Control, data: Dictionary):
+func _handle_inactive_drop(perk: GameInfo.Perk, source_container: Control):
 	print("Moving perk to inactive panel")
 	# Place perk in inactive panel
 	place_perk_in_panel(perk)
 	
 	# Only clear the source container if it's different from this panel
 	if source_container and source_container != self:
-		# Remove only the specific perk that was dragged
-		var source_node = data.get("source_node", null)
-		if source_node and source_node.get_parent() == source_container:
-			source_node.queue_free()
-		else:
-			print("Warning: Could not find source node to remove from active")
+		source_container.clear_panel()
 
 func _handle_reorder(pos: Vector2, data):
 	# Get the dragged perk
@@ -165,8 +150,7 @@ func place_perk_in_panel(perk_data: GameInfo.Perk):
 
 func clear_panel():
 	for child in get_children():
-		if child != drag_placeholder:  # Don't clear the placeholder
-			child.queue_free()
+		child.queue_free()
 
 func set_slot_filter(slot: int):
 	slot_filter = slot
@@ -178,7 +162,6 @@ func _create_placeholder():
 	drag_placeholder = Panel.new()
 	drag_placeholder.custom_minimum_size = Vector2(0, 70)  # Same height as perk
 	drag_placeholder.modulate = Color(1, 1, 1, 0.3)  # Semi-transparent
-	drag_placeholder.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Make it ignore mouse input
 	
 	# Add a subtle background
 	var style = StyleBoxFlat.new()
