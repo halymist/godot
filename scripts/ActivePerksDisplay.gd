@@ -5,7 +5,7 @@ extends HBoxContainer
 func update_active_perks():
 	print("ActivePerksDisplay: Updating active perks...")
 	
-	# Clear existing icons
+	# Clear existing iconsw
 	for child in get_children():
 		child.queue_free()
 	
