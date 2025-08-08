@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=49 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -33,6 +33,7 @@
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
+[ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.936635, 0.300484, 0.782811, 1)
@@ -3215,7 +3216,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
 script = ExtResource("23_tgy6u")
 perk_scene = ExtResource("22_81klo")
 
-[node name="Chat" type="Panel" parent="Portrait/GameScene"]
+[node name="Chat" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_container", "scroll_container")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -3224,6 +3225,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7sc4i")
+script = ExtResource("28_chat_panel")
+chat_container = NodePath("ScrollContainer/ChatContainer")
+scroll_container = NodePath("ScrollContainer")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Chat"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameScene/Chat/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ItemDescription" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("name_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
 visible = false

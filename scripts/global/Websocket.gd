@@ -365,3 +365,67 @@ var mock_arena_opponents = [
 		]
 	}
 ]
+
+# Mock chat data
+var mock_chat_messages = [
+	{
+		"sender": "Herald",
+		"timestamp": "2025-08-08T10:30:00Z",
+		"status": "lord",
+		"message": "Welcome, brave adventurers! The tournament begins at dawn!"
+	},
+	{
+		"sender": "Farmer Joe",
+		"timestamp": "2025-08-08T10:31:15Z", 
+		"status": "peasant",
+		"message": "Anyone know where I can buy better seeds? My crops aren't growing well."
+	},
+	{
+		"sender": "Lady Ashford",
+		"timestamp": "2025-08-08T10:32:30Z",
+		"status": "lord", 
+		"message": "The Royal Treasury is offering bounties for rare artifacts."
+	},
+	{
+		"sender": "Blacksmith Tom",
+		"timestamp": "2025-08-08T10:33:45Z",
+		"status": "peasant",
+		"message": "Need iron ore! Will trade weapons for quality materials."
+	},
+	{
+		"sender": "Sir Gareth",
+		"timestamp": "2025-08-08T10:35:00Z",
+		"status": "lord",
+		"message": "Beware the dark forest - strange creatures have been spotted there."
+	},
+	{
+		"sender": "Merchant Mills",
+		"timestamp": "2025-08-08T10:36:20Z",
+		"status": "peasant",
+		"message": "Fresh potions and supplies at the market square!"
+	},
+	{
+		"sender": "Captain Reynolds",
+		"timestamp": "2025-08-08T10:37:45Z",
+		"status": "lord",
+		"message": "Guards are needed at the city gates. Report to the barracks."
+	},
+	{
+		"sender": "Young Tim",
+		"timestamp": "2025-08-08T10:39:10Z",
+		"status": "peasant",
+		"message": "Has anyone seen my lost cat? It's orange with white paws."
+	},
+	{
+		"sender": "Duchess Elena",
+		"timestamp": "2025-08-08T10:40:30Z",
+		"status": "lord",
+		"message": "The grand ball is this weekend. All nobles are invited."
+	},
+	{
+		"sender": "Baker Bill",
+		"timestamp": "2025-08-08T10:41:50Z",
+		"status": "peasant",
+		"message": "Fresh bread and pastries! Hot from the oven!"
+	}
+]

@@ -145,6 +145,22 @@ class Talent:
 		"points": "points"
 	}
 
+class ChatMessage:
+	extends MessagePackObject
+	
+	# Chat message properties
+	var sender: String = ""
+	var timestamp: String = ""
+	var status: String = "peasant"  # "peasant" or "lord"
+	var message: String = ""
+	
+	const MSGPACK_MAP = {
+		"sender": "sender",
+		"timestamp": "timestamp", 
+		"status": "status",
+		"message": "message"
+	}
+
 class GamePlayer:
 	extends MessagePackObject
 	
@@ -346,6 +362,7 @@ class GameArenaOpponent:
 var current_player: GameCurrentPlayer
 var arena_opponents: Array[GameArenaOpponent] = []
 var arena_opponent: GameArenaOpponent = null
+var chat_messages: Array[ChatMessage] = []
 
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null:
@@ -375,6 +392,7 @@ func _ready():
 	print("GameInfo ready!")
 	load_player_data(Websocket.mock_character_data)
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
+	load_chat_messages_data(Websocket.mock_chat_messages)
 	print_arena_opponents_info()
 
 # Helper functions to modify values and emit signals
@@ -445,6 +463,14 @@ func load_arena_opponents_data(opponents_data: Array):
 		arena_opponents.append(opponent)
 		print("Loaded arena opponent: ", opponent.name)
 	print("Total arena opponents loaded: ", arena_opponents.size())
+
+# Function to load chat messages from mock data
+func load_chat_messages_data(messages_data: Array):
+	chat_messages.clear()
+	for message_data in messages_data:
+		var chat_message = ChatMessage.new(message_data)
+		chat_messages.append(chat_message)
+	print("Total chat messages loaded: ", chat_messages.size())
 
 # Helper function to get active perks for any GamePlayer (player or opponent)
 func get_active_perks_for_character(character: GamePlayer) -> Array:
