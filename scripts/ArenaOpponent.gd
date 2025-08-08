@@ -34,12 +34,12 @@ func _update_display():
 	
 	_update_perks_display()
 
-func set_enemy_data(id: int, enemy_name_text: String, strength: int, constitution: int, dexterity: int, luck: int, armor: int):
+func set_enemy_data(id: int, enemy_name_text: String, strength: int, stamina: int, agility: int, luck: int, armor: int):
 	enemy_id = id
 	enemy_name = enemy_name_text
 	enemy_strength = strength
-	enemy_constitution = constitution
-	enemy_dexterity = dexterity
+	enemy_constitution = stamina  # Map stamina back to constitution for display
+	enemy_dexterity = agility     # Map agility back to dexterity for display
 	enemy_luck = luck
 	enemy_armor = armor
 	_update_display()
@@ -47,7 +47,8 @@ func set_enemy_data(id: int, enemy_name_text: String, strength: int, constitutio
 func set_opponent_data(opponent):
 	opponent_data = opponent
 	if opponent:
-		set_enemy_data(enemy_id, opponent.name, opponent.strength, opponent.constitution, opponent.dexterity, opponent.luck, opponent.armor)
+		var total_stats = opponent.get_total_stats()
+		set_enemy_data(enemy_id, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
 
 func _update_perks_display():
 	if not perks_container or not opponent_data:

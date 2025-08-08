@@ -139,6 +139,28 @@ var mock_arena_opponents = [
 		"dexterity": 14,
 		"luck": 8,
 		"armor": 3,
+		"bag_slots": [
+			{
+				"id": 11,
+				"bag_slot_id": 0,
+				"item_name": "Rusty Sword",
+				"type": "Weapon",
+				"subtype": "Sword",
+				"armor": 0,
+				"strength": 3,
+				"constitution": 0,
+				"dexterity": 0,
+				"luck": 0,
+				"damage_min": 5,
+				"damage_max": 8,
+				"asset_id": 11,
+				"effect_name": "",
+				"effect_description": "",
+				"effect_factor": 0.0,
+				"quality": 1,
+				"price": 50
+			}
+		],
 		"perks": [
 			{
 				"perk_name": "Berserker Rage",
@@ -151,6 +173,12 @@ var mock_arena_opponents = [
 				"effect2": "",
 				"factor2": 0.0
 			}
+		],
+		"talents": [
+			{
+				"talent_id": 1,
+				"points": 2
+			}
 		]
 	},
 	{
@@ -160,6 +188,48 @@ var mock_arena_opponents = [
 		"dexterity": 8,
 		"luck": 6,
 		"armor": 8,
+		"bag_slots": [
+			{
+				"id": 12,
+				"bag_slot_id": 0,
+				"item_name": "Heavy Axe",
+				"type": "Weapon",
+				"subtype": "Axe",
+				"armor": 0,
+				"strength": 5,
+				"constitution": 0,
+				"dexterity": -2,
+				"luck": 0,
+				"damage_min": 8,
+				"damage_max": 15,
+				"asset_id": 12,
+				"effect_name": "",
+				"effect_description": "",
+				"effect_factor": 0.0,
+				"quality": 2,
+				"price": 120
+			},
+			{
+				"id": 13,
+				"bag_slot_id": 2,
+				"item_name": "Iron Chestplate",
+				"type": "Chest",
+				"subtype": "",
+				"armor": 5,
+				"strength": 2,
+				"constitution": 3,
+				"dexterity": -1,
+				"luck": 0,
+				"damage_min": 0,
+				"damage_max": 0,
+				"asset_id": 13,
+				"effect_name": "",
+				"effect_description": "",
+				"effect_factor": 0.0,
+				"quality": 2,
+				"price": 200
+			}
+		],
 		"perks": [
 			{
 				"perk_name": "Iron Will",
@@ -183,6 +253,16 @@ var mock_arena_opponents = [
 				"effect2": "",
 				"factor2": 0.0
 			}
+		],
+		"talents": [
+			{
+				"talent_id": 2,
+				"points": 3
+			},
+			{
+				"talent_id": 4,
+				"points": 1
+			}
 		]
 	},
 	{
@@ -192,6 +272,48 @@ var mock_arena_opponents = [
 		"dexterity": 20,
 		"luck": 15,
 		"armor": 2,
+		"bag_slots": [
+			{
+				"id": 14,
+				"bag_slot_id": 0,
+				"item_name": "Poison Dagger",
+				"type": "Weapon",
+				"subtype": "Dagger",
+				"armor": 0,
+				"strength": 1,
+				"constitution": 0,
+				"dexterity": 4,
+				"luck": 2,
+				"damage_min": 3,
+				"damage_max": 6,
+				"asset_id": 14,
+				"effect_name": "Poison",
+				"effect_description": "Applies poison on hit",
+				"effect_factor": 2.0,
+				"quality": 3,
+				"price": 300
+			},
+			{
+				"id": 15,
+				"bag_slot_id": 1,
+				"item_name": "Leather Armor",
+				"type": "Chest",
+				"subtype": "",
+				"armor": 2,
+				"strength": 0,
+				"constitution": 1,
+				"dexterity": 3,
+				"luck": 1,
+				"damage_min": 0,
+				"damage_max": 0,
+				"asset_id": 15,
+				"effect_name": "",
+				"effect_description": "",
+				"effect_factor": 0.0,
+				"quality": 2,
+				"price": 150
+			}
+		],
 		"perks": [
 			{
 				"perk_name": "Shadow Strike",
@@ -225,6 +347,20 @@ var mock_arena_opponents = [
 				"factor1": 5.0,
 				"effect2": "Luck",
 				"factor2": 3.0
+			}
+		],
+		"talents": [
+			{
+				"talent_id": 3,
+				"points": 4
+			},
+			{
+				"talent_id": 5,
+				"points": 2
+			},
+			{
+				"talent_id": 7,
+				"points": 1
 			}
 		]
 	}

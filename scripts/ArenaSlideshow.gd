@@ -48,8 +48,11 @@ func _load_opponent_data():
 			var card = cards[i]
 			var opponent = GameInfo.arena_opponents[i]
 			
-			# Set the basic enemy data with raw stats
-			card.set_enemy_data(i + 1, opponent.name, opponent.strength, opponent.constitution, opponent.dexterity, opponent.luck, opponent.armor)
+			# Get total stats (base + equipment + perks)
+			var total_stats = opponent.get_total_stats()
+			
+			# Set the enemy data with calculated total stats
+			card.set_enemy_data(i + 1, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
 			
 			# Pass the full opponent data for perks display
 			card.set_opponent_data(opponent)
