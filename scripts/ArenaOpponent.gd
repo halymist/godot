@@ -30,7 +30,7 @@ func _update_display():
 		image_label.text = "Enemy\nImage\n" + str(enemy_id)
 	
 	if stats_label:
-		stats_label.text = "STR: " + str(enemy_strength) + "\nCON: " + str(enemy_constitution) + "\nDEX: " + str(enemy_dexterity) + "\nLCK: " + str(enemy_luck) + "\nARM: " + str(enemy_armor)
+		stats_label.text = "STR: " + str(enemy_strength) + "   CON: " + str(enemy_constitution) + "\nDEX: " + str(enemy_dexterity) + "   LCK: " + str(enemy_luck) + "\nARM: " + str(enemy_armor)
 	
 	_update_perks_display()
 
