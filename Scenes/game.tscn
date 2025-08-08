@@ -823,7 +823,6 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3112,7 +3111,6 @@ grow_horizontal = 2
 grow_vertical = 0
 
 [node name="PerkScreen" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("active_panel", "inactive_panel")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3152,7 +3150,8 @@ perk_scene = ExtResource("22_81klo")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.3
+anchor_bottom = 0.2
+offset_bottom = -0.400002
 theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
 script = ExtResource("23_tgy6u")
 perk_scene = ExtResource("22_81klo")

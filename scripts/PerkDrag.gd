@@ -11,6 +11,9 @@ func set_perk_data(data: GameInfo.Perk):
 		
 		var texture_rect = get_node("AspectRatioContainer/TextureRect")
 		texture_rect.texture = data.texture
+		
+		# Apply dynamic color styling based on perk state
+		_update_perk_colors(data)
 
 func _get_drag_data(_at_position):
 	if not perk_data:
@@ -26,6 +29,15 @@ func _get_drag_data(_at_position):
 	var preview = duplicate()
 	preview.modulate = Color(1, 1, 1, 0.7)  # Semi-transparent preview
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Preview ignores mouse
+	
+	# Ensure the preview has the correct texture and styling
+	if perk_data and perk_data.texture:
+		var preview_texture_rect = preview.get_node("AspectRatioContainer/TextureRect")
+		if preview_texture_rect:
+			preview_texture_rect.texture = perk_data.texture
+	
+	# Apply special preview styling (semi-transparent look)
+	_apply_preview_styling(preview)
 
 	# Center the preview on the mouse position using current node's size
 	var current_size = size
@@ -81,6 +93,55 @@ func _notification(what):
 
 func get_perk_data() -> GameInfo.Perk:
 	return perk_data
+
+func _update_perk_colors(perk: GameInfo.Perk):
+	# Get the existing panel style and just update colors
+	var current_style = get_theme_stylebox("panel")
+	if current_style is StyleBoxFlat:
+		var style = current_style.duplicate()
+		
+		# Update colors based on perk state
+		if perk.active:
+			# Active perks get warm colors
+			style.bg_color = Color(0.6, 0.2, 0.1, 0.95)  # Deep red
+			style.border_color = Color(1.0, 0.6, 0.3, 1.0)  # Orange border
+		else:
+			# Inactive perks get cool colors (default from scene)
+			style.bg_color = Color(0.1, 0.2, 0.6, 0.95)  # Deep blue
+			style.border_color = Color(0.3, 0.6, 1.0, 1.0)  # Light blue border
+		
+		add_theme_stylebox_override("panel", style)
+
+func _apply_preview_styling(preview_node: Control):
+	# Make the preview more transparent and add a glow effect
+	var preview_style = StyleBoxFlat.new()
+	
+	# Base it on the current perk's colors but more transparent
+	if perk_data.active:
+		preview_style.bg_color = Color(0.6, 0.2, 0.1, 0.6)  # More transparent red
+		preview_style.border_color = Color(1.0, 0.6, 0.3, 0.8)  # Semi-transparent orange
+	else:
+		preview_style.bg_color = Color(0.1, 0.2, 0.6, 0.6)  # More transparent blue
+		preview_style.border_color = Color(0.3, 0.6, 1.0, 0.8)  # Semi-transparent blue
+	
+	# Add glow effect for the preview
+	preview_style.shadow_color = Color(1, 1, 1, 0.4)  # White glow
+	preview_style.shadow_size = 8
+	preview_style.shadow_offset = Vector2(0, 0)
+	
+	# Keep the rounded corners
+	preview_style.corner_radius_top_left = 10
+	preview_style.corner_radius_top_right = 10
+	preview_style.corner_radius_bottom_left = 10
+	preview_style.corner_radius_bottom_right = 10
+	
+	# Border
+	preview_style.border_width_left = 2
+	preview_style.border_width_right = 2
+	preview_style.border_width_top = 2
+	preview_style.border_width_bottom = 2
+	
+	preview_node.add_theme_stylebox_override("panel", preview_style)
 
 func _set_all_perks_mouse_filter(filter_mode: int):
 	# Find all perk nodes in all panels and set their mouse filter

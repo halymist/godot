@@ -9,6 +9,96 @@ var slot_filter: int = 0 # Which perk slot this active panel is showing
 var drag_placeholder: Control = null
 var is_dragging_over: bool = false
 
+func _ready():
+	# Apply styling based on panel type
+	_apply_panel_styling()
+	# Add section header
+	_add_section_header()
+	# Configure container spacing
+	_configure_spacing()
+
+func _configure_spacing():
+	# For inactive panels (VBoxContainer), add consistent spacing
+	if panel_type == "Inactive":
+		add_theme_constant_override("separation", 8)  # 8 pixels between perks
+	elif panel_type == "Active":
+		# For active panels, we don't need separation since they hold one perk
+		pass
+
+func _add_section_header():
+	# Create a header label for the section
+	var header = Label.new()
+	header.name = "SectionHeader"
+	header.text = panel_type.to_upper() + " PERKS"
+	
+	# Style the header
+	header.add_theme_font_size_override("font_size", 18)
+	header.add_theme_color_override("font_color", Color.WHITE)
+	header.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	header.add_theme_constant_override("shadow_offset_x", 2)
+	header.add_theme_constant_override("shadow_offset_y", 2)
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	
+	# Position the header at the top
+	header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	header.size.y = 30
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	add_child(header)
+	
+	# Adjust content area to not overlap with header
+	if panel_type == "Active":
+		# Add some top margin for active panels
+		add_theme_constant_override("margin_top", 35)
+	elif panel_type == "Inactive":
+		# Add more top margin for inactive panels
+		add_theme_constant_override("margin_top", 35)
+
+func _apply_panel_styling():
+	var style = StyleBoxFlat.new()
+	
+	if panel_type == "Active":
+		# Active panel styling - warmer colors
+		style.bg_color = Color(0.3, 0.15, 0.1, 0.8)  # Dark reddish brown
+		style.border_color = Color(0.8, 0.4, 0.2, 1.0)  # Orange border
+		
+		# Ensure active panels are properly sized for single perks
+		custom_minimum_size = Vector2(0, 80)  # Just enough for one perk + padding
+		
+	elif panel_type == "Inactive":
+		# Inactive panel styling - cooler colors
+		style.bg_color = Color(0.1, 0.15, 0.3, 0.8)  # Dark blue
+		style.border_color = Color(0.2, 0.4, 0.8, 1.0)  # Blue border
+		
+		# Inactive panels can expand to fit multiple perks
+		custom_minimum_size = Vector2(0, 200)
+	
+	# Common styling
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_left = 12
+	style.corner_radius_bottom_right = 12
+	
+	style.border_width_left = 3
+	style.border_width_right = 3
+	style.border_width_top = 3
+	style.border_width_bottom = 3
+	
+	# Add inner shadow for depth
+	style.shadow_color = Color(0, 0, 0, 0.4)
+	style.shadow_size = 5
+	style.shadow_offset = Vector2(0, 3)
+	
+	# Apply the style - create a background panel since this is a Control
+	var bg_panel = Panel.new()
+	bg_panel.name = "BackgroundPanel"
+	bg_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg_panel.add_theme_stylebox_override("panel", style)
+	add_child(bg_panel)
+	move_child(bg_panel, 0)  # Put it at the back
+
 func _can_drop_data(pos, data):
 	# Check if data is valid drag package
 	if not (data is Dictionary and data.has("perk") and data["perk"] is GameInfo.Perk):
@@ -160,6 +250,7 @@ func place_perk_in_panel(perk_data: GameInfo.Perk):
 	
 	# Set the perk data using the script's method
 	new_perk.set_perk_data(perk_data)
+	
 	add_child(new_perk)
 	
 	print("Perk placed successfully, panel now has ", get_child_count(), " children")
@@ -169,7 +260,8 @@ func place_perk_in_panel(perk_data: GameInfo.Perk):
 
 func clear_panel():
 	for child in get_children():
-		if child != drag_placeholder:  # Don't clear the placeholder
+		# Don't clear the placeholder, background panel, or header
+		if child != drag_placeholder and child.name != "BackgroundPanel" and child.name != "SectionHeader":
 			child.queue_free()
 	
 	# Update active perks display when clearing
@@ -184,15 +276,29 @@ func _create_placeholder():
 		
 	drag_placeholder = Panel.new()
 	drag_placeholder.custom_minimum_size = Vector2(0, 70)  # Same height as perk
-	drag_placeholder.modulate = Color(1, 1, 1, 0.3)  # Semi-transparent
+	drag_placeholder.modulate = Color(1, 1, 1, 0.6)  # More visible
 	drag_placeholder.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Make it ignore mouse input
 	
-	# Add a subtle background
+	# Create a more attractive placeholder style
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color.GRAY
-	style.border_width_top = 2
-	style.border_width_bottom = 2
-	style.border_color = Color.WHITE
+	style.bg_color = Color(0.4, 0.7, 0.4, 0.3)  # Light green with transparency
+	style.border_width_top = 3
+	style.border_width_bottom = 3
+	style.border_width_left = 3
+	style.border_width_right = 3
+	style.border_color = Color(0.6, 1.0, 0.6, 0.8)  # Bright green border
+	
+	# Add rounded corners
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	
+	# Add a pulsing glow effect
+	style.shadow_color = Color(0.6, 1.0, 0.6, 0.4)
+	style.shadow_size = 8
+	style.shadow_offset = Vector2(0, 0)
+	
 	drag_placeholder.add_theme_stylebox_override("panel", style)
 
 func _remove_placeholder():
