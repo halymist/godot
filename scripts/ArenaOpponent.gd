@@ -3,9 +3,11 @@ extends Panel
 @export var perk_mini_scene: PackedScene
 @export var enemy_id: int = 1
 @export var enemy_name: String = "Enemy"
-@export var enemy_hp: int = 100
-@export var enemy_attack: int = 25
-@export var enemy_defense: int = 15
+@export var enemy_strength: int = 10
+@export var enemy_constitution: int = 10
+@export var enemy_dexterity: int = 10
+@export var enemy_luck: int = 10
+@export var enemy_armor: int = 0
 
 @onready var name_label: Label = $EnemyName
 @onready var image_label: Label = $ImagePanel/ImageLabel
@@ -28,22 +30,24 @@ func _update_display():
 		image_label.text = "Enemy\nImage\n" + str(enemy_id)
 	
 	if stats_label:
-		stats_label.text = "HP: " + str(enemy_hp) + "\nATK: " + str(enemy_attack) + "\nDEF: " + str(enemy_defense)
+		stats_label.text = "STR: " + str(enemy_strength) + "\nCON: " + str(enemy_constitution) + "\nDEX: " + str(enemy_dexterity) + "\nLCK: " + str(enemy_luck) + "\nARM: " + str(enemy_armor)
 	
 	_update_perks_display()
 
-func set_enemy_data(id: int, enemy_name_text: String, hp: int, attack: int, defense: int):
+func set_enemy_data(id: int, enemy_name_text: String, strength: int, constitution: int, dexterity: int, luck: int, armor: int):
 	enemy_id = id
 	enemy_name = enemy_name_text
-	enemy_hp = hp
-	enemy_attack = attack
-	enemy_defense = defense
+	enemy_strength = strength
+	enemy_constitution = constitution
+	enemy_dexterity = dexterity
+	enemy_luck = luck
+	enemy_armor = armor
 	_update_display()
 
 func set_opponent_data(opponent):
 	opponent_data = opponent
 	if opponent:
-		set_enemy_data(enemy_id, opponent.name, enemy_hp, enemy_attack, enemy_defense)
+		set_enemy_data(enemy_id, opponent.name, opponent.strength, opponent.constitution, opponent.dexterity, opponent.luck, opponent.armor)
 
 func _update_perks_display():
 	if not perks_container or not opponent_data:

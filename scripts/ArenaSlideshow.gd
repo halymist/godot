@@ -48,31 +48,13 @@ func _load_opponent_data():
 			var card = cards[i]
 			var opponent = GameInfo.arena_opponents[i]
 			
-			# Calculate opponent stats (base stats + equipment + perks)
-			var total_hp = _calculate_opponent_hp(opponent)
-			var total_attack = _calculate_opponent_attack(opponent)
-			var total_defense = _calculate_opponent_defense(opponent)
-			
-			# Set the basic enemy data
-			card.set_enemy_data(i + 1, opponent.name, total_hp, total_attack, total_defense)
+			# Set the basic enemy data with raw stats
+			card.set_enemy_data(i + 1, opponent.name, opponent.strength, opponent.constitution, opponent.dexterity, opponent.luck, opponent.armor)
 			
 			# Pass the full opponent data for perks display
 			card.set_opponent_data(opponent)
 	else:
 		print("Warning: No arena opponents data available")
-
-func _calculate_opponent_hp(opponent) -> int:
-	# Simple HP calculation: constitution * 10 + base HP
-	var base_hp = opponent.constitution * 10 + 50
-	return base_hp
-
-func _calculate_opponent_attack(opponent) -> int:
-	# Simple attack calculation: just use strength stat
-	return opponent.strength
-
-func _calculate_opponent_defense(opponent) -> int:
-	# Simple defense calculation: just use armor stat
-	return opponent.armor
 
 func _style_buttons():
 	var button_style = StyleBoxFlat.new()
