@@ -26,10 +26,16 @@ func _get_drag_data(_at_position):
 		# Fallback to a reasonable default size if size isn't calculated yet
 		current_size = Vector2(70, 70)  # Typical perk size
 	
+	# Calculate offset to center the preview on mouse cursor
 	var offset = Vector2(current_size.x / 2, current_size.y / 2)
+	
+	# Create a container to hold the preview with proper offset
+	var preview_container = Control.new()
+	preview_container.size = current_size  # Set container size
+	preview_container.add_child(preview)
 	preview.position = -offset
 	
-	set_drag_preview(preview)
+	set_drag_preview(preview_container)
 
 	# Create a drag data package with perk and source reference
 	var drag_package = {

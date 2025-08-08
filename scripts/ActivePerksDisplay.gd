@@ -47,14 +47,31 @@ func _on_perk_hover_start(perk_icon):
 	if perk_data:
 		tooltip_label.text = perk_data.perk_name + "\n\n" + perk_data.description
 		tooltip_panel.visible = true
+		
+		# Position tooltip above the perk icon
+		var icon_global_pos = perk_icon.global_position
+		var icon_size = perk_icon.size
+		var tooltip_size = tooltip_panel.size
+		
+		# Position above the icon, centered horizontally
+		tooltip_panel.global_position = Vector2(
+			icon_global_pos.x - tooltip_size.x / 2 + icon_size.x / 2,  # Center horizontally on icon
+			icon_global_pos.y - tooltip_size.y - 10  # Position above icon with 10px gap
+		)
+		
+		# Ensure tooltip stays within screen bounds
+		var viewport_size = get_viewport().get_visible_rect().size
+		if tooltip_panel.global_position.x < 0:
+			tooltip_panel.global_position.x = 0
+		elif tooltip_panel.global_position.x + tooltip_size.x > viewport_size.x:
+			tooltip_panel.global_position.x = viewport_size.x - tooltip_size.x
+		
+		if tooltip_panel.global_position.y < 0:
+			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10  # Show below if no space above
 
 func _on_perk_hover_end():
 	tooltip_panel.visible = false
 
 func get_active_perks() -> Array:
-	var active_perks = []
-	if GameInfo.current_player and GameInfo.current_player.perks:
-		for perk in GameInfo.current_player.perks:
-			if perk.active:
-				active_perks.append(perk)
-	return active_perks
+	# Use the shared helper function from GameInfo
+	return GameInfo.get_active_perks_for_character(GameInfo.current_player)

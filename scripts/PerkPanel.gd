@@ -236,31 +236,42 @@ func _update_placeholder_position(pos: Vector2):
 	var insert_index = 0
 	var found_target = false
 	
+	print("Mouse position: ", pos, " - Checking ", children.size(), " children")
+	
 	for i in range(children.size()):
 		var child = children[i]
 		if child == drag_placeholder:
 			continue
 			
 		var child_rect = child.get_rect()
+		print("Child ", i, " rect: ", child_rect, " - position: ", child_rect.position, " size: ", child_rect.size)
 		
-		# Check if mouse is anywhere over this child
-		if pos.y >= child_rect.position.y and pos.y <= child_rect.position.y + child_rect.size.y:
+		# Check if mouse is anywhere over this child's Y range
+		var child_top = child_rect.position.y
+		var child_bottom = child_rect.position.y + child_rect.size.y
+		
+		if pos.y >= child_top and pos.y <= child_bottom:
 			found_target = true
+			var child_center_y = child_top + child_rect.size.y / 2
+			
 			# Top half = before, bottom half = after
-			if pos.y < child_rect.position.y + child_rect.size.y / 2:
+			if pos.y < child_center_y:
 				insert_index = i  # Insert before this child
-				print("Mouse over TOP of perk, inserting BEFORE at index: ", insert_index)
+				print("Mouse over TOP of perk ", i, ", inserting BEFORE at index: ", insert_index)
 			else:
 				insert_index = i + 1  # Insert after this child
-				print("Mouse over BOTTOM of perk, inserting AFTER at index: ", insert_index)
+				print("Mouse over BOTTOM of perk ", i, ", inserting AFTER at index: ", insert_index)
 			break
 	
 	# If not over any child, place at end
 	if not found_target:
-		insert_index = children.size()
+		insert_index = children.size() - 1  # -1 because placeholder is already a child
 		print("Mouse not over any perk, placing at END: ", insert_index)
 	
-	move_child(drag_placeholder, insert_index)
+	# Make sure we don't move to same position
+	var current_index = drag_placeholder.get_index()
+	if current_index != insert_index:
+		move_child(drag_placeholder, insert_index)
 
 # Handle drag exit to clean up placeholder
 func _notification(what):

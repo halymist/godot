@@ -129,3 +129,251 @@ var mock_character_data = {
 		}
 	]
 }
+
+# Mock arena opponents data
+var mock_arena_opponents = [
+	{
+		"name": "Goblin Warrior",
+		"strength": 12,
+		"constitution": 10,
+		"dexterity": 14,
+		"luck": 8,
+		"armor": 3,
+		"talent_points": 5,
+		"perk_points": 1,
+		"slide": 1,
+		"slides": null,
+		"bag_slots": [
+			{
+				"id": 101,
+				"bag_slot_id": 0,
+				"item_name": "Rusty Sword",
+				"type": "Weapon",
+				"subtype": "Sword",
+				"armor": 0,
+				"strength": 3,
+				"constitution": 0,
+				"dexterity": 2,
+				"luck": 0,
+				"damage_min": 5,
+				"damage_max": 8,
+				"asset_id": 3,
+				"effect_name": "",
+				"effect_description": "",
+				"effect_factor": 0.0,
+				"quality": 1,
+				"price": 50
+			}
+		],
+		"perks": [
+			{
+				"perk_name": "Berserker Rage",
+				"active": true,
+				"description": "Increases damage when health is low",
+				"asset_id": 5,
+				"slot": 1,
+				"effect1": "Strength",
+				"factor1": 3.0,
+				"effect2": "",
+				"factor2": 0.0
+			}
+		],
+		"talents": [
+			{
+				"talent_id": 3,
+				"points": 2
+			}
+		]
+	},
+	{
+		"name": "Orc Brute",
+		"strength": 18,
+		"constitution": 16,
+		"dexterity": 8,
+		"luck": 6,
+		"armor": 8,
+		"talent_points": 8,
+		"perk_points": 2,
+		"slide": 1,
+		"slides": null,
+		"bag_slots": [
+			{
+				"id": 201,
+				"bag_slot_id": 0,
+				"item_name": "Heavy Axe",
+				"type": "Weapon",
+				"subtype": "Axe",
+				"armor": 0,
+				"strength": 8,
+				"constitution": 0,
+				"dexterity": -2,
+				"luck": 0,
+				"damage_min": 10,
+				"damage_max": 15,
+				"asset_id": 4,
+				"effect_name": "",
+				"effect_description": "",
+				"effect_factor": 0.0,
+				"quality": 2,
+				"price": 150
+			},
+			{
+				"id": 202,
+				"bag_slot_id": 1,
+				"item_name": "Iron Armor",
+				"type": "Chest",
+				"subtype": "",
+				"armor": 5,
+				"strength": 0,
+				"constitution": 5,
+				"dexterity": -1,
+				"luck": 0,
+				"damage_min": 0,
+				"damage_max": 0,
+				"asset_id": 6,
+				"effect_name": "",
+				"effect_description": "",
+				"effect_factor": 0.0,
+				"quality": 2,
+				"price": 200
+			}
+		],
+		"perks": [
+			{
+				"perk_name": "Iron Will",
+				"active": true,
+				"description": "Resistance to debuffs",
+				"asset_id": 7,
+				"slot": 1,
+				"effect1": "Constitution",
+				"factor1": 4.0,
+				"effect2": "",
+				"factor2": 0.0
+			},
+			{
+				"perk_name": "Heavy Hitter",
+				"active": true,
+				"description": "Increased damage with heavy weapons",
+				"asset_id": 9,
+				"slot": 2,
+				"effect1": "Strength",
+				"factor1": 5.0,
+				"effect2": "",
+				"factor2": 0.0
+			}
+		],
+		"talents": [
+			{
+				"talent_id": 4,
+				"points": 3
+			},
+			{
+				"talent_id": 5,
+				"points": 2
+			}
+		]
+	},
+	{
+		"name": "Dark Assassin",
+		"strength": 10,
+		"constitution": 8,
+		"dexterity": 20,
+		"luck": 15,
+		"armor": 2,
+		"talent_points": 12,
+		"perk_points": 3,
+		"slide": 1,
+		"slides": null,
+		"bag_slots": [
+			{
+				"id": 301,
+				"bag_slot_id": 0,
+				"item_name": "Poison Dagger",
+				"type": "Weapon",
+				"subtype": "Dagger",
+				"armor": 0,
+				"strength": 0,
+				"constitution": 0,
+				"dexterity": 6,
+				"luck": 3,
+				"damage_min": 4,
+				"damage_max": 6,
+				"asset_id": 5,
+				"effect_name": "Poison",
+				"effect_description": "Deals poison damage over time",
+				"effect_factor": 2.0,
+				"quality": 3,
+				"price": 300
+			},
+			{
+				"id": 302,
+				"bag_slot_id": 1,
+				"item_name": "Shadow Cloak",
+				"type": "Chest",
+				"subtype": "",
+				"armor": 1,
+				"strength": 0,
+				"constitution": 0,
+				"dexterity": 8,
+				"luck": 5,
+				"damage_min": 0,
+				"damage_max": 0,
+				"asset_id": 7,
+				"effect_name": "Stealth",
+				"effect_description": "Chance to avoid attacks",
+				"effect_factor": 15.0,
+				"quality": 3,
+				"price": 400
+			}
+		],
+		"perks": [
+			{
+				"perk_name": "Shadow Strike",
+				"active": true,
+				"description": "Critical hits from stealth",
+				"asset_id": 10,
+				"slot": 1,
+				"effect1": "Dexterity",
+				"factor1": 6.0,
+				"effect2": "Luck",
+				"factor2": 4.0
+			},
+			{
+				"perk_name": "Poison Master",
+				"active": true,
+				"description": "Enhanced poison effects",
+				"asset_id": 11,
+				"slot": 2,
+				"effect1": "Dexterity",
+				"factor1": 3.0,
+				"effect2": "",
+				"factor2": 0.0
+			},
+			{
+				"perk_name": "Evasion",
+				"active": false,
+				"description": "Increased dodge chance",
+				"asset_id": 12,
+				"slot": 3,
+				"effect1": "Dexterity",
+				"factor1": 5.0,
+				"effect2": "Luck",
+				"factor2": 3.0
+			}
+		],
+		"talents": [
+			{
+				"talent_id": 6,
+				"points": 4
+			},
+			{
+				"talent_id": 7,
+				"points": 3
+			},
+			{
+				"talent_id": 8,
+				"points": 2
+			}
+		]
+	}
+]

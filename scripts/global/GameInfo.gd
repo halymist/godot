@@ -328,6 +328,7 @@ class GameArenaOpponent:
 
 # GameInfo main class properties
 var current_player: GameCurrentPlayer
+var arena_opponents: Array[GameArenaOpponent] = []
 var arena_opponent: GameArenaOpponent = null
 
 # Panel tracking for navigation (where the client currently is)
@@ -357,6 +358,8 @@ var player_currency: int:
 func _ready():
 	print("GameInfo ready!")
 	load_player_data(Websocket.mock_character_data)
+	load_arena_opponents_data(Websocket.mock_arena_opponents)
+	print_arena_opponents_info()
 
 # Helper functions to modify values and emit signals
 func add_gold(amount: int):
@@ -417,3 +420,44 @@ func get_total_stats() -> Dictionary:
 func load_arena_opponent_msgpack(msgpack_data: Dictionary):
 	arena_opponent = GameArenaOpponent.new(msgpack_data, self)
 	print("Arena opponent loaded from MessagePack: ", arena_opponent.name)
+
+# Function to load all arena opponents from mock data
+func load_arena_opponents_data(opponents_data: Array):
+	arena_opponents.clear()
+	for opponent_data in opponents_data:
+		var opponent = GameArenaOpponent.new(opponent_data, self)
+		arena_opponents.append(opponent)
+		print("Loaded arena opponent: ", opponent.name)
+	print("Total arena opponents loaded: ", arena_opponents.size())
+
+# Helper function to get active perks for any GamePlayer (player or opponent)
+func get_active_perks_for_character(character: GamePlayer) -> Array:
+	var active_perks = []
+	if character and character.perks:
+		for perk in character.perks:
+			if perk.active:
+				active_perks.append(perk)
+	return active_perks
+
+# Helper function to get inactive perks for any GamePlayer
+func get_inactive_perks_for_character(character: GamePlayer) -> Array:
+	var inactive_perks = []
+	if character and character.perks:
+		for perk in character.perks:
+			if not perk.active:
+				inactive_perks.append(perk)
+	return inactive_perks
+
+# Debug function to print arena opponents info
+func print_arena_opponents_info():
+	print("=== Arena Opponents Info ===")
+	for i in range(arena_opponents.size()):
+		var opponent = arena_opponents[i]
+		print("Opponent ", i + 1, ":")
+		print("  Name: ", opponent.name)
+		print("  Stats: STR=", opponent.strength, " CON=", opponent.constitution, " DEX=", opponent.dexterity, " LCK=", opponent.luck, " ARM=", opponent.armor)
+		print("  Active Perks: ", get_active_perks_for_character(opponent).size())
+		print("  Inactive Perks: ", get_inactive_perks_for_character(opponent).size())
+		print("  Items: ", opponent.bag_slots.size())
+		print("  Talents: ", opponent.talents.size())
+	print("=== End Arena Opponents Info ===")
