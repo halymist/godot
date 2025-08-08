@@ -17,8 +17,16 @@ func _ready():
 func set_talent_data(talent_name: String, description: String, factor: float, points: int, max_points: int, eligible_for_upgrade: bool, talent_reference: Node = null):
 	visible = true
 	name_label.text = talent_name
-	description_label.text = description
+	
+	# Handle factor replacement in description
+	var processed_description = description
+	if factor > 0 and "*" in description:
+		# Replace "*" with the factor value
+		processed_description = description.replace("*", str(factor))
+	
+	description_label.text = processed_description
 	talent_ref = talent_reference
+	
 	if eligible_for_upgrade:
 		upgrade_button.visible = true
 	else:
