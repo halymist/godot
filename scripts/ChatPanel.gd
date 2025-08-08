@@ -6,6 +6,7 @@ extends Panel
 
 var is_chat_open = false
 var slide_tween: Tween
+var saved_scroll_position: int = 0
 
 func _ready():
 	# Load chat messages when the panel is ready
@@ -46,12 +47,15 @@ func show_chat():
 	var target_x = 0.0
 	slide_tween.tween_property(chat_panel, "position:x", target_x, 0.3)
 	
-	# Scroll to bottom after animation
-	slide_tween.tween_callback(_scroll_to_bottom)
+	# Restore scroll position after animation
+	slide_tween.tween_callback(_restore_scroll_position)
 
 func hide_chat():
 	if not is_chat_open or not chat_panel:
 		return
+	
+	# Save current scroll position before hiding
+	_save_scroll_position()
 		
 	is_chat_open = false
 	
@@ -75,6 +79,16 @@ func toggle_chat():
 	else:
 		show_chat()
 
+func _save_scroll_position():
+	if scroll_container:
+		saved_scroll_position = scroll_container.scroll_vertical
+
+func _restore_scroll_position():
+	if scroll_container:
+		# Wait a frame for the content to be properly sized
+		await get_tree().process_frame
+		scroll_container.scroll_vertical = saved_scroll_position
+
 func display_chat_messages():
 	if not chat_container:
 		print("ERROR: chat_container not assigned!")
@@ -88,14 +102,18 @@ func display_chat_messages():
 	for message in GameInfo.chat_messages:
 		add_chat_message(message)
 	
-	# Scroll to bottom after messages are added
-	call_deferred("_scroll_to_bottom")
+	# Only scroll to bottom on first load (when saved_scroll_position is 0)
+	if saved_scroll_position == 0:
+		call_deferred("_scroll_to_bottom")
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
 	# Create simple label for each message
 	var message_label = Label.new()
 	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	
+	# Set smaller font size
+	message_label.add_theme_font_size_override("font_size", 12)
 	
 	# Set text color based on status  
 	if chat_message.status == "lord":
@@ -114,3 +132,5 @@ func _scroll_to_bottom():
 		# Wait a frame for the content to be properly sized
 		await get_tree().process_frame
 		scroll_container.scroll_vertical = int(scroll_container.get_v_scroll_bar().max_value)
+		# Update saved position to bottom
+		saved_scroll_position = scroll_container.scroll_vertical

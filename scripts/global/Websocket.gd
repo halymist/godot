@@ -427,5 +427,71 @@ var mock_chat_messages = [
 		"timestamp": "2025-08-08T10:41:50Z",
 		"status": "peasant",
 		"message": "Fresh bread and pastries! Hot from the oven!"
+	},
+	{
+		"sender": "Wizard Eldrin",
+		"timestamp": "2025-08-08T10:43:15Z",
+		"status": "lord",
+		"message": "I seek apprentices to help with my research. Interested parties, come see me."
+	},
+	{
+		"sender": "Guard Captain",
+		"timestamp": "2025-08-08T10:44:40Z",
+		"status": "lord",
+		"message": "Stay vigilant, the kingdom is under threat from bandits."
+	},
+	{
+		"sender": "Alchemist Zara",
+		"timestamp": "2025-08-08T10:46:05Z",
+		"status": "peasant",
+		"message": "Potions for sale! Healing, mana, and more!"
+	},
+	{
+		"sender": "Knight Commander",
+		"timestamp": "2025-08-08T10:47:30Z",
+		"status": "lord",
+		"message": "All knights must report for training at the castle courtyard."
+	},
+	{
+		"sender": "Innkeeper Molly",
+		"timestamp": "2025-08-08T10:48:45Z",
+		"status": "peasant",
+		"message": "Rooms available for rent! Come rest your weary heads."
+	},
+	{
+		"sender": "Bard Lyra",
+		"timestamp": "2025-08-08T10:49:50Z",
+		"status": "peasant",
+		"message": "Hear ye, hear ye! Tales of adventure and glory await!"
+	},
+	{
+		"sender": "Mayor Thompson",
+		"timestamp": "2025-08-08T10:51:15Z",
+		"status": "lord",
+		"message": "The town council meets every Friday. All are welcome to attend."
+	},
+	{
+		"sender": "Hunter Greg",
+		"timestamp": "2025-08-08T10:52:40Z",
+		"status": "peasant",
+		"message": "Looking for hunting partners. Plenty of game in the hills."
+	},
+	{
+		"sender": "Priestess Mira",
+		"timestamp": "2025-08-08T10:54:05Z",
+		"status": "lord",
+		"message": "The temple is open for prayers and blessings. All are welcome."
+	},
+	{
+		"sender": "Farmer Ann",
+		"timestamp": "2025-08-08T10:55:30Z",
+		"status": "peasant",
+		"message": "Need help harvesting crops! Good food in return."
+	},
+	{
+		"sender": "Blacksmith Jane",
+		"timestamp": "2025-08-08T10:56:55Z",
+		"status": "peasant",
+		"message": "Weapons and armor repaired! Come see me at the forge."
 	}
 ]
