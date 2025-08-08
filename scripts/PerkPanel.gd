@@ -14,17 +14,16 @@ func _can_drop_data(pos, data):
 	if not (data is Dictionary and data.has("perk") and data["perk"] is GameInfo.Perk):
 		return false
 	
-	# For active panel, we accept any perk
-	if panel_type == "Active":
-		return true
-	
-	# For inactive panel, we accept any perk
+	# For inactive panel, always show placeholder and allow drop
 	if panel_type == "Inactive":
-		# Show placeholder for reordering feedback
 		if not is_dragging_over:
 			is_dragging_over = true
 			_create_placeholder()
 		_update_placeholder_position(pos)
+		return true
+	
+	# For active panel, we accept any perk
+	if panel_type == "Active":
 		return true
 	
 	return false
@@ -219,37 +218,57 @@ func _update_placeholder_position(pos: Vector2):
 	if panel_type != "Inactive" or not drag_placeholder:
 		return
 	
-	# Ensure placeholder is added first time
+	# Ensure placeholder is added to the panel
 	if drag_placeholder.get_parent() != self:
 		add_child(drag_placeholder)
+		# Animate placeholder height when first added
+		var target_height = 70.0  # Standard perk height
+		var existing_children = get_children()
+		for child in existing_children:
+			if child != drag_placeholder and child.has_method("get_rect"):
+				target_height = child.get_rect().size.y
+				break
+		_animate_placeholder_height(target_height * 0.8)
 	
-	var children = get_children()
-	var insert_index = children.size()
-	var found_target = false
+	# Get all non-placeholder children
+	var logical_children = []
+	for child in get_children():
+		if child != drag_placeholder:
+			logical_children.append(child)
 	
-	for i in range(children.size()):
-		var child = children[i]
-		if child == drag_placeholder:
-			continue
+	# Find insertion index based on Y position
+	var insert_index = logical_children.size()  # Default to end
+	
+	for i in range(logical_children.size()):
+		var child = logical_children[i]
+		var child_rect = child.get_rect()
+		var child_global_pos = child.global_position
+		var child_center_y = child_global_pos.y + child_rect.size.y * 0.5
 		
-		var child_top = child.position.y
-		var child_bottom = child_top + child.size.y
-		var child_center_y = child_top + child.size.y / 2
+		# Convert pos to global coordinates for comparison
+		var global_pos = global_position + pos
 		
-		if pos.y >= child_top and pos.y <= child_bottom:
-			found_target = true
-			if pos.y < child_center_y:
-				insert_index = i
-			else:
-				insert_index = i + 1
+		if global_pos.y < child_center_y:
+			insert_index = i
 			break
 	
-	if not found_target:
-		insert_index = children.size() - 1  # end
+	# Calculate the actual index considering the placeholder
+	var target_index = insert_index
+	var current_placeholder_index = drag_placeholder.get_index()
 	
-	# Only move if needed
-	if drag_placeholder.get_index() != insert_index:
-		move_child(drag_placeholder, insert_index)
+	# Only move if the position has changed
+	if current_placeholder_index != target_index:
+		move_child(drag_placeholder, target_index)
+
+func _animate_placeholder_height(target_height: float):
+	if not drag_placeholder:
+		return
+		
+	# Simple tween animation for placeholder height
+	var tween = create_tween()
+	tween.tween_property(drag_placeholder, "custom_minimum_size:y", target_height, 0.15)
+	tween.set_trans(Tween.TRANS_SINE)
+	tween.set_ease(Tween.EASE_OUT)
 
 
 # Handle drag exit to clean up placeholder
