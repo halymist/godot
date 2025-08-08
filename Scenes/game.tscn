@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=48 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -25,6 +25,7 @@
 [ext_resource type="Texture2D" uid="uid://drrca05nqixdx" path="res://assets/images/ui/talents/survive.png" id="15_7nbq1"]
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
+[ext_resource type="PackedScene" uid="uid://bmwipv6nvqjj2" path="res://Scenes/perk_tooltip.tscn" id="17_oeip8"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
@@ -44,9 +45,6 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_215e1"]
 texture = ExtResource("5_85qyi")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vm72l"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
 bg_color = Color(0.64014, 0.614233, 0.287706, 1)
 
@@ -63,6 +61,9 @@ border_color = Color(0.8, 0.8, 0.8, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkdbe"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vm72l"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgy6u"]
 
@@ -710,7 +711,7 @@ script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_id = 14
 
-[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("tooltip_panel", "tooltip_label")]
+[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameScene/Character"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.85
@@ -721,34 +722,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
-tooltip_panel = NodePath("../PerkTooltip")
-tooltip_label = NodePath("../PerkTooltip/TooltipLabel")
 
-[node name="PerkTooltip" type="Panel" parent="Portrait/GameScene/Character"]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.2
-anchor_top = 0.1
-anchor_right = 0.8
-anchor_bottom = 0.3
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vm72l")
-
-[node name="TooltipLabel" type="Label" parent="Portrait/GameScene/Character/PerkTooltip"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "Perk Description"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
+[node name="PerkTooltip" parent="Portrait/GameScene/Character" instance=ExtResource("17_oeip8")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="Stats" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1

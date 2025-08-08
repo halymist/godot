@@ -2,24 +2,39 @@ extends Panel
 
 @export var perk_mini_scene: PackedScene
 @export var enemy_id: int = 1
-@export var enemy_name: String = "Enemy"
-@export var enemy_strength: int = 10
-@export var enemy_constitution: int = 10
-@export var enemy_dexterity: int = 10
-@export var enemy_luck: int = 10
-@export var enemy_armor: int = 0
+var enemy_name: String = "Enemy"
+var enemy_strength: int = 10
+var enemy_constitution: int = 10
+var enemy_dexterity: int = 10
+var enemy_luck: int = 10
+var enemy_armor: int = 0
 
-@onready var name_label: Label = $EnemyName
-@onready var image_label: Label = $ImagePanel/ImageLabel
-@onready var stats_label: Label = $StatsLabel
-@onready var perks_container: HBoxContainer = $PerksContainer
+@export var image_label: Label
+@export var name_label: Label
+@export var strength_label: Label
+@export var constitution_label: Label
+@export var dexterity_label: Label
+@export var luck_label: Label
+@export var armor_label: Label
+@export var perks_container: HBoxContainer
+@export var tooltip_panel: Panel
+@export var tooltip_label: Label
 
 var opponent_data = null
 
 func _ready():
-	# Load perk_mini scene if not set
-	if not perk_mini_scene:
-		perk_mini_scene = load("res://Scenes/perk_mini.tscn")
+	# Manually assign UI elements
+	name_label = $EnemyName
+	image_label = $AspectRatioContainer/ImagePanel/ImageLabel
+	strength_label = $StatsContainer/StrengthLabel
+	constitution_label = $StatsContainer/ConstitutionLabel
+	dexterity_label = $StatsContainer/DexterityLabel
+	luck_label = $StatsContainer/LuckLabel
+	armor_label = $StatsContainer/ArmorLabel
+	perks_container = $PerksContainer
+	tooltip_panel = $PerkTooltip
+	tooltip_label = $PerkTooltip/TooltipLabel
+	
 	_update_display()
 
 func _update_display():
@@ -29,8 +44,20 @@ func _update_display():
 	if image_label:
 		image_label.text = "Enemy\nImage\n" + str(enemy_id)
 	
-	if stats_label:
-		stats_label.text = "STR: " + str(enemy_strength) + "   CON: " + str(enemy_constitution) + "\nDEX: " + str(enemy_dexterity) + "   LCK: " + str(enemy_luck) + "\nARM: " + str(enemy_armor)
+	if strength_label:
+		strength_label.text = "STR: " + str(enemy_strength)
+	
+	if constitution_label:
+		constitution_label.text = "CON: " + str(enemy_constitution)
+	
+	if dexterity_label:
+		dexterity_label.text = "DEX: " + str(enemy_dexterity)
+	
+	if luck_label:
+		luck_label.text = "LCK: " + str(enemy_luck)
+	
+	if armor_label:
+		armor_label.text = "ARM: " + str(enemy_armor)
 	
 	_update_perks_display()
 
@@ -78,7 +105,45 @@ func _update_perks_display():
 					var asset_id = perk.asset_id if perk.asset_id else 1
 					_set_perk_texture_by_asset_id(texture_rect, asset_id)
 				
+				# Enable mouse detection for hover (like character screen)
+				perk_icon.mouse_filter = Control.MOUSE_FILTER_PASS
+				
+				# Connect hover signals for tooltip functionality
+				perk_icon.mouse_entered.connect(_on_perk_hover_start.bind(perk_icon))
+				perk_icon.mouse_exited.connect(_on_perk_hover_end)
+				
 				perks_container.add_child(perk_icon)
+
+func _on_perk_hover_start(perk_icon):
+	var perk_data = perk_icon.get_meta("perk_data")
+	if perk_data and tooltip_label and tooltip_panel:
+		tooltip_label.text = perk_data.perk_name + "\n\n" + perk_data.description
+		tooltip_panel.visible = true
+		
+		# Position tooltip above the perk icon
+		var icon_global_pos = perk_icon.global_position
+		var icon_size = perk_icon.size
+		var tooltip_size = tooltip_panel.size
+		
+		# Position above the icon, centered horizontally
+		tooltip_panel.global_position = Vector2(
+			icon_global_pos.x - tooltip_size.x / 2 + icon_size.x / 2,  # Center horizontally on icon
+			icon_global_pos.y - tooltip_size.y - 10  # Position above icon with 10px gap
+		)
+		
+		# Ensure tooltip stays within screen bounds
+		var viewport_size = get_viewport().get_visible_rect().size
+		if tooltip_panel.global_position.x < 0:
+			tooltip_panel.global_position.x = 0
+		elif tooltip_panel.global_position.x + tooltip_size.x > viewport_size.x:
+			tooltip_panel.global_position.x = viewport_size.x - tooltip_size.x
+		
+		if tooltip_panel.global_position.y < 0:
+			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10  # Show below if no space above
+
+func _on_perk_hover_end():
+	if tooltip_panel:
+		tooltip_panel.visible = false
 
 func _set_perk_texture_by_asset_id(texture_rect: TextureRect, _asset_id: int):
 	# This could be expanded to load actual perk textures based on asset_id
