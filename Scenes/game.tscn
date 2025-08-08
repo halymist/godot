@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=50 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -68,6 +68,9 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgy6u"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
+bg_color = Color(0, 0, 0, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sc4i"]
 bg_color = Color(0.91713, 0.421878, 0.438724, 1)
 
@@ -113,7 +116,7 @@ map_button = NodePath("BottomUI/Buttons/Map/Button")
 map_panel = NodePath("GameScene/Map")
 back_button = NodePath("TopUI/HBoxContainer/Back/Button")
 chat_button = NodePath("BottomUI/Buttons/Chat/Button")
-chat_panel = NodePath("GameScene/Chat")
+chat_panel = NodePath("GameScene/ChatOverlay")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -3216,8 +3219,21 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
 script = ExtResource("23_tgy6u")
 perk_scene = ExtResource("22_81klo")
 
-[node name="Chat" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_container", "scroll_container")]
+[node name="ChatOverlay" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container")]
 visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
+script = ExtResource("28_chat_panel")
+chat_panel = NodePath("ChatPanel")
+chat_container = NodePath("ChatPanel/ScrollContainer/ChatContainer")
+scroll_container = NodePath("ChatPanel/ScrollContainer")
+
+[node name="ChatPanel" type="Panel" parent="Portrait/GameScene/ChatOverlay"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.7
@@ -3225,11 +3241,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7sc4i")
-script = ExtResource("28_chat_panel")
-chat_container = NodePath("ScrollContainer/ChatContainer")
-scroll_container = NodePath("ScrollContainer")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Chat"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3241,7 +3254,7 @@ offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameScene/Chat/ScrollContainer"]
+[node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 

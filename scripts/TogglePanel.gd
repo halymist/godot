@@ -25,7 +25,7 @@ func _ready():
 	character_button.pressed.connect(show_panel.bind(character_panel))
 	map_button.pressed.connect(show_panel.bind(map_panel))
 	talents_button.pressed.connect(show_panel.bind(talents_panel))
-	chat_button.pressed.connect(show_panel_overlay.bind(chat_panel))
+	chat_button.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
 
 func show_panel(panel: Control):
@@ -44,7 +44,16 @@ func show_panel_overlay(panel_to_toggle: Control):
 	panel_to_toggle.visible = not is_active
 	GameInfo.set_current_panel_overlay(panel_to_toggle if not is_active else null)
 
+func toggle_chat():
+	if chat_panel and chat_panel.has_method("toggle_chat"):
+		chat_panel.toggle_chat()
+
 func go_back():
+	# Check if chat is open first
+	if chat_panel and chat_panel.has_method("hide_chat") and chat_panel.get("is_chat_open"):
+		chat_panel.hide_chat()
+		return
+		
 	if GameInfo.get_current_panel_overlay() != null:
 		GameInfo.get_current_panel_overlay().hide()
 		GameInfo.set_current_panel_overlay(null)
@@ -63,4 +72,7 @@ func hide_all_panels():
 	character_panel.visible = false
 	map_panel.visible = false
 	talents_panel.visible = false
-	chat_panel.visible = false
+	
+	# Close chat if it's open
+	if chat_panel and chat_panel.has_method("hide_chat"):
+		chat_panel.hide_chat()

@@ -1,11 +1,79 @@
 extends Panel
 
+@export var chat_panel: Panel
 @export var chat_container: VBoxContainer
 @export var scroll_container: ScrollContainer
+
+var is_chat_open = false
+var slide_tween: Tween
 
 func _ready():
 	# Load chat messages when the panel is ready
 	display_chat_messages()
+	
+	# Connect click on overlay to close chat
+	gui_input.connect(_on_overlay_input)
+	
+	# Ensure chat starts hidden off-screen
+	if chat_panel:
+		var chat_width = get_viewport().get_visible_rect().size.x * 0.7
+		chat_panel.position.x = -chat_width
+
+func _on_overlay_input(event: InputEvent):
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			# Check if click was outside the chat panel
+			var click_pos = event.position
+			var chat_rect = Rect2(chat_panel.position, chat_panel.size)
+			
+			if not chat_rect.has_point(click_pos):
+				hide_chat()
+
+func show_chat():
+	if is_chat_open or not chat_panel:
+		return
+		
+	is_chat_open = true
+	visible = true
+	
+	# Animate sliding in
+	if slide_tween:
+		slide_tween.kill()
+	slide_tween = create_tween()
+	slide_tween.set_ease(Tween.EASE_OUT)
+	slide_tween.set_trans(Tween.TRANS_CUBIC)
+	
+	var target_x = 0.0
+	slide_tween.tween_property(chat_panel, "position:x", target_x, 0.3)
+	
+	# Scroll to bottom after animation
+	slide_tween.tween_callback(_scroll_to_bottom)
+
+func hide_chat():
+	if not is_chat_open or not chat_panel:
+		return
+		
+	is_chat_open = false
+	
+	# Animate sliding out
+	if slide_tween:
+		slide_tween.kill()
+	slide_tween = create_tween()
+	slide_tween.set_ease(Tween.EASE_IN)
+	slide_tween.set_trans(Tween.TRANS_CUBIC)
+	
+	var chat_width = get_viewport().get_visible_rect().size.x * 0.7
+	var target_x = -chat_width
+	slide_tween.tween_property(chat_panel, "position:x", target_x, 0.3)
+	
+	# Hide overlay after animation
+	slide_tween.tween_callback(func(): visible = false)
+
+func toggle_chat():
+	if is_chat_open:
+		hide_chat()
+	else:
+		show_chat()
 
 func display_chat_messages():
 	if not chat_container:
@@ -24,43 +92,25 @@ func display_chat_messages():
 	call_deferred("_scroll_to_bottom")
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
-	# Create a container for this message
-	var message_container = HBoxContainer.new()
-	message_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
-	# Create the message label
-	var message_label = RichTextLabel.new()
+	# Create simple label for each message
+	var message_label = Label.new()
 	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	message_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	message_label.custom_minimum_size.y = 30
-	message_label.bbcode_enabled = true
-	message_label.fit_content = true
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	
-	# Set text color based on status
-	var color = ""
+	# Set text color based on status  
 	if chat_message.status == "lord":
-		color = "[color=gold]"  # Gold color for lords
+		message_label.modulate = Color.GOLD
 	else:
-		color = "[color=white]"  # White color for peasants
+		message_label.modulate = Color.WHITE
 	
-	# Format the message: [color]Sender:[/color] message
-	var formatted_text = color + chat_message.sender + ":[/color] " + chat_message.message
-	message_label.text = formatted_text
+	# Simple format: Sender: message
+	message_label.text = chat_message.sender + ": " + chat_message.message
 	
-	# Add to containers
-	message_container.add_child(message_label)
-	chat_container.add_child(message_container)
+	# Add to container
+	chat_container.add_child(message_label)
 
 func _scroll_to_bottom():
 	if scroll_container:
 		# Wait a frame for the content to be properly sized
 		await get_tree().process_frame
 		scroll_container.scroll_vertical = int(scroll_container.get_v_scroll_bar().max_value)
-
-# Function to check if we should show timestamp
-# This could be expanded later to show timestamps after periods of inactivity
-func should_show_timestamp(_current_message: GameInfo.ChatMessage, _previous_message: GameInfo.ChatMessage) -> bool:
-	# For now, we don't show timestamps for every message as requested
-	# This can be expanded later to show timestamps after long periods
-	return false
