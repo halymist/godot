@@ -448,49 +448,49 @@ var mock_chat_messages = [
 	},
 	{
 		"sender": "Knight Commander",
-		"timestamp": "2025-08-08T10:47:30Z",
+		"timestamp": "2025-08-08T10:57:30Z",
 		"status": "lord",
 		"message": "All knights must report for training at the castle courtyard."
 	},
 	{
 		"sender": "Innkeeper Molly",
-		"timestamp": "2025-08-08T10:48:45Z",
+		"timestamp": "2025-08-08T10:58:45Z",
 		"status": "peasant",
 		"message": "Rooms available for rent! Come rest your weary heads."
 	},
 	{
 		"sender": "Bard Lyra",
-		"timestamp": "2025-08-08T10:49:50Z",
+		"timestamp": "2025-08-08T10:59:50Z",
 		"status": "peasant",
 		"message": "Hear ye, hear ye! Tales of adventure and glory await!"
 	},
 	{
 		"sender": "Mayor Thompson",
-		"timestamp": "2025-08-08T10:51:15Z",
+		"timestamp": "2025-08-08T10:59:15Z",
 		"status": "lord",
 		"message": "The town council meets every Friday. All are welcome to attend."
 	},
 	{
 		"sender": "Hunter Greg",
-		"timestamp": "2025-08-08T10:52:40Z",
+		"timestamp": "2025-08-08T10:59:40Z",
 		"status": "peasant",
 		"message": "Looking for hunting partners. Plenty of game in the hills."
 	},
 	{
 		"sender": "Priestess Mira",
-		"timestamp": "2025-08-08T10:54:05Z",
+		"timestamp": "2025-08-08T10:59:05Z",
 		"status": "lord",
 		"message": "The temple is open for prayers and blessings. All are welcome."
 	},
 	{
 		"sender": "Farmer Ann",
-		"timestamp": "2025-08-08T10:55:30Z",
+		"timestamp": "2025-08-08T10:59:30Z",
 		"status": "peasant",
 		"message": "Need help harvesting crops! Good food in return."
 	},
 	{
 		"sender": "Blacksmith Jane",
-		"timestamp": "2025-08-08T10:56:55Z",
+		"timestamp": "2025-08-08T10:59:55Z",
 		"status": "peasant",
 		"message": "Weapons and armor repaired! Come see me at the forge."
 	}

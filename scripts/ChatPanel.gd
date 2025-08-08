@@ -7,6 +7,12 @@ extends Panel
 var is_chat_open = false
 var slide_tween: Tween
 var saved_scroll_position: int = 0
+var last_message_time: String = ""
+
+# Drag-to-scroll variables
+var is_dragging = false
+var drag_start_position: Vector2
+var scroll_start_position: float
 
 func _ready():
 	# Load chat messages when the panel is ready
@@ -14,6 +20,10 @@ func _ready():
 	
 	# Connect click on overlay to close chat
 	gui_input.connect(_on_overlay_input)
+	
+	# Set up drag-to-scroll for the scroll container
+	if scroll_container:
+		scroll_container.gui_input.connect(_on_scroll_container_input)
 	
 	# Ensure chat starts hidden off-screen
 	if chat_panel:
@@ -29,6 +39,36 @@ func _on_overlay_input(event: InputEvent):
 			
 			if not chat_rect.has_point(click_pos):
 				hide_chat()
+
+func _on_scroll_container_input(event: InputEvent):
+	if not scroll_container:
+		return
+		
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				# Start dragging
+				is_dragging = true
+				drag_start_position = event.position
+				scroll_start_position = scroll_container.scroll_vertical
+			else:
+				# Stop dragging
+				is_dragging = false
+	
+	elif event is InputEventMouseMotion and is_dragging:
+		# Calculate scroll delta based on mouse movement
+		var delta = drag_start_position.y - event.position.y
+		var new_scroll = scroll_start_position + delta
+		
+		# Clamp to valid scroll range
+		var max_scroll = scroll_container.get_v_scroll_bar().max_value
+		new_scroll = clamp(new_scroll, 0, max_scroll)
+		
+		# Apply the scroll
+		scroll_container.scroll_vertical = int(new_scroll)
+		
+		# Update saved position
+		saved_scroll_position = scroll_container.scroll_vertical
 
 func show_chat():
 	if is_chat_open or not chat_panel:
@@ -107,22 +147,28 @@ func display_chat_messages():
 		call_deferred("_scroll_to_bottom")
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
+	# Check if we need to add a timestamp separator
+	_add_timestamp_separator_if_needed(chat_message)
+	
 	# Create simple label for each message
-	var message_label = Label.new()
+	var message_label = RichTextLabel.new()
 	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message_label.fit_content = true
+	message_label.scroll_active = false
+	message_label.bbcode_enabled = true
 	
 	# Set smaller font size
-	message_label.add_theme_font_size_override("font_size", 12)
+	message_label.add_theme_font_size_override("normal_font_size", 12)
+	message_label.add_theme_font_size_override("bold_font_size", 12)
 	
-	# Set text color based on status  
+	# Format with bold sender name and colored text
+	var sender_color = "white"
 	if chat_message.status == "lord":
-		message_label.modulate = Color.GOLD
-	else:
-		message_label.modulate = Color.WHITE
+		sender_color = "gold"
 	
-	# Simple format: Sender: message
-	message_label.text = chat_message.sender + ": " + chat_message.message
+	# Create rich text with bold sender name
+	var rich_text = "[color=" + sender_color + "][b]" + chat_message.sender + "[/b][/color]: " + chat_message.message
+	message_label.text = rich_text
 	
 	# Add to container
 	chat_container.add_child(message_label)
@@ -134,3 +180,51 @@ func _scroll_to_bottom():
 		scroll_container.scroll_vertical = int(scroll_container.get_v_scroll_bar().max_value)
 		# Update saved position to bottom
 		saved_scroll_position = scroll_container.scroll_vertical
+
+func _add_timestamp_separator_if_needed(chat_message: GameInfo.ChatMessage):
+	if last_message_time == "":
+		last_message_time = chat_message.timestamp
+		return
+	
+	# Parse timestamps to compare time difference
+	var last_time = Time.get_unix_time_from_datetime_string(last_message_time.replace("Z", "+00:00"))
+	var current_time = Time.get_unix_time_from_datetime_string(chat_message.timestamp.replace("Z", "+00:00"))
+	
+	# If more than 10 minutes (600 seconds) difference, add timestamp separator
+	if current_time - last_time >= 600:
+		_add_timestamp_separator(chat_message.timestamp)
+	
+	last_message_time = chat_message.timestamp
+
+func _add_timestamp_separator(timestamp: String):
+	# Create a full-width timestamp separator
+	var timestamp_label = RichTextLabel.new()
+	timestamp_label.fit_content = true
+	timestamp_label.scroll_active = false
+	timestamp_label.bbcode_enabled = true
+	timestamp_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
+	# Format the timestamp to be more readable and prominent
+	var formatted_time = _format_timestamp(timestamp)
+	timestamp_label.text = "[center][color=gold][b]" + formatted_time + "[/b][/color][/center]"
+	
+	# Set larger font size for prominence
+	timestamp_label.add_theme_font_size_override("normal_font_size", 14)
+	timestamp_label.add_theme_font_size_override("bold_font_size", 14)
+	
+	# Add directly to chat container to take full width
+	chat_container.add_child(timestamp_label)
+	
+	# Add some spacing
+	var spacer = Control.new()
+	spacer.custom_minimum_size.y = 8
+	chat_container.add_child(spacer)
+
+func _format_timestamp(iso_timestamp: String) -> String:
+	# Convert "2025-08-08T10:35:00Z" to "10:35"
+	var parts = iso_timestamp.split("T")
+	if parts.size() >= 2:
+		var time_part = parts[1].split(":")
+		if time_part.size() >= 2:
+			return time_part[0] + ":" + time_part[1]
+	return iso_timestamp  # Fallback to original if parsing fails
