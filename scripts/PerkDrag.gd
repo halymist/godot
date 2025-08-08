@@ -19,6 +19,9 @@ func _get_drag_data(_at_position):
 	# Immediately set mouse filter to ignore to prevent blocking
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
+	# Set all other perks to ignore mouse to prevent drop conflicts
+	_set_all_perks_mouse_filter(Control.MOUSE_FILTER_IGNORE)
+	
 	# Create a preview for dragging
 	var preview = duplicate()
 	preview.modulate = Color(1, 1, 1, 0.7)  # Semi-transparent
@@ -45,8 +48,12 @@ func _get_drag_data(_at_position):
 		"source_node": self  # Include reference to the dragged node
 	}
 	
-	# Hide the original node by making it semi-transparent instead of invisible
-	modulate.a = 0.3
+	# Store original size for restoration and shrink to height 0 instantly
+	var original_size = custom_minimum_size if custom_minimum_size != Vector2.ZERO else size
+	set_meta("original_size", original_size)
+	print("Shrinking perk from size: ", original_size, " to height 0")
+	custom_minimum_size = Vector2(original_size.x, 0.0)  # Instant shrink, no animation
+	
 	return drag_package
 
 # Add this method to handle failed drops
@@ -56,6 +63,38 @@ func _notification(what):
 		mouse_filter = Control.MOUSE_FILTER_STOP
 		modulate.a = 1.0
 		visible = true
+		
+		# Restore all perks mouse filter
+		_set_all_perks_mouse_filter(Control.MOUSE_FILTER_STOP)
+		
+		# Restore original height instantly if drag failed (no successful drop)
+		if has_meta("original_size"):
+			var original_size = get_meta("original_size")
+			print("Restoring perk to original size: ", original_size)
+			custom_minimum_size = Vector2(original_size.x, original_size.y)  # Instant restore, no animation
+			remove_meta("original_size")
 
 func get_perk_data() -> GameInfo.Perk:
 	return perk_data
+
+func _set_all_perks_mouse_filter(filter_mode: int):
+	# Find all perk nodes in all panels and set their mouse filter
+	var game_scene = get_tree().root.get_node("Game/Portrait/GameScene")
+	if not game_scene:
+		return
+	
+	# Find all perk panels (both active and inactive)
+	var perk_panels = []
+	_find_perk_panels_recursive(game_scene, perk_panels)
+	
+	for panel in perk_panels:
+		for child in panel.get_children():
+			if child.has_method("get_perk_data"):  # This is a perk node
+				child.mouse_filter = filter_mode
+
+func _find_perk_panels_recursive(node: Node, panels: Array):
+	if node.has_method("place_perk_in_panel"):  # This is a PerkPanel
+		panels.append(node)
+	
+	for child in node.get_children():
+		_find_perk_panels_recursive(child, panels)

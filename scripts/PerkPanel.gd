@@ -22,8 +22,13 @@ func _can_drop_data(pos, data):
 		_update_placeholder_position(pos)
 		return true
 	
-	# For active panel, we accept any perk
+	# For active panel, we accept any perk and create placeholder
 	if panel_type == "Active":
+		if not is_dragging_over:
+			is_dragging_over = true
+			_create_placeholder()
+			add_child(drag_placeholder)
+			move_child(drag_placeholder, 0)  # Always at the top for active panels
 		return true
 	
 	return false
@@ -45,6 +50,9 @@ func _drop_data(_pos, data):
 	# Remove placeholder and reset drag state
 	_remove_placeholder()
 	is_dragging_over = false
+	
+	# Restore all perks mouse filter since drag is ending successfully
+	_restore_all_perks_mouse_filter()
 	
 	# Extract perk and source container from drag package
 	var perk = data["perk"]
@@ -91,29 +99,25 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		clear_panel()
 		place_perk_in_panel(perk)
 		
-		# Only clear the source container if it's different from this panel
-		if source_container and source_container != self:
-			# Remove only the specific perk that was dragged
-			var source_node = data.get("source_node", null)
-			if source_node and source_node.get_parent() == source_container:
-				source_node.queue_free()
-			else:
-				print("Warning: Could not find source node to remove for swap")
+		# The dragged node was already shrunk to height 0 during drag start
+		# Clear its restoration metadata and queue it for removal
+		var source_node = data.get("source_node", null)
+		if source_node:
+			source_node.remove_meta("original_size")
+			source_node.queue_free()
 	else:
 		print("Active panel is empty, moving perk...")
 		# Just place the perk in active panel
 		place_perk_in_panel(perk)
 		
-		# Only clear the source container if it's different from this panel
-		if source_container and source_container != self:
-			# Remove only the specific perk that was dragged
-			var source_node = data.get("source_node", null)
-			if source_node and source_node.get_parent() == source_container:
-				source_node.queue_free()
-			else:
-				print("Warning: Could not find source node to remove for move")
+		# The dragged node was already shrunk to height 0 during drag start
+		# Clear its restoration metadata and queue it for removal
+		var source_node = data.get("source_node", null)
+		if source_node:
+			source_node.remove_meta("original_size")
+			source_node.queue_free()
 
-func _handle_inactive_drop(perk: GameInfo.Perk, source_container: Control, data: Dictionary):
+func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data: Dictionary):
 	print("Moving perk to inactive panel")
 	
 	# Update perk data to be inactive
@@ -122,48 +126,31 @@ func _handle_inactive_drop(perk: GameInfo.Perk, source_container: Control, data:
 	# Place perk in inactive panel
 	place_perk_in_panel(perk)
 	
-	# Only clear the source container if it's different from this panel
-	if source_container and source_container != self:
-		# Remove only the specific perk that was dragged
-		var source_node = data.get("source_node", null)
-		if source_node and source_node.get_parent() == source_container:
-			source_node.queue_free()
-		else:
-			print("Warning: Could not find source node to remove from active")
+	# The dragged node was already shrunk to height 0 during drag start
+	# Clear its restoration metadata and queue it for removal
+	var source_node = data.get("source_node", null)
+	if source_node:
+		source_node.remove_meta("original_size")
+		source_node.queue_free()
 
-func _handle_reorder(pos: Vector2, data):
+func _handle_reorder(_pos: Vector2, data):
 	# Get the dragged perk
 	var perk_data = data["perk"]
 	var dragged_node = data.get("source_node", null)
 	
-	# Find the best insertion point based on mouse position
-	var children = get_children()
-	var insert_index = children.size()  # Default to end
+	# Find the best insertion point based on placeholder position
+	var placeholder_index = drag_placeholder.get_index() if drag_placeholder else get_child_count()
 	
-	for i in range(children.size()):
-		var child = children[i]
-		var child_rect = child.get_rect()
-		var child_center_y = child_rect.position.y + child_rect.size.y / 2
-		
-		if pos.y < child_center_y:
-			insert_index = i
-			break
+	# Create new perk at the placeholder position
+	var new_perk = perk_scene.instantiate()
+	new_perk.set_perk_data(perk_data)
+	add_child(new_perk)
+	move_child(new_perk, placeholder_index)
 	
-	# Remove the dragged node from its current position
-	if dragged_node and dragged_node.get_parent() == self:
-		var current_index = dragged_node.get_index()
-		# Adjust insert index if we're moving down
-		if insert_index > current_index:
-			insert_index -= 1
-		dragged_node.get_parent().remove_child(dragged_node)
-		add_child(dragged_node)
-		move_child(dragged_node, insert_index)
-	else:
-		# Create new perk at the desired position
-		var new_perk = perk_scene.instantiate()
-		new_perk.set_perk_data(perk_data)
-		add_child(new_perk)
-		move_child(new_perk, insert_index)
+	# Clear the restoration metadata since we successfully placed it
+	if dragged_node:
+		dragged_node.remove_meta("original_size")
+		dragged_node.queue_free()
 
 func place_perk_in_panel(perk_data: GameInfo.Perk):
 	print("Placing perk '", perk_data.perk_name, "' in panel: ", self.name)
@@ -284,3 +271,25 @@ func _update_character_active_perks():
 		var active_perks_display = character_panel.get_node("ActivePerks")
 		if active_perks_display and active_perks_display.has_method("update_active_perks"):
 			active_perks_display.update_active_perks()
+
+func _restore_all_perks_mouse_filter():
+	# Find all perk nodes in all panels and restore their mouse filter
+	var game_scene = get_tree().root.get_node("Game/Portrait/GameScene")
+	if not game_scene:
+		return
+	
+	# Find all perk panels (both active and inactive)
+	var perk_panels = []
+	_find_perk_panels_recursive(game_scene, perk_panels)
+	
+	for panel in perk_panels:
+		for child in panel.get_children():
+			if child.has_method("get_perk_data"):  # This is a perk node
+				child.mouse_filter = Control.MOUSE_FILTER_STOP
+
+func _find_perk_panels_recursive(node: Node, panels: Array):
+	if node.has_method("place_perk_in_panel"):  # This is a PerkPanel
+		panels.append(node)
+	
+	for child in node.get_children():
+		_find_perk_panels_recursive(child, panels)
