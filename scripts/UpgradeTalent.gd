@@ -16,7 +16,17 @@ func _ready():
 
 func set_talent_data(talent_name: String, description: String, factor: float, points: int, max_points: int, eligible_for_upgrade: bool, talent_reference: Node = null):
 	visible = true
-	name_label.text = talent_name
+	
+	# Create the name with level display
+	var level_text = ""
+	if points >= max_points:
+		level_text = " (MAX)"
+	elif points > 0:
+		level_text = " (Lv. " + str(points) + ")"
+	else:
+		level_text = " (Lv. 0)"
+	
+	name_label.text = talent_name + level_text
 	
 	# Handle factor replacement in description
 	var processed_description = description
