@@ -97,10 +97,6 @@ func _on_perk_hover_start(perk_icon):
 		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
 		if tooltip_label:
 			tooltip_label.text = perk_data.perk_name + "\n\n" + perk_data.description
-			
-			# Ensure the tooltip panel has proper size before positioning
-			tooltip_panel.custom_minimum_size = Vector2(250, 120)
-			tooltip_panel.size = Vector2(250, 120)
 			tooltip_panel.visible = true
 			
 			# Position tooltip above the perk icon
