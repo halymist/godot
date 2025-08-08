@@ -711,7 +711,7 @@ script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_id = 14
 
-[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameScene/Character"]
+[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("tooltip_panel")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.85
@@ -722,14 +722,18 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
+tooltip_panel = NodePath("../PerkTooltip")
 
 [node name="PerkTooltip" parent="Portrait/GameScene/Character" instance=ExtResource("17_oeip8")]
+visible = false
 layout_mode = 0
 anchors_preset = 0
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
+offset_right = 200.0
+offset_bottom = 100.0
 grow_horizontal = 1
 grow_vertical = 1
 

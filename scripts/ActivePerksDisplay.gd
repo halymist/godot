@@ -2,7 +2,6 @@ extends HBoxContainer
 
 @export var perk_mini_scene: PackedScene
 @export var tooltip_panel: Panel
-@export var tooltip_label: Label
 
 
 func update_active_perks():
@@ -44,9 +43,11 @@ func update_active_perks():
 
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
-	if perk_data:
-		tooltip_label.text = perk_data.perk_name + "\n\n" + perk_data.description
-		tooltip_panel.visible = true
+	if perk_data and tooltip_panel:
+		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
+		if tooltip_label:
+			tooltip_label.text = perk_data.perk_name + "\n\n" + perk_data.description
+			tooltip_panel.visible = true
 		
 		# Position tooltip above the perk icon
 		var icon_global_pos = perk_icon.global_position
