@@ -73,5 +73,5 @@ func _on_perk_hover_end():
 	tooltip_panel.visible = false
 
 func get_active_perks() -> Array:
-	# Use the shared helper function from GameInfo
-	return GameInfo.get_active_perks_for_character(GameInfo.current_player)
+	# Use the new helper method directly on the player
+	return GameInfo.current_player.get_active_perks() if GameInfo.current_player else []

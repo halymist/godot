@@ -235,6 +235,22 @@ class GamePlayer:
 			if talent.talent_id == talent_id:
 				return true
 		return false
+	
+	# Helper function to get active perks
+	func get_active_perks() -> Array:
+		var active_perks = []
+		for perk in perks:
+			if perk.active:
+				active_perks.append(perk)
+		return active_perks
+	
+	# Helper function to get inactive perks
+	func get_inactive_perks() -> Array:
+		var inactive_perks = []
+		for perk in perks:
+			if not perk.active:
+				inactive_perks.append(perk)
+		return inactive_perks
 
 class GameCurrentPlayer:
 	extends GamePlayer
@@ -456,8 +472,8 @@ func print_arena_opponents_info():
 		print("Opponent ", i + 1, ":")
 		print("  Name: ", opponent.name)
 		print("  Stats: STR=", opponent.strength, " CON=", opponent.constitution, " DEX=", opponent.dexterity, " LCK=", opponent.luck, " ARM=", opponent.armor)
-		print("  Active Perks: ", get_active_perks_for_character(opponent).size())
-		print("  Inactive Perks: ", get_inactive_perks_for_character(opponent).size())
+		print("  Active Perks: ", opponent.get_active_perks().size())
+		print("  Inactive Perks: ", opponent.get_inactive_perks().size())
 		print("  Items: ", opponent.bag_slots.size())
 		print("  Talents: ", opponent.talents.size())
 	print("=== End Arena Opponents Info ===")

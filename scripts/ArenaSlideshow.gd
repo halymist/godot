@@ -13,13 +13,6 @@ var fight_button: Button
 # For slide animations
 var is_animating: bool = false
 
-# Enemy data
-var enemies_data = [
-	{"name": "Goblin Warrior", "hp": 100, "attack": 25, "defense": 15},
-	{"name": "Orc Berserker", "hp": 200, "attack": 50, "defense": 30},
-	{"name": "Dragon Lord", "hp": 300, "attack": 75, "defense": 45}
-]
-
 func _ready():
 	# Get references to scene nodes
 	card_container = $CardContainer
@@ -34,11 +27,8 @@ func _ready():
 		$CardContainer/ArenaOpponent3
 	]
 	
-	# Set up enemy data for each card
-	for i in range(cards.size()):
-		var card = cards[i]
-		var enemy_data = enemies_data[i]
-		card.set_enemy_data(i + 1, enemy_data.name, enemy_data.hp, enemy_data.attack, enemy_data.defense)
+	# Set up enemy data from GameInfo
+	_load_opponent_data()
 	
 	# Connect button signals
 	prev_button.pressed.connect(_on_prev_pressed)
@@ -50,6 +40,39 @@ func _ready():
 	
 	# Show first card
 	_update_display()
+
+func _load_opponent_data():
+	# Use actual arena opponents data from GameInfo
+	if GameInfo.arena_opponents.size() > 0:
+		for i in range(min(cards.size(), GameInfo.arena_opponents.size())):
+			var card = cards[i]
+			var opponent = GameInfo.arena_opponents[i]
+			
+			# Calculate opponent stats (base stats + equipment + perks)
+			var total_hp = _calculate_opponent_hp(opponent)
+			var total_attack = _calculate_opponent_attack(opponent)
+			var total_defense = _calculate_opponent_defense(opponent)
+			
+			# Set the basic enemy data
+			card.set_enemy_data(i + 1, opponent.name, total_hp, total_attack, total_defense)
+			
+			# Pass the full opponent data for perks display
+			card.set_opponent_data(opponent)
+	else:
+		print("Warning: No arena opponents data available")
+
+func _calculate_opponent_hp(opponent) -> int:
+	# Simple HP calculation: constitution * 10 + base HP
+	var base_hp = opponent.constitution * 10 + 50
+	return base_hp
+
+func _calculate_opponent_attack(opponent) -> int:
+	# Simple attack calculation: just use strength stat
+	return opponent.strength
+
+func _calculate_opponent_defense(opponent) -> int:
+	# Simple defense calculation: just use armor stat
+	return opponent.armor
 
 func _style_buttons():
 	var button_style = StyleBoxFlat.new()
@@ -90,8 +113,12 @@ func _style_buttons():
 	fight_button.add_theme_stylebox_override("hover", fight_hover_style)
 
 func _on_fight_pressed():
-	print("Fighting enemy: ", enemies_data[current_index].name)
-	# TODO: Implement fight logic
+	if GameInfo.arena_opponents.size() > current_index:
+		var current_opponent = GameInfo.arena_opponents[current_index]
+		print("Fighting enemy: ", current_opponent.name)
+		# TODO: Implement fight logic
+	else:
+		print("No opponent data available")
 
 func _on_prev_pressed():
 	if is_animating:
