@@ -15,46 +15,51 @@ func set_perk_data(data: GameInfo.Perk):
 func _get_drag_data(_at_position):
 	if not perk_data:
 		return null
-	
-	# Immediately set mouse filter to ignore to prevent blocking
+
+	# Immediately set mouse filter to ignore to prevent blocking input
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
+
 	# Set all other perks to ignore mouse to prevent drop conflicts
 	_set_all_perks_mouse_filter(Control.MOUSE_FILTER_IGNORE)
-	
+
 	# Create a preview for dragging
 	var preview = duplicate()
-	preview.modulate = Color(1, 1, 1, 0.7)  # Semi-transparent
-	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Ensure preview doesn't block
-	
-	# Center the preview on the mouse position by using the current node's size
+	preview.modulate = Color(1, 1, 1, 0.7)  # Semi-transparent preview
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Preview ignores mouse
+
+	# Center the preview on the mouse position using current node's size
 	var current_size = size
 	var offset = Vector2(0, current_size.y / 2)
-	
+
 	# Create a container to hold the preview with proper offset
 	var preview_container = Control.new()
-	preview_container.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Container also ignores
-	preview_container.size = current_size  # Set container size
+	preview_container.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Container ignores mouse too
+	preview_container.size = current_size
 	preview_container.add_child(preview)
 	preview.position = -offset
-	
+
 	set_drag_preview(preview_container)
 
-	# Create a drag data package with perk and source reference
+	# Create a drag data package with perk data and source references
 	var drag_package = {
 		"type": "perk",
 		"perk": perk_data,
 		"source_container": get_parent(),
-		"source_node": self  # Include reference to the dragged node
+		"source_node": self
 	}
-	
-	# Store original size for restoration and shrink to height 0 instantly
+
+	# Store original size for restoration
 	var original_size = custom_minimum_size if custom_minimum_size != Vector2.ZERO else size
 	set_meta("original_size", original_size)
-	print("Shrinking perk from size: ", original_size, " to height 0")
-	custom_minimum_size = Vector2(original_size.x, 0.0)  # Instant shrink, no animation
-	
+
+	# Shrink the perk instantly to height 0 to hide from layout
+	custom_minimum_size = Vector2(original_size.x, 0)
+
+	# Also hide the original node completely to avoid layout forcing size
+	visible = false
+
 	return drag_package
+
 
 # Add this method to handle failed drops
 func _notification(what):
