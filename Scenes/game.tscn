@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=47 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -31,6 +31,7 @@
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
+[ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.936635, 0.300484, 0.782811, 1)
@@ -182,7 +183,6 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_feb5d")
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -194,31 +194,53 @@ script = ExtResource("26_arena_slideshow")
 
 [node name="CardContainer" type="Control" parent="Portrait/GameScene/Arena"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -240.0
-offset_right = 320.0
-offset_bottom = 240.0
+anchor_left = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.8
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="ArenaOpponent1" parent="Portrait/GameScene/Arena/CardContainer" instance=ExtResource("27_arena_opponent")]
+layout_mode = 1
+
+[node name="ArenaOpponent2" parent="Portrait/GameScene/Arena/CardContainer" instance=ExtResource("27_arena_opponent")]
+visible = false
+layout_mode = 1
+
+[node name="ArenaOpponent3" parent="Portrait/GameScene/Arena/CardContainer" instance=ExtResource("27_arena_opponent")]
+visible = false
+layout_mode = 1
 
 [node name="PrevButton" type="Button" parent="Portrait/GameScene/Arena"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 50.0
+offset_left = 20.0
 offset_top = -70.0
-offset_right = 170.0
+offset_right = 120.0
 offset_bottom = -20.0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
 text = "< PREV"
+
+[node name="FightButton" type="Button" parent="Portrait/GameScene/Arena"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -75.0
+offset_top = -70.0
+offset_right = 75.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "FIGHT!"
 
 [node name="NextButton" type="Button" parent="Portrait/GameScene/Arena"]
 layout_mode = 1
@@ -227,9 +249,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -170.0
+offset_left = -120.0
 offset_top = -70.0
-offset_right = -50.0
+offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
@@ -238,6 +260,7 @@ theme_override_font_sizes/font_size = 16
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -870,6 +893,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

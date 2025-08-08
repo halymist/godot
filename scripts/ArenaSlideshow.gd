@@ -1,7 +1,6 @@
 extends Panel
 
 # Arena slideshow for enemy cards
-@export var opponent_scene: PackedScene
 @export var slide_duration: float = 0.3
 
 var current_index: int = 0
@@ -9,6 +8,7 @@ var cards: Array[Control] = []
 var card_container: Control
 var prev_button: Button
 var next_button: Button
+var fight_button: Button
 
 # For slide animations
 var is_animating: bool = false
@@ -25,20 +25,28 @@ func _ready():
 	card_container = $CardContainer
 	prev_button = $PrevButton
 	next_button = $NextButton
+	fight_button = $FightButton
 	
-	# Load the opponent scene
-	if not opponent_scene:
-		opponent_scene = load("res://Scenes/arena_opponent.tscn")
+	# Get the arena opponent cards from the scene
+	cards = [
+		$CardContainer/ArenaOpponent1,
+		$CardContainer/ArenaOpponent2,
+		$CardContainer/ArenaOpponent3
+	]
+	
+	# Set up enemy data for each card
+	for i in range(cards.size()):
+		var card = cards[i]
+		var enemy_data = enemies_data[i]
+		card.set_enemy_data(i + 1, enemy_data.name, enemy_data.hp, enemy_data.attack, enemy_data.defense)
 	
 	# Connect button signals
 	prev_button.pressed.connect(_on_prev_pressed)
 	next_button.pressed.connect(_on_next_pressed)
+	fight_button.pressed.connect(_on_fight_pressed)
 	
 	# Style buttons
 	_style_buttons()
-	
-	# Create enemy cards
-	_create_enemy_cards()
 	
 	# Show first card
 	_update_display()
@@ -69,22 +77,21 @@ func _style_buttons():
 	
 	prev_button.add_theme_stylebox_override("hover", hover_style)
 	next_button.add_theme_stylebox_override("hover", hover_style)
+	
+	# Fight button gets a special red style
+	var fight_style = button_style.duplicate()
+	fight_style.bg_color = Color(0.6, 0.2, 0.2, 0.9)
+	fight_style.border_color = Color(1.0, 0.4, 0.4, 1.0)
+	fight_button.add_theme_stylebox_override("normal", fight_style)
+	
+	var fight_hover_style = fight_style.duplicate()
+	fight_hover_style.bg_color = Color(0.8, 0.3, 0.3, 1.0)
+	fight_hover_style.border_color = Color(1.0, 0.6, 0.6, 1.0)
+	fight_button.add_theme_stylebox_override("hover", fight_hover_style)
 
-func _create_enemy_cards():
-	for i in range(enemies_data.size()):
-		var card_instance = opponent_scene.instantiate()
-		var enemy_data = enemies_data[i]
-		
-		# Set enemy data
-		card_instance.set_enemy_data(i + 1, enemy_data.name, enemy_data.hp, enemy_data.attack, enemy_data.defense)
-		
-		# Add to container
-		card_container.add_child(card_instance)
-		cards.append(card_instance)
-		
-		# Position cards (all at same spot, only one visible)
-		card_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		card_instance.visible = (i == 0)
+func _on_fight_pressed():
+	print("Fighting enemy: ", enemies_data[current_index].name)
+	# TODO: Implement fight logic
 
 func _on_prev_pressed():
 	if is_animating:
@@ -115,10 +122,14 @@ func _slide_to_card(new_index: int, sliding_left: bool):
 	var current_card = cards[current_index]
 	var new_card = cards[new_index]
 	
-	# Set up new card position (offscreen)
-	var card_width = card_container.size.x
-	var start_x = card_width if not sliding_left else -card_width
+	# Wait one frame to ensure container size is properly calculated
+	await get_tree().process_frame
 	
+	# Use a more reliable width calculation
+	var card_width = max(card_container.size.x, 400)  # Fallback minimum width
+	var start_x = card_width * 1.2 if not sliding_left else -card_width * 1.2  # Go further offscreen
+	
+	# Position the new card offscreen first, THEN make it visible
 	new_card.position.x = start_x
 	new_card.visible = true
 	
@@ -127,20 +138,20 @@ func _slide_to_card(new_index: int, sliding_left: bool):
 	tween.set_parallel(true)
 	
 	# Slide current card out
-	var end_x = -card_width if not sliding_left else card_width
+	var end_x = -card_width * 1.2 if not sliding_left else card_width * 1.2
 	tween.tween_property(current_card, "position:x", end_x, slide_duration)
 	
-	# Slide new card in
+	# Slide new card in from offscreen to center
 	tween.tween_property(new_card, "position:x", 0, slide_duration)
 	
-	# Set easing
-	tween.set_trans(Tween.TRANS_CUBIC)
+	# Set easing for smoother animation
+	tween.set_trans(Tween.TRANS_QUART)
 	tween.set_ease(Tween.EASE_OUT)
 	
 	# When animation completes
 	await tween.finished
 	
-	# Hide the old card and reset position
+	# Hide the old card and reset its position
 	current_card.visible = false
 	current_card.position.x = 0
 	
@@ -150,10 +161,14 @@ func _slide_to_card(new_index: int, sliding_left: bool):
 	_update_button_states()
 
 func _update_display():
-	# Hide all cards except current
+	# Hide all cards except current and reset their positions
 	for i in range(cards.size()):
-		cards[i].visible = (i == current_index)
-		cards[i].position = Vector2.ZERO
+		if i == current_index:
+			cards[i].visible = true
+			cards[i].position = Vector2.ZERO
+		else:
+			cards[i].visible = false
+			cards[i].position = Vector2.ZERO
 	
 	_update_button_states()
 
