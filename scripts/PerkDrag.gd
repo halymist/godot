@@ -15,19 +15,15 @@ func set_perk_data(data: GameInfo.Perk):
 func _get_drag_data(_at_position):
 	if not perk_data:
 		return null
-			
+	
+	mouse_filter = Control.MOUSE_FILTER_IGNORE		
 	# Create a preview for dragging
 	var preview = duplicate()
 	preview.modulate = Color(1, 1, 1, 0.7)  # Semi-transparent
 	
 	# Center the preview on the mouse position by using the current node's size
 	var current_size = size
-	if current_size == Vector2.ZERO:
-		# Fallback to a reasonable default size if size isn't calculated yet
-		current_size = Vector2(70, 70)  # Typical perk size
-	
-	# Calculate offset to center the preview on mouse cursor
-	var offset = Vector2(current_size.x / 2, current_size.y / 2)
+	var offset = Vector2(0, current_size.y / 2)
 	
 	# Create a container to hold the preview with proper offset
 	var preview_container = Control.new()

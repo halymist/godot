@@ -4,8 +4,6 @@ extends Control
 @export var perk_scene: PackedScene
 var slot_filter: int = 0 # Which perk slot this active panel is showing
 
-# Preload the PerkDrag script
-const PerkDragScript = preload("res://scripts/PerkDrag.gd")
 
 # Variables for drag feedback
 var drag_placeholder: Control = null
@@ -164,8 +162,6 @@ func _handle_reorder(pos: Vector2, data):
 	else:
 		# Create new perk at the desired position
 		var new_perk = perk_scene.instantiate()
-		if not new_perk.get_script():
-			new_perk.set_script(PerkDragScript)
 		new_perk.set_perk_data(perk_data)
 		add_child(new_perk)
 		move_child(new_perk, insert_index)
@@ -175,10 +171,6 @@ func place_perk_in_panel(perk_data: GameInfo.Perk):
 	
 	# Create new perk instance
 	var new_perk = perk_scene.instantiate()
-	
-	# Set up the perk instance with the PerkDrag script if it doesn't have one
-	if not new_perk.get_script():
-		new_perk.set_script(PerkDragScript)
 	
 	# Set the perk data using the script's method
 	new_perk.set_perk_data(perk_data)
@@ -227,51 +219,38 @@ func _update_placeholder_position(pos: Vector2):
 	if panel_type != "Inactive" or not drag_placeholder:
 		return
 	
-	# Ensure placeholder is added first
+	# Ensure placeholder is added first time
 	if drag_placeholder.get_parent() != self:
 		add_child(drag_placeholder)
-		
-	# Simple logic: find which perk we're over and place placeholder accordingly
-	var children = get_children()
-	var insert_index = 0
-	var found_target = false
 	
-	print("Mouse position: ", pos, " - Checking ", children.size(), " children")
+	var children = get_children()
+	var insert_index = children.size()
+	var found_target = false
 	
 	for i in range(children.size()):
 		var child = children[i]
 		if child == drag_placeholder:
 			continue
-			
-		var child_rect = child.get_rect()
-		print("Child ", i, " rect: ", child_rect, " - position: ", child_rect.position, " size: ", child_rect.size)
 		
-		# Check if mouse is anywhere over this child's Y range
-		var child_top = child_rect.position.y
-		var child_bottom = child_rect.position.y + child_rect.size.y
+		var child_top = child.position.y
+		var child_bottom = child_top + child.size.y
+		var child_center_y = child_top + child.size.y / 2
 		
 		if pos.y >= child_top and pos.y <= child_bottom:
 			found_target = true
-			var child_center_y = child_top + child_rect.size.y / 2
-			
-			# Top half = before, bottom half = after
 			if pos.y < child_center_y:
-				insert_index = i  # Insert before this child
-				print("Mouse over TOP of perk ", i, ", inserting BEFORE at index: ", insert_index)
+				insert_index = i
 			else:
-				insert_index = i + 1  # Insert after this child
-				print("Mouse over BOTTOM of perk ", i, ", inserting AFTER at index: ", insert_index)
+				insert_index = i + 1
 			break
 	
-	# If not over any child, place at end
 	if not found_target:
-		insert_index = children.size() - 1  # -1 because placeholder is already a child
-		print("Mouse not over any perk, placing at END: ", insert_index)
+		insert_index = children.size() - 1  # end
 	
-	# Make sure we don't move to same position
-	var current_index = drag_placeholder.get_index()
-	if current_index != insert_index:
+	# Only move if needed
+	if drag_placeholder.get_index() != insert_index:
 		move_child(drag_placeholder, insert_index)
+
 
 # Handle drag exit to clean up placeholder
 func _notification(what):

@@ -1,14 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmj5lho3avnou"]
+[gd_scene load_steps=3 format=3 uid="uid://bmj5lho3avnou"]
 
+[ext_resource type="Script" uid="uid://cqb6i7umltnhb" path="res://scripts/PerkDrag.gd" id="1_aud06"]
 [ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="1_rdxla"]
 
 [node name="Perk" type="Panel"]
 clip_contents = true
 custom_minimum_size = Vector2(0, 70)
-anchors_preset = -1
+anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 70.0
 grow_horizontal = 2
+script = ExtResource("1_aud06")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
 layout_mode = 1
