@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=57 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -37,7 +37,16 @@
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
-bg_color = Color(0.936635, 0.300484, 0.782811, 1)
+bg_color = Color(0.08, 0.05, 0.15, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
@@ -107,9 +116,6 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_log_separator"]
-bg_color = Color(0.6, 0.4, 0.2, 0.8)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
 bg_color = Color(0.64014, 0.614233, 0.287706, 1)
 
@@ -142,7 +148,16 @@ border_color = Color(0.7, 0.5, 0.3, 0.6)
 shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
-bg_color = Color(0.326126, 0.755287, 0.623061, 1)
+bg_color = Color(0.08, 0.05, 0.15, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryrav"]
 bg_color = Color(0.600872, 0.630424, 0.268774, 1)
@@ -223,10 +238,20 @@ size_flags_stretch_ratio = 3.0
 
 [node name="Runes" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
 text = "Runes: "
 
 [node name="Gold" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
 text = "Gold: "
 
 [node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer"]
@@ -1068,21 +1093,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LogColumns" type="HBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PlayerLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll/LogColumns"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="LogSeparator" type="Panel" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll/LogColumns"]
-custom_minimum_size = Vector2(3, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_log_separator")
-
-[node name="EnemyLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll/LogColumns"]
+[node name="CombatLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -3708,6 +3719,7 @@ anchor_bottom = 1.0
 [node name="Chat" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Chat"]
 layout_mode = 2
@@ -3717,6 +3729,7 @@ expand_icon = true
 [node name="Map" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Map"]
 layout_mode = 2
@@ -3726,6 +3739,7 @@ expand_icon = true
 [node name="Arena" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Arena"]
 layout_mode = 2
@@ -3735,6 +3749,7 @@ expand_icon = true
 [node name="Home" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Home"]
 layout_mode = 2

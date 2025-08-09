@@ -689,7 +689,7 @@ var mock_combat_logs = [
 		"player1health": 80,
 		"player2name": "Fire Demon",
 		"player2health": 150,
-		"final_message": "The Fire Demon is defeated by magical prowess!",
+		"final_message": "The Fire Demon is defeated by magical prowess! and suffers a humiliating defeat. anyways we should have a celebration, invite the wenches and lets drink to our victory!",
 		"logs": [
 			{
 				"turn": 1,
