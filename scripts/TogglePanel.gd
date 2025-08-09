@@ -105,6 +105,13 @@ func go_back():
 		GameInfo.set_current_panel_overlay(null)
 		return
 
+	# Check if we're in a building interior in the home panel
+	if GameInfo.get_current_panel() == home_panel:
+		if home_panel.has_method("handle_back_navigation"):
+			var handled = home_panel.handle_back_navigation()
+			if handled:
+				return
+
 	if GameInfo.get_current_panel() == talents_panel:
 		toggle_talents_bookmark()  # Use bookmark animation to slide out
 	elif GameInfo.get_current_panel() == combat_panel:

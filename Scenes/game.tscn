@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=56 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="PackedScene" uid="uid://bmwipv6nvqjj2" path="res://Scenes/perk_tooltip.tscn" id="17_oeip8"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
+[ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
@@ -279,6 +280,70 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_feb5d")
+script = ExtResource("20_village")
+
+[node name="VillageView" type="Control" parent="Portrait/GameScene/Home"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Home/VillageView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillageView/ScrollContainer"]
+custom_minimum_size = Vector2(800, 600)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VillageBackground" type="ColorRect" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.6, 0.3, 1)
+
+[node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Home/InteriorView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InteriorContent" type="Control" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer"]
+custom_minimum_size = Vector2(600, 400)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="ColorRect" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer/InteriorContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.4, 0.3, 0.2, 1)
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
 visible = false
