@@ -26,7 +26,7 @@ func _ready():
 	arena_button.pressed.connect(show_panel.bind(arena_panel))
 	character_button.pressed.connect(show_panel.bind(character_panel))
 	map_button.pressed.connect(show_panel.bind(map_panel))
-	talents_button.pressed.connect(show_panel.bind(talents_panel))
+	talents_button.pressed.connect(toggle_talents_bookmark)
 	chat_button.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
@@ -47,6 +47,25 @@ func show_panel_overlay(panel_to_toggle: Control):
 	panel_to_toggle.visible = not is_active
 	GameInfo.set_current_panel_overlay(panel_to_toggle if not is_active else null)
 
+func toggle_talents_bookmark():
+	var tween = create_tween()
+	
+	if talents_panel.visible:
+		# Slide out animation
+		tween.tween_property(talents_panel, "modulate:a", 0.0, 0.3)
+		tween.tween_property(talents_panel, "position:x", get_viewport().get_visible_rect().size.x, 0.3)
+		tween.tween_callback(func(): talents_panel.visible = false)
+		GameInfo.set_current_panel(character_panel)
+	else:
+		# Slide in animation
+		talents_panel.visible = true
+		talents_panel.position.x = get_viewport().get_visible_rect().size.x
+		talents_panel.modulate.a = 0.0
+		
+		tween.tween_property(talents_panel, "position:x", 0.0, 0.3)
+		tween.tween_property(talents_panel, "modulate:a", 1.0, 0.3)
+		GameInfo.set_current_panel(talents_panel)
+
 func toggle_chat():
 	if chat_panel and chat_panel.has_method("toggle_chat"):
 		chat_panel.toggle_chat()
@@ -63,7 +82,7 @@ func go_back():
 		return
 
 	if GameInfo.get_current_panel() == talents_panel:
-		show_panel(character_panel)
+		toggle_talents_bookmark()  # Use bookmark animation to slide out
 	elif GameInfo.get_current_panel() == combat_panel:
 		show_panel(arena_panel)
 	else:

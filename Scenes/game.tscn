@@ -1,10 +1,9 @@
-[gd_scene load_steps=57 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=56 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
-[ext_resource type="Texture2D" uid="uid://blij632fyb3sg" path="res://assets/images/ui/background_parch.png" id="5_85qyi"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
@@ -54,7 +53,6 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_215e1"]
-texture = ExtResource("5_85qyi")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combat_bg"]
 bg_color = Color(0.08, 0.05, 0.15, 0.9)
@@ -816,7 +814,10 @@ anchors_preset = -1
 anchor_top = 0.85
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 44.5
+offset_left = 10.0
+offset_top = 50.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_active_perks")
@@ -829,6 +830,10 @@ anchors_preset = -1
 anchor_top = 0.7
 anchor_right = 0.8
 anchor_bottom = 0.85
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("10_mg4q0")
@@ -946,6 +951,8 @@ alignment_horizontal = 2
 
 [node name="Button" type="Button" parent="Portrait/GameScene/Character/Talents"]
 layout_mode = 2
+text = "⭐"
+flat = true
 
 [node name="PerkTooltip" parent="Portrait/GameScene/Character" instance=ExtResource("17_oeip8")]
 visible = false
