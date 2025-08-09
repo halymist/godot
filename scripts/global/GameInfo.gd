@@ -438,7 +438,7 @@ func _ready():
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)
 	load_combat_logs_data(Websocket.mock_combat_logs)
-	set_current_combat_log(1)  # Set to player vs goblin combat by default
+	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 
 # Helper functions to modify values and emit signals

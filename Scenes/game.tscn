@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=58 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -75,6 +75,25 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_bg"]
+bg_color = Color(0.2, 0.1, 0.1, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.2, 0.2, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_fill"]
+bg_color = Color(0.8, 0.2, 0.2, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_icon"]
 bg_color = Color(0.8, 0.2, 0.2, 0.3)
@@ -952,6 +971,7 @@ grow_vertical = 2
 [node name="PlayerSection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+alignment = 1
 
 [node name="PlayerIcon" type="Panel" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
 custom_minimum_size = Vector2(130, 130)
@@ -960,9 +980,11 @@ size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_player_icon")
 
 [node name="PlayerHealthBar" type="ProgressBar" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
-custom_minimum_size = Vector2(130, 0)
+custom_minimum_size = Vector2(130, 20)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_health_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 value = 100.0
 show_percentage = false
 
@@ -975,9 +997,15 @@ text = "You"
 horizontal_alignment = 1
 autowrap_mode = 3
 
+[node name="Spacer" type="Control" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
 [node name="EnemySection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+alignment = 1
 
 [node name="EnemyIcon" type="Panel" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
 custom_minimum_size = Vector2(130, 130)
@@ -986,9 +1014,11 @@ size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_enemy_icon")
 
 [node name="EnemyHealthBar" type="ProgressBar" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
-custom_minimum_size = Vector2(130, 0)
+custom_minimum_size = Vector2(130, 20)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_health_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 value = 100.0
 show_percentage = false
 

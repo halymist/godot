@@ -683,5 +683,86 @@ var mock_combat_logs = [
 				"factor": 22
 			}
 		]
+	},
+	{
+		"player1name": "Wizard Eldara",
+		"player1health": 80,
+		"player2name": "Fire Demon",
+		"player2health": 150,
+		"final_message": "The Fire Demon is defeated by magical prowess!",
+		"logs": [
+			{
+				"turn": 1,
+				"player": "Wizard Eldara",
+				"action": "cast spell",
+				"factor": 0
+			},
+			{
+				"turn": 1,
+				"player": "Fire Demon",
+				"action": "hit",
+				"factor": 30
+			},
+			{
+				"turn": 1,
+				"player": "Wizard Eldara",
+				"action": "burn damage",
+				"factor": 5
+			},
+			{
+				"turn": 2,
+				"player": "Fire Demon",
+				"action": "rage",
+				"factor": 0
+			},
+			{
+				"turn": 2,
+				"player": "Fire Demon",
+				"action": "fire breath",
+				"factor": 0
+			},
+			{
+				"turn": 2,
+				"player": "Fire Demon",
+				"action": "intimidate",
+				"factor": 0
+			},
+			{
+				"turn": 2,
+				"player": "Wizard Eldara",
+				"action": "hit",
+				"factor": 25
+			},
+			{
+				"turn": 3,
+				"player": "Wizard Eldara",
+				"action": "heal",
+				"factor": 15
+			},
+			{
+				"turn": 3,
+				"player": "Wizard Eldara",
+				"action": "shield",
+				"factor": 0
+			},
+			{
+				"turn": 3,
+				"player": "Fire Demon",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 4,
+				"player": "Fire Demon",
+				"action": "claw strike",
+				"factor": 0
+			},
+			{
+				"turn": 4,
+				"player": "Wizard Eldara",
+				"action": "hit",
+				"factor": 12
+			}
+		]
 	}
 ]
