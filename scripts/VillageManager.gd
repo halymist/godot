@@ -16,22 +16,18 @@ var current_scroll_container: ScrollContainer
 var npcs: Array[Dictionary] = []
 
 # Building data - you can expand this later
+# Building data
 var buildings = {
-	"blacksmith": {
-		"name": "Blacksmith",
-		"position": Vector2(150, 200),
-		"interior_texture": "res://assets/images/interiors/blacksmith.png"
-	},
-	"tavern": {
-		"name": "Tavern", 
-		"position": Vector2(350, 180),
-		"interior_texture": "res://assets/images/interiors/tavern.png"
-	},
-	"shop": {
-		"name": "General Store",
-		"position": Vector2(250, 250),
-		"interior_texture": "res://assets/images/interiors/shop.png"
-	}
+	"blacksmith": {"name": "Blacksmith"},
+	"tavern": {"name": "Tavern"},
+	"shop": {"name": "General Store"},
+	"inn": {"name": "Inn"},
+	"market": {"name": "Market"},
+	"bank": {"name": "Bank"},
+	"temple": {"name": "Temple"},
+	"guild": {"name": "Guild Hall"},
+	"stables": {"name": "Stables"},
+	"library": {"name": "Library"}
 }
 
 func _ready():
@@ -39,22 +35,13 @@ func _ready():
 	village_scene = get_node("VillageView")
 	interior_scene = get_node("InteriorView")
 	
-	# Set up scroll containers for drag functionality
-	setup_scroll_containers()
-	
-	# Create mock NPC data
-	create_mock_npcs()
-	
 	# Set up initial state
 	show_village()
 	
-	# Create buildings
-	create_buildings()
+	# Connect building buttons
+	connect_building_buttons()
 	
-	# Create NPCs
-	create_npcs()
-	
-	# Connect to the main back button via GameInfo or by finding the Portrait controller
+	# Connect to the main back button
 	call_deferred("connect_back_button")
 
 func create_mock_npcs():
@@ -133,28 +120,16 @@ func setup_scroll_containers():
 	village_scroll.gui_input.connect(_on_scroll_input)
 	interior_scroll.gui_input.connect(_on_scroll_input)
 
-func create_buildings():
+func connect_building_buttons():
+	# Connect the building buttons that are in the scene
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
 	
-	for building_id in buildings:
-		var building_data = buildings[building_id]
-		
-		# Create building button
-		var building_button = Button.new()
-		building_button.name = building_id
-		building_button.text = building_data.name
-		building_button.size = Vector2(100, 80)
-		building_button.position = building_data.position
-		
-		# Style the building button
-		building_button.flat = false
-		building_button.add_theme_color_override("font_color", Color.WHITE)
-		building_button.add_theme_font_size_override("font_size", 16)
-		
-		# Connect button signal
-		building_button.pressed.connect(_on_building_clicked.bind(building_id))
-		
-		village_content.add_child(building_button)
+	var building_names = ["Blacksmith", "Tavern", "Shop", "Inn", "Market", "Bank", "Temple", "Guild", "Stables", "Library"]
+	var building_ids = ["blacksmith", "tavern", "shop", "inn", "market", "bank", "temple", "guild", "stables", "library"]
+	
+	for i in range(building_names.size()):
+		if village_content.has_node(building_names[i]):
+			village_content.get_node(building_names[i]).pressed.connect(_on_building_clicked.bind(building_ids[i]))
 
 func create_npcs():
 	# Create NPCs based on mock data
