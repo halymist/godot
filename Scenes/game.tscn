@@ -277,7 +277,7 @@ grow_horizontal = 2
 
 [node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("village_scene", "interior_scene")]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -305,21 +305,22 @@ grow_vertical = 2
 vertical_scroll_mode = 0
 
 [node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillageView/ScrollContainer"]
-custom_minimum_size = Vector2(1800, 600)
+custom_minimum_size = Vector2(500, 400)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="Building" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent" node_paths=PackedStringArray("interior_background") instance=ExtResource("6_lmoi6")]
+[node name="Building" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent" node_paths=PackedStringArray("interior_background", "interior_content") instance=ExtResource("6_lmoi6")]
 layout_mode = 0
 texture = ExtResource("7_6uxt2")
 building_id = "1"
 building_name = "Blacksmith"
 interior_texture = ExtResource("8_6uxt2")
 interior_background = NodePath("../../../../InteriorView/ScrollContainer/InteriorContent/Interior")
+interior_content = NodePath("../../../../InteriorView/ScrollContainer/InteriorContent")
 
 [node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -337,7 +338,6 @@ grow_vertical = 2
 vertical_scroll_mode = 0
 
 [node name="InteriorContent" type="Control" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer"]
-custom_minimum_size = Vector2(1200, 600)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -345,10 +345,9 @@ mouse_filter = 1
 
 [node name="Interior" type="TextureRect" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer/InteriorContent"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.762
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.600098
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2

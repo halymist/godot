@@ -30,10 +30,10 @@ func connect_existing_buildings():
 				child.building_clicked.connect(_on_building_clicked)
 			print("Connected existing building: ", child.building_name)
 
-func _on_building_clicked(building_id: String, interior_background: TextureRect, interior_texture: Texture2D):
-	current_building = building_id
-	show_interior(interior_background, interior_texture)
-	print("Entered building: ", building_id)
+func _on_building_clicked(building: Building):
+	current_building = building.building_id
+	show_interior(building)
+	print("Entered building: ", building.building_id)
 
 func show_village():
 	is_in_interior = false
@@ -41,24 +41,14 @@ func show_village():
 	interior_scene.visible = false
 	current_building = ""
 
-func show_interior(interior_background: TextureRect = null, interior_texture: Texture2D = null):
+func show_interior(building: Building = null):
 	is_in_interior = true
 	village_scene.visible = false
 	interior_scene.visible = true
 	
-	# Apply interior texture directly to the referenced background
-	if interior_background and interior_texture:
-		interior_background.texture = interior_texture
-		print("Applied interior texture directly to referenced background")
-	elif interior_texture:
-		# Fallback: try to find background by path if direct reference not set
-		var interior_content = interior_scene.get_node("ScrollContainer/InteriorContent")
-		var background = interior_content.get_node_or_null("Background")
-		if background and background is TextureRect:
-			background.texture = interior_texture
-			print("Applied interior texture to background via fallback method")
-		else:
-			print("Warning: No background found and no direct reference set")
+	# Let the building handle its own interior setup
+	if building:
+		building.show_interior()
 	
 	print("Inside building")
 
