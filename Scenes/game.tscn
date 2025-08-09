@@ -242,7 +242,7 @@ theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 18
 text = "Runes: "
 
 [node name="Gold" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
@@ -251,7 +251,7 @@ theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 18
 text = "Gold: "
 
 [node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer"]
@@ -823,19 +823,6 @@ script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 tooltip_panel = NodePath("../PerkTooltip")
 
-[node name="PerkTooltip" parent="Portrait/GameScene/Character" instance=ExtResource("17_oeip8")]
-visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_right = 200.0
-offset_bottom = 100.0
-grow_horizontal = 1
-grow_vertical = 1
-
 [node name="Stats" type="VBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
 anchors_preset = -1
@@ -959,6 +946,19 @@ alignment_horizontal = 2
 
 [node name="Button" type="Button" parent="Portrait/GameScene/Character/Talents"]
 layout_mode = 2
+
+[node name="PerkTooltip" parent="Portrait/GameScene/Character" instance=ExtResource("17_oeip8")]
+visible = false
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="Combat" type="Panel" parent="Portrait/GameScene"]
 layout_mode = 1
@@ -3719,7 +3719,7 @@ anchor_bottom = 1.0
 [node name="Chat" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 0.6
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Chat"]
 layout_mode = 2
@@ -3729,7 +3729,7 @@ expand_icon = true
 [node name="Map" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 0.6
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Map"]
 layout_mode = 2
@@ -3739,7 +3739,7 @@ expand_icon = true
 [node name="Arena" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 0.6
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Arena"]
 layout_mode = 2
@@ -3749,7 +3749,7 @@ expand_icon = true
 [node name="Home" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 0.6
 
 [node name="Button" type="Button" parent="Portrait/BottomUI/Buttons/Home"]
 layout_mode = 2

@@ -26,6 +26,11 @@ var current_action_index = 0
 var all_actions = []
 var is_displaying_actions = false
 
+# Drag-to-scroll variables for combat log
+var is_dragging_combat = false
+var drag_start_position_combat: Vector2
+var scroll_start_position_combat: float
+
 func _ready():
 	# Create timer for displaying combat turns
 	display_timer = Timer.new()
@@ -44,6 +49,10 @@ func _ready():
 	
 	# Connect button signal
 	skip_replay_button.pressed.connect(_on_skip_replay_pressed)
+	
+	# Set up drag-to-scroll for the combat log
+	if unified_scroll:
+		unified_scroll.gui_input.connect(_on_combat_scroll_input)
 
 func display_combat_log():
 	if not GameInfo.current_combat_log:
@@ -167,6 +176,16 @@ func _display_next_turn():
 		display_timer.stop()
 		is_displaying_actions = true
 		current_action_index = 0
+		
+		# Check if first action is a turn header - display it immediately
+		if current_action_index < all_actions.size():
+			var first_action = all_actions[current_action_index]
+			if first_action.type == "turn_header":
+				display_turn_header(first_action.turn_number)
+				current_action_index += 1
+				call_deferred("smooth_scroll_to_bottom")
+		
+		# Start the timer for actual actions
 		action_timer.start()
 
 func _display_next_action():
@@ -181,7 +200,14 @@ func _display_next_action():
 	var action_data = all_actions[current_action_index]
 	
 	if action_data.type == "turn_header":
+		# Display turn header immediately without delay
 		display_turn_header(action_data.turn_number)
+		current_action_index += 1
+		call_deferred("smooth_scroll_to_bottom")
+		
+		# Continue immediately to next action (no timer restart needed)
+		call_deferred("_display_next_action")
+		return
 	elif action_data.type == "individual_action":
 		display_individual_action(action_data)
 	
@@ -415,3 +441,30 @@ func _on_skip_replay_pressed():
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
 		call_deferred("scroll_to_bottom")
+
+func _on_combat_scroll_input(event: InputEvent):
+	if not unified_scroll:
+		return
+		
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				# Start dragging
+				is_dragging_combat = true
+				drag_start_position_combat = event.position
+				scroll_start_position_combat = unified_scroll.scroll_vertical
+			else:
+				# Stop dragging
+				is_dragging_combat = false
+	
+	elif event is InputEventMouseMotion and is_dragging_combat:
+		# Calculate scroll delta based on mouse movement
+		var delta = drag_start_position_combat.y - event.position.y
+		var new_scroll = scroll_start_position_combat + delta
+		
+		# Clamp to valid scroll range
+		var max_scroll = unified_scroll.get_v_scroll_bar().max_value
+		new_scroll = clamp(new_scroll, 0, max_scroll)
+		
+		# Apply the scroll
+		unified_scroll.scroll_vertical = int(new_scroll)

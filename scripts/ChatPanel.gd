@@ -21,9 +21,11 @@ func _ready():
 	# Connect click on overlay to close chat
 	gui_input.connect(_on_overlay_input)
 	
-	# Set up drag-to-scroll for the scroll container
+	# Set up drag-to-scroll for the scroll container and chat container
 	if scroll_container:
 		scroll_container.gui_input.connect(_on_scroll_container_input)
+	if chat_container:
+		chat_container.gui_input.connect(_on_scroll_container_input)
 	
 	# Ensure chat starts hidden off-screen
 	if chat_panel:
