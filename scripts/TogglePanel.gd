@@ -49,21 +49,45 @@ func show_panel_overlay(panel_to_toggle: Control):
 
 func toggle_talents_bookmark():
 	var tween = create_tween()
+	tween.set_parallel(true)  # Allow multiple animations at once
 	
 	if talents_panel.visible:
-		# Slide out animation
-		tween.tween_property(talents_panel, "modulate:a", 0.0, 0.3)
-		tween.tween_property(talents_panel, "position:x", get_viewport().get_visible_rect().size.x, 0.3)
-		tween.tween_callback(func(): talents_panel.visible = false)
+		# Slide out animation - panel goes right, bookmark follows
+		tween.tween_property(talents_panel, "modulate:a", 0.0, 0.4)
+		tween.tween_property(talents_panel, "position:x", get_viewport().get_visible_rect().size.x, 0.4)
+		
+		# Bookmark moves back to its original position with the panel
+		var bookmark = talents_button.get_parent()
+		tween.tween_property(bookmark, "offset_left", -8.0, 0.4)
+		tween.tween_property(bookmark, "modulate", Color(1, 1, 1, 0.8), 0.2)
+		
+		tween.tween_callback(func(): 
+			talents_panel.visible = false
+			talents_panel.position.x = 0  # Reset position
+		).set_delay(0.4)
 		GameInfo.set_current_panel(character_panel)
 	else:
-		# Slide in animation
+		# Slide in animation - bookmark pulls panel from the right
 		talents_panel.visible = true
 		talents_panel.position.x = get_viewport().get_visible_rect().size.x
 		talents_panel.modulate.a = 0.0
 		
-		tween.tween_property(talents_panel, "position:x", 0.0, 0.3)
-		tween.tween_property(talents_panel, "modulate:a", 1.0, 0.3)
+		# Bookmark extends further as it "pulls" the panel
+		var bookmark = talents_button.get_parent()
+		tween.tween_property(bookmark, "offset_left", 20.0, 0.4)  # Extends more during pull
+		tween.tween_property(bookmark, "modulate", Color(1.2, 1.2, 1.2, 1), 0.2)  # Brighten during pull
+		
+		# Panel slides in from right
+		tween.tween_property(talents_panel, "position:x", 0.0, 0.4)
+		tween.tween_property(talents_panel, "modulate:a", 1.0, 0.4)
+		
+		# Bookmark returns to normal position after panel is in
+		tween.tween_callback(func():
+			var return_tween = create_tween()
+			return_tween.tween_property(bookmark, "offset_left", -8.0, 0.2)
+			return_tween.tween_property(bookmark, "modulate", Color(1, 1, 1, 1), 0.2)
+		).set_delay(0.3)
+		
 		GameInfo.set_current_panel(talents_panel)
 
 func toggle_chat():
