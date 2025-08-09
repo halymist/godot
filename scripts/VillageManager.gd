@@ -16,18 +16,18 @@ var current_scroll_container: ScrollContainer
 var npcs: Array[Dictionary] = []
 
 # Building data - you can expand this later
-# Building data
+# Building data with different interior sizes
 var buildings = {
-	"blacksmith": {"name": "Blacksmith"},
-	"tavern": {"name": "Tavern"},
-	"shop": {"name": "General Store"},
-	"inn": {"name": "Inn"},
-	"market": {"name": "Market"},
-	"bank": {"name": "Bank"},
-	"temple": {"name": "Temple"},
-	"guild": {"name": "Guild Hall"},
-	"stables": {"name": "Stables"},
-	"library": {"name": "Library"}
+	"blacksmith": {"name": "Blacksmith", "interior_width": 1000},
+	"tavern": {"name": "Tavern", "interior_width": 1500},
+	"shop": {"name": "General Store", "interior_width": 1200},
+	"inn": {"name": "Inn", "interior_width": 1800},
+	"market": {"name": "Market", "interior_width": 2000},
+	"bank": {"name": "Bank", "interior_width": 800},
+	"temple": {"name": "Temple", "interior_width": 1600},
+	"guild": {"name": "Guild Hall", "interior_width": 1400},
+	"stables": {"name": "Stables", "interior_width": 1300},
+	"library": {"name": "Library", "interior_width": 2200}
 }
 
 func _ready():
@@ -227,17 +227,12 @@ func show_interior(_building_id: String):
 	village_scene.visible = false
 	interior_scene.visible = true
 	
-	# Clear previous interior NPCs
-	clear_interior_npcs()
-	
-	# Add NPCs for this specific building
+	# Set interior size based on building type
 	var interior_content = interior_scene.get_node("ScrollContainer/InteriorContent")
-	for npc_data in npcs:
-		if npc_data.building == _building_id:
-			create_npc_in_scene(npc_data, interior_content)
+	var interior_width = buildings[_building_id].interior_width
+	interior_content.custom_minimum_size = Vector2(interior_width, 600)
 	
-	# Update interior background (placeholder for now)
-	var _interior_bg = interior_scene.get_node("ScrollContainer/InteriorContent/Background")
+	print("Inside: ", buildings[_building_id].name, " (", interior_width, "px wide)")
 	# _interior_bg.texture = load(buildings[_building_id].interior_texture)  # Uncomment when textures available
 
 func clear_interior_npcs():

@@ -297,17 +297,20 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+vertical_scroll_mode = 0
 
 [node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillageView/ScrollContainer"]
-custom_minimum_size = Vector2(2400, 1600)
+custom_minimum_size = Vector2(1800, 600)
 layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 1
 
 [node name="VillageBackground" type="ColorRect" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_right = 0.762
 anchor_bottom = 1.0
+offset_right = -0.600098
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -315,82 +318,82 @@ color = Color(0.2, 0.6, 0.3, 1)
 
 [node name="Blacksmith" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
-offset_left = 150.0
-offset_top = 200.0
-offset_right = 250.0
-offset_bottom = 280.0
+offset_left = 100.0
+offset_top = 250.0
+offset_right = 200.0
+offset_bottom = 330.0
 text = "Blacksmith"
 
 [node name="Tavern" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 350.0
-offset_top = 180.0
-offset_right = 450.0
-offset_bottom = 260.0
-text = "Tavern"
-
-[node name="Shop" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
 offset_left = 250.0
 offset_top = 250.0
 offset_right = 350.0
 offset_bottom = 330.0
+text = "Tavern"
+
+[node name="Shop" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 250.0
+offset_right = 500.0
+offset_bottom = 330.0
 text = "General Store"
 
 [node name="Inn" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
-offset_left = 500.0
-offset_top = 300.0
-offset_right = 600.0
-offset_bottom = 380.0
+offset_left = 550.0
+offset_top = 250.0
+offset_right = 650.0
+offset_bottom = 330.0
 text = "Inn"
 
 [node name="Market" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
 offset_left = 700.0
-offset_top = 150.0
+offset_top = 250.0
 offset_right = 800.0
-offset_bottom = 230.0
+offset_bottom = 330.0
 text = "Market"
 
 [node name="Bank" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
-offset_left = 1000.0
-offset_top = 400.0
-offset_right = 1100.0
-offset_bottom = 480.0
+offset_left = 850.0
+offset_top = 250.0
+offset_right = 950.0
+offset_bottom = 330.0
 text = "Bank"
 
 [node name="Temple" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
-offset_left = 1200.0
-offset_top = 200.0
-offset_right = 1300.0
-offset_bottom = 280.0
+offset_left = 1000.0
+offset_top = 250.0
+offset_right = 1100.0
+offset_bottom = 330.0
 text = "Temple"
 
 [node name="Guild" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
-offset_left = 1500.0
-offset_top = 350.0
-offset_right = 1600.0
-offset_bottom = 430.0
+offset_left = 1150.0
+offset_top = 250.0
+offset_right = 1250.0
+offset_bottom = 330.0
 text = "Guild Hall"
 
 [node name="Stables" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
-offset_left = 900.0
-offset_top = 600.0
-offset_right = 1000.0
-offset_bottom = 680.0
+offset_left = 1300.0
+offset_top = 250.0
+offset_right = 1400.0
+offset_bottom = 330.0
 text = "Stables"
 
 [node name="Library" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
 layout_mode = 0
-offset_left = 1800.0
-offset_top = 500.0
-offset_right = 1900.0
-offset_bottom = 580.0
+offset_left = 1450.0
+offset_top = 250.0
+offset_right = 1550.0
+offset_bottom = 330.0
 text = "Library"
 
 [node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
@@ -409,11 +412,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
+vertical_scroll_mode = 0
 
 [node name="InteriorContent" type="Control" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer"]
-custom_minimum_size = Vector2(1800, 1200)
+custom_minimum_size = Vector2(1200, 600)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -509,6 +511,7 @@ theme_override_font_sizes/font_size = 16
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
