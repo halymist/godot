@@ -15,12 +15,16 @@ extends Panel
 
 var current_turn_display = 0
 var display_timer: Timer
+var action_timer: Timer
 var is_combat_finished = false
 var current_player1_health: float
 var current_player2_health: float
 
 # For turn-based display
 var organized_turns = []
+var current_action_index = 0
+var all_actions = []
+var is_displaying_actions = false
 
 func _ready():
 	# Create timer for displaying combat turns
@@ -28,6 +32,12 @@ func _ready():
 	display_timer.wait_time = 1.5  # 1.5 seconds per turn
 	display_timer.timeout.connect(_display_next_turn)
 	add_child(display_timer)
+	
+	# Create timer for individual actions
+	action_timer = Timer.new()
+	action_timer.wait_time = 0.6  # 0.6 seconds per action
+	action_timer.timeout.connect(_display_next_action)
+	add_child(action_timer)
 	
 	# Connect to visibility changes
 	visibility_changed.connect(_on_visibility_changed)
@@ -60,9 +70,14 @@ func display_combat_log():
 	# Organize combat data by turns
 	organize_combat_by_turns(combat)
 	
+	# Create a flat list of all actions for sequential display
+	create_action_sequence()
+	
 	# Reset state
 	current_turn_display = 0
+	current_action_index = 0
 	is_combat_finished = false
+	is_displaying_actions = false
 	combat_result.text = ""
 	skip_replay_button.text = "Skip"
 	
@@ -108,25 +123,59 @@ func organize_combat_by_turns(combat: GameInfo.CombatResponse):
 		
 		organized_turns.append(turn_data)
 
+func create_action_sequence():
+	all_actions.clear()
+	
+	for turn_data in organized_turns:
+		# Add turn header action
+		all_actions.append({
+			"type": "turn_header",
+			"turn_number": turn_data.turn_number
+		})
+		
+		# Find max actions between both players for this turn
+		var max_actions = max(turn_data.player1_actions.size(), turn_data.player2_actions.size())
+		
+		# Add paired actions (player1 and player2 actions for same "row")
+		for i in range(max_actions):
+			var action_pair = {"type": "action_pair"}
+			
+			if i < turn_data.player1_actions.size():
+				action_pair["player1_action"] = turn_data.player1_actions[i]
+			
+			if i < turn_data.player2_actions.size():
+				action_pair["player2_action"] = turn_data.player2_actions[i]
+				
+			all_actions.append(action_pair)
+
 func _display_next_turn():
-	if current_turn_display >= organized_turns.size():
+	if not is_displaying_actions:
+		# This is the first turn - start action sequence
 		display_timer.stop()
+		is_displaying_actions = true
+		current_action_index = 0
+		action_timer.start()
+
+func _display_next_action():
+	if current_action_index >= all_actions.size():
+		action_timer.stop()
 		combat_result.text = GameInfo.current_combat_log.final_message if GameInfo.current_combat_log else "Combat Complete"
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
-		call_deferred("scroll_to_bottom")
+		call_deferred("smooth_scroll_to_bottom")
 		return
 	
-	var turn_data = organized_turns[current_turn_display]
-	create_turn_display(turn_data)
+	var action_data = all_actions[current_action_index]
 	
-	# Apply health changes for this turn
-	apply_turn_health_changes(turn_data)
+	if action_data.type == "turn_header":
+		display_turn_header(action_data.turn_number)
+	elif action_data.type == "action_pair":
+		display_action_pair(action_data)
 	
-	current_turn_display += 1
-	call_deferred("scroll_to_bottom")
+	current_action_index += 1
+	call_deferred("smooth_scroll_to_bottom")
 
-func create_turn_display(turn_data: Dictionary):
+func display_turn_header(turn_number: int):
 	# Create turn separator and title
 	var turn_separator_top = HSeparator.new()
 	turn_separator_top.add_theme_color_override("separator", Color(0.6, 0.4, 0.2, 0.8))
@@ -134,7 +183,7 @@ func create_turn_display(turn_data: Dictionary):
 	
 	# Turn title
 	var turn_title = Label.new()
-	turn_title.text = "Turn " + str(turn_data.turn_number)
+	turn_title.text = "Turn " + str(turn_number)
 	turn_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	turn_title.add_theme_font_size_override("font_size", 16)
 	turn_title.add_theme_color_override("font_color", Color(0.9, 0.7, 0.4, 1))
@@ -148,60 +197,80 @@ func create_turn_display(turn_data: Dictionary):
 	turn_separator_bottom.add_theme_color_override("separator", Color(0.6, 0.4, 0.2, 0.8))
 	combat_log_container.add_child(turn_separator_bottom)
 	
-	# Create actions container
+	# Create actions container for this turn if it doesn't exist
 	var actions_container = HBoxContainer.new()
 	actions_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	actions_container.name = "ActionsContainer_" + str(turn_number)
 	combat_log_container.add_child(actions_container)
 	
 	# Player actions column
 	var player_column = VBoxContainer.new()
 	player_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	player_column.name = "PlayerColumn"
 	actions_container.add_child(player_column)
 	
 	# Enemy actions column  
 	var enemy_column = VBoxContainer.new()
 	enemy_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	enemy_column.name = "EnemyColumn"
 	actions_container.add_child(enemy_column)
+
+func display_action_pair(action_data: Dictionary):
+	# Find the most recent actions container
+	var actions_container = null
+	for i in range(combat_log_container.get_child_count() - 1, -1, -1):
+		var child = combat_log_container.get_child(i)
+		if child is HBoxContainer and child.name.begins_with("ActionsContainer_"):
+			actions_container = child
+			break
 	
-	# Add player actions
-	for action in turn_data.player1_actions:
+	if not actions_container:
+		return
+	
+	var player_column = actions_container.get_node("PlayerColumn")
+	var enemy_column = actions_container.get_node("EnemyColumn")
+	
+	# Add player action if exists
+	if action_data.has("player1_action"):
 		var action_label = Label.new()
-		action_label.text = format_combat_entry(action)
+		action_label.text = format_combat_entry(action_data.player1_action)
 		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		action_label.add_theme_font_size_override("font_size", 14)
 		player_column.add_child(action_label)
+		
+		# Apply health changes for this action
+		apply_action_health_changes(action_data.player1_action)
 	
-	# Add enemy actions
-	for action in turn_data.player2_actions:
+	# Add enemy action if exists
+	if action_data.has("player2_action"):
 		var action_label = Label.new()
-		action_label.text = format_combat_entry(action)
+		action_label.text = format_combat_entry(action_data.player2_action)
 		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		action_label.add_theme_font_size_override("font_size", 14)
 		enemy_column.add_child(action_label)
-	
-	# Add spacing after turn
-	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 10)
-	combat_log_container.add_child(spacer)
+		
+		# Apply health changes for this action
+		apply_action_health_changes(action_data.player2_action)
 
-func apply_turn_health_changes(turn_data: Dictionary):
+func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	var combat = GameInfo.current_combat_log
 	if not combat:
 		return
 	
-	# Apply damage for player1 (left side)
-	for action in turn_data.player1_actions:
-		if is_damage_action(action.action):
-			animate_health_decrease(player_health_bar, action.factor)
-		elif action.action == "heal" and action.factor > 0:
-			animate_health_increase(player_health_bar, action.factor)
+	# Determine which health bar to affect based on player
+	var health_bar = null
+	if action.player == combat.player1_name:
+		health_bar = player_health_bar
+	else:
+		health_bar = enemy_health_bar
 	
-	# Apply damage for player2 (right side)
-	for action in turn_data.player2_actions:
-		if is_damage_action(action.action):
-			animate_health_decrease(enemy_health_bar, action.factor)
-		elif action.action == "heal" and action.factor > 0:
-			animate_health_increase(enemy_health_bar, action.factor)
+	# Apply the effect
+	if is_damage_action(action.action):
+		animate_health_decrease(health_bar, action.factor)
+	elif action.action == "heal" and action.factor > 0:
+		animate_health_increase(health_bar, action.factor)
+
+
 
 func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	var text = ""
@@ -274,6 +343,19 @@ func animate_health_increase(health_bar: ProgressBar, heal_amount: int):
 func is_damage_action(action: String) -> bool:
 	return action in ["hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
 
+# Helper function to scroll to bottom of the log with smooth animation
+func smooth_scroll_to_bottom():
+	if unified_scroll:
+		await get_tree().process_frame
+		await get_tree().process_frame
+		
+		var target_value = unified_scroll.get_v_scroll_bar().max_value
+		var current_value = unified_scroll.get_v_scroll_bar().value
+		
+		if target_value > current_value:
+			var tween = create_tween()
+			tween.tween_property(unified_scroll.get_v_scroll_bar(), "value", target_value, 0.4)
+
 # Helper function to scroll to bottom of the log
 func scroll_to_bottom():
 	if unified_scroll:
@@ -291,29 +373,35 @@ func _on_skip_replay_pressed():
 		# Replay the combat
 		display_combat_log()
 	else:
-		# Skip to the end - show all remaining turns instantly
+		# Skip to the end - show all remaining actions instantly
 		display_timer.stop()
+		action_timer.stop()
 		
-		while current_turn_display < organized_turns.size():
-			var turn_data = organized_turns[current_turn_display]
-			create_turn_display(turn_data)
+		# Display all remaining actions
+		while current_action_index < all_actions.size():
+			var action_data = all_actions[current_action_index]
 			
-			# Apply health changes instantly (no animation)
-			var combat = GameInfo.current_combat_log
-			if combat:
-				for action in turn_data.player1_actions:
+			if action_data.type == "turn_header":
+				display_turn_header(action_data.turn_number)
+			elif action_data.type == "action_pair":
+				display_action_pair(action_data)
+				
+				# Apply health changes instantly (no animation)
+				if action_data.has("player1_action"):
+					var action = action_data.player1_action
 					if is_damage_action(action.action):
 						player_health_bar.value = max(0, player_health_bar.value - action.factor)
 					elif action.action == "heal" and action.factor > 0:
 						player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + action.factor)
 				
-				for action in turn_data.player2_actions:
+				if action_data.has("player2_action"):
+					var action = action_data.player2_action
 					if is_damage_action(action.action):
 						enemy_health_bar.value = max(0, enemy_health_bar.value - action.factor)
 					elif action.action == "heal" and action.factor > 0:
 						enemy_health_bar.value = min(enemy_health_bar.max_value, enemy_health_bar.value + action.factor)
 			
-			current_turn_display += 1
+			current_action_index += 1
 		
 		if GameInfo.current_combat_log:
 			combat_result.text = GameInfo.current_combat_log.final_message
