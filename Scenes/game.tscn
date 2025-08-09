@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=59 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="Texture2D" uid="uid://cln4gnj3yak2h" path="res://assets/images/villages/blacksmith.png" id="7_6uxt2"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
+[ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
 [ext_resource type="FontFile" uid="uid://bapt2viuub0ha" path="res://assets/Spectral-Regular.ttf" id="8_exi56"]
 [ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="9_7t8sx"]
@@ -274,7 +275,7 @@ anchor_right = 1.0
 anchor_bottom = 0.9
 grow_horizontal = 2
 
-[node name="Home" type="Panel" parent="Portrait/GameScene"]
+[node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("village_scene", "interior_scene")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -283,6 +284,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_feb5d")
 script = ExtResource("20_village")
+village_scene = NodePath("VillageView")
+interior_scene = NodePath("InteriorView")
 
 [node name="VillageView" type="Control" parent="Portrait/GameScene/Home"]
 layout_mode = 1
@@ -307,25 +310,13 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="VillageBackground" type="ColorRect" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.762
-anchor_bottom = 1.0
-offset_right = -0.600098
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.2, 0.6, 0.3, 1)
-
-[node name="Building" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent" instance=ExtResource("6_lmoi6")]
+[node name="Building" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent" node_paths=PackedStringArray("interior_background") instance=ExtResource("6_lmoi6")]
 layout_mode = 0
-offset_left = 141.0
-offset_top = 120.0
-offset_right = 241.0
-offset_bottom = 200.0
+texture = ExtResource("7_6uxt2")
+building_id = "1"
 building_name = "Blacksmith"
-building_texture = ExtResource("7_6uxt2")
+interior_texture = ExtResource("8_6uxt2")
+interior_background = NodePath("../../../../InteriorView/ScrollContainer/InteriorContent/Interior")
 
 [node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
 visible = false
@@ -352,15 +343,16 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="Background" type="ColorRect" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer/InteriorContent"]
+[node name="Interior" type="TextureRect" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer/InteriorContent"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_right = 0.762
 anchor_bottom = 1.0
+offset_right = -0.600098
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.4, 0.3, 0.2, 1)
+expand_mode = 1
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
 visible = false
