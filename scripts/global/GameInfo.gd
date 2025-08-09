@@ -161,6 +161,48 @@ class ChatMessage:
 		"message": "message"
 	}
 
+class CombatLogEntry:
+	extends MessagePackObject
+	
+	var turn: int = 0
+	var player: String = ""
+	var action: String = ""
+	var factor: int = 0  # Optional damage/heal amount
+	
+	const MSGPACK_MAP = {
+		"turn": "turn",
+		"player": "player",
+		"action": "action",
+		"factor": "factor"
+	}
+
+class CombatResponse:
+	extends MessagePackObject
+	
+	var player1_name: String = ""
+	var player1_health: int = 0
+	var player2_name: String = ""
+	var player2_health: int = 0
+	var final_message: String = ""
+	var combat_log: Array[CombatLogEntry] = []
+	
+	const MSGPACK_MAP = {
+		"player1name": "player1_name",
+		"player1health": "player1_health",
+		"player2name": "player2_name", 
+		"player2health": "player2_health",
+		"final_message": "final_message",
+		"logs": "combat_log"
+	}
+	
+	func _init(data: Dictionary = {}):
+		super._init(data)
+		# Handle the combat log array specially
+		if data.has("logs"):
+			combat_log.clear()
+			for log_data in data["logs"]:
+				combat_log.append(CombatLogEntry.new(log_data))
+
 class GamePlayer:
 	extends MessagePackObject
 	
@@ -363,6 +405,8 @@ var current_player: GameCurrentPlayer
 var arena_opponents: Array[GameArenaOpponent] = []
 var arena_opponent: GameArenaOpponent = null
 var chat_messages: Array[ChatMessage] = []
+var combat_logs: Array[CombatResponse] = []
+var current_combat_log: CombatResponse = null
 
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null:
@@ -393,6 +437,8 @@ func _ready():
 	load_player_data(Websocket.mock_character_data)
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)
+	load_combat_logs_data(Websocket.mock_combat_logs)
+	set_current_combat_log(1)  # Set to player vs goblin combat by default
 	print_arena_opponents_info()
 
 # Helper functions to modify values and emit signals
@@ -471,6 +517,30 @@ func load_chat_messages_data(messages_data: Array):
 		var chat_message = ChatMessage.new(message_data)
 		chat_messages.append(chat_message)
 	print("Total chat messages loaded: ", chat_messages.size())
+
+# Function to load combat logs from mock data
+func load_combat_logs_data(combat_data: Array):
+	combat_logs.clear()
+	for combat_data_item in combat_data:
+		var combat_response = CombatResponse.new(combat_data_item)
+		combat_logs.append(combat_response)
+	print("Total combat logs loaded: ", combat_logs.size())
+
+# Function to set current combat for display
+func set_current_combat_log(combat_index: int = 0):
+	if combat_index >= 0 and combat_index < combat_logs.size():
+		current_combat_log = combat_logs[combat_index]
+		print("Set current combat log: ", current_combat_log.player1_name, " vs ", current_combat_log.player2_name)
+	else:
+		print("Invalid combat log index: ", combat_index)
+
+# Function to get combat logs for a specific player
+func get_combat_logs_for_player(player_name: String) -> Array[CombatResponse]:
+	var player_combats: Array[CombatResponse] = []
+	for combat in combat_logs:
+		if combat.player1_name == player_name or combat.player2_name == player_name:
+			player_combats.append(combat)
+	return player_combats
 
 # Helper function to get active perks for any GamePlayer (player or opponent)
 func get_active_perks_for_character(character: GamePlayer) -> Array:

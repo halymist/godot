@@ -495,3 +495,193 @@ var mock_chat_messages = [
 		"message": "Weapons and armor repaired! Come see me at the forge."
 	}
 ]
+
+# Mock combat data for development/testing
+var mock_combat_logs = [
+	{
+		"player1name": "Sir Galahad",
+		"player1health": 100,
+		"player2name": "Dark Knight",
+		"player2health": 120,
+		"final_message": "Sir Galahad emerges victorious!",
+		"logs": [
+			{
+				"turn": 1,
+				"player": "Sir Galahad",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 1,
+				"player": "Dark Knight",
+				"action": "hit",
+				"factor": 15
+			},
+			{
+				"turn": 2,
+				"player": "Dark Knight",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 2,
+				"player": "Sir Galahad",
+				"action": "dodge",
+				"factor": 0
+			},
+			{
+				"turn": 3,
+				"player": "Sir Galahad",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 3,
+				"player": "Dark Knight",
+				"action": "hit",
+				"factor": 22
+			},
+			{
+				"turn": 4,
+				"player": "Dark Knight",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 4,
+				"player": "Sir Galahad",
+				"action": "hit",
+				"factor": 18
+			},
+			{
+				"turn": 5,
+				"player": "Sir Galahad",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 5,
+				"player": "Dark Knight",
+				"action": "hit",
+				"factor": 25
+			},
+			{
+				"turn": 6,
+				"player": "Dark Knight",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 6,
+				"player": "Sir Galahad",
+				"action": "hit",
+				"factor": 12
+			},
+			{
+				"turn": 7,
+				"player": "Sir Galahad",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 7,
+				"player": "Dark Knight",
+				"action": "hit",
+				"factor": 28
+			}
+		]
+	},
+	{
+		"player1name": "You",
+		"player1health": 85,
+		"player2name": "Goblin Warrior",
+		"player2health": 60,
+		"final_message": "Victory! You gain experience and gold.",
+		"logs": [
+			{
+				"turn": 1,
+				"player": "You",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 1,
+				"player": "Goblin Warrior",
+				"action": "hit",
+				"factor": 12
+			},
+			{
+				"turn": 2,
+				"player": "Goblin Warrior",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 2,
+				"player": "You",
+				"action": "dodge",
+				"factor": 0
+			},
+			{
+				"turn": 3,
+				"player": "You",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 3,
+				"player": "Goblin Warrior",
+				"action": "hit",
+				"factor": 18
+			},
+			{
+				"turn": 4,
+				"player": "Goblin Warrior",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 4,
+				"player": "You",
+				"action": "hit",
+				"factor": 8
+			},
+			{
+				"turn": 5,
+				"player": "You",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 5,
+				"player": "Goblin Warrior",
+				"action": "hit",
+				"factor": 20
+			},
+			{
+				"turn": 6,
+				"player": "Goblin Warrior",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 6,
+				"player": "You",
+				"action": "miss",
+				"factor": 0
+			},
+			{
+				"turn": 7,
+				"player": "You",
+				"action": "attack",
+				"factor": 0
+			},
+			{
+				"turn": 7,
+				"player": "Goblin Warrior",
+				"action": "hit",
+				"factor": 22
+			}
+		]
+	}
+]

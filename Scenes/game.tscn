@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=56 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -34,6 +34,7 @@
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
+[ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.936635, 0.300484, 0.782811, 1)
@@ -45,6 +46,50 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_215e1"]
 texture = ExtResource("5_85qyi")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combat_bg"]
+bg_color = Color(0.08, 0.05, 0.15, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character_area"]
+bg_color = Color(0.12, 0.08, 0.2, 0.7)
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_player_icon"]
+bg_color = Color(0.2, 0.5, 0.8, 0.3)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.7, 1, 0.8)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_icon"]
+bg_color = Color(0.8, 0.2, 0.2, 0.3)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.4, 0.4, 0.8)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_log_separator"]
+bg_color = Color(0.6, 0.4, 0.2, 0.8)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
 bg_color = Color(0.64014, 0.614233, 0.287706, 1)
@@ -98,7 +143,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -120,6 +165,8 @@ map_panel = NodePath("GameScene/Map")
 back_button = NodePath("TopUI/HBoxContainer/Back/Button")
 chat_button = NodePath("BottomUI/Buttons/Chat/Button")
 chat_panel = NodePath("GameScene/ChatOverlay")
+combat_panel = NodePath("GameScene/Combat")
+fight_button = NodePath("GameScene/Arena/FightButton")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -191,6 +238,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_feb5d")
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -869,13 +917,169 @@ alignment_horizontal = 2
 layout_mode = 2
 
 [node name="Combat" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_combat_bg")
+script = ExtResource("35_combat_panel")
+
+[node name="CharacterArea" type="Panel" parent="Portrait/GameScene/Combat"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -5.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_character_area")
+
+[node name="CharacterContainer" type="HBoxContainer" parent="Portrait/GameScene/Combat/CharacterArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerSection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerIcon" type="Panel" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_player_icon")
+
+[node name="PlayerHealthBar" type="ProgressBar" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+value = 100.0
+show_percentage = false
+
+[node name="PlayerLabel" type="Label" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 12
+text = "You"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EnemySection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnemyIcon" type="Panel" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_enemy_icon")
+
+[node name="EnemyHealthBar" type="ProgressBar" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+value = 100.0
+show_percentage = false
+
+[node name="EnemyLabel" type="Label" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 12
+text = "Enemy"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CombatLogArea" type="HBoxContainer" parent="Portrait/GameScene/Combat"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -50.0
+
+[node name="PlayerLogSection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerLogLabel" type="Label" parent="Portrait/GameScene/Combat/CombatLogArea/PlayerLogSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Your Actions"
+horizontal_alignment = 1
+
+[node name="PlayerLogScroll" type="ScrollContainer" parent="Portrait/GameScene/Combat/CombatLogArea/PlayerLogSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/PlayerLogSection/PlayerLogScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LogSeparator" type="Panel" parent="Portrait/GameScene/Combat/CombatLogArea"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_log_separator")
+
+[node name="EnemyLogSection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnemyLogLabel" type="Label" parent="Portrait/GameScene/Combat/CombatLogArea/EnemyLogSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Enemy Actions"
+horizontal_alignment = 1
+
+[node name="EnemyLogScroll" type="ScrollContainer" parent="Portrait/GameScene/Combat/CombatLogArea/EnemyLogSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EnemyLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/EnemyLogSection/EnemyLogScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CombatResult" type="Label" parent="Portrait/GameScene/Combat"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -40.0
+offset_right = -120.0
+offset_bottom = -10.0
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkipReplayButton" type="Button" parent="Portrait/GameScene/Combat"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_top = -40.0
+offset_right = -10.0
+offset_bottom = -10.0
+text = "Skip"
 
 [node name="Map" type="Panel" parent="Portrait/GameScene"]
 visible = false
@@ -3305,19 +3509,49 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_7sc4i")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = -10.0
-offset_bottom = -10.0
+offset_bottom = -60.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="InputContainer" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -50.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+
+[node name="ChatInput" type="LineEdit" parent="Portrait/GameScene/ChatOverlay/ChatPanel/InputContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Type your message..."
+
+[node name="SendButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/InputContainer"]
+layout_mode = 2
+text = "Send"
+
+[node name="Combat2" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ItemDescription" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("name_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
 visible = false

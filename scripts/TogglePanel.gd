@@ -13,6 +13,8 @@ extends Control
 @export var back_button: Button
 @export var chat_button: Button
 @export var chat_panel: Control
+@export var combat_panel: Control
+@export var fight_button: Button
 
 func _ready():
 	hide_all_panels()
@@ -27,6 +29,7 @@ func _ready():
 	talents_button.pressed.connect(show_panel.bind(talents_panel))
 	chat_button.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
+	fight_button.pressed.connect(show_combat)
 
 func show_panel(panel: Control):
 	hide_all_panels()
@@ -61,6 +64,8 @@ func go_back():
 
 	if GameInfo.get_current_panel() == talents_panel:
 		show_panel(character_panel)
+	elif GameInfo.get_current_panel() == combat_panel:
+		show_panel(arena_panel)
 	else:
 		show_panel(home_panel)
 
@@ -72,7 +77,13 @@ func hide_all_panels():
 	character_panel.visible = false
 	map_panel.visible = false
 	talents_panel.visible = false
+	combat_panel.visible = false
 	
 	# Close chat if it's open
 	if chat_panel and chat_panel.has_method("hide_chat"):
 		chat_panel.hide_chat()
+
+func show_combat():
+	hide_all_panels()
+	combat_panel.visible = true
+	GameInfo.set_current_panel(combat_panel)
