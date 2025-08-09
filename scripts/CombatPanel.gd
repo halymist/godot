@@ -133,20 +133,33 @@ func create_action_sequence():
 			"turn_number": turn_data.turn_number
 		})
 		
-		# Find max actions between both players for this turn
-		var max_actions = max(turn_data.player1_actions.size(), turn_data.player2_actions.size())
+		# Create a flat list of all individual actions for this turn
+		var all_turn_actions = []
 		
-		# Add paired actions (player1 and player2 actions for same "row")
-		for i in range(max_actions):
-			var action_pair = {"type": "action_pair"}
-			
-			if i < turn_data.player1_actions.size():
-				action_pair["player1_action"] = turn_data.player1_actions[i]
-			
-			if i < turn_data.player2_actions.size():
-				action_pair["player2_action"] = turn_data.player2_actions[i]
-				
-			all_actions.append(action_pair)
+		# Add all player1 actions
+		for action in turn_data.player1_actions:
+			all_turn_actions.append({
+				"type": "individual_action",
+				"action": action,
+				"player_side": "player1"
+			})
+		
+		# Add all player2 actions
+		for action in turn_data.player2_actions:
+			all_turn_actions.append({
+				"type": "individual_action", 
+				"action": action,
+				"player_side": "player2"
+			})
+		
+		# Sort actions by their original order in combat log to maintain sequence
+		all_turn_actions.sort_custom(func(a, b): 
+			return GameInfo.current_combat_log.combat_log.find(a.action) < GameInfo.current_combat_log.combat_log.find(b.action)
+		)
+		
+		# Add each individual action to the sequence
+		for action_data in all_turn_actions:
+			all_actions.append(action_data)
 
 func _display_next_turn():
 	if not is_displaying_actions:
@@ -169,8 +182,8 @@ func _display_next_action():
 	
 	if action_data.type == "turn_header":
 		display_turn_header(action_data.turn_number)
-	elif action_data.type == "action_pair":
-		display_action_pair(action_data)
+	elif action_data.type == "individual_action":
+		display_individual_action(action_data)
 	
 	current_action_index += 1
 	call_deferred("smooth_scroll_to_bottom")
@@ -215,7 +228,7 @@ func display_turn_header(turn_number: int):
 	enemy_column.name = "EnemyColumn"
 	actions_container.add_child(enemy_column)
 
-func display_action_pair(action_data: Dictionary):
+func display_individual_action(action_data: Dictionary):
 	# Find the most recent actions container
 	var actions_container = null
 	for i in range(combat_log_container.get_child_count() - 1, -1, -1):
@@ -227,30 +240,26 @@ func display_action_pair(action_data: Dictionary):
 	if not actions_container:
 		return
 	
-	var player_column = actions_container.get_node("PlayerColumn")
-	var enemy_column = actions_container.get_node("EnemyColumn")
+	var action = action_data.action
+	var player_side = action_data.player_side
 	
-	# Add player action if exists
-	if action_data.has("player1_action"):
+	# Determine which column to add to
+	var target_column = null
+	if player_side == "player1":
+		target_column = actions_container.get_node("PlayerColumn")
+	else:
+		target_column = actions_container.get_node("EnemyColumn")
+	
+	if target_column:
+		# Create and add the action label
 		var action_label = Label.new()
-		action_label.text = format_combat_entry(action_data.player1_action)
+		action_label.text = format_combat_entry(action)
 		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		action_label.add_theme_font_size_override("font_size", 14)
-		player_column.add_child(action_label)
+		target_column.add_child(action_label)
 		
-		# Apply health changes for this action
-		apply_action_health_changes(action_data.player1_action)
-	
-	# Add enemy action if exists
-	if action_data.has("player2_action"):
-		var action_label = Label.new()
-		action_label.text = format_combat_entry(action_data.player2_action)
-		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		action_label.add_theme_font_size_override("font_size", 14)
-		enemy_column.add_child(action_label)
-		
-		# Apply health changes for this action
-		apply_action_health_changes(action_data.player2_action)
+		# Apply health changes for this individual action
+		apply_action_health_changes(action)
 
 func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	var combat = GameInfo.current_combat_log
@@ -383,22 +392,20 @@ func _on_skip_replay_pressed():
 			
 			if action_data.type == "turn_header":
 				display_turn_header(action_data.turn_number)
-			elif action_data.type == "action_pair":
-				display_action_pair(action_data)
+			elif action_data.type == "individual_action":
+				display_individual_action(action_data)
 				
 				# Apply health changes instantly (no animation)
-				if action_data.has("player1_action"):
-					var action = action_data.player1_action
-					if is_damage_action(action.action):
+				var action = action_data.action
+				if is_damage_action(action.action):
+					if action_data.player_side == "player1":
 						player_health_bar.value = max(0, player_health_bar.value - action.factor)
-					elif action.action == "heal" and action.factor > 0:
-						player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + action.factor)
-				
-				if action_data.has("player2_action"):
-					var action = action_data.player2_action
-					if is_damage_action(action.action):
+					else:
 						enemy_health_bar.value = max(0, enemy_health_bar.value - action.factor)
-					elif action.action == "heal" and action.factor > 0:
+				elif action.action == "heal" and action.factor > 0:
+					if action_data.player_side == "player1":
+						player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + action.factor)
+					else:
 						enemy_health_bar.value = min(enemy_health_bar.max_value, enemy_health_bar.value + action.factor)
 			
 			current_action_index += 1
