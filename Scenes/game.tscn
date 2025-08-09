@@ -1031,7 +1031,7 @@ text = "Enemy"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="CombatLogArea" type="HBoxContainer" parent="Portrait/GameScene/Combat"]
+[node name="CombatLogArea" type="VBoxContainer" parent="Portrait/GameScene/Combat"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5
@@ -1040,47 +1040,49 @@ anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 5.0
 offset_right = -10.0
-offset_bottom = -50.0
+offset_bottom = -80.0
 
-[node name="PlayerLogSection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea"]
+[node name="LogHeaders" type="HBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea"]
+layout_mode = 2
+
+[node name="PlayerLogLabel" type="Label" parent="Portrait/GameScene/Combat/CombatLogArea/LogHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="PlayerLogLabel" type="Label" parent="Portrait/GameScene/Combat/CombatLogArea/PlayerLogSection"]
-layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Your Actions"
 horizontal_alignment = 1
 
-[node name="PlayerLogScroll" type="ScrollContainer" parent="Portrait/GameScene/Combat/CombatLogArea/PlayerLogSection"]
+[node name="HeaderSeparator" type="Control" parent="Portrait/GameScene/Combat/CombatLogArea/LogHeaders"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="EnemyLogLabel" type="Label" parent="Portrait/GameScene/Combat/CombatLogArea/LogHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Enemy Actions"
+horizontal_alignment = 1
+
+[node name="UnifiedLogScroll" type="ScrollContainer" parent="Portrait/GameScene/Combat/CombatLogArea"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PlayerLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/PlayerLogSection/PlayerLogScroll"]
+[node name="LogColumns" type="HBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LogSeparator" type="Panel" parent="Portrait/GameScene/Combat/CombatLogArea"]
+[node name="PlayerLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll/LogColumns"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LogSeparator" type="Panel" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll/LogColumns"]
 custom_minimum_size = Vector2(3, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_log_separator")
 
-[node name="EnemyLogSection" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="EnemyLogLabel" type="Label" parent="Portrait/GameScene/Combat/CombatLogArea/EnemyLogSection"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "Enemy Actions"
-horizontal_alignment = 1
-
-[node name="EnemyLogScroll" type="ScrollContainer" parent="Portrait/GameScene/Combat/CombatLogArea/EnemyLogSection"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="EnemyLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/EnemyLogSection/EnemyLogScroll"]
+[node name="EnemyLogContainer" type="VBoxContainer" parent="Portrait/GameScene/Combat/CombatLogArea/UnifiedLogScroll/LogColumns"]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -1091,12 +1093,13 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -40.0
-offset_right = -120.0
+offset_top = -70.0
+offset_right = -80.0
 offset_bottom = -10.0
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="SkipReplayButton" type="Button" parent="Portrait/GameScene/Combat"]
 layout_mode = 1
@@ -1105,8 +1108,8 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -110.0
-offset_top = -40.0
+offset_left = -70.0
+offset_top = -70.0
 offset_right = -10.0
 offset_bottom = -10.0
 text = "Skip"

@@ -8,10 +8,11 @@ extends Panel
 @onready var enemy_icon = $CharacterArea/CharacterContainer/EnemySection/EnemyIcon
 @onready var enemy_health_bar = $CharacterArea/CharacterContainer/EnemySection/EnemyHealthBar
 @onready var enemy_label = $CharacterArea/CharacterContainer/EnemySection/EnemyLabel
-@onready var player_log_container = $CombatLogArea/PlayerLogSection/PlayerLogScroll/PlayerLogContainer
-@onready var enemy_log_container = $CombatLogArea/EnemyLogSection/EnemyLogScroll/EnemyLogContainer
+@onready var player_log_container = $CombatLogArea/UnifiedLogScroll/LogColumns/PlayerLogContainer
+@onready var enemy_log_container = $CombatLogArea/UnifiedLogScroll/LogColumns/EnemyLogContainer
 @onready var combat_result = $CombatResult
 @onready var skip_replay_button = $SkipReplayButton
+@onready var unified_scroll = $CombatLogArea/UnifiedLogScroll
 
 var current_turn = 0
 var display_timer: Timer
@@ -29,7 +30,7 @@ var enemy_log_entries = []
 func _ready():
 	# Create timer for displaying combat log entries
 	display_timer = Timer.new()
-	display_timer.wait_time = 0.8  # Faster speed: 0.8 seconds instead of 1.5
+	display_timer.wait_time = 1.2  # Slower for animations: 1.2 seconds per entry
 	display_timer.timeout.connect(_display_next_entry)
 	add_child(display_timer)
 	
