@@ -1,10 +1,12 @@
-[gd_scene load_steps=56 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=58 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
+[ext_resource type="PackedScene" path="res://Scenes/Building.tscn" id="6_lmoi6"]
+[ext_resource type="Texture2D" uid="uid://cln4gnj3yak2h" path="res://assets/images/villages/blacksmith.png" id="7_6uxt2"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
 [ext_resource type="FontFile" uid="uid://bapt2viuub0ha" path="res://assets/Spectral-Regular.ttf" id="8_exi56"]
@@ -316,85 +318,14 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.2, 0.6, 0.3, 1)
 
-[node name="Blacksmith" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
+[node name="Building" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent" instance=ExtResource("6_lmoi6")]
 layout_mode = 0
-offset_left = 100.0
-offset_top = 250.0
-offset_right = 200.0
-offset_bottom = 330.0
-text = "Blacksmith"
-
-[node name="Tavern" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 250.0
-offset_top = 250.0
-offset_right = 350.0
-offset_bottom = 330.0
-text = "Tavern"
-
-[node name="Shop" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 400.0
-offset_top = 250.0
-offset_right = 500.0
-offset_bottom = 330.0
-text = "General Store"
-
-[node name="Inn" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 550.0
-offset_top = 250.0
-offset_right = 650.0
-offset_bottom = 330.0
-text = "Inn"
-
-[node name="Market" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 700.0
-offset_top = 250.0
-offset_right = 800.0
-offset_bottom = 330.0
-text = "Market"
-
-[node name="Bank" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 850.0
-offset_top = 250.0
-offset_right = 950.0
-offset_bottom = 330.0
-text = "Bank"
-
-[node name="Temple" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 1000.0
-offset_top = 250.0
-offset_right = 1100.0
-offset_bottom = 330.0
-text = "Temple"
-
-[node name="Guild" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 1150.0
-offset_top = 250.0
-offset_right = 1250.0
-offset_bottom = 330.0
-text = "Guild Hall"
-
-[node name="Stables" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 1300.0
-offset_top = 250.0
-offset_right = 1400.0
-offset_bottom = 330.0
-text = "Stables"
-
-[node name="Library" type="Button" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent"]
-layout_mode = 0
-offset_left = 1450.0
-offset_top = 250.0
-offset_right = 1550.0
-offset_bottom = 330.0
-text = "Library"
+offset_left = 141.0
+offset_top = 120.0
+offset_right = 241.0
+offset_bottom = 200.0
+building_name = "Blacksmith"
+building_texture = ExtResource("7_6uxt2")
 
 [node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
 visible = false
