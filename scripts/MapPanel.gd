@@ -85,9 +85,10 @@ func update_travel_display():
 		if enter_dungeon_button:
 			enter_dungeon_button.visible = true
 		
-		# Clear travel data
+		# Clear travel data and show quest panel
 		current_player.traveling = null
-		current_player.traveling_destination = null
+		if quest:
+			quest.visible = true
 		return
 	
 	# Currently traveling - show skip button, hide enter dungeon button
@@ -148,38 +149,15 @@ func _on_skip_button_pressed():
 			skip_button.disabled = true
 
 func _on_travel_completed():
-	print("Travel completed via skip - switching to Quest panel with transition")
+	print("Travel completed via skip - showing Quest panel")
 	
 	# Re-enable skip button
 	if skip_button:
 		skip_button.disabled = false
 	
-	# Add a smooth transition to quest panel
-	var transition_tween = create_tween()
-	transition_tween.set_ease(Tween.EASE_OUT)
-	transition_tween.set_trans(Tween.TRANS_CUBIC)
-	
-	# First fade out current panel
-	modulate = Color(1, 1, 1, 1)
-	transition_tween.tween_property(self, "modulate", Color(1, 1, 1, 0.3), 0.2)
-	
-	# Then switch panels and fade back in
-	transition_tween.tween_callback(_switch_to_quest_panel)
-	transition_tween.tween_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
-
-func _switch_to_quest_panel():
-	# Find the TogglePanel and switch to Quest
-	var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-	if toggle_panel and toggle_panel.has_method("show_panel"):
-		# Find the quest panel 
-		var quest_panel = toggle_panel.get("quest_panel")
-		if quest_panel:
-			toggle_panel.show_panel(quest_panel)
-			print("Switched to Quest panel")
-		else:
-			print("Quest panel not found")
-	else:
-		print("TogglePanel not found or missing show_panel method")
+	# Simply show the exported quest panel
+	if quest:
+		quest.visible = true
 
 func _on_enter_dungeon_pressed():
 	# Placeholder for dungeon functionality

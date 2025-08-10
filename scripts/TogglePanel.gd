@@ -38,12 +38,16 @@ func _ready():
 	
 	# Connect cancel quest dialog buttons if they exist
 	if cancel_quest:
-		var yes_button = cancel_quest.get_node_or_null("YesButton")
-		var no_button = cancel_quest.get_node_or_null("NoButton")
+		var yes_button = cancel_quest.get_node_or_null("DialogPanel/VBoxContainer/HBoxContainer/YesButton")
+		var no_button = cancel_quest.get_node_or_null("DialogPanel/VBoxContainer/HBoxContainer/NoButton")
+		var background_button = cancel_quest.get_node_or_null("BackgroundButton")
+		
 		if yes_button:
 			yes_button.pressed.connect(_on_cancel_quest_yes)
 		if no_button:
 			no_button.pressed.connect(_on_cancel_quest_no)
+		if background_button:
+			background_button.pressed.connect(_on_cancel_quest_no)  # Close dialog when clicking background
 
 func show_panel(panel: Control):
 	hide_all_panels()
@@ -66,9 +70,7 @@ func handle_home_button():
 		show_panel(map_panel)
 		return
 	elif traveling == null and destination != null:
-		# Destination only: in quest - show quest panel
-		if quest:
-			show_panel_overlay(quest)
+		show_panel(quest)
 		return
 	
 	# Normal state (both null) - standard home behavior
@@ -92,9 +94,7 @@ func handle_map_button():
 		show_panel(map_panel)
 		return
 	elif traveling == null and destination != null:
-		# Destination only: in quest - show quest panel
-		if quest:
-			show_panel_overlay(quest)
+		show_panel(quest)
 		return
 	
 	# Normal state (both null) - standard map behavior
