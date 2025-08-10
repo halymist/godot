@@ -30,11 +30,20 @@ func _ready():
 	home_button.pressed.connect(handle_home_button)
 	arena_button.pressed.connect(show_panel.bind(arena_panel))
 	character_button.pressed.connect(show_panel.bind(character_panel))
-	map_button.pressed.connect(show_panel.bind(map_panel))
+	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
 	chat_button.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
+	
+	# Connect cancel quest dialog buttons if they exist
+	if cancel_quest:
+		var yes_button = cancel_quest.get_node_or_null("YesButton")
+		var no_button = cancel_quest.get_node_or_null("NoButton")
+		if yes_button:
+			yes_button.pressed.connect(_on_cancel_quest_yes)
+		if no_button:
+			no_button.pressed.connect(_on_cancel_quest_no)
 
 func show_panel(panel: Control):
 	hide_all_panels()
@@ -48,11 +57,21 @@ func show_panel(panel: Control):
 			active_perks_display.update_active_perks()
 
 func handle_home_button():
-	# If player is traveling, show map panel instead of home
-	if GameInfo.current_player.traveling != null:
+	var traveling = GameInfo.current_player.traveling
+	var destination = GameInfo.current_player.traveling_destination
+	
+	# Check quest states
+	if traveling != null and destination != null:
+		# Both values: traveling state - show map
 		show_panel(map_panel)
 		return
+	elif traveling == null and destination != null:
+		# Destination only: in quest - show quest panel
+		if quest:
+			show_panel_overlay(quest)
+		return
 	
+	# Normal state (both null) - standard home behavior
 	# If we're already on the home panel, act like back button to exit buildings
 	if GameInfo.get_current_panel() == home_panel:
 		if home_panel.has_method("handle_back_navigation"):
@@ -62,6 +81,24 @@ func handle_home_button():
 	
 	# Otherwise, show home panel normally
 	show_panel(home_panel)
+
+func handle_map_button():
+	var traveling = GameInfo.current_player.traveling
+	var destination = GameInfo.current_player.traveling_destination
+	
+	# Check quest states
+	if traveling != null and destination != null:
+		# Both values: traveling state - show map
+		show_panel(map_panel)
+		return
+	elif traveling == null and destination != null:
+		# Destination only: in quest - show quest panel
+		if quest:
+			show_panel_overlay(quest)
+		return
+	
+	# Normal state (both null) - standard map behavior
+	show_panel(map_panel)
 	
 func show_panel_overlay(panel_to_toggle: Control):
 	var is_active = GameInfo.get_current_panel_overlay() == panel_to_toggle and panel_to_toggle.visible
@@ -116,10 +153,19 @@ func toggle_chat():
 		chat_panel.toggle_chat()
 
 func go_back():
+	var traveling = GameInfo.current_player.traveling
+	var destination = GameInfo.current_player.traveling_destination
+	
 	# Check if quest panel is open first
-	if quest_panel and quest_panel.visible:
-		quest_panel.visible = false
-		return
+	if quest and quest.visible:
+		# If in quest state, show cancel dialog
+		if traveling == null and destination != null:
+			if cancel_quest:
+				cancel_quest.visible = true
+			return
+		else:
+			quest.visible = false
+			return
 		
 	# Check if chat is open first
 	if chat_panel and chat_panel.has_method("hide_chat") and chat_panel.get("is_chat_open"):
@@ -129,6 +175,12 @@ func go_back():
 	if GameInfo.get_current_panel_overlay() != null:
 		GameInfo.get_current_panel_overlay().hide()
 		GameInfo.set_current_panel_overlay(null)
+		return
+
+	# Check if we're traveling and on map panel - show cancel dialog
+	if traveling != null and destination != null and GameInfo.get_current_panel() == map_panel:
+		if cancel_quest:
+			cancel_quest.visible = true
 		return
 
 	# Check if we're in a building interior in the home panel
@@ -156,8 +208,12 @@ func hide_all_panels():
 	combat_panel.visible = false
 	
 	# Hide quest panel
-	if quest_panel:
-		quest_panel.visible = false
+	if quest:
+		quest.visible = false
+	
+	# Hide cancel quest dialog
+	if cancel_quest:
+		cancel_quest.visible = false
 	
 	# Close chat if it's open
 	if chat_panel and chat_panel.has_method("hide_chat"):
@@ -167,3 +223,20 @@ func show_combat():
 	hide_all_panels()
 	combat_panel.visible = true
 	GameInfo.set_current_panel(combat_panel)
+
+# Cancel quest dialog functions
+func _on_cancel_quest_yes():
+	# Cancel the quest
+	GameInfo.current_player.traveling = null
+	GameInfo.current_player.traveling_destination = null
+	
+	# Hide cancel dialog and return to home
+	if cancel_quest:
+		cancel_quest.visible = false
+	show_panel(home_panel)
+	print("Quest canceled by user")
+
+func _on_cancel_quest_no():
+	# Just hide the dialog, continue with quest
+	if cancel_quest:
+		cancel_quest.visible = false

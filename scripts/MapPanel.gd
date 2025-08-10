@@ -6,6 +6,8 @@ class_name MapPanel
 @export var travel_time_label: Label
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
+@export var quest: Control 
+@export var ambadon: Control # Reference to the Ambadon quest panel
 
 var update_timer: Timer
 var is_skipping: bool = false
@@ -13,12 +15,6 @@ var skip_start_time: float = 0.0
 var original_travel_end: float = 0.0
 
 func _ready():
-	# Get references to UI elements
-	travel_text_label = $VBoxContainer/TravelTextPanel/TravelTextLabel
-	travel_progress = $VBoxContainer/TravelBarContainer/TravelProgress
-	travel_time_label = $VBoxContainer/TravelBarContainer/TravelTimeLabel
-	skip_button = $VBoxContainer/SkipButton
-	enter_dungeon_button = $VBoxContainer/TravelBarContainer/EnterDungeonButton
 	
 	# Connect skip button
 	if skip_button:
