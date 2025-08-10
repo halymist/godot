@@ -47,7 +47,7 @@ func connect_existing_buildings():
 				child.building_clicked.connect(_on_building_clicked)
 			print("Connected existing building: ", child.building_name)
 
-func spawn_npcs():
+func spawn_npcs(building_id: int = 0):
 	if not npc_prefab:
 		print("No NPC prefab assigned")
 		return
@@ -57,9 +57,14 @@ func spawn_npcs():
 	# Get NPC data from GameInfo
 	var npcs_data = GameInfo.npcs
 	
-	# Spawn NPCs based on GameInfo data
+	# Spawn NPCs based on GameInfo data, filtered by building_id
 	for i in range(npcs_data.size()):
 		var npc_data = npcs_data[i]
+		var npc_building_id = npc_data.get("building", 0)
+		
+		# Only spawn NPCs that match the requested building_id
+		if npc_building_id != building_id:
+			continue
 		
 		# Instance the NPC prefab
 		var npc_instance = npc_prefab.instantiate()
@@ -94,7 +99,7 @@ func spawn_npcs():
 		# Add to village
 		village_content.add_child(npc_instance)
 		
-		print("Spawned NPC: ", npc_data.get("name", "Unknown"), " at anchor (", anchor_x, ", ", anchor_y, ") = pixels (", pixel_x, ", ", pixel_y, ")")
+		print("Spawned NPC: ", npc_data.get("name", "Unknown"), " in building ", building_id, " at anchor (", anchor_x, ", ", anchor_y, ") = pixels (", pixel_x, ", ", pixel_y, ")")
 
 func _on_npc_clicked(npc):
 	print("NPC clicked: ", npc.npc_data.get("name", "Unknown"))
@@ -161,6 +166,8 @@ func show_interior(building: Building = null):
 	# Let the building handle its own interior setup
 	if building:
 		building.show_interior()
+		# Spawn NPCs for this building
+		building.spawn_building_npcs()
 	
 	print("Inside building")
 

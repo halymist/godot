@@ -4,6 +4,7 @@ class_name MapPanel
 @export var travel_text_label: Label
 @export var travel_progress: ProgressBar
 @export var travel_time_label: Label
+@export var skip_button: Button
 
 var update_timer: Timer
 
@@ -12,6 +13,11 @@ func _ready():
 	travel_text_label = $VBoxContainer/TravelTextPanel/TravelTextLabel
 	travel_progress = $VBoxContainer/TravelBarContainer/TravelProgress
 	travel_time_label = $VBoxContainer/TravelBarContainer/TravelTimeLabel
+	skip_button = $VBoxContainer/SkipButton
+	
+	# Connect skip button
+	if skip_button:
+		skip_button.pressed.connect(_on_skip_button_pressed)
 	
 	# Create and setup timer for updating travel progress
 	update_timer = Timer.new()
@@ -83,3 +89,7 @@ func _get_original_travel_duration(quest_data: Dictionary) -> float:
 	
 	var travel_minutes = quest_data.get("travel", 5)
 	return travel_minutes * 60.0  # Convert to seconds
+
+func _on_skip_button_pressed():
+	# Placeholder for skip functionality
+	print("Skip travel button pressed - functionality not implemented yet")

@@ -1,12 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://npc_prefab"]
+[gd_scene load_steps=2 format=3 uid="uid://p7jxfxdp1qfb"]
 
-[ext_resource type="Script" path="res://scripts/NPC.gd" id="1"]
+[ext_resource type="Script" uid="uid://ds77r87m17jbh" path="res://scripts/NPC.gd" id="1"]
 
 [node name="NPC" type="TextureRect"]
 custom_minimum_size = Vector2(60, 80)
-script = ExtResource("1")
+anchors_preset = -1
 expand_mode = 1
 stretch_mode = 5
+script = ExtResource("1")
 
 [node name="ClickButton" type="Button" parent="."]
 layout_mode = 1
@@ -16,4 +17,3 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 flat = true
-text = ""

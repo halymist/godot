@@ -46,6 +46,11 @@ func show_panel(panel: Control):
 			active_perks_display.update_active_perks()
 
 func handle_home_button():
+	# If player is traveling, show map panel instead of home
+	if GameInfo.current_player.traveling != null:
+		show_panel(map_panel)
+		return
+	
 	# If we're already on the home panel, act like back button to exit buildings
 	if GameInfo.get_current_panel() == home_panel:
 		if home_panel.has_method("handle_back_navigation"):
