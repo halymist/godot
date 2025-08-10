@@ -13,8 +13,11 @@ func _ready():
 	village_scene = get_node("VillageView")
 	interior_scene = get_node("InteriorView")
 	
-	# Get quest panel reference
-	quest_panel = get_node("../../QuestPanel")
+	# Get quest panel reference - search from game root
+	quest_panel = get_tree().current_scene.find_child("QuestPanel", true, false)
+	print("Quest panel found: ", quest_panel != null)
+	if quest_panel:
+		print("Quest panel path: ", quest_panel.get_path())
 	
 	# Set up initial state
 	show_village()
@@ -31,6 +34,7 @@ func _ready():
 	# Connect quest panel signals
 	if quest_panel and quest_panel.has_method("quest_panel_closed"):
 		quest_panel.quest_panel_closed.connect(_on_quest_panel_closed)
+		print("Quest panel signal connected")
 
 func connect_existing_buildings():
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
@@ -95,12 +99,20 @@ func _on_npc_clicked(npc):
 	print("NPC clicked: ", npc.npc_data.get("name", "Unknown"))
 	
 	var quest_id = npc.npc_data.get("questid", null)
+	print("Quest ID: ", quest_id)
 	
 	if quest_id != null:
 		# NPC has a quest - show quest panel
-		if quest_panel and quest_panel.has_method("show_quest"):
-			quest_panel.show_quest(npc.npc_data)
-			print("Showing quest panel for: ", npc.npc_data.get("questname", "Unknown Quest"))
+		print("Quest panel reference: ", quest_panel)
+		if quest_panel:
+			print("Quest panel has show_quest method: ", quest_panel.has_method("show_quest"))
+			if quest_panel.has_method("show_quest"):
+				quest_panel.show_quest(npc.npc_data)
+				print("Showing quest panel for: ", npc.npc_data.get("questname", "Unknown Quest"))
+			else:
+				print("Quest panel missing show_quest method")
+		else:
+			print("Quest panel is null")
 	else:
 		# No quest - dialogue is already shown via hover chat bubble
 		print("NPC has no quest - dialogue shown on hover")

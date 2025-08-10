@@ -73,7 +73,7 @@ func show_chat_bubble():
 	# Position bubble above the NPC, accounting for scroll
 	var bubble_pos = Vector2(
 		npc_global_pos.x - scroll_offset.x - 50,  # Center bubble over NPC
-		npc_global_pos.y - scroll_offset.y - 70   # Position above NPC
+		npc_global_pos.y - scroll_offset.y - 50   # Position just above NPC (reduced from -70)
 	)
 	chat_bubble.position = bubble_pos
 	
