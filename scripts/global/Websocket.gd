@@ -8,6 +8,8 @@ var mock_character_data = {
 	"name": "TestPlayer",
 	"gold": 1000,
 	"currency": 50,
+	"traveling": null,
+	"traveling_destination": null,
 	"location": "tavern",
 	"strength": 15,
 	"constitution": 12,
@@ -17,8 +19,6 @@ var mock_character_data = {
 	"talent_points": 10,
 	"perk_points": 2,
 	"dungeon": false,
-	"traveling": null,
-	"destination": null,
 	"slide": 1,
 	"slides": null,
 	"bag_slots": [
@@ -380,6 +380,7 @@ var mock_npcs = [
 		"travel": null,
 		"building": "",
 		"asset": "herald",
+		"portrait": "npc_portrait",
 		"traveltext": null
 	},
 	{
@@ -394,6 +395,7 @@ var mock_npcs = [
 		"travel": 5,
 		"building": "shop",
 		"asset": "merchant",
+		"portrait": "npc_portrait",
 		"traveltext": "Travel to the next town"
 	},
 	{
@@ -408,6 +410,7 @@ var mock_npcs = [
 		"travel": 10,
 		"building": "",
 		"asset": "guard",
+		"portrait": "npc_portrait",
 		"traveltext": "Hunt down the bandits"
 	},
 	{
@@ -422,6 +425,7 @@ var mock_npcs = [
 		"travel": null,
 		"building": "alchemy",
 		"asset": "alchemist",
+		"portrait": "npc_portrait",
 		"traveltext": null
 	},
 	{
@@ -436,6 +440,7 @@ var mock_npcs = [
 		"travel": null,
 		"building": "inn",
 		"asset": "innkeeper",
+		"portrait": "npc_portrait",
 		"traveltext": null
 	},
 	{
@@ -450,6 +455,7 @@ var mock_npcs = [
 		"travel": 8,
 		"building": "blacksmith",
 		"asset": "blacksmith",
+		"portrait": "npc_portrait",
 		"traveltext": "Gather rare metals"
 	}
 ]

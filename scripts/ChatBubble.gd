@@ -26,13 +26,7 @@ func show_dialogue(text: String, duration: float = 3.0):
 	custom_minimum_size = Vector2(estimated_width, estimated_height)
 	size = Vector2(estimated_width, estimated_height)
 	
-	# Store original position
-	var original_pos = position
-	
-	# Adjust position so bubble expands upward only
-	# Move the bubble up by the difference in height from the minimum
-	var height_diff = estimated_height - 40  # 40 is our minimum height
-	position = Vector2(original_pos.x, original_pos.y - (height_diff * 0.5))  # Only move up by half the height difference
+	# Don't adjust position here - we'll set the correct position from NPC script
 	
 	visible = true
 	

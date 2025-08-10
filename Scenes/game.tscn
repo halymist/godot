@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=62 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -40,6 +40,7 @@
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
+[ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.08, 0.05, 0.15, 0.85)
@@ -1197,6 +1198,65 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
+script = ExtResource("37_map_panel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Map"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TravelTextPanel" type="Panel" parent="Portrait/GameScene/Map/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TravelTextLabel" type="Label" parent="Portrait/GameScene/Map/VBoxContainer/TravelTextPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "No active travel"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="TravelBarContainer" type="Panel" parent="Portrait/GameScene/Map/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="TravelProgress" type="ProgressBar" parent="Portrait/GameScene/Map/VBoxContainer/TravelBarContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.2
+anchor_right = 0.95
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TravelTimeLabel" type="Label" parent="Portrait/GameScene/Map/VBoxContainer/TravelBarContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -10.0
+offset_right = 50.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "00:00"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
 visible = false
@@ -3776,7 +3836,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Effect"
 
-[node name="QuestPanel" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button")]
+[node name="QuestPanel" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("quest_name_label", "background_button", "accept_button", "portrait_texture")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -3786,9 +3846,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 script = ExtResource("36_quest_panel")
-quest_name_label = NodePath("QuestContent/VBoxContainer/QuestName")
+quest_name_label = NodePath("QuestContent/VBoxContainer/HeaderContainer/QuestName")
 quest_dialogue_label = NodePath("QuestContent/VBoxContainer/QuestDialogue")
 background_button = NodePath("BackgroundButton")
+accept_button = NodePath("QuestContent/VBoxContainer/AcceptButton")
+portrait_texture = NodePath("QuestContent/VBoxContainer/HeaderContainer/PortraitPanel/Portrait")
 
 [node name="BackgroundButton" type="Button" parent="Portrait/GameScene/QuestPanel"]
 layout_mode = 1
@@ -3826,12 +3888,37 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="QuestName" type="Label" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 0
+
+[node name="QuestName" type="Label" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 24
 text = "Quest Name"
-horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PortraitPanel" type="Panel" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer/HeaderContainer"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
+[node name="Portrait" type="TextureRect" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer/HeaderContainer/PortraitPanel"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="HSeparator" type="HSeparator" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
 layout_mode = 2
@@ -3839,10 +3926,18 @@ theme_override_constants/separation = 20
 
 [node name="QuestDialogue" type="Label" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_font_sizes/font_size = 16
 text = "Quest dialogue goes here..."
+vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="AcceptButton" type="Button" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = "Accept Quest"
 
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1

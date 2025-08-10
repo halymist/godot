@@ -70,14 +70,19 @@ func show_chat_bubble():
 	if scroll_container is ScrollContainer:
 		scroll_offset = Vector2(scroll_container.scroll_horizontal, scroll_container.scroll_vertical)
 	
-	# Position bubble above the NPC, accounting for scroll
+	# First show the dialogue to get the correct bubble size
+	chat_bubble.show_dialogue(dialogue, 3.0)
+	
+	# Wait one frame for size to be calculated
+	await get_tree().process_frame
+	
+	# Now position bubble directly above NPC with minimal padding
+	var bubble_size = chat_bubble.size
 	var bubble_pos = Vector2(
-		npc_global_pos.x - scroll_offset.x - 50,  # Center bubble over NPC
-		npc_global_pos.y - scroll_offset.y - 50   # Position just above NPC (reduced from -70)
+		npc_global_pos.x - scroll_offset.x - (bubble_size.x / 2) + (size.x / 2),  # Center bubble over NPC
+		npc_global_pos.y - scroll_offset.y - bubble_size.y - 5   # Position directly above NPC with 5px padding
 	)
 	chat_bubble.position = bubble_pos
-	
-	chat_bubble.show_dialogue(dialogue, 3.0)
 
 func hide_chat_bubble():
 	if chat_bubble and is_instance_valid(chat_bubble):

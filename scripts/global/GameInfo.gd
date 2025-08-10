@@ -316,6 +316,7 @@ class GameCurrentPlayer:
 	# Current player specific properties with automatic events
 	var location: String = ""
 	var traveling: Variant = null
+	var traveling_destination: Variant = null
 	var dungeon: bool = false
 	var destination: Variant = null
 	var slide: Variant = null
@@ -353,6 +354,7 @@ class GameCurrentPlayer:
 		# Current player specific fields
 		"location": "location",
 		"traveling": "traveling",
+		"traveling_destination": "traveling_destination",
 		"gold": "_gold",  # Use private field to avoid triggering setter
 		"currency": "_currency",  # Use private field to avoid triggering setter
 		"talent_points": "talent_points",

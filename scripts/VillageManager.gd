@@ -34,6 +34,7 @@ func _ready():
 	# Connect quest panel signals
 	if quest_panel and quest_panel.has_method("quest_panel_closed"):
 		quest_panel.quest_panel_closed.connect(_on_quest_panel_closed)
+		quest_panel.quest_accepted.connect(_on_quest_accepted)
 		print("Quest panel signal connected")
 
 func connect_existing_buildings():
@@ -119,6 +120,19 @@ func _on_npc_clicked(npc):
 
 func _on_quest_panel_closed():
 	print("Quest panel closed")
+
+func _on_quest_accepted(quest_data: Dictionary):
+	print("Quest accepted: ", quest_data.get("questname", "Unknown Quest"))
+	print("Quest travel time: ", quest_data.get("travel", 0))
+	
+	# Set current panel to map in GameInfo as well
+	var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+	if toggle_panel:
+		var map_panel = toggle_panel.get("map_panel")
+		if map_panel:
+			GameInfo.set_current_panel(map_panel)
+	
+	# You can add quest acceptance logic here later
 
 func handle_back_navigation() -> bool:
 	# If we're in interior, go back to village
