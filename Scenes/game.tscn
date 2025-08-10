@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=67 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -41,6 +41,7 @@
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
+[ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.08, 0.05, 0.15, 0.85)
@@ -4029,6 +4030,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 0
 
 [node name="StatusPanel" type="Panel" parent="Portrait/Quest/VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
@@ -4109,6 +4111,7 @@ stretch_mode = 5
 [node name="BottomPanel" type="VBoxContainer" parent="Portrait/Quest/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
+theme_override_constants/separation = 0
 
 [node name="QuestTextPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/BottomPanel"]
 custom_minimum_size = Vector2(0, 150)
@@ -4134,9 +4137,10 @@ fit_content = true
 scroll_active = false
 
 [node name="OptionsPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/BottomPanel"]
-custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+script = ExtResource("38_dynamic_options")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel"]
 layout_mode = 1
@@ -4150,11 +4154,13 @@ offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
-vertical_scroll_mode = 0
+vertical_scroll_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 5
 
 [node name="GoLeftButton" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 40)
@@ -4172,7 +4178,7 @@ size_flags_horizontal = 8
 theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Go Right"
+text = "Follow the main road to the right"
 
 [node name="GoRightButton2" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 40)
@@ -4181,16 +4187,7 @@ size_flags_horizontal = 8
 theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Go Right"
-
-[node name="GoRightButton3" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(200, 40)
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Go Right"
+text = "Search for a hidden passage through the rocks"
 
 [node name="PerkTooltip" parent="Portrait" instance=ExtResource("17_oeip8")]
 visible = false
