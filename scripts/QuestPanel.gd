@@ -36,6 +36,11 @@ func _on_accept_pressed():
 		GameInfo.current_player.traveling_destination = current_quest_data.get("questid", 0)
 		
 		print("Travel started - Duration: ", travel_time, " minutes, End time: ", travel_end_time)
+		
+		# Immediately update MapPanel if it exists
+		var map_panel = get_tree().current_scene.find_child("Map", true, false)
+		if map_panel and map_panel.has_method("update_travel_display"):
+			map_panel.update_travel_display()
 	
 	hide_panel()
 	print("Quest accepted: ", current_quest_data.get("questname", "Unknown Quest"))

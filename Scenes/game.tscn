@@ -1078,6 +1078,7 @@ value = 100.0
 show_percentage = false
 
 [node name="PlayerLabel" type="Label" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
+clip_contents = true
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -1112,6 +1113,7 @@ value = 100.0
 show_percentage = false
 
 [node name="EnemyLabel" type="Label" parent="Portrait/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
+clip_contents = true
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -1162,6 +1164,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="CombatResult" type="Label" parent="Portrait/GameScene/Combat"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -1208,38 +1211,50 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TravelTextPanel" type="Panel" parent="Portrait/GameScene/Map/VBoxContainer"]
+[node name="Spacer" type="Control" parent="Portrait/GameScene/Map/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="TravelTextPanel" type="Panel" parent="Portrait/GameScene/Map/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
 [node name="TravelTextLabel" type="Label" parent="Portrait/GameScene/Map/VBoxContainer/TravelTextPanel"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
 text = "No active travel"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="TravelBarContainer" type="Panel" parent="Portrait/GameScene/Map/VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="TravelProgress" type="ProgressBar" parent="Portrait/GameScene/Map/VBoxContainer/TravelBarContainer"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.05
-anchor_top = 0.2
+anchor_top = 0.3
 anchor_right = 0.95
-anchor_bottom = 0.8
+anchor_bottom = 0.7
 grow_horizontal = 2
 grow_vertical = 2
+show_percentage = false
 
 [node name="TravelTimeLabel" type="Label" parent="Portrait/GameScene/Map/VBoxContainer/TravelBarContainer"]
 layout_mode = 1
@@ -1248,12 +1263,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -10.0
-offset_right = 50.0
-offset_bottom = 10.0
+offset_left = -40.0
+offset_top = -8.0
+offset_right = 40.0
+offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
 text = "00:00"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3574,6 +3591,7 @@ text = "Talent name"
 horizontal_alignment = 1
 
 [node name="Description" type="Label" parent="Portrait/GameScene/Talents/Upgrade/UpgradeTalent"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -3836,7 +3854,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Effect"
 
-[node name="QuestPanel" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("quest_name_label", "background_button", "accept_button", "portrait_texture")]
+[node name="QuestPanel" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -3925,6 +3943,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="QuestDialogue" type="Label" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
+clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)

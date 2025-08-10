@@ -16,14 +16,14 @@ func _ready():
 	# Create and setup timer for updating travel progress
 	update_timer = Timer.new()
 	update_timer.wait_time = 1.0  # Update every second
-	update_timer.timeout.connect(_update_travel_display)
+	update_timer.timeout.connect(update_travel_display)
 	add_child(update_timer)
 	update_timer.start()
 	
 	# Initial update
-	_update_travel_display()
+	update_travel_display()
 
-func _update_travel_display():
+func update_travel_display():
 	var current_player = GameInfo.current_player
 	
 	if current_player.traveling == null:
