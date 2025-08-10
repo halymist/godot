@@ -19,6 +19,7 @@ extends Control
 @export var village_view: Control
 @export var quest_panel: Control
 @export var quest: Control
+@export var cancel_quest: Control
 
 func _ready():
 	hide_all_panels()
