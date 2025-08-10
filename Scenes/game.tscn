@@ -4012,7 +4012,7 @@ layout_mode = 2
 icon = ExtResource("14_81klo")
 expand_icon = true
 
-[node name="Quest" type="Panel" parent="Portrait"]
+[node name="Quest" type="Panel" parent="Portrait" node_paths=PackedStringArray("status_panel", "scene_panel", "quest_text_panel", "options_panel")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -4022,22 +4022,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
+script = ExtResource("38_dynamic_options")
+status_panel = NodePath("StatusPanel")
+scene_panel = NodePath("ScenePanel")
+quest_text_panel = NodePath("BottomPanel/QuestTextPanel")
+options_panel = NodePath("BottomPanel/OptionsPanel")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/Quest"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 0
-
-[node name="StatusPanel" type="Panel" parent="Portrait/Quest/VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
+[node name="StatusPanel" type="Panel" parent="Portrait/Quest"]
+layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="HealthPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/StatusPanel"]
+[node name="HealthPanel" type="Panel" parent="Portrait/Quest/StatusPanel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.3
@@ -4045,7 +4040,7 @@ anchor_bottom = 1.0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="HealthBar" type="ProgressBar" parent="Portrait/Quest/VBoxContainer/StatusPanel/HealthPanel"]
+[node name="HealthBar" type="ProgressBar" parent="Portrait/Quest/StatusPanel/HealthPanel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.05
@@ -4058,7 +4053,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_health_bar")
 value = 100.0
 show_percentage = false
 
-[node name="HealthLabel" type="Label" parent="Portrait/Quest/VBoxContainer/StatusPanel/HealthPanel/HealthBar"]
+[node name="HealthLabel" type="Label" parent="Portrait/Quest/StatusPanel/HealthPanel/HealthBar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -4070,7 +4065,7 @@ text = "100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="QuestEffectsPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/StatusPanel"]
+[node name="QuestEffectsPanel" type="Panel" parent="Portrait/Quest/StatusPanel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -4080,7 +4075,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="QuestEffects" type="HBoxContainer" parent="Portrait/Quest/VBoxContainer/StatusPanel/QuestEffectsPanel"]
+[node name="QuestEffects" type="HBoxContainer" parent="Portrait/Quest/StatusPanel/QuestEffectsPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -4088,17 +4083,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScenePanel" type="AspectRatioContainer" parent="Portrait/Quest/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="ScenePanel" type="AspectRatioContainer" parent="Portrait/Quest"]
+layout_mode = 0
 ratio = 1.333
 
-[node name="Panel" type="Panel" parent="Portrait/Quest/VBoxContainer/ScenePanel"]
+[node name="Panel" type="Panel" parent="Portrait/Quest/ScenePanel"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="SceneImage" type="TextureRect" parent="Portrait/Quest/VBoxContainer/ScenePanel/Panel"]
+[node name="SceneImage" type="TextureRect" parent="Portrait/Quest/ScenePanel/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -4108,18 +4101,14 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BottomPanel" type="VBoxContainer" parent="Portrait/Quest/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/separation = 0
+[node name="BottomPanel" type="Control" parent="Portrait/Quest"]
+anchors_preset = 0
 
-[node name="QuestTextPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/BottomPanel"]
-custom_minimum_size = Vector2(0, 150)
-layout_mode = 2
-size_flags_vertical = 0
+[node name="QuestTextPanel" type="Panel" parent="Portrait/Quest/BottomPanel"]
+layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/VBoxContainer/BottomPanel/QuestTextPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/BottomPanel/QuestTextPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -4127,7 +4116,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="QuestText" type="RichTextLabel" parent="Portrait/Quest/VBoxContainer/BottomPanel/QuestTextPanel/ScrollContainer"]
+[node name="QuestText" type="RichTextLabel" parent="Portrait/Quest/BottomPanel/QuestTextPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4136,13 +4125,11 @@ text = "Quest description and story text will appear here..."
 fit_content = true
 scroll_active = false
 
-[node name="OptionsPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/BottomPanel"]
-layout_mode = 2
-size_flags_vertical = 0
+[node name="OptionsPanel" type="Panel" parent="Portrait/Quest/BottomPanel"]
+layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-script = ExtResource("38_dynamic_options")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/BottomPanel/OptionsPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -4156,13 +4143,13 @@ grow_vertical = 2
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_constants/separation = 5
 
-[node name="GoLeftButton" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+[node name="GoLeftButton" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -4171,7 +4158,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
 text = "Take the winding forest path to the left"
 
-[node name="GoRightButton" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+[node name="GoRightButton" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -4180,7 +4167,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
 text = "Follow the main road to the right"
 
-[node name="GoRightButton2" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+[node name="GoRightButton2" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -4188,6 +4175,15 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
 text = "Search for a hidden passage through the rocks"
+
+[node name="GoLeftButton2" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
+theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
+text = "Take the winding forest path to the left"
 
 [node name="PerkTooltip" parent="Portrait" instance=ExtResource("17_oeip8")]
 visible = false
