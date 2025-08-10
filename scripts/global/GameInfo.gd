@@ -407,6 +407,7 @@ var arena_opponent: GameArenaOpponent = null
 var chat_messages: Array[ChatMessage] = []
 var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
+var npcs: Array[Dictionary] = []
 
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null:
@@ -438,6 +439,7 @@ func _ready():
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)
 	load_combat_logs_data(Websocket.mock_combat_logs)
+	load_npcs_data(Websocket.mock_npcs)
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 
@@ -517,6 +519,13 @@ func load_chat_messages_data(messages_data: Array):
 		var chat_message = ChatMessage.new(message_data)
 		chat_messages.append(chat_message)
 	print("Total chat messages loaded: ", chat_messages.size())
+
+# Function to load NPCs from mock data
+func load_npcs_data(npcs_data: Array):
+	npcs.clear()
+	for npc_data in npcs_data:
+		npcs.append(npc_data)
+	print("Total NPCs loaded: ", npcs.size())
 
 # Function to load combat logs from mock data
 func load_combat_logs_data(combat_data: Array):

@@ -1,27 +1,11 @@
 extends Panel
 
-# Preload the NPC class
-const NPC = preload("res://scripts/NPC.gd")
-
 @export var village_scene: Control
 @export var interior_scene: Control
 @export var npc_prefab: PackedScene
 
 var current_building: String = ""
 var is_in_interior: bool = false
-
-# NPC data extracted from chat messages (we'll use the senders as NPCs)
-var npcs_data = [
-	{"name": "Herald", "status": "lord"},
-	{"name": "Merchant Gareth", "status": "peasant"},
-	{"name": "Guard Captain", "status": "guard"},
-	{"name": "Alchemist Zara", "status": "peasant"},
-	{"name": "Knight Commander", "status": "lord"},
-	{"name": "Innkeeper Molly", "status": "peasant"},
-	{"name": "Bard Lyra", "status": "peasant"},
-	{"name": "Farmer Bob", "status": "peasant"},
-	{"name": "Blacksmith Jane", "status": "peasant"}
-]
 
 func _ready():
 	# Get references to child nodes
@@ -52,26 +36,44 @@ func connect_existing_buildings():
 
 func spawn_npcs():
 	if not npc_prefab:
-		print("Warning: NPC prefab not assigned!")
+		print("No NPC prefab assigned")
 		return
 		
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
 	
-	# Spawn NPCs at random positions
+	# Get NPC data from GameInfo
+	var npcs_data = GameInfo.npcs
+	
+	# Spawn NPCs based on GameInfo data
 	for i in range(npcs_data.size()):
 		var npc_data = npcs_data[i]
 		
 		# Instance the NPC prefab
 		var npc_instance = npc_prefab.instantiate()
 		
-		# Set random position in village (avoid building area)
-		var random_x = randf_range(50, 400)
-		var random_y = randf_range(50, 200)
-		npc_instance.position = Vector2(random_x, random_y)
-		npc_instance.size = Vector2(60, 80)
+		# Get village content size for anchor-based positioning
+		var content_size = village_content.size
+		if content_size == Vector2.ZERO:
+			content_size = village_content.custom_minimum_size
 		
-		# Set NPC data (no texture for now as requested)
-		npc_instance.set_npc_data(npc_data.name, npc_data.status, null)
+		# Convert anchor-based position (0.0-1.0) to actual pixels
+		var anchor_x = npc_data.get("xpos", randf_range(0.1, 0.9))  # Default random anchor
+		var anchor_y = npc_data.get("ypos", randf_range(0.1, 0.8))  # Default random anchor
+		var pixel_x = anchor_x * content_size.x
+		var pixel_y = anchor_y * content_size.y
+		npc_instance.position = Vector2(pixel_x, pixel_y)
+		
+		# Convert size multipliers to actual pixels (1.0 = base size of 60x80)
+		var base_width = 60.0
+		var base_height = 80.0
+		var width_multiplier = npc_data.get("width", 1.0)
+		var height_multiplier = npc_data.get("height", 1.0)
+		var pixel_width = base_width * width_multiplier
+		var pixel_height = base_height * height_multiplier
+		npc_instance.size = Vector2(pixel_width, pixel_height)
+		
+		# Set the NPC data (texture is handled in NPC.gd)
+		npc_instance.set_npc_data(npc_data)
 		
 		# Connect the signal
 		npc_instance.npc_clicked.connect(_on_npc_clicked)
@@ -79,11 +81,22 @@ func spawn_npcs():
 		# Add to village
 		village_content.add_child(npc_instance)
 		
-		print("Spawned NPC: ", npc_data.name, " (", npc_data.status, ")")
+		print("Spawned NPC: ", npc_data.get("name", "Unknown"), " at anchor (", anchor_x, ", ", anchor_y, ") = pixels (", pixel_x, ", ", pixel_y, ")")
 
-func _on_npc_clicked(npc: NPC):
-	print("NPC clicked: ", npc.npc_name, " (Status: ", npc.status, ")")
-	# TODO: Add NPC interaction logic here
+func _on_npc_clicked(npc):
+	print("NPC clicked: ", npc.npc_data.get("name", "Unknown"))
+	print("Dialogue: ", npc.npc_data.get("dialogue", "No dialogue available"))
+	
+	# You can add additional NPC interaction logic here
+	# For example, show a dialogue panel with the NPC's dialogue
+
+func handle_back_navigation() -> bool:
+	# If we're in interior, go back to village
+	if is_in_interior:
+		show_village()
+		return true
+	# If we're in village, let the toggle panel handle it normally
+	return false
 
 func _on_building_clicked(building: Building):
 	current_building = building.building_id

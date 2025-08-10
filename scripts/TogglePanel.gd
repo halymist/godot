@@ -15,6 +15,8 @@ extends Control
 @export var chat_panel: Control
 @export var combat_panel: Control
 @export var fight_button: Button
+@export var interior_view: Control
+@export var village_view: Control
 
 func _ready():
 	hide_all_panels()

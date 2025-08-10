@@ -366,6 +366,94 @@ var mock_arena_opponents = [
 	}
 ]
 
+# Mock NPC data with proper NpcInfo structure
+var mock_npcs = [
+	{
+		"name": "Herald",
+		"xpos": 0.2,
+		"ypos": 0.3,
+		"width": 1.0,
+		"height": 1.0,
+		"dialogue": "Welcome, brave adventurer! The kingdom needs your help!",
+		"questid": null,
+		"questname": null,
+		"travel": null,
+		"building": "",
+		"asset": "herald",
+		"traveltext": null
+	},
+	{
+		"name": "Merchant Gareth",
+		"xpos": 0.4,
+		"ypos": 0.4,
+		"width": 1.0,
+		"height": 1.0,
+		"dialogue": "Fine wares and rare items for sale! Come see what I have!",
+		"questid": 1,
+		"questname": "Delivery Quest",
+		"travel": 5,
+		"building": "shop",
+		"asset": "merchant",
+		"traveltext": "Travel to the next town"
+	},
+	{
+		"name": "Guard Captain",
+		"xpos": 0.6,
+		"ypos": 0.25,
+		"width": 1.2,
+		"height": 1.1,
+		"dialogue": "Stay vigilant, the kingdom is under threat from bandits.",
+		"questid": 2,
+		"questname": "Bandit Hunt",
+		"travel": 10,
+		"building": "",
+		"asset": "guard",
+		"traveltext": "Hunt down the bandits"
+	},
+	{
+		"name": "Alchemist Zara",
+		"xpos": 0.3,
+		"ypos": 0.45,
+		"width": 1.0,
+		"height": 1.0,
+		"dialogue": "Potions for sale! Healing, mana, and more!",
+		"questid": null,
+		"questname": null,
+		"travel": null,
+		"building": "alchemy",
+		"asset": "alchemist",
+		"traveltext": null
+	},
+	{
+		"name": "Innkeeper Molly",
+		"xpos": 0.25,
+		"ypos": 0.55,
+		"width": 1.0,
+		"height": 1.0,
+		"dialogue": "Rooms available for rent! Come rest your weary heads.",
+		"questid": null,
+		"questname": null,
+		"travel": null,
+		"building": "inn",
+		"asset": "innkeeper",
+		"traveltext": null
+	},
+	{
+		"name": "Blacksmith Jane",
+		"xpos": 0.75,
+		"ypos": 0.35,
+		"width": 1.0,
+		"height": 1.0,
+		"dialogue": "Weapons and armor repaired! Come see me at the forge.",
+		"questid": 3,
+		"questname": "Metal Collection",
+		"travel": 8,
+		"building": "blacksmith",
+		"asset": "blacksmith",
+		"traveltext": "Gather rare metals"
+	}
+]
+
 # Mock chat data
 var mock_chat_messages = [
 	{

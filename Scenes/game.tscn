@@ -181,7 +181,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button", "interior_view", "village_view")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -205,6 +205,8 @@ chat_button = NodePath("BottomUI/Buttons/Chat/Button")
 chat_panel = NodePath("GameScene/ChatOverlay")
 combat_panel = NodePath("GameScene/Combat")
 fight_button = NodePath("GameScene/Arena/FightButton")
+interior_view = NodePath("GameScene/Home/InteriorView")
+village_view = NodePath("GameScene/Home/VillageView")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
