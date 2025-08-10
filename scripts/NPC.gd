@@ -26,14 +26,36 @@ func _ready():
 		texture = load(npc_texture_path)
 
 func _on_button_pressed():
+	print("NPC button pressed: ", npc_name)
+	print("NPC data during click: ", npc_data)
+	
 	var quest_id = npc_data.get("questid", null)
 	
 	if quest_id != null:
-		# NPC has a quest - emit signal for quest panel
-		npc_clicked.emit(self)
+		# NPC has a quest - directly show quest panel
+		print("Found quest ID: ", quest_id, " - showing quest panel directly")
+		
+		# Find the quest panel directly
+		var quest_panel = get_tree().current_scene.find_child("QuestPanel", true, false)
+		if quest_panel and quest_panel.has_method("show_quest"):
+			# Switch to home panel first
+			var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+			if toggle_panel and toggle_panel.has_method("show_panel"):
+				var home_panel = toggle_panel.get("home_panel")
+				if home_panel:
+					toggle_panel.show_panel(home_panel)
+					print("Switched to home panel")
+			
+			# Show the quest
+			quest_panel.show_quest(npc_data)
+			print("Quest panel shown directly for: ", npc_data.get("questname", "Unknown Quest"))
+		else:
+			print("Quest panel not found or missing show_quest method")
+			# Fallback to signal emission
+			npc_clicked.emit(self)
 	else:
 		# No quest - just show dialogue in chat bubble (already shown on hover)
-		pass
+		print("No quest found for NPC: ", npc_name)
 	
 	print("Clicked NPC: ", npc_name)
 
@@ -114,6 +136,10 @@ func hide_chat_bubble():
 func set_npc_data(data: Dictionary):
 	npc_data = data
 	npc_name = data.get("name", "Unknown NPC")
+	
+	print("Setting NPC data for: ", npc_name)
+	print("Quest ID in data: ", data.get("questid", "None"))
+	print("Building ID in data: ", data.get("building", "None"))
 	
 	# Set texture to npc.png
 	var npc_texture_path = "res://assets/images/fallback/npc.png"

@@ -8,13 +8,16 @@ class_name MapPanel
 @export var enter_dungeon_button: Button
 
 var update_timer: Timer
+var is_skipping: bool = false
+var skip_start_time: float = 0.0
+var original_travel_end: float = 0.0
 
 func _ready():
 	# Get references to UI elements
 	travel_text_label = $VBoxContainer/TravelTextPanel/TravelTextLabel
 	travel_progress = $VBoxContainer/TravelBarContainer/TravelProgress
 	travel_time_label = $VBoxContainer/TravelBarContainer/TravelTimeLabel
-	skip_button = $VBoxContainer/TravelBarContainer/SkipButton
+	skip_button = $VBoxContainer/SkipButton
 	enter_dungeon_button = $VBoxContainer/TravelBarContainer/EnterDungeonButton
 	
 	# Connect skip button
@@ -27,7 +30,7 @@ func _ready():
 	
 	# Create and setup timer for updating travel progress
 	update_timer = Timer.new()
-	update_timer.wait_time = 1.0  # Update every second
+	update_timer.wait_time = 0.016  # Update at ~60 FPS for smooth animation
 	update_timer.timeout.connect(update_travel_display)
 	add_child(update_timer)
 	update_timer.start()
@@ -43,6 +46,7 @@ func update_travel_display():
 		travel_text_label.text = "No active travel"
 		travel_progress.value = 0
 		travel_time_label.text = "00:00"
+		is_skipping = false
 		if skip_button:
 			skip_button.visible = false
 		if enter_dungeon_button:
@@ -51,10 +55,32 @@ func update_travel_display():
 	
 	var current_time = Time.get_unix_time_from_system()
 	var travel_end_time = current_player.traveling
+	
+	# Handle skipping animation
+	if is_skipping:
+		var skip_elapsed = current_time - skip_start_time
+		var skip_duration = 2.0  # 2 seconds to complete
+		
+		# Calculate accelerating progress (quadratic acceleration)
+		var skip_progress = skip_elapsed / skip_duration
+		skip_progress = skip_progress * skip_progress  # Square for acceleration effect
+		
+		if skip_progress >= 1.0:
+			# Skip completed
+			is_skipping = false
+			current_player.traveling = null
+			current_player.traveling_destination = null
+			_on_travel_completed()
+			return
+		
+		# Show accelerated time remaining
+		var simulated_remaining = (original_travel_end - current_time) * (1.0 - skip_progress)
+		travel_end_time = current_time + simulated_remaining
+	
 	var time_remaining = travel_end_time - current_time
 	
-	if time_remaining <= 0:
-		# Travel completed
+	if time_remaining <= 0 and not is_skipping:
+		# Travel completed naturally
 		travel_text_label.text = "Travel completed!"
 		travel_progress.value = 100
 		travel_time_label.text = "00:00"
@@ -71,6 +97,7 @@ func update_travel_display():
 	# Currently traveling - show skip button, hide enter dungeon button
 	if skip_button:
 		skip_button.visible = true
+		skip_button.text = "Skip" if not is_skipping else "Skipping..."
 	if enter_dungeon_button:
 		enter_dungeon_button.visible = false
 	
@@ -113,23 +140,38 @@ func _get_original_travel_duration(quest_data: Dictionary) -> float:
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
 	
-	if current_player.traveling != null:
-		# Speed up travel - set to complete in 2 seconds
-		var current_time = Time.get_unix_time_from_system()
-		current_player.traveling = current_time + 2.0
-		print("Travel skipped - completing in 2 seconds")
+	if current_player.traveling != null and not is_skipping:
+		# Start skipping animation
+		is_skipping = true
+		skip_start_time = Time.get_unix_time_from_system()
+		original_travel_end = current_player.traveling
+		print("Travel skip started - accelerating countdown...")
 		
-		# Start a timer to switch to Quest panel when travel completes
-		var complete_timer = Timer.new()
-		complete_timer.wait_time = 2.5  # Wait a bit longer than travel completion
-		complete_timer.one_shot = true
-		complete_timer.timeout.connect(_on_travel_completed)
-		add_child(complete_timer)
-		complete_timer.start()
+		# Disable the skip button during animation
+		if skip_button:
+			skip_button.disabled = true
 
 func _on_travel_completed():
-	print("Travel completed via skip - switching to Quest panel")
+	print("Travel completed via skip - switching to Quest panel with transition")
 	
+	# Re-enable skip button
+	if skip_button:
+		skip_button.disabled = false
+	
+	# Add a smooth transition to quest panel
+	var transition_tween = create_tween()
+	transition_tween.set_ease(Tween.EASE_OUT)
+	transition_tween.set_trans(Tween.TRANS_CUBIC)
+	
+	# First fade out current panel
+	modulate = Color(1, 1, 1, 1)
+	transition_tween.tween_property(self, "modulate", Color(1, 1, 1, 0.3), 0.2)
+	
+	# Then switch panels and fade back in
+	transition_tween.tween_callback(_switch_to_quest_panel)
+	transition_tween.tween_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
+
+func _switch_to_quest_panel():
 	# Find the TogglePanel and switch to Quest
 	var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
 	if toggle_panel and toggle_panel.has_method("show_panel"):

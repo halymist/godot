@@ -9,15 +9,13 @@ var is_in_interior: bool = false
 var quest_panel: Panel = null
 
 func _ready():
-	# Get references to child nodes
-	village_scene = get_node("VillageView")
-	interior_scene = get_node("InteriorView")
-	
-	# Get quest panel reference - search from game root
+	# Find the quest panel in its new location (inside Home panel)
 	quest_panel = get_tree().current_scene.find_child("QuestPanel", true, false)
 	print("Quest panel found: ", quest_panel != null)
 	if quest_panel:
 		print("Quest panel path: ", quest_panel.get_path())
+	else:
+		print("ERROR: Quest panel not found - check if it's properly named and placed")
 	
 	# Set up initial state
 	show_village()
@@ -95,6 +93,7 @@ func spawn_npcs(building_id: int = 0):
 		
 		# Connect the signal
 		npc_instance.npc_clicked.connect(_on_npc_clicked)
+		print("Connected signal for NPC: ", npc_data.get("name", "Unknown"), " in building ", building_id)
 		
 		# Add to village
 		village_content.add_child(npc_instance)
@@ -102,6 +101,7 @@ func spawn_npcs(building_id: int = 0):
 		print("Spawned NPC: ", npc_data.get("name", "Unknown"), " in building ", building_id, " at anchor (", anchor_x, ", ", anchor_y, ") = pixels (", pixel_x, ", ", pixel_y, ")")
 
 func _on_npc_clicked(npc):
+	print("=== VillageManager._on_npc_clicked() CALLED ===")
 	print("Clicked NPC: ", npc.npc_data.get("name", "Unknown"))
 	print("Building context: ", "inside building" if is_in_interior else "in village")
 	
@@ -122,6 +122,15 @@ func _on_npc_clicked(npc):
 		if quest_panel:
 			print("Quest panel has show_quest method: ", quest_panel.has_method("show_quest"))
 			if quest_panel.has_method("show_quest"):
+				# First switch to home panel if quest panel is inside it
+				var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+				if toggle_panel and toggle_panel.has_method("show_panel"):
+					var home_panel = toggle_panel.get("home_panel")
+					if home_panel:
+						toggle_panel.show_panel(home_panel)
+						print("Switched to home panel to show quest")
+				
+				# Then show the quest
 				quest_panel.show_quest(npc.npc_data)
 				print("Called quest_panel.show_quest() for: ", npc.npc_data.get("questname", "Unknown Quest"))
 				print("Quest panel visible after: ", quest_panel.visible)

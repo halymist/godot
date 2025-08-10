@@ -100,9 +100,23 @@ func spawn_building_npcs():
 			
 			# Connect NPC signals to VillageManager
 			var village_manager = get_tree().current_scene.find_child("VillageManager", true, false)
-			if village_manager and village_manager.has_method("_on_npc_clicked"):
-				npc_instance.npc_clicked.connect(village_manager._on_npc_clicked)
+			print("Looking for VillageManager, found: ", village_manager != null)
+			if not village_manager:
+				# Try alternative search paths
+				var game_scene = get_tree().current_scene.find_child("GameScene", true, false)
+				if game_scene:
+					village_manager = game_scene.find_child("VillageManager", true, false)
+					print("Found VillageManager in GameScene: ", village_manager != null)
 			
+			if village_manager:
+				print("VillageManager path: ", village_manager.get_path())
+				if village_manager.has_method("_on_npc_clicked"):
+					npc_instance.npc_clicked.connect(village_manager._on_npc_clicked)
+					print("Connected NPC signal to VillageManager for: ", npc_data.get("name", "Unknown"))
+				else:
+					print("VillageManager missing _on_npc_clicked method")
+			else:
+				print("Could not find VillageManager anywhere")
 			# Add to building interior
 			interior_content.add_child(npc_instance)
 			spawned_npcs.append(npc_instance)

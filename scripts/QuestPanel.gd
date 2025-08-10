@@ -6,6 +6,7 @@ class_name QuestPanel
 @export var background_button: Button
 @export var accept_button: Button
 @export var portrait_texture: TextureRect
+@export var map: Control
 
 var current_quest_data: Dictionary = {}
 
@@ -38,9 +39,8 @@ func _on_accept_pressed():
 		print("Travel started - Duration: ", travel_time, " minutes, End time: ", travel_end_time)
 		
 		# Immediately update MapPanel if it exists
-		var map_panel = get_tree().current_scene.find_child("Map", true, false)
-		if map_panel and map_panel.has_method("update_travel_display"):
-			map_panel.update_travel_display()
+		if map and map.has_method("update_travel_display"):
+			map.update_travel_display()
 	
 	hide_panel()
 	print("Quest accepted: ", current_quest_data.get("questname", "Unknown Quest"))
@@ -48,10 +48,11 @@ func _on_accept_pressed():
 	# Switch to map panel through the TogglePanel
 	var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
 	if toggle_panel and toggle_panel.has_method("show_panel"):
-		var map_panel = toggle_panel.get("map_panel")
-		if map_panel:
-			toggle_panel.show_panel(map_panel)
+		if map:
+			toggle_panel.show_panel(map)
 			print("Switched to map panel")
+		else:
+			print("Map panel reference not set")
 
 func show_quest(quest_data: Dictionary):
 	print("QuestPanel.show_quest called with data: ", quest_data)
@@ -81,9 +82,29 @@ func show_quest(quest_data: Dictionary):
 	else:
 		print("portrait_texture is null")
 	
+	# Ensure quest panel is on top and visible with smooth transition
+	z_index = 1000  # Very high z-index to appear above everything
+	
+	# Start with transparent and animate in
+	modulate = Color(1, 1, 1, 0)
 	visible = true
-	print("Quest panel set to visible: ", visible)
+	
+	# Smooth fade-in animation
+	var show_tween = create_tween()
+	show_tween.set_ease(Tween.EASE_OUT)
+	show_tween.set_trans(Tween.TRANS_CUBIC)
+	show_tween.tween_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
+	
+	print("Quest panel set to visible: ", visible, " with z_index: ", z_index)
 
 func hide_panel():
+	# Smooth fade-out animation before hiding
+	var hide_tween = create_tween()
+	hide_tween.set_ease(Tween.EASE_IN)
+	hide_tween.set_trans(Tween.TRANS_CUBIC)
+	hide_tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.2)
+	hide_tween.tween_callback(_finish_hide)
+
+func _finish_hide():
 	visible = false
 	quest_panel_closed.emit()
