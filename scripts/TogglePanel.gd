@@ -87,6 +87,7 @@ func handle_home_button():
 func handle_map_button():
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
+	print("Traveling: ", traveling, " Destination: ", destination)
 	
 	# Check quest states
 	if traveling != null and destination != null:

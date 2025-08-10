@@ -52,7 +52,7 @@ func update_travel_display():
 	var current_time = Time.get_unix_time_from_system()
 	var travel_end_time = current_player.traveling
 	
-	# Handle skipping animation
+	# Handle skipping animation - accelerate the countdown
 	if is_skipping:
 		var skip_elapsed = current_time - skip_start_time
 		var skip_duration = 2.0  # 2 seconds to complete
@@ -62,12 +62,7 @@ func update_travel_display():
 		skip_progress = skip_progress * skip_progress  # Square for acceleration effect
 		
 		if skip_progress >= 1.0:
-			# Skip completed
-			is_skipping = false
-			current_player.traveling = null
-			current_player.traveling_destination = null
-			_on_travel_completed()
-			return
+			skip_progress = 1.0
 		
 		# Show accelerated time remaining
 		var simulated_remaining = (original_travel_end - current_time) * (1.0 - skip_progress)
@@ -75,8 +70,9 @@ func update_travel_display():
 	
 	var time_remaining = travel_end_time - current_time
 	
-	if time_remaining <= 0 and not is_skipping:
-		# Travel completed naturally
+	# Check if travel is completed (naturally or via skip)
+	if time_remaining <= 0:
+		# Travel completed
 		travel_text_label.text = "Travel completed!"
 		travel_progress.value = 100
 		travel_time_label.text = "00:00"
@@ -86,9 +82,9 @@ func update_travel_display():
 			enter_dungeon_button.visible = true
 		
 		# Clear travel data and show quest panel
+		is_skipping = false
 		current_player.traveling = null
-		if quest:
-			quest.visible = true
+		_on_travel_completed()
 		return
 	
 	# Currently traveling - show skip button, hide enter dungeon button
