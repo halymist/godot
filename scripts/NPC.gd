@@ -8,10 +8,17 @@ class_name NPC
 @onready var click_button: Button = $ClickButton
 
 signal npc_clicked(npc: NPC)
+signal npc_hovered(npc: NPC)
+signal npc_hover_exited(npc: NPC)
+
+var chat_bubble: Panel = null
+var chat_bubble_scene = preload("res://Scenes/ChatBubble.tscn")
 
 func _ready():
-	# Connect the button press signal
+	# Connect the button signals
 	click_button.button_up.connect(_on_button_pressed)
+	click_button.mouse_entered.connect(_on_mouse_entered)
+	click_button.mouse_exited.connect(_on_mouse_exited)
 	
 	# Set default NPC texture
 	var npc_texture_path = "res://assets/images/fallback/npc.png"
@@ -19,8 +26,63 @@ func _ready():
 		texture = load(npc_texture_path)
 
 func _on_button_pressed():
-	npc_clicked.emit(self)
+	var quest_id = npc_data.get("questid", null)
+	
+	if quest_id != null:
+		# NPC has a quest - emit signal for quest panel
+		npc_clicked.emit(self)
+	else:
+		# No quest - just show dialogue in chat bubble (already shown on hover)
+		pass
+	
 	print("Clicked NPC: ", npc_name)
+
+func _on_mouse_entered():
+	var quest_id = npc_data.get("questid", null)
+	
+	if quest_id == null:
+		# No quest - show dialogue as chat bubble
+		show_chat_bubble()
+	
+	npc_hovered.emit(self)
+
+func _on_mouse_exited():
+	hide_chat_bubble()
+	npc_hover_exited.emit(self)
+
+func show_chat_bubble():
+	if chat_bubble:
+		hide_chat_bubble()
+	
+	var dialogue = npc_data.get("dialogue", "...")
+	chat_bubble = chat_bubble_scene.instantiate()
+	
+	# Add to parent's parent scene (since we're in a ScrollContainer)
+	var scene_root = get_tree().current_scene
+	scene_root.add_child(chat_bubble)
+	
+	# Get global position and convert to screen coordinates
+	var npc_global_pos = global_position
+	var scroll_container = get_parent().get_parent()  # VillageContent -> ScrollContainer
+	
+	# Adjust for scroll position
+	var scroll_offset = Vector2.ZERO
+	if scroll_container is ScrollContainer:
+		scroll_offset = Vector2(scroll_container.scroll_horizontal, scroll_container.scroll_vertical)
+	
+	# Position bubble above the NPC, accounting for scroll
+	var bubble_pos = Vector2(
+		npc_global_pos.x - scroll_offset.x - 50,  # Center bubble over NPC
+		npc_global_pos.y - scroll_offset.y - 70   # Position above NPC
+	)
+	chat_bubble.position = bubble_pos
+	
+	chat_bubble.show_dialogue(dialogue, 3.0)
+
+func hide_chat_bubble():
+	if chat_bubble and is_instance_valid(chat_bubble):
+		chat_bubble.hide_bubble()
+		chat_bubble = null
 
 func set_npc_data(data: Dictionary):
 	npc_data = data

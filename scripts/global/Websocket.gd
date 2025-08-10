@@ -374,7 +374,7 @@ var mock_npcs = [
 		"ypos": 0.3,
 		"width": 1.0,
 		"height": 1.0,
-		"dialogue": "Welcome, brave adventurer! The kingdom needs your help!",
+		"dialogue": "Welcome, brave adventurer! The kingdom needs your help! Welcome, brave adventurer! The kingdom needs your help!",
 		"questid": null,
 		"questname": null,
 		"travel": null,

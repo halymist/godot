@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=61 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -39,6 +39,7 @@
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
+[ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.08, 0.05, 0.15, 0.85)
@@ -181,7 +182,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button", "interior_view", "village_view")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button", "interior_view", "village_view", "quest_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -207,6 +208,7 @@ combat_panel = NodePath("GameScene/Combat")
 fight_button = NodePath("GameScene/Arena/FightButton")
 interior_view = NodePath("GameScene/Home/InteriorView")
 village_view = NodePath("GameScene/Home/VillageView")
+quest_panel = NodePath("GameScene/QuestPanel")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -3773,6 +3775,74 @@ text = "20"
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Effect"
+
+[node name="QuestPanel" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
+script = ExtResource("36_quest_panel")
+quest_name_label = NodePath("QuestContent/VBoxContainer/QuestName")
+quest_dialogue_label = NodePath("QuestContent/VBoxContainer/QuestDialogue")
+background_button = NodePath("BackgroundButton")
+
+[node name="BackgroundButton" type="Button" parent="Portrait/GameScene/QuestPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+flat = true
+
+[node name="QuestContent" type="Panel" parent="Portrait/GameScene/QuestPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.25
+anchor_right = 0.9
+anchor_bottom = 0.75
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/QuestPanel/QuestContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="QuestName" type="Label" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Quest Name"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="QuestDialogue" type="Label" parent="Portrait/GameScene/QuestPanel/QuestContent/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+text = "Quest dialogue goes here..."
+autowrap_mode = 3
 
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1

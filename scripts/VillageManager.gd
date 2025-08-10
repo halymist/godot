@@ -6,11 +6,15 @@ extends Panel
 
 var current_building: String = ""
 var is_in_interior: bool = false
+var quest_panel: Panel = null
 
 func _ready():
 	# Get references to child nodes
 	village_scene = get_node("VillageView")
 	interior_scene = get_node("InteriorView")
+	
+	# Get quest panel reference
+	quest_panel = get_node("../../QuestPanel")
 	
 	# Set up initial state
 	show_village()
@@ -23,6 +27,10 @@ func _ready():
 	
 	# Connect to the main back button
 	call_deferred("connect_back_button")
+	
+	# Connect quest panel signals
+	if quest_panel and quest_panel.has_method("quest_panel_closed"):
+		quest_panel.quest_panel_closed.connect(_on_quest_panel_closed)
 
 func connect_existing_buildings():
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
@@ -85,10 +93,20 @@ func spawn_npcs():
 
 func _on_npc_clicked(npc):
 	print("NPC clicked: ", npc.npc_data.get("name", "Unknown"))
-	print("Dialogue: ", npc.npc_data.get("dialogue", "No dialogue available"))
 	
-	# You can add additional NPC interaction logic here
-	# For example, show a dialogue panel with the NPC's dialogue
+	var quest_id = npc.npc_data.get("questid", null)
+	
+	if quest_id != null:
+		# NPC has a quest - show quest panel
+		if quest_panel and quest_panel.has_method("show_quest"):
+			quest_panel.show_quest(npc.npc_data)
+			print("Showing quest panel for: ", npc.npc_data.get("questname", "Unknown Quest"))
+	else:
+		# No quest - dialogue is already shown via hover chat bubble
+		print("NPC has no quest - dialogue shown on hover")
+
+func _on_quest_panel_closed():
+	print("Quest panel closed")
 
 func handle_back_navigation() -> bool:
 	# If we're in interior, go back to village

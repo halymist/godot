@@ -17,6 +17,7 @@ extends Control
 @export var fight_button: Button
 @export var interior_view: Control
 @export var village_view: Control
+@export var quest_panel: Control
 
 func _ready():
 	hide_all_panels()
@@ -97,6 +98,11 @@ func toggle_chat():
 		chat_panel.toggle_chat()
 
 func go_back():
+	# Check if quest panel is open first
+	if quest_panel and quest_panel.visible:
+		quest_panel.visible = false
+		return
+		
 	# Check if chat is open first
 	if chat_panel and chat_panel.has_method("hide_chat") and chat_panel.get("is_chat_open"):
 		chat_panel.hide_chat()
@@ -130,6 +136,10 @@ func hide_all_panels():
 	map_panel.visible = false
 	talents_panel.visible = false
 	combat_panel.visible = false
+	
+	# Hide quest panel
+	if quest_panel:
+		quest_panel.visible = false
 	
 	# Close chat if it's open
 	if chat_panel and chat_panel.has_method("hide_chat"):
