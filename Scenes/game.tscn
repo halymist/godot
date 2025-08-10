@@ -4113,6 +4113,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -4121,7 +4125,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "Quest description and story text will appear here..."
+text = "You find yourself standing at the edge of the Whispering Woods, where ancient tales speak of mystical creatures and forgotten treasures hidden deep within the shadowy depths. The morning mist clings to the towering oak trees, their gnarled branches reaching out like ghostly fingers in the pale dawn light.
+
+As you study the path ahead, you notice two distinct routes that diverge into the forest. To your left, a narrow, winding trail disappears between thick undergrowth and twisted roots, marked only by the occasional glimmer of what might be fairy lights or dewdrops catching the early sunlight. Local legends speak of this path leading to the Grove of Echoes, where the voices of long-lost travelers are said to guide wanderers toward hidden secrets.
+
+To your right, a broader, more well-traveled road cuts straight through the forest, its packed earth worn smooth by countless merchant caravans and adventuring parties. Stone markers line this route, each one bearing cryptic symbols that seem to pulse with a faint, otherworldly energy. This path is known to lead directly to the Thornwood Trading Post, where information and supplies can be acquired, though at a price that extends beyond mere gold.
+
+The choice before you is crucial, as each path offers its own dangers and rewards. The forest itself seems to hold its breath, waiting for your decision. Which way will you choose to begin your quest into the unknown depths of the Whispering Woods?"
 fit_content = true
 scroll_active = false
 
@@ -4140,6 +4150,8 @@ offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+scroll_horizontal_custom_step = 0.0
+scroll_vertical_custom_step = 40.0
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
@@ -4150,40 +4162,48 @@ size_flags_vertical = 0
 theme_override_constants/separation = 5
 
 [node name="GoLeftButton" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Take the winding forest path to the left"
+text = "Take the winding forest path that leads deeper into the mysterious woods"
+autowrap_mode = 1
 
 [node name="GoRightButton" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Follow the main road to the right"
+text = "Follow the main road toward the trading post where merchants gather"
+autowrap_mode = 1
 
 [node name="GoRightButton2" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Search for a hidden passage through the rocks"
+text = "Search for a hidden passage through the rocks and examine the ancient stone markers"
+autowrap_mode = 1
 
 [node name="GoLeftButton2" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
 theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Take the winding forest path to the left"
+text = "Approach the mysterious cloaked figure standing by the crossroads and ask for guidance"
+autowrap_mode = 1
 
 [node name="PerkTooltip" parent="Portrait" instance=ExtResource("17_oeip8")]
 visible = false

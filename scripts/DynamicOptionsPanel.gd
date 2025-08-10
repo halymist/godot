@@ -86,7 +86,21 @@ func _update_layout():
 	options_panel.size = Vector2(total_width, options_height)
 	print("Options panel: pos=%s size=%s" % [options_panel.position, options_panel.size])
 	
+	# 7. Update button max widths to 80% of options panel width
+	_update_button_widths(total_width * 0.8)
+	
 	print("=== Layout Complete ===")
+
+func _update_button_widths(max_width: float):
+	if not options_vbox:
+		return
+	
+	for child in options_vbox.get_children():
+		if child is Button:
+			# Set custom max size to 80% of panel width
+			child.custom_minimum_size.x = min(200, max_width)
+			child.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			child.clip_contents = true
 
 func _calculate_options_height() -> int:
 	if not options_vbox:
@@ -113,6 +127,10 @@ func add_option(text: String, callback: Callable = Callable()) -> Button:
 	button.text = text
 	button.custom_minimum_size = Vector2(200, button_height)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	
+	# Set max width to 80% of panel width
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.clip_contents = true
 	
 	# Apply bubble styling - you'll need to set the style resource
 	# button.theme_override_styles/normal = preload("res://path/to/bubble_style.tres")
