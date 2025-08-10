@@ -4019,8 +4019,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="StatusPanel" type="Panel" parent="Portrait/Quest/VBoxContainer"]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="HealthPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/StatusPanel"]
 layout_mode = 1
@@ -4028,6 +4029,7 @@ anchors_preset = -1
 anchor_right = 0.3
 anchor_bottom = 1.0
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="HealthBar" type="ProgressBar" parent="Portrait/Quest/VBoxContainer/StatusPanel/HealthPanel"]
 layout_mode = 1
@@ -4061,6 +4063,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="QuestEffects" type="HBoxContainer" parent="Portrait/Quest/VBoxContainer/StatusPanel/QuestEffectsPanel"]
 layout_mode = 1
@@ -4071,13 +4074,13 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ScenePanel" type="AspectRatioContainer" parent="Portrait/Quest/VBoxContainer"]
-custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 size_flags_vertical = 0
 
 [node name="Panel" type="Panel" parent="Portrait/Quest/VBoxContainer/ScenePanel"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="SceneImage" type="TextureRect" parent="Portrait/Quest/VBoxContainer/ScenePanel/Panel"]
 layout_mode = 1
@@ -4096,6 +4099,7 @@ size_flags_vertical = 3
 [node name="QuestTextPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/BottomPanel"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/VBoxContainer/BottomPanel/QuestTextPanel"]
 layout_mode = 1
@@ -4117,6 +4121,7 @@ scroll_active = false
 [node name="OptionsPanel" type="Panel" parent="Portrait/Quest/VBoxContainer/BottomPanel"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel"]
 layout_mode = 1
@@ -4130,19 +4135,16 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="OptionsLabel" type="Label" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Options:"
+horizontal_alignment = 1
+
 [node name="GoLeftButton" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Go Left"
 
 [node name="GoRightButton" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
-layout_mode = 2
-text = "Go Right"
-
-[node name="GoRightButton2" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
-layout_mode = 2
-text = "Go Right"
-
-[node name="GoRightButton3" type="Button" parent="Portrait/Quest/VBoxContainer/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Go Right"
 
