@@ -1,10 +1,27 @@
 extends Panel
 
+# Preload the NPC class
+const NPC = preload("res://scripts/NPC.gd")
+
 @export var village_scene: Control
 @export var interior_scene: Control
+@export var npc_prefab: PackedScene
 
 var current_building: String = ""
 var is_in_interior: bool = false
+
+# NPC data extracted from chat messages (we'll use the senders as NPCs)
+var npcs_data = [
+	{"name": "Herald", "status": "lord"},
+	{"name": "Merchant Gareth", "status": "peasant"},
+	{"name": "Guard Captain", "status": "guard"},
+	{"name": "Alchemist Zara", "status": "peasant"},
+	{"name": "Knight Commander", "status": "lord"},
+	{"name": "Innkeeper Molly", "status": "peasant"},
+	{"name": "Bard Lyra", "status": "peasant"},
+	{"name": "Farmer Bob", "status": "peasant"},
+	{"name": "Blacksmith Jane", "status": "peasant"}
+]
 
 func _ready():
 	# Get references to child nodes
@@ -16,6 +33,9 @@ func _ready():
 	
 	# Connect to existing buildings in the scene
 	connect_existing_buildings()
+	
+	# Spawn NPCs in the village
+	spawn_npcs()
 	
 	# Connect to the main back button
 	call_deferred("connect_back_button")
@@ -29,6 +49,41 @@ func connect_existing_buildings():
 			if not child.building_clicked.is_connected(_on_building_clicked):
 				child.building_clicked.connect(_on_building_clicked)
 			print("Connected existing building: ", child.building_name)
+
+func spawn_npcs():
+	if not npc_prefab:
+		print("Warning: NPC prefab not assigned!")
+		return
+		
+	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
+	
+	# Spawn NPCs at random positions
+	for i in range(npcs_data.size()):
+		var npc_data = npcs_data[i]
+		
+		# Instance the NPC prefab
+		var npc_instance = npc_prefab.instantiate()
+		
+		# Set random position in village (avoid building area)
+		var random_x = randf_range(50, 400)
+		var random_y = randf_range(50, 200)
+		npc_instance.position = Vector2(random_x, random_y)
+		npc_instance.size = Vector2(60, 80)
+		
+		# Set NPC data (no texture for now as requested)
+		npc_instance.set_npc_data(npc_data.name, npc_data.status, null)
+		
+		# Connect the signal
+		npc_instance.npc_clicked.connect(_on_npc_clicked)
+		
+		# Add to village
+		village_content.add_child(npc_instance)
+		
+		print("Spawned NPC: ", npc_data.name, " (", npc_data.status, ")")
+
+func _on_npc_clicked(npc: NPC):
+	print("NPC clicked: ", npc.npc_name, " (Status: ", npc.status, ")")
+	# TODO: Add NPC interaction logic here
 
 func _on_building_clicked(building: Building):
 	current_building = building.building_id

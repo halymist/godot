@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=60 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
 [ext_resource type="PackedScene" path="res://Scenes/Building.tscn" id="6_lmoi6"]
+[ext_resource type="PackedScene" path="res://Scenes/NPC.tscn" id="6_ym3tv"]
 [ext_resource type="Texture2D" uid="uid://cln4gnj3yak2h" path="res://assets/images/villages/blacksmith.png" id="7_6uxt2"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
@@ -286,6 +287,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_feb5d")
 script = ExtResource("20_village")
 village_scene = NodePath("VillageView")
 interior_scene = NodePath("InteriorView")
+npc_prefab = ExtResource("6_ym3tv")
 
 [node name="VillageView" type="Control" parent="Portrait/GameScene/Home"]
 layout_mode = 1
@@ -302,7 +304,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-vertical_scroll_mode = 0
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
 
 [node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillageView/ScrollContainer"]
 custom_minimum_size = Vector2(500, 400)
@@ -335,7 +338,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-vertical_scroll_mode = 0
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
 
 [node name="InteriorContent" type="Control" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer"]
 layout_mode = 2
