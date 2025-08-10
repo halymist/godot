@@ -1042,7 +1042,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
-tooltip_panel = NodePath("../../PerkTooltip")
+tooltip_panel = NodePath("../../../PerkTooltip")
 
 [node name="Stats" type="Panel" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
@@ -3936,122 +3936,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PerkTooltip" parent="Portrait/GameScene" instance=ExtResource("17_oeip8")]
-visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_right = 200.0
-offset_bottom = 100.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="ItemDescription" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("name_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.25
-anchor_top = 0.1
-anchor_right = 0.75
-anchor_bottom = 0.38
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("14_85qyi")
-name_label = NodePath("VBoxContainer/Name")
-strength = NodePath("VBoxContainer/HBoxContainer/Value")
-stamina = NodePath("VBoxContainer/HBoxContainer2/Value")
-agility = NodePath("VBoxContainer/HBoxContainer3/Value")
-luck = NodePath("VBoxContainer/HBoxContainer4/Value")
-armor = NodePath("VBoxContainer/HBoxContainer5/Value")
-effect = NodePath("VBoxContainer/Effect")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/ItemDescription"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Name" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 15
-text = "Item Name"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/GameScene/ItemDescription/VBoxContainer"]
-layout_mode = 2
-
-[node name="Strength" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Strength"
-
-[node name="Value" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "20"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Portrait/GameScene/ItemDescription/VBoxContainer"]
-layout_mode = 2
-
-[node name="Stamina" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Stamina"
-
-[node name="Value" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "20"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="Portrait/GameScene/ItemDescription/VBoxContainer"]
-layout_mode = 2
-
-[node name="Agility" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Agility"
-
-[node name="Value" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "20"
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="Portrait/GameScene/ItemDescription/VBoxContainer"]
-layout_mode = 2
-
-[node name="Luck" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Luck"
-
-[node name="Value" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "20"
-
-[node name="HBoxContainer5" type="HBoxContainer" parent="Portrait/GameScene/ItemDescription/VBoxContainer"]
-layout_mode = 2
-
-[node name="Armor" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer5"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Armor"
-
-[node name="Value" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer/HBoxContainer5"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "20"
-
-[node name="Effect" type="Label" parent="Portrait/GameScene/ItemDescription/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Effect"
-
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1
 anchors_preset = -1
@@ -4118,6 +4002,125 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
+
+[node name="PerkTooltip" parent="Portrait" instance=ExtResource("17_oeip8")]
+visible = false
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_top = 180.0
+offset_right = 200.0
+offset_bottom = 280.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="ItemDescription" type="Panel" parent="Portrait" node_paths=PackedStringArray("name_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.1
+anchor_right = 0.75
+anchor_bottom = 0.38
+offset_top = 153.0
+offset_bottom = 153.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("14_85qyi")
+name_label = NodePath("VBoxContainer/Name")
+strength = NodePath("VBoxContainer/HBoxContainer/Value")
+stamina = NodePath("VBoxContainer/HBoxContainer2/Value")
+agility = NodePath("VBoxContainer/HBoxContainer3/Value")
+luck = NodePath("VBoxContainer/HBoxContainer4/Value")
+armor = NodePath("VBoxContainer/HBoxContainer5/Value")
+effect = NodePath("VBoxContainer/Effect")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/ItemDescription"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Name" type="Label" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 15
+text = "Item Name"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+
+[node name="Strength" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Strength"
+
+[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "20"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+
+[node name="Stamina" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Stamina"
+
+[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "20"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+
+[node name="Agility" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Agility"
+
+[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "20"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+
+[node name="Luck" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Luck"
+
+[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "20"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+
+[node name="Armor" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Armor"
+
+[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "20"
+
+[node name="Effect" type="Label" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Effect"
 
 [node name="CancelQuest" type="Panel" parent="Portrait"]
 visible = false

@@ -4,7 +4,7 @@ var description_panel: Panel
 var item_data: GameInfo.Item = null
 
 func _ready():
-	description_panel = get_tree().root.get_node("Game/Portrait/GameScene/ItemDescription")
+	description_panel = get_tree().root.get_node("Game/Portrait/ItemDescription")
 	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
 	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
 	description_panel.visible = false
