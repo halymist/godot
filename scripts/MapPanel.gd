@@ -5,6 +5,7 @@ class_name MapPanel
 @export var travel_progress: ProgressBar
 @export var travel_time_label: Label
 @export var skip_button: Button
+@export var enter_dungeon_button: Button
 
 var update_timer: Timer
 
@@ -13,11 +14,16 @@ func _ready():
 	travel_text_label = $VBoxContainer/TravelTextPanel/TravelTextLabel
 	travel_progress = $VBoxContainer/TravelBarContainer/TravelProgress
 	travel_time_label = $VBoxContainer/TravelBarContainer/TravelTimeLabel
-	skip_button = $VBoxContainer/SkipButton
+	skip_button = $VBoxContainer/TravelBarContainer/SkipButton
+	enter_dungeon_button = $VBoxContainer/TravelBarContainer/EnterDungeonButton
 	
 	# Connect skip button
 	if skip_button:
 		skip_button.pressed.connect(_on_skip_button_pressed)
+	
+	# Connect enter dungeon button
+	if enter_dungeon_button:
+		enter_dungeon_button.pressed.connect(_on_enter_dungeon_pressed)
 	
 	# Create and setup timer for updating travel progress
 	update_timer = Timer.new()
@@ -37,6 +43,10 @@ func update_travel_display():
 		travel_text_label.text = "No active travel"
 		travel_progress.value = 0
 		travel_time_label.text = "00:00"
+		if skip_button:
+			skip_button.visible = false
+		if enter_dungeon_button:
+			enter_dungeon_button.visible = true
 		return
 	
 	var current_time = Time.get_unix_time_from_system()
@@ -48,11 +58,21 @@ func update_travel_display():
 		travel_text_label.text = "Travel completed!"
 		travel_progress.value = 100
 		travel_time_label.text = "00:00"
+		if skip_button:
+			skip_button.visible = false
+		if enter_dungeon_button:
+			enter_dungeon_button.visible = true
 		
 		# Clear travel data
 		current_player.traveling = null
 		current_player.traveling_destination = null
 		return
+	
+	# Currently traveling - show skip button, hide enter dungeon button
+	if skip_button:
+		skip_button.visible = true
+	if enter_dungeon_button:
+		enter_dungeon_button.visible = false
 	
 	# Get quest data for travel text
 	var quest_id = current_player.traveling_destination
@@ -91,5 +111,38 @@ func _get_original_travel_duration(quest_data: Dictionary) -> float:
 	return travel_minutes * 60.0  # Convert to seconds
 
 func _on_skip_button_pressed():
-	# Placeholder for skip functionality
-	print("Skip travel button pressed - functionality not implemented yet")
+	var current_player = GameInfo.current_player
+	
+	if current_player.traveling != null:
+		# Speed up travel - set to complete in 2 seconds
+		var current_time = Time.get_unix_time_from_system()
+		current_player.traveling = current_time + 2.0
+		print("Travel skipped - completing in 2 seconds")
+		
+		# Start a timer to switch to Quest panel when travel completes
+		var complete_timer = Timer.new()
+		complete_timer.wait_time = 2.5  # Wait a bit longer than travel completion
+		complete_timer.one_shot = true
+		complete_timer.timeout.connect(_on_travel_completed)
+		add_child(complete_timer)
+		complete_timer.start()
+
+func _on_travel_completed():
+	print("Travel completed via skip - switching to Quest panel")
+	
+	# Find the TogglePanel and switch to Quest
+	var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+	if toggle_panel and toggle_panel.has_method("show_panel"):
+		# Find the quest panel 
+		var quest_panel = toggle_panel.get("quest_panel")
+		if quest_panel:
+			toggle_panel.show_panel(quest_panel)
+			print("Switched to Quest panel")
+		else:
+			print("Quest panel not found")
+	else:
+		print("TogglePanel not found or missing show_panel method")
+
+func _on_enter_dungeon_pressed():
+	# Placeholder for dungeon functionality
+	print("Enter dungeon button pressed - functionality not implemented yet")

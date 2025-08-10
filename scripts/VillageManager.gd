@@ -102,19 +102,29 @@ func spawn_npcs(building_id: int = 0):
 		print("Spawned NPC: ", npc_data.get("name", "Unknown"), " in building ", building_id, " at anchor (", anchor_x, ", ", anchor_y, ") = pixels (", pixel_x, ", ", pixel_y, ")")
 
 func _on_npc_clicked(npc):
-	print("NPC clicked: ", npc.npc_data.get("name", "Unknown"))
+	print("Clicked NPC: ", npc.npc_data.get("name", "Unknown"))
+	print("Building context: ", "inside building" if is_in_interior else "in village")
 	
 	var quest_id = npc.npc_data.get("questid", null)
-	print("Quest ID: ", quest_id)
+	var quest_name = npc.npc_data.get("questname", "No Quest")
+	print("Quest stored inside the Clicked NPC - Quest ID: ", quest_id, ", Quest Name: ", quest_name)
+	print("NPC data keys: ", npc.npc_data.keys())
+	print("Full NPC data: ", npc.npc_data)
 	
 	if quest_id != null:
 		# NPC has a quest - show quest panel
 		print("Quest panel reference: ", quest_panel)
+		print("Quest panel exists: ", quest_panel != null)
+		if quest_panel:
+			print("Quest panel visible before: ", quest_panel.visible)
+		else:
+			print("Quest panel visible before: N/A")
 		if quest_panel:
 			print("Quest panel has show_quest method: ", quest_panel.has_method("show_quest"))
 			if quest_panel.has_method("show_quest"):
 				quest_panel.show_quest(npc.npc_data)
-				print("Showing quest panel for: ", npc.npc_data.get("questname", "Unknown Quest"))
+				print("Called quest_panel.show_quest() for: ", npc.npc_data.get("questname", "Unknown Quest"))
+				print("Quest panel visible after: ", quest_panel.visible)
 			else:
 				print("Quest panel missing show_quest method")
 		else:

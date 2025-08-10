@@ -466,127 +466,148 @@ var mock_chat_messages = [
 		"sender": "Herald",
 		"timestamp": "2025-08-08T10:30:00Z",
 		"status": "lord",
-		"message": "Welcome, brave adventurers! The tournament begins at dawn!"
+		"message": "Welcome, brave adventurers! The tournament begins at dawn!",
+		"type": "global"
 	},
 	{
 		"sender": "Farmer Joe",
 		"timestamp": "2025-08-08T10:31:15Z", 
 		"status": "peasant",
-		"message": "Anyone know where I can buy better seeds? My crops aren't growing well."
+		"message": "Anyone know where I can buy better seeds? My crops aren't growing well.",
+		"type": "local"
 	},
 	{
 		"sender": "Lady Ashford",
 		"timestamp": "2025-08-08T10:32:30Z",
 		"status": "lord", 
-		"message": "The Royal Treasury is offering bounties for rare artifacts."
+		"message": "The Royal Treasury is offering bounties for rare artifacts.",
+		"type": "global"
 	},
 	{
 		"sender": "Blacksmith Tom",
 		"timestamp": "2025-08-08T10:33:45Z",
 		"status": "peasant",
-		"message": "Need iron ore! Will trade weapons for quality materials."
+		"message": "Need iron ore! Will trade weapons for quality materials.",
+		"type": "local"
 	},
 	{
 		"sender": "Sir Gareth",
 		"timestamp": "2025-08-08T10:35:00Z",
 		"status": "lord",
-		"message": "Beware the dark forest - strange creatures have been spotted there."
+		"message": "Beware the dark forest - strange creatures have been spotted there.",
+		"type": "global"
 	},
 	{
 		"sender": "Merchant Mills",
 		"timestamp": "2025-08-08T10:36:20Z",
 		"status": "peasant",
-		"message": "Fresh potions and supplies at the market square!"
+		"message": "Fresh potions and supplies at the market square!",
+		"type": "local"
 	},
 	{
 		"sender": "Captain Reynolds",
 		"timestamp": "2025-08-08T10:37:45Z",
 		"status": "lord",
-		"message": "Guards are needed at the city gates. Report to the barracks."
+		"message": "Guards are needed at the city gates. Report to the barracks.",
+		"type": "global"
 	},
 	{
 		"sender": "Young Tim",
 		"timestamp": "2025-08-08T10:39:10Z",
 		"status": "peasant",
-		"message": "Has anyone seen my lost cat? It's orange with white paws."
+		"message": "Has anyone seen my lost cat? It's orange with white paws.",
+		"type": "local"
 	},
 	{
 		"sender": "Duchess Elena",
 		"timestamp": "2025-08-08T10:40:30Z",
 		"status": "lord",
-		"message": "The grand ball is this weekend. All nobles are invited."
+		"message": "The grand ball is this weekend. All nobles are invited.",
+		"type": "global"
 	},
 	{
 		"sender": "Baker Bill",
 		"timestamp": "2025-08-08T10:41:50Z",
 		"status": "peasant",
-		"message": "Fresh bread and pastries! Hot from the oven!"
+		"message": "Fresh bread and pastries! Hot from the oven!",
+		"type": "local"
 	},
 	{
 		"sender": "Wizard Eldrin",
 		"timestamp": "2025-08-08T10:43:15Z",
 		"status": "lord",
-		"message": "I seek apprentices to help with my research. Interested parties, come see me."
+		"message": "I seek apprentices to help with my research. Interested parties, come see me.",
+		"type": "global"
 	},
 	{
 		"sender": "Guard Captain",
 		"timestamp": "2025-08-08T10:44:40Z",
 		"status": "lord",
-		"message": "Stay vigilant, the kingdom is under threat from bandits."
+		"message": "Stay vigilant, the kingdom is under threat from bandits.",
+		"type": "global"
 	},
 	{
 		"sender": "Alchemist Zara",
 		"timestamp": "2025-08-08T10:46:05Z",
 		"status": "peasant",
-		"message": "Potions for sale! Healing, mana, and more!"
+		"message": "Potions for sale! Healing, mana, and more!",
+		"type": "local"
 	},
 	{
 		"sender": "Knight Commander",
 		"timestamp": "2025-08-08T10:57:30Z",
 		"status": "lord",
-		"message": "All knights must report for training at the castle courtyard."
+		"message": "All knights must report for training at the castle courtyard.",
+		"type": "global"
 	},
 	{
 		"sender": "Innkeeper Molly",
 		"timestamp": "2025-08-08T10:58:45Z",
 		"status": "peasant",
-		"message": "Rooms available for rent! Come rest your weary heads."
+		"message": "Rooms available for rent! Come rest your weary heads.",
+		"type": "local"
 	},
 	{
 		"sender": "Bard Lyra",
 		"timestamp": "2025-08-08T10:59:50Z",
 		"status": "peasant",
-		"message": "Hear ye, hear ye! Tales of adventure and glory await!"
+		"message": "Hear ye, hear ye! Tales of adventure and glory await!",
+		"type": "local"
 	},
 	{
 		"sender": "Mayor Thompson",
 		"timestamp": "2025-08-08T10:59:15Z",
 		"status": "lord",
-		"message": "The town council meets every Friday. All are welcome to attend."
+		"message": "The town council meets every Friday. All are welcome to attend.",
+		"type": "global"
 	},
 	{
 		"sender": "Hunter Greg",
 		"timestamp": "2025-08-08T10:59:40Z",
 		"status": "peasant",
-		"message": "Looking for hunting partners. Plenty of game in the hills."
+		"message": "Looking for hunting partners. Plenty of game in the hills.",
+		"type": "local"
 	},
 	{
 		"sender": "Priestess Mira",
 		"timestamp": "2025-08-08T10:59:05Z",
 		"status": "lord",
-		"message": "The temple is open for prayers and blessings. All are welcome."
+		"message": "The temple is open for prayers and blessings. All are welcome.",
+		"type": "global"
 	},
 	{
 		"sender": "Farmer Ann",
 		"timestamp": "2025-08-08T10:59:30Z",
 		"status": "peasant",
-		"message": "Need help harvesting crops! Good food in return."
+		"message": "Need help harvesting crops! Good food in return.",
+		"type": "local"
 	},
 	{
 		"sender": "Blacksmith Jane",
 		"timestamp": "2025-08-08T10:59:55Z",
 		"status": "peasant",
-		"message": "Weapons and armor repaired! Come see me at the forge."
+		"message": "Weapons and armor repaired! Come see me at the forge.",
+		"type": "local"
 	}
 ]
 

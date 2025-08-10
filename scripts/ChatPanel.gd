@@ -3,11 +3,14 @@ extends Panel
 @export var chat_panel: Panel
 @export var chat_container: VBoxContainer
 @export var scroll_container: ScrollContainer
+@export var global_button: Button
+@export var local_button: Button
 
 var is_chat_open = false
 var slide_tween: Tween
 var saved_scroll_position: int = 0
 var last_message_time: String = ""
+var current_filter: String = "global"  # "global", "local", or "all"
 
 # Drag-to-scroll variables
 var is_dragging = false
@@ -15,6 +18,15 @@ var drag_start_position: Vector2
 var scroll_start_position: float
 
 func _ready():
+	# Connect toggle buttons
+	if global_button:
+		global_button.pressed.connect(_on_global_button_pressed)
+	if local_button:
+		local_button.pressed.connect(_on_local_button_pressed)
+	
+	# Set initial button states
+	_update_button_states()
+	
 	# Load chat messages when the panel is ready
 	display_chat_messages()
 	
@@ -140,13 +152,63 @@ func display_chat_messages():
 	for child in chat_container.get_children():
 		child.queue_free()
 	
-	# Add each chat message
+	# Add each chat message that matches the current filter
 	for message in GameInfo.chat_messages:
-		add_chat_message(message)
+		if _should_show_message(message):
+			add_chat_message(message)
 	
 	# Only scroll to bottom on first load (when saved_scroll_position is 0)
 	if saved_scroll_position == 0:
 		call_deferred("_scroll_to_bottom")
+
+func _should_show_message(chat_message: GameInfo.ChatMessage) -> bool:
+	# Show message based on current filter
+	match current_filter:
+		"global":
+			return chat_message.type == "global"
+		"local":
+			return chat_message.type == "local"
+		"all":
+			return true
+		_:
+			return true  # Default to showing all messages
+
+func _on_global_button_pressed():
+	current_filter = "global"
+	_update_button_states()
+	display_chat_messages()
+
+func _on_local_button_pressed():
+	current_filter = "local"
+	_update_button_states()
+	display_chat_messages()
+
+func _update_button_states():
+	if not global_button or not local_button:
+		return
+	
+	# Update button colors based on active filter
+	match current_filter:
+		"global":
+			# Global button active - gold colors
+			global_button.add_theme_color_override("font_color", Color(0.9, 0.7, 0.4, 1))
+			global_button.add_theme_color_override("font_hover_color", Color(1, 0.85, 0.6, 1))
+			global_button.add_theme_color_override("font_pressed_color", Color(0.8, 0.6, 0.3, 1))
+			
+			# Local button inactive - gray colors  
+			local_button.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5, 1))
+			local_button.add_theme_color_override("font_hover_color", Color(0.7, 0.7, 0.7, 1))
+			local_button.add_theme_color_override("font_pressed_color", Color(0.4, 0.4, 0.4, 1))
+		"local":
+			# Local button active - gold colors
+			local_button.add_theme_color_override("font_color", Color(0.9, 0.7, 0.4, 1))
+			local_button.add_theme_color_override("font_hover_color", Color(1, 0.85, 0.6, 1))
+			local_button.add_theme_color_override("font_pressed_color", Color(0.8, 0.6, 0.3, 1))
+			
+			# Global button inactive - gray colors
+			global_button.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5, 1))
+			global_button.add_theme_color_override("font_hover_color", Color(0.7, 0.7, 0.7, 1))
+			global_button.add_theme_color_override("font_pressed_color", Color(0.4, 0.4, 0.4, 1))
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
 	# Check if we need to add a timestamp separator

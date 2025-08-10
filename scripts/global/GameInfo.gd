@@ -153,12 +153,14 @@ class ChatMessage:
 	var timestamp: String = ""
 	var status: String = "peasant"  # "peasant" or "lord"
 	var message: String = ""
+	var type: String = "global"  # "global" or "local"
 	
 	const MSGPACK_MAP = {
 		"sender": "sender",
 		"timestamp": "timestamp", 
 		"status": "status",
-		"message": "message"
+		"message": "message",
+		"type": "type"
 	}
 
 class CombatLogEntry:
