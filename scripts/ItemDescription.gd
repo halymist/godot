@@ -1,5 +1,5 @@
 extends Panel
-@export var name_label: Label
+@export var name_label: RichTextLabel
 @export var strength: Label
 @export var stamina: Label
 @export var agility: Label
@@ -16,7 +16,7 @@ extends Panel
 
 func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector2.ZERO):
 	if item_data:
-		name_label.text = item_data.item_name
+		name_label.text = "[b]" + item_data.item_name + "[/b]"
 		
 		# Handle strength stat - hide if 0
 		if item_data.strength != 0:
@@ -79,25 +79,33 @@ func _fit_content_size():
 	var content_height = 20  # Base padding
 	var content_width = 200  # Minimum width
 	
-	# Add height for name
-	content_height += 25
+	# Add height for name (larger now)
+	content_height += 35
 	
-	# Add height for visible stats
+	# Count visible stats and add consistent spacing
+	var visible_stat_count = 0
 	if strength_container.visible:
-		content_height += 20
+		visible_stat_count += 1
 	if stamina_container.visible:
-		content_height += 20
+		visible_stat_count += 1
 	if agility_container.visible:
-		content_height += 20
+		visible_stat_count += 1
 	if luck_container.visible:
-		content_height += 20
+		visible_stat_count += 1
 	if armor_container.visible:
-		content_height += 20
+		visible_stat_count += 1
+	
+	# Add consistent height for all visible stats
+	content_height += visible_stat_count * 22  # 22px per stat line
 	
 	# Add height for effect if visible
 	if effect.visible:
 		content_height += effect.get_content_height() + 10
 		content_width = max(content_width, effect.get_content_width() + 40)
+	
+	# Ensure minimum content size
+	content_height = max(content_height, 60)  # Minimum height
+	content_width = max(content_width, 180)   # Minimum width
 	
 	# Update panel size
 	size = Vector2(content_width, content_height)

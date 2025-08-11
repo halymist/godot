@@ -44,7 +44,7 @@
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
-bg_color = Color(0.08, 0.05, 0.15, 0.85)
+bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -172,6 +172,16 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgy6u"]
+bg_color = Color(0.12, 0.08, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.5, 0.3, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sc4i"]
 bg_color = Color(0.08, 0.12, 0.2, 0.95)
@@ -1472,7 +1482,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3826,7 +3835,6 @@ grow_vertical = 0
 text = "Upgrade"
 
 [node name="PerkScreen" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("active_panel", "inactive_panel")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3849,6 +3857,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="Inactive" type="VBoxContainer" parent="Portrait/GameScene/Talents/PerkScreen/PerkPanel"]
 layout_mode = 1
@@ -3856,6 +3865,10 @@ anchors_preset = -1
 anchor_top = 0.3
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("23_tgy6u")
@@ -3867,6 +3880,9 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.2
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
 offset_bottom = -0.400002
 theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
 script = ExtResource("23_tgy6u")
@@ -4266,11 +4282,15 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Name" type="Label" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="Name" type="RichTextLabel" parent="Portrait/ItemDescription/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 15
-text = "Item Name"
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "[b]Item Name[/b]"
+fit_content = true
+scroll_active = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
 layout_mode = 2
