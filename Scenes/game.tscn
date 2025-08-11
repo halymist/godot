@@ -444,10 +444,10 @@ flat = true
 [node name="QuestContent" type="Panel" parent="Portrait/GameScene/Home/QuestPanel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.25
-anchor_right = 0.1
-anchor_bottom = 0.75
+anchor_left = 0.15
+anchor_top = 0.2
+anchor_right = 0.85
+anchor_bottom = 0.8
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
@@ -1472,6 +1472,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -4239,16 +4240,8 @@ grow_vertical = 1
 
 [node name="ItemDescription" type="Panel" parent="Portrait" node_paths=PackedStringArray("name_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
 visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.25
-anchor_top = 0.1
-anchor_right = 0.75
-anchor_bottom = 0.38
-offset_top = 153.0
-offset_bottom = 153.0
-grow_horizontal = 2
-grow_vertical = 2
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 script = ExtResource("14_85qyi")
 name_label = NodePath("VBoxContainer/Name")
@@ -4270,6 +4263,8 @@ offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Name" type="Label" parent="Portrait/ItemDescription/VBoxContainer"]
 layout_mode = 2

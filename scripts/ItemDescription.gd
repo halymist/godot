@@ -60,13 +60,48 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 		else:
 			effect.visible = false
 		
+		# Fit content to actual size
+		call_deferred("_fit_content_size")
+		
 		# Position the panel relative to mouse/hover position if provided
 		if mouse_position != Vector2.ZERO:
-			position_near_cursor(mouse_position)
+			call_deferred("position_near_cursor", mouse_position)
 		
 		visible = true
 	else:
 		visible = false
+
+func _fit_content_size():
+	# Let the layout update first
+	await get_tree().process_frame
+	
+	# Calculate the required size based on visible content
+	var content_height = 20  # Base padding
+	var content_width = 200  # Minimum width
+	
+	# Add height for name
+	content_height += 25
+	
+	# Add height for visible stats
+	if strength_container.visible:
+		content_height += 20
+	if stamina_container.visible:
+		content_height += 20
+	if agility_container.visible:
+		content_height += 20
+	if luck_container.visible:
+		content_height += 20
+	if armor_container.visible:
+		content_height += 20
+	
+	# Add height for effect if visible
+	if effect.visible:
+		content_height += effect.get_content_height() + 10
+		content_width = max(content_width, effect.get_content_width() + 40)
+	
+	# Update panel size
+	size = Vector2(content_width, content_height)
+	custom_minimum_size = Vector2(content_width, content_height)
 
 func position_near_cursor(cursor_pos: Vector2):
 	var viewport_size = get_viewport().get_visible_rect().size
