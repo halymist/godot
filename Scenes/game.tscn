@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=68 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -158,6 +158,18 @@ border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vm72l"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_talent_upgrade"]
+bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgy6u"]
 
@@ -434,7 +446,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.1
 anchor_top = 0.25
-ww danchor_right = 0.9
+anchor_right = 0.1
 anchor_bottom = 0.75
 grow_horizontal = 2
 grow_vertical = 2
@@ -1460,7 +1472,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1474,12 +1485,17 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.1
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="Label" type="Label" parent="Portrait/GameScene/Talents/Title"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 5.0
+offset_right = -15.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 35
@@ -3730,7 +3746,6 @@ texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
 [node name="Upgrade" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("name_label", "description_label", "upgrade_button", "title_label", "talents_container")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3760,7 +3775,7 @@ offset_right = 150.0
 offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_talent_upgrade")
 
 [node name="Name" type="Label" parent="Portrait/GameScene/Talents/Upgrade/UpgradeTalent"]
 layout_mode = 1
@@ -3810,6 +3825,7 @@ grow_vertical = 0
 text = "Upgrade"
 
 [node name="PerkScreen" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("active_panel", "inactive_panel")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -4326,10 +4342,14 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "20"
 
-[node name="Effect" type="Label" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="Effect" type="RichTextLabel" parent="Portrait/ItemDescription/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Effect"
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+text = "[i]Effect[/i]"
+fit_content = true
+scroll_active = false
 
 [node name="CancelQuest" type="Panel" parent="Portrait"]
 visible = false
