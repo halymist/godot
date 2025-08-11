@@ -12,7 +12,8 @@ func _ready():
 
 func _on_mouse_entered():
 	if item_data:
-		description_panel.show_description(item_data)
+		var mouse_pos = get_global_mouse_position()
+		description_panel.show_description(item_data, mouse_pos)
 
 func _on_mouse_exited():
 	description_panel.hide_description()

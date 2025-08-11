@@ -28,11 +28,25 @@ func set_talent_data(talent_name: String, description: String, factor: float, po
 	
 	name_label.text = talent_name + level_text
 	
-	# Handle factor replacement in description
+	# Handle factor replacement in description with enhanced format
 	var processed_description = description
 	if factor > 0 and "*" in description:
-		# Replace "*" with the factor value
-		processed_description = description.replace("*", str(factor))
+		var current_effect = points * factor
+		var next_effect = (points + 1) * factor
+		
+		# Create the enhanced format: current → next
+		var effect_text = ""
+		if points == 0:
+			# If no points invested, show "0 → first_level"
+			effect_text = "0 → " + str(next_effect)
+		elif points >= max_points:
+			# If maxed out, just show current effect
+			effect_text = str(current_effect)
+		else:
+			# Show current → next
+			effect_text = str(current_effect) + " → " + str(next_effect)
+		
+		processed_description = description.replace("*", effect_text)
 	
 	description_label.text = processed_description
 	talent_ref = talent_reference
