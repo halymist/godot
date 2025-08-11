@@ -608,7 +608,43 @@ var mock_chat_messages = [
 		"status": "peasant",
 		"message": "Weapons and armor repaired! Come see me at the forge.",
 		"type": "local"
-	}
+	},
+	{
+		"sender": "Ada Jane",
+		"timestamp": "2025-08-08T10:59:55Z",
+		"status": "peasant",
+		"message": "asdasasd asdasda",
+		"type": "local"
+	},
+	{
+		"sender": "Ada Jane",
+		"timestamp": "2025-08-08T10:59:55Z",
+		"status": "peasant",
+		"message": "adadadadsss asdasda",
+		"type": "local"
+	},
+	{
+		"sender": "Ada Jane",
+		"timestamp": "2025-08-08T10:59:55Z",
+		"status": "peasant",
+		"message": "asdadsssss asdasda",
+		"type": "local"
+	},
+	{
+		"sender": "Ada Jane",
+		"timestamp": "2025-08-08T10:59:55Z",
+		"status": "peasant",
+		"message": "asdadsssss asdasda",
+		"type": "local"
+	},
+	{
+		"sender": "Ada Jane",
+		"timestamp": "2025-08-08T10:59:55Z",
+		"status": "peasant",
+		"message": "penus",
+		"type": "local"
+	},
+
 ]
 
 # Mock combat data for development/testing

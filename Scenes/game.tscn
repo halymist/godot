@@ -3756,6 +3756,7 @@ texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
 [node name="Upgrade" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("name_label", "description_label", "upgrade_button", "title_label", "talents_container")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3835,6 +3836,7 @@ grow_vertical = 0
 text = "Upgrade"
 
 [node name="PerkScreen" type="Button" parent="Portrait/GameScene/Talents" node_paths=PackedStringArray("active_panel", "inactive_panel")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
