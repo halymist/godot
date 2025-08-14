@@ -3,30 +3,16 @@ extends Panel
 @export var village_scene: Control
 @export var interior_scene: Control
 @export var npc_prefab: PackedScene
+@export var quest_panel: Control
+@export var map_panel: Control
 
 var current_building: String = ""
 var is_in_interior: bool = false
-var quest_panel: Panel = null
 
 func _ready():
-	# Find the quest panel in its new location (inside Home panel)
-	quest_panel = get_tree().current_scene.find_child("QuestPanel", true, false)
-	print("Quest panel found: ", quest_panel != null)
-	if quest_panel:
-		print("Quest panel path: ", quest_panel.get_path())
-	else:
-		print("ERROR: Quest panel not found - check if it's properly named and placed")
-	
-	# Set up initial state
 	show_village()
-	
-	# Connect to existing buildings in the scene
 	connect_existing_buildings()
-	
-	# Spawn NPCs in the village
 	spawn_npcs()
-	
-	# Connect to the main back button
 	call_deferred("connect_back_button")
 	
 	# Connect quest panel signals
@@ -112,32 +98,14 @@ func _on_npc_clicked(npc):
 	print("Full NPC data: ", npc.npc_data)
 	
 	if quest_id != null:
-		# NPC has a quest - show quest panel
-		print("Quest panel reference: ", quest_panel)
-		print("Quest panel exists: ", quest_panel != null)
-		if quest_panel:
-			print("Quest panel visible before: ", quest_panel.visible)
-		else:
-			print("Quest panel visible before: N/A")
-		if quest_panel:
-			print("Quest panel has show_quest method: ", quest_panel.has_method("show_quest"))
-			if quest_panel.has_method("show_quest"):
-				# First switch to home panel if quest panel is inside it
-				var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-				if toggle_panel and toggle_panel.has_method("show_panel"):
-					var home_panel = toggle_panel.get("home_panel")
-					if home_panel:
-						toggle_panel.show_panel(home_panel)
-						print("Switched to home panel to show quest")
+		quest_panel.show_quest(npc.npc_data)
+		print("Called quest_panel.show_quest() for: ", npc.npc_data.get("questname", "Unknown Quest"))
+		print("Quest panel visible after: ", quest_panel.visible)
 				
-				# Then show the quest
-				quest_panel.show_quest(npc.npc_data)
-				print("Called quest_panel.show_quest() for: ", npc.npc_data.get("questname", "Unknown Quest"))
-				print("Quest panel visible after: ", quest_panel.visible)
-			else:
-				print("Quest panel missing show_quest method")
-		else:
-			print("Quest panel is null")
+		# Set quest panel as current overlay so cancel button works
+		GameInfo.set_current_panel_overlay(quest_panel)
+		print(GameInfo.get_current_panel_overlay())
+		print("Set quest panel as current overlay")
 	else:
 		# No quest - dialogue is already shown via hover chat bubble
 		print("NPC has no quest - dialogue shown on hover")
@@ -149,12 +117,7 @@ func _on_quest_accepted(quest_data: Dictionary):
 	print("Quest accepted: ", quest_data.get("questname", "Unknown Quest"))
 	print("Quest travel time: ", quest_data.get("travel", 0))
 	
-	# Set current panel to map in GameInfo as well
-	var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-	if toggle_panel:
-		var map_panel = toggle_panel.get("map_panel")
-		if map_panel:
-			GameInfo.set_current_panel(map_panel)
+	GameInfo.set_current_panel(map_panel)
 	
 	# You can add quest acceptance logic here later
 

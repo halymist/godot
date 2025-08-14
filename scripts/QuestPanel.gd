@@ -108,3 +108,7 @@ func hide_panel():
 func _finish_hide():
 	visible = false
 	quest_panel_closed.emit()
+	# Clear current overlay so cancel button behavior works properly
+	if GameInfo.get_current_panel_overlay() == self:
+		GameInfo.set_current_panel_overlay(null)
+		print("Cleared quest panel from current overlay")

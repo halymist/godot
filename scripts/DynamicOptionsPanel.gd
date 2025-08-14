@@ -86,7 +86,7 @@ func _update_layout():
 	options_panel.size = Vector2(total_width, options_height)
 	print("Options panel: pos=%s size=%s" % [options_panel.position, options_panel.size])
 	
-	# 7. Update button max widths to 80% of options panel width
+	# 7. Update button max widths to 80% of quest panel width
 	_update_button_widths(total_width * 0.8)
 	
 	print("=== Layout Complete ===")
@@ -97,8 +97,8 @@ func _update_button_widths(max_width: float):
 	
 	for child in options_vbox.get_children():
 		if child is Button:
-			# Set custom max size to 80% of panel width
-			child.custom_minimum_size.x = min(200, max_width)
+			# Set custom max size to 80% of quest panel width
+			child.custom_minimum_size.x = min(300, max_width)
 			child.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			child.clip_contents = true
 
@@ -125,10 +125,10 @@ func add_option(text: String, callback: Callable = Callable()) -> Button:
 	
 	var button = Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(200, button_height)
+	button.custom_minimum_size = Vector2(300, button_height)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	
-	# Set max width to 80% of panel width
+	# Set max width to 80% of quest panel width
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.clip_contents = true
 	
