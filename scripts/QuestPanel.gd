@@ -27,6 +27,7 @@ func _on_accept_pressed():
 	quest_accepted.emit(current_quest_data)
 	
 	# Set travel data when accepting quest
+	var quest_id = current_quest_data.get("questid", 0)
 	var travel_time = current_quest_data.get("travel", 0)
 	if travel_time > 0:
 		var current_time = Time.get_unix_time_from_system()
@@ -34,7 +35,7 @@ func _on_accept_pressed():
 		
 		# Update GameInfo with travel data
 		GameInfo.current_player.traveling = travel_end_time
-		GameInfo.current_player.traveling_destination = current_quest_data.get("questid", 0)
+		GameInfo.accept_quest(quest_id)  # This sets traveling_destination
 		
 		print("Travel started - Duration: ", travel_time, " minutes, End time: ", travel_end_time)
 		

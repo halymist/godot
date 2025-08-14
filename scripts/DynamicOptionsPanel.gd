@@ -154,3 +154,61 @@ func clear_options():
 func set_scene_aspect_ratio(ratio: float):
 	scene_aspect_ratio = ratio
 	_update_layout()
+
+# Quest Slide System
+var current_quest_id: int = 0
+var current_slide_number: int = 1
+
+func load_quest(quest_id: int, slide_number: int = 1):
+	"""Load and display a quest slide from GameInfo"""
+	current_quest_id = quest_id
+	current_slide_number = slide_number
+	
+	var quest_slide = GameInfo.get_quest_slide(quest_id, slide_number)
+	if quest_slide:
+		display_quest_slide(quest_slide)
+	else:
+		print("Failed to load quest slide: quest_id=", quest_id, " slide=", slide_number)
+
+func display_quest_slide(quest_slide: GameInfo.QuestSlide):
+	"""Display the quest slide text and create option buttons"""
+	# Set the quest text
+	if quest_text_panel:
+		var quest_label = quest_text_panel.get_node_or_null("Label")
+		if not quest_label:
+			quest_label = Label.new()
+			quest_label.name = "Label"
+			quest_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			quest_text_panel.add_child(quest_label)
+		quest_label.text = quest_slide.text
+	
+	# Clear existing options and create new ones
+	clear_options()
+	
+	for option in quest_slide.options:
+		add_option(option.text, _on_quest_option_pressed.bind(option))
+	
+	call_deferred("_update_layout")
+	print("Displayed quest slide ", quest_slide.slide, ": ", quest_slide.text)
+
+func _on_quest_option_pressed(option: GameInfo.QuestOption):
+	"""Handle quest option selection"""
+	print("Selected option: ", option.text)
+	
+	match option.type:
+		"dialogue":
+			# Navigate to target slide
+			if option.slide_target > 0:
+				load_quest(current_quest_id, option.slide_target)
+		"combat":
+			# Handle combat option
+			print("Combat option selected - Enemy: ", option.enemy)
+			# TODO: Implement combat system integration
+			# For now, just show win/lose options based on random outcome
+			var won_combat = randf() > 0.5  # Random outcome for demo
+			if won_combat and option.on_win_slide > 0:
+				load_quest(current_quest_id, option.on_win_slide)
+			elif not won_combat and option.on_loose_slide > 0:
+				load_quest(current_quest_id, option.on_loose_slide)
+		_:
+			print("Unknown option type: ", option.type)

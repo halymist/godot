@@ -355,7 +355,7 @@ anchor_bottom = 0.9
 grow_horizontal = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("village_scene", "interior_scene", "quest_panel", "map_panel")]
+[node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("village_scene", "interior_scene", "quest_panel", "quest_slide_panel", "map_panel")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -368,6 +368,7 @@ village_scene = NodePath("VillageView")
 interior_scene = NodePath("InteriorView")
 npc_prefab = ExtResource("6_ym3tv")
 quest_panel = NodePath("QuestPanel")
+quest_slide_panel = NodePath("../../Quest")
 map_panel = NodePath("../Map")
 
 [node name="VillageView" type="Control" parent="Portrait/GameScene/Home"]

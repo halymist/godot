@@ -145,6 +145,56 @@ class Talent:
 		"points": "points"
 	}
 
+class QuestOption:
+	extends MessagePackObject
+	
+	# MessagePack properties matching Go QuestOption struct
+	var option_index: int = 0
+	var type: String = ""
+	var text: String = ""
+	var slide_target: int = 0
+	var enemy: int = 0
+	var on_win_slide: int = 0
+	var on_loose_slide: int = 0
+	
+	const MSGPACK_MAP = {
+		"optionIndex": "option_index",
+		"type": "type",
+		"text": "text",
+		"slideTarget": "slide_target",
+		"enemy": "enemy",
+		"onWinSlide": "on_win_slide",
+		"onLooseSlide": "on_loose_slide"
+	}
+
+class QuestSlide:
+	extends MessagePackObject
+	
+	# MessagePack properties matching Go QuestSlide struct
+	var slide: int = 0
+	var asset_id: int = 0
+	var text: String = ""
+	var options: Array[QuestOption] = []
+	var reward: Dictionary = {}
+	
+	const MSGPACK_MAP = {
+		"slide": "slide",
+		"assetID": "asset_id",
+		"text": "text",
+		"options": "options",
+		"reward": "reward"
+	}
+	
+	func load_from_msgpack(data: Dictionary):
+		super.load_from_msgpack(data)
+		# Convert options array
+		if data.has("options") and data["options"] is Array:
+			options.clear()
+			for option_data in data["options"]:
+				if option_data is Dictionary:
+					var option = QuestOption.new(option_data)
+					options.append(option)
+
 class ChatMessage:
 	extends MessagePackObject
 	
@@ -413,6 +463,9 @@ var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
 var npcs: Array[Dictionary] = []
 
+# Quest system
+var quest_slides: Dictionary = {}  # questID -> Array[QuestSlide]
+
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null:
 	set(value):
@@ -444,6 +497,7 @@ func _ready():
 	load_chat_messages_data(Websocket.mock_chat_messages)
 	load_combat_logs_data(Websocket.mock_combat_logs)
 	load_npcs_data(Websocket.mock_npcs)
+	load_all_quests_data(Websocket.mock_quests)  # Load all quests by ID
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 
@@ -537,7 +591,40 @@ func load_combat_logs_data(combat_data: Array):
 	for combat_data_item in combat_data:
 		var combat_response = CombatResponse.new(combat_data_item)
 		combat_logs.append(combat_response)
-	print("Total combat logs loaded: ", combat_logs.size())
+
+# Function to load quest slides by quest ID
+func load_quest_slides_data(quest_id: int, slides_data: Array):
+	var slides_array: Array[QuestSlide] = []
+	for slide_data in slides_data:
+		var quest_slide = QuestSlide.new(slide_data)
+		slides_array.append(quest_slide)
+	quest_slides[quest_id] = slides_array
+	print("Loaded quest ", quest_id, " with ", slides_array.size(), " slides")
+
+# Function to load all quests from mock data
+func load_all_quests_data(quests_data: Dictionary):
+	quest_slides.clear()
+	for quest_id in quests_data:
+		var quest_info = quests_data[quest_id]
+		if quest_info.has("slides"):
+			load_quest_slides_data(quest_id, quest_info["slides"])
+	print("Total quests loaded: ", quest_slides.size())
+
+# Function to get quest slide by quest ID and slide number
+func get_quest_slide(quest_id: int, slide_number: int) -> QuestSlide:
+	if quest_slides.has(quest_id):
+		var slides = quest_slides[quest_id]
+		for slide in slides:
+			if slide.slide == slide_number:
+				return slide
+	print("Quest slide not found: quest_id=", quest_id, " slide=", slide_number)
+	return null
+
+# Function to set player traveling destination to quest
+func accept_quest(quest_id: int):
+	if current_player:
+		current_player.traveling_destination = quest_id
+		print("Player accepted quest ", quest_id, " and is now traveling to it")
 
 # Function to set current combat for display
 func set_current_combat_log(combat_index: int = 0):

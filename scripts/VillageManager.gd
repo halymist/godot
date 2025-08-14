@@ -3,7 +3,8 @@ extends Panel
 @export var village_scene: Control
 @export var interior_scene: Control
 @export var npc_prefab: PackedScene
-@export var quest_panel: Control
+@export var quest_panel: Control  # Old accept quest panel
+@export var quest_slide_panel: Control  # New quest slide panel (DynamicOptionsPanel)
 @export var map_panel: Control
 
 var current_building: String = ""
@@ -96,16 +97,32 @@ func _on_npc_clicked(npc):
 	print("Full NPC data: ", npc.npc_data)
 	
 	if quest_id != null:
-		# Prepare quest data first
-		quest_panel.show_quest(npc.npc_data)
-		
-		# Get TogglePanel reference and show overlay
-		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-		if toggle_panel and toggle_panel.has_method("show_overlay"):
-			toggle_panel.show_overlay(quest_panel)
-			print("Quest panel shown through unified overlay system")
+		# Check if player is already traveling to this quest
+		if GameInfo.current_player and GameInfo.current_player.traveling_destination == quest_id:
+			# Player has arrived at quest destination - show quest slides
+			if quest_slide_panel and quest_slide_panel.has_method("load_quest"):
+				quest_slide_panel.load_quest(quest_id, 1)  # Load quest slide 1
+				
+				# Get TogglePanel reference and show overlay
+				var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+				if toggle_panel and toggle_panel.has_method("show_overlay"):
+					toggle_panel.show_overlay(quest_slide_panel)
+					print("Quest slide panel shown - player arrived at quest destination")
+				else:
+					print("TogglePanel not found or missing show_overlay method")
+			else:
+				print("Quest slide panel not found or missing load_quest method")
 		else:
-			print("TogglePanel not found or missing show_overlay method")
+			# Player hasn't accepted quest yet - show accept quest panel
+			quest_panel.show_quest(npc.npc_data)
+			
+			# Get TogglePanel reference and show overlay
+			var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+			if toggle_panel and toggle_panel.has_method("show_overlay"):
+				toggle_panel.show_overlay(quest_panel)
+				print("Quest accept panel shown through unified overlay system")
+			else:
+				print("TogglePanel not found or missing show_overlay method")
 	else:
 		# No quest - dialogue is already shown via hover chat bubble
 		print("NPC has no quest - dialogue shown on hover")

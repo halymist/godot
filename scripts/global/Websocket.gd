@@ -917,3 +917,277 @@ var mock_combat_logs = [
 		]
 	}
 ]
+
+# Mock quest data organized by questID
+var mock_quests = {
+	1: {  # Merchant Gareth's delivery quest
+		"quest_id": 1,
+		"quest_name": "Delivery Quest",
+		"slides": [
+			{
+				"slide": 1,
+				"assetID": 1,
+				"text": "You encounter a mysterious traveler on the road. They seem to be in distress.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "dialogue",
+						"text": "Ask what's wrong",
+						"slideTarget": 2
+					},
+					{
+						"optionIndex": 2,
+						"type": "dialogue", 
+						"text": "Ignore them and continue",
+						"slideTarget": 3
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 2,
+				"assetID": 1,
+				"text": "The traveler explains that bandits stole their belongings. They beg for your help.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "combat",
+						"text": "Agree to help fight the bandits",
+						"enemy": 1,
+						"onWinSlide": 4,
+						"onLooseSlide": 5
+					},
+					{
+						"optionIndex": 2,
+						"type": "dialogue",
+						"text": "Apologize but decline to help",
+						"slideTarget": 3
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 3,
+				"assetID": 1,
+				"text": "You continue on your journey, leaving the traveler behind.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "End quest",
+						"slideTarget": -1
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 4,
+				"assetID": 1,
+				"text": "You defeated the bandits! The traveler rewards you with gold.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "Accept reward and end quest",
+						"slideTarget": -1
+					}
+				],
+				"reward": {
+					"gold": 100,
+					"experience": 50
+				}
+			},
+			{
+				"slide": 5,
+				"assetID": 1,
+				"text": "The bandits defeated you. You retreat with wounds.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "End quest",
+						"slideTarget": -1
+					}
+				],
+				"reward": null
+			}
+		]
+	},
+	2: {  # Guard Captain's bandit hunt
+		"quest_id": 2,
+		"quest_name": "Bandit Hunt",
+		"slides": [
+			{
+				"slide": 1,
+				"assetID": 2,
+				"text": "The Guard Captain briefs you on the bandit threat in the area.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "dialogue",
+						"text": "Accept the mission",
+						"slideTarget": 2
+					},
+					{
+						"optionIndex": 2,
+						"type": "dialogue",
+						"text": "Decline the mission",
+						"slideTarget": 3
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 2,
+				"assetID": 2,
+				"text": "You track down the bandit hideout. Time to strike!",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "combat",
+						"text": "Attack the bandits",
+						"enemy": 2,
+						"onWinSlide": 4,
+						"onLooseSlide": 5
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 3,
+				"assetID": 2,
+				"text": "The Guard Captain is disappointed but understands.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "End quest",
+						"slideTarget": -1
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 4,
+				"assetID": 2,
+				"text": "Victory! The bandit threat is eliminated. The captain rewards you.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "Collect reward",
+						"slideTarget": -1
+					}
+				],
+				"reward": {
+					"gold": 200,
+					"experience": 100
+				}
+			},
+			{
+				"slide": 5,
+				"assetID": 2,
+				"text": "The bandits proved too strong. You retreat to fight another day.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "End quest",
+						"slideTarget": -1
+					}
+				],
+				"reward": null
+			}
+		]
+	},
+	3: {  # Blacksmith Jane's metal collection
+		"quest_id": 3,
+		"quest_name": "Metal Collection",
+		"slides": [
+			{
+				"slide": 1,
+				"assetID": 3,
+				"text": "The blacksmith needs rare metals for a special order.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "dialogue",
+						"text": "Agree to help gather metals",
+						"slideTarget": 2
+					},
+					{
+						"optionIndex": 2,
+						"type": "dialogue",
+						"text": "Not interested",
+						"slideTarget": 3
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 2,
+				"assetID": 3,
+				"text": "You venture into the mines to search for rare metals.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "combat",
+						"text": "Mine the metals (face cave monsters)",
+						"enemy": 3,
+						"onWinSlide": 4,
+						"onLooseSlide": 5
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 3,
+				"assetID": 3,
+				"text": "The blacksmith finds someone else to help.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "End quest",
+						"slideTarget": -1
+					}
+				],
+				"reward": null
+			},
+			{
+				"slide": 4,
+				"assetID": 3,
+				"text": "You successfully gather the rare metals! The blacksmith is pleased.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "Collect payment",
+						"slideTarget": -1
+					}
+				],
+				"reward": {
+					"gold": 150,
+					"experience": 75
+				}
+			},
+			{
+				"slide": 5,
+				"assetID": 3,
+				"text": "The cave monsters were too dangerous. You return empty-handed.",
+				"options": [
+					{
+						"optionIndex": 1,
+						"type": "end",
+						"text": "End quest",
+						"slideTarget": -1
+					}
+				],
+				"reward": null
+			}
+		]
+	}
+}
+
+# Legacy mock_quest_slides for backward compatibility (removed in favor of mock_quests)
+var mock_quest_slides = []
