@@ -265,6 +265,7 @@ func hide_all_panels():
 	map_panel.visible = false
 	talents_panel.visible = false
 	combat_panel.visible = false
+	quest.visible = false
 	
 	# Hide any active overlay using GameInfo system
 	var current_overlay = GameInfo.get_current_panel_overlay()

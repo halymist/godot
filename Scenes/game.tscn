@@ -4073,7 +4073,7 @@ layout_mode = 2
 icon = ExtResource("14_81klo")
 expand_icon = true
 
-[node name="Quest" type="Panel" parent="Portrait" node_paths=PackedStringArray("status_panel", "scene_panel", "quest_text_panel", "quest_text_label", "options_panel")]
+[node name="Quest" type="Panel" parent="Portrait" node_paths=PackedStringArray("status_panel", "scene_panel", "quest_text_panel", "quest_text_label", "options_panel", "portrait", "options_vbox")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -4089,6 +4089,8 @@ scene_panel = NodePath("ScenePanel")
 quest_text_panel = NodePath("BottomPanel/QuestTextPanel")
 quest_text_label = NodePath("BottomPanel/QuestTextPanel/ScrollContainer/QuestText")
 options_panel = NodePath("BottomPanel/OptionsPanel")
+portrait = NodePath("..")
+options_vbox = NodePath("BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer")
 
 [node name="StatusPanel" type="Panel" parent="Portrait/Quest"]
 layout_mode = 0

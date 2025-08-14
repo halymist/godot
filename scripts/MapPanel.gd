@@ -7,12 +7,18 @@ class_name MapPanel
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
 @export var quest: Control 
-@export var ambadon: Control # Reference to the Ambadon quest panel
 
 var update_timer: Timer
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
 var original_travel_end: float = 0.0
+
+# Travel info set when quest is accepted
+var travel_text: String = "Traveling..."
+var travel_duration: float = 300.0  # Default 5 minutes
+
+# Quest completed signal
+signal quest_travel_completed
 
 func _ready():
 	
@@ -33,6 +39,12 @@ func _ready():
 	
 	# Initial update
 	update_travel_display()
+
+func start_travel(quest_travel_text: String, duration_minutes: int):
+	"""Start traveling with the given text and duration"""
+	travel_text = quest_travel_text
+	travel_duration = duration_minutes * 60.0  # Convert to seconds
+	print("Started travel: '", travel_text, "' for ", duration_minutes, " minutes")
 
 func update_travel_display():
 	var current_player = GameInfo.current_player
@@ -94,41 +106,19 @@ func update_travel_display():
 	if enter_dungeon_button:
 		enter_dungeon_button.visible = false
 	
-	# Get quest data for travel text
-	var quest_id = current_player.traveling_destination
-	var quest_data = _find_quest_by_id(quest_id)
+	# Use stored travel text instead of looking it up
+	travel_text_label.text = travel_text
 	
-	if quest_data:
-		travel_text_label.text = quest_data.get("traveltext", "Traveling...")
-	else:
-		travel_text_label.text = "Traveling..."
-	
-	# Calculate progress (assuming we know the original travel duration)
-	var original_duration = _get_original_travel_duration(quest_data)
-	if original_duration > 0:
-		var elapsed_time = original_duration - time_remaining
-		var progress_percent = (elapsed_time / original_duration) * 100
+	# Calculate progress using stored duration
+	if travel_duration > 0:
+		var elapsed_time = travel_duration - time_remaining
+		var progress_percent = (elapsed_time / travel_duration) * 100
 		travel_progress.value = max(0, min(100, progress_percent))
 	
 	# Format remaining time as MM:SS
 	var minutes = int(time_remaining / 60)
 	var seconds = int(time_remaining) % 60
 	travel_time_label.text = "%02d:%02d" % [minutes, seconds]
-
-func _find_quest_by_id(quest_id) -> Dictionary:
-	var websocket = get_node("/root/Websocket")
-	if websocket and websocket.has_method("get") and websocket.get("mock_npcs"):
-		for npc_data in websocket.mock_npcs:
-			if npc_data.get("questid") == quest_id:
-				return npc_data
-	return {}
-
-func _get_original_travel_duration(quest_data: Dictionary) -> float:
-	if quest_data.is_empty():
-		return 300.0  # Default 5 minutes in seconds
-	
-	var travel_minutes = quest_data.get("travel", 5)
-	return travel_minutes * 60.0  # Convert to seconds
 
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
@@ -145,27 +135,29 @@ func _on_skip_button_pressed():
 			skip_button.disabled = true
 
 func _on_travel_completed():
-	print("Travel completed via skip - showing Quest panel")
+	print("Travel completed - emitting quest arrival signal")
 	
 	# Get the quest destination the player was traveling to
 	var current_player = GameInfo.current_player
 	var quest_id = current_player.traveling_destination
 	
-	print("=== TRAVEL COMPLETED - TRIGGERING QUEST ARRIVAL ===")
-	print("Player was traveling to quest ID: ", quest_id)
-	
 	# Re-enable skip button
 	if skip_button:
 		skip_button.disabled = false
 	
-	# Trigger quest arrival signal on the quest panel
-	if quest and quest.has_method("trigger_quest_arrival") and quest_id != null:
-		print("Triggering quest arrival signal for quest ID: ", quest_id)
-		quest.trigger_quest_arrival(quest_id)
-	else:
-		print("Cannot trigger quest arrival - quest panel: ", quest != null, ", has method: ", quest.has_method("trigger_quest_arrival") if quest else false, ", quest_id: ", quest_id)
+	# Emit quest arrival signal and show quest panel
+	quest_travel_completed.emit()
 	
-	# Simply show the exported quest panel
+	# Emit quest arrival signal on the quest panel
+	if quest and quest_id != null:
+		print("Emitting quest_arrived signal for quest ID: ", quest_id)
+		if quest.has_signal("quest_arrived"):
+			quest.quest_arrived.emit(quest_id)
+			print("✓ Quest arrival signal emitted")
+		else:
+			print("✗ Quest panel missing quest_arrived signal")
+	
+	# Show the quest panel
 	if quest:
 		quest.visible = true
 
