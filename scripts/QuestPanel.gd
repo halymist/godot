@@ -82,30 +82,13 @@ func show_quest(quest_data: Dictionary):
 	else:
 		print("portrait_texture is null")
 	
-	# Ensure quest panel is on top and visible with smooth transition
+	# Ensure quest panel is on top and visible
 	z_index = 1000  # Very high z-index to appear above everything
-	
-	# Start with transparent and animate in
-	modulate = Color(1, 1, 1, 0)
 	visible = true
-	
-	# Smooth fade-in animation
-	var show_tween = create_tween()
-	show_tween.set_ease(Tween.EASE_OUT)
-	show_tween.set_trans(Tween.TRANS_CUBIC)
-	show_tween.tween_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	
 	print("Quest panel set to visible: ", visible, " with z_index: ", z_index)
 
 func hide_panel():
-	# Smooth fade-out animation before hiding
-	var hide_tween = create_tween()
-	hide_tween.set_ease(Tween.EASE_IN)
-	hide_tween.set_trans(Tween.TRANS_CUBIC)
-	hide_tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.2)
-	hide_tween.tween_callback(_finish_hide)
-
-func _finish_hide():
 	visible = false
 	quest_panel_closed.emit()
 	print("Quest panel hidden")
