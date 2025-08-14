@@ -35,7 +35,7 @@ func _ready():
 	character_button.pressed.connect(show_panel.bind(character_panel))
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
-	chat_button.pressed.connect(toggle_chat)
+	chat_button.pressed.connect(show_overlay.bind(chat_panel))
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
 	
@@ -225,9 +225,6 @@ func toggle_talents_bookmark():
 		
 		GameInfo.set_current_panel(talents_panel)
 
-func toggle_chat():
-	# Use the unified show_overlay function - it has built-in toggle behavior
-	show_overlay(chat_panel)
 
 func go_back():
 	var traveling = GameInfo.current_player.traveling

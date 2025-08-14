@@ -32,25 +32,27 @@ func _on_button_pressed():
 	var quest_id = npc_data.get("questid", null)
 	
 	if quest_id != null:
-		# NPC has a quest - directly show quest panel
-		print("Found quest ID: ", quest_id, " - showing quest panel directly")
+		# NPC has a quest - use unified overlay system
+		print("Found quest ID: ", quest_id, " - showing quest panel through overlay system")
 		
-		# Find the quest panel directly
+		# Find the quest panel and toggle panel
 		var quest_panel = get_tree().current_scene.find_child("QuestPanel", true, false)
-		if quest_panel and quest_panel.has_method("show_quest"):
+		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+		
+		if quest_panel and toggle_panel and toggle_panel.has_method("show_overlay"):
 			# Switch to home panel first
-			var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-			if toggle_panel and toggle_panel.has_method("show_panel"):
+			if toggle_panel.has_method("show_panel"):
 				var home_panel = toggle_panel.get("home_panel")
 				if home_panel:
 					toggle_panel.show_panel(home_panel)
 					print("Switched to home panel")
 			
-			# Show the quest
+			# Prepare quest data and show through overlay system
 			quest_panel.show_quest(npc_data)
-			print("Quest panel shown directly for: ", npc_data.get("questname", "Unknown Quest"))
+			toggle_panel.show_overlay(quest_panel)
+			print("Quest panel shown through unified overlay system for: ", npc_data.get("questname", "Unknown Quest"))
 		else:
-			print("Quest panel not found or missing show_quest method")
+			print("Quest panel or TogglePanel not found or missing methods")
 			# Fallback to signal emission
 			npc_clicked.emit(self)
 	else:

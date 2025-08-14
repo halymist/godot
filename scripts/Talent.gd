@@ -47,13 +47,27 @@ func update_button_appearance():
 func _on_button_pressed():
 	var eligible_for_upgrade = can_upgrade()
 	if perk_slot > 0 and points >= maxPoints:
-		GameInfo.current_panel_overlay = perkScreen
-		perkScreen.visible = true
-		# Load active perks for the specific slot that was clicked
-		perkScreen.load_active_perks_for_slot(perk_slot)
+		# Get TogglePanel reference and show perks overlay
+		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+		if toggle_panel and toggle_panel.has_method("show_overlay"):
+			# Load active perks for the specific slot that was clicked
+			perkScreen.load_active_perks_for_slot(perk_slot)
+			toggle_panel.show_overlay(perkScreen)
+		else:
+			# Fallback to old method
+			GameInfo.current_panel_overlay = perkScreen
+			perkScreen.visible = true
+			perkScreen.load_active_perks_for_slot(perk_slot)
 	else:
-		GameInfo.current_panel_overlay = upgrade
-		upgrade.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
+		# Get TogglePanel reference and show upgrade talent overlay
+		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+		if toggle_panel and toggle_panel.has_method("show_overlay"):
+			upgrade.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
+			toggle_panel.show_overlay(upgrade)
+		else:
+			# Fallback to old method
+			GameInfo.current_panel_overlay = upgrade
+			upgrade.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
 
 func can_upgrade() -> bool:
 	# Check if talent is already maxed out
