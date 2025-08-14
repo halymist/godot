@@ -20,8 +20,11 @@ extends Control
 @export var quest_panel: Control
 @export var quest: Control
 @export var cancel_quest: Control
+@export var upgrade_talent: Control
+@export var perks_panel: Control
 
 func _ready():
+	
 	hide_all_panels()
 	GameInfo.set_current_panel(home_panel)
 	home_panel.visible = true
@@ -48,6 +51,64 @@ func _ready():
 			no_button.pressed.connect(_on_cancel_quest_no)
 		if background_button:
 			background_button.pressed.connect(_on_cancel_quest_no)  # Close dialog when clicking background
+
+func show_overlay(overlay: Control):
+	"""Unified overlay function - hides current overlay and shows the new one"""
+	if overlay == null:
+		return
+	
+	# Hide current overlay if one exists
+	var current = GameInfo.get_current_panel_overlay()
+	if current != null and current != overlay:
+		hide_overlay(current)
+	
+	# Don't show if it's already the current overlay - instead hide it (toggle behavior)
+	if current == overlay:
+		hide_overlay(overlay)
+		return
+	
+	# Set as current overlay in GameInfo
+	GameInfo.set_current_panel_overlay(overlay)
+	
+	# Call the overlay's specific show method based on its type
+	if overlay == chat_panel and overlay.has_method("show_chat"):
+		overlay.show_chat()
+	elif overlay == quest_panel and overlay.has_method("show_quest"):
+		# Note: show_quest should already have been called with data, just make visible
+		overlay.visible = true
+	elif overlay.has_method("show_overlay"):
+		overlay.show_overlay()
+	elif overlay.has_method("show_panel"):
+		overlay.show_panel()
+	else:
+		# Fallback to simple visibility
+		overlay.visible = true
+	
+	print("Showing overlay: ", overlay.name)
+
+func hide_overlay(overlay: Control):
+	"""Hide a specific overlay using its own hide method"""
+	if overlay == null:
+		return
+	
+	# Clear from GameInfo if it's the current overlay
+	if GameInfo.get_current_panel_overlay() == overlay:
+		GameInfo.set_current_panel_overlay(null)
+	
+	# Call the overlay's specific hide method based on its type
+	if overlay == chat_panel and overlay.has_method("hide_chat"):
+		overlay.hide_chat()
+	elif overlay == quest_panel and overlay.has_method("hide_panel"):
+		overlay.hide_panel()
+	elif overlay.has_method("hide_overlay"):
+		overlay.hide_overlay()
+	elif overlay.has_method("hide_panel"):
+		overlay.hide_panel()
+	else:
+		# Fallback to simple visibility
+		overlay.visible = false
+	
+	print("Hiding overlay: ", overlay.name)
 
 func show_panel(panel: Control):
 	hide_all_panels()
@@ -102,9 +163,24 @@ func handle_map_button():
 	show_panel(map_panel)
 	
 func show_panel_overlay(panel_to_toggle: Control):
-	var is_active = GameInfo.get_current_panel_overlay() == panel_to_toggle and panel_to_toggle.visible
-	panel_to_toggle.visible = not is_active
-	GameInfo.set_current_panel_overlay(panel_to_toggle if not is_active else null)
+	"""Legacy function - now uses the unified show_overlay function"""
+	show_overlay(panel_to_toggle)
+
+# Convenience methods for specific overlays
+func show_quest_panel():
+	show_overlay(quest_panel)
+
+func show_cancel_quest():
+	show_overlay(cancel_quest)
+
+func show_chat():
+	show_overlay(chat_panel)
+
+func show_upgrade_talent():
+	show_overlay(upgrade_talent)
+
+func show_perks_panel():
+	show_overlay(perks_panel)
 
 func toggle_talents_bookmark():
 	var tween = create_tween()
@@ -150,42 +226,32 @@ func toggle_talents_bookmark():
 		GameInfo.set_current_panel(talents_panel)
 
 func toggle_chat():
-	if chat_panel and chat_panel.has_method("toggle_chat"):
-		chat_panel.toggle_chat()
+	# Use the unified show_overlay function - it has built-in toggle behavior
+	show_overlay(chat_panel)
 
 func go_back():
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
 	
-	# Check if quest panel is open first
-	if quest and quest.visible:
-		# If in quest state, show cancel dialog
-		if traveling == null and destination != null:
-			if cancel_quest:
-				cancel_quest.visible = true
-			return
-		else:
-			quest.visible = false
-			return
-		
-	if GameInfo.current_panel_overlay != null:
-		GameInfo.current_panel_overlay.hide()
-		GameInfo.set_current_panel_overlay(null)
+	# Priority 1: Hide any active overlay using GameInfo system
+	var current_overlay = GameInfo.get_current_panel_overlay()
+	if current_overlay != null:
+		hide_overlay(current_overlay)
 		return
-
-	# Check if we're traveling and on map panel - show cancel dialog
+	
+	# Priority 2: Check if we're traveling and on map panel - show cancel dialog
 	if traveling != null and destination != null and GameInfo.get_current_panel() == map_panel:
-		if cancel_quest:
-			cancel_quest.visible = true
+		show_overlay(cancel_quest)
 		return
 
-	# Check if we're in a building interior in the home panel
+	# Priority 3: Check if we're in a building interior in the home panel
 	if GameInfo.get_current_panel() == home_panel:
 		if home_panel.has_method("handle_back_navigation"):
 			var handled = home_panel.handle_back_navigation()
 			if handled:
 				return
 
+	# Priority 4: Handle panel-specific back navigation
 	if GameInfo.get_current_panel() == talents_panel:
 		toggle_talents_bookmark()  # Use bookmark animation to slide out
 	elif GameInfo.get_current_panel() == combat_panel:
@@ -203,17 +269,10 @@ func hide_all_panels():
 	talents_panel.visible = false
 	combat_panel.visible = false
 	
-	# Hide quest panel
-	if quest:
-		quest.visible = false
-	
-	# Hide cancel quest dialog
-	if cancel_quest:
-		cancel_quest.visible = false
-	
-	# Close chat if it's open
-	if chat_panel and chat_panel.has_method("hide_chat"):
-		chat_panel.hide_chat()
+	# Hide any active overlay using GameInfo system
+	var current_overlay = GameInfo.get_current_panel_overlay()
+	if current_overlay != null:
+		hide_overlay(current_overlay)
 
 func show_combat():
 	hide_all_panels()
@@ -226,13 +285,11 @@ func _on_cancel_quest_yes():
 	GameInfo.current_player.traveling = null
 	GameInfo.current_player.traveling_destination = null
 	
-	# Hide cancel dialog and return to home
-	if cancel_quest:
-		cancel_quest.visible = false
+	# Hide cancel dialog using unified overlay system and return to home
+	hide_overlay(cancel_quest)
 	show_panel(home_panel)
 	print("Quest canceled by user")
 
 func _on_cancel_quest_no():
-	# Just hide the dialog, continue with quest
-	if cancel_quest:
-		cancel_quest.visible = false
+	# Just hide the dialog using unified overlay system, continue with quest
+	hide_overlay(cancel_quest)

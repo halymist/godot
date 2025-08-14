@@ -96,14 +96,16 @@ func _on_npc_clicked(npc):
 	print("Full NPC data: ", npc.npc_data)
 	
 	if quest_id != null:
+		# Prepare quest data first
 		quest_panel.show_quest(npc.npc_data)
-		print("Called quest_panel.show_quest() for: ", npc.npc_data.get("questname", "Unknown Quest"))
-		print("Quest panel visible after: ", quest_panel.visible)
-				
-		# Set quest panel as current overlay so cancel button works
-		GameInfo.set_current_panel_overlay(quest_panel)
-		print(GameInfo.get_current_panel_overlay())
-		print("Set quest panel as current overlay")
+		
+		# Get TogglePanel reference and show overlay
+		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+		if toggle_panel and toggle_panel.has_method("show_overlay"):
+			toggle_panel.show_overlay(quest_panel)
+			print("Quest panel shown through unified overlay system")
+		else:
+			print("TogglePanel not found or missing show_overlay method")
 	else:
 		# No quest - dialogue is already shown via hover chat bubble
 		print("NPC has no quest - dialogue shown on hover")
