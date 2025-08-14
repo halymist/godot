@@ -147,9 +147,23 @@ func _on_skip_button_pressed():
 func _on_travel_completed():
 	print("Travel completed via skip - showing Quest panel")
 	
+	# Get the quest destination the player was traveling to
+	var current_player = GameInfo.current_player
+	var quest_id = current_player.traveling_destination
+	
+	print("=== TRAVEL COMPLETED - TRIGGERING QUEST ARRIVAL ===")
+	print("Player was traveling to quest ID: ", quest_id)
+	
 	# Re-enable skip button
 	if skip_button:
 		skip_button.disabled = false
+	
+	# Trigger quest arrival signal on the quest panel
+	if quest and quest.has_method("trigger_quest_arrival") and quest_id != null:
+		print("Triggering quest arrival signal for quest ID: ", quest_id)
+		quest.trigger_quest_arrival(quest_id)
+	else:
+		print("Cannot trigger quest arrival - quest panel: ", quest != null, ", has method: ", quest.has_method("trigger_quest_arrival") if quest else false, ", quest_id: ", quest_id)
 	
 	# Simply show the exported quest panel
 	if quest:

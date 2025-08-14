@@ -4073,7 +4073,7 @@ layout_mode = 2
 icon = ExtResource("14_81klo")
 expand_icon = true
 
-[node name="Quest" type="Panel" parent="Portrait" node_paths=PackedStringArray("status_panel", "scene_panel", "quest_text_panel", "options_panel")]
+[node name="Quest" type="Panel" parent="Portrait" node_paths=PackedStringArray("status_panel", "scene_panel", "quest_text_panel", "quest_text_label", "options_panel")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -4087,6 +4087,7 @@ script = ExtResource("38_dynamic_options")
 status_panel = NodePath("StatusPanel")
 scene_panel = NodePath("ScenePanel")
 quest_text_panel = NodePath("BottomPanel/QuestTextPanel")
+quest_text_label = NodePath("BottomPanel/QuestTextPanel/ScrollContainer/QuestText")
 options_panel = NodePath("BottomPanel/OptionsPanel")
 
 [node name="StatusPanel" type="Panel" parent="Portrait/Quest"]

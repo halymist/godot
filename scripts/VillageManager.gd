@@ -96,12 +96,28 @@ func _on_npc_clicked(npc):
 	print("NPC data keys: ", npc.npc_data.keys())
 	print("Full NPC data: ", npc.npc_data)
 	
+	# DEBUG: Check player traveling state
+	print("=== DEBUGGING QUEST ARRIVAL CONDITION ===")
+	print("GameInfo.current_player exists: ", GameInfo.current_player != null)
+	if GameInfo.current_player:
+		print("Player traveling_destination: ", GameInfo.current_player.traveling_destination)
+		print("Player traveling_destination type: ", typeof(GameInfo.current_player.traveling_destination))
+		print("NPC quest_id: ", quest_id)
+		print("NPC quest_id type: ", typeof(quest_id))
+		print("Do they match?: ", GameInfo.current_player.traveling_destination == quest_id)
+	else:
+		print("No current player found!")
+	
 	if quest_id != null:
 		# Check if player is already traveling to this quest
 		if GameInfo.current_player and GameInfo.current_player.traveling_destination == quest_id:
-			# Player has arrived at quest destination - show quest slides
-			if quest_slide_panel and quest_slide_panel.has_method("load_quest"):
-				quest_slide_panel.load_quest(quest_id, 1)  # Load quest slide 1
+			# Player has arrived at quest destination - trigger quest arrival signal
+			print("=== PLAYER ARRIVED AT QUEST DESTINATION ===")
+			print("Quest ID: ", quest_id)
+			print("Triggering quest arrival signal...")
+			
+			if quest_slide_panel and quest_slide_panel.has_method("trigger_quest_arrival"):
+				quest_slide_panel.trigger_quest_arrival(quest_id)
 				
 				# Get TogglePanel reference and show overlay
 				var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
@@ -111,9 +127,10 @@ func _on_npc_clicked(npc):
 				else:
 					print("TogglePanel not found or missing show_overlay method")
 			else:
-				print("Quest slide panel not found or missing load_quest method")
+				print("Quest slide panel not found or missing trigger_quest_arrival method")
 		else:
 			# Player hasn't accepted quest yet - show accept quest panel
+			print("=== PLAYER NOT TRAVELING TO THIS QUEST - SHOWING ACCEPT PANEL ===")
 			quest_panel.show_quest(npc.npc_data)
 			
 			# Get TogglePanel reference and show overlay

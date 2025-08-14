@@ -5,6 +5,7 @@ class_name QuestUIManager
 @export var status_panel: Panel
 @export var scene_panel: AspectRatioContainer  
 @export var quest_text_panel: Panel
+@export var quest_text_label: RichTextLabel  # Changed to RichTextLabel
 @export var options_panel: Panel
 
 # Settings
@@ -18,7 +19,16 @@ class_name QuestUIManager
 
 var options_vbox: VBoxContainer
 
+# Quest system variables
+var current_quest_id: int = 0
+var current_slide_number: int = 1
+
+# Quest signals
+signal quest_arrived(quest_id: int)
+signal quest_slide_changed(quest_id: int, slide_number: int)
+
 func _ready():
+	print("=== DynamicOptionsPanel._ready() ===")
 	# Get panel references if not set
 	if not status_panel:
 		status_panel = get_node_or_null("StatusPanel")
@@ -26,19 +36,55 @@ func _ready():
 		scene_panel = get_node_or_null("ScenePanel") 
 	if not quest_text_panel:
 		quest_text_panel = get_node_or_null("BottomPanel/QuestTextPanel")
+		print("quest_text_panel found: ", quest_text_panel != null)
+	if not quest_text_label:
+		quest_text_label = get_node_or_null("BottomPanel/QuestTextPanel/RichTextLabel")
+		print("quest_text_label found: ", quest_text_label != null)
 	if not options_panel:
 		options_panel = get_node_or_null("BottomPanel/OptionsPanel")
+		print("options_panel found: ", options_panel != null)
 	
 	# Find options VBoxContainer
 	if options_panel:
 		options_vbox = options_panel.get_node_or_null("ScrollContainer/VBoxContainer")
+		print("options_vbox found: ", options_vbox != null)
 		if options_vbox:
 			options_vbox.child_entered_tree.connect(_update_layout)
 			options_vbox.child_exiting_tree.connect(_update_layout)
 	
 	# Connect to resize
 	resized.connect(_update_layout)
+	
+	# Connect quest arrival signal to handler
+	quest_arrived.connect(_on_quest_arrived)
+	
 	call_deferred("_update_layout")
+	print("DynamicOptionsPanel ready!")
+
+func trigger_quest_arrival(quest_id: int):
+	"""External function to trigger quest arrival"""
+	print("=== TRIGGERING QUEST ARRIVAL ===")
+	print("Quest ID: ", quest_id)
+	quest_arrived.emit(quest_id)
+
+func _on_quest_arrived(quest_id: int):
+	"""Internal signal handler for quest arrival"""
+	print("=== QUEST ARRIVED SIGNAL RECEIVED ===")
+	print("Quest ID: ", quest_id)
+	print("Player traveling_destination: ", GameInfo.current_player.traveling_destination if GameInfo.current_player else "No player")
+	print("Available quest IDs in GameInfo: ", GameInfo.quest_slides.keys() if GameInfo.quest_slides else [])
+	
+	# Verify this is the right quest
+	if GameInfo.current_player and GameInfo.current_player.traveling_destination == quest_id:
+		print("✓ Quest arrival confirmed! Loading quest slides...")
+		load_quest(quest_id, 1)
+	else:
+		print("✗ Player not traveling to this quest!")
+		if GameInfo.current_player:
+			print("  Expected quest: ", quest_id)
+			print("  Player traveling to: ", GameInfo.current_player.traveling_destination)
+		else:
+			print("  No current player found!")
 
 func _update_layout():
 	if not status_panel or not scene_panel or not quest_text_panel or not options_panel:
@@ -156,40 +202,77 @@ func set_scene_aspect_ratio(ratio: float):
 	_update_layout()
 
 # Quest Slide System
-var current_quest_id: int = 0
-var current_slide_number: int = 1
-
 func load_quest(quest_id: int, slide_number: int = 1):
 	"""Load and display a quest slide from GameInfo"""
+	print("=== LOADING QUEST ===")
+	print("Quest ID: ", quest_id)
+	print("Slide number: ", slide_number)
+	
 	current_quest_id = quest_id
 	current_slide_number = slide_number
 	
+	print("GameInfo.quest_slides exists: ", GameInfo.quest_slides != null)
+	if GameInfo.quest_slides:
+		print("Available quest IDs: ", GameInfo.quest_slides.keys())
+		print("Quest ", quest_id, " exists: ", GameInfo.quest_slides.has(quest_id))
+		
+		if GameInfo.quest_slides.has(quest_id):
+			var quest_data = GameInfo.quest_slides[quest_id]
+			print("Quest data type: ", typeof(quest_data))
+			print("Quest slides count: ", quest_data.size() if quest_data else 0)
+			
+			if quest_data and slide_number <= quest_data.size():
+				print("Slide ", slide_number, " exists in quest data")
+			else:
+				print("Slide ", slide_number, " does NOT exist! Max slides: ", quest_data.size() if quest_data else 0)
+	
 	var quest_slide = GameInfo.get_quest_slide(quest_id, slide_number)
+	print("get_quest_slide returned: ", quest_slide != null)
+	
 	if quest_slide:
+		print("Quest slide text: '", quest_slide.text, "'")
+		print("Quest slide options count: ", quest_slide.options.size())
 		display_quest_slide(quest_slide)
 	else:
-		print("Failed to load quest slide: quest_id=", quest_id, " slide=", slide_number)
+		print("✗ Failed to load quest slide: quest_id=", quest_id, " slide=", slide_number)
 
 func display_quest_slide(quest_slide: GameInfo.QuestSlide):
 	"""Display the quest slide text and create option buttons"""
+	print("=== DISPLAYING QUEST SLIDE ===")
+	print("Quest slide object: ", quest_slide)
+	print("Quest text: '", quest_slide.text, "'")
+	print("Options count: ", quest_slide.options.size())
+	
 	# Set the quest text
-	if quest_text_panel:
-		var quest_label = quest_text_panel.get_node_or_null("Label")
-		if not quest_label:
-			quest_label = Label.new()
-			quest_label.name = "Label"
-			quest_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			quest_text_panel.add_child(quest_label)
-		quest_label.text = quest_slide.text
+	print("quest_text_label exists: ", quest_text_label != null)
+	if quest_text_label:
+		print("quest_text_label node path: ", quest_text_label.get_path())
+		print("quest_text_label visible: ", quest_text_label.visible)
+		
+		print("Setting text directly on RichTextLabel...")
+		quest_text_label.text = quest_slide.text
+		print("RichTextLabel text set to: '", quest_text_label.text, "'")
+		print("RichTextLabel visible: ", quest_text_label.visible)
+		print("RichTextLabel size: ", quest_text_label.size)
+	else:
+		print("✗ quest_text_label is null!")
 	
 	# Clear existing options and create new ones
+	print("Clearing existing options...")
 	clear_options()
 	
-	for option in quest_slide.options:
+	print("Creating ", quest_slide.options.size(), " option buttons...")
+	for i in range(quest_slide.options.size()):
+		var option = quest_slide.options[i]
+		print("Option ", i + 1, ": '", option.text, "'")
 		add_option(option.text, _on_quest_option_pressed.bind(option))
 	
 	call_deferred("_update_layout")
-	print("Displayed quest slide ", quest_slide.slide, ": ", quest_slide.text)
+	
+	# Emit signal for quest slide change
+	quest_slide_changed.emit(current_quest_id, current_slide_number)
+	
+	print("✓ Quest slide display complete. Slide ", quest_slide.slide, " text: '", quest_slide.text, "'")
 
 func _on_quest_option_pressed(option: GameInfo.QuestOption):
 	"""Handle quest option selection"""
