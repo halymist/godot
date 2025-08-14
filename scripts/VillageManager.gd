@@ -13,13 +13,11 @@ func _ready():
 	show_village()
 	connect_existing_buildings()
 	spawn_npcs()
-	call_deferred("connect_back_button")
 	
 	# Connect quest panel signals
-	if quest_panel and quest_panel.has_method("quest_panel_closed"):
-		quest_panel.quest_panel_closed.connect(_on_quest_panel_closed)
-		quest_panel.quest_accepted.connect(_on_quest_accepted)
-		print("Quest panel signal connected")
+	quest_panel.quest_panel_closed.connect(_on_quest_panel_closed)
+	quest_panel.quest_accepted.connect(_on_quest_accepted)
+	print("Quest panel signal connected")
 
 func connect_existing_buildings():
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")

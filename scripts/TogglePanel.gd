@@ -168,13 +168,8 @@ func go_back():
 			quest.visible = false
 			return
 		
-	# Check if chat is open first
-	if chat_panel and chat_panel.has_method("hide_chat") and chat_panel.get("is_chat_open"):
-		chat_panel.hide_chat()
-		return
-		
-	if GameInfo.get_current_panel_overlay() != null:
-		GameInfo.get_current_panel_overlay().hide()
+	if GameInfo.current_panel_overlay != null:
+		GameInfo.current_panel_overlay.hide()
 		GameInfo.set_current_panel_overlay(null)
 		return
 

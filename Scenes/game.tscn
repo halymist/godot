@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=70 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -43,6 +43,12 @@
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="Theme" id="Theme_no_focus"]
+Button/styles/focus = SubResource("StyleBoxFlat_transparent")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
 border_width_left = 2
@@ -57,9 +63,6 @@ corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
-bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
 
@@ -284,7 +287,7 @@ anchor_right = 1.0
 anchor_bottom = 0.2
 grow_horizontal = 2
 size_flags_horizontal = 4
-theme = ExtResource("2_nb51f")
+theme = SubResource("Theme_no_focus")
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Portrait/TopUI"]
@@ -305,6 +308,7 @@ alignment_horizontal = 0
 
 [node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Character"]
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/TopUI/HBoxContainer"]
 layout_mode = 2
@@ -336,6 +340,7 @@ alignment_vertical = 2
 
 [node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Back"]
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
 expand_icon = true
 
@@ -346,6 +351,7 @@ anchor_top = 0.2
 anchor_right = 1.0
 anchor_bottom = 0.9
 grow_horizontal = 2
+theme = SubResource("Theme_no_focus")
 
 [node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("village_scene", "interior_scene", "quest_panel", "map_panel")]
 layout_mode = 1
@@ -535,6 +541,7 @@ autowrap_mode = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 18
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "Accept Quest"
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
@@ -580,6 +587,7 @@ offset_bottom = -20.0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "< PREV"
 
 [node name="FightButton" type="Button" parent="Portrait/GameScene/Arena"]
@@ -597,6 +605,7 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "FIGHT!"
 
 [node name="NextButton" type="Button" parent="Portrait/GameScene/Arena"]
@@ -614,6 +623,7 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
@@ -1367,6 +1377,7 @@ offset_left = -70.0
 offset_top = -70.0
 offset_right = -10.0
 offset_bottom = -10.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "Skip"
 
 [node name="Map" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button", "quest")]
