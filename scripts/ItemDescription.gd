@@ -60,27 +60,37 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 		else:
 			effect.visible = false
 		
-		# Fit content to actual size
+		# Show first, then fit content size to ensure proper layout calculation
+		visible = true
+		
+		# Use multiple deferred calls to ensure proper sizing
 		call_deferred("_fit_content_size")
 		
 		# Position the panel relative to mouse/hover position if provided
 		if mouse_position != Vector2.ZERO:
 			call_deferred("position_near_cursor", mouse_position)
-		
-		visible = true
 	else:
 		visible = false
 
 func _fit_content_size():
-	# Let the layout update first
+	# Force layout update multiple times to ensure consistency
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	# Reset size first to get accurate content measurements
+	custom_minimum_size = Vector2.ZERO
+	size = Vector2(200, 60)  # Start with minimum size
+	
+	# Force another layout pass
 	await get_tree().process_frame
 	
 	# Calculate the required size based on visible content
-	var content_height = 20  # Base padding
+	var content_height = 25  # Base padding + spacing
 	var content_width = 200  # Minimum width
 	
-	# Add height for name (larger now)
-	content_height += 35
+	# Add height for name (RichTextLabel needs time to calculate)
+	if name_label.visible:
+		content_height += max(30, name_label.get_content_height())
 	
 	# Count visible stats and add consistent spacing
 	var visible_stat_count = 0
@@ -95,21 +105,34 @@ func _fit_content_size():
 	if armor_container.visible:
 		visible_stat_count += 1
 	
-	# Add consistent height for all visible stats
-	content_height += visible_stat_count * 22  # 22px per stat line
+	# Add consistent height for all visible stats (with spacing)
+	if visible_stat_count > 0:
+		content_height += visible_stat_count * 25 + 10  # 25px per stat line + spacing
 	
-	# Add height for effect if visible
-	if effect.visible:
-		content_height += effect.get_content_height() + 10
-		content_width = max(content_width, effect.get_content_width() + 40)
+	# Add height for effect if visible (RichTextLabel needs proper sizing)
+	if effect.visible and effect.text != "":
+		# Force effect to calculate its content size
+		effect.custom_minimum_size = Vector2.ZERO
+		await get_tree().process_frame
+		
+		var effect_height = max(20, effect.get_content_height())
+		content_height += effect_height + 15  # Extra spacing for effect
+		
+		# Calculate width based on effect content
+		var effect_width = max(200, effect.get_content_width() + 40)
+		content_width = max(content_width, effect_width)
 	
-	# Ensure minimum content size
-	content_height = max(content_height, 60)  # Minimum height
-	content_width = max(content_width, 180)   # Minimum width
+	# Ensure minimum content size with some padding
+	content_height = max(content_height, 70)   # Minimum height
+	content_width = max(content_width, 200)    # Minimum width
 	
-	# Update panel size
-	size = Vector2(content_width, content_height)
-	custom_minimum_size = Vector2(content_width, content_height)
+	# Apply the calculated size
+	var new_size = Vector2(content_width, content_height)
+	custom_minimum_size = new_size
+	size = new_size
+	
+	# Force final layout update
+	await get_tree().process_frame
 
 func position_near_cursor(cursor_pos: Vector2):
 	var viewport_size = get_viewport().get_visible_rect().size
