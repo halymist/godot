@@ -55,7 +55,7 @@ func update_travel_display():
 		# No active travel
 		travel_text_label.text = "No active travel"
 		travel_progress.value = 0
-		travel_time_label.text = "00:00"
+		travel_time_label.text = ""
 		is_skipping = false
 		if skip_button:
 			skip_button.visible = false
@@ -138,12 +138,7 @@ func _on_skip_button_pressed():
 
 func _on_travel_completed():
 	print("Travel completed - clearing travel state and showing quest")
-	
-	# Clear travel state
-	var current_player = GameInfo.current_player
-	if current_player:
-		current_player.traveling = null
-		print("Cleared traveling state")
+	GameInfo.current_player.traveling = null
 	
 	# Re-enable skip button
 	if skip_button:

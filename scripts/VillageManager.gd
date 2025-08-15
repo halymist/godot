@@ -90,6 +90,7 @@ func _on_npc_clicked(npc):
 	var quest_id = npc.npc_data.get("questid", null)	
 	if quest_id != null:
 		quest_panel.show_quest(npc.npc_data)
+		GameInfo.set_current_panel_overlay(quest_panel)
 
 
 func _on_quest_accepted(quest_data: Dictionary):
