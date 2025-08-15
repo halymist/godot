@@ -276,7 +276,7 @@ combat_panel = NodePath("GameScene/Combat")
 fight_button = NodePath("GameScene/Arena/FightButton")
 interior_view = NodePath("GameScene/Home/InteriorView")
 village_view = NodePath("GameScene/Home/VillageView")
-quest_panel = NodePath("GameScene/Home/QuestPanel")
+quest_panel = NodePath("GameScene/Home/QuestAccept")
 quest = NodePath("Quest")
 cancel_quest = NodePath("CancelQuest")
 upgrade_talent = NodePath("GameScene/Talents/Upgrade")
@@ -367,7 +367,7 @@ script = ExtResource("20_village")
 village_scene = NodePath("VillageView")
 interior_scene = NodePath("InteriorView")
 npc_prefab = ExtResource("6_ym3tv")
-quest_panel = NodePath("QuestPanel")
+quest_panel = NodePath("QuestAccept")
 quest_slide_panel = NodePath("../../Quest")
 map_panel = NodePath("../Map")
 
@@ -439,7 +439,7 @@ grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 
-[node name="QuestPanel" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map")]
+[node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling")]
 visible = false
 z_index = 100
 layout_mode = 1
@@ -456,8 +456,9 @@ background_button = NodePath("BackgroundButton")
 accept_button = NodePath("QuestContent/VBoxContainer/AcceptButton")
 portrait_texture = NodePath("QuestContent/VBoxContainer/HeaderContainer/PortraitPanel/Portrait")
 map = NodePath("../../Map")
+alreadyTraveling = NodePath("QuestContent/VBoxContainer/AlreadyTraveling")
 
-[node name="BackgroundButton" type="Button" parent="Portrait/GameScene/Home/QuestPanel"]
+[node name="BackgroundButton" type="Button" parent="Portrait/GameScene/Home/QuestAccept"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -470,34 +471,34 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
 flat = true
 
-[node name="QuestContent" type="Panel" parent="Portrait/GameScene/Home/QuestPanel"]
+[node name="QuestContent" type="Panel" parent="Portrait/GameScene/Home/QuestAccept"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.15
-anchor_top = 0.2
-anchor_right = 0.85
-anchor_bottom = 0.8
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/QuestPanel/QuestContent"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/QuestAccept/QuestContent"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameScene/Home/QuestPanel/QuestContent/VBoxContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/QuestPanel/QuestContent/VBoxContainer/HeaderContainer"]
+[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
@@ -505,12 +506,13 @@ theme_override_font_sizes/font_size = 24
 text = "Quest Name"
 vertical_alignment = 1
 
-[node name="PortraitPanel" type="Panel" parent="Portrait/GameScene/Home/QuestPanel/QuestContent/VBoxContainer/HeaderContainer"]
-custom_minimum_size = Vector2(110, 110)
+[node name="PortraitPanel" type="Panel" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer"]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="Portrait" type="TextureRect" parent="Portrait/GameScene/Home/QuestPanel/QuestContent/VBoxContainer/HeaderContainer/PortraitPanel"]
+[node name="Portrait" type="TextureRect" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer/PortraitPanel"]
 texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
@@ -525,27 +527,37 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HSeparator" type="HSeparator" parent="Portrait/GameScene/Home/QuestPanel/QuestContent/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="QuestDialogue" type="Label" parent="Portrait/GameScene/Home/QuestPanel/QuestContent/VBoxContainer"]
+[node name="QuestDialogue" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
 clip_contents = true
-custom_minimum_size = Vector2(20, 20)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "Quest dialogue goes here..."
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="AcceptButton" type="Button" parent="Portrait/GameScene/Home/QuestPanel/QuestContent/VBoxContainer"]
+[node name="AcceptButton" type="Button" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "Accept Quest"
+
+[node name="AlreadyTraveling" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "You are already on a quest."
+horizontal_alignment = 1
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
 visible = false

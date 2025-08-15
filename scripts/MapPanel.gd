@@ -17,9 +17,6 @@ var original_travel_end: float = 0.0
 var travel_text: String = "Traveling..."
 var travel_duration: float = 300.0  # Default 5 minutes
 
-# Quest completed signal
-signal quest_travel_completed
-
 func _ready():
 	
 	# Connect skip button
@@ -45,6 +42,11 @@ func start_travel(quest_travel_text: String, duration_minutes: int):
 	travel_text = quest_travel_text
 	travel_duration = duration_minutes * 60.0  # Convert to seconds
 	print("Started travel: '", travel_text, "' for ", duration_minutes, " minutes")
+	print("Travel duration in seconds: ", travel_duration)
+	
+	# Force immediate UI update to show travel info
+	call_deferred("update_travel_display")
+	print("Travel UI update triggered")
 
 func update_travel_display():
 	var current_player = GameInfo.current_player
@@ -135,31 +137,21 @@ func _on_skip_button_pressed():
 			skip_button.disabled = true
 
 func _on_travel_completed():
-	print("Travel completed - emitting quest arrival signal")
+	print("Travel completed - clearing travel state and showing quest")
 	
-	# Get the quest destination the player was traveling to
+	# Clear travel state
 	var current_player = GameInfo.current_player
-	var quest_id = current_player.traveling_destination
+	if current_player:
+		current_player.traveling = null
+		print("Cleared traveling state")
 	
 	# Re-enable skip button
 	if skip_button:
 		skip_button.disabled = false
 	
-	# Emit quest arrival signal and show quest panel
-	quest_travel_completed.emit()
-	
-	# Emit quest arrival signal on the quest panel
-	if quest and quest_id != null:
-		print("Emitting quest_arrived signal for quest ID: ", quest_id)
-		if quest.has_signal("quest_arrived"):
-			quest.quest_arrived.emit(quest_id)
-			print("✓ Quest arrival signal emitted")
-		else:
-			print("✗ Quest panel missing quest_arrived signal")
-	
-	# Show the quest panel
-	if quest:
-		quest.visible = true
+	# Emit simple quest arrival signal and show quest panel
+	quest.quest_arrived.emit()
+	quest.visible = true
 
 func _on_enter_dungeon_pressed():
 	# Placeholder for dungeon functionality

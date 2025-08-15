@@ -16,9 +16,7 @@ func _ready():
 	spawn_npcs()
 	
 	# Connect quest panel signals
-	quest_panel.quest_panel_closed.connect(_on_quest_panel_closed)
 	quest_panel.quest_accepted.connect(_on_quest_accepted)
-	print("Quest panel signal connected")
 
 func connect_existing_buildings():
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
@@ -88,72 +86,23 @@ func spawn_npcs(building_id: int = 0):
 func _on_npc_clicked(npc):
 	print("=== VillageManager._on_npc_clicked() CALLED ===")
 	print("Clicked NPC: ", npc.npc_data.get("name", "Unknown"))
-	print("Building context: ", "inside building" if is_in_interior else "in village")
 	
-	var quest_id = npc.npc_data.get("questid", null)
-	var quest_name = npc.npc_data.get("questname", "No Quest")
-	print("Quest stored inside the Clicked NPC - Quest ID: ", quest_id, ", Quest Name: ", quest_name)
-	print("NPC data keys: ", npc.npc_data.keys())
-	print("Full NPC data: ", npc.npc_data)
-	
-	# DEBUG: Check player traveling state
-	print("=== DEBUGGING QUEST ARRIVAL CONDITION ===")
-	print("GameInfo.current_player exists: ", GameInfo.current_player != null)
-	if GameInfo.current_player:
-		print("Player traveling_destination: ", GameInfo.current_player.traveling_destination)
-		print("Player traveling_destination type: ", typeof(GameInfo.current_player.traveling_destination))
-		print("NPC quest_id: ", quest_id)
-		print("NPC quest_id type: ", typeof(quest_id))
-		print("Do they match?: ", GameInfo.current_player.traveling_destination == quest_id)
-	else:
-		print("No current player found!")
-	
+	var quest_id = npc.npc_data.get("questid", null)	
 	if quest_id != null:
-		# Check if player is already traveling to this quest
-		if GameInfo.current_player and GameInfo.current_player.traveling_destination == quest_id:
-			# Player has arrived at quest destination - trigger quest arrival signal
-			print("=== PLAYER ARRIVED AT QUEST DESTINATION ===")
-			print("Quest ID: ", quest_id)
-			print("Triggering quest arrival signal...")
-			
-			if quest_slide_panel and quest_slide_panel.has_method("trigger_quest_arrival"):
-				quest_slide_panel.trigger_quest_arrival(quest_id)
-				
-				# Get TogglePanel reference and show overlay
-				var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-				if toggle_panel and toggle_panel.has_method("show_overlay"):
-					toggle_panel.show_overlay(quest_slide_panel)
-					print("Quest slide panel shown - player arrived at quest destination")
-				else:
-					print("TogglePanel not found or missing show_overlay method")
-			else:
-				print("Quest slide panel not found or missing trigger_quest_arrival method")
-		else:
-			# Player hasn't accepted quest yet - show accept quest panel
-			print("=== PLAYER NOT TRAVELING TO THIS QUEST - SHOWING ACCEPT PANEL ===")
-			quest_panel.show_quest(npc.npc_data)
-			
-			# Get TogglePanel reference and show overlay
-			var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-			if toggle_panel and toggle_panel.has_method("show_overlay"):
-				toggle_panel.show_overlay(quest_panel)
-				print("Quest accept panel shown through unified overlay system")
-			else:
-				print("TogglePanel not found or missing show_overlay method")
-	else:
-		# No quest - dialogue is already shown via hover chat bubble
-		print("NPC has no quest - dialogue shown on hover")
+		quest_panel.show_quest(npc.npc_data)
 
-func _on_quest_panel_closed():
-	print("Quest panel closed")
 
 func _on_quest_accepted(quest_data: Dictionary):
 	print("Quest accepted: ", quest_data.get("questname", "Unknown Quest"))
 	print("Quest travel time: ", quest_data.get("travel", 0))
 	
-	GameInfo.set_current_panel(map_panel)
+	# Pass travel info to MapPanel
+	var travel_text = quest_data.get("traveltext", "Traveling to quest...")
+	var travel_minutes = quest_data.get("travel", 5)
 	
-	# You can add quest acceptance logic here later
+	map_panel.start_travel(travel_text, travel_minutes)
+	
+	GameInfo.set_current_panel(map_panel)
 
 func handle_back_navigation() -> bool:
 	# If we're in interior, go back to village

@@ -7,6 +7,7 @@ class_name QuestPanel
 @export var accept_button: Button
 @export var portrait_texture: TextureRect
 @export var map: Control
+@export var alreadyTraveling: Label
 
 var current_quest_data: Dictionary = {}
 
@@ -82,6 +83,23 @@ func show_quest(quest_data: Dictionary):
 			print("Portrait not found: ", portrait_path)
 	else:
 		print("portrait_texture is null")
+	
+	# Check if player is already traveling/has active quest
+	var is_already_traveling = false
+	if GameInfo.current_player:
+		var has_active_travel = GameInfo.current_player.traveling != null
+		var has_destination = GameInfo.current_player.traveling_destination != null
+		is_already_traveling = has_active_travel or has_destination
+		print("Player travel state - traveling: ", has_active_travel, ", destination: ", has_destination, ", already traveling: ", is_already_traveling)
+	
+	# Show/hide accept button and already traveling label based on travel state
+	if accept_button:
+		accept_button.visible = not is_already_traveling
+		print("Accept button visible: ", accept_button.visible)
+	
+	if alreadyTraveling:
+		alreadyTraveling.visible = is_already_traveling
+		print("Already traveling label visible: ", alreadyTraveling.visible)
 	
 	# Ensure quest panel is on top and visible
 	z_index = 1000  # Very high z-index to appear above everything

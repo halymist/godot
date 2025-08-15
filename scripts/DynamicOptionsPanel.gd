@@ -26,8 +26,7 @@ var current_quest_id: int = 0
 var current_slide_number: int = 1
 
 # Quest signals
-signal quest_arrived(quest_id: int)
-signal quest_slide_changed(quest_id: int, slide_number: int)
+signal quest_arrived()
 
 func _ready():
 	options_vbox.child_entered_tree.connect(_update_layout)
@@ -38,24 +37,18 @@ func _ready():
 	quest_arrived.connect(_on_quest_arrived)
 	
 
-func _on_quest_arrived(quest_id: int):
+func _on_quest_arrived():
 	"""Internal signal handler for quest arrival"""
 	print("=== QUEST ARRIVED SIGNAL RECEIVED ===")
-	print("Quest ID: ", quest_id)
-	print("Player traveling_destination: ", GameInfo.current_player.traveling_destination if GameInfo.current_player else "No player")
-	print("Available quest IDs in GameInfo: ", GameInfo.quest_slides.keys() if GameInfo.quest_slides else [])
 	
-	# Verify this is the right quest
-	if GameInfo.current_player and GameInfo.current_player.traveling_destination == quest_id:
-		print("✓ Quest arrival confirmed! Loading quest slides...")
+	# Get quest ID from GameInfo
+	var quest_id = GameInfo.current_player.traveling_destination if GameInfo.current_player else null
+	
+	if quest_id:
+		print("Loading quest slides for quest ID: ", quest_id)
 		load_quest(quest_id, 1)
 	else:
-		print("✗ Player not traveling to this quest!")
-		if GameInfo.current_player:
-			print("  Expected quest: ", quest_id)
-			print("  Player traveling to: ", GameInfo.current_player.traveling_destination)
-		else:
-			print("  No current player found!")
+		print("✗ No traveling destination found!")
 
 func _update_layout():
 	if not status_panel or not scene_panel or not quest_text_panel or not options_panel:
@@ -146,7 +139,6 @@ func add_option(text: String, callback: Callable = Callable()) -> Button:
 		button.pressed.connect(callback)
 	
 	options_vbox.add_child(button)
-	call_deferred("_update_layout")
 	return button
 
 func clear_options():
@@ -156,7 +148,6 @@ func clear_options():
 	for child in options_vbox.get_children():
 		child.queue_free()
 	
-	call_deferred("_update_layout")
 
 func set_scene_aspect_ratio(ratio: float):
 	scene_aspect_ratio = ratio
@@ -171,31 +162,9 @@ func load_quest(quest_id: int, slide_number: int = 1):
 	
 	current_quest_id = quest_id
 	current_slide_number = slide_number
-	
-	print("GameInfo.quest_slides exists: ", GameInfo.quest_slides != null)
-	if GameInfo.quest_slides:
-		print("Available quest IDs: ", GameInfo.quest_slides.keys())
-		print("Quest ", quest_id, " exists: ", GameInfo.quest_slides.has(quest_id))
-		
-		if GameInfo.quest_slides.has(quest_id):
-			var quest_data = GameInfo.quest_slides[quest_id]
-			print("Quest data type: ", typeof(quest_data))
-			print("Quest slides count: ", quest_data.size() if quest_data else 0)
-			
-			if quest_data and slide_number <= quest_data.size():
-				print("Slide ", slide_number, " exists in quest data")
-			else:
-				print("Slide ", slide_number, " does NOT exist! Max slides: ", quest_data.size() if quest_data else 0)
-	
 	var quest_slide = GameInfo.get_quest_slide(quest_id, slide_number)
 	print("get_quest_slide returned: ", quest_slide != null)
-	
-	if quest_slide:
-		print("Quest slide text: '", quest_slide.text, "'")
-		print("Quest slide options count: ", quest_slide.options.size())
-		display_quest_slide(quest_slide)
-	else:
-		print("✗ Failed to load quest slide: quest_id=", quest_id, " slide=", slide_number)
+	display_quest_slide(quest_slide)
 
 func display_quest_slide(quest_slide: GameInfo.QuestSlide):
 	"""Display the quest slide text and create option buttons"""
@@ -203,23 +172,7 @@ func display_quest_slide(quest_slide: GameInfo.QuestSlide):
 	print("Quest slide object: ", quest_slide)
 	print("Quest text: '", quest_slide.text, "'")
 	print("Options count: ", quest_slide.options.size())
-	
-	# Set the quest text
-	print("quest_text_label exists: ", quest_text_label != null)
-	if quest_text_label:
-		print("quest_text_label node path: ", quest_text_label.get_path())
-		print("quest_text_label visible: ", quest_text_label.visible)
-		
-		print("Setting text directly on RichTextLabel...")
-		quest_text_label.text = quest_slide.text
-		print("RichTextLabel text set to: '", quest_text_label.text, "'")
-		print("RichTextLabel visible: ", quest_text_label.visible)
-		print("RichTextLabel size: ", quest_text_label.size)
-	else:
-		print("✗ quest_text_label is null!")
-	
-	# Clear existing options and create new ones
-	print("Clearing existing options...")
+
 	clear_options()
 	
 	print("Creating ", quest_slide.options.size(), " option buttons...")
@@ -228,13 +181,10 @@ func display_quest_slide(quest_slide: GameInfo.QuestSlide):
 		print("Option ", i + 1, ": '", option.text, "'")
 		add_option(option.text, _on_quest_option_pressed.bind(option))
 	
+	# Force layout update
+	print("Forcing layout update...")
 	call_deferred("_update_layout")
 	
-	# Emit signal for quest slide change
-	quest_slide_changed.emit(current_quest_id, current_slide_number)
-	
-	print("✓ Quest slide display complete. Slide ", quest_slide.slide, " text: '", quest_slide.text, "'")
-
 func _on_quest_option_pressed(option: GameInfo.QuestOption):
 	"""Handle quest option selection"""
 	print("Selected option: ", option.text)
@@ -255,7 +205,6 @@ func _on_quest_option_pressed(option: GameInfo.QuestOption):
 			elif not won_combat and option.on_loose_slide > 0:
 				load_quest(current_quest_id, option.on_loose_slide)
 		"end":
-			# Quest finished - return to home screen
 			print("Quest ended! Returning to home screen...")
 			_finish_quest()
 		_:

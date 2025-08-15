@@ -121,19 +121,7 @@ func show_panel(panel: Control):
 		if active_perks_display and active_perks_display.has_method("update_active_perks"):
 			active_perks_display.update_active_perks()
 
-func handle_home_button():
-	var traveling = GameInfo.current_player.traveling
-	var destination = GameInfo.current_player.traveling_destination
-	
-	# Check quest states
-	if traveling != null and destination != null:
-		# Both values: traveling state - show map
-		show_panel(map_panel)
-		return
-	elif traveling == null and destination != null:
-		show_panel(quest)
-		return
-	
+func handle_home_button():	
 	# Normal state (both null) - standard home behavior
 	# If we're already on the home panel, act like back button to exit buildings
 	if GameInfo.get_current_panel() == home_panel:
