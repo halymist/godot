@@ -17,6 +17,10 @@ func _ready():
 	
 	# Connect quest panel signals
 	quest_panel.quest_accepted.connect(_on_quest_accepted)
+	
+	# Connect global NPC click signal
+	GameInfo.npc_clicked.connect(_on_npc_clicked)
+	print("Connected to global NPC click signal")
 
 func connect_existing_buildings():
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
@@ -74,9 +78,8 @@ func spawn_npcs(building_id: int = 0):
 		# Set the NPC data (texture is handled in NPC.gd)
 		npc_instance.set_npc_data(npc_data)
 		
-		# Connect the signal
-		npc_instance.npc_clicked.connect(_on_npc_clicked)
-		print("Connected signal for NPC: ", npc_data.get("name", "Unknown"), " in building ", building_id)
+		# NPC will emit global signal through GameInfo - no connection needed
+		print("NPC will use global signal: ", npc_data.get("name", "Unknown"), " in building ", building_id)
 		
 		# Add to village
 		village_content.add_child(npc_instance)
@@ -86,11 +89,19 @@ func spawn_npcs(building_id: int = 0):
 func _on_npc_clicked(npc):
 	print("=== VillageManager._on_npc_clicked() CALLED ===")
 	print("Clicked NPC: ", npc.npc_data.get("name", "Unknown"))
+	print("Is in interior: ", is_in_interior)
+	print("Current building: ", current_building)
 	
 	var quest_id = npc.npc_data.get("questid", null)	
 	if quest_id != null:
+		# NPC has a quest - show quest panel
+		print("Showing quest panel for quest ID: ", quest_id)
 		quest_panel.show_quest(npc.npc_data)
 		GameInfo.set_current_panel_overlay(quest_panel)
+	else:
+		# NPC has no quest - just show dialogue in chat bubble (handled by NPC itself on hover)
+		print("No quest for this NPC - dialogue shown via chat bubble")
+		# Could add more dialogue interaction here if needed
 
 
 func _on_quest_accepted(quest_data: Dictionary):

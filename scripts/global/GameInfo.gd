@@ -11,6 +11,7 @@ signal bag_slots_changed
 signal on_player_data_loaded
 signal current_panel_changed(new_panel)
 signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
+signal npc_clicked(npc) # Global NPC click signal
 
 # Inner Classes - Single source of truth
 

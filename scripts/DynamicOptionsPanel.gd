@@ -173,6 +173,8 @@ func display_quest_slide(quest_slide: GameInfo.QuestSlide):
 	print("Quest text: '", quest_slide.text, "'")
 	print("Options count: ", quest_slide.options.size())
 
+	quest_text_label.text = quest_slide.text
+
 	clear_options()
 	
 	print("Creating ", quest_slide.options.size(), " option buttons...")

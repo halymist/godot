@@ -406,6 +406,7 @@ interior_background = NodePath("../../../../InteriorView/ScrollContainer/Interio
 interior_content = NodePath("../../../../InteriorView/ScrollContainer/InteriorContent")
 
 [node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -437,6 +438,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+texture = ExtResource("8_6uxt2")
 expand_mode = 1
 
 [node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling")]
@@ -1518,6 +1520,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
 
 [node name="Talents" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

@@ -7,7 +7,6 @@ class_name NPC
 
 @onready var click_button: Button = $ClickButton
 
-signal npc_clicked(npc: NPC)
 signal npc_hovered(npc: NPC)
 signal npc_hover_exited(npc: NPC)
 
@@ -28,38 +27,10 @@ func _ready():
 func _on_button_pressed():
 	print("NPC button pressed: ", npc_name)
 	print("NPC data during click: ", npc_data)
-	
-	var quest_id = npc_data.get("questid", null)
-	
-	if quest_id != null:
-		# NPC has a quest - use unified overlay system
-		print("Found quest ID: ", quest_id, " - showing quest panel through overlay system")
-		
-		# Find the quest panel and toggle panel
-		var quest_panel = get_tree().current_scene.find_child("QuestPanel", true, false)
-		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
-		
-		if quest_panel and toggle_panel and toggle_panel.has_method("show_overlay"):
-			# Switch to home panel first
-			if toggle_panel.has_method("show_panel"):
-				var home_panel = toggle_panel.get("home_panel")
-				if home_panel:
-					toggle_panel.show_panel(home_panel)
-					print("Switched to home panel")
-			
-			# Prepare quest data and show through overlay system
-			quest_panel.show_quest(npc_data)
-			toggle_panel.show_overlay(quest_panel)
-			print("Quest panel shown through unified overlay system for: ", npc_data.get("questname", "Unknown Quest"))
-		else:
-			print("Quest panel or TogglePanel not found or missing methods")
-			# Fallback to signal emission
-			npc_clicked.emit(self)
-	else:
-		# No quest - just show dialogue in chat bubble (already shown on hover)
-		print("No quest found for NPC: ", npc_name)
-	
-	print("Clicked NPC: ", npc_name)
+
+	# Emit global signal through GameInfo
+	GameInfo.emit_signal("npc_clicked", self)
+	print("Emitted npc_clicked signals for: ", npc_name)
 
 func _on_mouse_entered():
 	var quest_id = npc_data.get("questid", null)
