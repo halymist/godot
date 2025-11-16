@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=67 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -194,33 +194,6 @@ shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inner_panel"]
-bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.7)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_bar"]
-bg_color = Color(0.8, 0.1, 0.1, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_option_bubble"]
-bg_color = Color(0.3, 0.5, 0.8, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.8)
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
 bg_color = Color(0.2, 0.2, 0.2, 0.9)
@@ -4088,7 +4061,7 @@ layout_mode = 2
 icon = ExtResource("14_81klo")
 expand_icon = true
 
-[node name="Quest" type="Panel" parent="Portrait" node_paths=PackedStringArray("status_panel", "scene_panel", "quest_text_panel", "quest_text_label", "options_panel", "portrait", "options_vbox")]
+[node name="Quest" type="Panel" parent="Portrait" node_paths=PackedStringArray("quest_text_label", "options_container", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -4099,190 +4072,43 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
-status_panel = NodePath("StatusPanel")
-scene_panel = NodePath("ScenePanel")
-quest_text_panel = NodePath("BottomPanel/QuestTextPanel")
-quest_text_label = NodePath("BottomPanel/QuestTextPanel/ScrollContainer/QuestText")
-options_panel = NodePath("BottomPanel/OptionsPanel")
+quest_text_label = NodePath("BookScroll/BookContent/QuestText")
+options_container = NodePath("BookScroll/BookContent/OptionsContainer")
 portrait = NodePath("..")
-options_vbox = NodePath("BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer")
 
-[node name="StatusPanel" type="Panel" parent="Portrait/Quest"]
-layout_mode = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_panel")
-
-[node name="HealthPanel" type="Panel" parent="Portrait/Quest/StatusPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.3
-anchor_bottom = 1.0
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_panel")
-
-[node name="HealthBar" type="ProgressBar" parent="Portrait/Quest/StatusPanel/HealthPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.05
-anchor_top = 0.2
-anchor_right = 0.95
-anchor_bottom = 0.7
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_health_bar")
-value = 100.0
-show_percentage = false
-
-[node name="HealthLabel" type="Label" parent="Portrait/Quest/StatusPanel/HealthPanel/HealthBar"]
+[node name="BookScroll" type="ScrollContainer" parent="Portrait/Quest"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 20
-text = "100 / 100"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="QuestEffectsPanel" type="Panel" parent="Portrait/Quest/StatusPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.3
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_panel")
-
-[node name="QuestEffects" type="HBoxContainer" parent="Portrait/Quest/StatusPanel/QuestEffectsPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScenePanel" type="AspectRatioContainer" parent="Portrait/Quest"]
-layout_mode = 0
-ratio = 1.333
-
-[node name="Panel" type="Panel" parent="Portrait/Quest/ScenePanel"]
+[node name="BookContent" type="VBoxContainer" parent="Portrait/Quest/BookScroll"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_panel")
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="SceneImage" type="TextureRect" parent="Portrait/Quest/ScenePanel/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="BottomPanel" type="Control" parent="Portrait/Quest"]
-anchors_preset = 0
-
-[node name="QuestTextPanel" type="Panel" parent="Portrait/Quest/BottomPanel"]
-layout_mode = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_panel")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/BottomPanel/QuestTextPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = -15.0
-offset_bottom = -15.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="QuestText" type="RichTextLabel" parent="Portrait/Quest/BottomPanel/QuestTextPanel/ScrollContainer"]
+[node name="QuestText" type="RichTextLabel" parent="Portrait/Quest/BookScroll/BookContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "You find yourself standing at the edge of the Whispering Woods, where ancient tales speak of mystical creatures and forgotten treasures hidden deep within the shadowy depths. The morning mist clings to the towering oak trees, their gnarled branches reaching out like ghostly fingers in the pale dawn light.
-
-As you study the path ahead, you notice two distinct routes that diverge into the forest. To your left, a narrow, winding trail disappears between thick undergrowth and twisted roots, marked only by the occasional glimmer of what might be fairy lights or dewdrops catching the early sunlight. Local legends speak of this path leading to the Grove of Echoes, where the voices of long-lost travelers are said to guide wanderers toward hidden secrets.
-
-To your right, a broader, more well-traveled road cuts straight through the forest, its packed earth worn smooth by countless merchant caravans and adventuring parties. Stone markers line this route, each one bearing cryptic symbols that seem to pulse with a faint, otherworldly energy. This path is known to lead directly to the Thornwood Trading Post, where information and supplies can be acquired, though at a price that extends beyond mere gold.
-
-The choice before you is crucial, as each path offers its own dangers and rewards. The forest itself seems to hold its breath, waiting for your decision. Which way will you choose to begin your quest into the unknown depths of the Whispering Woods?"
+text = "Quest text will appear here..."
 fit_content = true
 scroll_active = false
 
-[node name="OptionsPanel" type="Panel" parent="Portrait/Quest/BottomPanel"]
-layout_mode = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_panel")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/Quest/BottomPanel/OptionsPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-scroll_horizontal_custom_step = 0.0
-scroll_vertical_custom_step = 40.0
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer"]
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/Quest/BookScroll/BookContent"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_constants/separation = 5
 
-[node name="GoLeftButton" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(200, 40)
+[node name="OptionsContainer2" type="VBoxContainer" parent="Portrait/Quest/BookScroll/BookContent"]
 layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Take the winding forest path that leads deeper into the mysterious woods"
-autowrap_mode = 1
-
-[node name="GoRightButton" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(200, 40)
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Follow the main road toward the trading post where merchants gather"
-autowrap_mode = 1
-
-[node name="GoRightButton2" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(200, 40)
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Search for a hidden passage through the rocks and examine the ancient stone markers"
-autowrap_mode = 1
-
-[node name="GoLeftButton2" type="Button" parent="Portrait/Quest/BottomPanel/OptionsPanel/ScrollContainer/VBoxContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(200, 40)
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/hover = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_option_bubble")
-theme_override_styles/normal = SubResource("StyleBoxFlat_option_bubble")
-text = "Approach the mysterious cloaked figure standing by the crossroads and ask for guidance"
-autowrap_mode = 1
+size_flags_horizontal = 3
 
 [node name="PerkTooltip" parent="Portrait" instance=ExtResource("17_oeip8")]
 visible = false
