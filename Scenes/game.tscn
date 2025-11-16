@@ -4072,43 +4072,66 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
-quest_text_label = NodePath("BookScroll/BookContent/QuestText")
-options_container = NodePath("BookScroll/BookContent/OptionsContainer")
+quest_text_label = NodePath("BookScroll/BookContent/CenterContainer/QuestText")
+options_container = NodePath("OptionsContainer")
 portrait = NodePath("..")
+
+[node name="QuestTitle" type="Label" parent="Portrait/Quest"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 10.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "Quest Title"
+horizontal_alignment = 1
 
 [node name="BookScroll" type="ScrollContainer" parent="Portrait/Quest"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = 20.0
+offset_top = 60.0
 offset_right = -20.0
-offset_bottom = -20.0
+offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
 
 [node name="BookContent" type="VBoxContainer" parent="Portrait/Quest/BookScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="QuestText" type="RichTextLabel" parent="Portrait/Quest/BookScroll/BookContent"]
+[node name="CenterContainer" type="CenterContainer" parent="Portrait/Quest/BookScroll/BookContent"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="QuestText" type="RichTextLabel" parent="Portrait/Quest/BookScroll/BookContent/CenterContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 4
 bbcode_enabled = true
 text = "Quest text will appear here..."
 fit_content = true
 scroll_active = false
 
-[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/Quest/BookScroll/BookContent"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="OptionsContainer2" type="VBoxContainer" parent="Portrait/Quest/BookScroll/BookContent"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/Quest"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="PerkTooltip" parent="Portrait" instance=ExtResource("17_oeip8")]
 visible = false

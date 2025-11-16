@@ -1,13 +1,12 @@
 extends Panel
 
 # Simple book-style quest display
-@export var quest_text_label: RichTextLabel  # Accumulates all text
+@export var quest_text_label: RichTextLabel  # Text (replaces, doesn't accumulate)
 @export var options_container: VBoxContainer  # Buttons below text
 
 # Quest state
 var current_quest_id: int = 0
 var current_slide_number: int = 1
-var quest_history: String = ""  # All accumulated text
 
 # Reference to portrait for navigation
 @export var portrait: Control
@@ -25,9 +24,14 @@ func _on_quest_arrived():
 		load_quest(quest_id, 1)
 
 func load_quest(quest_id: int, slide_number: int = 1):
-	"""Load a quest and start from slide 1"""
+	"""Load a quest and display first slide"""
 	if current_quest_id != quest_id:
-		quest_history = ""  # Reset history for new quest
+		# Set quest title
+		var quest_data = GameInfo.get_quest_data(quest_id)
+		if quest_data:
+			var title_label = get_node_or_null("QuestTitle")
+			if title_label:
+				title_label.text = quest_data.get("quest_name", "Unknown Quest")
 	
 	current_quest_id = quest_id
 	current_slide_number = slide_number
@@ -36,16 +40,20 @@ func load_quest(quest_id: int, slide_number: int = 1):
 	display_quest_slide(quest_slide)
 
 func display_quest_slide(quest_slide: GameInfo.QuestSlide):
-	"""Add text to page and show options"""
-	# Append text to history
-	if quest_history != "":
-		quest_history += "\n\n"
-	quest_history += quest_slide.text
+	"""Replace text with fade effect and show options"""
+	# Fade out
+	var tween = create_tween()
+	tween.tween_property(quest_text_label, "modulate:a", 0.0, 0.2)
+	await tween.finished
 	
-	# Update display
-	quest_text_label.text = quest_history
+	# Replace text
+	quest_text_label.text = quest_slide.text
 	
-	# Clear old options and add new ones
+	# Fade in
+	tween = create_tween()
+	tween.tween_property(quest_text_label, "modulate:a", 1.0, 0.3)
+	
+	# Update options
 	clear_options()
 	for option in quest_slide.options:
 		add_option(option.text, _on_quest_option_pressed.bind(option))
@@ -96,5 +104,4 @@ func _finish_quest():
 	GameInfo.current_player.traveling = null
 	current_quest_id = 0
 	current_slide_number = 1
-	quest_history = ""
 	portrait.show_panel(portrait.home_panel)

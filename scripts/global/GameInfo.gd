@@ -621,6 +621,11 @@ func get_quest_slide(quest_id: int, slide_number: int) -> QuestSlide:
 	print("Quest slide not found: quest_id=", quest_id, " slide=", slide_number)
 	return null
 
+func get_quest_data(quest_id: int) -> Dictionary:
+	"""Get quest metadata (name, id, etc)"""
+	var quest_data = Websocket.mock_quests.get(quest_id, {})
+	return quest_data
+
 # Function to set player traveling destination to quest
 func accept_quest(quest_id: int):
 	if current_player:
