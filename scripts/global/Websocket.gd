@@ -377,11 +377,9 @@ var mock_npcs = [
 		"dialogue": "Welcome, brave adventurer! The kingdom needs your help! Welcome, brave adventurer! The kingdom needs your help!",
 		"questid": null,
 		"questname": null,
-		"travel": null,
 		"building": 0,
 		"asset": "herald",
-		"portrait": "npc_portrait",
-		"traveltext": null
+		"portrait": "npc_portrait"
 	},
 	{
 		"name": "Merchant Gareth",
@@ -392,11 +390,9 @@ var mock_npcs = [
 		"dialogue": "Fine wares and rare items for sale! Come see what I have!",
 		"questid": 1,
 		"questname": "Delivery Quest",
-		"travel": 5,
 		"building": 0,
 		"asset": "merchant",
-		"portrait": "npc_portrait",
-		"traveltext": "Travel to the next town"
+		"portrait": "npc_portrait"
 	},
 	{
 		"name": "Guard Captain",
@@ -407,11 +403,9 @@ var mock_npcs = [
 		"dialogue": "Stay vigilant, the kingdom is under threat from bandits.",
 		"questid": 2,
 		"questname": "Bandit Hunt",
-		"travel": 10,
 		"building": 0,
 		"asset": "guard",
-		"portrait": "npc_portrait",
-		"traveltext": "Hunt down the bandits"
+		"portrait": "npc_portrait"
 	},
 	{
 		"name": "Alchemist Zara",
@@ -422,11 +416,9 @@ var mock_npcs = [
 		"dialogue": "Potions for sale! Healing, mana, and more!",
 		"questid": null,
 		"questname": null,
-		"travel": null,
 		"building": 0,
 		"asset": "alchemist",
-		"portrait": "npc_portrait",
-		"traveltext": null
+		"portrait": "npc_portrait"
 	},
 	{
 		"name": "Innkeeper Molly",
@@ -437,11 +429,9 @@ var mock_npcs = [
 		"dialogue": "Rooms available for rent! Come rest your weary heads.",
 		"questid": null,
 		"questname": null,
-		"travel": null,
 		"building": 0,
 		"asset": "innkeeper",
-		"portrait": "npc_portrait",
-		"traveltext": null
+		"portrait": "npc_portrait"
 	},
 	{
 		"name": "Blacksmith Jane",
@@ -452,11 +442,9 @@ var mock_npcs = [
 		"dialogue": "Weapons and armor repaired! Come see me at the forge.",
 		"questid": 3,
 		"questname": "Metal Collection",
-		"travel": 8,
 		"building": 1,
 		"asset": "blacksmith",
-		"portrait": "npc_portrait",
-		"traveltext": "Gather rare metals"
+		"portrait": "npc_portrait"
 	}
 ]
 
@@ -923,6 +911,8 @@ var mock_quests = {
 	1: {  # Merchant Gareth's delivery quest
 		"quest_id": 1,
 		"quest_name": "Delivery Quest",
+		"travel_time": 5,  # minutes
+		"travel_text": "Travel to the next town",
 		"slides": [
 			{
 				"slide": 1,
@@ -1016,6 +1006,8 @@ var mock_quests = {
 	2: {  # Guard Captain's bandit hunt
 		"quest_id": 2,
 		"quest_name": "Bandit Hunt",
+		"travel_time": 10,  # minutes
+		"travel_text": "Hunt down the bandits",
 		"slides": [
 			{
 				"slide": 1,
@@ -1103,6 +1095,8 @@ var mock_quests = {
 	3: {  # Blacksmith Jane's metal collection
 		"quest_id": 3,
 		"quest_name": "Metal Collection",
+		"travel_time": 8,  # minutes
+		"travel_text": "Gather rare metals",
 		"slides": [
 			{
 				"slide": 1,

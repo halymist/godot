@@ -368,7 +368,7 @@ class GameCurrentPlayer:
 	
 	# Current player specific properties with automatic events
 	var location: String = ""
-	var traveling: Variant = null
+	var traveling: int = 0  # Unix timestamp when travel ends, 0 if not traveling
 	var traveling_destination: Variant = null
 	var dungeon: bool = false
 	var destination: Variant = null
@@ -424,7 +424,13 @@ class GameCurrentPlayer:
 		for msgpack_key in msgpack_map:
 			if data.has(msgpack_key):
 				var local_key = msgpack_map[msgpack_key]
-				set(local_key, data[msgpack_key])
+				var value = data[msgpack_key]
+				
+				# Special handling for traveling: convert null to 0
+				if msgpack_key == "traveling" and value == null:
+					value = 0
+				
+				set(local_key, value)
 		
 		# Load arrays
 		load_bag_slots(data)

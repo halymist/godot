@@ -51,7 +51,7 @@ func start_travel(quest_travel_text: String, duration_minutes: int):
 func update_travel_display():
 	var current_player = GameInfo.current_player
 	
-	if current_player.traveling == null:
+	if current_player.traveling == 0:
 		# No active travel
 		travel_text_label.text = "No active travel"
 		travel_progress.value = 0
@@ -97,7 +97,7 @@ func update_travel_display():
 		
 		# Clear travel data and show quest panel
 		is_skipping = false
-		current_player.traveling = null
+		current_player.traveling = 0
 		_on_travel_completed()
 		return
 	
@@ -125,7 +125,7 @@ func update_travel_display():
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
 	
-	if current_player.traveling != null and not is_skipping:
+	if current_player.traveling > 0 and not is_skipping:
 		# Start skipping animation
 		is_skipping = true
 		skip_start_time = Time.get_unix_time_from_system()
@@ -138,7 +138,7 @@ func _on_skip_button_pressed():
 
 func _on_travel_completed():
 	print("Travel completed - clearing travel state and showing quest")
-	GameInfo.current_player.traveling = null
+	GameInfo.current_player.traveling = 0
 	
 	# Re-enable skip button
 	if skip_button:

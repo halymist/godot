@@ -101,7 +101,7 @@ func _on_quest_option_pressed(option: GameInfo.QuestOption):
 func _finish_quest():
 	"""End quest and return home"""
 	GameInfo.current_player.traveling_destination = null
-	GameInfo.current_player.traveling = null
+	GameInfo.current_player.traveling = 0
 	current_quest_id = 0
 	current_slide_number = 1
 	portrait.show_panel(portrait.home_panel)

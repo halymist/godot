@@ -8,6 +8,7 @@ class_name QuestPanel
 @export var portrait_texture: TextureRect
 @export var map: Control
 @export var alreadyTraveling: Label
+@export var npc_name_label: Label
 
 var current_quest_data: Dictionary = {}
 
@@ -27,22 +28,26 @@ func _on_background_pressed():
 func _on_accept_pressed():
 	quest_accepted.emit(current_quest_data)
 	
-	# Set travel data when accepting quest
+	# Get quest ID from NPC data
 	var quest_id = current_quest_data.get("questid", 0)
-	var travel_time = current_quest_data.get("travel", 0)
-	if travel_time > 0:
-		var current_time = Time.get_unix_time_from_system()
-		var travel_end_time = current_time + (travel_time * 60) # Convert minutes to seconds
-		
-		# Update GameInfo with travel data
-		GameInfo.current_player.traveling = travel_end_time
-		GameInfo.accept_quest(quest_id)  # This sets traveling_destination
-		
-		print("Travel started - Duration: ", travel_time, " minutes, End time: ", travel_end_time)
-		
-		# Immediately update MapPanel if it exists
-		if map and map.has_method("update_travel_display"):
-			map.update_travel_display()
+	
+	# Get quest definition from GameInfo to access travel data
+	var quest_definition = GameInfo.get_quest_data(quest_id)
+	if quest_definition:
+		var travel_time = quest_definition.get("travel_time", 0)
+		if travel_time > 0:
+			var current_time = Time.get_unix_time_from_system()
+			var travel_end_time = current_time + (travel_time * 60) # Convert minutes to seconds
+			
+			# Update GameInfo with travel data
+			GameInfo.current_player.traveling = travel_end_time
+			GameInfo.accept_quest(quest_id)  # This sets traveling_destination
+			
+			print("Travel started - Duration: ", travel_time, " minutes, End time: ", travel_end_time)
+			
+			# Immediately update MapPanel if it exists
+			if map and map.has_method("update_travel_display"):
+				map.update_travel_display()
 	
 	hide_panel()
 	print("Quest accepted: ", current_quest_data.get("questname", "Unknown Quest"))
@@ -59,6 +64,13 @@ func _on_accept_pressed():
 func show_quest(quest_data: Dictionary):
 	print("QuestPanel.show_quest called with data: ", quest_data)
 	current_quest_data = quest_data
+	
+	# Display NPC name
+	if npc_name_label:
+		npc_name_label.text = quest_data.get("name", "Unknown NPC")
+		print("Set NPC name: ", npc_name_label.text)
+	else:
+		print("npc_name_label is null")
 	
 	if quest_name_label:
 		quest_name_label.text = quest_data.get("questname", "Unknown Quest")
@@ -87,7 +99,7 @@ func show_quest(quest_data: Dictionary):
 	# Check if player is already traveling/has active quest
 	var is_already_traveling = false
 	if GameInfo.current_player:
-		var has_active_travel = GameInfo.current_player.traveling != null
+		var has_active_travel = GameInfo.current_player.traveling > 0
 		var has_destination = GameInfo.current_player.traveling_destination != null
 		is_already_traveling = has_active_travel or has_destination
 		print("Player travel state - traveling: ", has_active_travel, ", destination: ", has_destination, ", already traveling: ", is_already_traveling)

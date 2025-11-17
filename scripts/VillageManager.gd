@@ -106,13 +106,20 @@ func _on_npc_clicked(npc):
 
 func _on_quest_accepted(quest_data: Dictionary):
 	print("Quest accepted: ", quest_data.get("questname", "Unknown Quest"))
-	print("Quest travel time: ", quest_data.get("travel", 0))
 	
-	# Pass travel info to MapPanel
-	var travel_text = quest_data.get("traveltext", "Traveling to quest...")
-	var travel_minutes = quest_data.get("travel", 5)
+	# Get quest ID from NPC data
+	var quest_id = quest_data.get("questid", 0)
 	
-	map_panel.start_travel(travel_text, travel_minutes)
+	# Get quest definition from GameInfo to access travel data
+	var quest_definition = GameInfo.get_quest_data(quest_id)
+	if quest_definition:
+		var travel_text = quest_definition.get("travel_text", "Traveling to quest...")
+		var travel_minutes = quest_definition.get("travel_time", 5)
+		
+		print("Quest travel time: ", travel_minutes)
+		
+		# Pass travel info to MapPanel
+		map_panel.start_travel(travel_text, travel_minutes)
 	
 	GameInfo.set_current_panel(map_panel)
 

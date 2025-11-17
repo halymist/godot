@@ -139,7 +139,7 @@ func handle_map_button():
 	print("Traveling: ", traveling, " Destination: ", destination)
 	
 	# Check quest states
-	if traveling != null and destination != null:
+	if traveling > 0 and destination != null:
 		# Both values: traveling state - show map
 		show_panel(map_panel)
 		return
@@ -225,7 +225,7 @@ func go_back():
 		return
 	
 	# Priority 2: Check if we're traveling and on map panel - show cancel dialog
-	if traveling != null and destination != null and GameInfo.get_current_panel() == map_panel:
+	if traveling > 0 and destination != null and GameInfo.get_current_panel() == map_panel:
 		show_overlay(cancel_quest)
 		return
 
@@ -268,7 +268,7 @@ func show_combat():
 # Cancel quest dialog functions
 func _on_cancel_quest_yes():
 	# Cancel the quest
-	GameInfo.current_player.traveling = null
+	GameInfo.current_player.traveling = 0
 	GameInfo.current_player.traveling_destination = null
 	
 	# Hide cancel dialog using unified overlay system and return to home

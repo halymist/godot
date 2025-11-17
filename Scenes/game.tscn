@@ -414,7 +414,7 @@ mouse_filter = 2
 texture = ExtResource("8_6uxt2")
 expand_mode = 1
 
-[node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling")]
+[node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling", "npc_name_label")]
 visible = false
 z_index = 100
 layout_mode = 1
@@ -425,13 +425,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 script = ExtResource("36_quest_panel")
-quest_name_label = NodePath("QuestContent/VBoxContainer/HeaderContainer/QuestName")
+quest_name_label = NodePath("QuestContent/VBoxContainer/QuestName")
 quest_dialogue_label = NodePath("QuestContent/VBoxContainer/QuestDialogue")
 background_button = NodePath("BackgroundButton")
 accept_button = NodePath("QuestContent/VBoxContainer/AcceptButton")
 portrait_texture = NodePath("QuestContent/VBoxContainer/HeaderContainer/PortraitPanel/Portrait")
 map = NodePath("../../Map")
 alreadyTraveling = NodePath("QuestContent/VBoxContainer/AlreadyTraveling")
+npc_name_label = NodePath("QuestContent/VBoxContainer/HeaderContainer/NPCName")
 
 [node name="BackgroundButton" type="Button" parent="Portrait/GameScene/Home/QuestAccept"]
 layout_mode = 1
@@ -473,12 +474,12 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer"]
+[node name="NPCName" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 24
-text = "Quest Name"
+text = "NPC Name"
 vertical_alignment = 1
 
 [node name="PortraitPanel" type="Panel" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer"]
@@ -506,6 +507,13 @@ stretch_mode = 5
 layout_mode = 2
 theme_override_constants/separation = 20
 
+[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "Quest Name"
+horizontal_alignment = 1
+
 [node name="QuestDialogue" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(0, 100)
@@ -514,7 +522,6 @@ size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_font_sizes/font_size = 14
 text = "Quest dialogue goes here..."
-vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="AcceptButton" type="Button" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
