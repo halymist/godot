@@ -146,6 +146,7 @@ func _on_travel_completed():
 	
 	# Emit simple quest arrival signal and show quest panel
 	quest.quest_arrived.emit()
+	GameInfo.set_current_panel(quest)
 	quest.visible = true
 
 func _on_enter_dungeon_pressed():

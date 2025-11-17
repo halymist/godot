@@ -228,6 +228,11 @@ func go_back():
 	if traveling > 0 and destination != null and GameInfo.get_current_panel() == map_panel:
 		show_overlay(cancel_quest)
 		return
+	print(GameInfo.get_current_panel())
+	# Priority 2.5: Check if we've arrived at quest (traveling = 0) but haven't finished it yet - show cancel dialog
+	if traveling == 0 and destination != null and GameInfo.get_current_panel() == quest:
+		show_overlay(cancel_quest)
+		return
 
 	# Priority 3: Check if we're in a building interior in the home panel
 	if GameInfo.get_current_panel() == home_panel:
@@ -267,6 +272,14 @@ func show_combat():
 
 # Cancel quest dialog functions
 func _on_cancel_quest_yes():
+	# Get the quest ID before clearing it
+	var quest_id = GameInfo.current_player.traveling_destination
+	
+	# Mark quest as completed so NPC won't show up again
+	if quest_id != null and quest_id is int:
+		GameInfo.complete_quest(quest_id)
+		print("Quest ", quest_id, " abandoned and marked as completed")
+	
 	# Cancel the quest
 	GameInfo.current_player.traveling = 0
 	GameInfo.current_player.traveling_destination = null

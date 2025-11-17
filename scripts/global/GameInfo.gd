@@ -12,6 +12,7 @@ signal on_player_data_loaded
 signal current_panel_changed(new_panel)
 signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
 signal npc_clicked(npc) # Global NPC click signal
+signal quest_completed(quest_id) # Emitted when a quest is marked as completed
 
 # Inner Classes - Single source of truth
 
@@ -376,6 +377,7 @@ class GameCurrentPlayer:
 	var slides: Array = []
 	var talent_points: int = 0
 	var perk_points: int = 0
+	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
 	
 	# Gold with automatic event emission
 	var _gold: int = 0
@@ -415,7 +417,8 @@ class GameCurrentPlayer:
 		"dungeon": "dungeon",
 		"destination": "destination",
 		"slide": "slide",
-		"slides": "slides"
+		"slides": "slides",
+		"quest_log": "quest_log"
 	}
 	
 	func load_from_msgpack(data: Dictionary):
@@ -505,6 +508,7 @@ func _ready():
 	load_combat_logs_data(Websocket.mock_combat_logs)
 	load_npcs_data(Websocket.mock_npcs)
 	load_all_quests_data(Websocket.mock_quests)  # Load all quests by ID
+	load_quest_log_data(Websocket.mock_quest_log)  # Load quest log
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 
@@ -616,6 +620,78 @@ func load_all_quests_data(quests_data: Dictionary):
 		if quest_info.has("slides"):
 			load_quest_slides_data(quest_id, quest_info["slides"])
 	print("Total quests loaded: ", quest_slides.size())
+
+# Function to load quest log
+func load_quest_log_data(quest_log_data: Array):
+	if current_player:
+		current_player.quest_log = quest_log_data.duplicate()
+		print("Quest log loaded: ", current_player.quest_log.size(), " entries")
+
+# Function to check if a quest is completed
+func is_quest_completed(quest_id: int) -> bool:
+	if not current_player:
+		return false
+	for entry in current_player.quest_log:
+		if entry.get("quest_id") == quest_id and entry.get("finished") == true:
+			return true
+	return false
+
+# Function to check if a specific quest slide has been visited
+func has_visited_quest_slide(quest_id: int, slide_number: int) -> bool:
+	if not current_player:
+		return false
+	for entry in current_player.quest_log:
+		if entry.get("quest_id") == quest_id:
+			var slides = entry.get("slides", [])
+			return slide_number in slides
+	return false
+
+# Function to add a slide to quest log (tracks progress through quest)
+func log_quest_slide(quest_id: int, slide_number: int):
+	if not current_player:
+		return
+	
+	# Find existing quest log entry
+	for entry in current_player.quest_log:
+		if entry.get("quest_id") == quest_id:
+			# Add slide to slides array if not already there
+			if not entry.has("slides"):
+				entry["slides"] = []
+			if slide_number not in entry["slides"]:
+				entry["slides"].append(slide_number)
+				print("Quest ", quest_id, " - logged slide ", slide_number)
+			return
+	
+	# Create new entry if quest not in log yet
+	var new_entry = {
+		"quest_id": quest_id,
+		"slides": [slide_number],
+		"finished": false
+	}
+	current_player.quest_log.append(new_entry)
+	print("Quest ", quest_id, " - created log with slide ", slide_number)
+
+# Function to mark a quest as completed
+func complete_quest(quest_id: int):
+	if not current_player:
+		return
+	
+	# Check if already in log
+	for entry in current_player.quest_log:
+		if entry.get("quest_id") == quest_id:
+			entry["finished"] = true
+			print("Quest ", quest_id, " marked as finished")
+			quest_completed.emit(quest_id)
+			return
+	
+	# Add new entry if not found (quest abandoned before any slides were logged)
+	current_player.quest_log.append({
+		"quest_id": quest_id,
+		"slides": [],
+		"finished": true
+	})
+	print("Quest ", quest_id, " added to quest log as finished")
+	quest_completed.emit(quest_id)
 
 # Function to get quest slide by quest ID and slide number
 func get_quest_slide(quest_id: int, slide_number: int) -> QuestSlide:

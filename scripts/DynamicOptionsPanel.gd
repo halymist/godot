@@ -36,6 +36,9 @@ func load_quest(quest_id: int, slide_number: int = 1):
 	current_quest_id = quest_id
 	current_slide_number = slide_number
 	
+	# Log this slide in the quest log
+	GameInfo.log_quest_slide(quest_id, slide_number)
+	
 	var quest_slide = GameInfo.get_quest_slide(quest_id, slide_number)
 	display_quest_slide(quest_slide)
 
@@ -100,6 +103,10 @@ func _on_quest_option_pressed(option: GameInfo.QuestOption):
 
 func _finish_quest():
 	"""End quest and return home"""
+	# Mark quest as completed in quest log
+	if current_quest_id > 0:
+		GameInfo.complete_quest(current_quest_id)
+	
 	GameInfo.current_player.traveling_destination = null
 	GameInfo.current_player.traveling = 0
 	current_quest_id = 0

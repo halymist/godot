@@ -21,6 +21,10 @@ func _ready():
 	# Connect global NPC click signal
 	GameInfo.npc_clicked.connect(_on_npc_clicked)
 	print("Connected to global NPC click signal")
+	
+	# Connect quest completed signal to redraw NPCs
+	GameInfo.quest_completed.connect(_on_quest_completed)
+	print("Connected to quest completed signal")
 
 func connect_existing_buildings():
 	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
@@ -49,6 +53,21 @@ func spawn_npcs(building_id: int = 0):
 		
 		# Only spawn NPCs that match the requested building_id
 		if npc_building_id != building_id:
+			continue
+		
+		# Check dependency requirements (if NPC requires a quest slide to be visited)
+		var dependency_quest = npc_data.get("dependency_quest", null)
+		var dependency_slide = npc_data.get("dependency_slide", null)
+		if dependency_quest != null and dependency_slide != null:
+			# This NPC requires a specific quest slide to be visited
+			if not GameInfo.has_visited_quest_slide(dependency_quest, dependency_slide):
+				print("Skipping NPC (dependency not met): ", npc_data.get("name", "Unknown"), " (Requires Quest ", dependency_quest, " Slide ", dependency_slide, ")")
+				continue
+		
+		# Skip NPCs whose quests are completed
+		var npc_quest_id = npc_data.get("questid", null)
+		if npc_quest_id != null and GameInfo.is_quest_completed(npc_quest_id):
+			print("Skipping NPC with completed quest: ", npc_data.get("name", "Unknown"), " (Quest ID: ", npc_quest_id, ")")
 			continue
 		
 		# Instance the NPC prefab
@@ -122,6 +141,32 @@ func _on_quest_accepted(quest_data: Dictionary):
 		map_panel.start_travel(travel_text, travel_minutes)
 	
 	GameInfo.set_current_panel(map_panel)
+
+func _on_quest_completed(quest_id: int):
+	"""Handle quest completion by redrawing NPCs"""
+	print("Quest ", quest_id, " completed - redrawing NPCs")
+	redraw_npcs()
+
+func redraw_npcs():
+	"""Clear and respawn all NPCs in current location"""
+	# Clear existing NPCs
+	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
+	
+	# Remove all NPC nodes
+	for child in village_content.get_children():
+		if child.has_method("set_npc_data"):  # Check if it's an NPC
+			child.queue_free()
+	
+	# If in interior, redraw building NPCs
+	if is_in_interior and current_building != "":
+		# Find the building and trigger its respawn
+		for child in village_content.get_children():
+			if child is Building and child.building_id == current_building:
+				child.spawn_building_npcs()
+				return
+	
+	# Otherwise redraw village NPCs
+	spawn_npcs(0)
 
 func handle_back_navigation() -> bool:
 	# If we're in interior, go back to village

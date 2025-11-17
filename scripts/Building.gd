@@ -74,6 +74,21 @@ func spawn_building_npcs():
 		
 		# Only spawn NPCs that belong to this building
 		if npc_building_id == building_int_id:
+			# Check dependency requirements (if NPC requires a quest slide to be visited)
+			var dependency_quest = npc_data.get("dependency_quest", null)
+			var dependency_slide = npc_data.get("dependency_slide", null)
+			if dependency_quest != null and dependency_slide != null:
+				# This NPC requires a specific quest slide to be visited
+				if not GameInfo.has_visited_quest_slide(dependency_quest, dependency_slide):
+					print("Skipping NPC (dependency not met): ", npc_data.get("name", "Unknown"), " (Requires Quest ", dependency_quest, " Slide ", dependency_slide, ")")
+					continue
+			
+			# Skip NPCs whose quests are completed
+			var npc_quest_id = npc_data.get("questid", null)
+			if npc_quest_id != null and GameInfo.is_quest_completed(npc_quest_id):
+				print("Skipping NPC with completed quest: ", npc_data.get("name", "Unknown"), " (Quest ID: ", npc_quest_id, ")")
+				continue
+			
 			var npc_instance = npc_prefab.instantiate()
 			
 			# Position NPC within the building interior

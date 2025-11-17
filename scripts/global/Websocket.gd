@@ -3,6 +3,12 @@ extends Node
 func _ready():
 	print("Websocket ready!")
 
+# Mock quest log data - tracks quest completion status
+var mock_quest_log = [
+	# Example: {"quest_id": 1, "slides": [1, 2, 4], "finished": true}
+	# Empty array means no quests completed yet
+]
+
 # Mock data for development/testing
 var mock_character_data = {
 	"name": "TestPlayer",
@@ -395,6 +401,21 @@ var mock_npcs = [
 		"portrait": "npc_portrait"
 	},
 	{
+		"name": "Merchant Gareth",
+		"xpos": 0.4,
+		"ypos": 0.4,
+		"width": 1.0,
+		"height": 1.0,
+		"dialogue": "The delivery was successful! You're a reliable courier indeed.",
+		"questid": null,
+		"questname": null,
+		"building": 0,
+		"asset": "merchant",
+		"portrait": "npc_portrait",
+		"dependency_quest": 1,
+		"dependency_slide": 1
+	},
+	{
 		"name": "Guard Captain",
 		"xpos": 0.6,
 		"ypos": 0.25,
@@ -406,6 +427,21 @@ var mock_npcs = [
 		"building": 0,
 		"asset": "guard",
 		"portrait": "npc_portrait"
+	},
+	{
+		"name": "Guard Captain",
+		"xpos": 0.6,
+		"ypos": 0.25,
+		"width": 1.2,
+		"height": 1.1,
+		"dialogue": "Thank you for your help, brave warrior! The roads are safer thanks to you.",
+		"questid": null,
+		"questname": null,
+		"building": 0,
+		"asset": "guard",
+		"portrait": "npc_portrait",
+		"dependency_quest": 2,
+		"dependency_slide": 2
 	},
 	{
 		"name": "Alchemist Zara",
@@ -445,6 +481,21 @@ var mock_npcs = [
 		"building": 1,
 		"asset": "blacksmith",
 		"portrait": "npc_portrait"
+	},
+	{
+		"name": "Blacksmith Jane",
+		"xpos": 0.5,
+		"ypos": 0,
+		"width": 4.0,
+		"height": 4.0,
+		"dialogue": "Those metals you brought were perfect! I'm finishing the armor now.",
+		"questid": null,
+		"questname": null,
+		"building": 1,
+		"asset": "blacksmith",
+		"portrait": "npc_portrait",
+		"dependency_quest": 3,
+		"dependency_slide": 1
 	}
 ]
 
