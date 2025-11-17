@@ -27,7 +27,7 @@ func _ready():
 	print("Connected to quest completed signal")
 
 func connect_existing_buildings():
-	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
+	var village_content = village_scene.get_node("VillageContent")
 	
 	# Connect signals for existing buildings in the scene
 	for child in village_content.get_children():
@@ -41,7 +41,7 @@ func spawn_npcs(building_id: int = 0):
 		print("No NPC prefab assigned")
 		return
 		
-	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
+	var village_content = village_scene.get_node("VillageContent")
 	
 	# Get NPC data from GameInfo
 	var npcs_data = GameInfo.npcs
@@ -150,7 +150,7 @@ func _on_quest_completed(quest_id: int):
 func redraw_npcs():
 	"""Clear and respawn all NPCs in current location"""
 	# Clear existing NPCs
-	var village_content = village_scene.get_node("ScrollContainer/VillageContent")
+	var village_content = village_scene.get_node("VillageContent")
 	
 	# Remove all NPC nodes
 	for child in village_content.get_children():

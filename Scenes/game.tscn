@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=68 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
 [ext_resource type="PackedScene" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="PackedScene" uid="uid://p7jxfxdp1qfb" path="res://Scenes/NPC.tscn" id="6_ym3tv"]
+[ext_resource type="Texture2D" uid="uid://bb55p258vfeei" path="res://assets/images/villages/village2.png" id="7_6a4tp"]
 [ext_resource type="Texture2D" uid="uid://cln4gnj3yak2h" path="res://assets/images/villages/blacksmith.png" id="7_6uxt2"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
@@ -352,31 +353,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Home/VillageView"]
+[node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillageView"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
-
-[node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillageView/ScrollContainer"]
-custom_minimum_size = Vector2(500, 400)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="Building" parent="Portrait/GameScene/Home/VillageView/ScrollContainer/VillageContent" node_paths=PackedStringArray("interior_background", "interior_content") instance=ExtResource("6_lmoi6")]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_6a4tp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Building" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("6_lmoi6")]
 layout_mode = 0
 texture = ExtResource("7_6uxt2")
 building_id = "1"
 building_name = "Blacksmith"
 interior_texture = ExtResource("8_6uxt2")
-interior_background = NodePath("../../../../InteriorView/ScrollContainer/InteriorContent/Interior")
-interior_content = NodePath("../../../../InteriorView/ScrollContainer/InteriorContent")
 
 [node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
 visible = false
