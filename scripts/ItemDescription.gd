@@ -54,8 +54,14 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			armor_container.visible = false
 		
 		# Handle effect description - hide if empty
-		if item_data.effect_description != "":
-			effect.text = "[i]" + item_data.effect_description + "[/i]"
+		# Display effect from database with factor from item
+		if item_data.effect_id > 0 and item_data.effect_description != "":
+			var effect_text = item_data.effect_description
+			# Append factor to description as integer
+			if item_data.effect_factor != 0.0:
+				effect_text += " " + str(int(item_data.effect_factor))
+			
+			effect.text = "[i]" + effect_text + "[/i]"
 			effect.visible = true
 		else:
 			effect.visible = false

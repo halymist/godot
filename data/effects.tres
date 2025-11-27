@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EffectDatabase" load_steps=5 format=3 uid="uid://bkg18l7ls21gy"]
+
+[ext_resource type="Script" uid="uid://p673jpbjsppe" path="res://scripts/resources/EffectResource.gd" id="1_kykie"]
+[ext_resource type="Script" uid="uid://tlx57q68wsqo" path="res://scripts/resources/EffectDatabase.gd" id="2_jpqpk"]
+
+[sub_resource type="Resource" id="Resource_kykie"]
+script = ExtResource("1_kykie")
+id = 1
+name = "Effect1"
+description = "Increases something by"
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_jpqpk"]
+script = ExtResource("1_kykie")
+id = 2
+name = "Effect2"
+description = "Seems solid lol"
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[resource]
+script = ExtResource("2_jpqpk")
+effects = Array[ExtResource("1_kykie")]([SubResource("Resource_kykie"), SubResource("Resource_jpqpk")])

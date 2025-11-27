@@ -3,6 +3,11 @@ extends Node
 # Persistent game data manager - AutoLoad
 # This holds all player data permanently, separate from UI
 
+# Static game data
+var effects_db: EffectDatabase = null
+var items_db: ItemDatabase = null
+var perks_db: PerkDatabase = null
+
 # Signals for UI updates
 signal gold_changed(new_gold)
 signal currency_changed(new_currency)
@@ -62,8 +67,9 @@ class Item:
 	var damage_min: int = 0
 	var damage_max: int = 0
 	var asset_id: int = 0
-	var effect_name: String = ""
-	var effect_description: String = ""
+	var effect_id: int = 0
+	var effect_name: String = ""  # Looked up from effects_db
+	var effect_description: String = ""  # Looked up from effects_db
 	var effect_factor: float = 0.0
 	var quality: int = 0
 	var price: int = 0
@@ -86,8 +92,7 @@ class Item:
 		"damage_min": "damage_min",
 		"damage_max": "damage_max",
 		"asset_id": "asset_id",
-		"effect_name": "effect_name",
-		"effect_description": "effect_description",
+		"effect_id": "effect_id",
 		"effect_factor": "effect_factor",
 		"quality": "quality",
 		"price": "price"
@@ -95,45 +100,89 @@ class Item:
 	
 	func _init(data: Dictionary = {}):
 		super._init(data)
-		# Assign texture after loading if asset_id exists
-		if asset_id > 0 and GameInfo:
-			texture = GameInfo.get_fallback_texture(asset_id)
+		# Get item data from items_db if available
+		if GameInfo and GameInfo.items_db:
+			var item_resource = GameInfo.items_db.get_item_by_id(id)
+			if item_resource:
+				# Copy static data from resource
+				item_name = item_resource.item_name
+				type = item_resource.type
+				subtype = item_resource.subtype
+				armor = item_resource.armor
+				strength = item_resource.strength
+				constitution = item_resource.constitution
+				dexterity = item_resource.dexterity
+				luck = item_resource.luck
+				damage_min = item_resource.damage_min
+				damage_max = item_resource.damage_max
+				effect_id = item_resource.effect_id
+				effect_factor = item_resource.effect_factor
+				quality = item_resource.quality
+				price = item_resource.price
+				texture = item_resource.icon
+				
+				# Look up effect details from effects_db
+				if GameInfo.effects_db and effect_id > 0:
+					var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
+					if effect:
+						effect_name = effect.name
+						effect_description = effect.description
 
 class Perk:
 	extends MessagePackObject
 	
-	# MessagePack properties matching C# Perk class
-	var perk_name: String = ""
+	# MessagePack properties (only dynamic data from server)
+	var id: int = 0
 	var active: bool = false
-	var description: String = ""
-	var asset_id: int = 0
 	var slot: int = 0
-	var effect1: String = ""
+	
+	# Static data (loaded from perks_db)
+	var perk_name: String = ""
+	var effect1_id: int = 0
+	var effect1: String = ""  # Looked up from effects_db
+	var effect1_description: String = ""  # Full effect description for tooltip
 	var factor1: float = 0.0
-	var effect2: String = ""
+	var effect2_id: int = 0
+	var effect2: String = ""  # Looked up from effects_db
+	var effect2_description: String = ""  # Full effect description for tooltip
 	var factor2: float = 0.0
 	
 	# Client-side only
 	var texture: Texture2D = null
 	
-	# MessagePack field mapping matching your actual data format
+	# MessagePack field mapping - id, active, and slot from server
 	const MSGPACK_MAP = {
-		"perk_name": "perk_name",
+		"id": "id",
 		"active": "active",
-		"description": "description",
-		"asset_id": "asset_id",
-		"slot": "slot",
-		"effect1": "effect1",
-		"factor1": "factor1",
-		"effect2": "effect2",
-		"factor2": "factor2"
+		"slot": "slot"
 	}
 	
 	func _init(data: Dictionary = {}):
 		super._init(data)
-		# Assign texture after loading if asset_id exists
-		if asset_id > 0 and GameInfo:
-			texture = GameInfo.get_fallback_texture(asset_id)
+		# Get perk data from perks_db if available
+		if GameInfo and GameInfo.perks_db:
+			var perk_resource = GameInfo.perks_db.get_perk_by_id(id)
+			if perk_resource:
+				# Copy static data from resource
+				perk_name = perk_resource.perk_name
+				effect1_id = perk_resource.effect1_id
+				factor1 = perk_resource.factor1
+				effect2_id = perk_resource.effect2_id
+				factor2 = perk_resource.factor2
+				texture = perk_resource.icon
+				
+				# Look up effect details from effects_db
+				if GameInfo.effects_db:
+					if effect1_id > 0:
+						var effect = GameInfo.effects_db.get_effect_by_id(effect1_id)
+						if effect:
+							effect1 = effect.name
+							effect1_description = effect.description
+					if effect2_id > 0:
+						var effect2_res = GameInfo.effects_db.get_effect_by_id(effect2_id)
+						if effect2_res:
+							effect2 = effect2_res.name
+							effect2_description = effect2_res.description
 
 class Talent:
 	extends MessagePackObject
@@ -502,6 +551,26 @@ var player_currency: int:
 
 func _ready():
 	print("GameInfo ready!")
+	# Load effects database first (items and perks reference these)
+	if ResourceLoader.exists("res://data/effects.tres"):
+		effects_db = load("res://data/effects.tres")
+		print("Effects database loaded: ", effects_db.effects.size(), " effects")
+	else:
+		print("Warning: effects.tres not found")
+	
+	# Load static databases
+	if ResourceLoader.exists("res://data/items.tres"):
+		items_db = load("res://data/items.tres")
+		print("Items database loaded: ", items_db.items.size(), " items")
+	else:
+		print("Warning: items.tres not found, items will use fallback textures")
+	
+	if ResourceLoader.exists("res://data/perks.tres"):
+		perks_db = load("res://data/perks.tres")
+		print("Perks database loaded: ", perks_db.perks.size(), " perks")
+	else:
+		print("Warning: perks.tres not found, perks will have no data")
+	
 	load_player_data(Websocket.mock_character_data)
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)

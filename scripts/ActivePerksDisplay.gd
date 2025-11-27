@@ -46,7 +46,24 @@ func _on_perk_hover_start(perk_icon):
 	if perk_data and tooltip_panel:
 		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
 		if tooltip_label:
-			tooltip_label.text = perk_data.perk_name + "\n\n" + perk_data.description
+			# Build tooltip with perk name and effects
+			var tooltip_text = perk_data.perk_name
+			
+			# Add effect 1 if it exists
+			if perk_data.effect1_description != "":
+				var effect1_text = perk_data.effect1_description
+				if perk_data.factor1 != 0.0:
+					effect1_text += " " + str(int(perk_data.factor1))
+				tooltip_text += "\n\n" + effect1_text
+			
+			# Add effect 2 if it exists
+			if perk_data.effect2_description != "":
+				var effect2_text = perk_data.effect2_description
+				if perk_data.factor2 != 0.0:
+					effect2_text += " " + str(int(perk_data.factor2))
+				tooltip_text += "\n" + effect2_text
+			
+			tooltip_label.text = tooltip_text
 			tooltip_panel.visible = true
 		
 		# Position tooltip above the perk icon
