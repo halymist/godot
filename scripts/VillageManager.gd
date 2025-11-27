@@ -15,6 +15,13 @@ func _ready():
 	connect_existing_buildings()
 	spawn_npcs()
 	
+	# Center scroll position on startup
+	await get_tree().process_frame
+	var village_content = village_scene.get_node("VillageContent")
+	var content_width = village_content.size.x
+	var viewport_width = village_scene.size.x
+	village_scene.scroll_horizontal = int((content_width - viewport_width) / 2.0)
+	
 	# Connect quest panel signals
 	quest_panel.quest_accepted.connect(_on_quest_accepted)
 	

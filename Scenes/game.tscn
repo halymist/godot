@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=67 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="PackedScene" uid="uid://p7jxfxdp1qfb" path="res://Scenes/NPC.tscn" id="6_ym3tv"]
 [ext_resource type="Texture2D" uid="uid://d3gicqboh0qna" path="res://assets/images/villages/village3.png" id="7_6a4tp"]
-[ext_resource type="Texture2D" uid="uid://cln4gnj3yak2h" path="res://assets/images/villages/blacksmith.png" id="7_6uxt2"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
@@ -364,14 +363,21 @@ texture = ExtResource("7_6a4tp")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Building" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("6_lmoi6")]
-layout_mode = 0
-texture = ExtResource("7_6uxt2")
+[node name="Building2" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("6_lmoi6")]
+layout_mode = 1
+anchor_left = 0.717
+anchor_top = 0.66
+anchor_right = 0.717
+anchor_bottom = 0.66
+offset_left = -74.2
+offset_top = -120.52
+offset_right = 92.8
+offset_bottom = 120.48
 building_id = "1"
 building_name = "Blacksmith"
 interior_texture = ExtResource("8_6uxt2")
 
-[node name="InteriorView" type="Control" parent="Portrait/GameScene/Home"]
+[node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -379,33 +385,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Home/InteriorView"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
-
-[node name="InteriorContent" type="Control" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer"]
+[node name="InteriorContent" type="TextureRect" parent="Portrait/GameScene/Home/InteriorView"]
+custom_minimum_size = Vector2(600, 600)
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_filter = 1
-
-[node name="Interior" type="TextureRect" parent="Portrait/GameScene/Home/InteriorView/ScrollContainer/InteriorContent"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 texture = ExtResource("8_6uxt2")
 expand_mode = 1
+stretch_mode = 6
 
 [node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling", "npc_name_label")]
 visible = false
