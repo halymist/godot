@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
 [ext_resource type="PackedScene" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="PackedScene" uid="uid://p7jxfxdp1qfb" path="res://Scenes/NPC.tscn" id="6_ym3tv"]
-[ext_resource type="Texture2D" uid="uid://bb55p258vfeei" path="res://assets/images/villages/village2.png" id="7_6a4tp"]
+[ext_resource type="Texture2D" uid="uid://d3gicqboh0qna" path="res://assets/images/villages/village3.png" id="7_6a4tp"]
 [ext_resource type="Texture2D" uid="uid://cln4gnj3yak2h" path="res://assets/images/villages/blacksmith.png" id="7_6uxt2"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
@@ -345,33 +345,24 @@ quest_panel = NodePath("QuestAccept")
 quest_slide_panel = NodePath("../../Quest")
 map_panel = NodePath("../Map")
 
-[node name="VillageView" type="Control" parent="Portrait/GameScene/Home"]
+[node name="VillageView" type="ScrollContainer" parent="Portrait/GameScene/Home"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+follow_focus = true
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
 
-[node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillageView"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="VillageContent" type="TextureRect" parent="Portrait/GameScene/Home/VillageView"]
+custom_minimum_size = Vector2(600, 600)
+layout_mode = 2
+size_flags_vertical = 3
 texture = ExtResource("7_6a4tp")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
 [node name="Building" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("6_lmoi6")]
 layout_mode = 0
