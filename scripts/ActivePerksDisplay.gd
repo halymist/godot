@@ -54,7 +54,7 @@ func _on_perk_hover_start(perk_icon):
 				var effect1_text = perk_data.effect1_description
 				if perk_data.factor1 != 0.0:
 					effect1_text += " " + str(int(perk_data.factor1))
-				tooltip_text += "\n\n" + effect1_text
+				tooltip_text += "\n" + effect1_text
 			
 			# Add effect 2 if it exists
 			if perk_data.effect2_description != "":

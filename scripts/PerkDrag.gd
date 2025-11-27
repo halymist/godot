@@ -8,24 +8,24 @@ func set_perk_data(data: GameInfo.Perk):
 		# Update the UI elements
 		var label = get_node("Label")
 		
-		# Build tooltip text with perk name and effects
-		tooltip_text = data.perk_name
+		# Build label text with perk name and effects
+		var label_text = data.perk_name
 		
 		# Add effect 1 if it exists
 		if data.effect1_description != "":
 			var effect1_text = data.effect1_description
 			if data.factor1 != 0.0:
 				effect1_text += " " + str(int(data.factor1))
-			tooltip_text += "\n" + effect1_text
+			label_text += "\n" + effect1_text
 		
 		# Add effect 2 if it exists
 		if data.effect2_description != "":
 			var effect2_text = data.effect2_description
 			if data.factor2 != 0.0:
 				effect2_text += " " + str(int(data.factor2))
-			tooltip_text += "\n" + effect2_text
+			label_text += "\n" + effect2_text
 		
-		label.text = tooltip_text
+		label.text = label_text
 		
 		var texture_rect = get_node("AspectRatioContainer/TextureRect")
 		texture_rect.texture = data.texture
