@@ -12,7 +12,6 @@ class_name QuestPanel
 
 var current_quest_data: Dictionary = {}
 
-signal quest_panel_closed()
 signal quest_accepted(quest_data: Dictionary)
 
 func _ready():
@@ -121,5 +120,5 @@ func show_quest(quest_data: Dictionary):
 
 func hide_panel():
 	visible = false
-	quest_panel_closed.emit()
+	GameInfo.set_current_panel_overlay(null)
 	print("Quest panel hidden")
