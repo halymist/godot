@@ -1071,43 +1071,87 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 script = ExtResource("10_mg4q0")
 gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Gold")
 currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
-player_name_label = NodePath("PlayerName")
-strength_label = NodePath("StatsGrid/StrengthLabel")
-stamina_label = NodePath("StatsGrid/StaminaLabel")
-agility_label = NodePath("StatsGrid/AgilityLabel")
-luck_label = NodePath("StatsGrid/LuckLabel")
-armor_label = NodePath("StatsGrid/ArmorLabel")
+player_name_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/PlayerName")
+strength_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthLabel")
+stamina_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaLabel")
+agility_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityLabel")
+luck_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckLabel")
+armor_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorLabel")
 
-[node name="PlayerName" type="Label" parent="Portrait/GameScene/Character/Stats"]
+[node name="DetailsAndStats" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
 anchor_right = 1.0
-offset_left = 10.0
-offset_top = 5.0
-offset_right = -10.0
-offset_bottom = 40.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CharacterDetails" type="Panel" parent="Portrait/GameScene/Character/Stats/DetailsAndStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.33
+theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
+
+[node name="DetailsGrid" type="GridContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerName" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 22
 text = "Name"
-horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StatsGrid" type="GridContainer" parent="Portrait/GameScene/Character/Stats"]
+[node name="RankLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
+theme_override_fonts/font = ExtResource("8_exi56")
+theme_override_font_sizes/font_size = 18
+text = "Novice (20165)"
+vertical_alignment = 1
+
+[node name="GuildLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
+theme_override_fonts/font = ExtResource("8_exi56")
+theme_override_font_sizes/font_size = 18
+text = "Guild"
+vertical_alignment = 1
+
+[node name="ProfessionLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
+theme_override_fonts/font = ExtResource("8_exi56")
+theme_override_font_sizes/font_size = 18
+text = "Profession"
+vertical_alignment = 1
+
+[node name="StatsContainer" type="Panel" parent="Portrait/GameScene/Character/Stats/DetailsAndStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.67
+theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
+
+[node name="StatsGrid" type="GridContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = 45.0
+offset_top = 5.0
 offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 columns = 2
 
-[node name="StrengthLabel" type="Label" parent="Portrait/GameScene/Character/Stats/StatsGrid"]
+[node name="StrengthLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -1115,7 +1159,7 @@ theme_override_font_sizes/font_size = 22
 text = "Strength: 10"
 vertical_alignment = 1
 
-[node name="StaminaLabel" type="Label" parent="Portrait/GameScene/Character/Stats/StatsGrid"]
+[node name="StaminaLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -1123,7 +1167,7 @@ theme_override_font_sizes/font_size = 22
 text = "Stamina: 10"
 vertical_alignment = 1
 
-[node name="AgilityLabel" type="Label" parent="Portrait/GameScene/Character/Stats/StatsGrid"]
+[node name="AgilityLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -1131,7 +1175,7 @@ theme_override_font_sizes/font_size = 22
 text = "Agility: 10"
 vertical_alignment = 1
 
-[node name="LuckLabel" type="Label" parent="Portrait/GameScene/Character/Stats/StatsGrid"]
+[node name="LuckLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -1139,7 +1183,7 @@ theme_override_font_sizes/font_size = 22
 text = "Luck: 10"
 vertical_alignment = 1
 
-[node name="ArmorLabel" type="Label" parent="Portrait/GameScene/Character/Stats/StatsGrid"]
+[node name="ArmorLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
