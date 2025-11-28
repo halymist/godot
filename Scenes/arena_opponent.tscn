@@ -19,7 +19,7 @@ shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 8
 shadow_offset = Vector2(3, 3)
 
-[node name="ArenaOpponent" type="Panel" node_paths=PackedStringArray("image_label", "name_label", "strength_label", "constitution_label", "dexterity_label", "luck_label", "armor_label", "perks_container", "tooltip_panel")]
+[node name="ArenaOpponent" type="Panel" node_paths=PackedStringArray("image_label", "name_label", "rank_label", "strength_label", "constitution_label", "dexterity_label", "luck_label", "armor_label", "perks_container", "tooltip_panel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,6 +30,7 @@ script = ExtResource("1_arena_opp")
 perk_mini_scene = ExtResource("2_jtndt")
 image_label = NodePath("AspectRatioContainer/ImagePanel/ImageLabel")
 name_label = NodePath("EnemyName")
+rank_label = NodePath("RankLabel")
 strength_label = NodePath("StatsContainer/StrengthLabel")
 constitution_label = NodePath("StatsContainer/ConstitutionLabel")
 dexterity_label = NodePath("StatsContainer/DexterityLabel")
@@ -44,14 +45,31 @@ anchors_preset = -1
 anchor_left = 0.1
 anchor_top = 0.05
 anchor_right = 0.9
-anchor_bottom = 0.2
+anchor_bottom = 0.15
 grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 28
 text = "ENEMY 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RankLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.15
+anchor_right = 0.9
+anchor_bottom = 0.2
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Novice (8500)"
 horizontal_alignment = 1
 vertical_alignment = 1
 

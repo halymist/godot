@@ -427,6 +427,9 @@ class GameCurrentPlayer:
 	var talent_points: int = 0
 	var perk_points: int = 0
 	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
+	var guild: int = 0  # Guild ID (1=Mercantile, 2=Warriors, 3=Mages, etc.)
+	var rank: int = 0  # Rank value (determines rank tier like Novice, Veteran, etc.)
+	var profession: int = 0  # Profession ID (1=Herbalist, 2=Blacksmith, etc.)
 	
 	# Gold with automatic event emission
 	var _gold: int = 0
@@ -467,7 +470,10 @@ class GameCurrentPlayer:
 		"destination": "destination",
 		"slide": "slide",
 		"slides": "slides",
-		"quest_log": "quest_log"
+		"quest_log": "quest_log",
+		"guild": "guild",
+		"rank": "rank",
+		"profession": "profession"
 	}
 	
 	func load_from_msgpack(data: Dictionary):
@@ -505,13 +511,63 @@ class GameCurrentPlayer:
 		stats["talent_points"] = talent_points
 		stats["perk_points"] = perk_points
 		return stats
+	
+	# Helper functions to convert IDs to display names
+	func get_guild_name() -> String:
+		match guild:
+			1: return "Mercantile"
+			2: return "Warriors"
+			3: return "Mages"
+			_: return "None"
+	
+	func get_rank_name() -> String:
+		# For now always return Novice, later we can add logic based on rank value
+		return "Novice"
+	
+	func get_profession_name() -> String:
+		match profession:
+			1: return "Herbalist"
+			2: return "Blacksmith"
+			3: return "Enchanter"
+			4: return "Warrior"
+			_: return "None"
 
 class GameArenaOpponent:
-	extends GamePlayer	
-	# ArenaOpponent has no additional fields beyond Player
+	extends GamePlayer
+	
+	var rank: int = 0  # Rank value for arena opponents
+	
+	const ARENA_OPPONENT_MSGPACK_MAP = {
+		# Base fields
+		"name": "name",
+		"strength": "strength",
+		"constitution": "constitution",
+		"dexterity": "dexterity",
+		"luck": "luck",
+		"armor": "armor",
+		# Arena opponent specific
+		"rank": "rank"
+	}
 	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):
 		super._init(data, game_info)
+	
+	func load_from_msgpack(data: Dictionary):
+		# Load using arena opponent mapping
+		var msgpack_map = ARENA_OPPONENT_MSGPACK_MAP
+		for msgpack_key in msgpack_map:
+			if data.has(msgpack_key):
+				var local_key = msgpack_map[msgpack_key]
+				set(local_key, data[msgpack_key])
+		
+		# Load arrays
+		load_bag_slots(data)
+		load_perks(data)
+		load_talents(data)
+	
+	func get_rank_name() -> String:
+		# Same logic as current player for now
+		return "Novice"
 
 # GameInfo main class properties
 var current_player: GameCurrentPlayer

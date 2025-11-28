@@ -524,7 +524,6 @@ text = "You are already on a quest."
 horizontal_alignment = 1
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -606,6 +605,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1058,7 +1058,7 @@ script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 tooltip_panel = NodePath("../../../../PerkTooltip")
 
-[node name="Stats" type="Panel" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
+[node name="Stats" type="Panel" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "rank_label", "guild_label", "profession_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -1072,6 +1072,9 @@ script = ExtResource("10_mg4q0")
 gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Gold")
 currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
 player_name_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/PlayerName")
+rank_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/RankLabel")
+guild_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildLabel")
+profession_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionLabel")
 strength_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthLabel")
 stamina_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaLabel")
 agility_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityLabel")
@@ -1121,7 +1124,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
 theme_override_font_sizes/font_size = 18
-text = "Guild"
+text = "Mercantile"
 vertical_alignment = 1
 
 [node name="ProfessionLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
@@ -1129,7 +1132,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
 theme_override_font_sizes/font_size = 18
-text = "Profession"
+text = "Herbalist"
 vertical_alignment = 1
 
 [node name="StatsContainer" type="Panel" parent="Portrait/GameScene/Character/Stats/DetailsAndStats"]

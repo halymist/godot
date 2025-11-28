@@ -3,6 +3,7 @@ extends Panel
 @export var perk_mini_scene: PackedScene
 @export var enemy_id: int = 1
 var enemy_name: String = "Enemy"
+var enemy_rank: int = 0
 var enemy_strength: int = 10
 var enemy_constitution: int = 10
 var enemy_dexterity: int = 10
@@ -11,6 +12,7 @@ var enemy_armor: int = 0
 
 @export var image_label: Label
 @export var name_label: Label
+@export var rank_label: Label
 @export var strength_label: Label
 @export var constitution_label: Label
 @export var dexterity_label: Label
@@ -26,6 +28,7 @@ func _ready():
 
 func _update_display():
 	name_label.text = enemy_name.to_upper()
+	rank_label.text = "Novice (" + str(enemy_rank) + ")"
 	image_label.text = "Enemy\nImage\n" + str(enemy_id)
 	strength_label.text = "STR: " + str(enemy_strength)
 	constitution_label.text = "CON: " + str(enemy_constitution)
@@ -49,6 +52,7 @@ func set_opponent_data(opponent):
 	opponent_data = opponent
 	if opponent:
 		var total_stats = opponent.get_total_stats()
+		enemy_rank = opponent.rank
 		set_enemy_data(enemy_id, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
 
 func _update_perks_display():
@@ -79,8 +83,14 @@ func _update_perks_display():
 				var perk_icon = perk_mini_scene.instantiate()
 				print("DEBUG: Created perk_icon: ", perk_icon)
 				
+				# Set the perk texture if available
+				var texture_rect = perk_icon.get_node("TextureRect")
+				if texture_rect and perk.texture:
+					texture_rect.texture = perk.texture
+				
 				# Store perk data for tooltip
-				perk_icon.set_meta("perk_data", perk)		
+				perk_icon.set_meta("perk_data", perk)
+				perk_icon.mouse_filter = Control.MOUSE_FILTER_PASS
 				perk_icon.mouse_entered.connect(_on_perk_hover_start.bind(perk_icon))
 				perk_icon.mouse_exited.connect(_on_perk_hover_end)
 				

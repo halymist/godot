@@ -3,6 +3,9 @@ extends Control
 @export var gold_label: Label
 @export var currency_label: Label
 @export var player_name_label: Label
+@export var rank_label: Label
+@export var guild_label: Label
+@export var profession_label: Label
 @export var strength_label: Label
 @export var stamina_label: Label
 @export var agility_label: Label
@@ -32,6 +35,9 @@ func _on_stats_changed(_stats: Dictionary):
 	print("Stats changed: ", _stats)
 	var total_stats = GameInfo.get_total_stats()
 	player_name_label.text = str(total_stats.name)
+	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
+	guild_label.text = GameInfo.current_player.get_guild_name()
+	profession_label.text = GameInfo.current_player.get_profession_name()
 	strength_label.text = "STRENGTH: " + str(total_stats.strength)
 	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
 	agility_label.text = "AGILITY: " + str(total_stats.agility)
@@ -42,6 +48,9 @@ func _on_bag_slots_changed():
 	print("Bag slots changed - updating stats display")
 	var total_stats = GameInfo.get_total_stats()
 	player_name_label.text = str(total_stats.name)
+	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
+	guild_label.text = GameInfo.current_player.get_guild_name()
+	profession_label.text = GameInfo.current_player.get_profession_name()
 	strength_label.text = "STRENGTH: " + str(total_stats.strength)
 	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
 	agility_label.text = "AGILITY: " + str(total_stats.agility)
