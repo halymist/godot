@@ -47,70 +47,89 @@ func spawn_npcs(building_id: int = 0):
 	if not npc_prefab:
 		print("No NPC prefab assigned")
 		return
+	
+	if not GameInfo.npcs_db:
+		print("No NPC database loaded")
+		return
 		
 	var village_content = village_scene.get_node("VillageContent")
 	
-	# Get NPC data from GameInfo
-	var npcs_data = GameInfo.npcs
+	# Get NPCs to spawn based on daily quests and quest log
+	var daily_quests = GameInfo.current_player.daily_quests if GameInfo.current_player else []
+	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
+	var npcs_to_spawn = GameInfo.npcs_db.get_npcs_for_quests(daily_quests, quest_log, building_id)
 	
-	# Spawn NPCs based on GameInfo data, filtered by building_id
-	for i in range(npcs_data.size()):
-		var npc_data = npcs_data[i]
-		var npc_building_id = npc_data.get("building", 0)
+	print("Spawning ", npcs_to_spawn.size(), " NPCs for building ", building_id)
+	
+	# Spawn each NPC at their designated spot
+	for npc_resource in npcs_to_spawn:
+		# Find the spot node
+		var spot_name = "Spot" + str(npc_resource.spot)
+		var spot_node = village_content.get_node_or_null(spot_name)
 		
-		# Only spawn NPCs that match the requested building_id
-		if npc_building_id != building_id:
-			continue
-		
-		# Check dependency requirements (if NPC requires a quest slide to be visited)
-		var dependency_quest = npc_data.get("dependency_quest", null)
-		var dependency_slide = npc_data.get("dependency_slide", null)
-		if dependency_quest != null and dependency_slide != null:
-			# This NPC requires a specific quest slide to be visited
-			if not GameInfo.has_visited_quest_slide(dependency_quest, dependency_slide):
-				print("Skipping NPC (dependency not met): ", npc_data.get("name", "Unknown"), " (Requires Quest ", dependency_quest, " Slide ", dependency_slide, ")")
-				continue
-		
-		# Skip NPCs whose quests are completed
-		var npc_quest_id = npc_data.get("questid", null)
-		if npc_quest_id != null and GameInfo.is_quest_completed(npc_quest_id):
-			print("Skipping NPC with completed quest: ", npc_data.get("name", "Unknown"), " (Quest ID: ", npc_quest_id, ")")
+		if not spot_node:
+			print("Warning: Spot node '", spot_name, "' not found for NPC '", npc_resource.name, "'")
 			continue
 		
 		# Instance the NPC prefab
 		var npc_instance = npc_prefab.instantiate()
 		
-		# Get village content size for anchor-based positioning
-		var content_size = village_content.size
-		if content_size == Vector2.ZERO:
-			content_size = village_content.custom_minimum_size
+		# Position and scale from spot
+		npc_instance.position = spot_node.position
+		npc_instance.scale = spot_node.scale
 		
-		# Convert anchor-based position (0.0-1.0) to actual pixels
-		var anchor_x = npc_data.get("xpos", randf_range(0.1, 0.9))  # Default random anchor
-		var anchor_y = npc_data.get("ypos", randf_range(0.1, 0.8))  # Default random anchor
-		var pixel_x = anchor_x * content_size.x
-		var pixel_y = anchor_y * content_size.y
-		npc_instance.position = Vector2(pixel_x, pixel_y)
+		# Convert NpcResource to dictionary format for set_npc_data
+		# Find appropriate dialogue based on quest state
+		var dialogue_entry = get_appropriate_dialogue(npc_resource, quest_log)
 		
-		# Convert size multipliers to actual pixels (1.0 = base size of 60x80)
-		var base_width = 60.0
-		var base_height = 80.0
-		var width_multiplier = npc_data.get("width", 1.0)
-		var height_multiplier = npc_data.get("height", 1.0)
-		var pixel_width = base_width * width_multiplier
-		var pixel_height = base_height * height_multiplier
-		npc_instance.size = Vector2(pixel_width, pixel_height)
+		# Extract portrait filename (remove path and extension)
+		var portrait_name = ""
+		if npc_resource.portrait:
+			var portrait_path = npc_resource.portrait.resource_path
+			portrait_name = portrait_path.get_file().get_basename()
 		
-		# Set the NPC data (texture is handled in NPC.gd)
+		# Get quest name if this is a quest dialogue
+		var quest_name = ""
+		if dialogue_entry and dialogue_entry.isQuest:
+			var quest_data = GameInfo.get_quest_data(dialogue_entry.questID)
+			if quest_data:
+				quest_name = quest_data.get("quest_name", "Unknown Quest")
+		
+		var npc_data = {
+			"name": npc_resource.name,
+			"asset": npc_resource.asset.resource_path if npc_resource.asset else "",
+			"portrait": portrait_name,
+			"dialogue": dialogue_entry.dialogue if dialogue_entry else "...",
+			"questid": dialogue_entry.questID if dialogue_entry and dialogue_entry.isQuest else null,
+			"questname": quest_name,
+			"building": npc_resource.building_id
+		}
+		
+		# Set the NPC data
 		npc_instance.set_npc_data(npc_data)
-		
-		# NPC will emit global signal through GameInfo - no connection needed
-		print("NPC will use global signal: ", npc_data.get("name", "Unknown"), " in building ", building_id)
 		
 		# Add to village
 		village_content.add_child(npc_instance)
 		
-		print("Spawned NPC: ", npc_data.get("name", "Unknown"), " in building ", building_id, " at anchor (", anchor_x, ", ", anchor_y, ") = pixels (", pixel_x, ", ", pixel_y, ")")
+		print("Spawned NPC: ", npc_resource.name, " at spot ", npc_resource.spot, " in building ", building_id)
+
+func get_appropriate_dialogue(npc_resource: NpcResource, quest_log: Array) -> DialogueEntry:
+	"""Find the appropriate dialogue for the NPC based on quest state"""
+	for dialogue in npc_resource.dialogues:
+		var quest_id = dialogue.questID
+		var stage = dialogue.stage
+		
+		# Check if player is at this quest stage
+		for quest_entry in quest_log:
+			if quest_entry.get("quest_id", 0) == quest_id:
+				var slides = quest_entry.get("slides", [])
+				if stage in slides or (stage == 0 and slides.is_empty()):
+					return dialogue
+	
+	# Return first dialogue as default if no match
+	if npc_resource.dialogues.size() > 0:
+		return npc_resource.dialogues[0]
+	return null
 
 func _on_npc_clicked(npc):
 	print("=== VillageManager._on_npc_clicked() CALLED ===")

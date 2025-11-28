@@ -15,6 +15,11 @@ var mock_character_data = {
 	"guild": 1,
 	"rank": 15486,
 	"profession": 1,
+	"daily_quests": [1, 2, 3],
+	"quest_log": [
+		{"quest_id": 1, "slides": [1], "finished": false},
+		{"quest_id": 2, "slides": [1, 2], "finished": false}
+	],
 	"gold": 1000,
 	"currency": 50,
 	"traveling": null,
@@ -192,132 +197,7 @@ var mock_arena_opponents = [
 	}
 ]
 
-# Mock NPC data with proper NpcInfo structure
-var mock_npcs = [
-	{
-		"name": "Herald",
-		"xpos": 0.2,
-		"ypos": 0.3,
-		"width": 1.0,
-		"height": 1.0,
-		"dialogue": "Welcome, brave adventurer! The kingdom needs your help! Welcome, brave adventurer! The kingdom needs your help!",
-		"questid": null,
-		"questname": null,
-		"building": 0,
-		"asset": "herald",
-		"portrait": "npc_portrait"
-	},
-	{
-		"name": "Merchant Gareth",
-		"xpos": 0.4,
-		"ypos": 0.4,
-		"width": 1.0,
-		"height": 1.0,
-		"dialogue": "Fine wares and rare items for sale! Come see what I have!",
-		"questid": 1,
-		"questname": "Delivery Quest",
-		"building": 0,
-		"asset": "merchant",
-		"portrait": "npc_portrait"
-	},
-	{
-		"name": "Merchant Gareth",
-		"xpos": 0.4,
-		"ypos": 0.4,
-		"width": 1.0,
-		"height": 1.0,
-		"dialogue": "The delivery was successful! You're a reliable courier indeed.",
-		"questid": null,
-		"questname": null,
-		"building": 0,
-		"asset": "merchant",
-		"portrait": "npc_portrait",
-		"dependency_quest": 1,
-		"dependency_slide": 1
-	},
-	{
-		"name": "Guard Captain",
-		"xpos": 0.6,
-		"ypos": 0.25,
-		"width": 1.2,
-		"height": 1.1,
-		"dialogue": "Stay vigilant, the kingdom is under threat from bandits.",
-		"questid": 2,
-		"questname": "Bandit Hunt",
-		"building": 0,
-		"asset": "guard",
-		"portrait": "npc_portrait"
-	},
-	{
-		"name": "Guard Captain",
-		"xpos": 0.6,
-		"ypos": 0.25,
-		"width": 1.2,
-		"height": 1.1,
-		"dialogue": "Thank you for your help, brave warrior! The roads are safer thanks to you.",
-		"questid": null,
-		"questname": null,
-		"building": 0,
-		"asset": "guard",
-		"portrait": "npc_portrait",
-		"dependency_quest": 2,
-		"dependency_slide": 2
-	},
-	{
-		"name": "Alchemist Zara",
-		"xpos": 0.3,
-		"ypos": 0.45,
-		"width": 1.0,
-		"height": 1.0,
-		"dialogue": "Potions for sale! Healing, mana, and more!",
-		"questid": null,
-		"questname": null,
-		"building": 0,
-		"asset": "alchemist",
-		"portrait": "npc_portrait"
-	},
-	{
-		"name": "Innkeeper Molly",
-		"xpos": 0.25,
-		"ypos": 0.55,
-		"width": 1.0,
-		"height": 1.0,
-		"dialogue": "Rooms available for rent! Come rest your weary heads.",
-		"questid": null,
-		"questname": null,
-		"building": 0,
-		"asset": "innkeeper",
-		"portrait": "npc_portrait"
-	},
-	{
-		"name": "Blacksmith Jane",
-		"xpos": 0.5,
-		"ypos": 0,
-		"width": 4.0,
-		"height": 4.0,
-		"dialogue": "Weapons and armor repaired! Come see me at the forge.",
-		"questid": 3,
-		"questname": "Metal Collection",
-		"building": 1,
-		"asset": "blacksmith",
-		"portrait": "npc_portrait"
-	},
-	{
-		"name": "Blacksmith Jane",
-		"xpos": 0.5,
-		"ypos": 0,
-		"width": 4.0,
-		"height": 4.0,
-		"dialogue": "Those metals you brought were perfect! I'm finishing the armor now.",
-		"questid": null,
-		"questname": null,
-		"building": 1,
-		"asset": "blacksmith",
-		"portrait": "npc_portrait",
-		"dependency_quest": 3,
-		"dependency_slide": 1
-	}
-]
+# NPCs are now client-side resources - server only sends daily_quests array in character data
 
 # Mock chat data
 var mock_chat_messages = [

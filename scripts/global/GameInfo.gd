@@ -7,6 +7,7 @@ extends Node
 var effects_db: EffectDatabase = null
 var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
+var npcs_db: NpcDatabase = null
 
 # Signals for UI updates
 signal gold_changed(new_gold)
@@ -430,6 +431,7 @@ class GameCurrentPlayer:
 	var guild: int = 0  # Guild ID (1=Mercantile, 2=Warriors, 3=Mages, etc.)
 	var rank: int = 0  # Rank value (determines rank tier like Novice, Veteran, etc.)
 	var profession: int = 0  # Profession ID (1=Herbalist, 2=Blacksmith, etc.)
+	var daily_quests: Array = []  # Array of quest IDs available today
 	
 	# Gold with automatic event emission
 	var _gold: int = 0
@@ -473,7 +475,8 @@ class GameCurrentPlayer:
 		"quest_log": "quest_log",
 		"guild": "guild",
 		"rank": "rank",
-		"profession": "profession"
+		"profession": "profession",
+		"daily_quests": "daily_quests"
 	}
 	
 	func load_from_msgpack(data: Dictionary):
@@ -627,13 +630,18 @@ func _ready():
 	else:
 		print("Warning: perks.tres not found, perks will have no data")
 	
+	if ResourceLoader.exists("res://data/npcs.tres"):
+		npcs_db = load("res://data/npcs.tres")
+		print("NPCs database loaded: ", npcs_db.npcs.size(), " NPCs")
+	else:
+		print("Warning: npcs.tres not found, NPCs will not spawn")
+	
 	load_player_data(Websocket.mock_character_data)
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)
 	load_combat_logs_data(Websocket.mock_combat_logs)
-	load_npcs_data(Websocket.mock_npcs)
+	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
 	load_all_quests_data(Websocket.mock_quests)  # Load all quests by ID
-	load_quest_log_data(Websocket.mock_quest_log)  # Load quest log
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 
