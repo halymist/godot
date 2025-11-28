@@ -374,7 +374,7 @@ func _update_character_active_perks():
 	# Find and update the active perks display in character screen
 	var character_panel = get_tree().root.get_node("Game/Portrait/GameScene/Character")
 	if character_panel:
-		var active_perks_display = character_panel.get_node("ActivePerks")
+		var active_perks_display = character_panel.get_node("ActivePerksBackground/ActivePerks")
 		if active_perks_display and active_perks_display.has_method("update_active_perks"):
 			active_perks_display.update_active_perks()
 

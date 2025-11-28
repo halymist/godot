@@ -117,7 +117,7 @@ func show_panel(panel: Control):
 	
 	# Update active perks display when character panel is shown
 	if panel == character_panel:
-		var active_perks_display = character_panel.get_node("ActivePerks")
+		var active_perks_display = character_panel.get_node("ActivePerksBackground/ActivePerks")
 		if active_perks_display and active_perks_display.has_method("update_active_perks"):
 			active_perks_display.update_active_perks()
 
