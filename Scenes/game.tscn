@@ -619,7 +619,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.3
 anchor_right = 1.0
-anchor_bottom = 0.8
+anchor_bottom = 0.88
 grow_horizontal = 2
 alignment = 1
 script = ExtResource("6_iivbl")
@@ -728,25 +728,6 @@ slot_id = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-
-[node name="Panel" type="Panel" parent="Portrait/GameScene/Character/Equip/Middle"]
-layout_mode = 2
-
-[node name="Name" type="Label" parent="Portrait/GameScene/Character/Equip/Middle/Panel"]
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -39.5
-offset_right = 39.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 30
-text = "Name"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle"]
 layout_mode = 2
@@ -916,7 +897,7 @@ slot_id = 7
 [node name="Bag" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.8
+anchor_top = 0.88
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -1089,12 +1070,28 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 script = ExtResource("10_mg4q0")
 gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Gold")
 currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
-player_name_label = NodePath("../Equip/Middle/Panel/Name")
+player_name_label = NodePath("PlayerName")
 strength_label = NodePath("StatsGrid/StrengthLabel")
 stamina_label = NodePath("StatsGrid/StaminaLabel")
 agility_label = NodePath("StatsGrid/AgilityLabel")
 luck_label = NodePath("StatsGrid/LuckLabel")
 armor_label = NodePath("StatsGrid/ArmorLabel")
+
+[node name="PlayerName" type="Label" parent="Portrait/GameScene/Character/Stats"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
+theme_override_fonts/font = ExtResource("8_exi56")
+theme_override_font_sizes/font_size = 26
+text = "Name"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="StatsGrid" type="GridContainer" parent="Portrait/GameScene/Character/Stats"]
 layout_mode = 1
@@ -1102,7 +1099,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = 10.0
+offset_top = 45.0
 offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
