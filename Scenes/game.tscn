@@ -606,7 +606,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -618,8 +617,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
 [node name="Equip" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
 anchors_preset = -1
+anchor_top = 0.3
 anchor_right = 1.0
-anchor_bottom = 0.5
+anchor_bottom = 0.8
 grow_horizontal = 2
 alignment = 1
 script = ExtResource("6_iivbl")
@@ -916,9 +916,9 @@ slot_id = 7
 [node name="Bag" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.5
+anchor_top = 0.8
 anchor_right = 1.0
-anchor_bottom = 0.7
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
@@ -1058,44 +1058,29 @@ slot_id = 14
 [node name="ActivePerksBackground" type="Panel" parent="Portrait/GameScene/Character"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.85
+anchor_top = 0.2
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 27.5
-offset_right = -10.0
-offset_bottom = -10.0
+anchor_bottom = 0.3
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 
-[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("tooltip_panel")]
+[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameScene/Character/ActivePerksBackground" node_paths=PackedStringArray("tooltip_panel")]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.85
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 37.5
-offset_right = -20.0
-offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
-tooltip_panel = NodePath("../../../PerkTooltip")
+tooltip_panel = NodePath("../../../../PerkTooltip")
 
 [node name="Stats" type="Panel" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.022
-anchor_top = 0.679
-anchor_right = 0.85
-anchor_bottom = 0.85
-offset_left = 0.0999994
-offset_top = 0.22998
-offset_right = -9.5
-offset_bottom = 21.5
+anchor_right = 1.0
+anchor_bottom = 0.2
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
