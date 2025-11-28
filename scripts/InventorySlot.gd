@@ -42,38 +42,46 @@ func _can_drop_data(_pos, data):
 
 func _drop_data(_pos, data):
 	# Extract item and source container from drag package
-	var item = data["item"]
+	var dragged_item = data["item"]
 	var source_container = data["source_container"]
+	var source_slot_id = source_container.slot_id if source_container else -1
 	
 	# Update GameInfo directly based on the operation
 	if not is_slot_empty():
 		# Swapping items
-		var existing_item_data = get_item_data()
+		var existing_item = get_item_data()
 		
-		# Update slot IDs for both items
-		item.bag_slot_id = slot_id
-		if existing_item_data:
-			existing_item_data.bag_slot_id = source_container.slot_id if source_container else -1
+		# Find the actual item instances in GameInfo.bag_slots by their current bag_slot_id
+		# This is more reliable than matching by id (which can have duplicates)
+		var dragged_item_in_array = null
+		var existing_item_in_array = null
 		
-		# Update GameInfo - find and update both items
 		for game_item in GameInfo.current_player.bag_slots:
-			if game_item.id == item.id:
-				game_item.bag_slot_id = slot_id
-			elif existing_item_data and game_item.id == existing_item_data.id:
-				game_item.bag_slot_id = source_container.slot_id if source_container else -1
+			if game_item.bag_slot_id == source_slot_id and dragged_item_in_array == null:
+				# This is the item being dragged from source
+				dragged_item_in_array = game_item
+			elif game_item.bag_slot_id == slot_id and existing_item_in_array == null:
+				# This is the item currently in this slot
+				existing_item_in_array = game_item
+		
+		# Swap their bag_slot_ids
+		if dragged_item_in_array:
+			dragged_item_in_array.bag_slot_id = slot_id
+		if existing_item_in_array:
+			existing_item_in_array.bag_slot_id = source_slot_id
 
-		place_item_in_slot(item)
+		place_item_in_slot(dragged_item)
 		if source_container:
-			source_container.place_item_in_slot(existing_item_data)
+			source_container.place_item_in_slot(existing_item)
 	else:
 		# Moving to empty slot
-		item.bag_slot_id = slot_id
+		# Find the item by its current slot_id
 		for game_item in GameInfo.current_player.bag_slots:
-			if game_item.id == item.id:
+			if game_item.bag_slot_id == source_slot_id:
 				game_item.bag_slot_id = slot_id
 				break
 				
-		place_item_in_slot(item)
+		place_item_in_slot(dragged_item)
 		if source_container:
 			source_container.clear_slot()
 
