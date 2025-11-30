@@ -418,7 +418,7 @@ class GameCurrentPlayer:
 	extends GamePlayer
 	
 	# Current player specific properties with automatic events
-	var location: String = ""
+	var location: int = 1
 	var traveling: int = 0  # Unix timestamp when travel ends, 0 if not traveling
 	var traveling_destination: Variant = null
 	var dungeon: bool = false

@@ -1,26 +1,33 @@
 extends Panel
 
-@export var village_scene: Control
-@export var interior_scene: Control
+# Export references to village containers
+# Structure: Home -> Village1, Village2, etc. (each contains VillageView + InteriorView)
+@export var villages_container: Control  # Parent node containing all village nodes
 @export var npc_prefab: PackedScene
 @export var quest_panel: Control  # Old accept quest panel
 @export var quest_slide_panel: Control  # New quest slide panel (DynamicOptionsPanel)
 @export var map_panel: Control
 
+var current_village_node: Control = null  # Current active village (Village1, Village2, etc.)
 var current_building: Building = null
 var is_in_interior: bool = false
 
 func _ready():
+	# Set current village based on player location
+	set_active_village(GameInfo.current_player.location if GameInfo.current_player else 1)
+	
 	show_village()
 	connect_existing_buildings()
 	spawn_npcs()
 	
 	# Center scroll position on startup
 	await get_tree().process_frame
-	var village_content = village_scene.get_node("VillageContent")
-	var content_width = village_content.size.x
-	var viewport_width = village_scene.size.x
-	village_scene.scroll_horizontal = int((content_width - viewport_width) / 2.0)
+	if current_village_node:
+		var village_view = current_village_node.get_node("VillageView")
+		var village_content = village_view.get_node("VillageContent")
+		var content_width = village_content.size.x
+		var viewport_width = village_view.size.x
+		village_view.scroll_horizontal = int((content_width - viewport_width) / 2.0)
 	
 	# Connect quest panel signals
 	quest_panel.quest_accepted.connect(_on_quest_accepted)
@@ -33,8 +40,38 @@ func _ready():
 	GameInfo.quest_completed.connect(_on_quest_completed)
 	print("Connected to quest completed signal")
 
+func set_active_village(location_id: int):
+	"""Set the active village based on location integer (1, 2, 3, etc.)"""
+	if not villages_container:
+		print("Error: villages_container not assigned")
+		return
+	
+	# Hide all villages first
+	for village in villages_container.get_children():
+		village.visible = false
+	
+	# Show the village matching the location ID
+	var village_name = "Village" + str(location_id)
+	var village_node = villages_container.get_node_or_null(village_name)
+	
+	if village_node:
+		village_node.visible = true
+		current_village_node = village_node
+		print("Switched to village: ", village_name)
+	else:
+		print("Warning: Village node '", village_name, "' not found for location ", location_id)
+		# Fallback to first village if exists
+		if villages_container.get_child_count() > 0:
+			current_village_node = villages_container.get_child(0)
+			current_village_node.visible = true
+			print("Using fallback village: ", current_village_node.name)
+
 func connect_existing_buildings():
-	var village_content = village_scene.get_node("VillageContent")
+	if not current_village_node:
+		return
+		
+	var village_view = current_village_node.get_node("VillageView")
+	var village_content = village_view.get_node("VillageContent")
 	
 	# Connect signals for existing buildings in the scene
 	for child in village_content.get_children():
@@ -51,8 +88,13 @@ func spawn_npcs(building_id: int = 0):
 	if not GameInfo.npcs_db:
 		print("No NPC database loaded")
 		return
+	
+	if not current_village_node:
+		print("No current village node")
+		return
 		
-	var village_content = village_scene.get_node("VillageContent")
+	var village_view = current_village_node.get_node("VillageView")
+	var village_content = village_view.get_node("VillageContent")
 	
 	# Get NPCs to spawn based on daily quests and quest log
 	var daily_quests = GameInfo.current_player.daily_quests if GameInfo.current_player else []
@@ -220,7 +262,7 @@ func redraw_npcs():
 		parent_container = current_building.interior_content
 		building_id = int(current_building.building_id)
 	else:
-		parent_container = village_scene.get_node("VillageContent")
+		parent_container = current_village_node.get_node("VillageView/VillageContent")
 		building_id = 0
 	
 	# Remove all NPC nodes from current location
@@ -246,8 +288,12 @@ func _on_building_clicked(building: Building):
 
 func show_village():
 	is_in_interior = false
-	village_scene.visible = true
-	interior_scene.visible = false
+	
+	if current_village_node:
+		var village_view = current_village_node.get_node("VillageView")
+		var interior_view = current_village_node.get_node("InteriorView")
+		village_view.visible = true
+		interior_view.visible = false
 	
 	# Hide current building's interior content
 	if current_building and current_building.interior_content:
@@ -257,8 +303,13 @@ func show_village():
 
 func show_interior(building: Building = null):
 	is_in_interior = true
-	village_scene.visible = false
-	interior_scene.visible = true
+	
+	if current_village_node:
+		var village_view = current_village_node.get_node("VillageView")
+		var interior_view = current_village_node.get_node("InteriorView")
+		village_view.visible = false
+		interior_view.visible = true
+	
 	current_building = building
 	
 	if building and building.interior_content:
