@@ -7,7 +7,7 @@ extends Panel
 @export var quest_slide_panel: Control  # New quest slide panel (DynamicOptionsPanel)
 @export var map_panel: Control
 
-var current_building: String = ""
+var current_building: Building = null
 var is_in_interior: bool = false
 
 func _ready():
@@ -178,12 +178,10 @@ func redraw_npcs():
 			child.queue_free()
 	
 	# If in interior, redraw building NPCs
-	if is_in_interior and current_building != "":
+	if is_in_interior and current_building:
 		# Find the building and trigger its respawn
-		for child in village_content.get_children():
-			if child is Building and child.building_id == current_building:
-				child.spawn_building_npcs()
-				return
+		current_building.spawn_building_npcs()
+		return
 	
 	# Otherwise redraw village NPCs
 	spawn_npcs(0)
@@ -197,26 +195,37 @@ func handle_back_navigation() -> bool:
 	return false
 
 func _on_building_clicked(building: Building):
-	current_building = building.building_id
+	current_building = building
 	show_interior(building)
-	print("Entered building: ", building.building_id)
+	print("Entered building: ", building.building_name)
 
 func show_village():
 	is_in_interior = false
 	village_scene.visible = true
 	interior_scene.visible = false
-	current_building = ""
+	
+	# Hide current building's interior content
+	if current_building and current_building.interior_content:
+		current_building.interior_content.visible = false
+	
+	current_building = null
 
 func show_interior(building: Building = null):
 	is_in_interior = true
 	village_scene.visible = false
 	interior_scene.visible = true
+	current_building = building
 	
-	# Let the building handle its own interior setup
-	if building:
-		building.show_interior()
+	if building and building.interior_content:
+		# Show this building's interior content
+		building.interior_content.visible = true
+		
 		# Spawn NPCs for this building
 		building.spawn_building_npcs()
+		
+		print("Showing interior for: ", building.building_name)
+	else:
+		print("Warning: No interior_content assigned to building")
 	
 	print("Inside building")
 

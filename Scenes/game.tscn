@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
-[ext_resource type="PackedScene" path="res://Scenes/Building.tscn" id="6_lmoi6"]
+[ext_resource type="PackedScene" uid="uid://d3fba85yq0umu" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="PackedScene" uid="uid://p7jxfxdp1qfb" path="res://Scenes/NPC.tscn" id="6_ym3tv"]
 [ext_resource type="Texture2D" uid="uid://d3gicqboh0qna" path="res://assets/images/villages/village3.png" id="7_6a4tp"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
@@ -386,8 +386,9 @@ position = Vector2(480, 180)
 position = Vector2(420, 380)
 scale = Vector2(0.9, 0.9)
 
-[node name="Blacksmith" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("6_lmoi6")]
+[node name="Blacksmith" parent="Portrait/GameScene/Home/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.717
 anchor_top = 0.66
 anchor_right = 0.717
@@ -398,7 +399,7 @@ offset_right = 92.8
 offset_bottom = 120.48
 building_id = "1"
 building_name = "Blacksmith"
-interior_texture = ExtResource("8_6uxt2")
+interior_content = NodePath("../../../InteriorView/BlacksmithInterior")
 
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home"]
 visible = false
@@ -411,7 +412,8 @@ grow_vertical = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
-[node name="InteriorContent" type="TextureRect" parent="Portrait/GameScene/Home/InteriorView"]
+[node name="BlacksmithInterior" type="TextureRect" parent="Portrait/GameScene/Home/InteriorView"]
+visible = false
 custom_minimum_size = Vector2(600, 600)
 layout_mode = 2
 size_flags_vertical = 3
@@ -419,10 +421,10 @@ texture = ExtResource("8_6uxt2")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Spot1" type="Marker2D" parent="Portrait/GameScene/Home/InteriorView/InteriorContent"]
+[node name="Spot1" type="Marker2D" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior"]
 position = Vector2(300, 250)
 
-[node name="Spot2" type="Marker2D" parent="Portrait/GameScene/Home/InteriorView/InteriorContent"]
+[node name="Spot2" type="Marker2D" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior"]
 position = Vector2(450, 300)
 scale = Vector2(1.1, 1.1)
 

@@ -3,7 +3,7 @@ class_name Building
 
 @export var building_id: String = ""
 @export var building_name: String = ""
-@export var interior_texture: Texture2D
+@export var interior_content: TextureRect  # Reference to this building's interior TextureRect in InteriorView
 @export var npc_prefab: PackedScene  # NPC prefab for spawning
 
 @onready var click_button: Button = $ClickButton
@@ -32,20 +32,6 @@ func _on_mouse_exited():
 func _on_button_pressed():
 	building_clicked.emit(self)
 
-func show_interior():
-	# Get the interior view and content from the village manager
-	var home = get_node("/root/Game/Portrait/GameScene/Home")
-	var interior_view = home.get_node("InteriorView")
-	var interior_content = interior_view.get_node("InteriorContent")
-	
-	if interior_texture and interior_content:
-		# Set the interior texture
-		interior_content.texture = interior_texture
-		
-		print("Applied interior texture: ", interior_texture)
-	else:
-		print("Warning: Missing interior_texture or interior_content")
-
 func spawn_building_npcs():
 	# Clear existing NPCs
 	clear_spawned_npcs()
@@ -54,13 +40,8 @@ func spawn_building_npcs():
 		print("Cannot spawn NPCs - missing prefab")
 		return
 	
-	# Get the interior content from the scene
-	var home = get_node("/root/Game/Portrait/GameScene/Home")
-	var interior_view = home.get_node("InteriorView")
-	var interior_content = interior_view.get_node("InteriorContent")
-	
 	if not interior_content:
-		print("Cannot spawn NPCs - interior content not found")
+		print("Cannot spawn NPCs - interior_content not assigned")
 		return
 	
 	# Get NPCs for this building from GameInfo
