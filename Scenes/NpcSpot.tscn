@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bk6a75wnuawv"]
+
+[ext_resource type="Script" uid="uid://dday8iog7qdy2" path="res://scripts/NpcSpot.gd" id="1"]
+
+[node name="NpcSpot" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 100.0
+offset_bottom = 150.0
+script = ExtResource("1")

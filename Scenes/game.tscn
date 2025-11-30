@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=68 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://p7jxfxdp1qfb" path="res://Scenes/NPC.tscn" id="6_ym3tv"]
 [ext_resource type="Texture2D" uid="uid://d3gicqboh0qna" path="res://assets/images/villages/village3.png" id="7_6a4tp"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
+[ext_resource type="PackedScene" uid="uid://bk6a75wnuawv" path="res://Scenes/NpcSpot.tscn" id="7_spot"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
 [ext_resource type="FontFile" uid="uid://bapt2viuub0ha" path="res://assets/Spectral-Regular.ttf" id="8_exi56"]
@@ -363,15 +364,28 @@ texture = ExtResource("7_6a4tp")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Spot1" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(292, 354)
-gizmo_extents = 20.0
+[node name="Spot1" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
+layout_mode = 0
+offset_left = 242.0
+offset_top = 204.0
+offset_right = 342.0
+offset_bottom = 354.0
 
-[node name="Spot2" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(329, 570)
+[node name="Spot2" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
+layout_mode = 0
+offset_left = 311.0
+offset_top = 464.0
+offset_right = 388.0
+offset_bottom = 576.0
+spot_id = 2
 
-[node name="Spot3" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(360, 270)
+[node name="Spot3" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
+layout_mode = 0
+offset_left = 325.0
+offset_top = 165.0
+offset_right = 395.0
+offset_bottom = 270.0
+spot_id = 3
 
 [node name="Blacksmith" parent="Portrait/GameScene/Home/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
 layout_mode = 1
@@ -409,12 +423,20 @@ texture = ExtResource("8_6uxt2")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Spot1" type="Marker2D" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior"]
-position = Vector2(300, 250)
+[node name="Spot1" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 100.0
+offset_right = 350.0
+offset_bottom = 250.0
 
-[node name="Spot2" type="Marker2D" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior"]
-position = Vector2(450, 300)
-scale = Vector2(1.1, 1.1)
+[node name="Spot2" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
+layout_mode = 0
+offset_left = 395.0
+offset_top = 135.0
+offset_right = 505.0
+offset_bottom = 300.0
+spot_id = 2
 
 [node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling", "npc_name_label")]
 visible = false

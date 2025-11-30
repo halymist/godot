@@ -80,8 +80,19 @@ func spawn_npcs(building_id: int = 0):
 		# Instance the NPC prefab
 		var npc_instance = npc_prefab.instantiate()
 		
-		# Set scale from spot first
-		npc_instance.scale = spot_node.scale
+		# If using NpcSpot (Control node), size and position are straightforward
+		# If using Marker2D (legacy), use scale
+		if spot_node is Control:
+			# Spot size determines NPC size
+			var spot_size = spot_node.size
+			if spot_size == Vector2.ZERO:
+				spot_size = spot_node.custom_minimum_size
+			print("Spot ", npc_resource.spot, " size: ", spot_size)
+		else:
+			# Legacy Marker2D - use scale
+			var spot_scale = spot_node.scale
+			print("Spot ", npc_resource.spot, " scale: ", spot_scale)
+			npc_instance.scale = spot_scale
 		
 		# Convert NpcResource to dictionary format for set_npc_data
 		# Find appropriate dialogue based on quest state
@@ -112,13 +123,30 @@ func spawn_npcs(building_id: int = 0):
 		
 		# Position after adding to tree so texture size is available
 		await get_tree().process_frame
-		var texture_size = npc_instance.size
-		if texture_size == Vector2.ZERO and npc_instance.texture:
-			texture_size = npc_instance.texture.get_size()
 		
-		# Position so bottom-center of NPC is at the spot
-		var feet_offset = Vector2(-texture_size.x / 2.0, -texture_size.y)
-		npc_instance.position = spot_node.position + feet_offset
+		if spot_node is Control:
+			# NpcSpot - use spot's size and position directly
+			var spot_size = spot_node.size
+			if spot_size == Vector2.ZERO:
+				spot_size = spot_node.custom_minimum_size
+			
+			# Resize NPC to exactly match spot size
+			npc_instance.custom_minimum_size = spot_size
+			npc_instance.size = spot_size
+			
+			# Position NPC exactly at spot position (no offsets)
+			npc_instance.position = spot_node.position
+			
+			print("Positioned NPC at spot pos: ", spot_node.position, " with size: ", spot_size)
+		else:
+			# Legacy Marker2D - calculate from texture size
+			var texture_size = npc_instance.size
+			if texture_size == Vector2.ZERO and npc_instance.texture:
+				texture_size = npc_instance.texture.get_size()
+			
+			# Position so bottom-center of NPC is at the spot
+			var feet_offset = Vector2(-texture_size.x / 2.0, -texture_size.y)
+			npc_instance.position = spot_node.position + feet_offset
 		
 		print("Spawned NPC: ", npc_resource.name, " at spot ", npc_resource.spot, " in building ", building_id)
 
