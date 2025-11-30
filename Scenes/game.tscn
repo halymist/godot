@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=69 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="9_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://btgcwrcimqh8b" path="res://assets/images/ui/belt_outline.png" id="9_nnt18"]
 [ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="10_mg4q0"]
+[ext_resource type="Texture2D" uid="uid://d4eq827d0dkdd" path="res://assets/images/villages/tavern_interrior.png" id="11_631el"]
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="11_ewbju"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="11_vm72l"]
 [ext_resource type="Texture2D" uid="uid://dslllm3eu8erj" path="res://assets/images/ui/map.png" id="12_22asu"]
@@ -391,6 +392,15 @@ offset_top = 292.0
 offset_right = 332.0
 offset_bottom = 344.0
 
+[node name="Tavern" parent="Portrait/GameScene/Home/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
+offset_left = 65.0
+offset_top = 246.0
+offset_right = 243.0
+offset_bottom = 399.0
+building_id = "2"
+building_name = "Tavern"
+interior_content = NodePath("../../../InteriorView/TavernInterior")
+
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home"]
 visible = false
 layout_mode = 1
@@ -413,6 +423,22 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Spot1" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
+offset_left = 24.0
+offset_top = 192.0
+offset_right = 207.0
+offset_bottom = 577.0
+
+[node name="TavernInterior" type="TextureRect" parent="Portrait/GameScene/Home/InteriorView"]
+visible = false
+custom_minimum_size = Vector2(600, 600)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("11_631el")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Spot1" parent="Portrait/GameScene/Home/InteriorView/TavernInterior" instance=ExtResource("7_spot")]
 offset_left = 24.0
 offset_top = 192.0
 offset_right = 207.0
