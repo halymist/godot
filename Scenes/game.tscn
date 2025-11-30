@@ -365,26 +365,13 @@ stretch_mode = 6
 
 [node name="Spot1" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
 position = Vector2(292, 354)
+gizmo_extents = 20.0
 
 [node name="Spot2" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(276, 553)
+position = Vector2(329, 570)
 
 [node name="Spot3" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
 position = Vector2(360, 270)
-
-[node name="Spot4" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(180, 330)
-
-[node name="Spot5" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(206, 440)
-scale = Vector2(1.2, 1.2)
-
-[node name="Spot6" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(480, 180)
-
-[node name="Spot7" type="Marker2D" parent="Portrait/GameScene/Home/VillageView/VillageContent"]
-position = Vector2(420, 380)
-scale = Vector2(0.9, 0.9)
 
 [node name="Blacksmith" parent="Portrait/GameScene/Home/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
 layout_mode = 1
@@ -416,6 +403,7 @@ vertical_scroll_mode = 0
 visible = false
 custom_minimum_size = Vector2(600, 600)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("8_6uxt2")
 expand_mode = 1

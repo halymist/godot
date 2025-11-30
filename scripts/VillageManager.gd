@@ -61,21 +61,26 @@ func spawn_npcs(building_id: int = 0):
 	
 	print("Spawning ", npcs_to_spawn.size(), " NPCs for building ", building_id)
 	
+	# Determine where to spawn (village or interior)
+	var parent_container = village_content
+	if building_id > 0 and current_building and current_building.interior_content:
+		parent_container = current_building.interior_content
+		print("Spawning in interior: ", current_building.building_name)
+	
 	# Spawn each NPC at their designated spot
 	for npc_resource in npcs_to_spawn:
 		# Find the spot node
 		var spot_name = "Spot" + str(npc_resource.spot)
-		var spot_node = village_content.get_node_or_null(spot_name)
+		var spot_node = parent_container.get_node_or_null(spot_name)
 		
 		if not spot_node:
-			print("Warning: Spot node '", spot_name, "' not found for NPC '", npc_resource.name, "'")
+			print("Warning: Spot node '", spot_name, "' not found for NPC '", npc_resource.name, "' in ", parent_container.name)
 			continue
 		
 		# Instance the NPC prefab
 		var npc_instance = npc_prefab.instantiate()
 		
-		# Position and scale from spot
-		npc_instance.position = spot_node.position
+		# Set scale from spot first
 		npc_instance.scale = spot_node.scale
 		
 		# Convert NpcResource to dictionary format for set_npc_data
@@ -102,8 +107,18 @@ func spawn_npcs(building_id: int = 0):
 		# Set the NPC data
 		npc_instance.set_npc_data(npc_data)
 		
-		# Add to village
-		village_content.add_child(npc_instance)
+		# Add to correct parent (village or interior)
+		parent_container.add_child(npc_instance)
+		
+		# Position after adding to tree so texture size is available
+		await get_tree().process_frame
+		var texture_size = npc_instance.size
+		if texture_size == Vector2.ZERO and npc_instance.texture:
+			texture_size = npc_instance.texture.get_size()
+		
+		# Position so bottom-center of NPC is at the spot
+		var feet_offset = Vector2(-texture_size.x / 2.0, -texture_size.y)
+		npc_instance.position = spot_node.position + feet_offset
 		
 		print("Spawned NPC: ", npc_resource.name, " at spot ", npc_resource.spot, " in building ", building_id)
 
@@ -169,22 +184,24 @@ func _on_quest_completed(quest_id: int):
 
 func redraw_npcs():
 	"""Clear and respawn all NPCs in current location"""
-	# Clear existing NPCs
-	var village_content = village_scene.get_node("VillageContent")
+	# Determine where to clear NPCs from
+	var parent_container
+	var building_id = 0
 	
-	# Remove all NPC nodes
-	for child in village_content.get_children():
+	if is_in_interior and current_building:
+		parent_container = current_building.interior_content
+		building_id = int(current_building.building_id)
+	else:
+		parent_container = village_scene.get_node("VillageContent")
+		building_id = 0
+	
+	# Remove all NPC nodes from current location
+	for child in parent_container.get_children():
 		if child.has_method("set_npc_data"):  # Check if it's an NPC
 			child.queue_free()
 	
-	# If in interior, redraw building NPCs
-	if is_in_interior and current_building:
-		# Find the building and trigger its respawn
-		current_building.spawn_building_npcs()
-		return
-	
-	# Otherwise redraw village NPCs
-	spawn_npcs(0)
+	# Respawn NPCs for current location
+	spawn_npcs(building_id)
 
 func handle_back_navigation() -> bool:
 	# If we're in interior, go back to village
@@ -221,7 +238,8 @@ func show_interior(building: Building = null):
 		building.interior_content.visible = true
 		
 		# Spawn NPCs for this building
-		building.spawn_building_npcs()
+		var building_int_id = int(building.building_id)
+		spawn_npcs(building_int_id)
 		
 		print("Showing interior for: ", building.building_name)
 	else:
