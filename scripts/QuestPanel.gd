@@ -85,13 +85,12 @@ func show_quest(quest_data: Dictionary):
 	
 	# Load portrait texture
 	if portrait_texture:
-		var portrait_name = quest_data.get("portrait", "npc_portrait")
-		var portrait_path = "res://assets/images/fallback/" + portrait_name + ".png"
-		if ResourceLoader.exists(portrait_path):
-			portrait_texture.texture = load(portrait_path)
-			print("Loaded portrait: ", portrait_path)
+		var portrait = quest_data.get("portrait", null)
+		if portrait is Texture2D:
+			portrait_texture.texture = portrait
+			print("Set portrait texture from resource")
 		else:
-			print("Portrait not found: ", portrait_path)
+			print("Portrait is not a valid Texture2D")
 	else:
 		print("portrait_texture is null")
 	

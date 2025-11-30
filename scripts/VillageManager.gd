@@ -82,12 +82,6 @@ func spawn_npcs(building_id: int = 0):
 		# Find appropriate dialogue based on quest state
 		var dialogue_entry = get_appropriate_dialogue(npc_resource, quest_log)
 		
-		# Extract portrait filename (remove path and extension)
-		var portrait_name = ""
-		if npc_resource.portrait:
-			var portrait_path = npc_resource.portrait.resource_path
-			portrait_name = portrait_path.get_file().get_basename()
-		
 		# Get quest name if this is a quest dialogue
 		var quest_name = ""
 		if dialogue_entry and dialogue_entry.isQuest:
@@ -98,7 +92,7 @@ func spawn_npcs(building_id: int = 0):
 		var npc_data = {
 			"name": npc_resource.name,
 			"asset": npc_resource.asset.resource_path if npc_resource.asset else "",
-			"portrait": portrait_name,
+			"portrait": npc_resource.portrait,  # Pass the Texture2D directly
 			"dialogue": dialogue_entry.dialogue if dialogue_entry else "...",
 			"questid": dialogue_entry.questID if dialogue_entry and dialogue_entry.isQuest else null,
 			"questname": quest_name,
