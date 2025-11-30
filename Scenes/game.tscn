@@ -364,29 +364,6 @@ texture = ExtResource("7_6a4tp")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Spot1" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
-layout_mode = 0
-offset_left = 242.0
-offset_top = 204.0
-offset_right = 342.0
-offset_bottom = 354.0
-
-[node name="Spot2" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
-layout_mode = 0
-offset_left = 311.0
-offset_top = 464.0
-offset_right = 388.0
-offset_bottom = 576.0
-spot_id = 2
-
-[node name="Spot3" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
-layout_mode = 0
-offset_left = 325.0
-offset_top = 165.0
-offset_right = 395.0
-offset_bottom = 270.0
-spot_id = 3
-
 [node name="Blacksmith" parent="Portrait/GameScene/Home/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
 layout_mode = 1
 anchors_preset = -1
@@ -401,6 +378,18 @@ offset_bottom = 120.48
 building_id = "1"
 building_name = "Blacksmith"
 interior_content = NodePath("../../../InteriorView/BlacksmithInterior")
+
+[node name="Spot1" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
+offset_left = 294.0
+offset_top = 456.0
+offset_right = 383.0
+offset_bottom = 579.0
+
+[node name="Spot2" parent="Portrait/GameScene/Home/VillageView/VillageContent" instance=ExtResource("7_spot")]
+offset_left = 298.0
+offset_top = 292.0
+offset_right = 332.0
+offset_bottom = 344.0
 
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home"]
 visible = false
@@ -424,19 +413,10 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Spot1" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
-layout_mode = 0
-offset_left = 250.0
-offset_top = 100.0
-offset_right = 350.0
-offset_bottom = 250.0
-
-[node name="Spot2" parent="Portrait/GameScene/Home/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
-layout_mode = 0
-offset_left = 395.0
-offset_top = 135.0
-offset_right = 505.0
-offset_bottom = 300.0
-spot_id = 2
+offset_left = 24.0
+offset_top = 192.0
+offset_right = 207.0
+offset_bottom = 577.0
 
 [node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling", "npc_name_label")]
 visible = false
