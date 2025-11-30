@@ -3,6 +3,7 @@ extends Panel
 # Export references to village containers
 # Structure: Home -> Village1, Village2, etc. (each contains VillageView + InteriorView)
 @export var villages_container: Control  # Parent node containing all village nodes
+@export var location_label: Label  # Label to display village name
 @export var npc_prefab: PackedScene
 @export var quest_panel: Control  # Old accept quest panel
 @export var quest_slide_panel: Control  # New quest slide panel (DynamicOptionsPanel)
@@ -14,7 +15,9 @@ var is_in_interior: bool = false
 
 func _ready():
 	# Set current village based on player location
-	set_active_village(GameInfo.current_player.location if GameInfo.current_player else 1)
+	var player_location = GameInfo.current_player.location if GameInfo.current_player else 1
+	print("VillageManager: Player location from GameInfo: ", player_location)
+	set_active_village(player_location)
 	
 	show_village()
 	connect_existing_buildings()
@@ -42,6 +45,8 @@ func _ready():
 
 func set_active_village(location_id: int):
 	"""Set the active village based on location integer (1, 2, 3, etc.)"""
+	print("set_active_village called with location_id: ", location_id)
+	
 	if not villages_container:
 		print("Error: villages_container not assigned")
 		return
@@ -65,6 +70,10 @@ func set_active_village(location_id: int):
 			current_village_node = villages_container.get_child(0)
 			current_village_node.visible = true
 			print("Using fallback village: ", current_village_node.name)
+	
+	# Update location label
+	if location_label:
+		location_label.text = GameInfo.get_village_name(location_id)
 
 func connect_existing_buildings():
 	if not current_village_node:

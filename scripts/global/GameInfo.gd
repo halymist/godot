@@ -9,6 +9,19 @@ var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
 var npcs_db: NpcDatabase = null
 
+# Village names mapping
+const VILLAGE_NAMES = {
+	1: "Krasna Ves",
+	2: "Katusice",
+	3: "Horni Dvur",
+	4: "Dolni Ves",
+	5: "Stary Mlyn"
+}
+
+func get_village_name(location_id: int) -> String:
+	"""Get the village name for a given location ID"""
+	return VILLAGE_NAMES.get(location_id, "Unknown Village")
+
 # Signals for UI updates
 signal gold_changed(new_gold)
 signal currency_changed(new_currency)
