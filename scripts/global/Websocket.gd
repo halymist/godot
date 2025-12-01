@@ -24,7 +24,7 @@ var mock_character_data = {
 	"currency": 50,
 	"traveling": null,
 	"traveling_destination": null,
-	"location": 2,
+	"location": 1,
 	"strength": 15,
 	"constitution": 12,
 	"dexterity": 18,
