@@ -56,12 +56,7 @@ func set_opponent_data(opponent):
 		set_enemy_data(enemy_id, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
 
 func _update_perks_display():
-	print("DEBUG: _update_perks_display called")
-	print("DEBUG: perks_container = ", perks_container)
-	print("DEBUG: opponent_data = ", opponent_data)
-	
 	if not perks_container or not opponent_data:
-		print("DEBUG: Early return - missing container or data")
 		return
 	
 	# Clear existing perk icons
@@ -71,17 +66,13 @@ func _update_perks_display():
 	# Use the inherited get_active_perks method
 	if opponent_data:
 		var active_perks = opponent_data.get_active_perks()
-		print("DEBUG: Found ", active_perks.size(), " active perks")
 		
 		# Display all active perks (not limited to 5)
 		for i in range(active_perks.size()):
 			var perk = active_perks[i]
-			print("DEBUG: Processing perk ", i, ": ", perk.perk_name)
 			
 			if perk_mini_scene:
-				print("DEBUG: perk_mini_scene is available")
 				var perk_icon = perk_mini_scene.instantiate()
-				print("DEBUG: Created perk_icon: ", perk_icon)
 				
 				# Set the perk texture if available
 				var texture_rect = perk_icon.get_node("TextureRect")
@@ -95,11 +86,6 @@ func _update_perks_display():
 				perk_icon.mouse_exited.connect(_on_perk_hover_end)
 				
 				perks_container.add_child(perk_icon)
-				print("DEBUG: Added perk_icon to container")
-			else:
-				print("DEBUG: perk_mini_scene is null!")
-	
-	print("DEBUG: perks_container now has ", perks_container.get_child_count(), " children")
 
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
