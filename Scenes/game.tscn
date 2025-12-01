@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=70 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -44,6 +44,7 @@
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
+[ext_resource type="Script" uid="uid://rk346721f3le" path="res://scripts/SquareContent.gd" id="39_square"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -316,7 +317,6 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 22
 text = "Krasna Ves"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer"]
@@ -379,18 +379,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-horizontal_scroll_mode = 3
+horizontal_scroll_mode = 2
 vertical_scroll_mode = 0
 
-[node name="VillageContent" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView"]
-custom_minimum_size = Vector2(600, 600)
+[node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView"]
+custom_minimum_size = Vector2(638, 630)
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("39_square")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("7_6a4tp")
 expand_mode = 1
-stretch_mode = 6
 
 [node name="Blacksmith" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.717
@@ -418,10 +427,12 @@ offset_right = 332.0
 offset_bottom = 344.0
 
 [node name="Tavern" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
-offset_left = 65.0
-offset_top = 246.0
-offset_right = 243.0
-offset_bottom = 399.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.143
+anchor_top = 0.316
+anchor_right = 0.386
+anchor_bottom = 0.625
 building_id = "2"
 building_name = "Tavern"
 interior_content = NodePath("../../../InteriorView/TavernInterior")
