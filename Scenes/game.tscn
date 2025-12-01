@@ -379,13 +379,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-horizontal_scroll_mode = 2
+horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
 [node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView"]
-custom_minimum_size = Vector2(638, 630)
+custom_minimum_size = Vector2(630, 630)
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 script = ExtResource("39_square")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent"]
