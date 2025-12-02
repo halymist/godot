@@ -319,3 +319,13 @@ func go_back():
 	else:
 		# Let the TogglePanel handle going back to previous screen
 		pass
+
+func center_village_view():
+	"""Center the village scroll view"""
+	if current_village_node:
+		await get_tree().process_frame
+		var village_view = current_village_node.get_node("VillageView")
+		var village_content = village_view.get_node("VillageContent")
+		var content_width = village_content.size.x
+		var viewport_width = village_view.size.x
+		village_view.scroll_horizontal = int((content_width - viewport_width) / 2.0)

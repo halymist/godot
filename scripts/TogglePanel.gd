@@ -121,6 +121,17 @@ func hide_overlay(overlay: Control):
 
 func show_panel(panel: Control):
 	hide_all_panels()
+	
+	# Also hide utility panels (vendor, blacksmith, settings, rankings)
+	if vendor_panel:
+		vendor_panel.visible = false
+	if blacksmith_panel:
+		blacksmith_panel.visible = false
+	if settings_panel:
+		settings_panel.visible = false
+	if rankings_panel:
+		rankings_panel.visible = false
+	
 	panel.visible = true
 	GameInfo.set_current_panel(panel)
 	
@@ -130,16 +141,26 @@ func show_panel(panel: Control):
 		if active_perks_display and active_perks_display.has_method("update_active_perks"):
 			active_perks_display.update_active_perks()
 
-func handle_home_button():	
-	# Normal state (both null) - standard home behavior
-	# If we're already on the home panel, act like back button to exit buildings
-	if GameInfo.get_current_panel() == home_panel:
-		if home_panel.has_method("handle_back_navigation"):
-			var handled = home_panel.handle_back_navigation()
-			if handled:
-				return
+func handle_home_button():
+	# Hide utility panels when going home
+	if vendor_panel:
+		vendor_panel.visible = false
+	if blacksmith_panel:
+		blacksmith_panel.visible = false
+	if settings_panel:
+		settings_panel.visible = false
+	if rankings_panel:
+		rankings_panel.visible = false
 	
-	# Otherwise, show home panel normally
+	# If we're in an interior, exit to village
+	if home_panel.has_method("handle_back_navigation"):
+		home_panel.handle_back_navigation()
+	
+	# Center the village view
+	if home_panel.has_method("center_village_view"):
+		home_panel.center_village_view()
+	
+	# Show home panel
 	show_panel(home_panel)
 
 func handle_map_button():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=80 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -73,7 +73,10 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnkle"]
-bg_color = Color(0.969078, 0.344179, 0.522869, 1)
+bg_color = Color(0.460477, 0.598623, 0.860762, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wr3wg"]
+bg_color = Color(0.649928, 0.613808, 0.210934, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
@@ -381,6 +384,7 @@ grow_horizontal = 2
 theme = SubResource("Theme_no_focus")
 
 [node name="Rankings" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -397,7 +401,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wr3wg")
 
 [node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("villages_container", "location_label", "quest_panel", "quest_slide_panel", "map_panel")]
 layout_mode = 0
