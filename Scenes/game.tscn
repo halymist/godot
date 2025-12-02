@@ -403,6 +403,161 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wr3wg")
 
+[node name="SettingsContainer" type="VBoxContainer" parent="Portrait/GameScene/Settings"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 32
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Portrait/GameScene/Settings/SettingsContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Settings/SettingsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CategoriesContainer" type="VBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Gameplay" type="VBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Gameplay"
+
+[node name="DisableAds" type="HBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/DisableAds"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Disable Ads"
+
+[node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/DisableAds"]
+layout_mode = 2
+
+[node name="AutoSkip" type="HBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/AutoSkip"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Auto-Skip Dialogues"
+
+[node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/AutoSkip"]
+layout_mode = 2
+
+[node name="Language" type="HBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/Language"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Language"
+
+[node name="OptionButton" type="OptionButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/Language"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "English"
+popup/item_0/id = 0
+popup/item_1/text = "Czech"
+popup/item_1/id = 1
+popup/item_2/text = "German"
+popup/item_2/id = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
+layout_mode = 2
+
+[node name="Audio" type="VBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Audio"
+
+[node name="Volume" type="VBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/Volume"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Master Volume"
+
+[node name="HSlider" type="HSlider" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/Volume"]
+layout_mode = 2
+value = 100.0
+
+[node name="DialogueToggle" type="HBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/DialogueToggle"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Enable Dialogue Sounds"
+
+[node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/DialogueToggle"]
+layout_mode = 2
+button_pressed = true
+
+[node name="HSeparator3" type="HSeparator" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
+layout_mode = 2
+
+[node name="Video" type="VBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Video"
+
+[node name="UISize" type="HBoxContainer" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video/UISize"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "UI Size"
+
+[node name="OptionButton" type="OptionButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video/UISize"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 1
+item_count = 3
+popup/item_0/text = "Small"
+popup/item_0/id = 0
+popup/item_1/text = "Medium"
+popup/item_1/id = 1
+popup/item_2/text = "Large"
+popup/item_2/id = 2
+
 [node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("villages_container", "location_label", "quest_panel", "quest_slide_panel", "map_panel")]
 layout_mode = 0
 anchor_right = 1.0

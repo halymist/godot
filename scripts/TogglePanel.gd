@@ -132,6 +132,11 @@ func show_panel(panel: Control):
 	if rankings_panel:
 		rankings_panel.visible = false
 	
+	# If switching away from home panel, ensure we're back to village outside view
+	if GameInfo.get_current_panel() == home_panel and panel != home_panel:
+		if home_panel.has_method("handle_back_navigation"):
+			home_panel.handle_back_navigation()
+	
 	panel.visible = true
 	GameInfo.set_current_panel(panel)
 	
