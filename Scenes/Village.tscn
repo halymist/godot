@@ -1,0 +1,120 @@
+[gd_scene load_steps=5 format=3 uid="uid://bv4x5y8n3j2k1"]
+
+[ext_resource type="Script" path="res://scripts/SquareContent.gd" id="1_square"]
+[ext_resource type="Texture2D" path="res://assets/images/villages/village3.png" id="2_village_bg"]
+[ext_resource type="PackedScene" uid="uid://bk6a75wnuawv" path="res://Scenes/NpcSpot.tscn" id="3_spot"]
+[ext_resource type="PackedScene" uid="uid://d3fba85yq0umu" path="res://Scenes/Building.tscn" id="4_building"]
+
+[node name="Village" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VillageView" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="VillageContent" type="Control" parent="VillageView"]
+custom_minimum_size = Vector2(630, 0)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("1_square")
+
+[node name="Background" type="TextureRect" parent="VillageView/VillageContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_village_bg")
+expand_mode = 1
+
+[node name="Spot1" parent="VillageView/VillageContent" instance=ExtResource("3_spot")]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.365
+anchor_top = 0.664
+anchor_right = 0.579
+anchor_bottom = 0.884
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Spot2" parent="VillageView/VillageContent" instance=ExtResource("3_spot")]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.456
+anchor_top = 0.463
+anchor_right = 0.527
+anchor_bottom = 0.546
+offset_left = 0.0
+offset_top = 0.309967
+offset_right = -0.0100098
+offset_bottom = 0.019989
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Tavern" parent="VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("4_building")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.143
+anchor_top = 0.316
+anchor_right = 0.386
+anchor_bottom = 0.625
+building_id = "1"
+building_name = "Tavern"
+interior_content = NodePath("../../InteriorView/TavernInterior")
+
+[node name="InteriorView" type="ScrollContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="TavernInterior" type="Control" parent="InteriorView"]
+visible = false
+custom_minimum_size = Vector2(630, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("1_square")
+
+[node name="Background" type="TextureRect" parent="InteriorView/TavernInterior"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Spot1" parent="InteriorView/TavernInterior" instance=ExtResource("3_spot")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.04
+anchor_top = 0.32
+anchor_right = 0.04
+anchor_bottom = 0.32

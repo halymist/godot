@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=81 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://bmwipv6nvqjj2" path="res://Scenes/perk_tooltip.tscn" id="17_oeip8"]
 [ext_resource type="Texture2D" uid="uid://bmo5oqy3a5rr5" path="res://assets/images/villages/blacksmith25.png" id="18_htg8p"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
+[ext_resource type="PackedScene" uid="uid://cducbq1tpj6uc" path="res://Scenes/bag.tscn" id="20_6xvgv"]
 [ext_resource type="Texture2D" uid="uid://bl10e588p83eh" path="res://assets/images/villages/blacksmith26.png" id="20_fnkle"]
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
@@ -1051,6 +1052,11 @@ offset_top = 564.0
 offset_right = 450.0
 offset_bottom = 630.0
 
+[node name="Bag" parent="Portrait/GameScene/Home/VendorPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.0
+
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameScene/Home"]
 visible = false
 z_index = 100
@@ -1093,6 +1099,11 @@ layout_mode = 0
 offset_top = 564.0
 offset_right = 450.0
 offset_bottom = 630.0
+
+[node name="Bag" parent="Portrait/GameScene/Home/BlacksmithPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.0
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
 visible = false
@@ -1177,7 +1188,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1466,147 +1476,8 @@ item_scene = ExtResource("11_ewbju")
 slot_type = "Amulet"
 slot_id = 7
 
-[node name="Bag" type="HBoxContainer" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
+[node name="Bag" parent="Portrait/GameScene/Character" instance=ExtResource("20_6xvgv")]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.88
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-script = ExtResource("6_iivbl")
-inventory_slots = [NodePath("Bag1/ItemContainer"), NodePath("Bag2/ItemContainer"), NodePath("Bag3/ItemContainer"), NodePath("Bag4/ItemContainer"), NodePath("Bag5/ItemContainer")]
-item_prefab = ExtResource("11_ewbju")
-is_bag = true
-
-[node name="Bag1" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag1"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag1"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag1"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
-slot_id = 10
-
-[node name="Bag2" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
-show_behind_parent = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag2"]
-show_behind_parent = true
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag2"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag2"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
-slot_id = 11
-
-[node name="Bag3" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag3"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag3"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag3"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
-slot_id = 12
-
-[node name="Bag4" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag4"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag4"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag4"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
-slot_id = 13
-
-[node name="Bag5" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Bag"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag5"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Bag/Bag5"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Character/Bag/Bag5"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
-slot_id = 14
 
 [node name="ActivePerksBackground" type="Panel" parent="Portrait/GameScene/Character"]
 layout_mode = 1

@@ -1,0 +1,147 @@
+[gd_scene load_steps=5 format=3 uid="uid://cducbq1tpj6uc"]
+
+[ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="1_57iao"]
+[ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="2_722nh"]
+[ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="3_dtdv7"]
+[ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="4_3582x"]
+
+[node name="Bag" type="HBoxContainer" node_paths=PackedStringArray("inventory_slots")]
+anchors_preset = -1
+anchor_top = 0.88
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+script = ExtResource("1_57iao")
+inventory_slots = [NodePath("Bag1/ItemContainer"), NodePath("Bag2/ItemContainer"), NodePath("Bag3/ItemContainer"), NodePath("Bag4/ItemContainer"), NodePath("Bag5/ItemContainer")]
+item_prefab = ExtResource("2_722nh")
+is_bag = true
+
+[node name="Bag1" type="AspectRatioContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Bag1"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Bag1"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Bag1"]
+layout_mode = 2
+script = ExtResource("4_3582x")
+item_scene = ExtResource("2_722nh")
+slot_id = 10
+
+[node name="Bag2" type="AspectRatioContainer" parent="."]
+show_behind_parent = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Bag2"]
+show_behind_parent = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Bag2"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Bag2"]
+layout_mode = 2
+script = ExtResource("4_3582x")
+item_scene = ExtResource("2_722nh")
+slot_id = 11
+
+[node name="Bag3" type="AspectRatioContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Bag3"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Bag3"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Bag3"]
+layout_mode = 2
+script = ExtResource("4_3582x")
+item_scene = ExtResource("2_722nh")
+slot_id = 12
+
+[node name="Bag4" type="AspectRatioContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Bag4"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Bag4"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Bag4"]
+layout_mode = 2
+script = ExtResource("4_3582x")
+item_scene = ExtResource("2_722nh")
+slot_id = 13
+
+[node name="Bag5" type="AspectRatioContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Bag5"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Bag5"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("3_dtdv7")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Bag5"]
+layout_mode = 2
+script = ExtResource("4_3582x")
+item_scene = ExtResource("2_722nh")
+slot_id = 14

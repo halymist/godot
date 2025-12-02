@@ -5,6 +5,14 @@ extends HBoxContainer
 
 func _ready():
 	update_equip_slots()
+	# Connect visibility changed for bags to refresh when shown
+	if is_bag:
+		visibility_changed.connect(_on_visibility_changed)
+
+func _on_visibility_changed():
+	# Refresh bag contents when it becomes visible
+	if visible:
+		update_equip_slots()
 
 func update_equip_slots():
 	# Clear only the ItemContainer, preserve backgrounds and outlines
