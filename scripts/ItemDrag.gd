@@ -37,6 +37,8 @@ func _get_drag_data(_at_position):
 
 	var preview = Control.new()
 	preview.add_child(preview_texture)
+	# Set high z-index so drag preview appears above all panels
+	preview.z_index = 1000
 	set_drag_preview(preview)
 
 	# Create a drag data package with item and source reference
