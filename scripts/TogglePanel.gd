@@ -11,9 +11,11 @@ extends Control
 @export var map_button: Button
 @export var map_panel: Control
 @export var back_button: Button
+@export var settings_button: Button
 @export var chat_button: Button
 @export var chat_panel: Control
 @export var combat_panel: Control
+@export var settings_panel: Control
 @export var fight_button: Button
 @export var interior_view: Control
 @export var village_view: Control
@@ -37,6 +39,7 @@ func _ready():
 	character_button.pressed.connect(show_panel.bind(character_panel))
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
+	settings_button.pressed.connect(show_panel.bind(settings_panel))
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
@@ -239,12 +242,21 @@ func go_back():
 	# Priority 3: Check if we're in vendor panel - hide it and return to home
 	if vendor_panel and vendor_panel.visible:
 		vendor_panel.visible = false
+		home_panel.visible = true
 		GameInfo.set_current_panel(home_panel)
 		return
 	
 	# Priority 3.5: Check if we're in blacksmith panel - hide it and return to home
 	if blacksmith_panel and blacksmith_panel.visible:
 		blacksmith_panel.visible = false
+		home_panel.visible = true
+		GameInfo.set_current_panel(home_panel)
+		return
+	
+	# Priority 3.6: Check if we're in settings panel - hide it and return to home
+	if settings_panel and settings_panel.visible:
+		settings_panel.visible = false
+		home_panel.visible = true
 		GameInfo.set_current_panel(home_panel)
 		return
 

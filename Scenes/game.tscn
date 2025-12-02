@@ -1,9 +1,10 @@
-[gd_scene load_steps=76 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=79 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
+[ext_resource type="Texture2D" uid="uid://ho4facjk62r8" path="res://assets/images/ui/settings.png" id="5_settings"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
 [ext_resource type="PackedScene" uid="uid://d3fba85yq0umu" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="Texture2D" uid="uid://d3gicqboh0qna" path="res://assets/images/villages/village3.png" id="7_6a4tp"]
@@ -36,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://bmwipv6nvqjj2" path="res://Scenes/perk_tooltip.tscn" id="17_oeip8"]
 [ext_resource type="Texture2D" uid="uid://bmo5oqy3a5rr5" path="res://assets/images/villages/blacksmith25.png" id="18_htg8p"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
+[ext_resource type="Texture2D" uid="uid://bl10e588p83eh" path="res://assets/images/villages/blacksmith26.png" id="20_fnkle"]
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
@@ -69,6 +71,9 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnkle"]
+bg_color = Color(0.969078, 0.344179, 0.522869, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
@@ -232,7 +237,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -251,10 +256,12 @@ talents_button = NodePath("GameScene/Character/Talents/Button")
 talents_panel = NodePath("GameScene/Talents")
 map_button = NodePath("BottomUI/Buttons/Map/Button")
 map_panel = NodePath("GameScene/Map")
-back_button = NodePath("TopUI/HBoxContainer/Back/BackButton")
+back_button = NodePath("TopUI/HBoxContainer/ButtonsContainer/Back/BackButton")
+settings_button = NodePath("TopUI/HBoxContainer/ButtonsContainer/Settings/SettingsButton")
 chat_button = NodePath("BottomUI/Buttons/Chat/Button")
 chat_panel = NodePath("GameScene/ChatOverlay")
 combat_panel = NodePath("GameScene/Combat")
+settings_panel = NodePath("GameScene/Settings")
 fight_button = NodePath("GameScene/Arena/FightButton")
 quest_panel = NodePath("GameScene/Home/QuestAccept")
 quest = NodePath("Quest")
@@ -327,12 +334,25 @@ theme_override_font_sizes/font_size = 22
 text = "Krasna Ves"
 vertical_alignment = 1
 
-[node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer"]
+[node name="ButtonsContainer" type="VBoxContainer" parent="Portrait/TopUI/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-alignment_vertical = 2
 
-[node name="BackButton" type="Button" parent="Portrait/TopUI/HBoxContainer/Back"]
+[node name="Settings" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SettingsButton" type="Button" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer/Settings"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+icon = ExtResource("5_settings")
+expand_icon = true
+
+[node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BackButton" type="Button" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer/Back"]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
@@ -346,6 +366,16 @@ anchor_right = 1.0
 anchor_bottom = 0.9
 grow_horizontal = 2
 theme = SubResource("Theme_no_focus")
+
+[node name="Settings" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fnkle")
 
 [node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("villages_container", "location_label", "quest_panel", "quest_slide_panel", "map_panel")]
 layout_mode = 1
@@ -404,16 +434,6 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("7_6a4tp")
 expand_mode = 1
-
-[node name="Blacksmith" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" instance=ExtResource("6_lmoi6")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.619
-anchor_top = 0.543
-anchor_right = 0.851
-anchor_bottom = 0.833
-building_id = "1"
-building_name = "Blacksmith"
 
 [node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" instance=ExtResource("7_spot")]
 custom_minimum_size = Vector2(0, 40)
@@ -862,10 +882,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
 village1_texture = ExtResource("18_htg8p")
-village2_texture = ExtResource("18_htg8p")
-village3_texture = ExtResource("18_htg8p")
-village4_texture = ExtResource("18_htg8p")
-village5_texture = ExtResource("18_htg8p")
+village2_texture = ExtResource("20_fnkle")
+village3_texture = ExtResource("20_fnkle")
+village4_texture = ExtResource("20_fnkle")
+village5_texture = ExtResource("20_fnkle")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/BlacksmithPanel"]
 anchors_preset = 0
@@ -4295,6 +4315,15 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
 script = ExtResource("23_tgy6u")
 perk_scene = ExtResource("22_81klo")
 
+[node name="CombatPanel" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="ChatOverlay" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
 visible = false
 layout_mode = 1
@@ -4389,15 +4418,6 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="CombatPanel" type="Panel" parent="Portrait/GameScene"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1
 anchors_preset = -1
@@ -4411,8 +4431,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.2
+anchor_top = 0.1
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.9
 
 [node name="Chat" type="AspectRatioContainer" parent="Portrait/BottomUI/Buttons"]
 layout_mode = 2

@@ -113,6 +113,10 @@ func hide_chat():
 		
 	is_chat_open = false
 	
+	# Clear from GameInfo if it's the current overlay
+	if GameInfo.get_current_panel_overlay() == self:
+		GameInfo.set_current_panel_overlay(null)
+	
 	# Animate sliding out
 	if slide_tween:
 		slide_tween.kill()
