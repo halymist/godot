@@ -29,8 +29,8 @@ name = "Bob"
 dialogues = Array[ExtResource("3_gyykm")]([SubResource("Resource_eq6f6"), SubResource("Resource_ru7c0")])
 asset = ExtResource("2_utwwl")
 portrait = ExtResource("4_4pi4t")
-spot = 2
-building_id = 0
+spot = 1
+building_id = 1
 metadata/_custom_type_script = "uid://b5vwu8i301q8y"
 
 [resource]
