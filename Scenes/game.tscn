@@ -237,7 +237,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -258,10 +258,12 @@ map_button = NodePath("BottomUI/Buttons/Map/Button")
 map_panel = NodePath("GameScene/Map")
 back_button = NodePath("TopUI/HBoxContainer/ButtonsContainer/Back/BackButton")
 settings_button = NodePath("TopUI/HBoxContainer/ButtonsContainer/Settings/SettingsButton")
+rankings_button = NodePath("TopUI/HBoxContainer/VBoxContainer/Rankings/RankingsButton")
 chat_button = NodePath("BottomUI/Buttons/Chat/Button")
 chat_panel = NodePath("GameScene/ChatOverlay")
 combat_panel = NodePath("GameScene/Combat")
 settings_panel = NodePath("GameScene/Settings")
+rankings_panel = NodePath("GameScene/Rankings")
 fight_button = NodePath("GameScene/Arena/FightButton")
 quest_panel = NodePath("GameScene/Home/QuestAccept")
 quest = NodePath("Quest")
@@ -334,6 +336,17 @@ theme_override_font_sizes/font_size = 22
 text = "Krasna Ves"
 vertical_alignment = 1
 
+[node name="Rankings" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment_horizontal = 0
+
+[node name="RankingsButton" type="Button" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/Rankings"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+icon = ExtResource("13_fkdbe")
+expand_icon = true
+
 [node name="ButtonsContainer" type="VBoxContainer" parent="Portrait/TopUI/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -367,6 +380,15 @@ anchor_bottom = 0.9
 grow_horizontal = 2
 theme = SubResource("Theme_no_focus")
 
+[node name="Rankings" type="Panel" parent="Portrait/GameScene"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fnkle")
+
 [node name="Settings" type="Panel" parent="Portrait/GameScene"]
 visible = false
 layout_mode = 1
@@ -378,8 +400,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fnkle")
 
 [node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("villages_container", "location_label", "quest_panel", "quest_slide_panel", "map_panel")]
-layout_mode = 1
-anchors_preset = -1
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -4326,6 +4347,7 @@ grow_vertical = 2
 
 [node name="ChatOverlay" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
 visible = false
+z_index = 200
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

@@ -12,10 +12,12 @@ extends Control
 @export var map_panel: Control
 @export var back_button: Button
 @export var settings_button: Button
+@export var rankings_button: Button
 @export var chat_button: Button
 @export var chat_panel: Control
 @export var combat_panel: Control
 @export var settings_panel: Control
+@export var rankings_panel: Control
 @export var fight_button: Button
 @export var interior_view: Control
 @export var village_view: Control
@@ -40,6 +42,8 @@ func _ready():
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
 	settings_button.pressed.connect(show_panel.bind(settings_panel))
+	if rankings_button:
+		rankings_button.pressed.connect(show_panel.bind(rankings_panel))
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
@@ -256,6 +260,13 @@ func go_back():
 	# Priority 3.6: Check if we're in settings panel - hide it and return to home
 	if settings_panel and settings_panel.visible:
 		settings_panel.visible = false
+		home_panel.visible = true
+		GameInfo.set_current_panel(home_panel)
+		return
+	
+	# Priority 3.7: Check if we're in rankings panel - hide it and return to home
+	if rankings_panel and rankings_panel.visible:
+		rankings_panel.visible = false
 		home_panel.visible = true
 		GameInfo.set_current_panel(home_panel)
 		return
