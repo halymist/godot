@@ -416,28 +416,34 @@ building_name = "Blacksmith"
 interior_content = NodePath("../../../InteriorView/BlacksmithInterior")
 
 [node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" instance=ExtResource("7_spot")]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.537
-anchor_top = 0.821
-anchor_right = 0.537
-anchor_bottom = 0.821
-offset_left = -111.31
-offset_top = -102.23
-offset_right = 44.69
-offset_bottom = 61.77
+anchor_left = 0.365
+anchor_top = 0.664
+anchor_right = 0.579
+anchor_bottom = 0.884
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="Spot2" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" instance=ExtResource("7_spot")]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.505
-anchor_right = 0.5
-anchor_bottom = 0.505
-offset_left = -17.0
-offset_top = -26.15
-offset_right = 17.0
-offset_bottom = 25.85
+anchor_left = 0.456
+anchor_top = 0.463
+anchor_right = 0.527
+anchor_bottom = 0.546
+offset_left = 0.0
+offset_top = 0.309967
+offset_right = -0.0100098
+offset_bottom = 0.019989
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="Tavern" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
 layout_mode = 1
@@ -472,10 +478,18 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
+custom_minimum_size = Vector2(0, 40)
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 offset_left = 24.0
 offset_top = 192.0
 offset_right = 207.0
 offset_bottom = 577.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="TavernInterior" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView"]
 visible = false
@@ -488,10 +502,18 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView/TavernInterior" instance=ExtResource("7_spot")]
+custom_minimum_size = Vector2(0, 40)
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 offset_left = 24.0
 offset_top = 192.0
 offset_right = 207.0
 offset_bottom = 577.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling", "npc_name_label")]
 visible = false
