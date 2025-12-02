@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=70 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -44,6 +44,7 @@
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Script" uid="uid://rk346721f3le" path="res://scripts/SquareContent.gd" id="39_square"]
+[ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -646,6 +647,35 @@ theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 16
 text = "You are already on a quest."
 horizontal_alignment = 1
+
+[node name="VendorPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = true
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("40_vendor")
+
+[node name="VendorBackground" type="Control" parent="Portrait/GameScene/Home/VendorPanel"]
+layout_mode = 0
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/VendorBackground"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+
+[node name="ItemsPanel" type="Panel" parent="Portrait/GameScene/Home/VendorPanel"]
+layout_mode = 0
+
+[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/VendorPanel"]
+layout_mode = 0
 
 [node name="Arena" type="Panel" parent="Portrait/GameScene"]
 visible = false
