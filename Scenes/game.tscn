@@ -1,4 +1,4 @@
-[gd_scene load_steps=81 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=82 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -81,6 +81,16 @@ bg_color = Color(0.649928, 0.613808, 0.210934, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bag_panel"]
+bg_color = Color(0.15, 0.12, 0.08, 0.95)
+border_width_left = 2
+border_width_top = 3
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.4, 0.25, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
 
@@ -1051,6 +1061,7 @@ layout_mode = 0
 offset_top = 564.0
 offset_right = 450.0
 offset_bottom = 630.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/VendorPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
 layout_mode = 1
@@ -1099,6 +1110,7 @@ layout_mode = 0
 offset_top = 564.0
 offset_right = 450.0
 offset_bottom = 630.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/BlacksmithPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
 layout_mode = 1

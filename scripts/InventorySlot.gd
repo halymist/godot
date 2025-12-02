@@ -9,6 +9,9 @@ extends Control
 @export var slot_id: int
 
 func _can_drop_data(_pos, data):
+	# Always use default cursor during drag (no forbidden cursor)
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+	
 	# Check if data is valid drag package
 	if not (data is Dictionary and data.has("item") and data["item"] is GameInfo.Item):
 		return false
