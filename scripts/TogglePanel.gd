@@ -22,6 +22,7 @@ extends Control
 @export var cancel_quest: Control
 @export var upgrade_talent: Control
 @export var perks_panel: Control
+@export var vendor_panel: Control
 
 func _ready():
 	
@@ -234,14 +235,20 @@ func go_back():
 		show_overlay(cancel_quest)
 		return
 
-	# Priority 3: Check if we're in a building interior in the home panel
+	# Priority 3: Check if we're in vendor panel - hide it and return to home
+	if vendor_panel and vendor_panel.visible:
+		vendor_panel.visible = false
+		GameInfo.set_current_panel(home_panel)
+		return
+
+	# Priority 4: Check if we're in a building interior in the home panel
 	if GameInfo.get_current_panel() == home_panel:
 		if home_panel.has_method("handle_back_navigation"):
 			var handled = home_panel.handle_back_navigation()
 			if handled:
 				return
 
-	# Priority 4: Handle panel-specific back navigation
+	# Priority 5: Handle panel-specific back navigation
 	if GameInfo.get_current_panel() == talents_panel:
 		toggle_talents_bookmark()  # Use bookmark animation to slide out
 	elif GameInfo.get_current_panel() == combat_panel:

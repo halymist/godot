@@ -22,4 +22,5 @@ func _on_mouse_exited():
 func _on_button_pressed():
 	if target_panel:
 		target_panel.visible = true
+		GameInfo.set_current_panel(target_panel)
 	utility_clicked.emit(self)
