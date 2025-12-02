@@ -133,24 +133,10 @@ func spawn_npcs(building_id: int = 0):
 			print("Warning: Spot node '", spot_name, "' not found for NPC '", npc_resource.name, "' in ", parent_container.name)
 			continue
 		
-		# Instance the NPC prefab
-		var npc_instance = npc_prefab.instantiate()
+		if not spot_node is NpcSpot:
+			print("Warning: Spot node '", spot_name, "' is not an NpcSpot")
+			continue
 		
-		# If using NpcSpot (Control node), size and position are straightforward
-		# If using Marker2D (legacy), use scale
-		if spot_node is Control:
-			# Spot size determines NPC size
-			var spot_size = spot_node.size
-			if spot_size == Vector2.ZERO:
-				spot_size = spot_node.custom_minimum_size
-			print("Spot ", npc_resource.spot, " size: ", spot_size)
-		else:
-			# Legacy Marker2D - use scale
-			var spot_scale = spot_node.scale
-			print("Spot ", npc_resource.spot, " scale: ", spot_scale)
-			npc_instance.scale = spot_scale
-		
-		# Convert NpcResource to dictionary format for set_npc_data
 		# Find appropriate dialogue based on quest state
 		var dialogue_entry = get_appropriate_dialogue(npc_resource, quest_log)
 		
@@ -171,43 +157,8 @@ func spawn_npcs(building_id: int = 0):
 			"building": npc_resource.building_id
 		}
 		
-		# Set the NPC data
-		npc_instance.set_npc_data(npc_data)
-		print("NPC instance created: ", npc_instance, " class=", npc_instance.get_class())
-		
-		# Add to correct parent (village or interior)
-		parent_container.add_child(npc_instance)
-		print("NPC added to parent: ", parent_container.name)
-		
-		# Position after adding to tree so texture size is available
-		await get_tree().process_frame
-		
-		if spot_node is Control:
-			# NpcSpot - use spot's size and position directly
-			var spot_size = spot_node.size
-			if spot_size == Vector2.ZERO:
-				spot_size = spot_node.custom_minimum_size
-			
-			# Resize NPC to exactly match spot size
-			npc_instance.custom_minimum_size = spot_size
-			npc_instance.size = spot_size
-			
-			# Position NPC exactly at spot position (no offsets)
-			npc_instance.position = spot_node.position
-			
-			print("Positioned NPC at spot pos: ", spot_node.position, " with size: ", spot_size)
-			print("NPC final state - visible=", npc_instance.visible, " modulate=", npc_instance.modulate, " z_index=", npc_instance.z_index)
-			if npc_instance.has_method("get_texture"):
-				print("NPC texture=", npc_instance.texture)
-		else:
-			# Legacy Marker2D - calculate from texture size
-			var texture_size = npc_instance.size
-			if texture_size == Vector2.ZERO and npc_instance.texture:
-				texture_size = npc_instance.texture.get_size()
-			
-			# Position so bottom-center of NPC is at the spot
-			var feet_offset = Vector2(-texture_size.x / 2.0, -texture_size.y)
-			npc_instance.position = spot_node.position + feet_offset
+		# Set the NPC data on the spot
+		spot_node.set_npc_data(npc_data)
 		
 		print("Spawned NPC: ", npc_resource.name, " at spot ", npc_resource.spot, " in building ", building_id)
 
@@ -284,10 +235,10 @@ func redraw_npcs():
 		parent_container = current_village_node.get_node("VillageView/VillageContent")
 		building_id = 0
 	
-	# Remove all NPC nodes from current location
+	# Clear all NPC spots in current location
 	for child in parent_container.get_children():
-		if child.has_method("set_npc_data"):  # Check if it's an NPC
-			child.queue_free()
+		if child is NpcSpot:
+			child.clear_npc()
 	
 	# Respawn NPCs for current location
 	spawn_npcs(building_id)
