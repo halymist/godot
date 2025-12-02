@@ -11,6 +11,7 @@ extends Panel
 var current_village_node: Control = null  # Current active village (Village1, Village2, etc.)
 var current_building: Building = null
 var is_in_interior: bool = false
+var village_scroll_initialized: bool = false  # Track if village scroll has been centered initially
 
 func _ready():
 	# Set current village based on player location
@@ -22,14 +23,16 @@ func _ready():
 	connect_existing_buildings()
 	spawn_npcs()
 	
-	# Center scroll position on startup
-	await get_tree().process_frame
-	if current_village_node:
-		var village_view = current_village_node.get_node("VillageView")
-		var village_content = village_view.get_node("VillageContent")
-		var content_width = village_content.size.x
-		var viewport_width = village_view.size.x
-		village_view.scroll_horizontal = int((content_width - viewport_width) / 2.0)
+	# Center scroll position only on first startup
+	if not village_scroll_initialized:
+		await get_tree().process_frame
+		if current_village_node:
+			var village_view = current_village_node.get_node("VillageView")
+			var village_content = village_view.get_node("VillageContent")
+			var content_width = village_content.size.x
+			var viewport_width = village_view.size.x
+			village_view.scroll_horizontal = int((content_width - viewport_width) / 2.0)
+			village_scroll_initialized = true
 	
 	# Connect quest panel signals
 	quest_panel.quest_accepted.connect(_on_quest_accepted)

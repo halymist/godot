@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=74 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="11_vm72l"]
 [ext_resource type="Texture2D" uid="uid://dslllm3eu8erj" path="res://assets/images/ui/map.png" id="12_22asu"]
 [ext_resource type="Texture2D" uid="uid://busbwafdwvl0h" path="res://assets/images/ui/arena.png" id="13_fkdbe"]
+[ext_resource type="Texture2D" uid="uid://b4115be1nn2oa" path="res://assets/images/villages/village_cold.png" id="13_tt7mg"]
 [ext_resource type="Theme" uid="uid://bvy63ncd844sa" path="res://assets/talent_slot.tres" id="14_7nbq1"]
 [ext_resource type="Script" uid="uid://ltahebix3ehj" path="res://scripts/Talent.gd" id="14_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://do7kcopjw84ob" path="res://assets/images/ui/home.png" id="14_81klo"]
@@ -527,6 +528,175 @@ texture = ExtResource("11_631el")
 expand_mode = 1
 
 [node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView/TavernInterior" instance=ExtResource("7_spot")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.04
+anchor_top = 0.32
+anchor_right = 0.04
+anchor_bottom = 0.32
+
+[node name="Village2" type="Control" parent="Portrait/GameScene/Home/VillagesContainer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VillageView" type="ScrollContainer" parent="Portrait/GameScene/Home/VillagesContainer/Village2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+follow_focus = true
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="VillageContent" type="Control" parent="Portrait/GameScene/Home/VillagesContainer/Village2/VillageView"]
+custom_minimum_size = Vector2(630, 0)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("39_square")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village2/VillageView/VillageContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("13_tt7mg")
+expand_mode = 1
+
+[node name="Blacksmith" parent="Portrait/GameScene/Home/VillagesContainer/Village2/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.619
+anchor_top = 0.543
+anchor_right = 0.851
+anchor_bottom = 0.833
+building_id = "1"
+building_name = "Blacksmith"
+interior_content = NodePath("../../../InteriorView/BlacksmithInterior")
+
+[node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village2/VillageView/VillageContent" instance=ExtResource("7_spot")]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.365
+anchor_top = 0.664
+anchor_right = 0.579
+anchor_bottom = 0.884
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Spot2" parent="Portrait/GameScene/Home/VillagesContainer/Village2/VillageView/VillageContent" instance=ExtResource("7_spot")]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.456
+anchor_top = 0.463
+anchor_right = 0.527
+anchor_bottom = 0.546
+offset_left = 0.0
+offset_top = 0.309967
+offset_right = -0.0100098
+offset_bottom = 0.019989
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Tavern" parent="Portrait/GameScene/Home/VillagesContainer/Village2/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.143
+anchor_top = 0.316
+anchor_right = 0.386
+anchor_bottom = 0.625
+building_id = "2"
+building_name = "Tavern"
+interior_content = NodePath("../../../InteriorView/TavernInterior")
+
+[node name="Vendor" parent="Portrait/GameScene/Home/VillagesContainer/Village2/VillageView/VillageContent" node_paths=PackedStringArray("target_panel") instance=ExtResource("10_32sfa")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.07
+anchor_top = 0.652
+anchor_right = 0.29
+anchor_bottom = 0.931
+target_panel = NodePath("../../../../../VendorPanel")
+
+[node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home/VillagesContainer/Village2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="BlacksmithInterior" type="Control" parent="Portrait/GameScene/Home/VillagesContainer/Village2/InteriorView"]
+visible = false
+custom_minimum_size = Vector2(630, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("39_square")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village2/InteriorView/BlacksmithInterior"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("8_6uxt2")
+expand_mode = 1
+
+[node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village2/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0
+anchor_top = 0.422
+anchor_right = 0.414
+anchor_bottom = 0.916
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="TavernInterior" type="Control" parent="Portrait/GameScene/Home/VillagesContainer/Village2/InteriorView"]
+visible = false
+custom_minimum_size = Vector2(630, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("39_square")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village2/InteriorView/TavernInterior"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("11_631el")
+expand_mode = 1
+
+[node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village2/InteriorView/TavernInterior" instance=ExtResource("7_spot")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.04
