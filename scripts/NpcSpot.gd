@@ -124,37 +124,13 @@ func set_npc_data(data: Dictionary):
 	npc_data = data
 	npc_name = data.get("name", "Unknown NPC")
 	
-	print("=== NpcSpot.set_npc_data ===")
-	print("Setting NPC data for: ", npc_name)
-	print("Quest ID in data: ", data.get("questid", "None"))
-	print("Building ID in data: ", data.get("building", "None"))
-	print("Asset path: ", data.get("asset", "None"))
-	
 	if data.has("asset") and data["asset"] != "" and texture_rect:
-		print("Loading texture from: ", data["asset"])
 		var tex = load(data["asset"])
-		print("Texture loaded: ", tex)
 		texture_rect.texture = tex
 		texture_rect.visible = true
 		spot_visual.visible = false
 		if click_button:
 			click_button.visible = true
-		
-		# Wait for layout update
-		await get_tree().process_frame
-		
-		print("=== After layout update ===")
-		print("NpcSpot size: ", size)
-		print("NpcSpot position: ", position)
-		print("NpcSpot global_position: ", global_position)
-		print("NpcSpot visible: ", visible)
-		print("AspectRatioContainer size: ", $AspectRatioContainer.size)
-		print("NPCTexture size: ", texture_rect.size)
-		print("NPCTexture visible: ", texture_rect.visible)
-		print("NPCTexture modulate: ", texture_rect.modulate)
-		print("NPCTexture texture: ", texture_rect.texture)
-		print("SpotVisual visible: ", spot_visual.visible)
-		print("ClickButton visible: ", click_button.visible if click_button else "no button")
 
 func clear_npc():
 	npc_data = {}

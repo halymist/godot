@@ -4,7 +4,6 @@ extends Panel
 # Structure: Home -> Village1, Village2, etc. (each contains VillageView + InteriorView)
 @export var villages_container: Control  # Parent node containing all village nodes
 @export var location_label: Label  # Label to display village name
-@export var npc_prefab: PackedScene
 @export var quest_panel: Control  # Old accept quest panel
 @export var quest_slide_panel: Control  # New quest slide panel (DynamicOptionsPanel)
 @export var map_panel: Control
@@ -90,10 +89,6 @@ func connect_existing_buildings():
 			print("Connected existing building: ", child.building_name)
 
 func spawn_npcs(building_id: int = 0):
-	if not npc_prefab:
-		print("No NPC prefab assigned")
-		return
-	
 	if not GameInfo.npcs_db:
 		print("No NPC database loaded")
 		return
@@ -107,12 +102,6 @@ func spawn_npcs(building_id: int = 0):
 	# Get NPCs to spawn based on daily quests and quest log
 	var daily_quests = GameInfo.current_player.daily_quests if GameInfo.current_player else []
 	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
-	
-	print("=== NPC Spawn Debug ===")
-	print("Daily quests: ", daily_quests)
-	print("Quest log: ", quest_log)
-	print("Building ID: ", building_id)
-	
 	var npcs_to_spawn = GameInfo.npcs_db.get_npcs_for_quests(daily_quests, quest_log, building_id)
 	
 	print("Spawning ", npcs_to_spawn.size(), " NPCs for building ", building_id)
