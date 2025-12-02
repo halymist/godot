@@ -279,6 +279,14 @@ func show_interior(building: Building = null):
 		var building_int_id = int(building.building_id)
 		spawn_npcs(building_int_id)
 		
+		# Center the scroll position when entering
+		await get_tree().process_frame  # Wait for layout update
+		if current_village_node:
+			var interior_view = current_village_node.get_node("InteriorView")
+			var content_width = building.interior_content.size.x
+			var viewport_width = interior_view.size.x
+			interior_view.scroll_horizontal = int((content_width - viewport_width) / 2.0)
+		
 		print("Showing interior for: ", building.building_name)
 	else:
 		print("Warning: No interior_content assigned to building")
