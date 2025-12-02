@@ -8,10 +8,11 @@ extends Control
 @export var slot_type: String = "Bag" # "Head", "Weapon", "Bag", etc.
 @export var slot_id: int
 
+func _ready():
+	# Override cursor to always be arrow (no forbidden cursor during drag)
+	mouse_default_cursor_shape = Control.CURSOR_ARROW
+
 func _can_drop_data(_pos, data):
-	# Always use default cursor during drag (no forbidden cursor)
-	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-	
 	# Check if data is valid drag package
 	if not (data is Dictionary and data.has("item") and data["item"] is GameInfo.Item):
 		return false
