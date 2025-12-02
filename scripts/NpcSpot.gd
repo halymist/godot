@@ -30,6 +30,8 @@ func _ready():
 	else:
 		spot_visual.visible = false
 		texture_rect.visible = false
+		# Empty spots should not block mouse input
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		if click_button:
 			click_button.visible = false
 			# Connect button signals
@@ -129,6 +131,8 @@ func set_npc_data(data: Dictionary):
 		texture_rect.texture = tex
 		texture_rect.visible = true
 		spot_visual.visible = false
+		# Enable mouse input when NPC is present
+		mouse_filter = Control.MOUSE_FILTER_STOP
 		if click_button:
 			click_button.visible = true
 
@@ -141,3 +145,7 @@ func clear_npc():
 	if click_button:
 		click_button.visible = false
 	spot_visual.visible = false
+	# Disable mouse input when empty
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Disable mouse input when empty
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
