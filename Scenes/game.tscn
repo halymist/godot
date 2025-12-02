@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=76 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -34,6 +34,7 @@
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="Texture2D" uid="uid://de5d80e8d58rl" path="res://assets/images/villages/vendor2.png" id="16_titue"]
 [ext_resource type="PackedScene" uid="uid://bmwipv6nvqjj2" path="res://Scenes/perk_tooltip.tscn" id="17_oeip8"]
+[ext_resource type="Texture2D" uid="uid://bmo5oqy3a5rr5" path="res://assets/images/villages/blacksmith25.png" id="18_htg8p"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
@@ -49,6 +50,7 @@
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Script" uid="uid://rk346721f3le" path="res://scripts/SquareContent.gd" id="39_square"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
+[ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -230,7 +232,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "chat_button", "chat_panel", "combat_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -249,7 +251,7 @@ talents_button = NodePath("GameScene/Character/Talents/Button")
 talents_panel = NodePath("GameScene/Talents")
 map_button = NodePath("BottomUI/Buttons/Map/Button")
 map_panel = NodePath("GameScene/Map")
-back_button = NodePath("TopUI/HBoxContainer/Back/Button")
+back_button = NodePath("TopUI/HBoxContainer/Back/BackButton")
 chat_button = NodePath("BottomUI/Buttons/Chat/Button")
 chat_panel = NodePath("GameScene/ChatOverlay")
 combat_panel = NodePath("GameScene/Combat")
@@ -260,6 +262,7 @@ cancel_quest = NodePath("CancelQuest")
 upgrade_talent = NodePath("GameScene/Talents/Upgrade")
 perks_panel = NodePath("GameScene/Talents/PerkScreen")
 vendor_panel = NodePath("GameScene/Home/VendorPanel")
+blacksmith_panel = NodePath("GameScene/Home/BlacksmithPanel")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -329,7 +332,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 alignment_vertical = 2
 
-[node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Back"]
+[node name="BackButton" type="Button" parent="Portrait/TopUI/HBoxContainer/Back"]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
@@ -402,7 +405,7 @@ grow_vertical = 2
 texture = ExtResource("7_6a4tp")
 expand_mode = 1
 
-[node name="Blacksmith" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("interior_content") instance=ExtResource("6_lmoi6")]
+[node name="Blacksmith" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" instance=ExtResource("6_lmoi6")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.619
@@ -411,7 +414,6 @@ anchor_right = 0.851
 anchor_bottom = 0.833
 building_id = "1"
 building_name = "Blacksmith"
-interior_content = NodePath("../../../InteriorView/BlacksmithInterior")
 
 [node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" instance=ExtResource("7_spot")]
 custom_minimum_size = Vector2(0, 40)
@@ -450,7 +452,7 @@ anchor_left = 0.143
 anchor_top = 0.316
 anchor_right = 0.386
 anchor_bottom = 0.625
-building_id = "2"
+building_id = "1"
 building_name = "Tavern"
 interior_content = NodePath("../../../InteriorView/TavernInterior")
 
@@ -463,6 +465,15 @@ anchor_right = 0.29
 anchor_bottom = 0.931
 target_panel = NodePath("../../../../../VendorPanel")
 
+[node name="Blacksmith2" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("target_panel") instance=ExtResource("10_32sfa")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.644
+anchor_top = 0.567
+anchor_right = 0.838
+anchor_bottom = 0.858
+target_panel = NodePath("../../../../../BlacksmithPanel")
+
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home/VillagesContainer/Village1"]
 visible = false
 layout_mode = 1
@@ -473,38 +484,6 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
-
-[node name="BlacksmithInterior" type="Control" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView"]
-visible = false
-custom_minimum_size = Vector2(630, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-script = ExtResource("39_square")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView/BlacksmithInterior"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("8_6uxt2")
-expand_mode = 1
-
-[node name="Spot1" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView/BlacksmithInterior" instance=ExtResource("7_spot")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.0
-anchor_top = 0.422
-anchor_right = 0.414
-anchor_bottom = 0.916
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 
 [node name="TavernInterior" type="Control" parent="Portrait/GameScene/Home/VillagesContainer/Village1/InteriorView"]
 visible = false
@@ -867,6 +846,49 @@ offset_right = 450.0
 offset_bottom = 564.0
 
 [node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/VendorPanel"]
+layout_mode = 0
+offset_top = 564.0
+offset_right = 450.0
+offset_bottom = 630.0
+
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("41_blacksmith")
+village1_texture = ExtResource("18_htg8p")
+village2_texture = ExtResource("18_htg8p")
+village3_texture = ExtResource("18_htg8p")
+village4_texture = ExtResource("18_htg8p")
+village5_texture = ExtResource("18_htg8p")
+
+[node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/BlacksmithPanel"]
+anchors_preset = 0
+offset_right = 450.0
+offset_bottom = 300.0
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/BlacksmithPanel/UtilityBackground"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("18_htg8p")
+expand_mode = 1
+
+[node name="ItemsPanel" type="Panel" parent="Portrait/GameScene/Home/BlacksmithPanel"]
+layout_mode = 0
+offset_top = 300.0
+offset_right = 450.0
+offset_bottom = 564.0
+
+[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/BlacksmithPanel"]
 layout_mode = 0
 offset_top = 564.0
 offset_right = 450.0

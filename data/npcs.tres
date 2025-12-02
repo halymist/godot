@@ -30,7 +30,7 @@ dialogues = Array[ExtResource("3_gyykm")]([SubResource("Resource_eq6f6"), SubRes
 asset = ExtResource("2_utwwl")
 portrait = ExtResource("4_4pi4t")
 spot = 1
-building_id = 1
+building_id = 0
 metadata/_custom_type_script = "uid://b5vwu8i301q8y"
 
 [resource]

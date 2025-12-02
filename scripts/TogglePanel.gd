@@ -23,6 +23,7 @@ extends Control
 @export var upgrade_talent: Control
 @export var perks_panel: Control
 @export var vendor_panel: Control
+@export var blacksmith_panel: Control
 
 func _ready():
 	
@@ -238,6 +239,12 @@ func go_back():
 	# Priority 3: Check if we're in vendor panel - hide it and return to home
 	if vendor_panel and vendor_panel.visible:
 		vendor_panel.visible = false
+		GameInfo.set_current_panel(home_panel)
+		return
+	
+	# Priority 3.5: Check if we're in blacksmith panel - hide it and return to home
+	if blacksmith_panel and blacksmith_panel.visible:
+		blacksmith_panel.visible = false
 		GameInfo.set_current_panel(home_panel)
 		return
 
