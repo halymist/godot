@@ -453,6 +453,7 @@ class GameCurrentPlayer:
 	var slides: Array = []
 	var talent_points: int = 0
 	var perk_points: int = 0
+	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
 	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
 	var guild: int = 0  # Guild ID (1=Mercantile, 2=Warriors, 3=Mages, etc.)
 	var rank: int = 0  # Rank value (determines rank tier like Novice, Veteran, etc.)
@@ -494,6 +495,7 @@ class GameCurrentPlayer:
 		"currency": "_currency",  # Use private field to avoid triggering setter
 		"talent_points": "talent_points",
 		"perk_points": "perk_points",
+		"blessing": "blessing",
 		"dungeon": "dungeon",
 		"destination": "destination",
 		"slide": "slide",

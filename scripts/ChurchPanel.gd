@@ -132,7 +132,9 @@ func _on_bless_button_pressed():
 	GameInfo.current_player.gold -= BLESSING_COST
 	GameInfo.gold_changed.emit()
 	
-	# TODO: Apply blessing effect (store active blessing ID in player data)
+	# Apply blessing effect
+	GameInfo.current_player.blessing = selected_blessing_id
+	GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 	print("Received blessing ID: ", selected_blessing_id, " - cost: ", BLESSING_COST, " gold")
 	
 	# Deselect all buttons after blessing

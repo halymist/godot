@@ -32,6 +32,7 @@ var mock_character_data = {
 	"armor": 5,
 	"talent_points": 10,
 	"perk_points": 2,
+	"blessing": 100,
 	"dungeon": false,
 	"slide": 1,
 	"slides": null,
