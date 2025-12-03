@@ -92,6 +92,13 @@ border_color = Color(0.5, 0.4, 0.25, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
+bg_color = Color(0.08, 0.05, 0.15, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character_panel"]
@@ -105,13 +112,6 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
-bg_color = Color(0.08, 0.05, 0.15, 0.85)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combat_bg"]
 bg_color = Color(0.08, 0.05, 0.15, 0.9)
@@ -1168,26 +1168,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="CurrentStatsLabel" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
+[node name="StatsTitle" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 12
-text = "Current Stats:"
-
-[node name="CurrentStats" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_font_sizes/font_size = 11
-text = "No item selected"
-
-[node name="HSeparator" type="HSeparator" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
-layout_mode = 2
-
-[node name="ImprovedStatsLabel" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 12
-text = "After Tempering:"
+text = "Tempering Improvement:"
 
 [node name="ImprovedStats" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
 layout_mode = 2
@@ -1198,9 +1183,14 @@ text = "+10% to all stats"
 [node name="TemperButton" type="Button" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content"]
 layout_mode = 2
 size_flags_vertical = 8
+theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 text = "Temper (10 Gold)"
 
 [node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/BlacksmithPanel"]

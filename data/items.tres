@@ -21,6 +21,7 @@ effect_id = 1
 effect_factor = 10.0
 quality = 0
 price = 0
+tempered = 1
 icon = ExtResource("2_tpttd")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 

@@ -5,8 +5,10 @@ extends "res://scripts/UtilityPanel.gd"
 # For now, it uses all functionality from UtilityPanel
 
 @onready var blacksmith_slot = $ItemsPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot/ItemContainer
-@onready var current_stats_label = $ItemsPanel/Content/ItemAndStats/StatsContainer/CurrentStats
 @onready var improved_stats_label = $ItemsPanel/Content/ItemAndStats/StatsContainer/ImprovedStats
+@onready var temper_button = $ItemsPanel/Content/TemperButton
+
+const TEMPER_COST = 10
 
 func _ready():
 	super._ready()
@@ -14,6 +16,14 @@ func _ready():
 	if not Engine.is_editor_hint():
 		visibility_changed.connect(_on_visibility_changed)
 		GameInfo.bag_slots_changed.connect(_on_item_changed)
+		GameInfo.gold_changed.connect(_on_gold_changed)
+		if temper_button:
+			temper_button.pressed.connect(_on_temper_pressed)
+		update_temper_button_state()
+
+func _on_gold_changed(_new_gold):
+	# Update button state when gold changes
+	update_temper_button_state()
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from blacksmith slot to bag
@@ -37,44 +47,41 @@ func update_stats_display():
 			break
 	
 	if item_in_slot:
-		# Display current stats
-		var current_text = ""
+		# Display stats showing what they will be after one more tempering
+		# Current stats already include existing tempering from database
+		var stats_text = ""
 		if item_in_slot.get("strength") and item_in_slot.strength > 0:
-			current_text += "Strength: " + str(item_in_slot.strength) + "\n"
-		if item_in_slot.get("stamina") and item_in_slot.stamina > 0:
-			current_text += "Stamina: " + str(item_in_slot.stamina) + "\n"
-		if item_in_slot.get("agility") and item_in_slot.agility > 0:
-			current_text += "Agility: " + str(item_in_slot.agility) + "\n"
+			var current = item_in_slot.strength
+			var bonus = ceil(current * 0.1)
+			var improved = current + bonus
+			stats_text += "Strength: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
+		if item_in_slot.get("constitution") and item_in_slot.constitution > 0:
+			var current = item_in_slot.constitution
+			var bonus = ceil(current * 0.1)
+			var improved = current + bonus
+			stats_text += "Constitution: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
+		if item_in_slot.get("dexterity") and item_in_slot.dexterity > 0:
+			var current = item_in_slot.dexterity
+			var bonus = ceil(current * 0.1)
+			var improved = current + bonus
+			stats_text += "Dexterity: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if item_in_slot.get("luck") and item_in_slot.luck > 0:
-			current_text += "Luck: " + str(item_in_slot.luck) + "\n"
+			var current = item_in_slot.luck
+			var bonus = ceil(current * 0.1)
+			var improved = current + bonus
+			stats_text += "Luck: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if item_in_slot.get("armor") and item_in_slot.armor > 0:
-			current_text += "Armor: " + str(item_in_slot.armor) + "\n"
+			var current = item_in_slot.armor
+			var bonus = ceil(current * 0.1)
+			var improved = current + bonus
+			stats_text += "Armor: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		
-		current_stats_label.text = current_text if current_text != "" else "No stats"
-		
-		# Display improved stats (+10%)
-		var improved_text = ""
-		if item_in_slot.get("strength") and item_in_slot.strength > 0:
-			var improved = int(item_in_slot.strength * 1.1)
-			improved_text += "Strength: " + str(improved) + " (+" + str(improved - item_in_slot.strength) + ")\n"
-		if item_in_slot.get("stamina") and item_in_slot.stamina > 0:
-			var improved = int(item_in_slot.stamina * 1.1)
-			improved_text += "Stamina: " + str(improved) + " (+" + str(improved - item_in_slot.stamina) + ")\n"
-		if item_in_slot.get("agility") and item_in_slot.agility > 0:
-			var improved = int(item_in_slot.agility * 1.1)
-			improved_text += "Agility: " + str(improved) + " (+" + str(improved - item_in_slot.agility) + ")\n"
-		if item_in_slot.get("luck") and item_in_slot.luck > 0:
-			var improved = int(item_in_slot.luck * 1.1)
-			improved_text += "Luck: " + str(improved) + " (+" + str(improved - item_in_slot.luck) + ")\n"
-		if item_in_slot.get("armor") and item_in_slot.armor > 0:
-			var improved = int(item_in_slot.armor * 1.1)
-			improved_text += "Armor: " + str(improved) + " (+" + str(improved - item_in_slot.armor) + ")\n"
-		
-		improved_stats_label.text = improved_text if improved_text != "" else "No stat improvements"
+		improved_stats_label.text = stats_text if stats_text != "" else "No stat improvements"
 	else:
 		# No item in slot
-		current_stats_label.text = "No item selected"
 		improved_stats_label.text = "+10% to all stats"
+	
+	update_temper_button_state()
 
 func return_blacksmith_item_to_bag():
 	# Find any item in slot 100 (blacksmith slot) and return it to an available bag slot
@@ -104,3 +111,59 @@ func return_blacksmith_item_to_bag():
 				blacksmith_slot.clear_slot()
 			GameInfo.bag_slots_changed.emit()
 			return
+
+func update_temper_button_state():
+	if not temper_button:
+		return
+	
+	# Check if there's an item in the blacksmith slot
+	var item_in_slot = null
+	for item in GameInfo.current_player.bag_slots:
+		if item.bag_slot_id == 100:
+			item_in_slot = item
+			break
+	
+	# Button is enabled only if there's an item and player has enough gold
+	var has_item = item_in_slot != null
+	var has_gold = GameInfo.current_player.gold >= TEMPER_COST
+	temper_button.disabled = not (has_item and has_gold)
+
+func _on_temper_pressed():
+	# Find item in slot 100
+	var item_in_slot = null
+	for item in GameInfo.current_player.bag_slots:
+		if item.bag_slot_id == 100:
+			item_in_slot = item
+			break
+	
+	if not item_in_slot:
+		return
+	
+	# Check if player has enough gold
+	if GameInfo.current_player.gold < TEMPER_COST:
+		return
+	
+	# Deduct gold
+	GameInfo.current_player.gold -= TEMPER_COST
+	GameInfo.gold_changed.emit(GameInfo.current_player.gold)
+	
+	# Improve item stats by 10% (rounded up)
+	if item_in_slot.get("strength") and item_in_slot.strength > 0:
+		item_in_slot.strength += ceil(item_in_slot.strength * 0.1)
+	if item_in_slot.get("constitution") and item_in_slot.constitution > 0:
+		item_in_slot.constitution += ceil(item_in_slot.constitution * 0.1)
+	if item_in_slot.get("dexterity") and item_in_slot.dexterity > 0:
+		item_in_slot.dexterity += ceil(item_in_slot.dexterity * 0.1)
+	if item_in_slot.get("luck") and item_in_slot.luck > 0:
+		item_in_slot.luck += ceil(item_in_slot.luck * 0.1)
+	if item_in_slot.get("armor") and item_in_slot.armor > 0:
+		item_in_slot.armor += ceil(item_in_slot.armor * 0.1)
+	
+	# Mark item as tempered
+	item_in_slot.tempered += 1
+	
+	# Emit signal to update UI
+	GameInfo.bag_slots_changed.emit()
+	
+	# Update stats display
+	update_stats_display()

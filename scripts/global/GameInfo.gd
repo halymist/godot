@@ -87,6 +87,7 @@ class Item:
 	var effect_factor: float = 0.0
 	var quality: int = 0
 	var price: int = 0
+	var tempered: int = 0  # Tracks tempering level (0 = not tempered, 1+ = tempered)
 	
 	# Client-side only (not serialized)
 	var texture: Texture2D = null
@@ -109,7 +110,8 @@ class Item:
 		"effect_id": "effect_id",
 		"effect_factor": "effect_factor",
 		"quality": "quality",
-		"price": "price"
+		"price": "price",
+		"tempered": "tempered"
 	}
 	
 	func _init(data: Dictionary = {}):
@@ -133,7 +135,18 @@ class Item:
 				effect_factor = item_resource.effect_factor
 				quality = item_resource.quality
 				price = item_resource.price
+				tempered = item_resource.tempered
 				texture = item_resource.icon
+				
+				# Apply tempering improvements if item is tempered
+				# Each tempering level adds 10% to base stats (compounding)
+				if tempered > 0:
+					var multiplier = pow(1.1, tempered)
+					armor = ceil(armor * multiplier)
+					strength = ceil(strength * multiplier)
+					constitution = ceil(constitution * multiplier)
+					dexterity = ceil(dexterity * multiplier)
+					luck = ceil(luck * multiplier)
 				
 				# Look up effect details from effects_db
 				if GameInfo.effects_db and effect_id > 0:

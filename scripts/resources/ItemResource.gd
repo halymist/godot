@@ -17,4 +17,5 @@ class_name ItemResource
 @export var effect_factor: float = 0.0  # Strength/magnitude of the effect
 @export var quality: int = 0
 @export var price: int = 0
+@export var tempered: int = 0  # Tempering level (0 = not tempered, 1+ = tempered)
 @export var icon: Texture2D = null

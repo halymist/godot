@@ -16,7 +16,10 @@ extends Panel
 
 func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector2.ZERO):
 	if item_data:
-		name_label.text = "[b]" + item_data.item_name + "[/b]"
+		var display_name = item_data.item_name
+		if item_data.get("tempered") and item_data.tempered > 0:
+			display_name += " +" + str(item_data.tempered)
+		name_label.text = "[b]" + display_name + "[/b]"
 		
 		# Handle strength stat - hide if 0
 		if item_data.strength != 0:
