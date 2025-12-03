@@ -1410,31 +1410,31 @@ theme_override_font_sizes/font_size = 12
 text = "Increases max health"
 vertical_alignment = 1
 
-[node name="DexterityRow" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer"]
+[node name="AgilityRow" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow"]
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow/StatInfo"]
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 15
-text = "Dexterity: 0"
+text = "Agility: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow/StatInfo"]
+[node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow/StatInfo"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow/StatInfo"]
+[node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow/StatInfo"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
@@ -1442,7 +1442,7 @@ theme_override_font_sizes/font_size = 13
 text = "(5g)"
 vertical_alignment = 1
 
-[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow"]
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.75, 0.65, 1)

@@ -76,7 +76,7 @@ class Item:
 	var armor: int = 0
 	var strength: int = 0
 	var stamina: int = 0
-	var dexterity: int = 0
+	var agility: int = 0
 	var luck: int = 0
 	var damage_min: int = 0
 	var damage_max: int = 0
@@ -102,7 +102,7 @@ class Item:
 		"armor": "armor",
 		"strength": "strength",
 		"stamina": "stamina",
-		"dexterity": "dexterity",
+		"agility": "agility",
 		"luck": "luck",
 		"damage_min": "damage_min",
 		"damage_max": "damage_max",
@@ -127,7 +127,7 @@ class Item:
 				armor = item_resource.armor
 				strength = item_resource.strength
 				stamina = item_resource.stamina
-				dexterity = item_resource.dexterity
+				agility = item_resource.agility
 				luck = item_resource.luck
 				damage_min = item_resource.damage_min
 				damage_max = item_resource.damage_max
@@ -145,7 +145,7 @@ class Item:
 					armor = ceil(armor * multiplier)
 					strength = ceil(strength * multiplier)
 					stamina = ceil(stamina * multiplier)
-					dexterity = ceil(dexterity * multiplier)
+					agility = ceil(agility * multiplier)
 					luck = ceil(luck * multiplier)
 				
 				# Look up effect details from effects_db
@@ -343,7 +343,7 @@ class GamePlayer:
 	var name: String = ""
 	var strength: int = 0
 	var stamina: int = 0
-	var dexterity: int = 0
+	var agility: int = 0
 	var luck: int = 0
 	var armor: int = 0
 	var bag_slots: Array[Item] = []
@@ -355,7 +355,7 @@ class GamePlayer:
 		"name": "name",
 		"strength": "strength",
 		"stamina": "stamina",
-		"dexterity": "dexterity",
+		"agility": "agility",
 		"luck": "luck",
 		"armor": "armor"
 	}
@@ -399,7 +399,7 @@ class GamePlayer:
 			"name": name,
 			"strength": strength,
 			"stamina": stamina,
-			"agility": dexterity,     # Map dexterity to agility for UI
+			"agility": agility,
 			"luck": luck,
 			"armor": armor
 		}
@@ -412,7 +412,7 @@ class GamePlayer:
 			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
 				total_stats.strength += item.strength
 				total_stats.stamina += item.stamina
-				total_stats.agility += item.dexterity
+				total_stats.agility += item.agility
 				total_stats.luck += item.luck
 				total_stats.armor += item.armor
 		
@@ -483,7 +483,7 @@ class GameCurrentPlayer:
 		"name": "name",
 		"strength": "strength",
 		"stamina": "stamina",
-		"dexterity": "dexterity",
+		"agility": "agility",
 		"luck": "luck",
 		"armor": "armor",
 		# Current player specific fields
@@ -571,7 +571,7 @@ class GameArenaOpponent:
 		"name": "name",
 		"strength": "strength",
 		"stamina": "stamina",
-		"dexterity": "dexterity",
+		"agility": "agility",
 		"luck": "luck",
 		"armor": "armor",
 		# Arena opponent specific
@@ -914,7 +914,7 @@ func print_arena_opponents_info():
 		var opponent = arena_opponents[i]
 		print("Opponent ", i + 1, ":")
 		print("  Name: ", opponent.name)
-		print("  Stats: STR=", opponent.strength, " STA=", opponent.stamina, " DEX=", opponent.dexterity, " LCK=", opponent.luck, " ARM=", opponent.armor)
+		print("  Stats: STR=", opponent.strength, " STA=", opponent.stamina, " AGI=", opponent.agility, " LCK=", opponent.luck, " ARM=", opponent.armor)
 		print("  Active Perks: ", opponent.get_active_perks().size())
 		print("  Inactive Perks: ", opponent.get_inactive_perks().size())
 		print("  Items: ", opponent.bag_slots.size())

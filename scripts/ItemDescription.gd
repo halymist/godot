@@ -36,8 +36,8 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			stamina_container.visible = false
 		
 		# Handle agility stat - hide if 0
-		if item_data.dexterity != 0:
-			agility.text = str(item_data.dexterity)
+		if item_data.agility != 0:
+			agility.text = str(item_data.agility)
 			agility_container.visible = true
 		else:
 			agility_container.visible = false

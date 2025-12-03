@@ -60,11 +60,11 @@ func update_stats_display():
 			var bonus = ceil(current * 0.1)
 			var improved = current + bonus
 			stats_text += "Stamina: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
-		if item_in_slot.get("dexterity") and item_in_slot.dexterity > 0:
-			var current = item_in_slot.dexterity
+		if item_in_slot.get("agility") and item_in_slot.agility > 0:
+			var current = item_in_slot.agility
 			var bonus = ceil(current * 0.1)
 			var improved = current + bonus
-			stats_text += "Dexterity: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
+			stats_text += "Agility: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if item_in_slot.get("luck") and item_in_slot.luck > 0:
 			var current = item_in_slot.luck
 			var bonus = ceil(current * 0.1)
@@ -144,8 +144,8 @@ func _on_temper_pressed():
 		item_in_slot.strength += ceil(item_in_slot.strength * 0.1)
 	if item_in_slot.get("stamina") and item_in_slot.stamina > 0:
 		item_in_slot.stamina += ceil(item_in_slot.stamina * 0.1)
-	if item_in_slot.get("dexterity") and item_in_slot.dexterity > 0:
-		item_in_slot.dexterity += ceil(item_in_slot.dexterity * 0.1)
+	if item_in_slot.get("agility") and item_in_slot.agility > 0:
+		item_in_slot.agility += ceil(item_in_slot.agility * 0.1)
 	if item_in_slot.get("luck") and item_in_slot.luck > 0:
 		item_in_slot.luck += ceil(item_in_slot.luck * 0.1)
 	if item_in_slot.get("armor") and item_in_slot.armor > 0:

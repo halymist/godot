@@ -6,7 +6,7 @@ var enemy_name: String = "Enemy"
 var enemy_rank: int = 0
 var enemy_strength: int = 10
 var enemy_stamina: int = 10
-var enemy_dexterity: int = 10
+var enemy_agility: int = 10
 var enemy_luck: int = 10
 var enemy_armor: int = 0
 
@@ -32,7 +32,7 @@ func _update_display():
 	image_label.text = "Enemy\nImage\n" + str(enemy_id)
 	strength_label.text = "STR: " + str(enemy_strength)
 	constitution_label.text = "STA: " + str(enemy_stamina)
-	dexterity_label.text = "DEX: " + str(enemy_dexterity)
+	dexterity_label.text = "AGI: " + str(enemy_agility)
 	luck_label.text = "LCK: " + str(enemy_luck)
 	armor_label.text = "ARM: " + str(enemy_armor)
 	
@@ -43,7 +43,7 @@ func set_enemy_data(id: int, enemy_name_text: String, strength: int, stamina: in
 	enemy_name = enemy_name_text
 	enemy_strength = strength
 	enemy_stamina = stamina
-	enemy_dexterity = agility     # Map agility back to dexterity for display
+	enemy_agility = agility
 	enemy_luck = luck
 	enemy_armor = armor
 	_update_display()

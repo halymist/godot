@@ -27,7 +27,7 @@ var mock_character_data = {
 	"location": 1,
 	"strength": 15,
 	"stamina": 12,
-	"dexterity": 18,
+	"agility": 18,
 	"luck": 10,
 	"armor": 5,
 	"talent_points": 10,
@@ -85,7 +85,7 @@ var mock_arena_opponents = [
 		"rank": 8500,
 		"strength": 12,
 		"stamina": 10,
-		"dexterity": 14,
+		"agility": 14,
 		"luck": 8,
 		"armor": 3,
 		"bag_slots": [
@@ -113,7 +113,7 @@ var mock_arena_opponents = [
 		"rank": 12000,
 		"strength": 18,
 		"stamina": 16,
-		"dexterity": 8,
+		"agility": 8,
 		"luck": 6,
 		"armor": 8,
 		"bag_slots": [
@@ -154,7 +154,7 @@ var mock_arena_opponents = [
 		"rank": 18500,
 		"strength": 10,
 		"stamina": 8,
-		"dexterity": 20,
+		"agility": 20,
 		"luck": 15,
 		"armor": 2,
 		"bag_slots": [
