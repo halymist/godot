@@ -28,6 +28,10 @@ extends Control
 @export var perks_panel: Control
 @export var vendor_panel: Control
 @export var blacksmith_panel: Control
+@export var trainer_panel: Control
+@export var church_panel: Control
+@export var alchemist_panel: Control
+
 
 func _ready():
 	
@@ -122,11 +126,17 @@ func hide_overlay(overlay: Control):
 func show_panel(panel: Control):
 	hide_all_panels()
 	
-	# Also hide utility panels (vendor, blacksmith, settings, rankings)
+	# Also hide utility panels (vendor, blacksmith, trainer, church, alchemist, settings, rankings)
 	if vendor_panel:
 		vendor_panel.visible = false
 	if blacksmith_panel:
 		blacksmith_panel.visible = false
+	if trainer_panel:
+		trainer_panel.visible = false
+	if church_panel:
+		church_panel.visible = false
+	if alchemist_panel:
+		alchemist_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -152,6 +162,12 @@ func handle_home_button():
 		vendor_panel.visible = false
 	if blacksmith_panel:
 		blacksmith_panel.visible = false
+	if trainer_panel:
+		trainer_panel.visible = false
+	if church_panel:
+		church_panel.visible = false
+	if alchemist_panel:
+		alchemist_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -283,14 +299,35 @@ func go_back():
 		GameInfo.set_current_panel(home_panel)
 		return
 	
-	# Priority 3.6: Check if we're in settings panel - hide it and return to home
+	# Priority 3.6: Check if we're in trainer panel - hide it and return to home
+	if trainer_panel and trainer_panel.visible:
+		trainer_panel.visible = false
+		home_panel.visible = true
+		GameInfo.set_current_panel(home_panel)
+		return
+	
+	# Priority 3.7: Check if we're in church panel - hide it and return to home
+	if church_panel and church_panel.visible:
+		church_panel.visible = false
+		home_panel.visible = true
+		GameInfo.set_current_panel(home_panel)
+		return
+	
+	# Priority 3.8: Check if we're in alchemist panel - hide it and return to home
+	if alchemist_panel and alchemist_panel.visible:
+		alchemist_panel.visible = false
+		home_panel.visible = true
+		GameInfo.set_current_panel(home_panel)
+		return
+	
+	# Priority 3.9: Check if we're in settings panel - hide it and return to home
 	if settings_panel and settings_panel.visible:
 		settings_panel.visible = false
 		home_panel.visible = true
 		GameInfo.set_current_panel(home_panel)
 		return
 	
-	# Priority 3.7: Check if we're in rankings panel - hide it and return to home
+	# Priority 4.0: Check if we're in rankings panel - hide it and return to home
 	if rankings_panel and rankings_panel.visible:
 		rankings_panel.visible = false
 		home_panel.visible = true

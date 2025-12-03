@@ -1,4 +1,4 @@
-[gd_scene load_steps=82 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=85 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -47,6 +47,9 @@
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
+[ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
+[ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
+[ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
@@ -251,7 +254,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -286,6 +289,9 @@ upgrade_talent = NodePath("GameScene/Talents/Upgrade")
 perks_panel = NodePath("GameScene/Talents/PerkScreen")
 vendor_panel = NodePath("GameScene/Home/VendorPanel")
 blacksmith_panel = NodePath("GameScene/Home/BlacksmithPanel")
+trainer_panel = NodePath("GameScene/Home/TrainerPanel")
+church_panel = NodePath("GameScene/Home/ChurchPanel")
+alchemist_panel = NodePath("GameScene/Home/AlchemistPanel")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -684,6 +690,15 @@ anchor_top = 0.567
 anchor_right = 0.838
 anchor_bottom = 0.858
 target_panel = NodePath("../../../../../BlacksmithPanel")
+
+[node name="Church" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("target_panel") instance=ExtResource("10_32sfa")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.564
+anchor_top = 0.306
+anchor_right = 0.723
+anchor_bottom = 0.5
+target_panel = NodePath("../../../../../ChurchPanel")
 
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home/VillagesContainer/Village1"]
 visible = false
@@ -1205,6 +1220,138 @@ offset_bottom = 630.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/BlacksmithPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.0
+
+[node name="TrainerPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("28_sjh24")
+
+[node name="VendorBackground" type="Control" parent="Portrait/GameScene/Home/TrainerPanel"]
+anchors_preset = 0
+offset_right = 450.0
+offset_bottom = 300.0
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/TrainerPanel/VendorBackground"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_v2cs8")
+expand_mode = 1
+
+[node name="ItemsPanel" type="Panel" parent="Portrait/GameScene/Home/TrainerPanel"]
+layout_mode = 0
+offset_top = 300.0
+offset_right = 450.0
+offset_bottom = 564.0
+
+[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/TrainerPanel"]
+layout_mode = 0
+offset_top = 564.0
+offset_right = 450.0
+offset_bottom = 630.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
+
+[node name="Bag" parent="Portrait/GameScene/Home/TrainerPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.0
+
+[node name="ChurchPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("29_k5jl5")
+
+[node name="VendorBackground" type="Control" parent="Portrait/GameScene/Home/ChurchPanel"]
+anchors_preset = 0
+offset_right = 450.0
+offset_bottom = 300.0
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/ChurchPanel/VendorBackground"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_v2cs8")
+expand_mode = 1
+
+[node name="ItemsPanel" type="Panel" parent="Portrait/GameScene/Home/ChurchPanel"]
+layout_mode = 0
+offset_top = 300.0
+offset_right = 450.0
+offset_bottom = 564.0
+
+[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/ChurchPanel"]
+layout_mode = 0
+offset_top = 564.0
+offset_right = 450.0
+offset_bottom = 630.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
+
+[node name="Bag" parent="Portrait/GameScene/Home/ChurchPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.0
+
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("30_nqk4g")
+
+[node name="VendorBackground" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel"]
+anchors_preset = 0
+offset_right = 450.0
+offset_bottom = 300.0
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/VendorBackground"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_v2cs8")
+expand_mode = 1
+
+[node name="ItemsPanel" type="Panel" parent="Portrait/GameScene/Home/AlchemistPanel"]
+layout_mode = 0
+offset_top = 300.0
+offset_right = 450.0
+offset_bottom = 564.0
+
+[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/AlchemistPanel"]
+layout_mode = 0
+offset_top = 564.0
+offset_right = 450.0
+offset_bottom = 630.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
+
+[node name="Bag" parent="Portrait/GameScene/Home/AlchemistPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
 layout_mode = 1
 anchors_preset = 15
 anchor_top = 0.0
