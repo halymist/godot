@@ -700,6 +700,15 @@ anchor_right = 0.723
 anchor_bottom = 0.5
 target_panel = NodePath("../../../../../ChurchPanel")
 
+[node name="Trainer" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("target_panel") instance=ExtResource("10_32sfa")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.132
+anchor_top = 0.085
+anchor_right = 0.324
+anchor_bottom = 0.252
+target_panel = NodePath("../../../../../TrainerPanel")
+
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home/VillagesContainer/Village1"]
 visible = false
 layout_mode = 1
@@ -1250,23 +1259,235 @@ grow_vertical = 2
 texture = ExtResource("14_v2cs8")
 expand_mode = 1
 
-[node name="ItemsPanel" type="Panel" parent="Portrait/GameScene/Home/TrainerPanel"]
+[node name="TrainingPanel" type="Panel" parent="Portrait/GameScene/Home/TrainerPanel"]
 layout_mode = 0
 offset_top = 300.0
 offset_right = 450.0
-offset_bottom = 564.0
-
-[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/TrainerPanel"]
-layout_mode = 0
-offset_top = 564.0
-offset_right = 450.0
 offset_bottom = 630.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
-[node name="Bag" parent="Portrait/GameScene/Home/TrainerPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+[node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel"]
 layout_mode = 1
 anchors_preset = 15
-anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "The trainer offers to improve your stats for a price.
+Each training session will permanently increase your chosen stat."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="TalentPointsRow" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 15
+text = "Talent Points: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "(100g)"
+vertical_alignment = 1
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 12
+text = "Unlock more talents"
+vertical_alignment = 1
+
+[node name="StrengthRow" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow/StatInfo"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 15
+text = "Strength: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow/StatInfo"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow/StatInfo"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "(5g)"
+vertical_alignment = 1
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 12
+text = "Increases damage dealt"
+vertical_alignment = 1
+
+[node name="ConstitutionRow" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/ConstitutionRow"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/ConstitutionRow/StatInfo"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 15
+text = "Constitution: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/ConstitutionRow/StatInfo"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/ConstitutionRow/StatInfo"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "(5g)"
+vertical_alignment = 1
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/ConstitutionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 12
+text = "Increases max health"
+vertical_alignment = 1
+
+[node name="DexterityRow" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow/StatInfo"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 15
+text = "Dexterity: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow/StatInfo"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow/StatInfo"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "(5g)"
+vertical_alignment = 1
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/DexterityRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 12
+text = "Increases dodge chance"
+vertical_alignment = 1
+
+[node name="LuckRow" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow/StatInfo"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 15
+text = "Luck: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow/StatInfo"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow/StatInfo"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "(5g)"
+vertical_alignment = 1
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 12
+text = "Increases critical chance"
+vertical_alignment = 1
 
 [node name="ChurchPanel" type="Panel" parent="Portrait/GameScene/Home"]
 visible = false
