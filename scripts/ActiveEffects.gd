@@ -1,7 +1,7 @@
 extends HBoxContainer
 
 const ActiveEffectScene = preload("res://Scenes/activeeffect.tscn")
-
+@export var perk_tooltip_panel: Panel
 @onready var effects_container = $EffectsContainer
 
 func _ready():
@@ -31,5 +31,5 @@ func update_active_effects():
 func create_effect_display(effect: EffectResource):
 	# Instantiate active effect scene
 	var active_effect = ActiveEffectScene.instantiate()
-	active_effect.setup(effect)
+	active_effect.setup(effect, perk_tooltip_panel)
 	effects_container.add_child(active_effect)
