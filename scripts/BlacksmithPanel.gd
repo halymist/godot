@@ -6,7 +6,7 @@ extends "res://scripts/UtilityPanel.gd"
 
 @onready var blacksmith_slot = $ItemsPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot/ItemContainer
 @onready var improved_stats_label = $ItemsPanel/Content/ItemAndStats/StatsContainer/ImprovedStats
-@onready var temper_button = $ItemsPanel/Content/TemperButton
+@onready var temper_button = $ItemsPanel/Content/TemperButtonContainer/TemperButton
 
 const TEMPER_COST = 10
 
@@ -84,7 +84,7 @@ func update_stats_display():
 	update_temper_button_state()
 
 func return_blacksmith_item_to_bag():
-	# Find any item in slot 100 (blacksmith slot) and return it to an available bag slot
+	# Find any item in slot 100 (blacksmith slot) and return it to first available bag slot
 	for item in GameInfo.current_player.bag_slots:
 		if item.bag_slot_id == 100:
 			# Find first available bag slot (10-14)
@@ -103,14 +103,6 @@ func return_blacksmith_item_to_bag():
 						blacksmith_slot.clear_slot()
 					GameInfo.bag_slots_changed.emit()
 					return
-			
-			# If no bag slot available, put it in the first bag slot (force it)
-			item.bag_slot_id = 10
-			# Clear the blacksmith slot visually
-			if blacksmith_slot and blacksmith_slot.has_method("clear_slot"):
-				blacksmith_slot.clear_slot()
-			GameInfo.bag_slots_changed.emit()
-			return
 
 func update_temper_button_state():
 	if not temper_button:
@@ -161,6 +153,21 @@ func _on_temper_pressed():
 	
 	# Mark item as tempered
 	item_in_slot.tempered += 1
+	
+	# Move item back to bag after tempering
+	for slot_id in range(10, 15):
+		var slot_occupied = false
+		for check_item in GameInfo.current_player.bag_slots:
+			if check_item.bag_slot_id == slot_id:
+				slot_occupied = true
+				break
+		
+		if not slot_occupied:
+			item_in_slot.bag_slot_id = slot_id
+			# Clear the blacksmith slot visually
+			if blacksmith_slot and blacksmith_slot.has_method("clear_slot"):
+				blacksmith_slot.clear_slot()
+			break
 	
 	# Emit signal to update UI
 	GameInfo.bag_slots_changed.emit()
