@@ -29,8 +29,8 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			strength_container.visible = false
 		
 		# Handle stamina stat - hide if 0
-		if item_data.constitution != 0:
-			stamina.text = str(item_data.constitution)
+		if item_data.stamina != 0:
+			stamina.text = str(item_data.stamina)
 			stamina_container.visible = true
 		else:
 			stamina_container.visible = false

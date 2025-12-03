@@ -75,7 +75,7 @@ class Item:
 	var subtype: String = ""
 	var armor: int = 0
 	var strength: int = 0
-	var constitution: int = 0
+	var stamina: int = 0
 	var dexterity: int = 0
 	var luck: int = 0
 	var damage_min: int = 0
@@ -101,7 +101,7 @@ class Item:
 		"subtype": "subtype",
 		"armor": "armor",
 		"strength": "strength",
-		"constitution": "constitution",
+		"stamina": "stamina",
 		"dexterity": "dexterity",
 		"luck": "luck",
 		"damage_min": "damage_min",
@@ -126,7 +126,7 @@ class Item:
 				subtype = item_resource.subtype
 				armor = item_resource.armor
 				strength = item_resource.strength
-				constitution = item_resource.constitution
+				stamina = item_resource.stamina
 				dexterity = item_resource.dexterity
 				luck = item_resource.luck
 				damage_min = item_resource.damage_min
@@ -144,7 +144,7 @@ class Item:
 					var multiplier = pow(1.1, tempered)
 					armor = ceil(armor * multiplier)
 					strength = ceil(strength * multiplier)
-					constitution = ceil(constitution * multiplier)
+					stamina = ceil(stamina * multiplier)
 					dexterity = ceil(dexterity * multiplier)
 					luck = ceil(luck * multiplier)
 				
@@ -342,7 +342,7 @@ class GamePlayer:
 	# Base properties shared by CurrentPlayer and ArenaOpponent
 	var name: String = ""
 	var strength: int = 0
-	var constitution: int = 0
+	var stamina: int = 0
 	var dexterity: int = 0
 	var luck: int = 0
 	var armor: int = 0
@@ -354,7 +354,7 @@ class GamePlayer:
 	const MSGPACK_MAP = {
 		"name": "name",
 		"strength": "strength",
-		"constitution": "constitution",
+		"stamina": "stamina",
 		"dexterity": "dexterity",
 		"luck": "luck",
 		"armor": "armor"
@@ -398,7 +398,7 @@ class GamePlayer:
 		return {
 			"name": name,
 			"strength": strength,
-			"stamina": constitution,  # Map constitution to stamina for UI
+			"stamina": stamina,
 			"agility": dexterity,     # Map dexterity to agility for UI
 			"luck": luck,
 			"armor": armor
@@ -411,7 +411,7 @@ class GamePlayer:
 		for item in bag_slots:
 			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
 				total_stats.strength += item.strength
-				total_stats.stamina += item.constitution
+				total_stats.stamina += item.stamina
 				total_stats.agility += item.dexterity
 				total_stats.luck += item.luck
 				total_stats.armor += item.armor
@@ -482,7 +482,7 @@ class GameCurrentPlayer:
 		# Base fields
 		"name": "name",
 		"strength": "strength",
-		"constitution": "constitution",
+		"stamina": "stamina",
 		"dexterity": "dexterity",
 		"luck": "luck",
 		"armor": "armor",
@@ -570,7 +570,7 @@ class GameArenaOpponent:
 		# Base fields
 		"name": "name",
 		"strength": "strength",
-		"constitution": "constitution",
+		"stamina": "stamina",
 		"dexterity": "dexterity",
 		"luck": "luck",
 		"armor": "armor",
@@ -914,7 +914,7 @@ func print_arena_opponents_info():
 		var opponent = arena_opponents[i]
 		print("Opponent ", i + 1, ":")
 		print("  Name: ", opponent.name)
-		print("  Stats: STR=", opponent.strength, " CON=", opponent.constitution, " DEX=", opponent.dexterity, " LCK=", opponent.luck, " ARM=", opponent.armor)
+		print("  Stats: STR=", opponent.strength, " STA=", opponent.stamina, " DEX=", opponent.dexterity, " LCK=", opponent.luck, " ARM=", opponent.armor)
 		print("  Active Perks: ", opponent.get_active_perks().size())
 		print("  Inactive Perks: ", opponent.get_inactive_perks().size())
 		print("  Items: ", opponent.bag_slots.size())

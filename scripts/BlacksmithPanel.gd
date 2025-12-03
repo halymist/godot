@@ -55,11 +55,11 @@ func update_stats_display():
 			var bonus = ceil(current * 0.1)
 			var improved = current + bonus
 			stats_text += "Strength: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
-		if item_in_slot.get("constitution") and item_in_slot.constitution > 0:
-			var current = item_in_slot.constitution
+		if item_in_slot.get("stamina") and item_in_slot.stamina > 0:
+			var current = item_in_slot.stamina
 			var bonus = ceil(current * 0.1)
 			var improved = current + bonus
-			stats_text += "Constitution: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
+			stats_text += "Stamina: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if item_in_slot.get("dexterity") and item_in_slot.dexterity > 0:
 			var current = item_in_slot.dexterity
 			var bonus = ceil(current * 0.1)
@@ -142,8 +142,8 @@ func _on_temper_pressed():
 	# Improve item stats by 10% (rounded up)
 	if item_in_slot.get("strength") and item_in_slot.strength > 0:
 		item_in_slot.strength += ceil(item_in_slot.strength * 0.1)
-	if item_in_slot.get("constitution") and item_in_slot.constitution > 0:
-		item_in_slot.constitution += ceil(item_in_slot.constitution * 0.1)
+	if item_in_slot.get("stamina") and item_in_slot.stamina > 0:
+		item_in_slot.stamina += ceil(item_in_slot.stamina * 0.1)
 	if item_in_slot.get("dexterity") and item_in_slot.dexterity > 0:
 		item_in_slot.dexterity += ceil(item_in_slot.dexterity * 0.1)
 	if item_in_slot.get("luck") and item_in_slot.luck > 0:
