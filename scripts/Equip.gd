@@ -20,9 +20,14 @@ func update_equip_slots():
 		if slot.has_method("clear_slot"):
 			slot.clear_slot()
 
-	#eq slotsID: 0-9, bagslots: 10-14
+	#eq slotsID: 0-9, bagslots: 10-14, special slots: 100+
 	for item in GameInfo.current_player.bag_slots:
 		var bag_slot_id = item.bag_slot_id  # Use property instead of dictionary access
+		
+		# Skip special slots like blacksmith (100+)
+		if bag_slot_id >= 100:
+			continue
+		
 		var valid = false
 		var slot_id = 0
 		if is_bag and bag_slot_id >= 10:

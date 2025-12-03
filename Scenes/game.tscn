@@ -4726,6 +4726,7 @@ grow_vertical = 1
 
 [node name="ItemDescription" type="Panel" parent="Portrait" node_paths=PackedStringArray("name_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
 visible = false
+z_index = 1500
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
