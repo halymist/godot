@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="EffectDatabase" load_steps=10 format=3 uid="uid://bkg18l7ls21gy"]
+[gd_resource type="Resource" script_class="EffectDatabase" load_steps=11 format=3 uid="uid://bkg18l7ls21gy"]
 
 [ext_resource type="Script" uid="uid://p673jpbjsppe" path="res://scripts/resources/EffectResource.gd" id="1_kykie"]
+[ext_resource type="Texture2D" uid="uid://de3hl0mcocv1p" path="res://assets/images/ui/Perks.png" id="2_j0sy3"]
 [ext_resource type="Script" uid="uid://tlx57q68wsqo" path="res://scripts/resources/EffectDatabase.gd" id="2_jpqpk"]
 
 [sub_resource type="Resource" id="Resource_kykie"]
@@ -22,6 +23,7 @@ script = ExtResource("1_kykie")
 id = 100
 name = "Blessing of something"
 description = "Bless by xxx"
+icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_j0sy3"]
@@ -29,6 +31,7 @@ script = ExtResource("1_kykie")
 id = 101
 name = "Blessing of something2"
 description = "Bless by xxx"
+icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_j56hd"]
@@ -36,20 +39,23 @@ script = ExtResource("1_kykie")
 id = 102
 name = "lessing of something3"
 description = "Bless by xxx"
+icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_73tjy"]
 script = ExtResource("1_kykie")
 id = 103
-name = "lessing of something4"
+name = "Blessing of something4"
 description = "Bless by xxx"
+icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_ur02h"]
 script = ExtResource("1_kykie")
 id = 104
-name = "lessing of something5"
+name = "Blessing of something5"
 description = "Bless by xxx"
+icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [resource]

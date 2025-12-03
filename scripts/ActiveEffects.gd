@@ -29,16 +29,32 @@ func update_active_effects():
 func create_effect_display(effect: EffectResource):
 	# Create container for the effect
 	var effect_box = VBoxContainer.new()
-	effect_box.custom_minimum_size = Vector2(80, 40)
+	effect_box.custom_minimum_size = Vector2(60, 60)
+	effect_box.add_theme_constant_override("separation", 2)
+	
+	# Create square icon container
+	var icon_container = AspectRatioContainer.new()
+	icon_container.custom_minimum_size = Vector2(48, 48)
+	icon_container.ratio = 1.0  # Force square
+	icon_container.stretch_mode = AspectRatioContainer.STRETCH_FIT
+	
+	# Create icon
+	if effect.icon:
+		var icon = TextureRect.new()
+		icon.texture = effect.icon
+		icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon_container.add_child(icon)
+	
+	effect_box.add_child(icon_container)
 	
 	# Create name label
 	var name_label = Label.new()
 	name_label.text = effect.name
 	name_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.7, 1))
-	name_label.add_theme_font_size_override("font_size", 11)
+	name_label.add_theme_font_size_override("font_size", 10)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	effect_box.add_child(name_label)
-	
-	# TODO: Add effect icon above name when available
 	
 	effects_container.add_child(effect_box)
