@@ -6,6 +6,15 @@ extends GridContainer
 func _ready():
 	if reset_button:
 		reset_button.pressed.connect(_on_reset_button_pressed)
+	
+	# Connect to stats_changed signal to update title label
+	GameInfo.stats_changed.connect(_on_stats_changed)
+	
+	# Initial update
+	update_title_label()
+
+func _on_stats_changed(_stats: Dictionary):
+	update_title_label()
 
 func refresh_all_talents():
 	for talent in talents:

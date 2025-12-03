@@ -6,6 +6,7 @@ extends Control
 @export var rank_label: Label
 @export var guild_label: Label
 @export var profession_label: Label
+@export var talent_points_label: Label
 @export var strength_label: Label
 @export var stamina_label: Label
 @export var agility_label: Label
@@ -38,6 +39,8 @@ func _on_stats_changed(_stats: Dictionary):
 	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
 	guild_label.text = GameInfo.current_player.get_guild_name()
 	profession_label.text = GameInfo.current_player.get_profession_name()
+	if talent_points_label:
+		talent_points_label.text = "TALENT POINTS: " + str(GameInfo.current_player.talent_points)
 	strength_label.text = "STRENGTH: " + str(total_stats.strength)
 	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
 	agility_label.text = "AGILITY: " + str(total_stats.agility)

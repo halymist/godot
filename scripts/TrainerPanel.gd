@@ -74,6 +74,7 @@ func _on_talent_points_plus_pressed():
 		GameInfo.current_player.gold -= TALENT_POINT_COST
 		GameInfo.current_player.talent_points += 1
 		GameInfo.gold_changed.emit()
+		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Talent Points - cost: ", TALENT_POINT_COST, " gold")
 
@@ -82,6 +83,7 @@ func _on_strength_plus_pressed():
 		GameInfo.current_player.gold -= STAT_COST
 		GameInfo.current_player.strength += 1
 		GameInfo.gold_changed.emit()
+		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Strength - cost: ", STAT_COST, " gold")
 
@@ -90,6 +92,7 @@ func _on_stamina_plus_pressed():
 		GameInfo.current_player.gold -= STAT_COST
 		GameInfo.current_player.stamina += 1
 		GameInfo.gold_changed.emit()
+		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Stamina - cost: ", STAT_COST, " gold")
 
@@ -98,6 +101,7 @@ func _on_agility_plus_pressed():
 		GameInfo.current_player.gold -= STAT_COST
 		GameInfo.current_player.agility += 1
 		GameInfo.gold_changed.emit()
+		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Agility - cost: ", STAT_COST, " gold")
 
@@ -106,5 +110,6 @@ func _on_luck_plus_pressed():
 		GameInfo.current_player.gold -= STAT_COST
 		GameInfo.current_player.luck += 1
 		GameInfo.gold_changed.emit()
+		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Luck - cost: ", STAT_COST, " gold")
