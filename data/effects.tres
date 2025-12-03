@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EffectDatabase" load_steps=5 format=3 uid="uid://bkg18l7ls21gy"]
+[gd_resource type="Resource" script_class="EffectDatabase" load_steps=10 format=3 uid="uid://bkg18l7ls21gy"]
 
 [ext_resource type="Script" uid="uid://p673jpbjsppe" path="res://scripts/resources/EffectResource.gd" id="1_kykie"]
 [ext_resource type="Script" uid="uid://tlx57q68wsqo" path="res://scripts/resources/EffectDatabase.gd" id="2_jpqpk"]
@@ -17,6 +17,41 @@ name = "Effect2"
 description = "Seems solid lol"
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
+[sub_resource type="Resource" id="Resource_lkg4j"]
+script = ExtResource("1_kykie")
+id = 100
+name = "Blessing of something"
+description = "Bless by xxx"
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_j0sy3"]
+script = ExtResource("1_kykie")
+id = 101
+name = "Blessing of something2"
+description = "Bless by xxx"
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_j56hd"]
+script = ExtResource("1_kykie")
+id = 102
+name = "lessing of something3"
+description = "Bless by xxx"
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_73tjy"]
+script = ExtResource("1_kykie")
+id = 103
+name = "lessing of something4"
+description = "Bless by xxx"
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_ur02h"]
+script = ExtResource("1_kykie")
+id = 104
+name = "lessing of something5"
+description = "Bless by xxx"
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
 [resource]
 script = ExtResource("2_jpqpk")
-effects = Array[ExtResource("1_kykie")]([SubResource("Resource_kykie"), SubResource("Resource_jpqpk")])
+effects = Array[ExtResource("1_kykie")]([SubResource("Resource_kykie"), SubResource("Resource_jpqpk"), SubResource("Resource_lkg4j"), SubResource("Resource_j0sy3"), SubResource("Resource_j56hd"), SubResource("Resource_73tjy"), SubResource("Resource_ur02h")])
