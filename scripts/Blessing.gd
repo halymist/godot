@@ -5,6 +5,7 @@ signal blessing_selected(blessing_id: int)
 var effect: EffectResource
 var blessing_id: int = 0
 var is_active: bool = false
+var is_selected: bool = false
 
 @onready var button = $Button
 @onready var icon = $Content/IconContainer/Icon
@@ -13,6 +14,7 @@ var is_active: bool = false
 
 # Style references
 var default_style: StyleBoxFlat
+var selected_style: StyleBoxFlat
 var active_style: StyleBoxFlat
 
 func _ready():
@@ -28,6 +30,19 @@ func _ready():
 	default_style.corner_radius_top_right = 4
 	default_style.corner_radius_bottom_left = 4
 	default_style.corner_radius_bottom_right = 4
+	
+	# Create selected style (when clicked but not yet active)
+	selected_style = StyleBoxFlat.new()
+	selected_style.bg_color = Color(0.18, 0.15, 0.10, 0.75)  # Slightly brighter than default
+	selected_style.border_color = Color(0.6, 0.5, 0.35, 0.7)  # Lighter border
+	selected_style.border_width_left = 1
+	selected_style.border_width_top = 1
+	selected_style.border_width_right = 1
+	selected_style.border_width_bottom = 1
+	selected_style.corner_radius_top_left = 4
+	selected_style.corner_radius_top_right = 4
+	selected_style.corner_radius_bottom_left = 4
+	selected_style.corner_radius_bottom_right = 4
 	
 	# Create active style
 	active_style = StyleBoxFlat.new()
@@ -69,8 +84,17 @@ func setup(blessing_effect: EffectResource):
 
 func set_active(active: bool):
 	is_active = active
-	if active:
+	update_style()
+
+func set_selected(selected: bool):
+	is_selected = selected
+	update_style()
+
+func update_style():
+	if is_active:
 		add_theme_stylebox_override("panel", active_style)
+	elif is_selected:
+		add_theme_stylebox_override("panel", selected_style)
 	else:
 		add_theme_stylebox_override("panel", default_style)
 

@@ -70,8 +70,17 @@ func create_blessing_row(effect: EffectResource):
 	blessings_container.add_child(blessing)
 
 func _on_blessing_selected(blessing_id: int):
+	# Clear previous selection visual
+	for effect_id in blessing_nodes:
+		blessing_nodes[effect_id].set_selected(false)
+	
 	# Update selected blessing
 	selected_blessing_id = blessing_id
+	
+	# Highlight selected blessing
+	if blessing_nodes.has(blessing_id):
+		blessing_nodes[blessing_id].set_selected(true)
+	
 	print("Selected blessing: ", blessing_id)
 	
 	update_bless_button_state()
@@ -105,7 +114,9 @@ func _on_bless_button_pressed():
 	# Highlight the newly active blessing
 	highlight_active_blessing(selected_blessing_id)
 	
-	# Clear selection
+	# Clear selection visual and state
+	for effect_id in blessing_nodes:
+		blessing_nodes[effect_id].set_selected(false)
 	selected_blessing_id = -1
 	update_bless_button_state()
 

@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8j2k5m3n6pqa"]
+
+[ext_resource type="Script" path="res://scripts/ActiveEffect.gd" id="1_active_effect"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.15, 0.12, 0.08, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 0.4, 0.25, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="ActiveEffect" type="PanelContainer"]
+custom_minimum_size = Vector2(52, 52)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+script = ExtResource("1_active_effect")
+
+[node name="IconContainer" type="AspectRatioContainer" parent="."]
+layout_mode = 2
+ratio = 1.0
+
+[node name="Icon" type="TextureRect" parent="IconContainer"]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
