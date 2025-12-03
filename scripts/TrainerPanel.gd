@@ -1,5 +1,5 @@
 @tool
-extends Control
+extends "res://scripts/UtilityPanel.gd"
 
 # Training costs
 const TALENT_POINT_COST = 100

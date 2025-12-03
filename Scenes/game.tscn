@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=90 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -50,7 +50,9 @@
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
 [ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
+[ext_resource type="Texture2D" uid="uid://cog1a0wwr6mol" path="res://assets/images/villages/trainer.png" id="29_nfavm"]
 [ext_resource type="Texture2D" uid="uid://dntdd7a6t8hwf" path="res://assets/images/villages/church.png" id="30_fh6x0"]
+[ext_resource type="Texture2D" uid="uid://6iephe8o7hdc" path="res://assets/images/villages/trainer2.png" id="30_jcn4n"]
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Texture2D" uid="uid://cxqt6xldm0tqa" path="res://assets/images/villages/church2.png" id="31_j0obb"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
@@ -1246,13 +1248,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("28_sjh24")
+village1_texture = ExtResource("29_nfavm")
+village2_texture = ExtResource("30_jcn4n")
+village3_texture = ExtResource("30_jcn4n")
+village4_texture = ExtResource("30_jcn4n")
+village5_texture = ExtResource("30_jcn4n")
 
-[node name="VendorBackground" type="Control" parent="Portrait/GameScene/Home/TrainerPanel"]
+[node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/TrainerPanel"]
 anchors_preset = 0
 offset_right = 450.0
 offset_bottom = 300.0
 
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/TrainerPanel/VendorBackground"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/TrainerPanel/UtilityBackground"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1509,12 +1516,12 @@ village3_texture = ExtResource("31_j0obb")
 village4_texture = ExtResource("31_j0obb")
 village5_texture = ExtResource("31_j0obb")
 
-[node name="VendorBackground" type="Control" parent="Portrait/GameScene/Home/ChurchPanel"]
+[node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/ChurchPanel"]
 anchors_preset = 0
 offset_right = 450.0
 offset_bottom = 300.0
 
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/ChurchPanel/VendorBackground"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/ChurchPanel/UtilityBackground"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
