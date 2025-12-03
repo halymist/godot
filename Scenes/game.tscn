@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=98 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -59,9 +59,17 @@
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
+[ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="38_jcn4n"]
+[ext_resource type="Texture2D" uid="uid://54fu6pfqynod" path="res://assets/images/ui/chest_outline.png" id="39_sfx3s"]
 [ext_resource type="Script" uid="uid://rk346721f3le" path="res://scripts/SquareContent.gd" id="39_square"]
+[ext_resource type="Texture2D" uid="uid://ptj6j3cf4d76" path="res://assets/images/ui/gloves_outline.png" id="40_p5qon"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
+[ext_resource type="Texture2D" uid="uid://b0w36ybd8s4jl" path="res://assets/images/ui/shoes_outline.png" id="41_gyste"]
+[ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="44_p3b6d"]
+[ext_resource type="Texture2D" uid="uid://b13lm15co82og" path="res://assets/images/ui/pants_outline.png" id="45_bchkn"]
+[ext_resource type="Texture2D" uid="uid://mui2o1egfipm" path="res://assets/images/ui/ring_outline.png" id="46_ff75x"]
+[ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="47_a2m5q"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -713,6 +721,16 @@ anchor_top = 0.085
 anchor_right = 0.324
 anchor_bottom = 0.252
 target_panel = NodePath("../../../../../TrainerPanel")
+
+[node name="Alchemist" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("target_panel") instance=ExtResource("10_32sfa")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.402
+anchor_top = 0.099
+anchor_right = 0.546
+anchor_bottom = 0.252
+offset_top = 0.122856
+target_panel = NodePath("../../../../../AlchemistPanel")
 
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home/VillagesContainer/Village1"]
 visible = false
@@ -1585,6 +1603,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
+village1_texture = ExtResource("30_fh6x0")
+village2_texture = ExtResource("31_j0obb")
+village3_texture = ExtResource("31_j0obb")
+village4_texture = ExtResource("31_j0obb")
+village5_texture = ExtResource("31_j0obb")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel"]
 anchors_preset = 0
@@ -1606,6 +1629,128 @@ layout_mode = 0
 offset_top = 300.0
 offset_right = 450.0
 offset_bottom = 564.0
+
+[node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "The alchemist can brew powerful elixirs from ingredients.
+Combine up to 5 items to create unique potions.
+Each brew costs 10 gold and consumes the ingredients."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="BrewingContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_constants/separation = 10
+
+[node name="Spacer1" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Slot1" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1"]
+layout_mode = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Plus1" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "+"
+vertical_alignment = 1
+
+[node name="Slot2" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2"]
+layout_mode = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Plus2" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "+"
+vertical_alignment = 1
+
+[node name="Slot3" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3"]
+layout_mode = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Plus3" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "+"
+vertical_alignment = 1
+
+[node name="Slot4" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot4"]
+layout_mode = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Plus4" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "+"
+vertical_alignment = 1
+
+[node name="Slot5" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot5"]
+layout_mode = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Spacer2" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+disabled = true
+text = "Brew Elixir (10g)"
 
 [node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/AlchemistPanel"]
 layout_mode = 0
@@ -1741,7 +1886,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/HeadSlot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("38_jcn4n")
 expand_mode = 1
 
 [node name="Head" type="Control" parent="Portrait/GameScene/Character/Equip/Left/HeadSlot"]
@@ -1764,7 +1909,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/ChestSlot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("39_sfx3s")
 expand_mode = 1
 
 [node name="Chest" type="Control" parent="Portrait/GameScene/Character/Equip/Left/ChestSlot"]
@@ -1787,7 +1932,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/HandSlot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("40_p5qon")
 expand_mode = 1
 
 [node name="Gloves" type="Control" parent="Portrait/GameScene/Character/Equip/Left/HandSlot"]
@@ -1810,7 +1955,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/ShoeSlot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("41_gyste")
 expand_mode = 1
 
 [node name="Shoes" type="Control" parent="Portrait/GameScene/Character/Equip/Left/ShoeSlot"]
@@ -1874,7 +2019,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1Slot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("44_p3b6d")
 expand_mode = 1
 
 [node name="Weapon1" type="Control" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1Slot"]
@@ -1898,7 +2043,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2Slot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("44_p3b6d")
 expand_mode = 1
 
 [node name="Weapon2" type="Control" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2Slot"]
@@ -1951,7 +2096,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/LegSlot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("45_bchkn")
 expand_mode = 1
 
 [node name="Pants" type="Control" parent="Portrait/GameScene/Character/Equip/Right/LegSlot"]
@@ -1974,7 +2119,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/RingSlot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("46_ff75x")
 expand_mode = 1
 
 [node name="Ring" type="Control" parent="Portrait/GameScene/Character/Equip/Right/RingSlot"]
@@ -1997,7 +2142,7 @@ expand_mode = 1
 [node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/AmuletSlot"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
+texture = ExtResource("47_a2m5q")
 expand_mode = 1
 
 [node name="Amulet" type="Control" parent="Portrait/GameScene/Character/Equip/Right/AmuletSlot"]
