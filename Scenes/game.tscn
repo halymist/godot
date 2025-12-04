@@ -1685,7 +1685,7 @@ layout_mode = 2
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Ingredient"
-slot_id = 100
+slot_id = 101
 
 [node name="Plus1" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
 layout_mode = 2
@@ -1713,7 +1713,7 @@ layout_mode = 2
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Ingredient"
-slot_id = 101
+slot_id = 102
 
 [node name="Plus2" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
 layout_mode = 2
@@ -1741,7 +1741,7 @@ layout_mode = 2
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Ingredient"
-slot_id = 102
+slot_id = 103
 
 [node name="Spacer2" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
 layout_mode = 2

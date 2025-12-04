@@ -14,7 +14,8 @@ class_name ItemResource
 @export var damage_min: int = 0
 @export var damage_max: int = 0
 @export var effect_id: int = 0  # References EffectResource by ID (0 if no effect)
-@export var effect_factor: float = 0.0  # Strength/magnitude of the effect
+@export var effect_factor: int = 0  # Strength/magnitude of the effect
+@export var duration: int = 0  # Duration in days for consumables (0 = permanent/not applicable)
 @export var quality: int = 0
 @export var price: int = 0
 @export var tempered: int = 0  # Tempering level (0 = not tempered, 1+ = tempered)
