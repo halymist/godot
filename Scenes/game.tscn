@@ -1,4 +1,4 @@
-[gd_scene load_steps=98 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=99 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -56,6 +56,7 @@
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Texture2D" uid="uid://cxqt6xldm0tqa" path="res://assets/images/villages/church2.png" id="31_j0obb"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
+[ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
@@ -1656,10 +1657,7 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_constants/separation = 10
-
-[node name="Spacer1" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
+alignment = 1
 
 [node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
 layout_mode = 2
@@ -1677,6 +1675,18 @@ layout_mode = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1"]
+layout_mode = 2
+texture = ExtResource("35_p5qon")
+expand_mode = 1
+
+[node name="SlotContainer" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Ingredient"
+slot_id = 100
+
 [node name="Plus1" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
@@ -1692,6 +1702,18 @@ layout_mode = 2
 layout_mode = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2"]
+layout_mode = 2
+texture = ExtResource("35_p5qon")
+expand_mode = 1
+
+[node name="SlotContainer" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Ingredient"
+slot_id = 101
 
 [node name="Plus2" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
 layout_mode = 2
@@ -1709,41 +1731,31 @@ layout_mode = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Plus3" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 24
-text = "+"
-vertical_alignment = 1
-
-[node name="Slot4" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot4"]
-layout_mode = 2
-texture = ExtResource("7_7nbq1")
+texture = ExtResource("35_p5qon")
 expand_mode = 1
 
-[node name="Plus4" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+[node name="SlotContainer" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 24
-text = "+"
-vertical_alignment = 1
-
-[node name="Slot5" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot5"]
-layout_mode = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Ingredient"
+slot_id = 102
 
 [node name="Spacer2" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="ResultPreview" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = "Elixir Effects: None"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
 custom_minimum_size = Vector2(0, 45)
@@ -1847,6 +1859,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

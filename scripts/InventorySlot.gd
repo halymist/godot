@@ -112,6 +112,8 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 			return item_type == "Amulet"
 		"Weapon":
 			return item_type == "Weapon"
+		"Ingredient":
+			return item_type == "Ingredient"
 		"Bag":
 			return true  # Bag accepts everything
 		_:
