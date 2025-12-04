@@ -124,34 +124,29 @@ func _on_brew_button_pressed():
 	if GameInfo.current_player.gold < BREW_COST:
 		return
 	
-	# Collect effect IDs and factors from ingredients
-	var effect_ids = [0, 0, 0]
-	var effect_factors = [0, 0, 0]
+	# Collect ingredient IDs from the slots
+	var ingredient_ids = [0, 0, 0]
 	var slot_index = 0
 	
 	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
 		var item = get_ingredient_in_slot(slot_id)
 		if item:
-			var item_resource = GameInfo.items_db.get_item_by_id(item.id)
-			if item_resource and item_resource.effect_id > 0:
-				effect_ids[slot_index] = item_resource.effect_id
-				effect_factors[slot_index] = item_resource.effect_factor
+			ingredient_ids[slot_index] = item.id
 		slot_index += 1
 	
-	# Check if we have at least one effect
-	if effect_ids[0] == 0 and effect_ids[1] == 0 and effect_ids[2] == 0:
+	# Check if we have at least one ingredient
+	if ingredient_ids[0] == 0 and ingredient_ids[1] == 0 and ingredient_ids[2] == 0:
 		return
 	
-	# Generate encoded elixir ID: 1000 + 9 digits (3 effect IDs, each 3 digits)
-	# Format: 1000 + effectID1(3) + effectID2(3) + effectID3(3)
+	# Generate encoded elixir ID: 1000 + 9 digits (3 ingredient IDs, each 3 digits)
+	# Format: 1000 + ingredientID1(3) + ingredientID2(3) + ingredientID3(3)
 	var encoded_id = 1000000000000  # Base: 1000 with 9 zeros
-	encoded_id += effect_ids[0] * 1000000  # First effect (digits 4-6)
-	encoded_id += effect_ids[1] * 1000      # Second effect (digits 7-9)
-	encoded_id += effect_ids[2]             # Third effect (digits 10-12)
+	encoded_id += ingredient_ids[0] * 1000000  # First ingredient (digits 4-6)
+	encoded_id += ingredient_ids[1] * 1000      # Second ingredient (digits 7-9)
+	encoded_id += ingredient_ids[2]             # Third ingredient (digits 10-12)
 	
 	print("Brewing elixir with ID: ", encoded_id)
-	print("  Effect IDs: ", effect_ids)
-	print("  Effect Factors: ", effect_factors)
+	print("  Ingredient IDs: ", ingredient_ids)
 	
 	# Deduct gold
 	GameInfo.current_player.gold -= BREW_COST
@@ -193,17 +188,17 @@ func clear_ingredient_slots():
 			container.clear_slot()
 
 func find_empty_bag_slot() -> int:
-	# Find first empty slot in bag (slots 0-99)
+	# Find first empty slot in bag (slots 10-14, the visible bag slots)
 	var occupied_slots = []
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id >= 0 and item.bag_slot_id < 100:
+		if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
 			occupied_slots.append(item.bag_slot_id)
 	
-	for i in range(100):
+	for i in range(10, 15):
 		if not i in occupied_slots:
 			return i
 	
-	return 0  # Fallback to slot 0 if all full
+	return 10  # Fallback to slot 10 if all full
 
 func _on_gold_changed(_new_gold: int):
 	update_brew_button_state()
