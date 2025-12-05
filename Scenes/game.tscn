@@ -1848,40 +1848,66 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ItemSlotContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content"]
+[node name="ItemSlotContainer" type="HBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.6
 
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
+[node name="SlotSection" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 12
 text = "Item to Enchant"
 horizontal_alignment = 1
 
-[node name="ItemSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
+[node name="ItemSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/ItemSlot"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection/ItemSlot"]
 layout_mode = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/ItemSlot"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection/ItemSlot"]
 layout_mode = 2
 texture = ExtResource("9_nnt18")
 expand_mode = 1
 
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/ItemSlot"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection/ItemSlot"]
 layout_mode = 2
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Enchanter"
 slot_id = 104
+
+[node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="EffectLabel" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/EffectsSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "Available Enchantments"
+horizontal_alignment = 1
+
+[node name="EffectScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/EffectsSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EffectList" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/EffectsSection/EffectScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="EnchantButtonContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content"]
 layout_mode = 2

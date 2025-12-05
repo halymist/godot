@@ -29,5 +29,4 @@ func _on_button_pressed():
 		
 		target_panel.visible = true
 		GameInfo.set_current_panel(target_panel)
-		print("Current panel set to: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
 	utility_clicked.emit(self)

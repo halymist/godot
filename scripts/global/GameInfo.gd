@@ -611,6 +611,7 @@ var chat_messages: Array[ChatMessage] = []
 var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
 var npcs: Array[Dictionary] = []
+var enchanter_effects: Array[Dictionary] = []  # Array of {effect_id: int, factor: float}
 
 # Quest system
 var quest_slides: Dictionary = {}  # questID -> Array[QuestSlide]
@@ -671,6 +672,7 @@ func _ready():
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)
 	load_combat_logs_data(Websocket.mock_combat_logs)
+	load_enchanter_effects_data(Websocket.mock_enchanter_effects)
 	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
 	load_all_quests_data(Websocket.mock_quests)  # Load all quests by ID
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
@@ -697,6 +699,18 @@ func get_fallback_texture(asset_id: int) -> Texture2D:
 	return null
 
 # UI Panel management functions
+# Load enchanter effects data from websocket
+func load_enchanter_effects_data(data: Array):
+	enchanter_effects.clear()
+	for effect_data in data:
+		if effect_data is Array and effect_data.size() >= 2:
+			var effect_entry = {
+				"effect_id": int(effect_data[0]),
+				"factor": float(effect_data[1])
+			}
+			enchanter_effects.append(effect_entry)
+	print("Loaded ", enchanter_effects.size(), " enchanter effects")
+
 func set_current_panel(panel: Control):
 	current_panel = panel
 
