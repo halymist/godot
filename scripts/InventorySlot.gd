@@ -112,9 +112,12 @@ func _drop_data(_pos, data):
 	GameInfo.bag_slots_changed.emit()
 
 func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
+	# Vendor items cost 2x their base price
+	var purchase_price = vendor_item.price * 2
+	
 	# Check if player has enough gold
-	if GameInfo.current_player.gold < vendor_item.price:
-		print("Not enough gold to purchase item! Need ", vendor_item.price, " but have ", GameInfo.current_player.gold)
+	if GameInfo.current_player.gold < purchase_price:
+		print("Not enough gold to purchase item! Need ", purchase_price, " but have ", GameInfo.current_player.gold)
 		return
 	
 	# Check if target slot is empty
@@ -123,8 +126,8 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 		return
 	
 	# Deduct gold
-	GameInfo.current_player.gold -= vendor_item.price
-	print("Purchased ", vendor_item.item_name, " for ", vendor_item.price, " gold. Remaining gold: ", GameInfo.current_player.gold)
+	GameInfo.current_player.gold -= purchase_price
+	print("Purchased ", vendor_item.item_name, " for ", purchase_price, " gold. Remaining gold: ", GameInfo.current_player.gold)
 	
 	# Create a new item instance from vendor item (copy the data)
 	var purchased_item = GameInfo.Item.new({
@@ -148,7 +151,7 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	GameInfo.bag_slots_changed.emit()
 	print("Item purchased and added to slot ", slot_id)
 
-func handle_vendor_sell(item: GameInfo.Item, source_slot_id: int, source_container):
+func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_container):
 	# Only accept items from equipment (0-9) or bag (10-14) slots
 	if source_slot_id < 0 or source_slot_id > 14:
 		print("Can only sell items from equipment or bag slots")

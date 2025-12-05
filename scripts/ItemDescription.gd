@@ -26,7 +26,11 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 		# Display price if available and > 0
 		if price_label and price_container:
 			if item_data.price > 0:
-				price_label.text = str(item_data.price) + " gold"
+				# Check if item is in vendor slots (105-112) - show 2x price for buying
+				var display_price = item_data.price
+				if item_data.bag_slot_id >= 105 and item_data.bag_slot_id <= 112:
+					display_price = item_data.price * 2
+				price_label.text = str(display_price) + " gold"
 				price_container.visible = true
 			else:
 				price_container.visible = false

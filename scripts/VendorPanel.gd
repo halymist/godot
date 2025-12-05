@@ -39,6 +39,8 @@ func populate_vendor_slots():
 	for i in range(min(GameInfo.vendor_items.size(), vendor_slots.size())):
 		var item = GameInfo.vendor_items[i]
 		var slot = vendor_slots[i]
+		# Set bag_slot_id to vendor slot ID (105-112) for pricing
+		item.bag_slot_id = 105 + i
 		
 		# Get item scene and instantiate
 		var item_scene = load("res://Scenes/item.tscn")
