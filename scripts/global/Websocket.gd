@@ -41,6 +41,7 @@ var mock_character_data = {
 	"bag_slots": [
 		{
 			"id": 1,
+			"effect_overdrive": 4,
 			"bag_slot_id": 0
 		},
 		{

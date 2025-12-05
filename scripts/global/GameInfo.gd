@@ -112,7 +112,8 @@ class Item:
 		"quality": "quality",
 		"price": "price",
 		"tempered": "tempered",
-		"enchant_overdrive": "enchant_overdrive"
+		"enchant_overdrive": "enchant_overdrive",
+		"effect_overdrive": "enchant_overdrive"
 	}
 	
 	func _init(data: Dictionary = {}):
@@ -132,29 +133,39 @@ class Item:
 				damage_min = item_resource.damage_min
 				damage_max = item_resource.damage_max
 				effect_id = item_resource.effect_id
-				effect_factor = item_resource.effect_factor
-				quality = item_resource.quality
-				price = item_resource.price
-				tempered = item_resource.tempered
-				enchant_overdrive = item_resource.enchant_overdrive
-				texture = item_resource.icon
-				
-				# Apply tempering improvements if item is tempered
-				# Each tempering level adds 10% to base stats (compounding)
-				if tempered > 0:
-					var multiplier = pow(1.1, tempered)
-					armor = ceil(armor * multiplier)
-					strength = ceil(strength * multiplier)
-					stamina = ceil(stamina * multiplier)
-					agility = ceil(agility * multiplier)
-					luck = ceil(luck * multiplier)
-				
-				# Look up effect details from effects_db
-				if GameInfo.effects_db and effect_id > 0:
-					var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
-					if effect:
-						effect_name = effect.name
-						effect_description = effect.description
+			effect_factor = item_resource.effect_factor
+			quality = item_resource.quality
+			price = item_resource.price
+			tempered = item_resource.tempered
+			# Note: enchant_overdrive comes from server data, not items_db
+			texture = item_resource.icon
+		
+		# Apply tempering improvements if item is tempered
+		# Each tempering level adds 10% to base stats (compounding)
+		if tempered > 0:
+			var multiplier = pow(1.1, tempered)
+			armor = ceil(armor * multiplier)
+			strength = ceil(strength * multiplier)
+			stamina = ceil(stamina * multiplier)
+			agility = ceil(agility * multiplier)
+			luck = ceil(luck * multiplier)
+		
+		# Handle effect_overdrive: override effect with data from effects_db
+		# enchant_overdrive comes from server data (via MSGPACK), not items_db
+		if enchant_overdrive > 0 and GameInfo and GameInfo.effects_db:
+			var overdrive_effect = GameInfo.effects_db.get_effect_by_id(enchant_overdrive)
+			if overdrive_effect:
+				effect_id = enchant_overdrive
+				effect_factor = overdrive_effect.factor
+				effect_name = overdrive_effect.name
+				effect_description = overdrive_effect.description
+		else:
+			# No effect_overdrive: look up effect details from effects_db
+			if GameInfo and GameInfo.effects_db and effect_id > 0:
+				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
+				if effect:
+					effect_name = effect.name
+					effect_description = effect.description
 
 class Perk:
 	extends MessagePackObject
