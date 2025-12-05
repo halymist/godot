@@ -946,9 +946,5 @@ var mock_quests = {
 # Legacy mock_quest_slides for backward compatibility (removed in favor of mock_quests)
 var mock_quest_slides = []
 
-# Mock enchanter effects data - array of [effect_id, factor] pairs
-var mock_enchanter_effects = [
-	[4, 15],   # Effect ID 4 with factor 15
-	[5, 10],   # Effect ID 5 with factor 10
-	[6, 8]    # Effect ID 6 with factor 8
-]
+# Mock enchanter effects data - array of effect IDs (factors are stored in effects.tres)
+var mock_enchanter_effects = [4, 5, 6]  # Effect IDs available for enchanting

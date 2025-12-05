@@ -6,4 +6,5 @@ class_name EffectResource
 @export var name: String = ""
 @export var description: String = ""
 @export var slot: String = ""  # Equipment slot (Head, Chest, Weapon, etc.)
+@export var factor: int = 0  # Enchanting factor (client-side)
 @export var icon: Texture2D = null

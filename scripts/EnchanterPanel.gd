@@ -101,26 +101,21 @@ func populate_effect_list():
 			item_type = item.type
 			break
 	
-	# Populate effect list
-	for effect_data in GameInfo.enchanter_effects:
-		var effect_id = effect_data.effect_id
-		var factor = effect_data.factor
-		
-		# Get effect details from database
-		if not GameInfo.effects_db:
-			continue
-		
-		var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
-		if not effect:
+	# Populate effect list from effects_db (client-side data)
+	if not GameInfo.effects_db:
+		return
+	
+	for effect in GameInfo.effects_db.effects:
+		if effect.factor == 0:  # Skip effects without enchanting factor
 			continue
 		
 		# Filter by item type if an item is in the slot
 		if item_in_slot and effect.slot != "" and effect.slot != item_type:
 			continue
 		
-		# Create effect button
+		# Create effect button with description
 		var button = Button.new()
-		button.text = "%s (+%s)" % [effect.name, str(factor)]
+		button.text = "%s (+%s)" % [effect.description, str(effect.factor)]
 		button.custom_minimum_size = Vector2(0, 30)
 		button.theme_type_variation = "FlatButton"
 		
@@ -156,7 +151,7 @@ func populate_effect_list():
 		button.add_theme_font_size_override("font_size", 12)
 		
 		# Connect button press
-		button.pressed.connect(_on_effect_selected.bind(effect_id, factor, button))
+		button.pressed.connect(_on_effect_selected.bind(effect.id, effect.factor, button))
 		
 		effect_list.add_child(button)
 	
@@ -235,8 +230,8 @@ func _on_enchant_pressed():
 		
 		print("Applied enchantment as main effect: ", selected_effect_id, " with factor ", selected_effect_factor)
 	
-	# Emit bag slots changed to update UI
-	GameInfo.bag_slots_changed.emit()
+	# Move item back to bag (like tempering)
+	return_enchanter_item_to_bag()
 	
 	# Reset selection
 	selected_effect_id = 0

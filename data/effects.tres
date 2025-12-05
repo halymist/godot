@@ -10,6 +10,7 @@ id = 1
 name = "Effect1"
 description = "Increases something by"
 slot = ""
+factor = 0
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_jpqpk"]
@@ -18,6 +19,7 @@ id = 2
 name = "Effect2"
 description = "Seems solid lol"
 slot = ""
+factor = 0
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_lkg4j"]
@@ -26,6 +28,7 @@ id = 100
 name = "Blessing of something"
 description = "Bless by xxx"
 slot = ""
+factor = 0
 icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -35,6 +38,7 @@ id = 101
 name = "Blessing of something2"
 description = "Bless by xxx"
 slot = ""
+factor = 0
 icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -44,6 +48,7 @@ id = 102
 name = "lessing of something3"
 description = "Bless by xxx"
 slot = ""
+factor = 0
 icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -53,6 +58,7 @@ id = 103
 name = "Blessing of something4"
 description = "Bless by xxx"
 slot = ""
+factor = 0
 icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -62,6 +68,7 @@ id = 104
 name = "Blessing of something5"
 description = "Bless by xxx"
 slot = ""
+factor = 0
 icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -71,6 +78,7 @@ id = 3
 name = "HelmetEffect1"
 description = "HelmetEffect1 by"
 slot = "Head"
+factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_adnf4"]
@@ -79,6 +87,7 @@ id = 4
 name = "HelmetEffect2"
 description = "HelmetEffect1 by"
 slot = "Head"
+factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_dr05w"]
@@ -87,6 +96,7 @@ id = 5
 name = "HelmetEffect3"
 description = "HelmetEffect1 by"
 slot = "Head"
+factor = 30
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_sfyhn"]
@@ -95,6 +105,7 @@ id = 6
 name = "LegsEffect1"
 description = "LegsEffect1"
 slot = "Legs"
+factor = 20
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [resource]

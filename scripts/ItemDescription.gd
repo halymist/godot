@@ -104,16 +104,30 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			else:
 				armor_container.visible = false
 			
-			# Handle effect description - hide if empty
-			# Display effect from database with factor from item
-			if item_data.effect_id > 0 and item_data.effect_description != "":
-				var effect_text = item_data.effect_description
-				# Append factor to description as integer
-				if item_data.effect_factor != 0.0:
-					effect_text += " " + str(int(item_data.effect_factor))
-				
-				effect.text = "[i]" + effect_text + "[/i]"
-				effect.visible = true
+			# Handle effect description - show enchant_overdrive if present, otherwise show regular effect
+			var display_effect_id = item_data.effect_id
+			var display_effect_factor = item_data.effect_factor
+			
+			# If item has enchant_overdrive, use that instead
+			if item_data.enchant_overdrive > 0:
+				var overdrive_effect = GameInfo.effects_db.get_effect_by_id(item_data.enchant_overdrive)
+				if overdrive_effect:
+					display_effect_id = item_data.enchant_overdrive
+					display_effect_factor = overdrive_effect.factor
+			
+			# Display effect from database with factor
+			if display_effect_id > 0:
+				var effect_data = GameInfo.effects_db.get_effect_by_id(display_effect_id)
+				if effect_data and effect_data.description != "":
+					var effect_text = effect_data.description
+					# Append factor to description as integer
+					if display_effect_factor != 0.0:
+						effect_text += " " + str(int(display_effect_factor))
+					
+					effect.text = "[i]" + effect_text + "[/i]"
+					effect.visible = true
+				else:
+					effect.visible = false
 			else:
 				effect.visible = false
 		
