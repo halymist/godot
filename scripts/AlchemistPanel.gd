@@ -81,6 +81,7 @@ func get_ingredient_in_slot(slot_id: int) -> GameInfo.Item:
 
 func update_result_preview():
 	var effects = []
+	var effect_map = {}  # Map effect_id to total factor
 	
 	# Check all three ingredient slots
 	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
@@ -89,13 +90,20 @@ func update_result_preview():
 			# Get item resource from database
 			var item_resource = GameInfo.items_db.get_item_by_id(item.id)
 			if item_resource and item_resource.effect_id > 0:
-				# Find effect in database
-				var effect = GameInfo.effects_db.get_effect_by_id(item_resource.effect_id)
-				if effect:
-					var effect_text = effect.description
-					if item_resource.effect_factor > 0:
-						effect_text += " " + str(item_resource.effect_factor)
-					effects.append(effect_text)
+				# Add factor to existing effect or create new entry
+				if effect_map.has(item_resource.effect_id):
+					effect_map[item_resource.effect_id] += item_resource.effect_factor
+				else:
+					effect_map[item_resource.effect_id] = item_resource.effect_factor
+	
+	# Build effect text from combined effects
+	for effect_id in effect_map.keys():
+		var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
+		if effect:
+			var effect_text = effect.description
+			if effect_map[effect_id] > 0:
+				effect_text += " " + str(effect_map[effect_id])
+			effects.append(effect_text)
 	
 	# Update preview label
 	if effects.size() > 0:

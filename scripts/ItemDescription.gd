@@ -40,18 +40,27 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			var ingredient2_id = int(remainder / 1000)
 			var ingredient3_id = remainder % 1000
 			
-			# Build effect text from ingredients
-			var effect_texts = []
+			# Build effect map to combine duplicate effects
+			var effect_map = {}  # Map effect_id to total factor
 			for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
 				if ingredient_id > 0:
 					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
 					if ingredient_resource and ingredient_resource.effect_id > 0:
-						var effect_data = GameInfo.effects_db.get_effect_by_id(ingredient_resource.effect_id)
-						if effect_data:
-							var effect_line = effect_data.description
-							if ingredient_resource.effect_factor > 0:
-								effect_line += " " + str(ingredient_resource.effect_factor)
-							effect_texts.append(effect_line)
+						# Add factor to existing effect or create new entry
+						if effect_map.has(ingredient_resource.effect_id):
+							effect_map[ingredient_resource.effect_id] += ingredient_resource.effect_factor
+						else:
+							effect_map[ingredient_resource.effect_id] = ingredient_resource.effect_factor
+			
+			# Build effect text from combined effects
+			var effect_texts = []
+			for effect_id in effect_map.keys():
+				var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
+				if effect_data:
+					var effect_line = effect_data.description
+					if effect_map[effect_id] > 0:
+						effect_line += " " + str(effect_map[effect_id])
+					effect_texts.append(effect_line)
 			
 			# Display combined effects
 			if effect_texts.size() > 0:
