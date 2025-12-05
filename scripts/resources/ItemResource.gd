@@ -19,4 +19,5 @@ class_name ItemResource
 @export var quality: int = 0
 @export var price: int = 0
 @export var tempered: int = 0  # Tempering level (0 = not tempered, 1+ = tempered)
+@export var enchant_overdrive: int = 0  # Enchanting overdrive level
 @export var icon: Texture2D = null

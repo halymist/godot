@@ -1,4 +1,4 @@
-[gd_scene load_steps=99 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=100 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -54,6 +54,7 @@
 [ext_resource type="Texture2D" uid="uid://dntdd7a6t8hwf" path="res://assets/images/villages/church.png" id="30_fh6x0"]
 [ext_resource type="Texture2D" uid="uid://6iephe8o7hdc" path="res://assets/images/villages/trainer2.png" id="30_jcn4n"]
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
+[ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
 [ext_resource type="Texture2D" uid="uid://cxqt6xldm0tqa" path="res://assets/images/villages/church2.png" id="31_j0obb"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
@@ -733,6 +734,14 @@ anchor_bottom = 0.252
 offset_top = 0.122856
 target_panel = NodePath("../../../../../AlchemistPanel")
 
+[node name="Enchanter" parent="Portrait/GameScene/Home/VillagesContainer/Village1/VillageView/VillageContent" node_paths=PackedStringArray("target_panel") instance=ExtResource("10_32sfa")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.565
+anchor_right = 0.692
+anchor_bottom = 0.14
+target_panel = NodePath("../../../../../EnchanterPanel")
+
 [node name="InteriorView" type="ScrollContainer" parent="Portrait/GameScene/Home/VillagesContainer/Village1"]
 visible = false
 layout_mode = 1
@@ -1209,6 +1218,7 @@ expand_mode = 1
 layout_mode = 2
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
+slot_type = "Blacksmith"
 slot_id = 100
 
 [node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats"]
@@ -1772,6 +1782,128 @@ offset_bottom = 630.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/AlchemistPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.0
+
+[node name="EnchanterPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("31_enchanter")
+village1_texture = ExtResource("30_fh6x0")
+village2_texture = ExtResource("31_j0obb")
+village3_texture = ExtResource("31_j0obb")
+village4_texture = ExtResource("31_j0obb")
+village5_texture = ExtResource("31_j0obb")
+
+[node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel"]
+anchors_preset = 0
+offset_right = 450.0
+offset_bottom = 300.0
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/UtilityBackground"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_v2cs8")
+expand_mode = 1
+
+[node name="ItemsPanel" type="Panel" parent="Portrait/GameScene/Home/EnchanterPanel"]
+layout_mode = 0
+offset_top = 300.0
+offset_right = 450.0
+offset_bottom = 564.0
+
+[node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Description" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "The enchanter can imbue your equipment with magical properties.
+Drop an item below to enchant it."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ItemSlotContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "Item to Enchant"
+horizontal_alignment = 1
+
+[node name="ItemSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/ItemSlot"]
+layout_mode = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/ItemSlot"]
+layout_mode = 2
+texture = ExtResource("9_nnt18")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/ItemSlot"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Enchanter"
+slot_id = 104
+
+[node name="EnchantButtonContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+stretch_mode = 1
+
+[node name="EnchantButton" type="Button" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/EnchantButtonContainer"]
+layout_mode = 2
+theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
+text = "Enchant (10 Gold)"
+
+[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/EnchanterPanel"]
+layout_mode = 0
+offset_top = 564.0
+offset_right = 450.0
+offset_bottom = 630.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
+
+[node name="Bag" parent="Portrait/GameScene/Home/EnchanterPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
 layout_mode = 1
 anchors_preset = 15
 anchor_top = 0.0

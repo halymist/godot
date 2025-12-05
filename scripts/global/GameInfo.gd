@@ -88,6 +88,7 @@ class Item:
 	var quality: int = 0
 	var price: int = 0
 	var tempered: int = 0  # Tracks tempering level (0 = not tempered, 1+ = tempered)
+	var enchant_overdrive: int = 0  # Enchanting overdrive level
 	
 	# Client-side only (not serialized)
 	var texture: Texture2D = null
@@ -111,7 +112,8 @@ class Item:
 		"effect_factor": "effect_factor",
 		"quality": "quality",
 		"price": "price",
-		"tempered": "tempered"
+		"tempered": "tempered",
+		"enchant_overdrive": "enchant_overdrive"
 	}
 	
 	func _init(data: Dictionary = {}):
@@ -136,6 +138,7 @@ class Item:
 				quality = item_resource.quality
 				price = item_resource.price
 				tempered = item_resource.tempered
+				enchant_overdrive = item_resource.enchant_overdrive
 				texture = item_resource.icon
 				
 				# Apply tempering improvements if item is tempered

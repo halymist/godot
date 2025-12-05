@@ -127,7 +127,7 @@ func hide_overlay(overlay: Control):
 func show_panel(panel: Control):
 	hide_all_panels()
 	
-	# Also hide utility panels (vendor, blacksmith, trainer, church, alchemist, settings, rankings)
+	# Also hide utility panels (vendor, blacksmith, trainer, church, alchemist, enchanter, settings, rankings)
 	if vendor_panel:
 		vendor_panel.visible = false
 	if blacksmith_panel:
@@ -138,6 +138,8 @@ func show_panel(panel: Control):
 		church_panel.visible = false
 	if alchemist_panel:
 		alchemist_panel.visible = false
+	if enchanter_panel:
+		enchanter_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -169,6 +171,8 @@ func handle_home_button():
 		church_panel.visible = false
 	if alchemist_panel:
 		alchemist_panel.visible = false
+	if enchanter_panel:
+		enchanter_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -269,6 +273,7 @@ func toggle_talents_bookmark():
 func go_back():
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
+	var current = GameInfo.get_current_panel()
 	
 	# Priority 1: Hide any active overlay using GameInfo system
 	var current_overlay = GameInfo.get_current_panel_overlay()
@@ -277,75 +282,38 @@ func go_back():
 		return
 	
 	# Priority 2: Check if we're traveling and on map panel - show cancel dialog
-	if traveling > 0 and destination != null and GameInfo.get_current_panel() == map_panel:
+	if traveling > 0 and destination != null and current == map_panel:
 		show_overlay(cancel_quest)
 		return
-	print(GameInfo.get_current_panel())
+	
 	# Priority 2.5: Check if we've arrived at quest (traveling = 0) but haven't finished it yet - show cancel dialog
-	if traveling == 0 and destination != null and GameInfo.get_current_panel() == quest:
+	if traveling == 0 and destination != null and current == quest:
 		show_overlay(cancel_quest)
 		return
 
-	# Priority 3: Check if we're in vendor panel - hide it and return to home
-	if vendor_panel and vendor_panel.visible:
-		vendor_panel.visible = false
-		home_panel.visible = true
-		GameInfo.set_current_panel(home_panel)
-		return
-	
-	# Priority 3.5: Check if we're in blacksmith panel - hide it and return to home
-	if blacksmith_panel and blacksmith_panel.visible:
-		blacksmith_panel.visible = false
-		home_panel.visible = true
-		GameInfo.set_current_panel(home_panel)
-		return
-	
-	# Priority 3.6: Check if we're in trainer panel - hide it and return to home
-	if trainer_panel and trainer_panel.visible:
-		trainer_panel.visible = false
-		home_panel.visible = true
-		GameInfo.set_current_panel(home_panel)
-		return
-	
-	# Priority 3.7: Check if we're in church panel - hide it and return to home
-	if church_panel and church_panel.visible:
-		church_panel.visible = false
-		home_panel.visible = true
-		GameInfo.set_current_panel(home_panel)
-		return
-	
-	# Priority 3.8: Check if we're in alchemist panel - hide it and return to home
-	if alchemist_panel and alchemist_panel.visible:
-		alchemist_panel.visible = false
-		home_panel.visible = true
-		GameInfo.set_current_panel(home_panel)
-		return
-	
-	# Priority 3.9: Check if we're in settings panel - hide it and return to home
-	if settings_panel and settings_panel.visible:
-		settings_panel.visible = false
-		home_panel.visible = true
-		GameInfo.set_current_panel(home_panel)
-		return
-	
-	# Priority 4.0: Check if we're in rankings panel - hide it and return to home
-	if rankings_panel and rankings_panel.visible:
-		rankings_panel.visible = false
-		home_panel.visible = true
-		GameInfo.set_current_panel(home_panel)
-		return
+	# Priority 3: Check if we're in any utility panel - hide it and return to home
+	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel, settings_panel, rankings_panel]
+	for panel in utility_panels:
+		if panel and current == panel:
+			# Call hide_panel method if available, otherwise just hide
+			if panel.has_method("hide_panel"):
+				panel.hide_panel()
+			else:
+				panel.visible = false
+			show_panel(home_panel)
+			return
 
 	# Priority 4: Check if we're in a building interior in the home panel
-	if GameInfo.get_current_panel() == home_panel:
+	if current == home_panel:
 		if home_panel.has_method("handle_back_navigation"):
 			var handled = home_panel.handle_back_navigation()
 			if handled:
 				return
 
 	# Priority 5: Handle panel-specific back navigation
-	if GameInfo.get_current_panel() == talents_panel:
+	if current == talents_panel:
 		toggle_talents_bookmark()  # Use bookmark animation to slide out
-	elif GameInfo.get_current_panel() == combat_panel:
+	elif current == combat_panel:
 		show_panel(arena_panel)
 	else:
 		show_panel(home_panel)

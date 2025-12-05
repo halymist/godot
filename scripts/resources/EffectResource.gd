@@ -5,4 +5,5 @@ class_name EffectResource
 @export var id: int = 0
 @export var name: String = ""
 @export var description: String = ""
+@export var slot: String = ""  # Equipment slot (Head, Chest, Weapon, etc.)
 @export var icon: Texture2D = null
