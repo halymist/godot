@@ -146,12 +146,13 @@ func _on_brew_button_pressed():
 	if ingredient_ids[0] == 0 and ingredient_ids[1] == 0 and ingredient_ids[2] == 0:
 		return
 	
-	# Generate encoded elixir ID: 1000 + 9 digits (3 ingredient IDs, each 3 digits)
-	# Format: 1000 + ingredientID1(3) + ingredientID2(3) + ingredientID3(3)
-	var encoded_id = 1000000000000  # Base: 1000 with 9 zeros
-	encoded_id += ingredient_ids[0] * 1000000  # First ingredient (digits 4-6)
-	encoded_id += ingredient_ids[1] * 1000      # Second ingredient (digits 7-9)
-	encoded_id += ingredient_ids[2]             # Third ingredient (digits 10-12)
+	# Generate encoded elixir ID using string concatenation
+	# Format: "1000" + ingredient1_id(3 digits) + ingredient2_id(3 digits) + ingredient3_id(3 digits)
+	var id_str = "1000"
+	for ingredient_id in ingredient_ids:
+		id_str += str(ingredient_id).pad_zeros(3)  # Pad each ID to 3 digits
+	
+	var encoded_id = int(id_str)
 	
 	print("Brewing elixir with ID: ", encoded_id)
 	print("  Ingredient IDs: ", ingredient_ids)

@@ -32,13 +32,12 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			luck_container.visible = false
 			armor_container.visible = false
 			
-			# Decode ingredient IDs from elixir ID
-			# Format: 1000 + ingredientID1(3) + ingredientID2(3) + ingredientID3(3)
-			var encoded_id = item_data.id - 1000000000000
-			var ingredient1_id = int(encoded_id / 1000000)
-			var remainder = encoded_id % 1000000
-			var ingredient2_id = int(remainder / 1000)
-			var ingredient3_id = remainder % 1000
+			# Decode ingredient IDs from elixir ID using string manipulation
+			# Format: 1000000000000 + ingredientID1(3 digits) + ingredientID2(3 digits) + ingredientID3(3 digits)
+			var id_str = str(item_data.id)
+			var ingredient1_id = int(id_str.substr(4, 3))  # Characters 4-6 (positions 4,5,6)
+			var ingredient2_id = int(id_str.substr(7, 3))  # Characters 7-9 (positions 7,8,9)
+			var ingredient3_id = int(id_str.substr(10, 3)) # Characters 10-12 (positions 10,11,12)
 			
 			# Build effect map to combine duplicate effects
 			var effect_map = {}  # Map effect_id to total factor

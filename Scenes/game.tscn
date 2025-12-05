@@ -1,4 +1,4 @@
-[gd_scene load_steps=100 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -56,15 +56,19 @@
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
 [ext_resource type="Texture2D" uid="uid://cxqt6xldm0tqa" path="res://assets/images/villages/church2.png" id="31_j0obb"]
+[ext_resource type="Texture2D" uid="uid://itwslgw5ib8e" path="res://assets/images/villages/alchemist.png" id="35_a2m5q"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
+[ext_resource type="Texture2D" uid="uid://dujo2rqnf0oo8" path="res://assets/images/villages/alchemist2.png" id="36_lknxd"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="38_jcn4n"]
+[ext_resource type="Texture2D" uid="uid://dydlyg2ehudyl" path="res://assets/images/villages/enchanter.png" id="39_ckj55"]
 [ext_resource type="Texture2D" uid="uid://54fu6pfqynod" path="res://assets/images/ui/chest_outline.png" id="39_sfx3s"]
 [ext_resource type="Script" uid="uid://rk346721f3le" path="res://scripts/SquareContent.gd" id="39_square"]
 [ext_resource type="Texture2D" uid="uid://ptj6j3cf4d76" path="res://assets/images/ui/gloves_outline.png" id="40_p5qon"]
+[ext_resource type="Texture2D" uid="uid://jwddckmt0kna" path="res://assets/images/villages/enchanter2.png" id="40_q8b24"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 [ext_resource type="Texture2D" uid="uid://b0w36ybd8s4jl" path="res://assets/images/ui/shoes_outline.png" id="41_gyste"]
@@ -1615,11 +1619,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
-village1_texture = ExtResource("30_fh6x0")
-village2_texture = ExtResource("31_j0obb")
-village3_texture = ExtResource("31_j0obb")
-village4_texture = ExtResource("31_j0obb")
-village5_texture = ExtResource("31_j0obb")
+village1_texture = ExtResource("35_a2m5q")
+village2_texture = ExtResource("36_lknxd")
+village3_texture = ExtResource("36_lknxd")
+village4_texture = ExtResource("36_lknxd")
+village5_texture = ExtResource("36_lknxd")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel"]
 anchors_preset = 0
@@ -1797,11 +1801,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("31_enchanter")
-village1_texture = ExtResource("30_fh6x0")
-village2_texture = ExtResource("31_j0obb")
-village3_texture = ExtResource("31_j0obb")
-village4_texture = ExtResource("31_j0obb")
-village5_texture = ExtResource("31_j0obb")
+village1_texture = ExtResource("40_q8b24")
+village2_texture = ExtResource("39_ckj55")
+village3_texture = ExtResource("39_ckj55")
+village4_texture = ExtResource("40_q8b24")
+village5_texture = ExtResource("40_q8b24")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel"]
 anchors_preset = 0
