@@ -1,8 +1,12 @@
-[gd_resource type="Resource" script_class="ItemDatabase" load_steps=8 format=3 uid="uid://csdtlb6wj760v"]
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=13 format=3 uid="uid://vft5y80xsrjn"]
 
 [ext_resource type="Script" uid="uid://5xjtibn1drlf" path="res://scripts/resources/ItemResource.gd" id="1_plm77"]
 [ext_resource type="Script" uid="uid://0io63usdvbbp" path="res://scripts/resources/ItemDatabase.gd" id="2_lxu8k"]
 [ext_resource type="Texture2D" uid="uid://bi5yse66s4xm" path="res://data/item_textures/item1.png" id="2_tpttd"]
+[ext_resource type="Texture2D" uid="uid://t2w6ivqnfx4" path="res://assets/images/fallback/elixir.png" id="3_tpttd"]
+[ext_resource type="Texture2D" uid="uid://dpo48i7i0iw8a" path="res://assets/images/fallback/Glowshroom.png" id="3_xygrn"]
+[ext_resource type="Texture2D" uid="uid://g55w8iql3326" path="res://assets/images/fallback/4.png" id="4_4egq1"]
+[ext_resource type="Texture2D" uid="uid://du5f1npkpqx0b" path="res://assets/images/fallback/Goblin_foot.png" id="4_v0hy1"]
 
 [sub_resource type="Resource" id="Resource_4egq1"]
 script = ExtResource("1_plm77")
@@ -30,7 +34,7 @@ metadata/_custom_type_script = "uid://5xjtibn1drlf"
 [sub_resource type="Resource" id="Resource_lxu8k"]
 script = ExtResource("1_plm77")
 id = 500
-item_name = "Tallow"
+item_name = "Glowshroom"
 type = "Ingredient"
 subtype = ""
 armor = 0
@@ -47,13 +51,13 @@ quality = 0
 price = 20
 tempered = 0
 enchant_overdrive = 0
-icon = ExtResource("2_tpttd")
+icon = ExtResource("3_xygrn")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
 [sub_resource type="Resource" id="Resource_tpttd"]
 script = ExtResource("1_plm77")
 id = 501
-item_name = "Potatoe"
+item_name = "Goblin foot"
 type = "Ingredient"
 subtype = ""
 armor = 0
@@ -70,7 +74,7 @@ quality = 0
 price = 0
 tempered = 0
 enchant_overdrive = 0
-icon = ExtResource("2_tpttd")
+icon = ExtResource("4_v0hy1")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
 [sub_resource type="Resource" id="Resource_ukfg0"]
@@ -93,10 +97,33 @@ quality = 0
 price = 50
 tempered = 0
 enchant_overdrive = 0
-icon = ExtResource("2_tpttd")
+icon = ExtResource("3_tpttd")
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
+[sub_resource type="Resource" id="Resource_xygrn"]
+script = ExtResource("1_plm77")
+id = 2
+item_name = "Simple pants"
+type = "Legs"
+subtype = ""
+armor = 5
+strength = 0
+stamina = 0
+agility = 3
+luck = 0
+damage_min = 0
+damage_max = 0
+effect_id = 0
+effect_factor = 0
+duration = 0
+quality = 0
+price = 10
+tempered = 0
+enchant_overdrive = 0
+icon = ExtResource("4_4egq1")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
 [resource]
 script = ExtResource("2_lxu8k")
-items = Array[ExtResource("1_plm77")]([SubResource("Resource_4egq1"), SubResource("Resource_lxu8k"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0")])
+items = Array[ExtResource("1_plm77")]([SubResource("Resource_4egq1"), SubResource("Resource_lxu8k"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn")])
 metadata/_custom_type_script = "uid://0io63usdvbbp"
