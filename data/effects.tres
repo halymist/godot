@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EffectDatabase" load_steps=15 format=3 uid="uid://bkg18l7ls21gy"]
+[gd_resource type="Resource" script_class="EffectDatabase" load_steps=16 format=3 uid="uid://bkg18l7ls21gy"]
 
 [ext_resource type="Script" uid="uid://p673jpbjsppe" path="res://scripts/resources/EffectResource.gd" id="1_kykie"]
 [ext_resource type="Texture2D" uid="uid://de3hl0mcocv1p" path="res://assets/images/ui/Perks.png" id="2_j0sy3"]
@@ -108,6 +108,15 @@ slot = "Legs"
 factor = 20
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
+[sub_resource type="Resource" id="Resource_mu2gr"]
+script = ExtResource("1_kykie")
+id = 7
+name = "LegsEffect1"
+description = "Increses critical strike by "
+slot = "Legs"
+factor = 10
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
 [resource]
 script = ExtResource("2_jpqpk")
-effects = Array[ExtResource("1_kykie")]([SubResource("Resource_kykie"), SubResource("Resource_jpqpk"), SubResource("Resource_lkg4j"), SubResource("Resource_j0sy3"), SubResource("Resource_j56hd"), SubResource("Resource_73tjy"), SubResource("Resource_ur02h"), SubResource("Resource_0aeja"), SubResource("Resource_adnf4"), SubResource("Resource_dr05w"), SubResource("Resource_sfyhn")])
+effects = Array[ExtResource("1_kykie")]([SubResource("Resource_kykie"), SubResource("Resource_jpqpk"), SubResource("Resource_lkg4j"), SubResource("Resource_j0sy3"), SubResource("Resource_j56hd"), SubResource("Resource_73tjy"), SubResource("Resource_ur02h"), SubResource("Resource_0aeja"), SubResource("Resource_adnf4"), SubResource("Resource_dr05w"), SubResource("Resource_sfyhn"), SubResource("Resource_mu2gr")])

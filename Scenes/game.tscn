@@ -1,4 +1,4 @@
-[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=103 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -44,7 +44,6 @@
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
-[ext_resource type="Script" uid="uid://30g2u15grqvp" path="res://scripts/ActiveEffects.gd" id="25_active_effects"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
@@ -1853,40 +1852,53 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.6
 
-[node name="SlotSection" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
+[node name="SlotAndButtonSection" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.4
 
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection"]
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 12
 text = "Item to Enchant"
 horizontal_alignment = 1
 
-[node name="ItemSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection"]
+[node name="ItemSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection/ItemSlot"]
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot"]
 layout_mode = 2
 texture = ExtResource("7_7nbq1")
 expand_mode = 1
 
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection/ItemSlot"]
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot"]
 layout_mode = 2
 texture = ExtResource("9_nnt18")
 expand_mode = 1
 
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotSection/ItemSlot"]
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot"]
 layout_mode = 2
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Enchanter"
 slot_id = 104
+
+[node name="EnchantButton" type="Button" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
+text = "Enchant (10 Gold)"
 
 [node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
 layout_mode = 2
@@ -1908,24 +1920,6 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="EnchantButtonContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.2
-stretch_mode = 1
-
-[node name="EnchantButton" type="Button" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/EnchantButtonContainer"]
-layout_mode = 2
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
-text = "Enchant (10 Gold)"
 
 [node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/EnchanterPanel"]
 layout_mode = 0
@@ -2157,23 +2151,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 texture = ExtResource("9_7t8sx")
 expand_mode = 1
-
-[node name="ActiveEffects" type="HBoxContainer" parent="Portrait/GameScene/Character/Equip/Middle/AspectRatioContainer/Character" node_paths=PackedStringArray("perk_tooltip_panel")]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.9
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 4
-script = ExtResource("25_active_effects")
-perk_tooltip_panel = NodePath("../../../../../../../PerkTooltip")
-
-[node name="EffectsContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Equip/Middle/AspectRatioContainer/Character/ActiveEffects"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 4
 
 [node name="Weapons" type="HBoxContainer" parent="Portrait/GameScene/Character/Equip/Middle"]
 layout_mode = 2

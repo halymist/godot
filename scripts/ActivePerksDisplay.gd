@@ -5,11 +5,17 @@ extends HBoxContainer
 
 
 func update_active_perks():
-	print("ActivePerksDisplay: Updating active perks...")
+	print("ActivePerksDisplay: Updating active perks and effects...")
 	
 	# Clear existing icons
 	for child in get_children():
 		child.queue_free()
+	
+	# Add active blessing effect first if any
+	if GameInfo.current_player and GameInfo.current_player.blessing > 0:
+		var blessing_effect = GameInfo.effects_db.get_effect_by_id(GameInfo.current_player.blessing)
+		if blessing_effect:
+			create_effect_display(blessing_effect)
 	
 	# Get active perks from GameInfo
 	var active_perks = get_active_perks()
@@ -40,6 +46,28 @@ func update_active_perks():
 			print("ActivePerksDisplay: Added perk icon to HBox")
 		else:
 			print("ERROR: perk_mini_scene is null!")
+
+func create_effect_display(effect: EffectResource):
+	"""Create a display for an active effect (like blessing)"""
+	if perk_mini_scene:
+		var effect_icon = perk_mini_scene.instantiate()
+		# Store effect data in the icon for hover functionality
+		effect_icon.set_meta("effect_data", effect)
+		
+		# Set the effect texture if available
+		var texture_rect = effect_icon.get_node("TextureRect")
+		if texture_rect and effect.icon:
+			texture_rect.texture = effect.icon
+		
+		# Enable mouse detection for hover
+		effect_icon.mouse_filter = Control.MOUSE_FILTER_PASS
+		
+		# Connect hover signals for effect
+		effect_icon.mouse_entered.connect(_on_effect_hover_start.bind(effect_icon))
+		effect_icon.mouse_exited.connect(_on_perk_hover_end)
+		
+		add_child(effect_icon)
+		print("ActivePerksDisplay: Added effect icon to HBox")
 
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
@@ -86,6 +114,41 @@ func _on_perk_hover_start(perk_icon):
 		
 		if tooltip_panel.global_position.y < 0:
 			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10  # Show below if no space above
+
+func _on_effect_hover_start(effect_icon):
+	"""Show tooltip for active effects"""
+	var effect_data = effect_icon.get_meta("effect_data")
+	if effect_data and tooltip_panel:
+		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
+		if tooltip_label:
+			# Build tooltip with effect name and description
+			var tooltip_text = effect_data.name
+			if effect_data.description != "":
+				tooltip_text += "\n" + effect_data.description
+			
+			tooltip_label.text = tooltip_text
+			tooltip_panel.visible = true
+		
+		# Position tooltip above the effect icon
+		var icon_global_pos = effect_icon.global_position
+		var icon_size = effect_icon.size
+		var tooltip_size = tooltip_panel.size
+		
+		# Position above the icon, centered horizontally
+		tooltip_panel.global_position = Vector2(
+			icon_global_pos.x - tooltip_size.x / 2 + icon_size.x / 2,
+			icon_global_pos.y - tooltip_size.y - 10
+		)
+		
+		# Ensure tooltip stays within screen bounds
+		var viewport_size = get_viewport().get_visible_rect().size
+		if tooltip_panel.global_position.x < 0:
+			tooltip_panel.global_position.x = 0
+		elif tooltip_panel.global_position.x + tooltip_size.x > viewport_size.x:
+			tooltip_panel.global_position.x = viewport_size.x - tooltip_size.x
+		
+		if tooltip_panel.global_position.y < 0:
+			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10
 
 func _on_perk_hover_end():
 	tooltip_panel.visible = false
