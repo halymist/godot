@@ -955,3 +955,15 @@ var mock_quest_slides = []
 
 # Mock enchanter effects data - array of effect IDs (factors are stored in effects.tres)
 var mock_enchanter_effects = [4, 5, 6, 7]  # Effect IDs available for enchanting
+
+# Mock vendor items data - items available for purchase (order doesn't matter)
+var mock_vendor_items = [
+	{"id": 1},
+	{"id": 1},
+	{"id": 1},
+	{"id": 1},
+	{"id": 1},
+	{"id": 1},
+	{"id": 1},
+	{"id": 1}
+]

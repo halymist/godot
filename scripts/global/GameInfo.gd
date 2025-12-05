@@ -624,6 +624,7 @@ var chat_messages: Array[ChatMessage] = []
 var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
 var npcs: Array[Dictionary] = []
+var vendor_items: Array[Item] = []
 
 # Quest system
 var quest_slides: Dictionary = {}  # questID -> Array[QuestSlide]
@@ -684,6 +685,7 @@ func _ready():
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)
 	load_combat_logs_data(Websocket.mock_combat_logs)
+	load_vendor_items_data(Websocket.mock_vendor_items)
 	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
 	load_all_quests_data(Websocket.mock_quests)  # Load all quests by ID
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
@@ -780,6 +782,15 @@ func load_combat_logs_data(combat_data: Array):
 		var combat_response = CombatResponse.new(combat_data_item)
 		combat_logs.append(combat_response)
 
+# Function to load vendor items from mock data
+# Function to load vendor items from mock data
+func load_vendor_items_data(vendor_data: Array):
+	vendor_items.clear()
+	print("Loading vendor_items: ", vendor_data.size(), " items found")
+	for item_data in vendor_data:
+		var item = Item.new(item_data)
+		print("  Loaded vendor item: ", item.item_name)
+		vendor_items.append(item)
 # Function to load quest slides by quest ID
 func load_quest_slides_data(quest_id: int, slides_data: Array):
 	var slides_array: Array[QuestSlide] = []

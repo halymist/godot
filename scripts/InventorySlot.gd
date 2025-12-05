@@ -19,6 +19,16 @@ func _can_drop_data(_pos, data):
 	
 	var item = data["item"]
 	var item_type = item.type
+	var source_container = data.get("source_container")
+	var source_slot_id = source_container.slot_id if source_container else -1
+	
+	# Vendor slots (105-112) cannot accept drops - they're for purchasing only
+	if slot_id >= 105 and slot_id <= 112:
+		return false
+	
+	# Cannot drag between vendor slots
+	if source_slot_id >= 105 and source_slot_id <= 112 and slot_id >= 105 and slot_id <= 112:
+		return false
 	
 	# Check if dragged item can go into this slot
 	if not is_valid_item_for_slot(item_type):
@@ -34,7 +44,6 @@ func _can_drop_data(_pos, data):
 		return true
 		
 	var existing_item_type = existing_item_data.type
-	var source_container = data["source_container"]
 	
 	# Check if the existing item can go back to the source slot
 	if source_container and source_container.has_method("is_valid_item_for_slot"):
@@ -49,6 +58,11 @@ func _drop_data(_pos, data):
 	var dragged_item = data["item"]
 	var source_container = data["source_container"]
 	var source_slot_id = source_container.slot_id if source_container else -1
+	
+	# Special case: Purchasing from vendor (slots 105-112)
+	if source_slot_id >= 105 and source_slot_id <= 112:
+		handle_vendor_purchase(dragged_item, source_slot_id)
+		return
 	
 	# Update GameInfo directly based on the operation
 	if not is_slot_empty():
@@ -91,6 +105,37 @@ func _drop_data(_pos, data):
 
 	print("Updated GameInfo: item moved to slot ", slot_id)
 	GameInfo.bag_slots_changed.emit()
+
+func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
+	# Check if player has enough gold
+	if GameInfo.current_player.gold < vendor_item.price:
+		print("Not enough gold to purchase item! Need ", vendor_item.price, " but have ", GameInfo.current_player.gold)
+		return
+	
+	# Check if target slot is empty
+	if not is_slot_empty():
+		print("Target slot must be empty to purchase item")
+		return
+	
+	# Deduct gold
+	GameInfo.current_player.gold -= vendor_item.price
+	print("Purchased ", vendor_item.item_name, " for ", vendor_item.price, " gold. Remaining gold: ", GameInfo.current_player.gold)
+	
+	# Create a new item instance from vendor item (copy the data)
+	var purchased_item = GameInfo.Item.new({
+		"id": vendor_item.id,
+		"bag_slot_id": slot_id
+	})
+	
+	# Add to player's bag_slots
+	GameInfo.current_player.bag_slots.append(purchased_item)
+	
+	# Place in visual slot
+	place_item_in_slot(purchased_item)
+	
+	# Emit signal to update UI
+	GameInfo.bag_slots_changed.emit()
+	print("Item purchased and added to slot ", slot_id)
 
 func is_valid_item_for_slot(item_type: String) -> bool:
 	match slot_type:
