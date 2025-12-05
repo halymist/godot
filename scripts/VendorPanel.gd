@@ -19,7 +19,15 @@ func _ready():
 			if vendor_slot:
 				vendor_slots.append(vendor_slot)
 	
+	# Connect to bag_slots_changed to refresh vendor display when items are bought
+	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
+	
 	populate_vendor_slots()
+
+func _on_bag_slots_changed():
+	# Refresh vendor slots when bag changes (items bought/sold)
+	if visible:
+		populate_vendor_slots()
 
 func populate_vendor_slots():
 	# Clear all vendor slots first

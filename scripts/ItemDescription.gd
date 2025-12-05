@@ -1,5 +1,6 @@
 extends Panel
 @export var name_label: RichTextLabel
+@export var price_label: Label
 @export var strength: Label
 @export var stamina: Label
 @export var agility: Label
@@ -8,6 +9,7 @@ extends Panel
 @export var effect: RichTextLabel
 
 # References to the stat containers for hiding/showing
+@onready var price_container = price_label.get_parent() if price_label else null
 @onready var strength_container = strength.get_parent()
 @onready var stamina_container = stamina.get_parent()
 @onready var agility_container = agility.get_parent()
@@ -20,6 +22,14 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 		if item_data.get("tempered") and item_data.tempered > 0:
 			display_name += " +" + str(item_data.tempered)
 		name_label.text = "[b]" + display_name + "[/b]"
+		
+		# Display price if available and > 0
+		if price_label and price_container:
+			if item_data.price > 0:
+				price_label.text = str(item_data.price) + " gold"
+				price_container.visible = true
+			else:
+				price_container.visible = false
 		
 		# Check if this is an elixir (ID > 1000)
 		var is_elixir = item_data.id > 1000
@@ -174,6 +184,8 @@ func _fit_content_size():
 	if luck_container.visible:
 		visible_stat_count += 1
 	if armor_container.visible:
+		visible_stat_count += 1
+	if price_container and price_container.visible:
 		visible_stat_count += 1
 	
 	# Add consistent height for all visible stats (with spacing)

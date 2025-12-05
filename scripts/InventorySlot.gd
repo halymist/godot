@@ -64,6 +64,11 @@ func _drop_data(_pos, data):
 		handle_vendor_purchase(dragged_item, source_slot_id)
 		return
 	
+	# Special case: Selling to vendor (slot 113)
+	if slot_id == 113:
+		handle_vendor_sell(dragged_item, source_slot_id, source_container)
+		return
+	
 	# Update GameInfo directly based on the operation
 	if not is_slot_empty():
 		# Swapping items
@@ -130,12 +135,50 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	# Add to player's bag_slots
 	GameInfo.current_player.bag_slots.append(purchased_item)
 	
+	# Remove item from vendor_items (don't replenish)
+	var vendor_slot_index = _vendor_slot_id - 105  # Convert slot_id to index (105->0, 106->1, etc.)
+	if vendor_slot_index >= 0 and vendor_slot_index < GameInfo.vendor_items.size():
+		GameInfo.vendor_items.remove_at(vendor_slot_index)
+		print("Removed item from vendor inventory at index ", vendor_slot_index)
+	
 	# Place in visual slot
 	place_item_in_slot(purchased_item)
 	
 	# Emit signal to update UI
 	GameInfo.bag_slots_changed.emit()
 	print("Item purchased and added to slot ", slot_id)
+
+func handle_vendor_sell(item: GameInfo.Item, source_slot_id: int, source_container):
+	# Only accept items from equipment (0-9) or bag (10-14) slots
+	if source_slot_id < 0 or source_slot_id > 14:
+		print("Can only sell items from equipment or bag slots")
+		return
+	
+	# Find the item in bag_slots by its bag_slot_id
+	var item_in_bag = null
+	for game_item in GameInfo.current_player.bag_slots:
+		if game_item.bag_slot_id == source_slot_id:
+			item_in_bag = game_item
+			break
+	
+	if not item_in_bag:
+		print("Item not found in bag_slots")
+		return
+	
+	# Add gold for selling the item
+	GameInfo.current_player.gold += item_in_bag.price
+	print("Sold ", item_in_bag.item_name, " for ", item_in_bag.price, " gold. Total gold: ", GameInfo.current_player.gold)
+	
+	# Remove item from bag_slots
+	GameInfo.current_player.bag_slots.erase(item_in_bag)
+	
+	# Clear the source slot visually
+	if source_container:
+		source_container.clear_slot()
+	
+	# Emit signal to update UI
+	GameInfo.bag_slots_changed.emit()
+	print("Item sold and removed from inventory")
 
 func is_valid_item_for_slot(item_type: String) -> bool:
 	match slot_type:
@@ -165,6 +208,8 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 			return item_type != "Ingredient" and item_type != "Consumable"
 		"Bag":
 			return true  # Bag accepts everything
+		"Sell":
+			return true  # Sell slot accepts everything from player inventory
 		_:
 			return false
 

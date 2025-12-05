@@ -1116,6 +1116,10 @@ layout_mode = 0
 offset_top = 300.0
 offset_right = 450.0
 offset_bottom = 564.0
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Sell"
+slot_id = 113
 
 [node name="VendorSlots" type="GridContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel"]
 layout_mode = 1
@@ -5642,7 +5646,7 @@ offset_bottom = 280.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="ItemDescription" type="Panel" parent="Portrait" node_paths=PackedStringArray("name_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
+[node name="ItemDescription" type="Panel" parent="Portrait" node_paths=PackedStringArray("name_label", "price_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
 visible = false
 z_index = 1500
 custom_minimum_size = Vector2(200, 50)
@@ -5650,6 +5654,7 @@ layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 script = ExtResource("14_85qyi")
 name_label = NodePath("VBoxContainer/Name")
+price_label = NodePath("VBoxContainer/PriceContainer/Value")
 strength = NodePath("VBoxContainer/HBoxContainer/Value")
 stamina = NodePath("VBoxContainer/HBoxContainer2/Value")
 agility = NodePath("VBoxContainer/HBoxContainer3/Value")
@@ -5679,6 +5684,20 @@ bbcode_enabled = true
 text = "[b]Item Name[/b]"
 fit_content = true
 scroll_active = false
+
+[node name="PriceContainer" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+layout_mode = 2
+
+[node name="Price" type="Label" parent="Portrait/ItemDescription/VBoxContainer/PriceContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Price:"
+
+[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/PriceContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0, 1)
+theme_override_font_sizes/font_size = 15
+text = "100 gold"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
 layout_mode = 2
