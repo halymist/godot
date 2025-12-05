@@ -21,53 +21,93 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			display_name += " +" + str(item_data.tempered)
 		name_label.text = "[b]" + display_name + "[/b]"
 		
-		# Handle strength stat - hide if 0
-		if item_data.strength != 0:
-			strength.text = str(item_data.strength)
-			strength_container.visible = true
-		else:
+		# Check if this is an elixir (ID > 1000)
+		var is_elixir = item_data.id > 1000
+		
+		if is_elixir:
+			# Hide all stat containers for elixirs
 			strength_container.visible = false
-		
-		# Handle stamina stat - hide if 0
-		if item_data.stamina != 0:
-			stamina.text = str(item_data.stamina)
-			stamina_container.visible = true
-		else:
 			stamina_container.visible = false
-		
-		# Handle agility stat - hide if 0
-		if item_data.agility != 0:
-			agility.text = str(item_data.agility)
-			agility_container.visible = true
-		else:
 			agility_container.visible = false
-		
-		# Handle luck stat - hide if 0
-		if item_data.luck != 0:
-			luck.text = str(item_data.luck)
-			luck_container.visible = true
-		else:
 			luck_container.visible = false
-		
-		# Handle armor stat - hide if 0
-		if item_data.armor != 0:
-			armor.text = str(item_data.armor)
-			armor_container.visible = true
-		else:
 			armor_container.visible = false
-		
-		# Handle effect description - hide if empty
-		# Display effect from database with factor from item
-		if item_data.effect_id > 0 and item_data.effect_description != "":
-			var effect_text = item_data.effect_description
-			# Append factor to description as integer
-			if item_data.effect_factor != 0.0:
-				effect_text += " " + str(int(item_data.effect_factor))
 			
-			effect.text = "[i]" + effect_text + "[/i]"
-			effect.visible = true
+			# Decode ingredient IDs from elixir ID
+			# Format: 1000 + ingredientID1(3) + ingredientID2(3) + ingredientID3(3)
+			var encoded_id = item_data.id - 1000000000000
+			var ingredient1_id = int(encoded_id / 1000000)
+			var remainder = encoded_id % 1000000
+			var ingredient2_id = int(remainder / 1000)
+			var ingredient3_id = remainder % 1000
+			
+			# Build effect text from ingredients
+			var effect_texts = []
+			for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
+				if ingredient_id > 0:
+					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
+					if ingredient_resource and ingredient_resource.effect_id > 0:
+						var effect_data = GameInfo.effects_db.get_effect_by_id(ingredient_resource.effect_id)
+						if effect_data:
+							var effect_line = effect_data.description
+							if ingredient_resource.effect_factor > 0:
+								effect_line += " " + str(ingredient_resource.effect_factor)
+							effect_texts.append(effect_line)
+			
+			# Display combined effects
+			if effect_texts.size() > 0:
+				effect.text = "[i]" + "\n".join(effect_texts) + "[/i]"
+				effect.visible = true
+			else:
+				effect.visible = false
 		else:
-			effect.visible = false
+			# Regular item - show stats normally
+			# Handle strength stat - hide if 0
+			if item_data.strength != 0:
+				strength.text = str(item_data.strength)
+				strength_container.visible = true
+			else:
+				strength_container.visible = false
+			
+			# Handle stamina stat - hide if 0
+			if item_data.stamina != 0:
+				stamina.text = str(item_data.stamina)
+				stamina_container.visible = true
+			else:
+				stamina_container.visible = false
+			
+			# Handle agility stat - hide if 0
+			if item_data.agility != 0:
+				agility.text = str(item_data.agility)
+				agility_container.visible = true
+			else:
+				agility_container.visible = false
+			
+			# Handle luck stat - hide if 0
+			if item_data.luck != 0:
+				luck.text = str(item_data.luck)
+				luck_container.visible = true
+			else:
+				luck_container.visible = false
+			
+			# Handle armor stat - hide if 0
+			if item_data.armor != 0:
+				armor.text = str(item_data.armor)
+				armor_container.visible = true
+			else:
+				armor_container.visible = false
+			
+			# Handle effect description - hide if empty
+			# Display effect from database with factor from item
+			if item_data.effect_id > 0 and item_data.effect_description != "":
+				var effect_text = item_data.effect_description
+				# Append factor to description as integer
+				if item_data.effect_factor != 0.0:
+					effect_text += " " + str(int(item_data.effect_factor))
+				
+				effect.text = "[i]" + effect_text + "[/i]"
+				effect.visible = true
+			else:
+				effect.visible = false
 		
 		# Show first, then fit content size to ensure proper layout calculation
 		visible = true
