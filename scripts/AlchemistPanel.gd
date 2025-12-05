@@ -157,6 +157,14 @@ func _on_brew_button_pressed():
 	new_elixir.id = encoded_id
 	new_elixir.bag_slot_id = find_empty_bag_slot()
 	
+	# Manually load elixir base data since _init might not have access to GameInfo yet
+	var base_elixir = GameInfo.items_db.get_item_by_id(1000)
+	if base_elixir:
+		new_elixir.item_name = base_elixir.item_name
+		new_elixir.type = base_elixir.type
+		new_elixir.texture = base_elixir.icon
+		print("Elixir created: ", new_elixir.item_name, " with texture: ", new_elixir.texture != null)
+	
 	# Add to player's bag
 	GameInfo.current_player.bag_slots.append(new_elixir)
 	

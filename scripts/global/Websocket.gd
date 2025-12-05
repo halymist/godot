@@ -54,7 +54,7 @@ var mock_character_data = {
 			"bag_slot_id": 13
 		},
 		{
-			"id": 501,
+			"id": 500,
 			"bag_slot_id": 14
 		}
 	],
