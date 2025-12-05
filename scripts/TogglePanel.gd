@@ -275,6 +275,8 @@ func go_back():
 	var destination = GameInfo.current_player.traveling_destination
 	var current = GameInfo.get_current_panel()
 	
+	print("go_back called, current panel: ", current.name if current else "null")
+	
 	# Priority 1: Hide any active overlay using GameInfo system
 	var current_overlay = GameInfo.get_current_panel_overlay()
 	if current_overlay != null:
@@ -293,13 +295,13 @@ func go_back():
 
 	# Priority 3: Check if we're in any utility panel - hide it and return to home
 	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel, settings_panel, rankings_panel]
+	print("Checking utility panels, current: ", current.name if current else "null")
 	for panel in utility_panels:
+		if panel:
+			print("  Comparing with: ", panel.name, " - Match: ", current == panel)
 		if panel and current == panel:
-			# Call hide_panel method if available, otherwise just hide
-			if panel.has_method("hide_panel"):
-				panel.hide_panel()
-			else:
-				panel.visible = false
+			print("Hiding utility panel: ", panel.name)
+			panel.visible = false
 			show_panel(home_panel)
 			return
 

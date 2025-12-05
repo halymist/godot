@@ -21,6 +21,7 @@ func _on_mouse_exited():
 
 func _on_button_pressed():
 	if target_panel:
+		print("Utility clicked, showing panel: ", target_panel.name)
 		# Set the location-specific background for utility panels
 		if target_panel.has_method("set_location_texture"):
 			var location = GameInfo.current_player.location if GameInfo.current_player else 1
@@ -28,4 +29,5 @@ func _on_button_pressed():
 		
 		target_panel.visible = true
 		GameInfo.set_current_panel(target_panel)
+		print("Current panel set to: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
 	utility_clicked.emit(self)

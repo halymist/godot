@@ -307,6 +307,7 @@ blacksmith_panel = NodePath("GameScene/Home/BlacksmithPanel")
 trainer_panel = NodePath("GameScene/Home/TrainerPanel")
 church_panel = NodePath("GameScene/Home/ChurchPanel")
 alchemist_panel = NodePath("GameScene/Home/AlchemistPanel")
+enchanter_panel = NodePath("GameScene/Home/EnchanterPanel")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
