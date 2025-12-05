@@ -60,7 +60,7 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
 					if ingredient_resource != null and ingredient_resource.effect_id > 0:
 						# Add factor to existing effect or create new entry
-						var factor = ingredient_resource.effect_factor if ingredient_resource.has("effect_factor") else 0
+						var factor = ingredient_resource.effect_factor
 						if effect_map.has(ingredient_resource.effect_id):
 							effect_map[ingredient_resource.effect_id] += factor
 						else:
