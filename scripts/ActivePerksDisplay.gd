@@ -3,6 +3,10 @@ extends HBoxContainer
 @export var perk_mini_scene: PackedScene
 @export var tooltip_panel: Panel
 
+func _ready():
+	# Connect to bag_slots_changed to update consumables immediately
+	if GameInfo:
+		GameInfo.bag_slots_changed.connect(update_active_perks)
 
 func update_active_perks():
 	print("ActivePerksDisplay: Updating active perks and effects...")
@@ -11,7 +15,19 @@ func update_active_perks():
 	for child in get_children():
 		child.queue_free()
 	
-	# Add active blessing effect first if any
+	# Add equipped elixir first if any
+	if GameInfo.current_player and GameInfo.current_player.elixir > 0:
+		var elixir_icon_texture = GameInfo.items_db.get_item_by_id(1000)  # Use elixir base icon
+		if elixir_icon_texture and elixir_icon_texture.icon:
+			create_consumable_display(elixir_icon_texture.icon, "Elixir", GameInfo.current_player.elixir)
+	
+	# Add equipped potion second if any
+	if GameInfo.current_player and GameInfo.current_player.potion > 0:
+		var potion_item = GameInfo.items_db.get_item_by_id(GameInfo.current_player.potion)
+		if potion_item and potion_item.icon:
+			create_consumable_display(potion_item.icon, "Potion", GameInfo.current_player.potion)
+	
+	# Add active blessing effect third if any
 	if GameInfo.current_player and GameInfo.current_player.blessing > 0:
 		var blessing_effect = GameInfo.effects_db.get_effect_by_id(GameInfo.current_player.blessing)
 		if blessing_effect:
@@ -46,6 +62,29 @@ func update_active_perks():
 			print("ActivePerksDisplay: Added perk icon to HBox")
 		else:
 			print("ERROR: perk_mini_scene is null!")
+
+func create_consumable_display(icon_texture: Texture2D, consumable_type: String, item_id: int):
+	"""Create a display for an equipped consumable (potion or elixir)"""
+	if perk_mini_scene:
+		var consumable_icon = perk_mini_scene.instantiate()
+		# Store consumable type and item ID for hover functionality
+		consumable_icon.set_meta("consumable_type", consumable_type)
+		consumable_icon.set_meta("item_id", item_id)
+		
+		# Set the consumable texture
+		var texture_rect = consumable_icon.get_node("TextureRect")
+		if texture_rect:
+			texture_rect.texture = icon_texture
+		
+		# Enable mouse detection for hover
+		consumable_icon.mouse_filter = Control.MOUSE_FILTER_PASS
+		
+		# Connect hover signals for consumable
+		consumable_icon.mouse_entered.connect(_on_consumable_hover_start.bind(consumable_icon))
+		consumable_icon.mouse_exited.connect(_on_perk_hover_end)
+		
+		add_child(consumable_icon)
+		print("ActivePerksDisplay: Added consumable icon to HBox")
 
 func create_effect_display(effect: EffectResource):
 	"""Create a display for an active effect (like blessing)"""
@@ -132,6 +171,80 @@ func _on_effect_hover_start(effect_icon):
 		# Position tooltip above the effect icon
 		var icon_global_pos = effect_icon.global_position
 		var icon_size = effect_icon.size
+		var tooltip_size = tooltip_panel.size
+		
+		# Position above the icon, centered horizontally
+		tooltip_panel.global_position = Vector2(
+			icon_global_pos.x - tooltip_size.x / 2 + icon_size.x / 2,
+			icon_global_pos.y - tooltip_size.y - 10
+		)
+		
+		# Ensure tooltip stays within screen bounds
+		var viewport_size = get_viewport().get_visible_rect().size
+		if tooltip_panel.global_position.x < 0:
+			tooltip_panel.global_position.x = 0
+		elif tooltip_panel.global_position.x + tooltip_size.x > viewport_size.x:
+			tooltip_panel.global_position.x = viewport_size.x - tooltip_size.x
+		
+		if tooltip_panel.global_position.y < 0:
+			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10
+
+func _on_consumable_hover_start(consumable_icon):
+	"""Show tooltip for equipped consumables"""
+	var consumable_type = consumable_icon.get_meta("consumable_type")
+	var item_id = consumable_icon.get_meta("item_id")
+	if consumable_type and tooltip_panel:
+		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
+		if tooltip_label:
+			var tooltip_text = ""
+			
+			if consumable_type == "Elixir":
+				# Decode elixir ID and show combined effects
+				tooltip_text = "Elixir"
+				var id_str = str(item_id)
+				var ingredient1_id = int(id_str.substr(4, 3))
+				var ingredient2_id = int(id_str.substr(7, 3))
+				var ingredient3_id = int(id_str.substr(10, 3))
+				
+				# Build effect map to combine duplicate effects
+				var effect_map = {}  # Map effect_id to total factor
+				for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
+					if ingredient_id > 0:
+						var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
+						if ingredient_resource and ingredient_resource.effect_id > 0:
+							if effect_map.has(ingredient_resource.effect_id):
+								effect_map[ingredient_resource.effect_id] += ingredient_resource.effect_factor
+							else:
+								effect_map[ingredient_resource.effect_id] = ingredient_resource.effect_factor
+				
+				# Build effect text from combined effects
+				for effect_id in effect_map.keys():
+					var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
+					if effect_data:
+						var effect_line = effect_data.description
+						if effect_map[effect_id] > 0:
+							effect_line += " " + str(effect_map[effect_id])
+						tooltip_text += "\n" + effect_line
+				
+			elif consumable_type == "Potion":
+				# Show potion name and effect
+				var potion_item = GameInfo.items_db.get_item_by_id(item_id)
+				if potion_item:
+					tooltip_text = potion_item.item_name
+					if potion_item.effect_id > 0:
+						var effect_data = GameInfo.effects_db.get_effect_by_id(potion_item.effect_id)
+						if effect_data:
+							var effect_line = effect_data.description
+							if potion_item.effect_factor > 0:
+								effect_line += " " + str(int(potion_item.effect_factor))
+							tooltip_text += "\n" + effect_line
+			
+			tooltip_label.text = tooltip_text
+			tooltip_panel.visible = true
+		
+		# Position tooltip above the consumable icon
+		var icon_global_pos = consumable_icon.global_position
+		var icon_size = consumable_icon.size
 		var tooltip_size = tooltip_panel.size
 		
 		# Position above the icon, centered horizontally

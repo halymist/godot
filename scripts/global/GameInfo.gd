@@ -72,7 +72,6 @@ class Item:
 	var bag_slot_id: int = 0
 	var item_name: String = ""
 	var type: String = ""
-	var subtype: String = ""
 	var armor: int = 0
 	var strength: int = 0
 	var stamina: int = 0
@@ -125,7 +124,6 @@ class Item:
 				# Copy static data from resource
 				item_name = item_resource.item_name
 				type = item_resource.type
-				subtype = item_resource.subtype
 				armor = item_resource.armor
 				strength = item_resource.strength
 				stamina = item_resource.stamina
@@ -457,6 +455,8 @@ class GameCurrentPlayer:
 	var talent_points: int = 0
 	var perk_points: int = 0
 	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
+	var potion: int = 0  # Equipped potion item ID (0 = no potion)
+	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
 	var guild: int = 0  # Guild ID (1=Mercantile, 2=Warriors, 3=Mages, etc.)
 	var rank: int = 0  # Rank value (determines rank tier like Novice, Veteran, etc.)
@@ -499,6 +499,8 @@ class GameCurrentPlayer:
 		"talent_points": "talent_points",
 		"perk_points": "perk_points",
 		"blessing": "blessing",
+		"potion": "potion",
+		"elixir": "elixir",
 		"dungeon": "dungeon",
 		"destination": "destination",
 		"slide": "slide",

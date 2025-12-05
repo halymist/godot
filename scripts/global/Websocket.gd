@@ -33,6 +33,8 @@ var mock_character_data = {
 	"talent_points": 10,
 	"perk_points": 2,
 	"blessing": 100,
+	"potion": 0,
+	"elixir": 0,
 	"dungeon": false,
 	"slide": 1,
 	"slides": null,
@@ -44,6 +46,10 @@ var mock_character_data = {
 		{
 			"id": 2,
 			"bag_slot_id": 11
+		},
+		{
+			"id": 400,
+			"bag_slot_id": 12
 		},
 		{
 			"id": 500,
