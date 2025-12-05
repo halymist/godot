@@ -1082,6 +1082,7 @@ text = "You are already on a quest."
 horizontal_alignment = 1
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = false
 z_index = 100
 layout_mode = 1
 anchors_preset = 15

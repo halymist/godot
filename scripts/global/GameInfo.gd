@@ -133,12 +133,12 @@ class Item:
 				damage_min = item_resource.damage_min
 				damage_max = item_resource.damage_max
 				effect_id = item_resource.effect_id
-			effect_factor = item_resource.effect_factor
-			quality = item_resource.quality
-			price = item_resource.price
-			tempered = item_resource.tempered
-			# Note: enchant_overdrive comes from server data, not items_db
-			texture = item_resource.icon
+				effect_factor = item_resource.effect_factor
+				quality = item_resource.quality
+				price = item_resource.price
+				tempered = item_resource.tempered
+				# Note: enchant_overdrive comes from server data, not items_db
+				texture = item_resource.icon
 		
 		# Apply tempering improvements if item is tempered
 		# Each tempering level adds 10% to base stats (compounding)

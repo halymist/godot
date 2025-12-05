@@ -58,12 +58,13 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
 				if ingredient_id > 0:
 					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
-					if ingredient_resource and ingredient_resource.effect_id > 0:
+					if ingredient_resource != null and ingredient_resource.effect_id > 0:
 						# Add factor to existing effect or create new entry
+						var factor = ingredient_resource.effect_factor if ingredient_resource.has("effect_factor") else 0
 						if effect_map.has(ingredient_resource.effect_id):
-							effect_map[ingredient_resource.effect_id] += ingredient_resource.effect_factor
+							effect_map[ingredient_resource.effect_id] += factor
 						else:
-							effect_map[ingredient_resource.effect_id] = ingredient_resource.effect_factor
+							effect_map[ingredient_resource.effect_id] = factor
 			
 			# Build effect text from combined effects
 			var effect_texts = []
