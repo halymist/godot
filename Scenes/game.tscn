@@ -1082,7 +1082,6 @@ text = "You are already on a quest."
 horizontal_alignment = 1
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameScene/Home"]
-visible = false
 z_index = 100
 layout_mode = 1
 anchors_preset = 15
@@ -1117,6 +1116,199 @@ layout_mode = 0
 offset_top = 300.0
 offset_right = 450.0
 offset_bottom = 564.0
+
+[node name="VendorSlots" type="GridContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 4
+
+[node name="Vendor1" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor1"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor1"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor1"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 105
+
+[node name="Vendor2" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor2"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor2"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor2"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 106
+
+[node name="Vendor3" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor3"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor3"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor3"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 107
+
+[node name="Vendor4" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor4"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor4"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor4"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 108
+
+[node name="Vendor5" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor5"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor5"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor5"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 109
+
+[node name="Vendor6" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor6"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor6"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor6"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 110
+
+[node name="Vendor7" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor7"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor7"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor7"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 111
+
+[node name="Vendor8" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor8"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor8"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_7nbq1")
+expand_mode = 1
+
+[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor8"]
+layout_mode = 2
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_id = 112
 
 [node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/VendorPanel"]
 layout_mode = 0
