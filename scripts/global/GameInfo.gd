@@ -152,6 +152,18 @@ class Item:
 			agility = ceil(agility * multiplier)
 			luck = ceil(luck * multiplier)
 		
+		# Apply day-based scaling (2% improvement per day, compounding)
+		# day represents when the item was acquired, so we scale by (1.02^day)
+		if day > 0:
+			var day_multiplier = pow(1.02, day)
+			armor = ceil(armor * day_multiplier)
+			strength = ceil(strength * day_multiplier)
+			stamina = ceil(stamina * day_multiplier)
+			agility = ceil(agility * day_multiplier)
+			luck = ceil(luck * day_multiplier)
+			damage_min = ceil(damage_min * day_multiplier)
+			damage_max = ceil(damage_max * day_multiplier)
+		
 		# Handle effect_overdrive: override effect with data from effects_db
 		# enchant_overdrive comes from server data (via MSGPACK), not items_db
 		if enchant_overdrive > 0 and GameInfo and GameInfo.effects_db:

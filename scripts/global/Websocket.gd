@@ -43,7 +43,7 @@ var mock_character_data = {
 			"id": 1,
 			"effect_overdrive": 4,
 			"bag_slot_id": 0,
-			"day": 1
+			"day": 70
 		},
 		{
 			"id": 2,
