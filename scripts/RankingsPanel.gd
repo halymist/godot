@@ -27,7 +27,7 @@ func _ready():
 		player_rank_label = player_info.get_node("PlayerRank")
 		player_rating_label = player_info.get_node("PlayerRating")
 		
-		var actions = card_content.get_node("Actions")
+		var actions = card_content.get_node("FightButtonContainer")
 		fight_button = actions.get_node("FightButton")
 		if fight_button:
 			fight_button.pressed.connect(_on_fight_pressed)

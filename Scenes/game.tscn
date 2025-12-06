@@ -2193,17 +2193,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="Character" type="Control" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
+[node name="Character" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 
 [node name="Button" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
 [node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
@@ -2225,14 +2220,13 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Rating: 1000"
 
-[node name="Actions" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
+[node name="FightButtonContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 10
+ratio = 1.33333
 
-[node name="FightButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Actions"]
+[node name="FightButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/FightButtonContainer"]
 layout_mode = 2
-size_flags_vertical = 3
 text = "Fight"
 
 [node name="SearchBar" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer"]
