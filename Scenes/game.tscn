@@ -1,4 +1,4 @@
-[gd_scene load_steps=106 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=107 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -63,6 +63,7 @@
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/RankingsPanel.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
+[ext_resource type="Script" uid="uid://dl5m7uo6ahwk7" path="res://scripts/DragScrollContainer.gd" id="37_drag_scroll"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="38_jcn4n"]
@@ -2164,22 +2165,22 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
-horizontal_scroll_mode = 0
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+script = ExtResource("37_drag_scroll")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/TableScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PlayerCard" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer"]
+[node name="PlayerCard" type="Panel" parent="Portrait/GameScene/Rankings/MainContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-ratio = 4.0
+size_flags_vertical = 8
+size_flags_stretch_ratio = 0.4
 
-[node name="CardPanel" type="Panel" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard"]
-layout_mode = 2
-
-[node name="CardContent" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel"]
+[node name="CardContent" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2192,49 +2193,44 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="Character" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent"]
+[node name="Character" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 alignment_horizontal = 0
 
-[node name="Button" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent/Character"]
+[node name="Button" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
-[node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent"]
+[node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PlayerName" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent/PlayerInfo"]
+[node name="PlayerName" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Player Name"
 
-[node name="PlayerRank" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent/PlayerInfo"]
+[node name="PlayerRank" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Rank: #1"
 
-[node name="PlayerRating" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent/PlayerInfo"]
+[node name="PlayerRating" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Rating: 1000"
 
-[node name="Actions" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent"]
+[node name="Actions" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="FightButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent/Actions"]
+[node name="FightButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Actions"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Fight"
-
-[node name="ViewProfileButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardPanel/CardContent/Actions"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "View Profile"
 
 [node name="SearchBar" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer"]
 custom_minimum_size = Vector2(0, 50)

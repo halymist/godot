@@ -19,11 +19,13 @@ offset_right = -10.0
 offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/separation = 15
 
 [node name="Rank" type="Label" parent="RowContent"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+mouse_filter = 2
 theme_override_font_sizes/font_size = 18
 text = "1"
 horizontal_alignment = 1
@@ -32,6 +34,7 @@ vertical_alignment = 1
 [node name="PlayerName" type="Label" parent="RowContent"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_font_sizes/font_size = 18
 text = "Player Name"
 vertical_alignment = 1
@@ -39,6 +42,7 @@ vertical_alignment = 1
 [node name="Rating" type="Label" parent="RowContent"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+mouse_filter = 2
 theme_override_font_sizes/font_size = 18
 text = "1000"
 horizontal_alignment = 1

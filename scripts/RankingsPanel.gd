@@ -2,7 +2,7 @@
 extends Panel
 
 @export var rankings_table: ScrollContainer
-@export var player_card: AspectRatioContainer
+@export var player_card: Panel
 @export var search_input: LineEdit
 @export var ranking_row_scene: PackedScene
 
@@ -19,8 +19,7 @@ func _ready():
 		table_content = rankings_table.get_node("VBoxContainer")
 	
 	if player_card:
-		var card_panel = player_card.get_node("CardPanel")
-		var card_content = card_panel.get_node("CardContent")
+		var card_content = player_card.get_node("CardContent")
 		var player_info = card_content.get_node("PlayerInfo")
 		player_name_label = player_info.get_node("PlayerName")
 		player_rank_label = player_info.get_node("PlayerRank")
