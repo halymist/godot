@@ -208,7 +208,7 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 		"Blacksmith":
 			return item_type != "Ingredient" and item_type != "Consumable"
 		"Enchanter":
-			return item_type != "Ingredient" and item_type != "Consumable"
+			return item_type != "Ingredient" and item_type != "Consumable" and item_type != "Elixir" and item_type != "Potion"
 		"Bag":
 			return true  # Bag accepts everything
 		"Sell":

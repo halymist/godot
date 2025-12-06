@@ -1932,9 +1932,13 @@ item_scene = ExtResource("11_ewbju")
 slot_type = "Enchanter"
 slot_id = 104
 
-[node name="EnchantButton" type="Button" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
+[node name="EnchantButtonContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_vertical = 3
+ratio = 1.33333
+
+[node name="EnchantButton" type="Button" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer"]
+layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 14
@@ -2411,6 +2415,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
