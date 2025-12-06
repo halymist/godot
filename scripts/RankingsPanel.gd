@@ -8,11 +8,10 @@ extends Panel
 
 @onready var table_content: VBoxContainer
 @onready var player_name_label: Label
-@onready var player_rank_label: Label
-@onready var player_rating_label: Label
 @onready var fight_button: Button
 
 var selected_row = null
+var stat_nodes = []
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -24,8 +23,13 @@ func _ready():
 		var card_content = player_card.get_node("CardContent")
 		var player_info = card_content.get_node("PlayerInfo")
 		player_name_label = player_info.get_node("PlayerName")
-		player_rank_label = player_info.get_node("PlayerRank")
-		player_rating_label = player_info.get_node("PlayerRating")
+		
+		# Get all stat nodes from StatsGrid
+		var stats_grid = player_info.get_node("StatsGrid")
+		for i in range(1, 6):  # Stat1 through Stat5
+			var stat_node = stats_grid.get_node("Stat" + str(i))
+			if stat_node:
+				stat_nodes.append(stat_node)
 		
 		var actions = card_content.get_node("FightButtonContainer")
 		fight_button = actions.get_node("FightButton")
@@ -87,10 +91,14 @@ func _on_row_clicked(rank: int, player_name: String, rating: int):
 func update_player_card(rank: int, player_name: String, rating: int):
 	if player_name_label:
 		player_name_label.text = player_name
-	if player_rank_label:
-		player_rank_label.text = "Rank: #" + str(rank)
-	if player_rating_label:
-		player_rating_label.text = "Rating: " + str(rating)
+	
+	# TODO: Update with actual player stats
+	# For now, set placeholder values
+	for i in range(stat_nodes.size()):
+		if i < stat_nodes.size():
+			var value_label = stat_nodes[i].get_node("Value")
+			if value_label:
+				value_label.text = str(100 + i * 10)  # Placeholder values
 
 func _on_fight_pressed():
 	print("Fight button pressed!")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=107 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=112 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -75,10 +75,15 @@
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 [ext_resource type="Texture2D" uid="uid://b0w36ybd8s4jl" path="res://assets/images/ui/shoes_outline.png" id="41_gyste"]
+[ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="44_p3b6d"]
+[ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="45_7sqp1"]
 [ext_resource type="Texture2D" uid="uid://b13lm15co82og" path="res://assets/images/ui/pants_outline.png" id="45_bchkn"]
 [ext_resource type="Texture2D" uid="uid://mui2o1egfipm" path="res://assets/images/ui/ring_outline.png" id="46_ff75x"]
+[ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="47_a2m5q"]
+[ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
+[ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -2185,10 +2190,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = -15.0
-offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
@@ -2204,21 +2205,103 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 [node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 5
 
 [node name="PlayerName" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Player Name"
 
-[node name="PlayerRank" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
+[node name="StatsGrid" type="GridContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Rank: #1"
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 5
+columns = 3
 
-[node name="PlayerRating" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
+[node name="Stat1" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Rating: 1000"
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat1"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("44_k8ojv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Stat2" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat2"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("45_7sqp1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Stat3" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat3"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("46_gsm33")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Stat4" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat4"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("47_lrctp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Stat5" type="HBoxContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat5"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("48_e6ols")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
 
 [node name="FightButtonContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 custom_minimum_size = Vector2(100, 0)
