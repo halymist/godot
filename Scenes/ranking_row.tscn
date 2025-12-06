@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://cnk4r8w2vplxk"]
 
-[ext_resource type="Script" path="res://scripts/RankingRow.gd" id="1_row"]
+[ext_resource type="Script" uid="uid://ojg3ty0v2k3n" path="res://scripts/RankingRow.gd" id="1_row"]
 
 [node name="RankingRow" type="Panel"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 40)
 offset_right = 400.0
 offset_bottom = 50.0
 script = ExtResource("1_row")
@@ -14,9 +14,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = 5.0
+offset_top = 3.0
 offset_right = -10.0
-offset_bottom = -5.0
+offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -25,7 +25,6 @@ theme_override_constants/separation = 15
 [node name="Rank" type="Label" parent="RowContent"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-mouse_filter = 2
 theme_override_font_sizes/font_size = 18
 text = "1"
 horizontal_alignment = 1
@@ -34,7 +33,6 @@ vertical_alignment = 1
 [node name="PlayerName" type="Label" parent="RowContent"]
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_filter = 2
 theme_override_font_sizes/font_size = 18
 text = "Player Name"
 vertical_alignment = 1
@@ -42,7 +40,6 @@ vertical_alignment = 1
 [node name="Rating" type="Label" parent="RowContent"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-mouse_filter = 2
 theme_override_font_sizes/font_size = 18
 text = "1000"
 horizontal_alignment = 1

@@ -12,6 +12,8 @@ extends Panel
 @onready var player_rating_label: Label
 @onready var fight_button: Button
 
+var selected_row = null
+
 func _ready():
 	if Engine.is_editor_hint():
 		return
@@ -67,6 +69,19 @@ func create_ranking_row(rank: int, p_player_name: String, p_rating: int):
 
 func _on_row_clicked(rank: int, player_name: String, rating: int):
 	print("Clicked on player: ", player_name, " Rank: ", rank, " Rating: ", rating)
+	
+	# Deselect previous row
+	if selected_row and is_instance_valid(selected_row):
+		selected_row.set_selected(false)
+	
+	# Find and select new row
+	if table_content:
+		for child in table_content.get_children():
+			if child.rank == rank:
+				child.set_selected(true)
+				selected_row = child
+				break
+	
 	update_player_card(rank, player_name, rating)
 
 func update_player_card(rank: int, player_name: String, rating: int):
