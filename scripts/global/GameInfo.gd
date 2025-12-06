@@ -88,6 +88,7 @@ class Item:
 	var price: int = 0
 	var tempered: int = 0  # Tracks tempering level (0 = not tempered, 1+ = tempered)
 	var enchant_overdrive: int = 0  # Enchanting overdrive level
+	var day: int = 0  # Day when item was acquired (for stat scaling: 2% per day)
 	
 	# Client-side only (not serialized)
 	var texture: Texture2D = null
@@ -113,7 +114,8 @@ class Item:
 		"price": "price",
 		"tempered": "tempered",
 		"enchant_overdrive": "enchant_overdrive",
-		"effect_overdrive": "enchant_overdrive"
+		"effect_overdrive": "enchant_overdrive",
+		"day": "day"
 	}
 	
 	func _init(data: Dictionary = {}):

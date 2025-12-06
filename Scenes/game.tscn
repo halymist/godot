@@ -2144,6 +2144,7 @@ popup/item_2/text = "Large"
 popup/item_2/id = 2
 
 [node name="Rankings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2410,7 +2411,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2428,7 +2428,7 @@ anchor_bottom = 0.88
 grow_horizontal = 2
 alignment = 1
 script = ExtResource("6_iivbl")
-inventory_slots = [NodePath("Left/HeadSlot/Head"), NodePath("Left/ChestSlot/Chest"), NodePath("Left/HandSlot/Gloves"), NodePath("Left/ShoeSlot/Shoes"), NodePath("Right/BeltSlot/Belt"), NodePath("Right/LegSlot/Pants"), NodePath("Right/RingSlot/Ring"), NodePath("Right/AmuletSlot/Amulet"), NodePath("Middle/Weapons/Weapon1Slot/Weapon1"), NodePath("Middle/Weapons/Weapon2Slot/Weapon2")]
+inventory_slots = [NodePath("Left/HeadSlot/Head"), NodePath("Left/ChestSlot/Chest"), NodePath("Left/HandSlot/Gloves"), NodePath("Left/ShoeSlot/Shoes"), NodePath("Right/BeltSlot/Belt"), NodePath("Right/LegSlot/Pants"), NodePath("Right/RingSlot/Ring"), NodePath("Right/AmuletSlot/Amulet"), NodePath("Middle/Weapons/Weapon1Slot/Weapon1")]
 item_prefab = ExtResource("11_ewbju")
 
 [node name="Left" type="VBoxContainer" parent="Portrait/GameScene/Character/Equip"]
@@ -2576,30 +2576,6 @@ script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Weapon"
 slot_id = 8
-
-[node name="Weapon2Slot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle/Weapons"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2Slot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2Slot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("44_p3b6d")
-expand_mode = 1
-
-[node name="Weapon2" type="Control" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon2Slot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
-slot_type = "Weapon"
-slot_id = 9
 
 [node name="Right" type="VBoxContainer" parent="Portrait/GameScene/Character/Equip"]
 custom_minimum_size = Vector2(100, 100)

@@ -42,23 +42,28 @@ var mock_character_data = {
 		{
 			"id": 1,
 			"effect_overdrive": 4,
-			"bag_slot_id": 0
+			"bag_slot_id": 0,
+			"day": 1
 		},
 		{
 			"id": 2,
-			"bag_slot_id": 11
+			"bag_slot_id": 11,
+			"day": 3
 		},
 		{
 			"id": 400,
-			"bag_slot_id": 12
+			"bag_slot_id": 12,
+			"day": 5
 		},
 		{
 			"id": 500,
-			"bag_slot_id": 13
+			"bag_slot_id": 13,
+			"day": 2
 		},
 		{
 			"id": 501,
-			"bag_slot_id": 14
+			"bag_slot_id": 14,
+			"day": 4
 		}
 	],
 	"perks": [
