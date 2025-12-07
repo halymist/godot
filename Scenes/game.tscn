@@ -13,7 +13,6 @@
 [ext_resource type="PackedScene" uid="uid://bk6a75wnuawv" path="res://Scenes/NpcSpot.tscn" id="7_spot"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
-[ext_resource type="FontFile" uid="uid://bapt2viuub0ha" path="res://assets/Spectral-Regular.ttf" id="8_exi56"]
 [ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="9_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://btgcwrcimqh8b" path="res://assets/images/ui/belt_outline.png" id="9_nnt18"]
 [ext_resource type="PackedScene" path="res://Scenes/Utility.tscn" id="10_32sfa"]
@@ -65,6 +64,7 @@
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
 [ext_resource type="Script" uid="uid://dl5m7uo6ahwk7" path="res://scripts/DragScrollContainer.gd" id="37_drag_scroll"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
+[ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="38_jcn4n"]
 [ext_resource type="Texture2D" uid="uid://dydlyg2ehudyl" path="res://assets/images/villages/enchanter.png" id="39_ckj55"]
@@ -360,29 +360,20 @@ size_flags_stretch_ratio = 3.0
 
 [node name="Runes" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 18
 text = "Runes: "
 
 [node name="Gold" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 18
 text = "Gold: "
 
 [node name="LocationLabel" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.95, 0.85, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 22
 text = "Krasna Ves"
 vertical_alignment = 1
 
@@ -1225,8 +1216,6 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 14
 text = "The blacksmith is offering you his services for a fee.
 Drop an item below to see the improvements."
 horizontal_alignment = 1
@@ -1244,8 +1233,6 @@ size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/ItemSlotContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 12
 text = "Item to Temper"
 horizontal_alignment = 1
 
@@ -1278,14 +1265,10 @@ size_flags_horizontal = 3
 
 [node name="StatsTitle" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 12
 text = "Tempering Improvement:"
 
 [node name="ImprovedStats" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/StatsContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.3, 0.9, 0.3, 1)
-theme_override_font_sizes/font_size = 11
 text = "+10% to all stats"
 
 [node name="TemperButtonContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content"]
@@ -1298,7 +1281,6 @@ stretch_mode = 1
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
@@ -1367,8 +1349,6 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 14
 text = "The trainer offers to improve your stats for a price.
 Each training session will permanently increase your chosen stat."
 horizontal_alignment = 1
@@ -1393,9 +1373,7 @@ theme_override_constants/separation = 8
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 15
-text = "Talent Points: 0"
+text = "Talents: 0"
 vertical_alignment = 1
 
 [node name="PlusButton" type="Button" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo"]
@@ -1407,16 +1385,12 @@ text = "+"
 [node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
-theme_override_font_sizes/font_size = 13
 text = "(100g)"
 vertical_alignment = 1
 
 [node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/TalentPointsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.75, 0.65, 1)
-theme_override_font_sizes/font_size = 12
 text = "Unlock more talents"
 vertical_alignment = 1
 
@@ -1433,8 +1407,6 @@ theme_override_constants/separation = 8
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 15
 text = "Strength: 0"
 vertical_alignment = 1
 
@@ -1447,16 +1419,12 @@ text = "+"
 [node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow/StatInfo"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
-theme_override_font_sizes/font_size = 13
 text = "(5g)"
 vertical_alignment = 1
 
 [node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StrengthRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.75, 0.65, 1)
-theme_override_font_sizes/font_size = 12
 text = "Increases damage dealt"
 vertical_alignment = 1
 
@@ -1473,8 +1441,6 @@ theme_override_constants/separation = 8
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StaminaRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 15
 text = "Stamina: 0"
 vertical_alignment = 1
 
@@ -1487,16 +1453,12 @@ text = "+"
 [node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StaminaRow/StatInfo"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
-theme_override_font_sizes/font_size = 13
 text = "(5g)"
 vertical_alignment = 1
 
 [node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/StaminaRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.75, 0.65, 1)
-theme_override_font_sizes/font_size = 12
 text = "Increases max health"
 vertical_alignment = 1
 
@@ -1513,8 +1475,6 @@ theme_override_constants/separation = 8
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 15
 text = "Agility: 0"
 vertical_alignment = 1
 
@@ -1527,16 +1487,12 @@ text = "+"
 [node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow/StatInfo"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
-theme_override_font_sizes/font_size = 13
 text = "(5g)"
 vertical_alignment = 1
 
 [node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/AgilityRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.75, 0.65, 1)
-theme_override_font_sizes/font_size = 12
 text = "Increases dodge chance"
 vertical_alignment = 1
 
@@ -1553,8 +1509,6 @@ theme_override_constants/separation = 8
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 15
 text = "Luck: 0"
 vertical_alignment = 1
 
@@ -1567,16 +1521,12 @@ text = "+"
 [node name="Price" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow/StatInfo"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.7, 0.3, 1)
-theme_override_font_sizes/font_size = 13
 text = "(5g)"
 vertical_alignment = 1
 
 [node name="Description" type="Label" parent="Portrait/GameScene/Home/TrainerPanel/TrainingPanel/Content/StatsContainer/LuckRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.75, 0.65, 1)
-theme_override_font_sizes/font_size = 12
 text = "Increases critical chance"
 vertical_alignment = 1
 
@@ -1629,11 +1579,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "The church offers divine blessings to aid you in your journey.
-Each blessing provides unique benefits for a small donation.
-Choose wisely, as only one blessing can be active at a time."
+text = "The church offers divine blessings to aid you in your journey. Each blessing provides unique benefits for a small donation. "
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -1651,7 +1597,6 @@ theme_override_constants/separation = 8
 [node name="BlessButton" type="Button" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content"]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 disabled = true
 text = "Receive Blessing (10g)"
 
@@ -1704,11 +1649,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "The alchemist can brew powerful elixirs from ingredients.
-Combine up to 5 items to create unique potions.
-Each brew costs 10 gold and consumes the ingredients."
+text = "The alchemist can brew powerful elixirs from ingredients. Combine up to 5 items to create unique potions."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -1811,8 +1752,6 @@ size_flags_vertical = 3
 [node name="ResultPreview" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.85, 0.6, 1)
-theme_override_font_sizes/font_size = 13
 text = "Elixir Effects: None"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1821,7 +1760,6 @@ autowrap_mode = 2
 [node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 disabled = true
 text = "Brew Elixir (10g)"
 
@@ -1886,10 +1824,7 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "The enchanter can imbue your equipment with magical properties.
-Drop an item below to enchant it."
+text = "The enchanter can imbue your equipment with magical properties. Drop an item below to enchant it."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -1906,8 +1841,6 @@ size_flags_stretch_ratio = 0.4
 
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 12
 text = "Item to Enchant"
 horizontal_alignment = 1
 
@@ -1943,7 +1876,6 @@ ratio = 1.33333
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
@@ -1958,8 +1890,6 @@ size_flags_stretch_ratio = 0.6
 
 [node name="EffectLabel" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/EffectsSection"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 12
 text = "Available Enchantments"
 horizontal_alignment = 1
 
@@ -1993,6 +1923,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wr3wg")
+script = ExtResource("37_settings")
 
 [node name="SettingsContainer" type="VBoxContainer" parent="Portrait/GameScene/Settings"]
 layout_mode = 1
@@ -2040,7 +1971,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/DisableAds"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
 text = "Disable Ads"
 
 [node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/DisableAds"]
@@ -2052,7 +1982,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/AutoSkip"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
 text = "Auto-Skip Dialogues"
 
 [node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/AutoSkip"]
@@ -2064,7 +1993,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/Language"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
 text = "Language"
 
 [node name="OptionButton" type="OptionButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/Language"]
@@ -2096,7 +2024,6 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/Volume"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
 text = "Master Volume"
 
 [node name="HSlider" type="HSlider" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/Volume"]
@@ -2109,7 +2036,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/DialogueToggle"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
 text = "Enable Dialogue Sounds"
 
 [node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/DialogueToggle"]
@@ -2134,7 +2060,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video/UISize"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
 text = "UI Size"
 
 [node name="OptionButton" type="OptionButton" parent="Portrait/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video/UISize"]
@@ -2194,7 +2119,6 @@ theme_override_constants/separation = 15
 [node name="RankHeader" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "Rank"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2202,14 +2126,12 @@ vertical_alignment = 1
 [node name="NameHeader" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 20
 text = "Name"
 vertical_alignment = 1
 
 [node name="HonorHeader" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "Honor"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2257,7 +2179,6 @@ theme_override_constants/separation = 5
 
 [node name="PlayerName" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
 text = "Player Name"
 
 [node name="StatsGrid" type="GridContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
@@ -2458,6 +2379,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2797,9 +2719,6 @@ grow_vertical = 2
 
 [node name="PlayerName" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 22
 text = "Name"
 vertical_alignment = 1
 
@@ -2813,9 +2732,6 @@ stretch_mode = 5
 
 [node name="RankLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 18
 text = "Novice (20165)"
 vertical_alignment = 1
 
@@ -2830,9 +2746,6 @@ stretch_mode = 5
 
 [node name="GuildLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 18
 text = "Mercantile"
 vertical_alignment = 1
 
@@ -2847,9 +2760,6 @@ stretch_mode = 5
 
 [node name="ProfessionLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 18
 text = "Herbalist"
 vertical_alignment = 1
 
@@ -2884,9 +2794,6 @@ stretch_mode = 5
 
 [node name="StrengthLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 22
 text = "Strength: 10"
 vertical_alignment = 1
 
@@ -2902,9 +2809,6 @@ stretch_mode = 5
 
 [node name="StaminaLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 22
 text = "Stamina: 10"
 vertical_alignment = 1
 
@@ -2920,9 +2824,6 @@ stretch_mode = 5
 
 [node name="AgilityLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 22
 text = "Agility: 10"
 vertical_alignment = 1
 
@@ -2938,9 +2839,6 @@ stretch_mode = 5
 
 [node name="LuckLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/LuckContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 22
 text = "Luck: 10"
 vertical_alignment = 1
 
@@ -2956,9 +2854,6 @@ stretch_mode = 5
 
 [node name="ArmorLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
-theme_override_fonts/font = ExtResource("8_exi56")
-theme_override_font_sizes/font_size = 22
 text = "Armor: 5"
 vertical_alignment = 1
 
@@ -5700,6 +5595,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="Enemy" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="ChatOverlay" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
 visible = false
 z_index = 200
@@ -5795,15 +5699,6 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="Enemy" type="Panel" parent="Portrait/GameScene"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1
 anchors_preset = -1
@@ -5883,8 +5778,6 @@ anchor_right = 1.0
 offset_top = 10.0
 offset_bottom = 50.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
-theme_override_font_sizes/font_size = 28
 text = "Quest Title"
 horizontal_alignment = 1
 
@@ -5980,7 +5873,6 @@ size_flags_vertical = 3
 [node name="Name" type="RichTextLabel" parent="Portrait/ItemDescription/VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
 text = "[b]Item Name[/b]"
 fit_content = true
@@ -5991,12 +5883,10 @@ layout_mode = 2
 
 [node name="Strength" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "Strength"
 
 [node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "20"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
@@ -6004,12 +5894,10 @@ layout_mode = 2
 
 [node name="Stamina" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "Stamina"
 
 [node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "20"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
@@ -6017,12 +5905,10 @@ layout_mode = 2
 
 [node name="Agility" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "Agility"
 
 [node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "20"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
@@ -6030,12 +5916,10 @@ layout_mode = 2
 
 [node name="Luck" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "Luck"
 
 [node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "20"
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
@@ -6043,18 +5927,15 @@ layout_mode = 2
 
 [node name="Armor" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer5"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "Armor"
 
 [node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer5"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "20"
 
 [node name="Effect" type="RichTextLabel" parent="Portrait/ItemDescription/VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 13
 bbcode_enabled = true
 text = "[i]Effect[/i]"
 fit_content = true
@@ -6065,8 +5946,6 @@ layout_mode = 2
 
 [node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/PriceContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0, 1)
-theme_override_font_sizes/font_size = 15
 text = "100 gold"
 
 [node name="CancelQuest" type="Panel" parent="Portrait"]
@@ -6121,7 +6000,6 @@ grow_vertical = 2
 clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 16
 text = "Do you wish to abandon the quest?"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -6134,7 +6012,6 @@ alignment = 1
 [node name="YesButton" type="Button" parent="Portrait/CancelQuest/DialogPanel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
 text = "Yes"
 
 [node name="Control" type="Control" parent="Portrait/CancelQuest/DialogPanel/VBoxContainer/HBoxContainer"]
@@ -6145,7 +6022,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 14
 text = "No"
 
 [node name="Wide" type="AspectRatioContainer" parent="."]
