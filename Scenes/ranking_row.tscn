@@ -37,20 +37,36 @@ theme_override_font_sizes/font_size = 18
 text = "Player Name"
 vertical_alignment = 1
 
-[node name="Guild" type="Label" parent="RowContent"]
-custom_minimum_size = Vector2(60, 0)
+[node name="GuildContainer" type="HBoxContainer" parent="RowContent"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="RowContent/GuildContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="Guild" type="Label" parent="RowContent/GuildContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "1"
-horizontal_alignment = 1
+text = "Mercantile"
 vertical_alignment = 1
 
-[node name="Profession" type="Label" parent="RowContent"]
-custom_minimum_size = Vector2(80, 0)
+[node name="ProfessionContainer" type="HBoxContainer" parent="RowContent"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="RowContent/ProfessionContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="Profession" type="Label" parent="RowContent/ProfessionContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "1"
-horizontal_alignment = 1
+text = "Herbalist"
 vertical_alignment = 1
 
 [node name="Honor" type="Label" parent="RowContent"]

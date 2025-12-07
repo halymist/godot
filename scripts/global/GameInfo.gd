@@ -22,6 +22,41 @@ func get_village_name(location_id: int) -> String:
 	"""Get the village name for a given location ID"""
 	return VILLAGE_NAMES.get(location_id, "Unknown Village")
 
+# Guild names and icons mapping
+const GUILD_DATA = {
+	1: {"name": "Mercantile", "icon": "res://assets/icons/guild_mercantile.png"},
+	2: {"name": "Warriors", "icon": "res://assets/icons/guild_warriors.png"},
+	3: {"name": "Mages", "icon": "res://assets/icons/guild_mages.png"}
+}
+
+func get_guild_name(guild_id: int) -> String:
+	"""Get the guild name for a given guild ID"""
+	var data = GUILD_DATA.get(guild_id, {})
+	return data.get("name", "None")
+
+func get_guild_icon(guild_id: int) -> String:
+	"""Get the guild icon path for a given guild ID"""
+	var data = GUILD_DATA.get(guild_id, {})
+	return data.get("icon", "")
+
+# Profession names and icons mapping
+const PROFESSION_DATA = {
+	1: {"name": "Herbalist", "icon": "res://assets/icons/profession_herbalist.png"},
+	2: {"name": "Blacksmith", "icon": "res://assets/icons/profession_blacksmith.png"},
+	3: {"name": "Enchanter", "icon": "res://assets/icons/profession_enchanter.png"},
+	4: {"name": "Warrior", "icon": "res://assets/icons/profession_warrior.png"}
+}
+
+func get_profession_name(profession_id: int) -> String:
+	"""Get the profession name for a given profession ID"""
+	var data = PROFESSION_DATA.get(profession_id, {})
+	return data.get("name", "None")
+
+func get_profession_icon(profession_id: int) -> String:
+	"""Get the profession icon path for a given profession ID"""
+	var data = PROFESSION_DATA.get(profession_id, {})
+	return data.get("icon", "")
+
 # Signals for UI updates
 signal gold_changed(new_gold)
 signal currency_changed(new_currency)
@@ -593,23 +628,14 @@ class GameCurrentPlayer:
 	
 	# Helper functions to convert IDs to display names
 	func get_guild_name() -> String:
-		match guild:
-			1: return "Mercantile"
-			2: return "Warriors"
-			3: return "Mages"
-			_: return "None"
+		return GameInfo.get_guild_name(guild)
 	
 	func get_rank_name() -> String:
 		# For now always return Novice, later we can add logic based on rank value
 		return "Novice"
 	
 	func get_profession_name() -> String:
-		match profession:
-			1: return "Herbalist"
-			2: return "Blacksmith"
-			3: return "Enchanter"
-			4: return "Warrior"
-			_: return "None"
+		return GameInfo.get_profession_name(profession)
 
 class GameArenaOpponent:
 	extends GamePlayer

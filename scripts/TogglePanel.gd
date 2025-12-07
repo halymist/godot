@@ -145,6 +145,9 @@ func show_panel(panel: Control):
 		settings_panel.visible = false
 	if rankings_panel:
 		rankings_panel.visible = false
+	# Hide enemy panel when switching to other panels
+	if enemy_panel:
+		enemy_panel.visible = false
 	
 	# If switching away from home panel, ensure we're back to village outside view
 	if GameInfo.get_current_panel() == home_panel and panel != home_panel:
@@ -178,6 +181,9 @@ func handle_home_button():
 		settings_panel.visible = false
 	if rankings_panel:
 		rankings_panel.visible = false
+	# Hide enemy panel when going home
+	if enemy_panel:
+		enemy_panel.visible = false
 	
 	# If we're in an interior, exit to village
 	if home_panel.has_method("handle_back_navigation"):
@@ -292,6 +298,14 @@ func go_back():
 	# Priority 2.5: Check if we've arrived at quest (traveling = 0) but haven't finished it yet - show cancel dialog
 	if traveling == 0 and destination != null and current == quest:
 		show_overlay(cancel_quest)
+		return
+
+	# Priority 2.75: Check if current panel is enemy_panel - toggle it off
+	print("Checking enemy_panel: enemy_panel exists=", enemy_panel != null, " current==enemy_panel=", current == enemy_panel)
+	if enemy_panel != null and current == enemy_panel:
+		print("Toggling off enemy panel, returning to rankings")
+		enemy_panel.visible = false
+		GameInfo.set_current_panel(rankings_panel)
 		return
 
 	# Priority 3: Check if we're in any utility panel - hide it and return to home

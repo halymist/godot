@@ -85,7 +85,7 @@
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
-[ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="66_gsm33"]
+[ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="66_gsm33"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -283,7 +283,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -322,6 +322,7 @@ trainer_panel = NodePath("GameScene/Home/TrainerPanel")
 church_panel = NodePath("GameScene/Home/ChurchPanel")
 alchemist_panel = NodePath("GameScene/Home/AlchemistPanel")
 enchanter_panel = NodePath("GameScene/Home/EnchanterPanel")
+enemy_panel = NodePath("GameScene/Enemy")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -2150,7 +2151,6 @@ popup/item_2/text = "Large"
 popup/item_2/id = 2
 
 [node name="Rankings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2725,12 +2725,19 @@ currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
 player_name_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/PlayerName")
 rank_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer/RankLabel")
 guild_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer/GuildLabel")
+guild_icon = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer/Icon")
 profession_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer/ProfessionLabel")
+profession_icon = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer/Icon")
 strength_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer/StrengthLabel")
+strength_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer/Icon")
 stamina_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer/StaminaLabel")
+stamina_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer/Icon")
 agility_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer/AgilityLabel")
+agility_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer/Icon")
 luck_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckContainer/LuckLabel")
+luck_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckContainer/Icon")
 armor_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer/ArmorLabel")
+armor_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer/Icon")
 
 [node name="DetailsAndStats" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats"]
 layout_mode = 1

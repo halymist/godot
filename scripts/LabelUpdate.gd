@@ -5,13 +5,20 @@ extends Control
 @export var player_name_label: Label
 @export var rank_label: Label
 @export var guild_label: Label
+@export var guild_icon: TextureRect
 @export var profession_label: Label
+@export var profession_icon: TextureRect
 @export var talent_points_label: Label
 @export var strength_label: Label
+@export var strength_icon: TextureRect
 @export var stamina_label: Label
+@export var stamina_icon: TextureRect
 @export var agility_label: Label
+@export var agility_icon: TextureRect
 @export var luck_label: Label
+@export var luck_icon: TextureRect
 @export var armor_label: Label
+@export var armor_icon: TextureRect
 
 func _ready():
 	print("LabelUpdate ready!")
@@ -38,7 +45,15 @@ func _on_stats_changed(_stats: Dictionary):
 	player_name_label.text = str(total_stats.name)
 	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
 	guild_label.text = GameInfo.current_player.get_guild_name()
+	if guild_icon:
+		var icon_path = GameInfo.get_guild_icon(GameInfo.current_player.guild)
+		if icon_path and ResourceLoader.exists(icon_path):
+			guild_icon.texture = load(icon_path)
 	profession_label.text = GameInfo.current_player.get_profession_name()
+	if profession_icon:
+		var icon_path = GameInfo.get_profession_icon(GameInfo.current_player.profession)
+		if icon_path and ResourceLoader.exists(icon_path):
+			profession_icon.texture = load(icon_path)
 	if talent_points_label:
 		talent_points_label.text = "TALENT POINTS: " + str(GameInfo.current_player.talent_points)
 	strength_label.text = "STRENGTH: " + str(total_stats.strength)
@@ -53,7 +68,15 @@ func _on_bag_slots_changed():
 	player_name_label.text = str(total_stats.name)
 	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
 	guild_label.text = GameInfo.current_player.get_guild_name()
+	if guild_icon:
+		var icon_path = GameInfo.get_guild_icon(GameInfo.current_player.guild)
+		if icon_path and ResourceLoader.exists(icon_path):
+			guild_icon.texture = load(icon_path)
 	profession_label.text = GameInfo.current_player.get_profession_name()
+	if profession_icon:
+		var icon_path = GameInfo.get_profession_icon(GameInfo.current_player.profession)
+		if icon_path and ResourceLoader.exists(icon_path):
+			profession_icon.texture = load(icon_path)
 	strength_label.text = "STRENGTH: " + str(total_stats.strength)
 	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
 	agility_label.text = "AGILITY: " + str(total_stats.agility)
