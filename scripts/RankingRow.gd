@@ -11,11 +11,9 @@ var honor: int = 0
 var is_selected: bool = false
 
 @onready var rank_label: Label = $RowContent/Rank
-@onready var name_label: Label = $RowContent/PlayerName
-@onready var guild_label: Label = $RowContent/GuildContainer/Guild
-@onready var guild_icon: TextureRect = $RowContent/GuildContainer/Icon
-@onready var profession_label: Label = $RowContent/ProfessionContainer/Profession
-@onready var profession_icon: TextureRect = $RowContent/ProfessionContainer/Icon
+@onready var name_label: Label = $RowContent/NameContainer/PlayerName
+@onready var guild_icon: TextureRect = $RowContent/NameContainer/GuildIcon
+@onready var profession_icon: TextureRect = $RowContent/NameContainer/ProfessionIcon
 @onready var honor_label: Label = $RowContent/Honor
 @onready var click_button: Button = $ClickButton
 
@@ -41,14 +39,10 @@ func update_display():
 		rank_label.text = str(rank)
 	if name_label:
 		name_label.text = player_name
-	if guild_label:
-		guild_label.text = GameInfo.get_guild_name(guild)
 	if guild_icon:
 		var icon_path = GameInfo.get_guild_icon(guild)
 		if icon_path and ResourceLoader.exists(icon_path):
 			guild_icon.texture = load(icon_path)
-	if profession_label:
-		profession_label.text = GameInfo.get_profession_name(profession)
 	if profession_icon:
 		var icon_path = GameInfo.get_profession_icon(profession)
 		if icon_path and ResourceLoader.exists(icon_path):
