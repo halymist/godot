@@ -975,13 +975,4 @@ var mock_quest_slides = []
 var mock_enchanter_effects = [4, 5, 6, 7]  # Effect IDs available for enchanting
 
 # Mock vendor items data - items available for purchase (order doesn't matter)
-var mock_vendor_items = [
-	{"id": 1},
-	{"id": 1},
-	{"id": 1},
-	{"id": 1},
-	{"id": 1},
-	{"id": 1},
-	{"id": 1},
-	{"id": 1}
-]
+var mock_vendor_items = [1, 1, 1, 1, 1, 1, 1, 1]

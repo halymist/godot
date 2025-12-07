@@ -5,10 +5,12 @@ extends Panel
 @export var player_card: Panel
 @export var search_input: LineEdit
 @export var ranking_row_scene: PackedScene
+@export var enemy_panel: Control
 
 @onready var table_content: VBoxContainer
 @onready var player_name_label: Label
 @onready var fight_button: Button
+@onready var character_button: Button
 
 var selected_row = null
 var stat_nodes = []
@@ -23,6 +25,13 @@ func _ready():
 		var card_content = player_card.get_node("CardContent")
 		var player_info = card_content.get_node("PlayerInfo")
 		player_name_label = player_info.get_node("PlayerName")
+		
+		# Get character button
+		var character_container = card_content.get_node("Character")
+		if character_container:
+			character_button = character_container.get_node("Button")
+			if character_button:
+				character_button.pressed.connect(_on_character_button_pressed)
 		
 		# Get all stat nodes from StatsGrid
 		var stats_grid = player_info.get_node("StatsGrid")
@@ -106,3 +115,9 @@ func _on_fight_pressed():
 func _on_search_changed(new_text: String):
 	# TODO: Filter rankings based on search text
 	print("Search: ", new_text)
+
+func _on_character_button_pressed():
+	if enemy_panel:
+		enemy_panel.visible = !enemy_panel.visible
+		if enemy_panel.visible:
+			GameInfo.set_current_panel(enemy_panel)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=112 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -84,6 +84,8 @@
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="47_a2m5q"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
+[ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
+[ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="66_gsm33"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -2147,7 +2149,7 @@ popup/item_1/id = 1
 popup/item_2/text = "Large"
 popup/item_2/id = 2
 
-[node name="Rankings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input")]
+[node name="Rankings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -2161,6 +2163,7 @@ rankings_table = NodePath("MainContainer/TableScroll")
 player_card = NodePath("MainContainer/PlayerCard")
 search_input = NodePath("MainContainer/SearchBar/SearchInput")
 ranking_row_scene = ExtResource("36_ranking_row")
+enemy_panel = NodePath("../Enemy")
 
 [node name="MainContainer" type="VBoxContainer" parent="Portrait/GameScene/Rankings"]
 layout_mode = 1
@@ -2720,14 +2723,14 @@ script = ExtResource("10_mg4q0")
 gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Gold")
 currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
 player_name_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/PlayerName")
-rank_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/RankLabel")
-guild_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildLabel")
-profession_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionLabel")
-strength_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthLabel")
-stamina_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaLabel")
-agility_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityLabel")
-luck_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckLabel")
-armor_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorLabel")
+rank_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer/RankLabel")
+guild_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer/GuildLabel")
+profession_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer/ProfessionLabel")
+strength_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer/StrengthLabel")
+stamina_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer/StaminaLabel")
+agility_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer/AgilityLabel")
+luck_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckContainer/LuckLabel")
+armor_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer/ArmorLabel")
 
 [node name="DetailsAndStats" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats"]
 layout_mode = 1
@@ -2759,7 +2762,15 @@ theme_override_font_sizes/font_size = 22
 text = "Name"
 vertical_alignment = 1
 
-[node name="RankLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+[node name="RankContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="RankLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -2767,7 +2778,17 @@ theme_override_font_sizes/font_size = 18
 text = "Novice (20165)"
 vertical_alignment = 1
 
-[node name="GuildLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+[node name="GuildContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("66_gsm33")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuildLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -2775,7 +2796,15 @@ theme_override_font_sizes/font_size = 18
 text = "Mercantile"
 vertical_alignment = 1
 
-[node name="ProfessionLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+[node name="ProfessionContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="ProfessionLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -2802,7 +2831,17 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 2
 
-[node name="StrengthLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="StrengthContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("44_k8ojv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StrengthLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -2810,7 +2849,17 @@ theme_override_font_sizes/font_size = 22
 text = "Strength: 10"
 vertical_alignment = 1
 
-[node name="StaminaLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="StaminaContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("46_gsm33")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StaminaLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -2818,7 +2867,17 @@ theme_override_font_sizes/font_size = 22
 text = "Stamina: 10"
 vertical_alignment = 1
 
-[node name="AgilityLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="AgilityContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("66_7sqp1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AgilityLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -2826,7 +2885,17 @@ theme_override_font_sizes/font_size = 22
 text = "Agility: 10"
 vertical_alignment = 1
 
-[node name="LuckLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="LuckContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/LuckContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("47_lrctp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LuckLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/LuckContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")
@@ -2834,7 +2903,17 @@ theme_override_font_sizes/font_size = 22
 text = "Luck: 10"
 vertical_alignment = 1
 
-[node name="ArmorLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="ArmorContainer" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("45_7sqp1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ArmorLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.8, 1)
 theme_override_fonts/font = ExtResource("8_exi56")

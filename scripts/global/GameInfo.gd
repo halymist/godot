@@ -821,8 +821,8 @@ func load_combat_logs_data(combat_data: Array):
 func load_vendor_items_data(vendor_data: Array):
 	vendor_items.clear()
 	print("Loading vendor_items: ", vendor_data.size(), " items found")
-	for item_data in vendor_data:
-		var item = Item.new(item_data)
+	for item_id in vendor_data:
+		var item = Item.new({"id": item_id})
 		print("  Loaded vendor item: ", item.item_name)
 		vendor_items.append(item)
 
