@@ -1,4 +1,4 @@
-[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=113 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -85,7 +85,6 @@
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
-[ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="66_gsm33"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -2151,6 +2150,7 @@ popup/item_2/text = "Large"
 popup/item_2/id = 2
 
 [node name="Rankings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2418,7 +2418,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2709,7 +2708,7 @@ script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 tooltip_panel = NodePath("../../../../PerkTooltip")
 
-[node name="Stats" type="Panel" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "rank_label", "guild_label", "profession_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
+[node name="Stats" type="Panel" parent="Portrait/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "rank_label", "guild_label", "guild_icon", "profession_label", "profession_icon", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -2729,15 +2728,10 @@ guild_icon = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildContain
 profession_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer/ProfessionLabel")
 profession_icon = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer/Icon")
 strength_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer/StrengthLabel")
-strength_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer/Icon")
 stamina_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer/StaminaLabel")
-stamina_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer/Icon")
 agility_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer/AgilityLabel")
-agility_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer/Icon")
 luck_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckContainer/LuckLabel")
-luck_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckContainer/Icon")
 armor_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer/ArmorLabel")
-armor_icon = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer/Icon")
 
 [node name="DetailsAndStats" type="HBoxContainer" parent="Portrait/GameScene/Character/Stats"]
 layout_mode = 1
@@ -2791,7 +2785,6 @@ layout_mode = 2
 [node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("66_gsm33")
 expand_mode = 1
 stretch_mode = 5
 
@@ -2809,6 +2802,7 @@ layout_mode = 2
 [node name="Icon" type="TextureRect" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+expand_mode = 1
 stretch_mode = 5
 
 [node name="ProfessionLabel" type="Label" parent="Portrait/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer"]

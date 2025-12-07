@@ -24,9 +24,9 @@ func get_village_name(location_id: int) -> String:
 
 # Guild names and icons mapping
 const GUILD_DATA = {
-	1: {"name": "Mercantile", "icon": "res://assets/icons/guild_mercantile.png"},
-	2: {"name": "Warriors", "icon": "res://assets/icons/guild_warriors.png"},
-	3: {"name": "Mages", "icon": "res://assets/icons/guild_mages.png"}
+	1: {"name": "Mercantile", "icon": "res://assets/images/ui/merchant.png"},
+	2: {"name": "Faithfull", "icon": "res://assets/images/ui/faith.png"},
+	3: {"name": "Fighters", "icon": "res://assets/images/ui/fighters.png"}
 }
 
 func get_guild_name(guild_id: int) -> String:
@@ -41,10 +41,10 @@ func get_guild_icon(guild_id: int) -> String:
 
 # Profession names and icons mapping
 const PROFESSION_DATA = {
-	1: {"name": "Herbalist", "icon": "res://assets/icons/profession_herbalist.png"},
-	2: {"name": "Blacksmith", "icon": "res://assets/icons/profession_blacksmith.png"},
-	3: {"name": "Enchanter", "icon": "res://assets/icons/profession_enchanter.png"},
-	4: {"name": "Warrior", "icon": "res://assets/icons/profession_warrior.png"}
+	1: {"name": "Herbalist", "icon": "res://assets/images/ui/merchant.png"},
+	2: {"name": "Blacksmith", "icon": "res://assets/images/ui/merchant.png"},
+	3: {"name": "Enchanter", "icon": "res://assets/images/ui/merchant.png"},
+	4: {"name": "Warrior", "icon": "res://assets/images/ui/merchant.png"}
 }
 
 func get_profession_name(profession_id: int) -> String:
@@ -628,14 +628,23 @@ class GameCurrentPlayer:
 	
 	# Helper functions to convert IDs to display names
 	func get_guild_name() -> String:
-		return GameInfo.get_guild_name(guild)
+		match guild:
+			1: return "Mercantile"
+			2: return "Warriors"
+			3: return "Mages"
+			_: return "None"
 	
 	func get_rank_name() -> String:
 		# For now always return Novice, later we can add logic based on rank value
 		return "Novice"
 	
 	func get_profession_name() -> String:
-		return GameInfo.get_profession_name(profession)
+		match profession:
+			1: return "Herbalist"
+			2: return "Blacksmith"
+			3: return "Enchanter"
+			4: return "Warrior"
+			_: return "None"
 
 class GameArenaOpponent:
 	extends GamePlayer

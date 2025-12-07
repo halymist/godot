@@ -10,15 +10,10 @@ extends Control
 @export var profession_icon: TextureRect
 @export var talent_points_label: Label
 @export var strength_label: Label
-@export var strength_icon: TextureRect
 @export var stamina_label: Label
-@export var stamina_icon: TextureRect
 @export var agility_label: Label
-@export var agility_icon: TextureRect
 @export var luck_label: Label
-@export var luck_icon: TextureRect
 @export var armor_label: Label
-@export var armor_icon: TextureRect
 
 func _ready():
 	print("LabelUpdate ready!")
@@ -52,8 +47,12 @@ func _on_stats_changed(_stats: Dictionary):
 	profession_label.text = GameInfo.current_player.get_profession_name()
 	if profession_icon:
 		var icon_path = GameInfo.get_profession_icon(GameInfo.current_player.profession)
+		print("Loading profession icon: ", icon_path)
 		if icon_path and ResourceLoader.exists(icon_path):
 			profession_icon.texture = load(icon_path)
+			print("Profession icon loaded successfully")
+		else:
+			print("Profession icon file not found: ", icon_path)
 	if talent_points_label:
 		talent_points_label.text = "TALENT POINTS: " + str(GameInfo.current_player.talent_points)
 	strength_label.text = "STRENGTH: " + str(total_stats.strength)
