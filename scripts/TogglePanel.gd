@@ -32,6 +32,7 @@ extends Control
 @export var church_panel: Control
 @export var alchemist_panel: Control
 @export var enchanter_panel: Control
+@export var enemy_panel: Control
 
 
 func _ready():
