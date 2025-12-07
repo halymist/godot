@@ -54,25 +54,24 @@ func populate_rankings():
 	for child in table_content.get_children():
 		child.queue_free()
 	
-	# TODO: Populate with actual ranking data
-	# For now, create placeholder rows
-	for i in range(20):
-		var row = create_ranking_row(i + 1, "Player" + str(i + 1), 1000 - (i * 50))
+	# Populate with rankings from GameInfo
+	for entry in GameInfo.rankings:
+		var row = create_ranking_row(entry)
 		if row:
 			table_content.add_child(row)
 
-func create_ranking_row(rank: int, p_player_name: String, p_rating: int):
+func create_ranking_row(entry: GameInfo.RankingEntry):
 	if not ranking_row_scene:
 		print("Warning: ranking_row_scene not set in RankingsPanel")
 		return null
 	
 	var row = ranking_row_scene.instantiate()
-	row.set_data(rank, p_player_name, p_rating)
+	row.set_data(entry.rank, entry.name, entry.guild, entry.profession, entry.honor)
 	row.row_clicked.connect(_on_row_clicked)
 	return row
 
-func _on_row_clicked(rank: int, player_name: String, rating: int):
-	print("Clicked on player: ", player_name, " Rank: ", rank, " Rating: ", rating)
+func _on_row_clicked(rank: int, player_name: String, guild: int, profession: int, honor: int):
+	print("Clicked on player: ", player_name, " Rank: ", rank, " Guild: ", guild, " Profession: ", profession, " Honor: ", honor)
 	
 	# Deselect previous row
 	if selected_row and is_instance_valid(selected_row):
@@ -86,14 +85,14 @@ func _on_row_clicked(rank: int, player_name: String, rating: int):
 				selected_row = child
 				break
 	
-	update_player_card(rank, player_name, rating)
+	update_player_card(rank, player_name, guild, profession, honor)
 
-func update_player_card(rank: int, player_name: String, rating: int):
+func update_player_card(rank: int, player_name: String, guild: int, profession: int, honor: int):
 	if player_name_label:
 		player_name_label.text = player_name
 	
-	# TODO: Update with actual player stats
-	# For now, set placeholder values
+	# TODO: Update with actual player stats when we load full player data
+	# For now, set placeholder values based on rank
 	for i in range(stat_nodes.size()):
 		if i < stat_nodes.size():
 			var value_label = stat_nodes[i].get_node("Value")

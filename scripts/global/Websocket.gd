@@ -2,12 +2,25 @@ extends Node
 
 func _ready():
 	print("Websocket ready!")
+	
+	# Generate 100 mock ranking entries
+	for i in range(1, 101):
+		mock_rankings.append({
+			"name": "Player" + str(i),
+			"rank": i,
+			"guild": (i % 3) + 1,  # Distribute across 3 guilds
+			"profession": (i % 3) + 1,  # 3 professions
+			"honor": 10000 - (i * 50)  # Higher rank = higher honor
+		})
 
 # Mock quest log data - tracks quest completion status
 var mock_quest_log = [
 	# Example: {"quest_id": 1, "slides": [1, 2, 4], "finished": true}
 	# Empty array means no quests completed yet
 ]
+
+# Mock rankings data (lightweight - sent on rankings panel open)
+var mock_rankings = []
 
 # Mock data for development/testing
 var mock_character_data = {

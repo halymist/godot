@@ -32,6 +32,7 @@ signal current_panel_changed(new_panel)
 signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
 signal npc_clicked(npc) # Global NPC click signal
 signal quest_completed(quest_id) # Emitted when a quest is marked as completed
+signal rankings_loaded # Emitted when rankings data is loaded
 
 # Inner Classes - Single source of truth
 
@@ -248,6 +249,23 @@ class Talent:
 		"talent_id": "talent_id",
 		"points": "points"
 	}
+
+# Ranking Entry for lightweight rankings display
+class RankingEntry:
+	extends RefCounted
+	
+	var name: String = ""
+	var rank: int = 0
+	var guild: int = 0
+	var profession: int = 0
+	var honor: int = 0
+	
+	func _init(data: Dictionary = {}):
+		name = data.get("name", "")
+		rank = data.get("rank", 0)
+		guild = data.get("guild", 0)
+		profession = data.get("profession", 0)
+		honor = data.get("honor", 0)
 
 class QuestOption:
 	extends MessagePackObject
@@ -639,6 +657,7 @@ var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
 var npcs: Array[Dictionary] = []
 var vendor_items: Array[Item] = []
+var rankings: Array[RankingEntry] = []  # Rankings list (lightweight data)
 
 # Quest system
 var quest_slides: Dictionary = {}  # questID -> Array[QuestSlide]
@@ -698,6 +717,7 @@ func _ready():
 	load_player_data(Websocket.mock_character_data)
 	load_arena_opponents_data(Websocket.mock_arena_opponents)
 	load_chat_messages_data(Websocket.mock_chat_messages)
+	load_rankings_data(Websocket.mock_rankings)
 	load_combat_logs_data(Websocket.mock_combat_logs)
 	load_vendor_items_data(Websocket.mock_vendor_items)
 	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
@@ -805,6 +825,15 @@ func load_vendor_items_data(vendor_data: Array):
 		var item = Item.new(item_data)
 		print("  Loaded vendor item: ", item.item_name)
 		vendor_items.append(item)
+
+func load_rankings_data(rankings_data: Array):
+	rankings.clear()
+	for entry_data in rankings_data:
+		var entry = RankingEntry.new(entry_data)
+		rankings.append(entry)
+	print("Loaded ", rankings.size(), " ranking entries")
+	rankings_loaded.emit()
+
 # Function to load quest slides by quest ID
 func load_quest_slides_data(quest_id: int, slides_data: Array):
 	var slides_array: Array[QuestSlide] = []

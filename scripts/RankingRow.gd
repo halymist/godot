@@ -1,16 +1,20 @@
 @tool
 extends Panel
 
-signal row_clicked(rank: int, player_name: String, rating: int)
+signal row_clicked(rank: int, player_name: String, guild: int, profession: int, honor: int)
 
 var rank: int = 0
 var player_name: String = ""
-var rating: int = 0
+var guild: int = 0
+var profession: int = 0
+var honor: int = 0
 var is_selected: bool = false
 
 @onready var rank_label: Label = $RowContent/Rank
 @onready var name_label: Label = $RowContent/PlayerName
-@onready var rating_label: Label = $RowContent/Rating
+@onready var guild_label: Label = $RowContent/Guild
+@onready var profession_label: Label = $RowContent/Profession
+@onready var honor_label: Label = $RowContent/Honor
 @onready var click_button: Button = $ClickButton
 
 func _ready():
@@ -22,10 +26,12 @@ func _ready():
 	
 	update_display()
 
-func set_data(p_rank: int, p_player_name: String, p_rating: int):
+func set_data(p_rank: int, p_player_name: String, p_guild: int, p_profession: int, p_honor: int):
 	rank = p_rank
 	player_name = p_player_name
-	rating = p_rating
+	guild = p_guild
+	profession = p_profession
+	honor = p_honor
 	update_display()
 
 func update_display():
@@ -33,8 +39,12 @@ func update_display():
 		rank_label.text = str(rank)
 	if name_label:
 		name_label.text = player_name
-	if rating_label:
-		rating_label.text = str(rating)
+	if guild_label:
+		guild_label.text = str(guild)
+	if profession_label:
+		profession_label.text = str(profession)
+	if honor_label:
+		honor_label.text = str(honor)
 
 func set_selected(selected: bool):
 	is_selected = selected
@@ -44,4 +54,4 @@ func set_selected(selected: bool):
 		modulate = Color(1.0, 1.0, 1.0)  # Normal color
 
 func _on_clicked():
-	row_clicked.emit(rank, player_name, rating)
+	row_clicked.emit(rank, player_name, guild, profession, honor)
