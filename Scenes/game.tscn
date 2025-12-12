@@ -291,9 +291,9 @@ talents_button = NodePath("GameScene/Character/Talents/Button")
 talents_panel = NodePath("GameScene/Talents")
 map_button = NodePath("BottomUI/Buttons/Map/Button")
 map_panel = NodePath("GameScene/Map")
-back_button = NodePath("TopUI/HBoxContainer/ButtonsContainer/Back/BackButton")
-settings_button = NodePath("TopUI/HBoxContainer/ButtonsContainer/Settings/SettingsButton")
-rankings_button = NodePath("TopUI/HBoxContainer/VBoxContainer/Rankings/RankingsButton")
+back_button = NodePath("TopUI/BackButton")
+settings_button = NodePath("TopUI/SettingsButton")
+rankings_button = NodePath("TopUI/HBoxContainer/VBoxContainer/AspectRatioContainer/RankingsButton")
 chat_button = NodePath("BottomUI/Buttons/Chat/Button")
 chat_panel = NodePath("GameScene/ChatOverlay")
 combat_panel = NodePath("GameScene/Combat")
@@ -326,18 +326,18 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 [node name="HBoxContainer" type="HBoxContainer" parent="Portrait/TopUI"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.025
-anchor_top = 0.1
-anchor_right = 0.975
-anchor_bottom = 0.9
-grow_horizontal = 2
-grow_vertical = 2
+anchor_right = 0.7
+anchor_bottom = 0.8
+offset_left = 10.0
+offset_top = 10.0
+offset_bottom = -10.0
+scale = Vector2(1, 1.00714)
 
 [node name="Character" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-alignment_horizontal = 0
+size_flags_stretch_ratio = 2.5
+alignment_vertical = 0
 
 [node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Character"]
 layout_mode = 2
@@ -360,47 +360,71 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "Gold: "
 
-[node name="LocationLabel" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-text = "Krasna Ves"
-vertical_alignment = 1
-
-[node name="Rankings" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
 alignment_horizontal = 0
 
-[node name="RankingsButton" type="Button" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/Rankings"]
+[node name="RankingsButton" type="Button" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/AspectRatioContainer"]
+custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("13_fkdbe")
+alignment = 0
+icon_alignment = 2
+vertical_icon_alignment = 0
 expand_icon = true
 
-[node name="ButtonsContainer" type="VBoxContainer" parent="Portrait/TopUI/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Settings" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="SettingsButton" type="Button" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer/Settings"]
-layout_mode = 2
+[node name="SettingsButton" type="Button" parent="Portrait/TopUI"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 10.0
+offset_right = -10.0
+grow_horizontal = 0
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("5_settings")
 expand_icon = true
 
-[node name="Back" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="BackButton" type="Button" parent="Portrait/TopUI/HBoxContainer/ButtonsContainer/Back"]
-layout_mode = 2
+[node name="BackButton" type="Button" parent="Portrait/TopUI"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
 expand_icon = true
+
+[node name="Panel" type="Panel" parent="Portrait/TopUI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.8
+anchor_right = 0.7
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="LocationLabel" type="Label" parent="Portrait/TopUI/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+text = "Krasna Ves"
+vertical_alignment = 1
 
 [node name="GameScene" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -420,7 +444,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_feb5d")
 script = ExtResource("20_village")
 villages_container = NodePath("VillagesContainer")
-location_label = NodePath("../../TopUI/HBoxContainer/VBoxContainer/LocationLabel")
+location_label = NodePath("../../TopUI/Panel/LocationLabel")
 quest_panel = NodePath("QuestAccept")
 quest_slide_panel = NodePath("../../Quest")
 map_panel = NodePath("../Map")
