@@ -248,8 +248,9 @@ func clear_slot():
 
 func update_slot_appearance():
 	var is_empty = is_slot_empty()
+	# Only show outline when empty AND outline_texture is set (equipment slots)
 	if item_outline:
-		item_outline.visible = is_empty
+		item_outline.visible = is_empty and outline_texture != null
 
 func get_item_data() -> GameInfo.Item:
 	if not is_slot_empty():

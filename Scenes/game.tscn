@@ -2412,27 +2412,24 @@ alignment = 1
 
 [node name="HeadSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
 outline_texture = ExtResource("9_helmet")
 slot_type = "Head"
 
 [node name="ChestSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
 outline_texture = ExtResource("9_chest")
 slot_type = "Chest"
 slot_id = 1
 
 [node name="HandSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
 outline_texture = ExtResource("9_gloves")
 slot_type = "Hand"
 slot_id = 2
 
 [node name="ShoeSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 6
 outline_texture = ExtResource("9_shoes")
 slot_type = "Foot"
 slot_id = 3
@@ -2465,28 +2462,24 @@ alignment = 1
 
 [node name="BeltSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
 outline_texture = ExtResource("9_nnt18")
 slot_type = "Belt"
 slot_id = 4
 
 [node name="LegSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
 outline_texture = ExtResource("9_pants")
 slot_type = "Legs"
 slot_id = 5
 
 [node name="RingSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
 outline_texture = ExtResource("9_ring")
 slot_type = "Ring"
 slot_id = 6
 
 [node name="AmuletSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
 outline_texture = ExtResource("9_amulet")
 slot_type = "Amulet"
 slot_id = 7
