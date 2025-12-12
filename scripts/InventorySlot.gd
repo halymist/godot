@@ -237,14 +237,19 @@ func place_item_in_slot(item_data: GameInfo.Item):
 	new_item.set_item_data(item_data)
 	add_child(new_item)
 	
-	update_slot_appearance()
+	# Hide outline when item is placed
+	if item_outline:
+		item_outline.visible = false
 
 func clear_slot():
 	# Clear all children except Background and Outline
 	for child in get_children():
 		if child != slot_background and child != item_outline:
 			child.queue_free()
-	update_slot_appearance()
+	
+	# Show outline immediately for equipment slots (don't wait for queue_free)
+	if item_outline and outline_texture:
+		item_outline.visible = true
 
 func update_slot_appearance():
 	var is_empty = is_slot_empty()
