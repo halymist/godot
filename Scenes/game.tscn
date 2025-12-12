@@ -1163,6 +1163,7 @@ offset_bottom = 630.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/VendorPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 anchors_preset = 15
 anchor_top = 0.0
@@ -1296,6 +1297,7 @@ offset_bottom = 630.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/BlacksmithPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 anchors_preset = 15
 anchor_top = 0.0
@@ -1771,6 +1773,7 @@ offset_bottom = 630.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/AlchemistPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 anchors_preset = 15
 anchor_top = 0.0
@@ -1910,6 +1913,7 @@ offset_bottom = 630.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
 
 [node name="Bag" parent="Portrait/GameScene/Home/EnchanterPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 anchors_preset = 15
 anchor_top = 0.0
@@ -2379,7 +2383,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2646,6 +2649,7 @@ slot_type = "Amulet"
 slot_id = 7
 
 [node name="Bag" parent="Portrait/GameScene/Character" instance=ExtResource("20_6xvgv")]
+custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 
 [node name="ActivePerksBackground" type="Panel" parent="Portrait/GameScene/Character"]
