@@ -1,4 +1,4 @@
-[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=113 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -107,16 +107,6 @@ corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bag_panel"]
-bg_color = Color(0.15, 0.12, 0.08, 0.95)
-border_width_left = 2
-border_width_top = 3
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.5, 0.4, 0.25, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
 bg_color = Color(0.08, 0.05, 0.15, 0.85)
@@ -1156,18 +1146,9 @@ script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_id = 112
 
-[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/VendorPanel"]
-layout_mode = 0
-offset_top = 564.0
-offset_right = 450.0
-offset_bottom = 630.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
-
-[node name="Bag" parent="Portrait/GameScene/Home/VendorPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/Home/VendorPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-anchors_preset = 15
-anchor_top = 0.0
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameScene/Home"]
 visible = false
@@ -1204,7 +1185,7 @@ expand_mode = 1
 layout_mode = 0
 offset_top = 300.0
 offset_right = 450.0
-offset_bottom = 564.0
+offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel"]
 layout_mode = 1
@@ -1290,18 +1271,9 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 text = "Temper (10 Gold)"
 
-[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/BlacksmithPanel"]
-layout_mode = 0
-offset_top = 564.0
-offset_right = 450.0
-offset_bottom = 630.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
-
-[node name="Bag" parent="Portrait/GameScene/Home/BlacksmithPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/Home/BlacksmithPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-anchors_preset = 15
-anchor_top = 0.0
 
 [node name="TrainerPanel" type="Panel" parent="Portrait/GameScene/Home"]
 visible = false
@@ -1638,7 +1610,7 @@ expand_mode = 1
 layout_mode = 0
 offset_top = 300.0
 offset_right = 450.0
-offset_bottom = 564.0
+offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel"]
 layout_mode = 1
@@ -1766,18 +1738,9 @@ layout_mode = 2
 disabled = true
 text = "Brew Elixir (10g)"
 
-[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/AlchemistPanel"]
-layout_mode = 0
-offset_top = 564.0
-offset_right = 450.0
-offset_bottom = 630.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
-
-[node name="Bag" parent="Portrait/GameScene/Home/AlchemistPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/Home/AlchemistPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-anchors_preset = 15
-anchor_top = 0.0
 
 [node name="EnchanterPanel" type="Panel" parent="Portrait/GameScene/Home"]
 visible = false
@@ -1814,7 +1777,7 @@ expand_mode = 1
 layout_mode = 0
 offset_top = 300.0
 offset_right = 450.0
-offset_bottom = 564.0
+offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel"]
 layout_mode = 1
@@ -1906,18 +1869,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PlayerBagPanel" type="Panel" parent="Portrait/GameScene/Home/EnchanterPanel"]
-layout_mode = 0
-offset_top = 564.0
-offset_right = 450.0
-offset_bottom = 630.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_bag_panel")
-
-[node name="Bag" parent="Portrait/GameScene/Home/EnchanterPanel/PlayerBagPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/Home/EnchanterPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-anchors_preset = 15
-anchor_top = 0.0
 
 [node name="Settings" type="Panel" parent="Portrait/GameScene"]
 visible = false
@@ -2384,6 +2338,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

@@ -5,14 +5,15 @@
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="3_itemslot"]
 
 [node name="Bag" type="HBoxContainer" node_paths=PackedStringArray("inventory_slots")]
-anchors_preset = -1
-anchor_top = 0.88
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -85.0
 grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 alignment = 1
 script = ExtResource("1_57iao")
 inventory_slots = [NodePath("Bag1"), NodePath("Bag2"), NodePath("Bag3"), NodePath("Bag4"), NodePath("Bag5")]

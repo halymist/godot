@@ -18,9 +18,9 @@ func _process(_delta):
 func _update_layout():
 	var background_container = get_node_or_null("UtilityBackground")
 	var items_panel = get_node_or_null("ItemsPanel")
-	var player_bag_panel = get_node_or_null("PlayerBagPanel")
+	var bag = get_node_or_null("Bag")
 	
-	if not background_container or not items_panel or not player_bag_panel:
+	if not background_container or not items_panel or not bag:
 		return
 	
 	# Get available size
@@ -32,18 +32,13 @@ func _update_layout():
 	background_container.size = Vector2(panel_width, bg_height)
 	background_container.position = Vector2(0, 0)
 	
-	# Remaining height after background
-	var remaining_height = panel_height - bg_height
+	# Bag: position at bottom, uses its natural size
+	bag.position = Vector2(0, panel_height - bag.size.y)
 	
-	# Items panel: 80% of remaining height
-	var items_height = remaining_height * 0.8
+	# Items panel: gets remaining space between background and bag
+	var items_height = panel_height - (bg_height + bag.size.y)
 	items_panel.size = Vector2(panel_width, items_height)
 	items_panel.position = Vector2(0, bg_height)
-	
-	# Player bag panel: 20% of remaining height
-	var bag_height = remaining_height * 0.2
-	player_bag_panel.size = Vector2(panel_width, bag_height)
-	player_bag_panel.position = Vector2(0, bg_height + items_height)
 
 func set_location_texture(location: int):
 	var background_texture = get_node_or_null("UtilityBackground/Background")
