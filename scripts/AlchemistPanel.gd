@@ -10,7 +10,7 @@ const SLOT_3 = 103
 
 # Node references
 @onready var result_preview = $ItemsPanel/Content/ResultPreview
-@onready var brew_button = $ItemsPanel/Content/BrewButton
+@onready var brew_button = $ItemsPanel/Content/BottomRow/BrewButton
 
 func _ready():
 	super._ready()
@@ -62,9 +62,9 @@ func return_ingredients_to_bag():
 	
 	# Clear the visual slots
 	var slot_containers = [
-		$ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1/SlotContainer,
-		$ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2/SlotContainer,
-		$ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3/SlotContainer
+		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot1,
+		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot2,
+		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot3
 	]
 	
 	for container in slot_containers:
@@ -195,9 +195,9 @@ func _on_brew_button_pressed():
 func clear_ingredient_slots():
 	# Clear all three ingredient slot visuals
 	var slot_containers = [
-		$ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1/SlotContainer,
-		$ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2/SlotContainer,
-		$ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3/SlotContainer
+		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot1,
+		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot2,
+		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot3
 	]
 	
 	for container in slot_containers:

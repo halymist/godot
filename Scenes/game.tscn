@@ -1446,68 +1446,74 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 0
-text = "The alchemist can brew powerful elixirs from ingrediets"
+text = "The alchemist can brew powerful elixirs from ingrediets. Comsdfsdfsdfs sfsdfsf s dsafsadf  safsdfasf as  fssaf"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="BrewingContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
+[node name="ResultPreview" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 2.0
+text = "Elixir Effects: None"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="BottomRow" type="HBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
+[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_horizontal = 3
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Slot1" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot1" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 101
 
-[node name="Plus1" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+[node name="Plus1" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot2" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot2" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 102
 
-[node name="Plus2" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
+[node name="Plus2" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot3" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot3" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 103
 
-[node name="ResultPreview" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
-custom_minimum_size = Vector2(0, 60)
+[node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-text = "Elixir Effects: None"
-autowrap_mode = 2
-
-[node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
-custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 disabled = true
-text = "Brew Elixir (10g)"
+text = "Brew (10g)"
 
 [node name="Bag" parent="Portrait/GameScene/Home/AlchemistPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
