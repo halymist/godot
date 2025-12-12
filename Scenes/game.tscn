@@ -1,4 +1,4 @@
-[gd_scene load_steps=113 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ho4facjk62r8" path="res://assets/images/ui/settings.png" id="5_settings"]
 [ext_resource type="Script" path="res://scripts/CharacterConsumableSlot.gd" id="6_consumable"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_iivbl"]
+[ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="6_itemslot"]
 [ext_resource type="PackedScene" uid="uid://d3fba85yq0umu" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="Texture2D" uid="uid://d3gicqboh0qna" path="res://assets/images/villages/village3.png" id="7_6a4tp"]
 [ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
@@ -14,7 +15,15 @@
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
 [ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="9_7t8sx"]
+[ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="9_amulet"]
+[ext_resource type="Texture2D" uid="uid://54fu6pfqynod" path="res://assets/images/ui/chest_outline.png" id="9_chest"]
+[ext_resource type="Texture2D" uid="uid://ptj6j3cf4d76" path="res://assets/images/ui/gloves_outline.png" id="9_gloves"]
+[ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="9_helmet"]
 [ext_resource type="Texture2D" uid="uid://btgcwrcimqh8b" path="res://assets/images/ui/belt_outline.png" id="9_nnt18"]
+[ext_resource type="Texture2D" uid="uid://b13lm15co82og" path="res://assets/images/ui/pants_outline.png" id="9_pants"]
+[ext_resource type="Texture2D" uid="uid://mui2o1egfipm" path="res://assets/images/ui/ring_outline.png" id="9_ring"]
+[ext_resource type="Texture2D" uid="uid://b0w36ybd8s4jl" path="res://assets/images/ui/shoes_outline.png" id="9_shoes"]
+[ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="9_sword"]
 [ext_resource type="PackedScene" path="res://Scenes/Utility.tscn" id="10_32sfa"]
 [ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="10_mg4q0"]
 [ext_resource type="Texture2D" uid="uid://d4eq827d0dkdd" path="res://assets/images/villages/tavern_interrior.png" id="11_631el"]
@@ -66,22 +75,14 @@
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
-[ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="38_jcn4n"]
 [ext_resource type="Texture2D" uid="uid://dydlyg2ehudyl" path="res://assets/images/villages/enchanter.png" id="39_ckj55"]
-[ext_resource type="Texture2D" uid="uid://54fu6pfqynod" path="res://assets/images/ui/chest_outline.png" id="39_sfx3s"]
 [ext_resource type="Script" uid="uid://rk346721f3le" path="res://scripts/SquareContent.gd" id="39_square"]
-[ext_resource type="Texture2D" uid="uid://ptj6j3cf4d76" path="res://assets/images/ui/gloves_outline.png" id="40_p5qon"]
 [ext_resource type="Texture2D" uid="uid://jwddckmt0kna" path="res://assets/images/villages/enchanter2.png" id="40_q8b24"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
-[ext_resource type="Texture2D" uid="uid://b0w36ybd8s4jl" path="res://assets/images/ui/shoes_outline.png" id="41_gyste"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
-[ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="44_p3b6d"]
 [ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="45_7sqp1"]
-[ext_resource type="Texture2D" uid="uid://b13lm15co82og" path="res://assets/images/ui/pants_outline.png" id="45_bchkn"]
-[ext_resource type="Texture2D" uid="uid://mui2o1egfipm" path="res://assets/images/ui/ring_outline.png" id="46_ff75x"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
-[ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="47_a2m5q"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
@@ -2400,7 +2401,7 @@ anchor_bottom = 0.88
 grow_horizontal = 2
 alignment = 1
 script = ExtResource("6_iivbl")
-inventory_slots = [NodePath("Left/HeadSlot/Head"), NodePath("Left/ChestSlot/Chest"), NodePath("Left/HandSlot/Gloves"), NodePath("Left/ShoeSlot/Shoes"), NodePath("Right/BeltSlot/Belt"), NodePath("Right/LegSlot/Pants"), NodePath("Right/RingSlot/Ring"), NodePath("Right/AmuletSlot/Amulet"), NodePath("Middle/Weapons/Weapon1Slot/Weapon1")]
+inventory_slots = [NodePath("Left/HeadSlot"), NodePath("Left/ChestSlot"), NodePath("Left/HandSlot"), NodePath("Left/ShoeSlot"), NodePath("Right/BeltSlot"), NodePath("Right/LegSlot"), NodePath("Right/RingSlot"), NodePath("Right/AmuletSlot"), NodePath("Middle/Weapon1Slot")]
 item_prefab = ExtResource("11_ewbju")
 
 [node name="Left" type="VBoxContainer" parent="Portrait/GameScene/Character/Equip"]
@@ -2409,95 +2410,30 @@ layout_mode = 2
 size_flags_horizontal = 2
 alignment = 1
 
-[node name="HeadSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="HeadSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/HeadSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/HeadSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("38_jcn4n")
-expand_mode = 1
-
-[node name="Head" type="Control" parent="Portrait/GameScene/Character/Equip/Left/HeadSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_helmet")
 slot_type = "Head"
 
-[node name="ChestSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="ChestSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/ChestSlot"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/ChestSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("39_sfx3s")
-expand_mode = 1
-
-[node name="Chest" type="Control" parent="Portrait/GameScene/Character/Equip/Left/ChestSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_chest")
 slot_type = "Chest"
 slot_id = 1
 
-[node name="HandSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="HandSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/HandSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/HandSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("40_p5qon")
-expand_mode = 1
-
-[node name="Gloves" type="Control" parent="Portrait/GameScene/Character/Equip/Left/HandSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_gloves")
 slot_type = "Hand"
 slot_id = 2
 
-[node name="ShoeSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Left"]
+[node name="ShoeSlot" parent="Portrait/GameScene/Character/Equip/Left" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/ShoeSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Left/ShoeSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("41_gyste")
-expand_mode = 1
-
-[node name="Shoes" type="Control" parent="Portrait/GameScene/Character/Equip/Left/ShoeSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_shoes")
 slot_type = "Foot"
 slot_id = 3
 
@@ -2506,46 +2442,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 2.5
-
-[node name="Character" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/AspectRatioContainer"]
-custom_minimum_size = Vector2(100, 100)
+[node name="Character" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle"]
+custom_minimum_size = Vector2(100, 270)
 layout_mode = 2
 size_flags_horizontal = 3
 texture = ExtResource("9_7t8sx")
 expand_mode = 1
+stretch_mode = 5
 script = ExtResource("6_consumable")
 
-[node name="Weapons" type="HBoxContainer" parent="Portrait/GameScene/Character/Equip/Middle"]
+[node name="Weapon1Slot" parent="Portrait/GameScene/Character/Equip/Middle" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_vertical = 3
-alignment = 2
-
-[node name="Weapon1Slot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Middle/Weapons"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-alignment_vertical = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1Slot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1Slot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("44_p3b6d")
-expand_mode = 1
-
-[node name="Weapon1" type="Control" parent="Portrait/GameScene/Character/Equip/Middle/Weapons/Weapon1Slot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_sword")
 slot_type = "Weapon"
 slot_id = 8
 
@@ -2555,96 +2463,31 @@ layout_mode = 2
 size_flags_horizontal = 2
 alignment = 1
 
-[node name="BeltSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="BeltSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/BeltSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/BeltSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("9_nnt18")
-expand_mode = 1
-
-[node name="Belt" type="Control" parent="Portrait/GameScene/Character/Equip/Right/BeltSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_nnt18")
 slot_type = "Belt"
 slot_id = 4
 
-[node name="LegSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="LegSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/LegSlot"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/LegSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("45_bchkn")
-expand_mode = 1
-
-[node name="Pants" type="Control" parent="Portrait/GameScene/Character/Equip/Right/LegSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_pants")
 slot_type = "Legs"
 slot_id = 5
 
-[node name="RingSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="RingSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/RingSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/RingSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("46_ff75x")
-expand_mode = 1
-
-[node name="Ring" type="Control" parent="Portrait/GameScene/Character/Equip/Right/RingSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_ring")
 slot_type = "Ring"
 slot_id = 6
 
-[node name="AmuletSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Character/Equip/Right"]
+[node name="AmuletSlot" parent="Portrait/GameScene/Character/Equip/Right" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/AmuletSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Character/Equip/Right/AmuletSlot"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("47_a2m5q")
-expand_mode = 1
-
-[node name="Amulet" type="Control" parent="Portrait/GameScene/Character/Equip/Right/AmuletSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_amulet")
 slot_type = "Amulet"
 slot_id = 7
 

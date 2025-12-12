@@ -8,9 +8,12 @@
 custom_minimum_size = Vector2(85, 85)
 layout_mode = 3
 anchors_preset = 0
+offset_right = 85.0
+offset_bottom = 85.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-mouse_filter = 1
+script = ExtResource("2_inventory_slot")
+item_scene = ExtResource("3_item")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -19,25 +22,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("1_bagslot")
-expand_mode = 1
+expand_mode = 3
+stretch_mode = 5
 
 [node name="Outline" type="TextureRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_bagslot")
+mouse_filter = 2
 expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("2_inventory_slot")
-item_scene = ExtResource("3_item")
+stretch_mode = 5

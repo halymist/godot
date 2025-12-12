@@ -1,9 +1,10 @@
-# SlotContainer.gd - Attach to your AspectRatioContainer (the slot itself)
+# SlotContainer.gd - Attach to the slot Control (root level)
 extends Control
 
-@export var item_scene: PackedScene 
-@onready var slot_background = get_parent().get_node("Background")
-@onready var item_outline = get_parent().get_node("Outline")
+@export var item_scene: PackedScene
+@export var outline_texture: Texture2D  # Outline texture for equipment slots (bag slots leave empty)
+@onready var slot_background = $Background
+@onready var item_outline = $Outline
 
 @export var slot_type: String = "Bag" # "Head", "Weapon", "Bag", etc.
 @export var slot_id: int
@@ -11,6 +12,10 @@ extends Control
 func _ready():
 	# Override cursor to always be arrow (no forbidden cursor during drag)
 	mouse_default_cursor_shape = Control.CURSOR_ARROW
+	
+	# Set outline texture if provided (equipment slots only)
+	if outline_texture and item_outline:
+		item_outline.texture = outline_texture
 
 func _can_drop_data(_pos, data):
 	# Check if data is valid drag package
@@ -217,8 +222,11 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 			return false
 
 func is_slot_empty() -> bool:
-	var count = get_child_count()
-	return count == 0
+	# Check if slot has any children besides Background and Outline
+	for child in get_children():
+		if child != slot_background and child != item_outline:
+			return false
+	return true
 
 func place_item_in_slot(item_data: GameInfo.Item):
 	if not is_slot_empty():
@@ -230,9 +238,12 @@ func place_item_in_slot(item_data: GameInfo.Item):
 	add_child(new_item)
 	
 	update_slot_appearance()
+
 func clear_slot():
+	# Clear all children except Background and Outline
 	for child in get_children():
-		child.free()
+		if child != slot_background and child != item_outline:
+			child.queue_free()
 	update_slot_appearance()
 
 func update_slot_appearance():

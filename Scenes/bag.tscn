@@ -15,21 +15,26 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 script = ExtResource("1_57iao")
-inventory_slots = [NodePath("Bag1/ItemContainer"), NodePath("Bag2/ItemContainer"), NodePath("Bag3/ItemContainer"), NodePath("Bag4/ItemContainer"), NodePath("Bag5/ItemContainer")]
+inventory_slots = [NodePath("Bag1"), NodePath("Bag2"), NodePath("Bag3"), NodePath("Bag4"), NodePath("Bag5")]
 item_prefab = ExtResource("2_722nh")
 is_bag = true
 
 [node name="Bag1" parent="." instance=ExtResource("3_itemslot")]
 layout_mode = 2
+slot_id = 10
 
 [node name="Bag2" parent="." instance=ExtResource("3_itemslot")]
 layout_mode = 2
+slot_id = 11
 
 [node name="Bag3" parent="." instance=ExtResource("3_itemslot")]
 layout_mode = 2
+slot_id = 12
 
 [node name="Bag4" parent="." instance=ExtResource("3_itemslot")]
 layout_mode = 2
+slot_id = 13
 
 [node name="Bag5" parent="." instance=ExtResource("3_itemslot")]
 layout_mode = 2
+slot_id = 14
