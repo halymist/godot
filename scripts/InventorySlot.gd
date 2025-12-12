@@ -3,8 +3,8 @@ extends Control
 
 @export var item_scene: PackedScene
 @export var outline_texture: Texture2D  # Outline texture for equipment slots (bag slots leave empty)
-@onready var slot_background = $Background
-@onready var item_outline = $Outline
+@onready var slot_background = get_node_or_null("Background")
+@onready var item_outline = get_node_or_null("Outline")
 
 @export var slot_type: String = "Bag" # "Head", "Weapon", "Bag", etc.
 @export var slot_id: int
