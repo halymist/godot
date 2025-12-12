@@ -4,7 +4,7 @@ extends "res://scripts/UtilityPanel.gd"
 # BlacksmithPanel-specific functionality can be added here
 # For now, it uses all functionality from UtilityPanel
 
-@onready var blacksmith_slot = $ItemsPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot/ItemContainer
+@onready var blacksmith_slot = $ItemsPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot
 @onready var improved_stats_label = $ItemsPanel/Content/ItemAndStats/StatsContainer/ImprovedStats
 @onready var temper_button = $ItemsPanel/Content/TemperButtonContainer/TemperButton
 

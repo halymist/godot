@@ -1,4 +1,4 @@
-[gd_scene load_steps=113 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=112 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -10,7 +10,6 @@
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="6_itemslot"]
 [ext_resource type="PackedScene" uid="uid://d3fba85yq0umu" path="res://Scenes/Building.tscn" id="6_lmoi6"]
 [ext_resource type="Texture2D" uid="uid://d3gicqboh0qna" path="res://assets/images/villages/village3.png" id="7_6a4tp"]
-[ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="7_7nbq1"]
 [ext_resource type="PackedScene" uid="uid://bk6a75wnuawv" path="res://Scenes/NpcSpot.tscn" id="7_spot"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
@@ -954,196 +953,36 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 4
 
-[node name="Vendor1" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor1" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor1"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor1"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor1"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 105
 
-[node name="Vendor2" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor2" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor2"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor2"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor2"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 106
 
-[node name="Vendor3" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor3" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor3"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor3"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor3"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 107
 
-[node name="Vendor4" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor4" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor4"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor4"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor4"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 108
 
-[node name="Vendor5" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor5" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor5"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor5"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor5"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 109
 
-[node name="Vendor6" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor6" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor6"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor6"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor6"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 110
 
-[node name="Vendor7" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor7" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor7"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor7"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor7"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 111
 
-[node name="Vendor8" type="AspectRatioContainer" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots"]
-custom_minimum_size = Vector2(110, 110)
+[node name="Vendor8" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-mouse_filter = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor8"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor8"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/VendorPanel/ItemsPanel/VendorSlots/Vendor8"]
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
 slot_id = 112
 
 [node name="Bag" parent="Portrait/GameScene/Home/VendorPanel" instance=ExtResource("20_6xvgv")]
@@ -1219,26 +1058,9 @@ layout_mode = 2
 text = "Item to Temper"
 horizontal_alignment = 1
 
-[node name="ItemSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/ItemSlotContainer"]
-custom_minimum_size = Vector2(80, 80)
+[node name="ItemSlot" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/ItemSlotContainer" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot"]
-layout_mode = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot"]
-layout_mode = 2
-texture = ExtResource("9_nnt18")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_sword")
 slot_type = "Blacksmith"
 slot_id = 100
 
@@ -1624,7 +1446,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 0
-text = "The alchemist can brew powerful elixirs from ingredients. Combine up to 5 items to create unique potions."
+text = "The alchemist can brew powerful elixirs from ingrediets"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -1643,24 +1465,9 @@ size_flags_vertical = 4
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Slot1" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
-custom_minimum_size = Vector2(60, 60)
+[node name="Slot1" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1"]
-layout_mode = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1"]
-layout_mode = 2
-texture = ExtResource("35_p5qon")
-expand_mode = 1
-
-[node name="SlotContainer" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot1"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 101
 
@@ -1671,24 +1478,9 @@ theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot2" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
-custom_minimum_size = Vector2(60, 60)
+[node name="Slot2" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2"]
-layout_mode = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2"]
-layout_mode = 2
-texture = ExtResource("35_p5qon")
-expand_mode = 1
-
-[node name="SlotContainer" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot2"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 102
 
@@ -1699,37 +1491,16 @@ theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot3" type="AspectRatioContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow"]
-custom_minimum_size = Vector2(60, 60)
+[node name="Slot3" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3"]
-layout_mode = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3"]
-layout_mode = 2
-texture = ExtResource("35_p5qon")
-expand_mode = 1
-
-[node name="SlotContainer" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer/IngredientsRow/Slot3"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 103
-
-[node name="Spacer2" type="Control" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BrewingContainer"]
-layout_mode = 2
-size_flags_vertical = 3
 
 [node name="ResultPreview" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 text = "Elixir Effects: None"
-horizontal_alignment = 1
-vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content"]
@@ -1811,26 +1582,9 @@ layout_mode = 2
 text = "Item to Enchant"
 horizontal_alignment = 1
 
-[node name="ItemSlot" type="AspectRatioContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
-custom_minimum_size = Vector2(80, 80)
+[node name="ItemSlot" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Background" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot"]
-layout_mode = 2
-texture = ExtResource("7_7nbq1")
-expand_mode = 1
-
-[node name="Outline" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot"]
-layout_mode = 2
-texture = ExtResource("9_nnt18")
-expand_mode = 1
-
-[node name="ItemContainer" type="Control" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot"]
-layout_mode = 2
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
+outline_texture = ExtResource("9_sword")
 slot_type = "Enchanter"
 slot_id = 104
 
@@ -2338,6 +2092,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

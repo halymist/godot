@@ -15,7 +15,7 @@ func _ready():
 	var vendor_grid = $ItemsPanel/VendorSlots
 	if vendor_grid:
 		for i in range(1, 9):  # Vendor1 through Vendor8
-			var vendor_slot = vendor_grid.get_node_or_null("Vendor%d/ItemContainer" % i)
+			var vendor_slot = vendor_grid.get_node_or_null("Vendor%d" % i)
 			if vendor_slot:
 				vendor_slots.append(vendor_slot)
 	
