@@ -73,9 +73,26 @@ func set_active_village(location_id: int):
 			current_village_node.visible = true
 			print("Using fallback village: ", current_village_node.name)
 	
-	# Update location label
+	# Update location label with server time
 	if location_label:
-		location_label.text = GameInfo.get_village_name(location_id)
+		var display_name = GameInfo.get_village_name(location_id)
+		var server_time = _get_server_time_string()
+		location_label.text = "%s - %s" % [display_name, server_time]
+
+func _get_server_time_string() -> String:
+	if not GameInfo.current_player:
+		return "00:00"
+	
+	# Calculate current server time based on server_timestamp and client time difference
+	var server_timestamp = GameInfo.current_player.server_timestamp
+	if server_timestamp == 0:
+		return "00:00"
+	
+	# Get current time (server time would be server_timestamp + time elapsed since data load)
+	var current_unix = Time.get_unix_time_from_system()
+	var time_dict = Time.get_datetime_dict_from_unix_time(int(current_unix))
+	
+	return "%02d:%02d" % [time_dict.hour, time_dict.minute]
 
 func connect_existing_buildings():
 	if not current_village_node:
