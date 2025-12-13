@@ -5,10 +5,8 @@ extends HBoxContainer
 
 func _ready():
 	update_equip_slots()
-	# Connect visibility changed for bags to refresh when shown
-	if is_bag:
-		# Also connect to bag slots changed signal to update when items move
-		GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
+	# Connect to bag slots changed signal to update when items move
+	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
 
 func _on_bag_slots_changed():
 	update_equip_slots()

@@ -39,6 +39,18 @@ func _handle_double_click():
 	if not item_data:
 		return
 	
+	# Check if item is a consumable (Potion or Elixir) in bag - consume it
+	if (item_data.type == "Potion" or item_data.type == "Elixir") and item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
+		_consume_item()
+		return
+	
+	# Check if character panel is visible and item is in bag - equip it
+	var character_panel = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Character")
+	if character_panel and character_panel.visible and item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
+		if _can_equip_to_character():
+			_equip_item_to_character()
+			return
+	
 	# Get root game node to find panels
 	var game = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Home")
 	if not game:
@@ -193,3 +205,72 @@ func _notification(what):
 
 func get_item_data() -> GameInfo.Item:
 	return item_data
+
+func _consume_item():
+	"""Consume a potion or elixir and apply its effects"""
+	if item_data.type == "Potion":
+		# Store potion item ID
+		GameInfo.current_player.potion = item_data.id
+		# Remove from bag
+		for i in range(GameInfo.current_player.bag_slots.size()):
+			var slot = GameInfo.current_player.bag_slots[i]
+			if slot.id == item_data.id and slot.bag_slot_id == item_data.bag_slot_id:
+				GameInfo.current_player.bag_slots.remove_at(i)
+				break
+		
+	elif item_data.type == "Elixir":
+		# Store elixir item ID
+		GameInfo.current_player.elixir = item_data.id
+		# Remove from bag
+		for i in range(GameInfo.current_player.bag_slots.size()):
+			var slot = GameInfo.current_player.bag_slots[i]
+			if slot.id == item_data.id and slot.bag_slot_id == item_data.bag_slot_id:
+				GameInfo.current_player.bag_slots.remove_at(i)
+				break
+	
+	# Update active perks display to show new consumable
+	var active_perks_display = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Character/ActivePerksBackground/ActivePerks")
+	if active_perks_display:
+		active_perks_display.update_active_perks()
+	
+	GameInfo.bag_slots_changed.emit()
+
+func _can_equip_to_character() -> bool:
+	"""Check if item can be equipped to character"""
+	return item_data.type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]
+
+func _equip_item_to_character():
+	"""Equip item from bag to character equipment slot"""
+	var target_slot_id = -1
+	
+	# Map item type to equipment slot
+	match item_data.type:
+		"Head": target_slot_id = 0
+		"Chest": target_slot_id = 1
+		"Hands": target_slot_id = 2
+		"Foot": target_slot_id = 3
+		"Belt": target_slot_id = 4
+		"Legs": target_slot_id = 5
+		"Ring": target_slot_id = 6
+		"Amulet": target_slot_id = 7
+		"Weapon": target_slot_id = 8
+	
+	if target_slot_id == -1:
+		return  # Item type can't be equipped
+	
+	# Check if there's already an item in the target slot
+	var existing_item = null
+	for item in GameInfo.current_player.bag_slots:
+		if item.bag_slot_id == target_slot_id:
+			existing_item = item
+			break
+	
+	# Swap items
+	var source_slot = item_data.bag_slot_id
+	item_data.bag_slot_id = target_slot_id
+	
+	if existing_item:
+		# Move existing equipped item to the bag slot
+		existing_item.bag_slot_id = source_slot
+	
+	GameInfo.bag_slots_changed.emit()
