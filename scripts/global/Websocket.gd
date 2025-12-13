@@ -28,8 +28,8 @@ var mock_character_data = {
 	"guild": 1,
 	"rank": 15486,
 	"profession": 1,
-	"server_timestamp": Time.get_unix_time_from_system(),
-	"server_timezone": "Europe/Prague",
+	"server_timezone": "Europe/Stockholm",
+	"weather": 2,  # 1=sunny, 2=rainy
 	"daily_quests": [1, 2, 3],
 	"quest_log": [
 		{"quest_id": 1, "slides": [1], "finished": false},

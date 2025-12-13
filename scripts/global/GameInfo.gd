@@ -540,8 +540,8 @@ class GameCurrentPlayer:
 	var rank: int = 0  # Rank value (determines rank tier like Novice, Veteran, etc.)
 	var profession: int = 0  # Profession ID (1=Herbalist, 2=Blacksmith, etc.)
 	var daily_quests: Array = []  # Array of quest IDs available today
-	var server_timestamp: float = 0.0  # Server's current Unix timestamp
-	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Prague")
+	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
+	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
 	
 	# Gold with automatic event emission
 	var _gold: int = 0
@@ -590,8 +590,8 @@ class GameCurrentPlayer:
 		"rank": "rank",
 		"profession": "profession",
 		"daily_quests": "daily_quests",
-		"server_timestamp": "server_timestamp",
-		"server_timezone": "server_timezone"
+		"server_timezone": "server_timezone",
+		"weather": "weather"
 	}
 	
 	func load_from_msgpack(data: Dictionary):

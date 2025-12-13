@@ -1,4 +1,4 @@
-[gd_scene load_steps=113 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://bk6a75wnuawv" path="res://Scenes/NpcSpot.tscn" id="7_spot"]
 [ext_resource type="Texture2D" uid="uid://brbtkpfvueuhu" path="res://assets/images/villages/blacksmith_interior.png" id="8_6uxt2"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
+[ext_resource type="Texture2D" uid="uid://cjgyacwkb877" path="res://assets/images/ui/sunny.png" id="8_e6ols"]
+[ext_resource type="Texture2D" uid="uid://814oroxowurk" path="res://assets/images/ui/rainy.png" id="9_2cns2"]
 [ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="9_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="9_amulet"]
 [ext_resource type="Texture2D" uid="uid://54fu6pfqynod" path="res://assets/images/ui/chest_outline.png" id="9_chest"]
@@ -47,6 +49,7 @@
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="PackedScene" uid="uid://cducbq1tpj6uc" path="res://Scenes/bag.tscn" id="20_6xvgv"]
 [ext_resource type="Texture2D" uid="uid://bl10e588p83eh" path="res://assets/images/villages/blacksmith26.png" id="20_fnkle"]
+[ext_resource type="Script" uid="uid://b8kh3j7mwq5yu" path="res://scripts/LocationPanel.gd" id="20_locationpanel"]
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
@@ -407,7 +410,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
 expand_icon = true
 
-[node name="LocationPanel" type="Panel" parent="Portrait/TopUI"]
+[node name="LocationPanel" type="Panel" parent="Portrait/TopUI" node_paths=PackedStringArray("location_label", "weather_icon_texture")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.8
@@ -417,6 +420,11 @@ offset_left = 10.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_7sqp1")
+script = ExtResource("20_locationpanel")
+sunny_icon = ExtResource("8_e6ols")
+rainy_icon = ExtResource("9_2cns2")
+location_label = NodePath("LocationLabel")
+weather_icon_texture = NodePath("WeatherIcon")
 
 [node name="LocationLabel" type="Label" parent="Portrait/TopUI/LocationPanel"]
 layout_mode = 1
@@ -430,6 +438,22 @@ theme_override_constants/shadow_offset_y = 2
 text = "Krasna Ves"
 vertical_alignment = 1
 
+[node name="WeatherIcon" type="TextureRect" parent="Portrait/TopUI/LocationPanel"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -20.0
+offset_right = -10.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="GameScene" type="Panel" parent="Portrait"]
 layout_mode = 1
 anchors_preset = -1
@@ -439,7 +463,7 @@ anchor_bottom = 0.9
 grow_horizontal = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("villages_container", "location_label", "quest_panel", "quest_slide_panel", "map_panel")]
+[node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("villages_container", "quest_panel", "quest_slide_panel", "map_panel")]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -448,7 +472,6 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_feb5d")
 script = ExtResource("20_village")
 villages_container = NodePath("VillagesContainer")
-location_label = NodePath("../../TopUI/LocationPanel/LocationLabel")
 quest_panel = NodePath("QuestAccept")
 quest_slide_panel = NodePath("../../Quest")
 map_panel = NodePath("../Map")
