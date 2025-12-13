@@ -111,6 +111,8 @@ func create_effect_display(effect: EffectResource):
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
 	if perk_data and tooltip_panel:
+		# Reset size to allow panel to resize for new content
+		tooltip_panel.reset_size()
 		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
 		if tooltip_label:
 			# Build tooltip with perk name and effects
@@ -158,6 +160,8 @@ func _on_effect_hover_start(effect_icon):
 	"""Show tooltip for active effects"""
 	var effect_data = effect_icon.get_meta("effect_data")
 	if effect_data and tooltip_panel:
+		# Reset size to allow panel to resize for new content
+		tooltip_panel.reset_size()
 		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
 		if tooltip_label:
 			# Build tooltip with effect name and description
@@ -194,6 +198,8 @@ func _on_consumable_hover_start(consumable_icon):
 	var consumable_type = consumable_icon.get_meta("consumable_type")
 	var item_id = consumable_icon.get_meta("item_id")
 	if consumable_type and tooltip_panel:
+		# Reset size to allow panel to resize for new content
+		tooltip_panel.reset_size()
 		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
 		if tooltip_label:
 			var tooltip_text = ""
