@@ -1,4 +1,4 @@
-[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -106,8 +106,6 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sqp1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
@@ -418,7 +416,7 @@ anchor_bottom = 1.0
 offset_left = 10.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_7sqp1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 script = ExtResource("20_locationpanel")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
@@ -5301,29 +5299,29 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="LocationInfoPanel" type="Panel" parent="Portrait/GameScene"]
+[node name="LocationInfoPanel" type="MarginContainer" parent="Portrait/GameScene"]
 visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.5
-anchor_bottom = 0.3
+layout_mode = 0
 offset_left = 10.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_7sqp1")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Panel" type="Panel" parent="Portrait/GameScene/LocationInfoPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="InfoLabel" type="Label" parent="Portrait/GameScene/LocationInfoPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 text = "Location Bonuses:
 +10% Gold from quests
 +5% Experience gain
 Weather: Rainy (-10% Travel Speed)"
-autowrap_mode = 2
 
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1

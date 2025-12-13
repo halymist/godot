@@ -4,7 +4,7 @@ extends Panel
 @export var rainy_icon: Texture2D
 @export var location_label: Label
 @export var weather_icon_texture: TextureRect
-@export var location_info_panel: Panel
+@export var location_info_panel: MarginContainer
 
 func _ready():
 	update_location_display()
