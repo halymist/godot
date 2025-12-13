@@ -36,7 +36,26 @@ func _on_visibility_changed():
 func _on_item_changed():
 	# Update stats when item changes
 	if visible:
+		update_slot_visual()
 		update_stats_display()
+
+func update_slot_visual():
+	# Update the visual display of slot 100
+	if blacksmith_slot and blacksmith_slot.has_method("clear_slot"):
+		blacksmith_slot.clear_slot()
+		
+		# Find item in slot 100
+		for item in GameInfo.current_player.bag_slots:
+			if item.bag_slot_id == 100:
+				# Get item prefab from the bag
+				var bag = get_node_or_null("Bag")
+				if bag and bag.item_prefab:
+					var icon = bag.item_prefab.instantiate()
+					icon.set_item_data(item)
+					blacksmith_slot.add_child(icon)
+				break
+		
+		blacksmith_slot.update_slot_appearance()
 
 func update_stats_display():
 	# Find item in slot 100
