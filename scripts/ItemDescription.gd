@@ -1,12 +1,12 @@
 extends PanelContainer
-@export var name_label: RichTextLabel
+@export var name_label: Label
 @export var price_label: Label
 @export var strength: Label
 @export var stamina: Label
 @export var agility: Label
 @export var luck: Label
 @export var armor: Label
-@export var effect: RichTextLabel
+@export var effect: Label
 
 # References to the stat containers for hiding/showing
 @onready var price_container = price_label.get_parent() if price_label else null
@@ -17,11 +17,14 @@ extends PanelContainer
 @onready var armor_container = armor.get_parent()
 
 func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector2.ZERO):
+	# Reset size to allow panel to resize for new content
+	reset_size()
+	
 	if item_data:
 		var display_name = item_data.item_name
 		if item_data.get("tempered") and item_data.tempered > 0:
 			display_name += " +" + str(item_data.tempered)
-		name_label.text = "[b]" + display_name + "[/b]"
+		name_label.text = display_name
 		
 		# Display price if available and > 0
 		if price_label and price_container:
@@ -78,7 +81,7 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 			
 			# Display combined effects
 			if effect_texts.size() > 0:
-				effect.text = "[i]" + "\n".join(effect_texts) + "[/i]"
+				effect.text = "\n".join(effect_texts)
 				effect.visible = true
 			else:
 				effect.visible = false
@@ -139,18 +142,18 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 					if display_effect_factor != 0.0:
 						effect_text += " " + str(int(display_effect_factor))
 					
-					effect.text = "[i]" + effect_text + "[/i]"
+					effect.text = effect_text
 					effect.visible = true
 				else:
 					effect.visible = false
 			else:
 				effect.visible = false
 		
-		# Show first, then fit content size to ensure proper layout calculation
-		visible = true
+		# Reset size again after all content is set to force proper recalculation
+		reset_size()
 		
-		# Use multiple deferred calls to ensure proper sizing
-		call_deferred("_fit_content_size")
+		# Show the panel
+		visible = true
 		
 		# Position the panel relative to mouse/hover position if provided
 		if mouse_position != Vector2.ZERO:
@@ -158,71 +161,10 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 	else:
 		visible = false
 
-func _fit_content_size():
-	# Force layout update multiple times to ensure consistency
-	await get_tree().process_frame
-	await get_tree().process_frame
-	
-	# Reset size first to get accurate content measurements
-	custom_minimum_size = Vector2.ZERO
-	size = Vector2(200, 60)  # Start with minimum size
-	
-	# Force another layout pass
-	await get_tree().process_frame
-	
-	# Calculate the required size based on visible content
-	var content_height = 25  # Base padding + spacing
-	var content_width = 200  # Minimum width
-	
-	# Add height for name (RichTextLabel needs time to calculate)
-	if name_label.visible:
-		content_height += max(30, name_label.get_content_height())
-	
-	# Count visible stats and add consistent spacing
-	var visible_stat_count = 0
-	if strength_container.visible:
-		visible_stat_count += 1
-	if stamina_container.visible:
-		visible_stat_count += 1
-	if agility_container.visible:
-		visible_stat_count += 1
-	if luck_container.visible:
-		visible_stat_count += 1
-	if armor_container.visible:
-		visible_stat_count += 1
-	if price_container and price_container.visible:
-		visible_stat_count += 1
-	
-	# Add consistent height for all visible stats (with spacing)
-	if visible_stat_count > 0:
-		content_height += visible_stat_count * 25 + 10  # 25px per stat line + spacing
-	
-	# Add height for effect if visible (RichTextLabel needs proper sizing)
-	if effect.visible and effect.text != "":
-		# Force effect to calculate its content size
-		effect.custom_minimum_size = Vector2.ZERO
-		await get_tree().process_frame
-		
-		var effect_height = max(20, effect.get_content_height())
-		content_height += effect_height + 15  # Extra spacing for effect
-		
-		# Calculate width based on effect content
-		var effect_width = max(200, effect.get_content_width() + 40)
-		content_width = max(content_width, effect_width)
-	
-	# Ensure minimum content size with some padding
-	content_height = max(content_height, 70)   # Minimum height
-	content_width = max(content_width, 200)    # Minimum width
-	
-	# Apply the calculated size
-	var new_size = Vector2(content_width, content_height)
-	custom_minimum_size = new_size
-	size = new_size
-	
-	# Force final layout update
-	await get_tree().process_frame
-
 func position_near_cursor(cursor_pos: Vector2):
+	# Wait for panel to auto-size
+	await get_tree().process_frame
+	
 	var viewport_size = get_viewport().get_visible_rect().size
 	var panel_size = size
 	
@@ -245,3 +187,5 @@ func position_near_cursor(cursor_pos: Vector2):
 
 func hide_description():
 	visible = false
+	# Reset size to allow panel to resize for next show
+	reset_size()

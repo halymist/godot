@@ -7,16 +7,18 @@ func _ready():
 	description_panel = get_tree().root.get_node("Game/Portrait/ItemDescription")
 	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
 	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
-	description_panel.visible = false
+	if description_panel:
+		description_panel.visible = false
 
 
 func _on_mouse_entered():
-	if item_data:
+	if item_data and description_panel:
 		var mouse_pos = get_global_mouse_position()
 		description_panel.show_description(item_data, mouse_pos)
 
 func _on_mouse_exited():
-	description_panel.hide_description()
+	if description_panel:
+		description_panel.hide_description()
 
 
 func set_item_data(data: GameInfo.Item):

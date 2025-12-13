@@ -5447,93 +5447,92 @@ z_index = 1500
 layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 script = ExtResource("14_85qyi")
-name_label = NodePath("VBoxContainer/Name")
-price_label = NodePath("VBoxContainer/PriceContainer/Value")
-strength = NodePath("VBoxContainer/HBoxContainer/Value")
-stamina = NodePath("VBoxContainer/HBoxContainer2/Value")
-agility = NodePath("VBoxContainer/HBoxContainer3/Value")
-luck = NodePath("VBoxContainer/HBoxContainer4/Value")
-armor = NodePath("VBoxContainer/HBoxContainer5/Value")
-effect = NodePath("VBoxContainer/Effect")
+name_label = NodePath("MarginContainer/VBoxContainer/Name")
+price_label = NodePath("MarginContainer/VBoxContainer/PriceContainer/Value")
+strength = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Value")
+stamina = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/Value")
+agility = NodePath("MarginContainer/VBoxContainer/HBoxContainer3/Value")
+luck = NodePath("MarginContainer/VBoxContainer/HBoxContainer4/Value")
+armor = NodePath("MarginContainer/VBoxContainer/HBoxContainer5/Value")
+effect = NodePath("MarginContainer/VBoxContainer/Effect")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/ItemDescription"]
+[node name="MarginContainer" type="MarginContainer" parent="Portrait/ItemDescription"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/ItemDescription/MarginContainer"]
 layout_mode = 2
 
-[node name="Name" type="RichTextLabel" parent="Portrait/ItemDescription/VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+[node name="Name" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
-bbcode_enabled = true
-text = "[b]Item Name[/b]"
-fit_content = true
-scroll_active = false
+text = "Item Name"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Strength" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer"]
+[node name="Strength" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Strength"
 
-[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer"]
+[node name="Value" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "20"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Stamina" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer2"]
+[node name="Stamina" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Stamina"
 
-[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer2"]
+[node name="Value" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "20"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Agility" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer3"]
+[node name="Agility" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 text = "Agility"
 
-[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer3"]
+[node name="Value" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 text = "20"
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Luck" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer4"]
+[node name="Luck" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 text = "Luck"
 
-[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer4"]
+[node name="Value" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 text = "20"
 
-[node name="HBoxContainer5" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="HBoxContainer5" type="HBoxContainer" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Armor" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer5"]
+[node name="Armor" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer5"]
 layout_mode = 2
 text = "Armor"
 
-[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/HBoxContainer5"]
+[node name="Value" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/HBoxContainer5"]
 layout_mode = 2
 text = "20"
 
-[node name="Effect" type="RichTextLabel" parent="Portrait/ItemDescription/VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+[node name="Effect" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
-bbcode_enabled = true
-text = "[i]Effect[/i]"
-fit_content = true
-scroll_active = false
+text = "Effect"
 
-[node name="PriceContainer" type="HBoxContainer" parent="Portrait/ItemDescription/VBoxContainer"]
+[node name="PriceContainer" type="HBoxContainer" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Value" type="Label" parent="Portrait/ItemDescription/VBoxContainer/PriceContainer"]
+[node name="Value" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/PriceContainer"]
 layout_mode = 2
 text = "100 gold"
 
