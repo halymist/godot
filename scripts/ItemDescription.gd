@@ -1,4 +1,4 @@
-extends Panel
+extends PanelContainer
 @export var name_label: RichTextLabel
 @export var price_label: Label
 @export var strength: Label

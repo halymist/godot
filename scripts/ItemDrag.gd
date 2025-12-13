@@ -1,6 +1,6 @@
 extends TextureRect
 # Store the complete item data
-var description_panel: Panel 
+var description_panel: PanelContainer 
 var item_data: GameInfo.Item = null
 
 func _ready():

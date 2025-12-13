@@ -1,7 +1,7 @@
 extends HBoxContainer
 
 @export var perk_mini_scene: PackedScene
-@export var tooltip_panel: Panel
+@export var tooltip_panel: PanelContainer
 
 func _ready():
 	# Connect to bag_slots_changed to update consumables immediately
@@ -111,7 +111,7 @@ func create_effect_display(effect: EffectResource):
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
 	if perk_data and tooltip_panel:
-		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
+		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
 		if tooltip_label:
 			# Build tooltip with perk name and effects
 			var tooltip_text = perk_data.perk_name
@@ -158,7 +158,7 @@ func _on_effect_hover_start(effect_icon):
 	"""Show tooltip for active effects"""
 	var effect_data = effect_icon.get_meta("effect_data")
 	if effect_data and tooltip_panel:
-		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
+		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
 		if tooltip_label:
 			# Build tooltip with effect name and description
 			var tooltip_text = effect_data.name
@@ -194,7 +194,7 @@ func _on_consumable_hover_start(consumable_icon):
 	var consumable_type = consumable_icon.get_meta("consumable_type")
 	var item_id = consumable_icon.get_meta("item_id")
 	if consumable_type and tooltip_panel:
-		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
+		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
 		if tooltip_label:
 			var tooltip_text = ""
 			
@@ -264,7 +264,10 @@ func _on_consumable_hover_start(consumable_icon):
 			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10
 
 func _on_perk_hover_end():
-	tooltip_panel.visible = false
+	if tooltip_panel:
+		tooltip_panel.visible = false
+		# Reset size to allow panel to resize for next hover
+		tooltip_panel.reset_size()
 
 func get_active_perks() -> Array:
 	# Use the new helper method directly on the player
