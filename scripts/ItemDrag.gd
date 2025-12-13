@@ -44,12 +44,18 @@ func _handle_double_click():
 		_consume_item()
 		return
 	
-	# Check if character panel is visible and item is in bag - equip it
+	# Check if character panel is visible
 	var character_panel = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Character")
-	if character_panel and character_panel.visible and item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
-		if _can_equip_to_character():
-			_equip_item_to_character()
+	if character_panel and character_panel.visible:
+		# If item is equipped (0-8), move it to bag
+		if item_data.bag_slot_id >= 0 and item_data.bag_slot_id <= 8:
+			_unequip_item_to_bag()
 			return
+		# If item is in bag (10-14), equip it
+		elif item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
+			if _can_equip_to_character():
+				_equip_item_to_character()
+				return
 	
 	# Get root game node to find panels
 	var game = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Home")
@@ -274,3 +280,18 @@ func _equip_item_to_character():
 		existing_item.bag_slot_id = source_slot
 	
 	GameInfo.bag_slots_changed.emit()
+
+func _unequip_item_to_bag():
+	"""Move equipped item to first available bag slot"""
+	# Find first empty bag slot
+	for bag_slot_id in range(10, 15):
+		var slot_empty = true
+		for item in GameInfo.current_player.bag_slots:
+			if item.bag_slot_id == bag_slot_id:
+				slot_empty = false
+				break
+		
+		if slot_empty:
+			item_data.bag_slot_id = bag_slot_id
+			GameInfo.bag_slots_changed.emit()
+			return

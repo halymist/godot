@@ -1,4 +1,4 @@
-[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -66,6 +66,7 @@
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
 [ext_resource type="Texture2D" uid="uid://cxqt6xldm0tqa" path="res://assets/images/villages/church2.png" id="31_j0obb"]
+[ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="32_ccfo7"]
 [ext_resource type="Texture2D" uid="uid://itwslgw5ib8e" path="res://assets/images/villages/alchemist.png" id="35_a2m5q"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
@@ -1027,7 +1028,6 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameScene/Home"]
-visible = false
 z_index = 100
 layout_mode = 1
 anchors_preset = 15
@@ -1120,6 +1120,7 @@ size_flags_stretch_ratio = 0.2
 stretch_mode = 1
 
 [node name="TemperButton" type="Button" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/TemperButtonContainer"]
+custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -1128,7 +1129,37 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
-text = "Temper (10 Gold)"
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/TemperButtonContainer/TemperButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/TemperButtonContainer/TemperButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Temper ("
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/TemperButtonContainer/TemperButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "10"
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/TemperButtonContainer/TemperButton/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/TemperButtonContainer/TemperButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = ")"
 
 [node name="Bag" parent="Portrait/GameScene/Home/BlacksmithPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
@@ -1398,7 +1429,7 @@ expand_mode = 1
 [node name="BlessingsPanel" type="Panel" parent="Portrait/GameScene/Home/ChurchPanel"]
 layout_mode = 0
 offset_top = 300.0
-offset_right = 450.0
+offset_right = 600.0
 offset_bottom = 630.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel"]
@@ -1429,10 +1460,47 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 
 [node name="BlessButton" type="Button" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content"]
-custom_minimum_size = Vector2(0, 45)
+custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
+theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
-text = "Receive Blessing (10g)"
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content/BlessButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content/BlessButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Receive Blessing ("
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content/BlessButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "10"
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content/BlessButton/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content/BlessButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = ")"
 
 [node name="AlchemistPanel" type="Panel" parent="Portrait/GameScene/Home"]
 visible = false
@@ -1545,12 +1613,49 @@ slot_type = "Ingredient"
 slot_id = 103
 
 [node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow"]
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
-text = "Brew (10g)"
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/BrewButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/BrewButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Brew ("
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/BrewButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "10"
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/BrewButton/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow/BrewButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = ")"
 
 [node name="Bag" parent="Portrait/GameScene/Home/AlchemistPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
@@ -1637,6 +1742,7 @@ layout_mode = 2
 ratio = 1.33333
 
 [node name="EnchantButton" type="Button" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer"]
+custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -1645,7 +1751,37 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
-text = "Enchant (10 Gold)"
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Enchant ("
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "10"
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = ")"
 
 [node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer"]
 layout_mode = 2
@@ -2135,6 +2271,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
