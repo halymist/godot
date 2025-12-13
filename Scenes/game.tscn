@@ -108,7 +108,6 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sqp1"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
@@ -410,7 +409,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
 expand_icon = true
 
-[node name="LocationPanel" type="Panel" parent="Portrait/TopUI" node_paths=PackedStringArray("location_label", "weather_icon_texture")]
+[node name="LocationPanel" type="Panel" parent="Portrait/TopUI" node_paths=PackedStringArray("location_label", "weather_icon_texture", "location_info_panel")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.8
@@ -423,34 +422,30 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_7sqp1")
 script = ExtResource("20_locationpanel")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
-location_label = NodePath("LocationLabel")
-weather_icon_texture = NodePath("WeatherIcon")
+location_label = NodePath("HBoxContainer/LocationLabel")
+weather_icon_texture = NodePath("HBoxContainer/WeatherIcon")
+location_info_panel = NodePath("../../GameScene/LocationInfoPanel")
 
-[node name="LocationLabel" type="Label" parent="Portrait/TopUI/LocationPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/TopUI/LocationPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 5
+
+[node name="LocationLabel" type="Label" parent="Portrait/TopUI/LocationPanel/HBoxContainer"]
+layout_mode = 2
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-text = "Krasna Ves"
+text = "Krasna Ves - 14:35"
 vertical_alignment = 1
 
-[node name="WeatherIcon" type="TextureRect" parent="Portrait/TopUI/LocationPanel"]
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -40.0
-offset_top = -20.0
-offset_right = -10.0
-offset_bottom = 20.0
-grow_horizontal = 0
-grow_vertical = 2
+[node name="WeatherIcon" type="TextureRect" parent="Portrait/TopUI/LocationPanel/HBoxContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture = ExtResource("9_2cns2")
 expand_mode = 1
 stretch_mode = 5
 
@@ -5305,6 +5300,30 @@ placeholder_text = "Type your message..."
 [node name="SendButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/InputContainer"]
 layout_mode = 2
 text = "Send"
+
+[node name="LocationInfoPanel" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 0.3
+offset_left = 10.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_7sqp1")
+
+[node name="InfoLabel" type="Label" parent="Portrait/GameScene/LocationInfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+text = "Location Bonuses:
++10% Gold from quests
++5% Experience gain
+Weather: Rainy (-10% Travel Speed)"
+autowrap_mode = 2
 
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1

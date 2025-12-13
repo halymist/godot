@@ -4,9 +4,31 @@ extends Panel
 @export var rainy_icon: Texture2D
 @export var location_label: Label
 @export var weather_icon_texture: TextureRect
+@export var location_info_panel: Panel
 
 func _ready():
 	update_location_display()
+	# Hide info panel initially
+	if location_info_panel:
+		location_info_panel.visible = false
+	
+	# Connect mouse signals
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+
+func _gui_input(event: InputEvent):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if location_info_panel:
+				location_info_panel.visible = not location_info_panel.visible
+
+func _on_mouse_entered():
+	if location_info_panel:
+		location_info_panel.visible = true
+
+func _on_mouse_exited():
+	if location_info_panel:
+		location_info_panel.visible = false
 
 func update_location_display():
 	if not location_label or not GameInfo.current_player:
