@@ -5299,19 +5299,10 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="LocationInfoPanel" type="MarginContainer" parent="Portrait/GameScene"]
+[node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameScene"]
 visible = false
 layout_mode = 0
 offset_left = 10.0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Panel" type="Panel" parent="Portrait/GameScene/LocationInfoPanel"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
 [node name="InfoLabel" type="Label" parent="Portrait/GameScene/LocationInfoPanel"]
