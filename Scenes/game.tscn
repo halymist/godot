@@ -5710,7 +5710,7 @@ offset_top = 180.0
 offset_right = 200.0
 offset_bottom = 280.0
 
-[node name="ItemDescription" type="PanelContainer" parent="Portrait" node_paths=PackedStringArray("name_label", "price_label", "strength", "stamina", "agility", "luck", "armor", "effect")]
+[node name="ItemDescription" type="PanelContainer" parent="Portrait" node_paths=PackedStringArray("name_label", "price_label", "price_icon", "strength", "stamina", "agility", "luck", "armor", "effect")]
 visible = false
 z_index = 1500
 layout_mode = 0
@@ -5718,6 +5718,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 script = ExtResource("14_85qyi")
 name_label = NodePath("MarginContainer/VBoxContainer/Name")
 price_label = NodePath("MarginContainer/VBoxContainer/PriceContainer/Value")
+price_icon = NodePath("MarginContainer/VBoxContainer/PriceContainer/SilverIcon")
 strength = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Value")
 stamina = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/Value")
 agility = NodePath("MarginContainer/VBoxContainer/HBoxContainer3/Value")
@@ -5800,10 +5801,18 @@ text = "Effect"
 
 [node name="PriceContainer" type="HBoxContainer" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="Value" type="Label" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/PriceContainer"]
 layout_mode = 2
-text = "100 gold"
+text = "100"
+
+[node name="SilverIcon" type="TextureRect" parent="Portrait/ItemDescription/MarginContainer/VBoxContainer/PriceContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="CancelQuest" type="Panel" parent="Portrait"]
 visible = false

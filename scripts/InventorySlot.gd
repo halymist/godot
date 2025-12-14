@@ -53,6 +53,13 @@ func _can_drop_data(_pos, data):
 		
 	var existing_item_type = existing_item_data.type
 	
+	# Special case: Don't allow swapping equipment items of different types
+	# Equipment slots are 0-8, and each has a specific type requirement
+	if slot_id >= 0 and slot_id <= 8 and source_slot_id >= 0 and source_slot_id <= 8:
+		# Both are equipment slots - only allow swap if same type
+		if item_type != existing_item_type:
+			return false
+	
 	# Check if the existing item can go back to the source slot
 	if source_container and source_container.has_method("is_valid_item_for_slot"):
 		# Check if source slot can accept the existing item

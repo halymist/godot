@@ -1,6 +1,7 @@
 extends PanelContainer
 @export var name_label: Label
 @export var price_label: Label
+@export var price_icon: TextureRect
 @export var strength: Label
 @export var stamina: Label
 @export var agility: Label
@@ -33,7 +34,9 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 				var display_price = item_data.price
 				if item_data.bag_slot_id >= 105 and item_data.bag_slot_id <= 112:
 					display_price = item_data.price * 2
-				price_label.text = str(display_price) + " gold"
+				price_label.text = str(display_price)
+				if price_icon:
+					price_icon.visible = true
 				price_container.visible = true
 			else:
 				price_container.visible = false
