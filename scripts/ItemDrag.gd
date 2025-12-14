@@ -239,7 +239,7 @@ func _consume_item():
 	if active_perks_display:
 		active_perks_display.update_active_perks()
 	
-	GameInfo.bag_slots_changed.emit()
+	GameInfo.emit_signal.call_deferred("bag_slots_changed")
 
 func _can_equip_to_character() -> bool:
 	"""Check if item can be equipped to character"""
@@ -279,7 +279,7 @@ func _equip_item_to_character():
 		# Move existing equipped item to the bag slot
 		existing_item.bag_slot_id = source_slot
 	
-	GameInfo.bag_slots_changed.emit()
+	GameInfo.emit_signal.call_deferred("bag_slots_changed")
 
 func _unequip_item_to_bag():
 	"""Move equipped item to first available bag slot"""
@@ -293,5 +293,5 @@ func _unequip_item_to_bag():
 		
 		if slot_empty:
 			item_data.bag_slot_id = bag_slot_id
-			GameInfo.bag_slots_changed.emit()
+			GameInfo.emit_signal.call_deferred("bag_slots_changed")
 			return

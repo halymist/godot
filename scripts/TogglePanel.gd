@@ -33,6 +33,8 @@ extends Control
 @export var alchemist_panel: Control
 @export var enchanter_panel: Control
 @export var enemy_panel: Control
+@export var payment: Control
+@export var payment_button: Button
 
 
 func _ready():
@@ -48,6 +50,8 @@ func _ready():
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
 	settings_button.pressed.connect(show_panel.bind(settings_panel))
+	if payment_button:
+		payment_button.pressed.connect(show_panel.bind(payment))
 	if rankings_button:
 		rankings_button.pressed.connect(show_panel.bind(rankings_panel))
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
@@ -145,6 +149,8 @@ func show_panel(panel: Control):
 		settings_panel.visible = false
 	if rankings_panel:
 		rankings_panel.visible = false
+	if payment:
+		payment.visible = false
 	# Hide enemy panel when switching to other panels
 	if enemy_panel:
 		enemy_panel.visible = false
@@ -181,6 +187,8 @@ func handle_home_button():
 		settings_panel.visible = false
 	if rankings_panel:
 		rankings_panel.visible = false
+	if payment:
+		payment.visible = false
 	# Hide enemy panel when going home
 	if enemy_panel:
 		enemy_panel.visible = false
@@ -309,7 +317,7 @@ func go_back():
 		return
 
 	# Priority 3: Check if we're in any utility panel - hide it and return to home
-	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel, settings_panel, rankings_panel]
+	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel, settings_panel, rankings_panel, payment]
 	print("Checking utility panels, current: ", current.name if current else "null")
 	for panel in utility_panels:
 		if panel:

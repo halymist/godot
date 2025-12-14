@@ -1,4 +1,4 @@
-[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -89,6 +89,7 @@
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
+[ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -245,6 +246,9 @@ border_width_right = 2
 border_color = Color(0.7, 0.5, 0.3, 0.6)
 shadow_offset = Vector2(3, 3)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cns2"]
+bg_color = Color(0.6, 0.6, 0.756863, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
 
@@ -276,7 +280,7 @@ desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -316,6 +320,8 @@ church_panel = NodePath("GameScene/Home/ChurchPanel")
 alchemist_panel = NodePath("GameScene/Home/AlchemistPanel")
 enchanter_panel = NodePath("GameScene/Home/EnchanterPanel")
 enemy_panel = NodePath("GameScene/Enemy")
+payment = NodePath("GameScene/Payment")
+payment_button = NodePath("TopUI/HBoxContainer/Payment")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -378,6 +384,11 @@ alignment = 0
 icon_alignment = 2
 vertical_icon_alignment = 0
 expand_icon = true
+
+[node name="Payment" type="Button" parent="Portrait/TopUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
 
 [node name="SettingsButton" type="Button" parent="Portrait/TopUI"]
 custom_minimum_size = Vector2(40, 40)
@@ -1028,6 +1039,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameScene/Home"]
+visible = false
 z_index = 100
 layout_mode = 1
 anchors_preset = 15
@@ -1120,7 +1132,7 @@ size_flags_stretch_ratio = 0.2
 stretch_mode = 1
 
 [node name="TemperButton" type="Button" parent="Portrait/GameScene/Home/BlacksmithPanel/ItemsPanel/Content/TemperButtonContainer"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -1460,7 +1472,7 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 
 [node name="BlessButton" type="Button" parent="Portrait/GameScene/Home/ChurchPanel/BlessingsPanel/Content"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -1613,7 +1625,7 @@ slot_type = "Ingredient"
 slot_id = 103
 
 [node name="BrewButton" type="Button" parent="Portrait/GameScene/Home/AlchemistPanel/ItemsPanel/Content/BottomRow"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -1742,7 +1754,7 @@ layout_mode = 2
 ratio = 1.33333
 
 [node name="EnchantButton" type="Button" parent="Portrait/GameScene/Home/EnchanterPanel/ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -5443,6 +5455,104 @@ text = "Location Bonuses:
 +10% Gold from quests
 +5% Experience gain
 Weather: Rainy (-10% Travel Speed)"
+
+[node name="Payment" type="Panel" parent="Portrait/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2cns2")
+script = ExtResource("67_payment")
+
+[node name="Content" type="VBoxContainer" parent="Portrait/GameScene/Payment"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="Title" type="Label" parent="Portrait/GameScene/Payment/Content"]
+layout_mode = 2
+text = "Payment & Rewards"
+horizontal_alignment = 1
+
+[node name="CouponSection" type="VBoxContainer" parent="Portrait/GameScene/Payment/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CouponLabel" type="Label" parent="Portrait/GameScene/Payment/Content/CouponSection"]
+layout_mode = 2
+text = "Redeem Coupon Code"
+
+[node name="CouponContainer" type="HBoxContainer" parent="Portrait/GameScene/Payment/Content/CouponSection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CouponInput" type="LineEdit" parent="Portrait/GameScene/Payment/Content/CouponSection/CouponContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter coupon code..."
+
+[node name="RedeemButton" type="Button" parent="Portrait/GameScene/Payment/Content/CouponSection/CouponContainer"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Redeem"
+
+[node name="InviteSection" type="VBoxContainer" parent="Portrait/GameScene/Payment/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="InviteLabel" type="Label" parent="Portrait/GameScene/Payment/Content/InviteSection"]
+layout_mode = 2
+text = "Invite a Friend"
+
+[node name="InviteContainer" type="HBoxContainer" parent="Portrait/GameScene/Payment/Content/InviteSection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="InviteDescription" type="Label" parent="Portrait/GameScene/Payment/Content/InviteSection/InviteContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Share your invite link and earn rewards when friends join!"
+autowrap_mode = 2
+
+[node name="ShareLinkButton" type="Button" parent="Portrait/GameScene/Payment/Content/InviteSection/InviteContainer"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Share Link"
+
+[node name="PurchaseSection" type="VBoxContainer" parent="Portrait/GameScene/Payment/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PurchaseLabel" type="Label" parent="Portrait/GameScene/Payment/Content/PurchaseSection"]
+layout_mode = 2
+text = "Purchase Gold"
+
+[node name="PurchaseOptions" type="VBoxContainer" parent="Portrait/GameScene/Payment/Content/PurchaseSection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Option1" type="Button" parent="Portrait/GameScene/Payment/Content/PurchaseSection/PurchaseOptions"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "100 Gold - $4.99"
+
+[node name="Option2" type="Button" parent="Portrait/GameScene/Payment/Content/PurchaseSection/PurchaseOptions"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "500 Gold - $19.99 (Best Value!)"
+
+[node name="Option3" type="Button" parent="Portrait/GameScene/Payment/Content/PurchaseSection/PurchaseOptions"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "1200 Gold - $39.99"
 
 [node name="BottomUI" type="Panel" parent="Portrait"]
 layout_mode = 1

@@ -16,6 +16,9 @@ func _ready():
 	# Set outline texture if provided (equipment slots only)
 	if outline_texture and item_outline:
 		item_outline.texture = outline_texture
+	
+	# Update slot appearance to show outline if empty
+	update_slot_appearance()
 
 func _can_drop_data(_pos, data):
 	# Check if data is valid drag package
@@ -242,20 +245,26 @@ func place_item_in_slot(item_data: GameInfo.Item):
 		item_outline.visible = false
 
 func clear_slot():
-	# Clear all children except Background and Outline
+	# Collect children to remove (except Background and Outline)
+	var children_to_remove = []
 	for child in get_children():
 		if child != slot_background and child != item_outline:
-			child.queue_free()
+			children_to_remove.append(child)
 	
-	# Show outline immediately for equipment slots (don't wait for queue_free)
-	if item_outline and outline_texture:
-		item_outline.visible = true
+	# Free them with queue_free to avoid locked object errors
+	for child in children_to_remove:
+		child.queue_free()
 
 func update_slot_appearance():
-	var is_empty = is_slot_empty()
+	# Count non-background/outline children that aren't queued for deletion
+	var item_count = 0
+	for child in get_children():
+		if child != slot_background and child != item_outline and not child.is_queued_for_deletion():
+			item_count += 1
+	
 	# Only show outline when empty AND outline_texture is set (equipment slots)
 	if item_outline:
-		item_outline.visible = is_empty and outline_texture != null
+		item_outline.visible = (item_count == 0) and (outline_texture != null)
 
 func get_item_data() -> GameInfo.Item:
 	if not is_slot_empty():
