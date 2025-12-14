@@ -30,6 +30,8 @@ func _can_drop_data(_pos, data):
 	var source_container = data.get("source_container")
 	var source_slot_id = source_container.slot_id if source_container else -1
 	
+	print("DEBUG _can_drop_data: Target slot_id=", slot_id, " slot_type=", slot_type, " | Source slot_id=", source_slot_id, " | Dragged item type=", item_type)
+	
 	# Vendor slots (105-112) cannot accept drops - they're for purchasing only
 	if slot_id >= 105 and slot_id <= 112:
 		return false
@@ -44,14 +46,18 @@ func _can_drop_data(_pos, data):
 	
 	# If slot is empty, we're good
 	if is_slot_empty():
+		print("DEBUG: Target slot is empty, allowing drop")
 		return true
 	
 	# If slot has an item, check if that item can go back to source
 	var existing_item_data = get_item_data()
+	print("DEBUG: Target slot has item, existing_item_data = ", existing_item_data)
 	if not existing_item_data:
+		print("DEBUG: No existing item data found, allowing drop")
 		return true
 		
 	var existing_item_type = existing_item_data.type
+	print("DEBUG: Existing item type = ", existing_item_type)
 	
 	# Special case: Don't allow swapping equipment items of different types
 	# Equipment slots are 0-8, and each has a specific type requirement
@@ -60,9 +66,34 @@ func _can_drop_data(_pos, data):
 		if item_type != existing_item_type:
 			return false
 	
-	# Check if the existing item can go back to the source slot
+	# Also check when swapping between equipment and bag
+	# If source is equipment (0-8) and target has an item, types must match
+	if source_slot_id >= 0 and source_slot_id <= 8:
+		# Source is equipment slot - the item types must match for a swap
+		print("DEBUG: Equipment->bag swap check. Source slot: ", source_slot_id, " Target slot: ", slot_id)
+		print("DEBUG: Dragged item type: ", item_type, " Existing item type: ", existing_item_type)
+		
+		# Get the required type for the source equipment slot
+		var required_type = ""
+		match source_slot_id:
+			0: required_type = "Head"
+			1: required_type = "Chest"
+			2: required_type = "Hands"
+			3: required_type = "Foot"
+			4: required_type = "Belt"
+			5: required_type = "Legs"
+			6: required_type = "Ring"
+			7: required_type = "Amulet"
+			8: required_type = "Weapon"
+		
+		# Both items must match the equipment slot's required type
+		if item_type != required_type or existing_item_type != required_type:
+			print("DEBUG: REJECTING - Types don't match required type: ", required_type)
+			return false
+		print("DEBUG: ALLOWING - Both items match required type: ", required_type)
+	
+	# For all other swaps (bag to bag, utility slots, etc.), check if existing item can go to source
 	if source_container and source_container.has_method("is_valid_item_for_slot"):
-		# Check if source slot can accept the existing item
 		return source_container.is_valid_item_for_slot(existing_item_type)
 	
 	# If we can't validate the reverse swap, don't allow it
@@ -275,7 +306,9 @@ func update_slot_appearance():
 
 func get_item_data() -> GameInfo.Item:
 	if not is_slot_empty():
-		var item = get_child(0)
-		if item.has_method("get_item_data"):
-			return item.get_item_data()
+		# Find the first child that is not background or outline
+		for child in get_children():
+			if child != slot_background and child != item_outline:
+				if child.has_method("get_item_data"):
+					return child.get_item_data()
 	return null
