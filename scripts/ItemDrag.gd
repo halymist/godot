@@ -271,6 +271,13 @@ func _equip_item_to_character():
 			existing_item = item
 			break
 	
+	# If there's an existing item, make sure it's the correct type for the source bag slot
+	# We can always swap to bag since bag accepts everything
+	if existing_item:
+		# The existing item must be equippable to be in an equipment slot
+		# So any swap to bag is valid - no extra validation needed
+		pass
+	
 	# Swap items
 	var source_slot = item_data.bag_slot_id
 	item_data.bag_slot_id = target_slot_id

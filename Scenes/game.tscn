@@ -321,7 +321,7 @@ alchemist_panel = NodePath("GameScene/Home/AlchemistPanel")
 enchanter_panel = NodePath("GameScene/Home/EnchanterPanel")
 enemy_panel = NodePath("GameScene/Enemy")
 payment = NodePath("GameScene/Payment")
-payment_button = NodePath("TopUI/HBoxContainer/Payment")
+payment_button = NodePath("TopUI/HBoxContainer/VBoxContainer/MushroomContainer/PaymentButton")
 
 [node name="TopUI" type="Panel" parent="Portrait"]
 layout_mode = 1
@@ -357,17 +357,44 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Runes" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+[node name="MushroomContainer" type="HBoxContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-text = "Runes: "
+theme_override_constants/separation = 4
 
-[node name="Gold" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+[node name="MushroomIcon" type="TextureRect" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MushroomValue" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-text = "Gold: "
+text = "0"
+
+[node name="PaymentButton" type="Button" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="SilverContainer" type="HBoxContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SilverIcon" type="TextureRect" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/SilverContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SilverValue" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/SilverContainer"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "0"
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -384,11 +411,6 @@ alignment = 0
 icon_alignment = 2
 vertical_icon_alignment = 0
 expand_icon = true
-
-[node name="Payment" type="Button" parent="Portrait/TopUI/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.2
 
 [node name="SettingsButton" type="Button" parent="Portrait/TopUI"]
 custom_minimum_size = Vector2(40, 40)
@@ -2422,8 +2444,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 script = ExtResource("10_mg4q0")
-gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Gold")
-currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/Runes")
+gold_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/SilverContainer/SilverValue")
+currency_label = NodePath("../../../TopUI/HBoxContainer/VBoxContainer/MushroomContainer/MushroomValue")
 player_name_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/PlayerName")
 rank_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer/RankLabel")
 guild_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer/GuildLabel")
@@ -5516,16 +5538,17 @@ text = "Invite a Friend"
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="InviteDescription" type="Label" parent="Portrait/GameScene/Payment/Content/InviteSection/InviteContainer"]
+[node name="InviteLinkInput" type="LineEdit" parent="Portrait/GameScene/Payment/Content/InviteSection/InviteContainer"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Share your invite link and earn rewards when friends join!"
-autowrap_mode = 2
+placeholder_text = "Your invite link will appear here..."
+editable = false
 
-[node name="ShareLinkButton" type="Button" parent="Portrait/GameScene/Payment/Content/InviteSection/InviteContainer"]
-custom_minimum_size = Vector2(150, 40)
+[node name="CopyLinkButton" type="Button" parent="Portrait/GameScene/Payment/Content/InviteSection/InviteContainer"]
+custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-text = "Share Link"
+text = "Copy"
 
 [node name="PurchaseSection" type="VBoxContainer" parent="Portrait/GameScene/Payment/Content"]
 layout_mode = 2
