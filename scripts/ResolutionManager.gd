@@ -9,6 +9,9 @@ var current_scale_factor = 1.0
 
 @export var phone_ui_root: Control
 @export var desktop_ui_root: Control
+@export var game_scene: Control
+@export var portrait_game_parent: Control
+@export var wide_game_parent: Control
 @export var base_theme: Theme
 @export var aspect_ratio_threshold: float = 0.6  # Below this = phone, above = desktop
 var min_phone_aspect_ratio: float = 0.4
@@ -20,7 +23,7 @@ signal user_font_scale_changed(new_scale)
 signal layout_changed(new_layout)
 
 func _ready():
-	current_layout = phone_ui_root
+	current_layout = null  # Start as null so first calculate_layout triggers switch
 	get_viewport().size_changed.connect(calculate_layout)
 	calculate_layout()
 
@@ -78,6 +81,23 @@ func switch_layout(new_layout: Control):
 	current_layout = new_layout
 	current_layout.visible = true
 	current_layout.process_mode = Node.PROCESS_MODE_INHERIT
+	
+	# Reparent GameScene to the appropriate parent
+	if game_scene:
+		var current_parent = game_scene.get_parent()
+		var target_parent = portrait_game_parent if new_layout == phone_ui_root else wide_game_parent
+		
+		print("GameScene reparenting - Current parent: ", current_parent.name if current_parent else "null", 
+			  ", Target parent: ", target_parent.name if target_parent else "null")
+		
+		if target_parent and current_parent != target_parent:
+			if current_parent:
+				current_parent.remove_child(game_scene)
+			target_parent.add_child(game_scene)
+			# Reset anchors/position to fill parent
+			game_scene.set_anchors_preset(Control.PRESET_FULL_RECT)
+			print("GameScene reparented to ", target_parent.name)
+	
 	layout_changed.emit(current_layout)
 
 # user font scale preference - only scales Label fonts
