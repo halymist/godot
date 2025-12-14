@@ -5677,6 +5677,7 @@ offset_bottom = 280.0
 [node name="ItemDescription" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("name_label", "price_label", "price_icon", "strength", "stamina", "agility", "luck", "armor", "effect")]
 visible = false
 z_index = 1500
+layout_mode = 0
 offset_right = 112.0
 offset_bottom = 280.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")

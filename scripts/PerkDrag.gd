@@ -163,7 +163,8 @@ func _apply_preview_styling(preview_node: Control):
 
 func _set_all_perks_mouse_filter(filter_mode: int):
 	# Find all perk nodes in all panels and set their mouse filter
-	var game_scene = get_tree().root.get_node("Game/Portrait/GameScene")
+	var game_root = get_tree().root.get_node_or_null("Game")
+	var game_scene = game_root.find_child("GameScene", true, false) if game_root else null
 	if not game_scene:
 		return
 	

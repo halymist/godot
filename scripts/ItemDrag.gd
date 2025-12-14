@@ -8,7 +8,11 @@ var last_click_time: float = 0.0
 const DOUBLE_CLICK_TIME: float = 0.3  # 300ms window for double-click
 
 func _ready():
-	description_panel = get_tree().root.get_node("Game/Portrait/ItemDescription")
+	# Find ItemDescription dynamically since it moves between Portrait/Wide
+	var game_root = get_tree().root.get_node_or_null("Game")
+	if game_root:
+		description_panel = game_root.find_child("ItemDescription", true, false)
+	
 	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
 	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
 	connect("gui_input", Callable(self, "_on_gui_input"))
@@ -45,7 +49,8 @@ func _handle_double_click():
 		return
 	
 	# Check if character panel is visible
-	var character_panel = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Character")
+	var game_root = get_tree().root.get_node_or_null("Game")
+	var character_panel = game_root.find_child("Character", true, false) if game_root else null
 	if character_panel and character_panel.visible:
 		# If item is equipped (0-8), move it to bag
 		if item_data.bag_slot_id >= 0 and item_data.bag_slot_id <= 8:
@@ -58,15 +63,15 @@ func _handle_double_click():
 				return
 	
 	# Get root game node to find panels
-	var game = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Home")
-	if not game:
+	var home_panel = game_root.find_child("Home", true, false) if game_root else null
+	if not home_panel:
 		return
 	
 	# Check which panel is visible and handle accordingly
-	var blacksmith_panel = game.get_node_or_null("BlacksmithPanel")
-	var enchanter_panel = game.get_node_or_null("EnchanterPanel")
-	var alchemist_panel = game.get_node_or_null("AlchemistPanel")
-	var vendor_panel = game.get_node_or_null("VendorPanel")
+	var blacksmith_panel = home_panel.get_node_or_null("BlacksmithPanel")
+	var enchanter_panel = home_panel.get_node_or_null("EnchanterPanel")
+	var alchemist_panel = home_panel.get_node_or_null("AlchemistPanel")
+	var vendor_panel = home_panel.get_node_or_null("VendorPanel")
 	
 	# Blacksmith: Move equippable items (not ingredients/consumables) to slot 100
 	if blacksmith_panel and blacksmith_panel.visible:
@@ -235,7 +240,8 @@ func _consume_item():
 				break
 	
 	# Update active perks display to show new consumable
-	var active_perks_display = get_tree().root.get_node_or_null("Game/Portrait/GameScene/Character/ActivePerksBackground/ActivePerks")
+	var game_root = get_tree().root.get_node_or_null("Game")
+	var active_perks_display = game_root.find_child("ActivePerks", true, false) if game_root else null
 	if active_perks_display:
 		active_perks_display.update_active_perks()
 	
