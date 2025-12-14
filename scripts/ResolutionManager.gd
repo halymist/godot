@@ -64,9 +64,16 @@ func calculate_layout():
 
 
 func switch_layout(new_layout: Control):
-	print("Switching layout from ", current_layout.name, " to ", new_layout.name)
-	current_layout.visible = false
-	current_layout.process_mode = Node.PROCESS_MODE_DISABLED
+	if not new_layout:
+		print("Error: new_layout is null")
+		return
+		
+	if current_layout:
+		print("Switching layout from ", current_layout.name, " to ", new_layout.name)
+		current_layout.visible = false
+		current_layout.process_mode = Node.PROCESS_MODE_DISABLED
+	else:
+		print("Switching to initial layout: ", new_layout.name)
 
 	current_layout = new_layout
 	current_layout.visible = true

@@ -1,0 +1,187 @@
+[gd_scene load_steps=5 format=3 uid="uid://landscape_game"]
+
+[ext_resource type="Script" path="res://scripts/TogglePanelWide.gd" id="1_wide"]
+[ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="2_silver"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sidebar"]
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
+border_width_right = 2
+border_color = Color(0.3, 0.3, 0.3, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gamescene"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Landscape" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Sidebar" type="PanelContainer" parent="Landscape"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sidebar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Landscape/Sidebar"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TopSection" type="VBoxContainer" parent="Landscape/Sidebar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 15
+
+[node name="CharacterIcon" type="TextureRect" parent="Landscape/Sidebar/VBoxContainer/TopSection"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CurrencyContainer" type="VBoxContainer" parent="Landscape/Sidebar/VBoxContainer/TopSection"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 8
+
+[node name="SilverContainer" type="HBoxContainer" parent="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 8
+
+[node name="SilverIcon" type="TextureRect" parent="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer/SilverContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("2_silver")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SilverValue" type="Label" parent="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer/SilverContainer"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "0"
+
+[node name="MushroomContainer" type="HBoxContainer" parent="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 8
+
+[node name="MushroomIcon" type="TextureRect" parent="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer/MushroomContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MushroomValue" type="Label" parent="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer/MushroomContainer"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "0"
+
+[node name="PaymentButton" type="Button" parent="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer/MushroomContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="Separator" type="Control" parent="Landscape/Sidebar/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="NavigationButtons" type="VBoxContainer" parent="Landscape/Sidebar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="HomeButton" type="Button" parent="Landscape/Sidebar/VBoxContainer/NavigationButtons"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Home"
+
+[node name="ArenaButton" type="Button" parent="Landscape/Sidebar/VBoxContainer/NavigationButtons"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Arena"
+
+[node name="MapButton" type="Button" parent="Landscape/Sidebar/VBoxContainer/NavigationButtons"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Map"
+
+[node name="RankingsButton" type="Button" parent="Landscape/Sidebar/VBoxContainer/NavigationButtons"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Rankings"
+
+[node name="ChatButton" type="Button" parent="Landscape/Sidebar/VBoxContainer/NavigationButtons"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Chat"
+
+[node name="SettingsButton" type="Button" parent="Landscape/Sidebar/VBoxContainer/NavigationButtons"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Settings"
+
+[node name="GameScene" type="AspectRatioContainer" parent="Landscape"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+ratio = 1.0
+script = ExtResource("1_wide")
+
+[node name="Background" type="Panel" parent="Landscape/GameScene"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gamescene")
+
+[node name="Home" type="Control" parent="Landscape/GameScene"]
+visible = false
+layout_mode = 2
+
+[node name="Arena" type="Control" parent="Landscape/GameScene"]
+visible = false
+layout_mode = 2
+
+[node name="Map" type="Control" parent="Landscape/GameScene"]
+visible = false
+layout_mode = 2
+
+[node name="Rankings" type="Control" parent="Landscape/GameScene"]
+visible = false
+layout_mode = 2
+
+[node name="Chat" type="Control" parent="Landscape/GameScene"]
+visible = false
+layout_mode = 2
+
+[node name="Settings" type="Control" parent="Landscape/GameScene"]
+visible = false
+layout_mode = 2
+
+[node name="Payment" type="Panel" parent="Landscape/GameScene"]
+visible = false
+layout_mode = 2
+
+[connection signal="pressed" from="Landscape/Sidebar/VBoxContainer/TopSection/CurrencyContainer/MushroomContainer/PaymentButton" to="Landscape/GameScene" method="_on_payment_button_pressed"]
+[connection signal="pressed" from="Landscape/Sidebar/VBoxContainer/NavigationButtons/HomeButton" to="Landscape/GameScene" method="_on_home_button_pressed"]
+[connection signal="pressed" from="Landscape/Sidebar/VBoxContainer/NavigationButtons/ArenaButton" to="Landscape/GameScene" method="_on_arena_button_pressed"]
+[connection signal="pressed" from="Landscape/Sidebar/VBoxContainer/NavigationButtons/MapButton" to="Landscape/GameScene" method="_on_map_button_pressed"]
+[connection signal="pressed" from="Landscape/Sidebar/VBoxContainer/NavigationButtons/RankingsButton" to="Landscape/GameScene" method="_on_rankings_button_pressed"]
+[connection signal="pressed" from="Landscape/Sidebar/VBoxContainer/NavigationButtons/ChatButton" to="Landscape/GameScene" method="_on_chat_button_pressed"]
+[connection signal="pressed" from="Landscape/Sidebar/VBoxContainer/NavigationButtons/SettingsButton" to="Landscape/GameScene" method="_on_settings_button_pressed"]
