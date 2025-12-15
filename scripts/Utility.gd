@@ -1,7 +1,7 @@
 extends Control
 class_name Utility
 
-@export var target_panel: Panel
+@export var target: Button
 
 @onready var click_button: Button = $ClickButton
 @onready var hover_area: ColorRect = $HoverArea
@@ -20,13 +20,13 @@ func _on_mouse_exited():
 	hover_area.color = Color(1, 1, 1, 0)
 
 func _on_button_pressed():
-	if target_panel:
-		print("Utility clicked, showing panel: ", target_panel.name)
+	if target:
+		print("Utility clicked, showing panel: ", target.name)
 		# Set the location-specific background for utility panels
-		if target_panel.has_method("set_location_texture"):
+		if target.has_method("set_location_texture"):
 			var location = GameInfo.current_player.location if GameInfo.current_player else 1
-			target_panel.set_location_texture(location)
+			target.set_location_texture(location)
 		
-		target_panel.visible = true
-		GameInfo.set_current_panel(target_panel)
+		target.visible = true
+		GameInfo.set_current_panel(target)
 	utility_clicked.emit(self)
