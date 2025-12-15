@@ -132,19 +132,31 @@ func hide_overlay(overlay: Control):
 func show_panel(panel: Control):
 	hide_all_panels()
 	
-	# Also hide utility panels (vendor, blacksmith, trainer, church, alchemist, enchanter, settings, rankings)
+	# Also hide utility panel wrappers
 	if vendor_panel:
-		vendor_panel.visible = false
+		var vendor_wrapper = vendor_panel.get_parent()
+		if vendor_wrapper:
+			vendor_wrapper.visible = false
 	if blacksmith_panel:
-		blacksmith_panel.visible = false
+		var blacksmith_wrapper = blacksmith_panel.get_parent()
+		if blacksmith_wrapper:
+			blacksmith_wrapper.visible = false
 	if trainer_panel:
-		trainer_panel.visible = false
+		var trainer_wrapper = trainer_panel.get_parent()
+		if trainer_wrapper:
+			trainer_wrapper.visible = false
 	if church_panel:
-		church_panel.visible = false
+		var church_wrapper = church_panel.get_parent()
+		if church_wrapper:
+			church_wrapper.visible = false
 	if alchemist_panel:
-		alchemist_panel.visible = false
+		var alchemist_wrapper = alchemist_panel.get_parent()
+		if alchemist_wrapper:
+			alchemist_wrapper.visible = false
 	if enchanter_panel:
-		enchanter_panel.visible = false
+		var enchanter_wrapper = enchanter_panel.get_parent()
+		if enchanter_wrapper:
+			enchanter_wrapper.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -170,19 +182,31 @@ func show_panel(panel: Control):
 			active_perks_display.update_active_perks()
 
 func handle_home_button():
-	# Hide utility panels when going home
+	# Hide utility panel wrappers when going home
 	if vendor_panel:
-		vendor_panel.visible = false
+		var vendor_wrapper = vendor_panel.get_parent()
+		if vendor_wrapper:
+			vendor_wrapper.visible = false
 	if blacksmith_panel:
-		blacksmith_panel.visible = false
+		var blacksmith_wrapper = blacksmith_panel.get_parent()
+		if blacksmith_wrapper:
+			blacksmith_wrapper.visible = false
 	if trainer_panel:
-		trainer_panel.visible = false
+		var trainer_wrapper = trainer_panel.get_parent()
+		if trainer_wrapper:
+			trainer_wrapper.visible = false
 	if church_panel:
-		church_panel.visible = false
+		var church_wrapper = church_panel.get_parent()
+		if church_wrapper:
+			church_wrapper.visible = false
 	if alchemist_panel:
-		alchemist_panel.visible = false
+		var alchemist_wrapper = alchemist_panel.get_parent()
+		if alchemist_wrapper:
+			alchemist_wrapper.visible = false
 	if enchanter_panel:
-		enchanter_panel.visible = false
+		var enchanter_wrapper = enchanter_panel.get_parent()
+		if enchanter_wrapper:
+			enchanter_wrapper.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -316,7 +340,7 @@ func go_back():
 		GameInfo.set_current_panel(rankings_panel)
 		return
 
-	# Priority 3: Check if we're in any utility panel - hide it and return to home
+	# Priority 3: Check if we're in any utility panel - hide wrapper and return to home
 	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel, settings_panel, rankings_panel, payment]
 	print("Checking utility panels, current: ", current.name if current else "null")
 	for panel in utility_panels:
@@ -324,7 +348,11 @@ func go_back():
 			print("  Comparing with: ", panel.name, " - Match: ", current == panel)
 		if panel and current == panel:
 			print("Hiding utility panel: ", panel.name)
-			panel.visible = false
+			var wrapper = panel.get_parent()
+			if wrapper:
+				wrapper.visible = false
+			else:
+				panel.visible = false
 			show_panel(home_panel)
 			return
 
