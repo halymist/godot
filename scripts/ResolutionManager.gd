@@ -87,18 +87,37 @@ func switch_layout(new_layout: Control):
 		var current_parent = game_scene.get_parent()
 		var target_parent = portrait_game_parent if new_layout == phone_ui_root else wide_game_parent
 		
-		print("GameScene reparenting - Current parent: ", current_parent.name if current_parent else "null", 
-			  ", Target parent: ", target_parent.name if target_parent else "null")
-		
 		if target_parent and current_parent != target_parent:
 			if current_parent:
 				current_parent.remove_child(game_scene)
 			target_parent.add_child(game_scene)
-			# Reset anchors/position to fill parent
 			game_scene.set_anchors_preset(Control.PRESET_FULL_RECT)
-			print("GameScene reparented to ", target_parent.name)
 	
 	layout_changed.emit(current_layout)
+
+func _process(_delta):
+	if current_layout == desktop_ui_root:
+		var viewport_size = get_viewport().get_visible_rect().size
+		var target_ratio = 4.0 / 3.0
+		
+		var width_based_height = viewport_size.x / target_ratio
+		var height_based_width = viewport_size.y * target_ratio
+		
+		var final_width: float
+		var final_height: float
+		
+		if width_based_height <= viewport_size.y:
+			final_width = viewport_size.x
+			final_height = width_based_height
+		else:
+			final_width = height_based_width
+			final_height = viewport_size.y
+		
+		var x_offset = (viewport_size.x - final_width) / 2.0
+		var y_offset = viewport_size.y - final_height
+		
+		desktop_ui_root.position = Vector2(x_offset, y_offset)
+		desktop_ui_root.size = Vector2(final_width, final_height)
 
 # user font scale preference - only scales Label fonts
 func set_user_font_scale(new_scale: float):
