@@ -1001,7 +1001,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -30.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("40_vendor")
@@ -1013,8 +1012,8 @@ village5_texture = ExtResource("16_titue")
 
 [node name="VendorBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel"]
 anchors_preset = 0
-offset_right = 420.0
-offset_bottom = 280.0
+offset_right = 450.0
+offset_bottom = 300.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel/VendorBackground"]
 layout_mode = 1
@@ -1028,8 +1027,8 @@ expand_mode = 1
 
 [node name="ItemsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel"]
 layout_mode = 0
-offset_top = 280.0
-offset_right = 420.0
+offset_top = 300.0
+offset_right = 450.0
 offset_bottom = 545.0
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
@@ -1086,8 +1085,8 @@ slot_id = 112
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-offset_left = 4.5
-offset_right = 25.5
+offset_left = -10.5
+offset_right = 10.5
 
 [node name="BlacksmithWrapper" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home"]
 visible = false
@@ -1104,7 +1103,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -30.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
@@ -1116,8 +1114,8 @@ village5_texture = ExtResource("20_fnkle")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel"]
 anchors_preset = 0
-offset_right = 420.0
-offset_bottom = 280.0
+offset_right = 450.0
+offset_bottom = 300.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel/UtilityBackground"]
 layout_mode = 1
@@ -1131,8 +1129,8 @@ expand_mode = 1
 
 [node name="ItemsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel"]
 layout_mode = 0
-offset_top = 280.0
-offset_right = 420.0
+offset_top = 300.0
+offset_right = 450.0
 offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel/ItemsPanel"]
@@ -1236,8 +1234,8 @@ text = ")"
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-offset_left = -205.5
-offset_right = 235.5
+offset_left = -220.5
+offset_right = 220.5
 
 [node name="TrainerWrapper" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home"]
 visible = false
@@ -1607,7 +1605,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -30.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
@@ -1619,8 +1616,8 @@ village5_texture = ExtResource("36_lknxd")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel"]
 anchors_preset = 0
-offset_right = 420.0
-offset_bottom = 280.0
+offset_right = 450.0
+offset_bottom = 300.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel/UtilityBackground"]
 layout_mode = 1
@@ -1634,8 +1631,8 @@ expand_mode = 1
 
 [node name="ItemsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel"]
 layout_mode = 0
-offset_top = 280.0
-offset_right = 420.0
+offset_top = 300.0
+offset_right = 450.0
 offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel/ItemsPanel"]
@@ -1759,8 +1756,8 @@ text = ")"
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-offset_left = -205.5
-offset_right = 235.5
+offset_left = -220.5
+offset_right = 220.5
 
 [node name="EnchanterWrapper" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home"]
 visible = false
@@ -1777,7 +1774,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -30.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("31_enchanter")
@@ -1789,8 +1785,8 @@ village5_texture = ExtResource("40_q8b24")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel"]
 anchors_preset = 0
-offset_right = 420.0
-offset_bottom = 280.0
+offset_right = 450.0
+offset_bottom = 300.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel/UtilityBackground"]
 layout_mode = 1
@@ -1804,8 +1800,8 @@ expand_mode = 1
 
 [node name="ItemsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel"]
 layout_mode = 0
-offset_top = 280.0
-offset_right = 420.0
+offset_top = 300.0
+offset_right = 450.0
 offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel/ItemsPanel"]
@@ -1915,8 +1911,8 @@ size_flags_vertical = 3
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-offset_left = -205.5
-offset_right = 235.5
+offset_left = -220.5
+offset_right = 220.5
 
 [node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false

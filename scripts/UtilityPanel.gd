@@ -50,8 +50,8 @@ func _update_layout():
 	var parent_width = parent.size.x
 	var parent_height = parent.size.y
 	
-	# Calculate max width based on 2:3 aspect ratio
-	var max_width = parent_height * (2.0 / 3.0)
+	# Calculate max width based on 2.2:3 aspect ratio
+	var max_width = parent_height * (2.2 / 3.0)
 	
 	# Constrain panel width
 	var panel_width = min(parent_width, max_width)
@@ -66,8 +66,8 @@ func _update_layout():
 	background_container.size = Vector2(panel_width, bg_height)
 	background_container.position = Vector2(0, 0)
 	
-	# Bag: position at bottom, centered horizontally within parent
-	var bag_x = (parent_width - bag.size.x) / 2.0
+	# Bag: position at bottom, centered horizontally within panel
+	var bag_x = (panel_width - bag.size.x) / 2.0
 	bag.position = Vector2(bag_x, panel_height - bag.size.y)
 	
 	# Items panel: gets remaining space between background and bag
