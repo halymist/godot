@@ -6026,13 +6026,14 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="CharacterButton" type="Button" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
-custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 3
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
 [node name="CurrencySection" type="VBoxContainer" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 
@@ -6100,43 +6101,43 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Separator" type="Control" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="HomeButton" type="Button" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer"]
-custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 3
 text = "Home"
 
 [node name="ArenaButton" type="Button" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer"]
-custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 3
 text = "Arena"
 
 [node name="MapButton" type="Button" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer"]
-custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 3
 text = "Map"
 
 [node name="ChatButton" type="Button" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer"]
-custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 3
 text = "Chat"
 
 [node name="RankingsButton" type="Button" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer"]
-custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 3
 text = "Rankings"
 
 [node name="SettingsButton" type="Button" parent="Wide/GamePanel/HBoxContainer/Sidebar/VBoxContainer"]
-custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 3
 text = "Settings"
 
 [node name="GameSceneParent" type="Control" parent="Wide/GamePanel/HBoxContainer"]
