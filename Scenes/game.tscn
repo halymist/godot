@@ -994,6 +994,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+flat = true
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper"]
 z_index = 100
@@ -1096,6 +1101,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+flat = true
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper"]
 z_index = 100
@@ -1245,6 +1255,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+flat = true
 
 [node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/TrainerWrapper"]
 z_index = 100
@@ -1483,6 +1498,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+flat = true
 
 [node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper"]
 z_index = 100
@@ -1517,7 +1537,7 @@ expand_mode = 1
 [node name="BlessingsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper/ChurchPanel"]
 layout_mode = 0
 offset_top = 300.0
-offset_right = 600.0
+offset_right = 450.0
 offset_bottom = 630.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper/ChurchPanel/BlessingsPanel"]
@@ -1598,6 +1618,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+flat = true
 
 [node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper"]
 z_index = 100
@@ -1767,6 +1792,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+flat = true
 
 [node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper"]
 z_index = 100

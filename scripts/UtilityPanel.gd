@@ -39,7 +39,7 @@ func _update_layout():
 	
 	var bag = get_node_or_null("Bag")
 	
-	if not background_container or not items_panel or not bag:
+	if not background_container or not items_panel:
 		return
 	
 	# Get parent (wrapper button) size
@@ -66,14 +66,20 @@ func _update_layout():
 	background_container.size = Vector2(panel_width, bg_height)
 	background_container.position = Vector2(0, 0)
 	
-	# Bag: position at bottom, centered horizontally within panel
-	var bag_x = (panel_width - bag.size.x) / 2.0
-	bag.position = Vector2(bag_x, panel_height - bag.size.y)
-	
-	# Items panel: gets remaining space between background and bag
-	var items_height = panel_height - (bg_height + bag.size.y)
-	items_panel.size = Vector2(panel_width, items_height)
-	items_panel.position = Vector2(0, bg_height)
+	if bag:
+		# Bag: position at bottom, centered horizontally within panel
+		var bag_x = (panel_width - bag.size.x) / 2.0
+		bag.position = Vector2(bag_x, panel_height - bag.size.y)
+		
+		# Items panel: gets remaining space between background and bag
+		var items_height = panel_height - (bg_height + bag.size.y)
+		items_panel.size = Vector2(panel_width, items_height)
+		items_panel.position = Vector2(0, bg_height)
+	else:
+		# No bag: items panel gets remaining space from background to bottom
+		var items_height = panel_height - bg_height
+		items_panel.size = Vector2(panel_width, items_height)
+		items_panel.position = Vector2(0, bg_height)
 
 func set_location_texture(location: int):
 	var background_texture = get_node_or_null("UtilityBackground/Background")
