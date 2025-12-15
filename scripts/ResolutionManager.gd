@@ -114,7 +114,7 @@ func _process(_delta):
 			final_height = viewport_size.y
 		
 		var x_offset = (viewport_size.x - final_width) / 2.0
-		var y_offset = viewport_size.y - final_height
+		var y_offset = (viewport_size.y - final_height) / 2.0
 		
 		desktop_ui_root.position = Vector2(x_offset, y_offset)
 		desktop_ui_root.size = Vector2(final_width, final_height)

@@ -288,7 +288,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2_nb51f")
 script = ExtResource("3_nnt18")
 home_panel = NodePath("GameSceneParent/Wrapper/GameScene/Home")
 home_button = NodePath("BottomUI/Buttons/Home/Button")
@@ -5995,7 +5994,6 @@ expand_icon = true
 [node name="Wide" type="Control" parent="."]
 visible = false
 anchors_preset = 0
-theme = ExtResource("2_nb51f")
 
 [node name="GamePanel" type="Panel" parent="Wide"]
 layout_mode = 1
