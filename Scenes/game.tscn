@@ -289,6 +289,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_nb51f")
 script = ExtResource("3_nnt18")
 home_panel = NodePath("GameSceneParent/Wrapper/GameScene/Home")
 home_button = NodePath("BottomUI/Buttons/Home/Button")
@@ -6000,6 +6001,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_nb51f")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Wide"]
 layout_mode = 1
@@ -6009,6 +6011,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 ratio = 1.33
+stretch_mode = 0
 
 [node name="GamePanel" type="Panel" parent="Wide/AspectRatioContainer"]
 layout_mode = 2
@@ -6019,6 +6022,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -2.82706
+offset_bottom = 2.82706
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
