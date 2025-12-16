@@ -86,13 +86,20 @@ func switch_layout(new_layout: Control):
 	# Reparent GameScene to the appropriate parent
 	if game_scene:
 		var current_parent = game_scene.get_parent()
-		var target_parent = portrait_game_parent if new_layout == phone_ui_root else wide_aspect_container
+		var target_parent = portrait_game_parent if new_layout == phone_ui_root else wide_game_parent
 		
 		if target_parent and current_parent != target_parent:
 			if current_parent:
 				current_parent.remove_child(game_scene)
 			target_parent.add_child(game_scene)
+			# Reset all properties to ensure clean reparenting
+			game_scene.position = Vector2.ZERO
+			game_scene.size = Vector2.ZERO
 			game_scene.set_anchors_preset(Control.PRESET_FULL_RECT)
+			game_scene.offset_left = 0
+			game_scene.offset_top = 0
+			game_scene.offset_right = 0
+			game_scene.offset_bottom = 0
 	
 	layout_changed.emit(current_layout)
 
