@@ -6031,6 +6031,154 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="VBoxContainer" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="TopSection" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Character" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+
+[node name="CurrencySection" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MushroomContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="MushroomIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/MushroomContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MushroomValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/MushroomContainer"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "0"
+
+[node name="PaymentButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/MushroomContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="SilverContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SilverIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/SilverContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SilverValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/SilverContainer"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "0"
+
+[node name="LocationLabel" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+text = "Krasna Ves - 14:35"
+vertical_alignment = 1
+
+[node name="ButtonsSection" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="HomeButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection"]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+ratio = 3.4
+
+[node name="HomeButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/HomeButtonContainer"]
+layout_mode = 2
+text = "Home"
+icon = ExtResource("14_81klo")
+expand_icon = true
+
+[node name="ArenaButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection"]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+ratio = 3.4
+
+[node name="ArenaButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/ArenaButtonContainer"]
+layout_mode = 2
+text = "Arena"
+icon = ExtResource("13_fkdbe")
+expand_icon = true
+
+[node name="MapButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection"]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+ratio = 3.4
+
+[node name="MapButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/MapButtonContainer"]
+layout_mode = 2
+text = "Map"
+icon = ExtResource("12_22asu")
+expand_icon = true
+
+[node name="RankingsButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection"]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+ratio = 3.4
+
+[node name="RankingsButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/RankingsButtonContainer"]
+layout_mode = 2
+text = "Rankings"
+icon = ExtResource("13_fkdbe")
+expand_icon = true
+
+[node name="ChatButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection"]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+ratio = 3.4
+
+[node name="ChatButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/ChatButtonContainer"]
+layout_mode = 2
+text = "Chat"
+icon = ExtResource("11_vm72l")
+expand_icon = true
+
+[node name="SettingsButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection"]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+ratio = 3.4
+
+[node name="SettingsButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/SettingsButtonContainer"]
+layout_mode = 2
+text = "Settings"
+icon = ExtResource("5_settings")
+expand_icon = true
+
 [node name="GameSceneParent" type="Control" parent="Wide/AspectRatioContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
