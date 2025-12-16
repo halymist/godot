@@ -11,8 +11,8 @@ var current_scale_factor = 1.0
 @export var desktop_ui_root: Control
 @export var game_scene: Control
 @export var portrait_game_parent: Control
-@export var wide_game_parent: Control
-@export var wide_aspect_container: AspectRatioContainer
+@export var wide_subviewport_container: SubViewportContainer
+@export var wide_subviewport: SubViewport
 @export var base_theme: Theme
 @export var aspect_ratio_threshold: float = 0.6  # Below this = phone, above = desktop
 var min_phone_aspect_ratio: float = 0.4
@@ -83,16 +83,21 @@ func switch_layout(new_layout: Control):
 	current_layout.visible = true
 	current_layout.process_mode = Node.PROCESS_MODE_INHERIT
 	
-	# Reparent GameScene to the appropriate parent
+	# Reparent GameScene between Portrait and Wide SubViewport
 	if game_scene:
 		var current_parent = game_scene.get_parent()
-		var target_parent = portrait_game_parent if new_layout == phone_ui_root else wide_game_parent
+		var target_parent: Node = null
+		
+		if new_layout == phone_ui_root:
+			target_parent = portrait_game_parent
+		else:
+			# Wide mode: parent to SubViewport
+			target_parent = wide_subviewport
 		
 		if target_parent and current_parent != target_parent:
 			if current_parent:
 				current_parent.remove_child(game_scene)
 			target_parent.add_child(game_scene)
-			# Reset all properties to ensure clean reparenting
 			game_scene.position = Vector2.ZERO
 			game_scene.size = Vector2.ZERO
 			game_scene.set_anchors_preset(Control.PRESET_FULL_RECT)
