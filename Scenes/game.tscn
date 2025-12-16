@@ -277,9 +277,19 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 game_scene = NodePath("Portrait/GameSceneParent/Wrapper")
 portrait_game_parent = NodePath("Portrait/GameSceneParent")
-wide_game_parent = NodePath("Wide/HBoxContainer/GameSceneParent")
+wide_game_parent = NodePath("Wide/AspectRatioContainer/HBoxContainer/GameSceneParent")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 1)
 
 [node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button")]
 layout_mode = 1
@@ -5997,26 +6007,31 @@ expand_icon = true
 [node name="Wide" type="Control" parent="."]
 visible = false
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -667.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 theme = ExtResource("2_nb51f")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Wide"]
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Wide"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_bottom = 667.0
 grow_horizontal = 2
-grow_vertical = 2
+ratio = 1.33333
 
-[node name="Sidebar" type="Control" parent="Wide/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer"]
+layout_mode = 2
+
+[node name="Sidebar" type="Control" parent="Wide/AspectRatioContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GameSceneParent" type="Control" parent="Wide/HBoxContainer"]
+[node name="GameSceneParent" type="Control" parent="Wide/AspectRatioContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0

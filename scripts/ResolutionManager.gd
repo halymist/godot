@@ -67,16 +67,15 @@ func switch_layout(new_layout: Control):
 	
 	# Change the Window's content scale base resolution based on mode
 	var window = get_tree().root
+	window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
+	
 	if new_layout == phone_ui_root:
 		# Portrait mode: use portrait base resolution
 		window.content_scale_size = PORTRAIT_BASE
-		window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
 	else:
 		# Wide mode: use wide base resolution (4:3)
 		window.content_scale_size = WIDE_BASE
-		window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
 	
 	# Reparent GameScene between Portrait and Wide parents
 	if game_scene:
