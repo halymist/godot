@@ -11,27 +11,39 @@ var current_scale_factor = 1.0
 @export var desktop_ui_root: Control
 @export var game_scene: Control
 @export var portrait_game_parent: Control
-@export var wide_subviewport_container: SubViewportContainer
-@export var wide_subviewport: SubViewport
+@export var wide_game_parent: Control
 @export var base_theme: Theme
-@export var aspect_ratio_threshold: float = 0.6  # Below this = phone, above = desktop
+@export var aspect_ratio_threshold: float = 1.3  # Below this = phone, above = desktop
 var min_phone_aspect_ratio: float = 0.4
+
+# Base resolutions for each mode
+const PORTRAIT_BASE = Vector2i(450, 900)
+const WIDE_BASE = Vector2i(889, 667)  # 4:3 aspect
 
 # Store current layout as direct reference to the active UI root
 var current_layout: Control = null
+var last_aspect_ratio: float = 0.0
+var last_window_size: Vector2i = Vector2i.ZERO
 
 signal user_font_scale_changed(new_scale)
 signal layout_changed(new_layout)
 
 func _ready():
 	current_layout = null  # Start as null so first calculate_layout triggers switch
-	get_viewport().size_changed.connect(calculate_layout)
 	calculate_layout()
+
+func _process(_delta):
+	var current_size = DisplayServer.window_get_size()
+	if current_size != last_window_size:
+		last_window_size = current_size
+		calculate_layout()
 
 func calculate_layout():
 	var window_size = DisplayServer.window_get_size()
 	var aspect_ratio = float(window_size.x) / float(window_size.y)
+	print("Window size: ", window_size, " | Aspect: ", aspect_ratio, " | Threshold: ", aspect_ratio_threshold)
 	var new_layout = phone_ui_root if aspect_ratio < aspect_ratio_threshold else desktop_ui_root
+	print("Selected layout: ", new_layout.name if new_layout else "null")
 
 	# Enforce minimum aspect ratio for phone layout
 	if new_layout == phone_ui_root:
@@ -83,7 +95,20 @@ func switch_layout(new_layout: Control):
 	current_layout.visible = true
 	current_layout.process_mode = Node.PROCESS_MODE_INHERIT
 	
-	# Reparent GameScene between Portrait and Wide SubViewport
+	# Change the Window's content scale base resolution based on mode
+	var window = get_tree().root
+	if new_layout == phone_ui_root:
+		# Portrait mode: use portrait base resolution
+		window.content_scale_size = PORTRAIT_BASE
+		window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+	else:
+		# Wide mode: use wide base resolution (4:3)
+		window.content_scale_size = WIDE_BASE
+		window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+	
+	# Reparent GameScene between Portrait and Wide parents
 	if game_scene:
 		var current_parent = game_scene.get_parent()
 		var target_parent: Node = null
@@ -91,8 +116,7 @@ func switch_layout(new_layout: Control):
 		if new_layout == phone_ui_root:
 			target_parent = portrait_game_parent
 		else:
-			# Wide mode: parent to SubViewport
-			target_parent = wide_subviewport
+			target_parent = wide_game_parent
 		
 		if target_parent and current_parent != target_parent:
 			if current_parent:

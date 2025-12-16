@@ -263,7 +263,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="Game" type="Control" node_paths=PackedStringArray("phone_ui_root", "desktop_ui_root", "game_scene", "portrait_game_parent", "wide_subviewport_container", "wide_subviewport")]
+[node name="Game" type="Control" node_paths=PackedStringArray("phone_ui_root", "desktop_ui_root", "game_scene", "portrait_game_parent", "wide_game_parent")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -277,8 +277,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 game_scene = NodePath("Portrait/GameSceneParent/Wrapper")
 portrait_game_parent = NodePath("Portrait/GameSceneParent")
-wide_subviewport_container = NodePath("Wide/SubViewportContainer")
-wide_subviewport = NodePath("Wide/SubViewportContainer/SubViewport")
+wide_game_parent = NodePath("Wide/GameSceneParent")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
@@ -1089,8 +1088,8 @@ slot_id = 112
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-offset_left = -10.5
-offset_right = 10.5
+offset_left = -49.3033
+offset_right = 49.3033
 
 [node name="BlacksmithWrapper" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home"]
 visible = false
@@ -6003,16 +6002,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_nb51f")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="Wide"]
+[node name="GameSceneParent" type="Control" parent="Wide"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-stretch = true
-
-[node name="SubViewport" type="SubViewport" parent="Wide/SubViewportContainer"]
-handle_input_locally = false
-size = Vector2i(450, 900)
-render_target_update_mode = 0
