@@ -76,7 +76,7 @@ var mock_character_data = {
 			"day": 2
 		},
 		{
-			"id": 501,
+			"id": 390,
 			"bag_slot_id": 14,
 			"day": 4
 		}
