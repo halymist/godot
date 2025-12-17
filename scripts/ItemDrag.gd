@@ -1,6 +1,5 @@
 extends TextureRect
 # Store the complete item data
-var description_panel: PanelContainer 
 var item_data: GameInfo.Item = null
 
 # Double-click detection
@@ -8,27 +7,19 @@ var last_click_time: float = 0.0
 const DOUBLE_CLICK_TIME: float = 0.3  # 300ms window for double-click
 
 func _ready():
-	# Find ItemDescription dynamically since it moves between Portrait/Wide
-	var game_root = get_tree().root.get_node_or_null("Game")
-	if game_root:
-		description_panel = game_root.find_child("ItemDescription", true, false)
-	
 	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
 	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
 	connect("gui_input", Callable(self, "_on_gui_input"))
-	if description_panel:
-		description_panel.visible = false
 
 
 func _on_mouse_entered():
-	if item_data and description_panel:
+	if item_data:
 		# Get the parent slot to determine positioning
 		var parent_slot = get_parent()
-		description_panel.show_description(item_data, parent_slot)
+		TooltipManager.show_tooltip(item_data, parent_slot)
 
 func _on_mouse_exited():
-	if description_panel:
-		description_panel.hide_description()
+	TooltipManager.hide_tooltip()
 
 func _on_gui_input(event: InputEvent):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:

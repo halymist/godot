@@ -1,0 +1,161 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4lxsamibimaj"]
+
+[ext_resource type="Script" uid="uid://bib0u7na61nim" path="res://scripts/ItemDescription.gd" id="1_r3ppy"]
+[ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="2_thy55"]
+[ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="3_v6gnf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
+bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="ItemDescription" type="PanelContainer" node_paths=PackedStringArray("name_label", "price_label", "price_icon", "strength", "stamina", "agility", "luck", "armor", "effect", "socket_label", "socket_icon", "gem_icon")]
+visible = false
+z_index = 1500
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -56.0
+offset_top = -156.5
+offset_right = 56.0
+offset_bottom = 156.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+script = ExtResource("1_r3ppy")
+name_label = NodePath("MarginContainer/VBoxContainer/Name")
+price_label = NodePath("MarginContainer/VBoxContainer/PriceContainer/Value")
+price_icon = NodePath("MarginContainer/VBoxContainer/PriceContainer/SilverIcon")
+strength = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Value")
+stamina = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/Value")
+agility = NodePath("MarginContainer/VBoxContainer/HBoxContainer3/Value")
+luck = NodePath("MarginContainer/VBoxContainer/HBoxContainer4/Value")
+armor = NodePath("MarginContainer/VBoxContainer/HBoxContainer5/Value")
+effect = NodePath("MarginContainer/VBoxContainer/Effect")
+socket_label = NodePath("MarginContainer/VBoxContainer/SocketContainer/Value")
+socket_icon = NodePath("MarginContainer/VBoxContainer/SocketContainer/SocketIcon")
+gem_icon = NodePath("MarginContainer/VBoxContainer/SocketContainer/SocketIcon/GemIcon")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Item Name"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Strength" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Strength"
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "20"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Stamina" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Stamina"
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "20"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Agility" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Agility"
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "20"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Luck" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Luck"
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "20"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Armor" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Armor"
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "20"
+
+[node name="Effect" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Effect"
+
+[node name="SocketContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SocketIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/SocketContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("2_thy55")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/SocketContainer/SocketIcon"]
+visible = false
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/SocketContainer"]
+modulate = Color(0.7, 0.7, 0.7, 1)
+layout_mode = 2
+text = "Empty"
+
+[node name="PriceContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/PriceContainer"]
+layout_mode = 2
+text = "100"
+
+[node name="SilverIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/PriceContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("3_v6gnf")
+expand_mode = 1
+stretch_mode = 5

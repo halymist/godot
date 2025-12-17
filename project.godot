@@ -19,6 +19,7 @@ config/icon="res://assets/images/icon.svg"
 
 Websocket="*res://scripts/global/Websocket.gd"
 GameInfo="*res://scripts/global/GameInfo.gd"
+TooltipManager="*res://scripts/global/TooltipManager.gd"
 
 [display]
 
