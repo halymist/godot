@@ -331,6 +331,8 @@ wide_chat_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/
 wide_map_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/MapButtonContainer/MapButton")
 wide_character_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character/CharacterButton")
 wide_rankings_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/RankingsButtonContainer/RankingsButton")
+wide_payment_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection/MushroomContainer/PaymentButton")
+wide_back_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/BackButton")
 
 [node name="Portrait" type="Control" parent="."]
 layout_mode = 1
@@ -6059,50 +6061,65 @@ size_flags_vertical = 3
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
-[node name="CurrencySection" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
+[node name="CurrencyBackRow" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="CurrencySection" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="MushroomContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection"]
+[node name="MushroomContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="MushroomIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/MushroomContainer"]
+[node name="MushroomIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection/MushroomContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MushroomValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/MushroomContainer"]
+[node name="MushroomValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection/MushroomContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="PaymentButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/MushroomContainer"]
+[node name="PaymentButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection/MushroomContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="SilverContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection"]
+[node name="SilverContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="SilverIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/SilverContainer"]
+[node name="SilverIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection/SilverContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="SilverValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection/SilverContainer"]
+[node name="SilverValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow/CurrencySection/SilverContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="LocationLabel" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencySection"]
+[node name="Spacer" type="Control" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BackButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/CurrencyBackRow"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+icon = ExtResource("4_ewbju")
+expand_icon = true
+
+[node name="LocationLabel" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2

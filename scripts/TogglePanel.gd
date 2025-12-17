@@ -45,6 +45,8 @@ extends Control
 @export var wide_map_button: Button
 @export var wide_character_button: Button
 @export var wide_rankings_button: Button
+@export var wide_payment_button: Button
+@export var wide_back_button: Button
 
 
 func _ready():
@@ -83,6 +85,10 @@ func _ready():
 		wide_character_button.pressed.connect(show_panel.bind(character_panel))
 	if wide_rankings_button:
 		wide_rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
+	if wide_payment_button:
+		wide_payment_button.pressed.connect(show_overlay.bind(payment))
+	if wide_back_button:
+		wide_back_button.pressed.connect(go_back)
 	
 	# Connect cancel quest dialog buttons if they exist
 	if cancel_quest:
