@@ -181,8 +181,11 @@ class Item:
 				quality = item_resource.quality
 				price = item_resource.price
 				tempered = item_resource.tempered
-				has_socket = item_resource.has_socket
-				socketed_gem_id = item_resource.socketed_gem_id
+				# Copy socket fields from ItemResource if not provided by server
+				if not data.has("has_socket"):
+					has_socket = item_resource.has_socket
+				if not data.has("socketed_gem_id"):
+					socketed_gem_id = item_resource.socketed_gem_id
 				# Note: enchant_overdrive comes from server data, not items_db
 				texture = item_resource.icon
 		

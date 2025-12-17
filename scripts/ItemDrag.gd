@@ -154,6 +154,9 @@ func _handle_double_click():
 						new_item.enchant_overdrive = item_data.enchant_overdrive
 						new_item.day = item_data.day
 						new_item.texture = item_data.texture
+						new_item.has_socket = item_data.has_socket
+						new_item.socketed_gem_id = item_data.socketed_gem_id
+						new_item.socketed_gem_day = item_data.socketed_gem_day
 						GameInfo.current_player.bag_slots.append(new_item)
 						GameInfo.bag_slots_changed.emit()
 						GameInfo.gold_changed.emit(GameInfo.current_player.gold)
