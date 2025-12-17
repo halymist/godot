@@ -36,6 +36,16 @@ extends Control
 @export var payment: Control
 @export var payment_button: Button
 
+# Wide mode buttons
+@export_group("Wide Buttons")
+@export var wide_home_button: Button
+@export var wide_arena_button: Button
+@export var wide_settings_button: Button
+@export var wide_chat_button: Button
+@export var wide_map_button: Button
+@export var wide_character_button: Button
+@export var wide_rankings_button: Button
+
 
 func _ready():
 	
@@ -57,6 +67,22 @@ func _ready():
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
+	
+	# Connect Wide button signals to same handlers
+	if wide_home_button:
+		wide_home_button.pressed.connect(handle_home_button)
+	if wide_arena_button:
+		wide_arena_button.pressed.connect(show_panel.bind(arena_panel))
+	if wide_settings_button:
+		wide_settings_button.pressed.connect(show_overlay.bind(settings_panel))
+	if wide_chat_button:
+		wide_chat_button.pressed.connect(show_overlay.bind(chat_panel))
+	if wide_map_button:
+		wide_map_button.pressed.connect(handle_map_button)
+	if wide_character_button:
+		wide_character_button.pressed.connect(show_panel.bind(character_panel))
+	if wide_rankings_button:
+		wide_rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
 	
 	# Connect cancel quest dialog buttons if they exist
 	if cancel_quest:

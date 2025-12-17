@@ -240,14 +240,14 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cns2"]
+bg_color = Color(0.6, 0.6, 0.756863, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sc4i"]
 bg_color = Color(0.08, 0.12, 0.2, 0.95)
 border_width_right = 2
 border_color = Color(0.7, 0.5, 0.3, 0.6)
 shadow_offset = Vector2(3, 3)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cns2"]
-bg_color = Color(0.6, 0.6, 0.756863, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
@@ -281,7 +281,7 @@ wide_game_parent = NodePath("Wide/AspectRatioContainer/HBoxContainer/GameScenePa
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "wide_home_button", "wide_arena_button", "wide_settings_button", "wide_chat_button", "wide_map_button", "wide_character_button", "wide_rankings_button")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -324,6 +324,13 @@ enchanter_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/E
 enemy_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy")
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
 payment_button = NodePath("../Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer/PaymentButton")
+wide_home_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/HomeButtonContainer/HomeButton")
+wide_arena_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/ArenaButtonContainer/ArenaButton")
+wide_settings_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/SettingsButtonContainer/SettingsButton")
+wide_chat_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/ChatButtonContainer/ChatButton")
+wide_map_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/MapButtonContainer/MapButton")
+wide_character_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character/CharacterButton")
+wide_rankings_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/RankingsButtonContainer/RankingsButton")
 
 [node name="Portrait" type="Control" parent="."]
 layout_mode = 1
@@ -5099,101 +5106,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ChatOverlay" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
-visible = false
-z_index = 200
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
-script = ExtResource("28_chat_panel")
-chat_panel = NodePath("ChatPanel")
-chat_container = NodePath("ChatPanel/ScrollContainer/ChatContainer")
-scroll_container = NodePath("ChatPanel/ScrollContainer")
-global_button = NodePath("ChatPanel/HeaderContainer/GlobalButton")
-local_button = NodePath("ChatPanel/HeaderContainer/LocalButton")
-
-[node name="ChatPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.75
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7sc4i")
-
-[node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.08
-offset_left = 10.0
-offset_top = 5.0
-offset_right = -10.0
-grow_horizontal = 2
-
-[node name="GlobalButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/HeaderContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
-theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
-theme_override_colors/font_pressed_color = Color(0.8, 0.6, 0.3, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/hover = SubResource("StyleBoxFlat_215e1")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_215e1")
-theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
-text = "Global"
-
-[node name="LocalButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/HeaderContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
-theme_override_font_sizes/font_size = 14
-text = "Local"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.08
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 5.0
-offset_right = -10.0
-offset_bottom = -60.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="InputContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = -50.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 2
-
-[node name="ChatInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/InputContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Type your message..."
-
-[node name="SendButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/InputContainer"]
-layout_mode = 2
-text = "Send"
-
 [node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
 layout_mode = 0
@@ -5691,6 +5603,101 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
 
+[node name="ChatOverlay" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
+visible = false
+z_index = 200
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
+script = ExtResource("28_chat_panel")
+chat_panel = NodePath("ChatPanel")
+chat_container = NodePath("ChatPanel/ScrollContainer/ChatContainer")
+scroll_container = NodePath("ChatPanel/ScrollContainer")
+global_button = NodePath("ChatPanel/HeaderContainer/GlobalButton")
+local_button = NodePath("ChatPanel/HeaderContainer/LocalButton")
+
+[node name="ChatPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.75
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7sc4i")
+
+[node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.08
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+grow_horizontal = 2
+
+[node name="GlobalButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_colors/font_pressed_color = Color(0.8, 0.6, 0.3, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/hover = SubResource("StyleBoxFlat_215e1")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_215e1")
+theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
+text = "Global"
+
+[node name="LocalButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 14
+text = "Local"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.08
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InputContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -50.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+
+[node name="ChatInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/InputContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Type your message..."
+
+[node name="SendButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/InputContainer"]
+layout_mode = 2
+text = "Send"
+
 [node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_text_label", "options_container", "portrait")]
 visible = false
 layout_mode = 1
@@ -6048,7 +6055,7 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character"]
+[node name="CharacterButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character"]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
