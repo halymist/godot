@@ -48,33 +48,13 @@ func _handle_double_click():
 		_consume_item()
 		return
 	
-	# Check if character panel is visible
+	# Get current utility panel from TogglePanel (unified tracking)
 	var game_root = get_tree().root.get_node_or_null("Game")
-	var character_panel = game_root.find_child("Character", true, false) if game_root else null
-	if character_panel and character_panel.visible:
-		# If item is equipped (0-8), move it to bag
-		if item_data.bag_slot_id >= 0 and item_data.bag_slot_id <= 8:
-			_unequip_item_to_bag()
-			return
-		# If item is in bag (10-14), equip it
-		elif item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
-			if _can_equip_to_character():
-				_equip_item_to_character()
-				return
-	
-	# Get root game node to find panels
-	var home_panel = game_root.find_child("Home", true, false) if game_root else null
-	if not home_panel:
-		return
-	
-	# Check which panel is visible and handle accordingly
-	var blacksmith_panel = home_panel.get_node_or_null("BlacksmithPanel")
-	var enchanter_panel = home_panel.get_node_or_null("EnchanterPanel")
-	var alchemist_panel = home_panel.get_node_or_null("AlchemistPanel")
-	var vendor_panel = home_panel.get_node_or_null("VendorPanel")
+	var toggle_panel = game_root.find_child("Background", true, false) if game_root else null
+	var current_utility = toggle_panel.current_utility_panel if toggle_panel else null
 	
 	# Blacksmith: Move equippable items (not ingredients/consumables) to slot 100
-	if blacksmith_panel and blacksmith_panel.visible:
+	if current_utility and current_utility.name == "BlacksmithPanel":
 		# Check if item can be tempered (not ingredient or consumable)
 		if item_data.type != "Ingredient" and item_data.type != "Consumable":
 			# Check if item is in bag (10-14)
@@ -89,9 +69,10 @@ func _handle_double_click():
 				if slot_100_empty:
 					item_data.bag_slot_id = 100
 					GameInfo.bag_slots_changed.emit()
+		return
 	
 	# Enchanter: Move equippable items (not ingredients/consumables/elixirs/potions) to slot 104
-	elif enchanter_panel and enchanter_panel.visible:
+	if current_utility and current_utility.name == "EnchanterPanel":
 		# Check if item can be enchanted
 		if item_data.type != "Ingredient" and item_data.type != "Consumable" and item_data.type != "Elixir" and item_data.type != "Potion":
 			# Check if item is in bag (10-14)
@@ -106,9 +87,10 @@ func _handle_double_click():
 				if slot_104_empty:
 					item_data.bag_slot_id = 104
 					GameInfo.bag_slots_changed.emit()
+		return
 	
 	# Alchemist: Move ingredients to slots 101-103
-	elif alchemist_panel and alchemist_panel.visible:
+	if current_utility and current_utility.name == "AlchemistPanel":
 		# Check if item is an ingredient
 		if item_data.type == "Ingredient" and item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
 			# Find first empty ingredient slot (101-103)
@@ -123,9 +105,10 @@ func _handle_double_click():
 					item_data.bag_slot_id = slot_id
 					GameInfo.bag_slots_changed.emit()
 					break
+		return
 	
 	# Vendor: Sell if in bag, buy if in vendor slots
-	elif vendor_panel and vendor_panel.visible:
+	if current_utility and current_utility.name == "VendorPanel":
 		# Selling: item in bag (10-14)
 		if item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
 			# Sell item for its price
@@ -175,6 +158,20 @@ func _handle_double_click():
 						GameInfo.bag_slots_changed.emit()
 						GameInfo.gold_changed.emit(GameInfo.current_player.gold)
 						break
+		return
+	
+	# Character panel equip/unequip (fallback - only if no utility panel is active)
+	var current_panel = GameInfo.get_current_panel()
+	if current_panel and current_panel.name == "Character":
+		# If item is equipped (0-8), move it to bag
+		if item_data.bag_slot_id >= 0 and item_data.bag_slot_id <= 8:
+			_unequip_item_to_bag()
+			return
+		# If item is in bag (10-14), equip it
+		elif item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
+			if _can_equip_to_character():
+				_equip_item_to_character()
+				return
 
 
 

@@ -48,6 +48,10 @@ extends Control
 @export var wide_payment_button: Button
 @export var wide_back_button: Button
 
+# Track three levels of UI
+var current_utility_panel: Control = null  # Blacksmith, Vendor, Enchanter, etc.
+var chat_overlay_active: bool = false  # Chat is always top priority
+
 
 func _ready():
 	
@@ -110,6 +114,7 @@ func show_overlay(overlay: Control):
 	
 	# Chat is special - it can show over everything and doesn't hide other overlays
 	if overlay == chat_panel:
+		chat_overlay_active = true
 		if overlay.has_method("show_chat"):
 			overlay.show_chat()
 		else:
@@ -149,6 +154,10 @@ func hide_overlay(overlay: Control):
 	if overlay == null:
 		return
 	
+	# Track chat state
+	if overlay == chat_panel:
+		chat_overlay_active = false
+	
 	# Clear from GameInfo if it's the current overlay
 	if GameInfo.get_current_panel_overlay() == overlay:
 		GameInfo.set_current_panel_overlay(null)
@@ -170,6 +179,10 @@ func hide_overlay(overlay: Control):
 
 func show_panel(panel: Control):
 	hide_all_panels()
+	
+	# Clear utility panel and chat tracking when switching main panels
+	current_utility_panel = null
+	chat_overlay_active = false
 	
 	# Also hide utility panel wrappers
 	if vendor_panel:
@@ -353,61 +366,46 @@ func go_back():
 	var destination = GameInfo.current_player.traveling_destination
 	var current = GameInfo.get_current_panel()
 	
-	print("go_back called, current panel: ", current.name if current else "null")
-	
-	# Priority 1: Check if chat is visible (top priority)
-	if chat_panel and chat_panel.visible:
+	# Priority 1: Check if chat is visible (top priority - chat overlay)
+	if chat_overlay_active and chat_panel and chat_panel.visible:
 		hide_overlay(chat_panel)
 		return
 	
 	# Priority 2: Hide any other active overlay (settings/rankings/payment)
 	var current_overlay = GameInfo.get_current_panel_overlay()
-	if current_overlay != null:
+	if current_overlay != null and current_overlay.visible:
 		hide_overlay(current_overlay)
 		return
 	
-	# Priority 2: Check if we're traveling and on map panel - show cancel dialog
+	# Priority 3: Utility panel (blacksmith, vendor, etc.) - middle priority
+	if current_utility_panel and current_utility_panel.visible:
+		hide_utility_panel(current_utility_panel)
+		return
+	
+	# Priority 4: Check if we're traveling and on map panel - show cancel dialog
 	if traveling > 0 and destination != null and current == map_panel:
 		show_overlay(cancel_quest)
 		return
 	
-	# Priority 2.5: Check if we've arrived at quest (traveling = 0) but haven't finished it yet - show cancel dialog
+	# Priority 5: Check if we've arrived at quest (traveling = 0) but haven't finished it yet - show cancel dialog
 	if traveling == 0 and destination != null and current == quest:
 		show_overlay(cancel_quest)
 		return
 
-	# Priority 2.75: Check if current panel is enemy_panel - toggle it off
-	print("Checking enemy_panel: enemy_panel exists=", enemy_panel != null, " current==enemy_panel=", current == enemy_panel)
+	# Priority 6: Check if current panel is enemy_panel - toggle it off
 	if enemy_panel != null and current == enemy_panel:
-		print("Toggling off enemy panel, returning to rankings")
 		enemy_panel.visible = false
 		GameInfo.set_current_panel(rankings_panel)
 		return
 
-	# Priority 3: Check if we're in any utility panel - hide wrapper and return to home
-	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel]
-	print("Checking utility panels, current: ", current.name if current else "null")
-	for panel in utility_panels:
-		if panel:
-			print("  Comparing with: ", panel.name, " - Match: ", current == panel)
-		if panel and current == panel:
-			print("Hiding utility panel: ", panel.name)
-			var wrapper = panel.get_parent()
-			if wrapper:
-				wrapper.visible = false
-			else:
-				panel.visible = false
-			show_panel(home_panel)
-			return
-
-	# Priority 4: Check if we're in a building interior in the home panel
+	# Priority 7: Check if we're in a building interior in the home panel
 	if current == home_panel:
 		if home_panel.has_method("handle_back_navigation"):
 			var handled = home_panel.handle_back_navigation()
 			if handled:
 				return
 
-	# Priority 5: Handle panel-specific back navigation
+	# Priority 8: Handle panel-specific back navigation
 	if current == talents_panel:
 		toggle_talents_bookmark()  # Use bookmark animation to slide out
 	elif current == combat_panel:
@@ -416,6 +414,26 @@ func go_back():
 		show_panel(home_panel)
 
 
+
+func show_utility_panel(panel: Control):
+	"""Show a utility panel (blacksmith, vendor, etc.) and track it"""
+	if panel:
+		current_utility_panel = panel
+		panel.visible = true
+		# Also make the wrapper visible if it exists
+		var wrapper = panel.get_parent()
+		if wrapper:
+			wrapper.visible = true
+
+func hide_utility_panel(panel: Control):
+	"""Hide a utility panel and clear tracking"""
+	if panel:
+		current_utility_panel = null
+		panel.visible = false
+		# Also hide the wrapper if it exists
+		var wrapper = panel.get_parent()
+		if wrapper:
+			wrapper.visible = false
 
 func hide_all_panels():
 	home_panel.visible = false
