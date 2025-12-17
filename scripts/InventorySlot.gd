@@ -115,6 +115,14 @@ func _drop_data(_pos, data):
 		handle_vendor_sell(dragged_item, source_slot_id, source_container)
 		return
 	
+	# Special case: Socketing a gem into an item
+	if dragged_item.type == "Gem" and not is_slot_empty():
+		var target_item = get_item_data()
+		if target_item and target_item.has_socket and target_item.socketed_gem_id == -1:
+			# Socket the gem into the item
+			handle_gem_socketing(dragged_item, target_item, source_slot_id, source_container)
+			return
+	
 	# Update GameInfo directly based on the operation
 	if not is_slot_empty():
 		# Swapping items
@@ -229,6 +237,44 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 	GameInfo.bag_slots_changed.emit()
 	print("Item sold and removed from inventory")
 
+func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, gem_source_slot_id: int, gem_source_container):
+	"""Socket a gem into an item with an empty socket"""
+	print("Socketing gem ", gem_item.item_name, " into ", target_item.item_name)
+	
+	# Find the actual target item in GameInfo.bag_slots
+	var target_item_in_array = null
+	for game_item in GameInfo.current_player.bag_slots:
+		if game_item.bag_slot_id == slot_id:
+			target_item_in_array = game_item
+			break
+	
+	if not target_item_in_array:
+		print("Error: Target item not found in bag_slots")
+		return
+	
+	# Socket the gem (store gem's item ID)
+	target_item_in_array.socketed_gem_id = gem_item.id
+	print("Socketed gem ID ", gem_item.id, " into item")
+	
+	# Remove the gem from the player's inventory
+	for i in range(GameInfo.current_player.bag_slots.size()):
+		var game_item = GameInfo.current_player.bag_slots[i]
+		if game_item.bag_slot_id == gem_source_slot_id:
+			GameInfo.current_player.bag_slots.remove_at(i)
+			print("Removed gem from slot ", gem_source_slot_id)
+			break
+	
+	# Clear the source slot visually
+	if gem_source_container:
+		gem_source_container.clear_slot()
+	
+	# Update the item display in this slot to show the socketed gem
+	place_item_in_slot(target_item_in_array)
+	
+	# Emit signal to update UI
+	GameInfo.bag_slots_changed.emit()
+	print("Gem socketing complete")
+
 func is_valid_item_for_slot(item_type: String) -> bool:
 	match slot_type:
 		"Head":
@@ -252,9 +298,9 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 		"Ingredient":
 			return item_type == "Ingredient"
 		"Blacksmith":
-			return item_type != "Ingredient" and item_type != "Consumable"
+			return item_type != "Ingredient" and item_type != "Consumable" and item_type != "Gem"
 		"Enchanter":
-			return item_type != "Ingredient" and item_type != "Consumable" and item_type != "Elixir" and item_type != "Potion"
+			return item_type != "Ingredient" and item_type != "Consumable" and item_type != "Elixir" and item_type != "Potion" and item_type != "Gem"
 		"Bag":
 			return true  # Bag accepts everything
 		"Sell":

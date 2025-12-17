@@ -58,7 +58,7 @@ var mock_character_data = {
 			"id": 1,
 			"effect_overdrive": 4,
 			"bag_slot_id": 0,
-			"day": 70
+			"day": 40
 		},
 		{
 			"id": 2,
@@ -78,7 +78,7 @@ var mock_character_data = {
 		{
 			"id": 390,
 			"bag_slot_id": 14,
-			"day": 4
+			"day": 40
 		}
 	],
 	"perks": [

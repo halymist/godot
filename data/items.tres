@@ -151,7 +151,7 @@ metadata/_custom_type_script = "uid://5xjtibn1drlf"
 [sub_resource type="Resource" id="Resource_lpggr"]
 script = ExtResource("1_plm77")
 id = 390
-item_name = "Gem of str"
+item_name = "Ruby"
 type = "Gem"
 armor = 0
 strength = 5

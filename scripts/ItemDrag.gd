@@ -53,10 +53,10 @@ func _handle_double_click():
 	var toggle_panel = game_root.find_child("Background", true, false) if game_root else null
 	var current_utility = toggle_panel.current_utility_panel if toggle_panel else null
 	
-	# Blacksmith: Move equippable items (not ingredients/consumables) to slot 100
+	# Blacksmith: Move equippable items (not ingredients/consumables/gems) to slot 100
 	if current_utility and current_utility.name == "BlacksmithPanel":
-		# Check if item can be tempered (not ingredient or consumable)
-		if item_data.type != "Ingredient" and item_data.type != "Consumable":
+		# Check if item can be tempered (not ingredient or consumable or gem)
+		if item_data.type != "Ingredient" and item_data.type != "Consumable" and item_data.type != "Gem":
 			# Check if item is in bag (10-14)
 			if item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
 				# Check if slot 100 is empty
@@ -71,10 +71,10 @@ func _handle_double_click():
 					GameInfo.bag_slots_changed.emit()
 		return
 	
-	# Enchanter: Move equippable items (not ingredients/consumables/elixirs/potions) to slot 104
+	# Enchanter: Move equippable items (not ingredients/consumables/elixirs/potions/gems) to slot 104
 	if current_utility and current_utility.name == "EnchanterPanel":
 		# Check if item can be enchanted
-		if item_data.type != "Ingredient" and item_data.type != "Consumable" and item_data.type != "Elixir" and item_data.type != "Potion":
+		if item_data.type != "Ingredient" and item_data.type != "Consumable" and item_data.type != "Elixir" and item_data.type != "Potion" and item_data.type != "Gem":
 			# Check if item is in bag (10-14)
 			if item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
 				# Check if slot 104 is empty

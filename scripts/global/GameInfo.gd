@@ -222,6 +222,41 @@ class Item:
 				if effect:
 					effect_name = effect.name
 					effect_description = effect.description
+	
+	func get_socketed_gem():
+		"""Get the socketed gem's ItemResource if one exists"""
+		if socketed_gem_id > 0 and GameInfo and GameInfo.items_db:
+			return GameInfo.items_db.get_item_by_id(socketed_gem_id)
+		return null
+	
+	func get_base_stats_without_gem() -> Dictionary:
+		"""Get item stats excluding socketed gem bonuses"""
+		return {
+			"strength": strength,
+			"stamina": stamina,
+			"agility": agility,
+			"luck": luck,
+			"armor": armor
+		}
+	
+	func get_gem_stats() -> Dictionary:
+		"""Get stats from socketed gem"""
+		var gem = get_socketed_gem()
+		if gem:
+			return {
+				"strength": gem.strength,
+				"stamina": gem.stamina,
+				"agility": gem.agility,
+				"luck": gem.luck,
+				"armor": gem.armor
+			}
+		return {
+			"strength": 0,
+			"stamina": 0,
+			"agility": 0,
+			"luck": 0,
+			"armor": 0
+		}
 
 class Perk:
 	extends MessagePackObject
@@ -500,6 +535,14 @@ class GamePlayer:
 				total_stats.agility += item.agility
 				total_stats.luck += item.luck
 				total_stats.armor += item.armor
+				
+				# Add stats from socketed gems
+				var gem_stats = item.get_gem_stats()
+				total_stats.strength += gem_stats.strength
+				total_stats.stamina += gem_stats.stamina
+				total_stats.agility += gem_stats.agility
+				total_stats.luck += gem_stats.luck
+				total_stats.armor += gem_stats.armor
 		
 		return total_stats
 	
