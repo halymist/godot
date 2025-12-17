@@ -40,6 +40,16 @@ func _can_drop_data(_pos, data):
 	if source_slot_id >= 105 and source_slot_id <= 112 and slot_id >= 105 and slot_id <= 112:
 		return false
 	
+	# Special case: Allow gems to be dropped on equipment slots (0-8) if item has a socket
+	if item_type == "Gem" and slot_id >= 0 and slot_id <= 8:
+		if not is_slot_empty():
+			var target_item = get_item_data()
+			if target_item and target_item.has_socket and target_item.socketed_gem_id == -1:
+				# Item has an empty socket, allow the drop
+				return true
+		# If slot is empty or item doesn't have a socket, reject
+		return false
+	
 	# Check if dragged item can go into this slot
 	if not is_valid_item_for_slot(item_type):
 		return false
@@ -252,9 +262,10 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 		print("Error: Target item not found in bag_slots")
 		return
 	
-	# Socket the gem (store gem's item ID)
+	# Socket the gem (store gem's item ID and day value)
 	target_item_in_array.socketed_gem_id = gem_item.id
-	print("Socketed gem ID ", gem_item.id, " into item")
+	target_item_in_array.socketed_gem_day = gem_item.day
+	print("Socketed gem ID ", gem_item.id, " with day ", gem_item.day, " into item")
 	
 	# Remove the gem from the player's inventory
 	for i in range(GameInfo.current_player.bag_slots.size()):

@@ -55,11 +55,11 @@ func _on_stats_changed(_stats: Dictionary):
 			print("Profession icon file not found: ", icon_path)
 	if talent_points_label:
 		talent_points_label.text = "TALENT POINTS: " + str(GameInfo.current_player.talent_points)
-	strength_label.text = "STRENGTH: " + str(total_stats.strength)
-	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
-	agility_label.text = "AGILITY: " + str(total_stats.agility)
-	luck_label.text = "LUCK: " + str(total_stats.luck)
-	armor_label.text = "ARMOR: " + str(total_stats.armor)
+	strength_label.text = "STRENGTH: " + str(int(total_stats.strength))
+	stamina_label.text = "STAMINA: " + str(int(total_stats.stamina))
+	agility_label.text = "AGILITY: " + str(int(total_stats.agility))
+	luck_label.text = "LUCK: " + str(int(total_stats.luck))
+	armor_label.text = "ARMOR: " + str(int(total_stats.armor))
 
 func _on_bag_slots_changed():
 	print("Bag slots changed - updating stats display")
@@ -76,8 +76,8 @@ func _on_bag_slots_changed():
 		var icon_path = GameInfo.get_profession_icon(GameInfo.current_player.profession)
 		if icon_path and ResourceLoader.exists(icon_path):
 			profession_icon.texture = load(icon_path)
-	strength_label.text = "STRENGTH: " + str(total_stats.strength)
-	stamina_label.text = "STAMINA: " + str(total_stats.stamina)
-	agility_label.text = "AGILITY: " + str(total_stats.agility)
-	luck_label.text = "LUCK: " + str(total_stats.luck)
-	armor_label.text = "ARMOR: " + str(total_stats.armor)
+	strength_label.text = "STRENGTH: " + str(int(total_stats.strength))
+	stamina_label.text = "STAMINA: " + str(int(total_stats.stamina))
+	agility_label.text = "AGILITY: " + str(int(total_stats.agility))
+	luck_label.text = "LUCK: " + str(int(total_stats.luck))
+	armor_label.text = "ARMOR: " + str(int(total_stats.armor))

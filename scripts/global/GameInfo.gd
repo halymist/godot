@@ -127,6 +127,7 @@ class Item:
 	var day: int = 0  # Day when item was acquired (for stat scaling: 2% per day)
 	var has_socket: bool = false  # Whether item has a socket slot
 	var socketed_gem_id: int = -1  # ID of socketed gem (-1 = empty socket)
+	var socketed_gem_day: int = 0  # Day value of socketed gem for stat scaling
 	
 	# Client-side only (not serialized)
 	var texture: Texture2D = null
@@ -155,7 +156,8 @@ class Item:
 		"effect_overdrive": "enchant_overdrive",
 		"day": "day",
 		"has_socket": "has_socket",
-		"socketed_gem_id": "socketed_gem_id"
+		"socketed_gem_id": "socketed_gem_id",
+		"socketed_gem_day": "socketed_gem_day"
 	}
 	
 	func _init(data: Dictionary = {}):
@@ -240,15 +242,36 @@ class Item:
 		}
 	
 	func get_gem_stats() -> Dictionary:
-		"""Get stats from socketed gem"""
+		"""Get stats from socketed gem with day scaling applied"""
 		var gem = get_socketed_gem()
 		if gem:
+			# Apply day-based scaling to gem stats (2% improvement per day)
+			var gem_strength = gem.strength
+			var gem_stamina = gem.stamina
+			var gem_agility = gem.agility
+			var gem_luck = gem.luck
+			var gem_armor = gem.armor
+			
+			if socketed_gem_day > 0:
+				var day_multiplier = pow(1.02, socketed_gem_day)
+				gem_strength = int(ceil(gem_strength * day_multiplier))
+				gem_stamina = int(ceil(gem_stamina * day_multiplier))
+				gem_agility = int(ceil(gem_agility * day_multiplier))
+				gem_luck = int(ceil(gem_luck * day_multiplier))
+				gem_armor = int(ceil(gem_armor * day_multiplier))
+			else:
+				gem_strength = int(gem_strength)
+				gem_stamina = int(gem_stamina)
+				gem_agility = int(gem_agility)
+				gem_luck = int(gem_luck)
+				gem_armor = int(gem_armor)
+			
 			return {
-				"strength": gem.strength,
-				"stamina": gem.stamina,
-				"agility": gem.agility,
-				"luck": gem.luck,
-				"armor": gem.armor
+				"strength": gem_strength,
+				"stamina": gem_stamina,
+				"agility": gem_agility,
+				"luck": gem_luck,
+				"armor": gem_armor
 			}
 		return {
 			"strength": 0,
