@@ -9,6 +9,8 @@ extends PanelContainer
 @export var armor: Label
 @export var effect: Label
 @export var socket_label: Label
+@export var socket_icon: TextureRect
+@export var gem_icon: TextureRect
 
 # References to the stat containers for hiding/showing
 @onready var price_container = price_label.get_parent() if price_label else null
@@ -176,18 +178,25 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 		if socket_label and socket_container:
 			if item_data.has_socket:
 				if item_data.socketed_gem_id > 0:
-					# Socket has a gem
+					# Socket has a gem - show socket icon + gem icon + gem name
 					var gem_item = GameInfo.items_db.get_item_by_id(item_data.socketed_gem_id)
 					if gem_item:
-						socket_label.text = "Socket: " + gem_item.item_name
+						socket_label.text = gem_item.item_name
 						socket_label.modulate = Color(0.5, 1.0, 0.5)  # Green for socketed
+						if gem_icon:
+							gem_icon.texture = gem_item.icon
+							gem_icon.visible = true
 					else:
-						socket_label.text = "Socket: Unknown Gem"
+						socket_label.text = "Unknown Gem"
 						socket_label.modulate = Color(1.0, 0.5, 0.5)  # Red for error
+						if gem_icon:
+							gem_icon.visible = false
 				else:
-					# Socket is empty
-					socket_label.text = "Socket: Empty"
+					# Socket is empty - show socket icon + "Empty" text
+					socket_label.text = "Empty"
 					socket_label.modulate = Color(0.7, 0.7, 0.7)  # Gray for empty
+					if gem_icon:
+						gem_icon.visible = false
 				socket_container.visible = true
 			else:
 				# No socket

@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -90,6 +90,7 @@
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
+[ext_resource type="Texture2D" uid="uid://v1yu6loafff6" path="res://assets/images/ui/BagSlot.png" id="88_ccfo7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -5775,7 +5776,7 @@ offset_top = 180.0
 offset_right = 200.0
 offset_bottom = 280.0
 
-[node name="ItemDescription" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("name_label", "price_label", "price_icon", "strength", "stamina", "agility", "luck", "armor", "effect", "socket_label")]
+[node name="ItemDescription" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("name_label", "price_label", "price_icon", "strength", "stamina", "agility", "luck", "armor", "effect", "socket_label", "socket_icon", "gem_icon")]
 visible = false
 z_index = 1500
 layout_mode = 0
@@ -5793,6 +5794,8 @@ luck = NodePath("MarginContainer/VBoxContainer/HBoxContainer4/Value")
 armor = NodePath("MarginContainer/VBoxContainer/HBoxContainer5/Value")
 effect = NodePath("MarginContainer/VBoxContainer/Effect")
 socket_label = NodePath("MarginContainer/VBoxContainer/SocketContainer/Value")
+socket_icon = NodePath("MarginContainer/VBoxContainer/SocketContainer/SocketIcon")
+gem_icon = NodePath("MarginContainer/VBoxContainer/SocketContainer/SocketIcon/GemIcon")
 
 [node name="MarginContainer" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/ItemDescription"]
 layout_mode = 2
@@ -5870,9 +5873,24 @@ text = "Effect"
 [node name="SocketContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/ItemDescription/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Socket" type="Label" parent="Portrait/GameSceneParent/Wrapper/ItemDescription/MarginContainer/VBoxContainer/SocketContainer"]
+[node name="SocketIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/ItemDescription/MarginContainer/VBoxContainer/SocketContainer"]
+custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-text = "Socket:"
+texture = ExtResource("88_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/ItemDescription/MarginContainer/VBoxContainer/SocketContainer/SocketIcon"]
+visible = false
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/ItemDescription/MarginContainer/VBoxContainer/SocketContainer"]
 modulate = Color(0.7, 0.7, 0.7, 1)
