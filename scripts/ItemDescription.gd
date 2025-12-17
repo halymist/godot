@@ -217,54 +217,11 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 func position_near_slot(slot_node: Control):
 	# Wait for panel to auto-size
 	await get_tree().process_frame
+	await get_tree().process_frame  # Wait extra frame to ensure size is stable
 	
-	var viewport_size = get_viewport().get_visible_rect().size
-	var panel_size = size
-	
-	# Get slot global position and size
-	var slot_global_pos = slot_node.global_position
-	var slot_size = slot_node.size
-	
-	# Check if this is a bag slot (slot_id 10-14) or equipment slot (0-9)
-	var slot_id = slot_node.slot_id if "slot_id" in slot_node else -1
-	var new_pos = Vector2.ZERO
-	
-	if slot_id >= 10 and slot_id <= 14:
-		# Bag slot - position ABOVE the slot, centered
-		new_pos.x = slot_global_pos.x + (slot_size.x / 2) - (panel_size.x / 2)
-		new_pos.y = slot_global_pos.y - panel_size.y - 10
-		
-		# If it goes off screen on top, show below instead
-		if new_pos.y < 10:
-			new_pos.y = slot_global_pos.y + slot_size.y + 10
-	elif slot_id >= 0 and slot_id <= 9:
-		# Equipment slot - position to the side
-		# Determine if slot is on left or right side of screen
-		var screen_center_x = viewport_size.x / 2
-		var slot_center_x = slot_global_pos.x + (slot_size.x / 2)
-		
-		if slot_center_x < screen_center_x:
-			# Slot on left side - show description to the RIGHT
-			new_pos.x = slot_global_pos.x + slot_size.x + 10
-		else:
-			# Slot on right side - show description to the LEFT
-			new_pos.x = slot_global_pos.x - panel_size.x - 10
-		
-		# Vertically align with top of slot
-		new_pos.y = slot_global_pos.y
-	else:
-		# Special/utility slots - use default positioning (right and below)
-		new_pos = slot_global_pos + Vector2(20, 20)
-	
-	# Ensure panel doesn't go off screen on any side
-	if new_pos.x + panel_size.x > viewport_size.x:
-		new_pos.x = viewport_size.x - panel_size.x - 10
-	if new_pos.y + panel_size.y > viewport_size.y:
-		new_pos.y = viewport_size.y - panel_size.y - 10
-	new_pos.x = max(10, new_pos.x)
-	new_pos.y = max(10, new_pos.y)
-	
-	position = new_pos
+	# Use the center preset to properly center the panel
+	set_anchors_preset(Control.PRESET_CENTER)
+	set_offsets_preset(Control.PRESET_CENTER)
 
 func hide_description():
 	visible = false
