@@ -22,8 +22,9 @@ func _ready():
 
 func _on_mouse_entered():
 	if item_data and description_panel:
-		var mouse_pos = get_global_mouse_position()
-		description_panel.show_description(item_data, mouse_pos)
+		# Get the parent slot to determine positioning
+		var parent_slot = get_parent()
+		description_panel.show_description(item_data, parent_slot)
 
 func _on_mouse_exited():
 	if description_panel:
@@ -43,15 +44,17 @@ func _handle_double_click():
 	if not item_data:
 		return
 	
-	# Check if item is a consumable (Potion or Elixir) in bag - consume it
-	if (item_data.type == "Potion" or item_data.type == "Elixir") and item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
-		_consume_item()
-		return
-	
 	# Get current utility panel from TogglePanel (unified tracking)
 	var game_root = get_tree().root.get_node_or_null("Game")
 	var toggle_panel = game_root.find_child("Background", true, false) if game_root else null
 	var current_utility = toggle_panel.current_utility_panel if toggle_panel else null
+	
+	# Check if item is a consumable (Potion or Elixir) in bag - consume it
+	# BUT only if no utility panel is open (only from character screen)
+	if (item_data.type == "Potion" or item_data.type == "Elixir") and item_data.bag_slot_id >= 10 and item_data.bag_slot_id <= 14:
+		if current_utility == null:
+			_consume_item()
+		return
 	
 	# Blacksmith: Move equippable items (not ingredients/consumables/gems) to slot 100
 	if current_utility and current_utility.name == "BlacksmithPanel":
