@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDatabase" load_steps=17 format=3 uid="uid://vft5y80xsrjn"]
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=21 format=3 uid="uid://vft5y80xsrjn"]
 
 [ext_resource type="Script" uid="uid://5xjtibn1drlf" path="res://scripts/resources/ItemResource.gd" id="1_plm77"]
 [ext_resource type="Script" uid="uid://0io63usdvbbp" path="res://scripts/resources/ItemDatabase.gd" id="2_lxu8k"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://du5f1npkpqx0b" path="res://assets/images/fallback/Goblin_foot.png" id="4_v0hy1"]
 [ext_resource type="Texture2D" uid="uid://v7871n2duiiy" path="res://assets/images/fallback/potion.png" id="7_v0hy1"]
 [ext_resource type="Texture2D" uid="uid://c6ngvejyd3kkk" path="res://assets/images/ui/gem_red.png" id="8_5s0y6"]
+[ext_resource type="Texture2D" uid="uid://dbj6suuwvlpu0" path="res://assets/images/ui/gem_green.png" id="9_lpggr"]
 
 [sub_resource type="Resource" id="Resource_4egq1"]
 script = ExtResource("1_plm77")
@@ -151,7 +152,7 @@ metadata/_custom_type_script = "uid://5xjtibn1drlf"
 [sub_resource type="Resource" id="Resource_lpggr"]
 script = ExtResource("1_plm77")
 id = 390
-item_name = "Ruby"
+item_name = "Bloodstone"
 type = "Gem"
 armor = 0
 strength = 5
@@ -171,7 +172,76 @@ socketed_gem_id = -1
 icon = ExtResource("8_5s0y6")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
+[sub_resource type="Resource" id="Resource_giyri"]
+script = ExtResource("1_plm77")
+id = 391
+item_name = "Lifegem"
+type = ""
+armor = 0
+strength = 0
+stamina = 5
+agility = 0
+luck = 0
+damage_min = 0
+damage_max = 0
+effect_id = 0
+effect_factor = 0
+quality = 0
+price = 10
+tempered = 0
+enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
+icon = ExtResource("9_lpggr")
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
+[sub_resource type="Resource" id="Resource_3m58g"]
+script = ExtResource("1_plm77")
+id = 392
+item_name = "Swiftstone"
+type = "Gem"
+armor = 0
+strength = 0
+stamina = 0
+agility = 5
+luck = 0
+damage_min = 0
+damage_max = 0
+effect_id = 0
+effect_factor = 0
+quality = 0
+price = 0
+tempered = 0
+enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
+icon = ExtResource("9_lpggr")
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
+[sub_resource type="Resource" id="Resource_gi1ch"]
+script = ExtResource("1_plm77")
+id = 393
+item_name = "Fategem"
+type = "Gem"
+armor = 0
+strength = 0
+stamina = 0
+agility = 0
+luck = 5
+damage_min = 0
+damage_max = 0
+effect_id = 0
+effect_factor = 0
+quality = 0
+price = 10
+tempered = 0
+enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
+icon = ExtResource("9_lpggr")
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
 [resource]
 script = ExtResource("2_lxu8k")
-items = Array[ExtResource("1_plm77")]([SubResource("Resource_4egq1"), SubResource("Resource_lxu8k"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr")])
+items = Array[ExtResource("1_plm77")]([SubResource("Resource_4egq1"), SubResource("Resource_lxu8k"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr"), SubResource("Resource_giyri"), SubResource("Resource_3m58g"), SubResource("Resource_gi1ch")])
 metadata/_custom_type_script = "uid://0io63usdvbbp"
