@@ -1,7 +1,7 @@
 extends Panel
 
 # Simple book-style quest display
-@export var quest_text_label: RichTextLabel  # Text (replaces, doesn't accumulate)
+@export var quest_text_label: RichTextLabel  # Text (replaces, doeshern't accumulate)
 @export var options_container: VBoxContainer  # Buttons below text
 
 # Quest state
@@ -111,4 +111,8 @@ func _finish_quest():
 	GameInfo.current_player.traveling = 0
 	current_quest_id = 0
 	current_slide_number = 1
-	portrait.show_panel(portrait.home_panel)
+	
+	# Return to home through TogglePanel
+	var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
+	if toggle_panel and toggle_panel.has_method("handle_home_button"):
+		toggle_panel.handle_home_button()

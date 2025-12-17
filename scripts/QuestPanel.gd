@@ -52,7 +52,7 @@ func _on_accept_pressed():
 	print("Quest accepted: ", current_quest_data.get("questname", "Unknown Quest"))
 	
 	# Switch to map panel through the TogglePanel
-	var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+	var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
 	if toggle_panel and toggle_panel.has_method("show_panel"):
 		if map:
 			toggle_panel.show_panel(map)

@@ -48,7 +48,7 @@ func _on_button_pressed():
 	var eligible_for_upgrade = can_upgrade()
 	if perk_slot > 0 and points >= maxPoints:
 		# Get TogglePanel reference and show perks overlay
-		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+		var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
 		if toggle_panel and toggle_panel.has_method("show_overlay"):
 			# Load active perks for the specific slot that was clicked
 			perkScreen.load_active_perks_for_slot(perk_slot)
@@ -60,7 +60,7 @@ func _on_button_pressed():
 			perkScreen.load_active_perks_for_slot(perk_slot)
 	else:
 		# Get TogglePanel reference and show upgrade talent overlay
-		var toggle_panel = get_tree().current_scene.find_child("Portrait", true, false)
+		var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
 		if toggle_panel and toggle_panel.has_method("show_overlay"):
 			upgrade.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
 			toggle_panel.show_overlay(upgrade)
