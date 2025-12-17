@@ -27,6 +27,8 @@ quality = 0
 price = 50
 tempered = 0
 enchant_overdrive = 0
+has_socket = true
+socketed_gem_id = -1
 icon = ExtResource("2_tpttd")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
@@ -48,6 +50,8 @@ quality = 0
 price = 20
 tempered = 0
 enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
 icon = ExtResource("3_xygrn")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
@@ -69,6 +73,8 @@ quality = 0
 price = 20
 tempered = 0
 enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
 icon = ExtResource("4_v0hy1")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
@@ -90,6 +96,8 @@ quality = 0
 price = 50
 tempered = 0
 enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
 icon = ExtResource("3_tpttd")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
@@ -111,6 +119,8 @@ quality = 0
 price = 10
 tempered = 0
 enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
 icon = ExtResource("4_4egq1")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
@@ -132,6 +142,8 @@ quality = 0
 price = 30
 tempered = 0
 enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
 icon = ExtResource("7_v0hy1")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 

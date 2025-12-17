@@ -125,6 +125,8 @@ class Item:
 	var tempered: int = 0  # Tracks tempering level (0 = not tempered, 1+ = tempered)
 	var enchant_overdrive: int = 0  # Enchanting overdrive level
 	var day: int = 0  # Day when item was acquired (for stat scaling: 2% per day)
+	var has_socket: bool = false  # Whether item has a socket slot
+	var socketed_gem_id: int = -1  # ID of socketed gem (-1 = empty socket)
 	
 	# Client-side only (not serialized)
 	var texture: Texture2D = null
@@ -151,7 +153,9 @@ class Item:
 		"tempered": "tempered",
 		"enchant_overdrive": "enchant_overdrive",
 		"effect_overdrive": "enchant_overdrive",
-		"day": "day"
+		"day": "day",
+		"has_socket": "has_socket",
+		"socketed_gem_id": "socketed_gem_id"
 	}
 	
 	func _init(data: Dictionary = {}):
@@ -175,6 +179,8 @@ class Item:
 				quality = item_resource.quality
 				price = item_resource.price
 				tempered = item_resource.tempered
+				has_socket = item_resource.has_socket
+				socketed_gem_id = item_resource.socketed_gem_id
 				# Note: enchant_overdrive comes from server data, not items_db
 				texture = item_resource.icon
 		

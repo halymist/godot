@@ -18,4 +18,6 @@ class_name ItemResource
 @export var price: int = 0
 @export var tempered: int = 0  # Tempering level (0 = not tempered, 1+ = tempered)
 @export var enchant_overdrive: int = 0  # Enchanting overdrive level
+@export var has_socket: bool = false  # Whether item has a socket slot
+@export var socketed_gem_id: int = -1  # ID of socketed gem (-1 = empty socket)
 @export var icon: Texture2D = null

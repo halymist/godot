@@ -8,9 +8,11 @@ extends PanelContainer
 @export var luck: Label
 @export var armor: Label
 @export var effect: Label
+@export var socket_label: Label
 
 # References to the stat containers for hiding/showing
 @onready var price_container = price_label.get_parent() if price_label else null
+@onready var socket_container = socket_label.get_parent() if socket_label else null
 @onready var strength_container = strength.get_parent()
 @onready var stamina_container = stamina.get_parent()
 @onready var agility_container = agility.get_parent()
@@ -151,6 +153,27 @@ func show_description(item_data: GameInfo.Item, mouse_position: Vector2 = Vector
 					effect.visible = false
 			else:
 				effect.visible = false
+		
+		# Handle socket display
+		if socket_label and socket_container:
+			if item_data.has_socket:
+				if item_data.socketed_gem_id > 0:
+					# Socket has a gem
+					var gem_item = GameInfo.items_db.get_item_by_id(item_data.socketed_gem_id)
+					if gem_item:
+						socket_label.text = "Socket: " + gem_item.item_name
+						socket_label.modulate = Color(0.5, 1.0, 0.5)  # Green for socketed
+					else:
+						socket_label.text = "Socket: Unknown Gem"
+						socket_label.modulate = Color(1.0, 0.5, 0.5)  # Red for error
+				else:
+					# Socket is empty
+					socket_label.text = "Socket: Empty"
+					socket_label.modulate = Color(0.7, 0.7, 0.7)  # Gray for empty
+				socket_container.visible = true
+			else:
+				# No socket
+				socket_container.visible = false
 		
 		# Reset size again after all content is set to force proper recalculation
 		reset_size()
