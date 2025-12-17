@@ -49,11 +49,11 @@ func _ready():
 	character_button.pressed.connect(show_panel.bind(character_panel))
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
-	settings_button.pressed.connect(show_panel.bind(settings_panel))
+	settings_button.pressed.connect(show_overlay.bind(settings_panel))
 	if payment_button:
-		payment_button.pressed.connect(show_panel.bind(payment))
+		payment_button.pressed.connect(show_overlay.bind(payment))
 	if rankings_button:
-		rankings_button.pressed.connect(show_panel.bind(rankings_panel))
+		rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
@@ -76,7 +76,16 @@ func show_overlay(overlay: Control):
 	if overlay == null:
 		return
 	
-	# Hide current overlay if one exists
+	# Chat is special - it can show over everything and doesn't hide other overlays
+	if overlay == chat_panel:
+		if overlay.has_method("show_chat"):
+			overlay.show_chat()
+		else:
+			overlay.visible = true
+		print("Showing chat overlay")
+		return
+	
+	# For other overlays (settings/rankings/payment), hide current overlay if one exists
 	var current = GameInfo.get_current_panel_overlay()
 	if current != null and current != overlay:
 		hide_overlay(current)
@@ -90,9 +99,7 @@ func show_overlay(overlay: Control):
 	GameInfo.set_current_panel_overlay(overlay)
 	
 	# Call the overlay's specific show method based on its type
-	if overlay == chat_panel and overlay.has_method("show_chat"):
-		overlay.show_chat()
-	elif overlay == quest_panel and overlay.has_method("show_quest"):
+	if overlay == quest_panel and overlay.has_method("show_quest"):
 		# Note: show_quest should already have been called with data, just make visible
 		overlay.visible = true
 	elif overlay.has_method("show_overlay"):
@@ -316,7 +323,12 @@ func go_back():
 	
 	print("go_back called, current panel: ", current.name if current else "null")
 	
-	# Priority 1: Hide any active overlay using GameInfo system
+	# Priority 1: Check if chat is visible (top priority)
+	if chat_panel and chat_panel.visible:
+		hide_overlay(chat_panel)
+		return
+	
+	# Priority 2: Hide any other active overlay (settings/rankings/payment)
 	var current_overlay = GameInfo.get_current_panel_overlay()
 	if current_overlay != null:
 		hide_overlay(current_overlay)
@@ -341,7 +353,7 @@ func go_back():
 		return
 
 	# Priority 3: Check if we're in any utility panel - hide wrapper and return to home
-	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel, settings_panel, rankings_panel, payment]
+	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel]
 	print("Checking utility panels, current: ", current.name if current else "null")
 	for panel in utility_panels:
 		if panel:
