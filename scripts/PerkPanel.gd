@@ -137,8 +137,7 @@ func _input(event):
 			is_dragging_over = false
 
 func _drop_data(_pos, data):
-	# Remove placeholder and reset drag state
-	_remove_placeholder()
+	# Reset drag state (placeholder will be removed by handlers)
 	is_dragging_over = false
 	
 	# Extract perk and source container from drag package
@@ -164,13 +163,21 @@ func _drop_data(_pos, data):
 		_handle_inactive_drop(perk, source_container, data)
 
 func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: Dictionary):
+	# Remove placeholder first
+	_remove_placeholder()
+	
 	# Update perk data to be active
 	perk.active = true
 	
 	# Check if active panel already has a perk (need to swap)
-	var existing_children = get_children()
-	if existing_children.size() > 0:
-		var existing_perk_node = existing_children[0]
+	# Filter out BackgroundPanel and SectionHeader
+	var existing_perk_node = null
+	for child in get_children():
+		if child.name != "BackgroundPanel" and child.name != "SectionHeader" and child.has_method("get_perk_data"):
+			existing_perk_node = child
+			break
+	
+	if existing_perk_node:
 		var existing_perk_data = existing_perk_node.get_perk_data()
 		
 		print("Active panel has existing perk, swapping...")
@@ -212,12 +219,18 @@ func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data
 	
 	# Get the placeholder position before it's removed
 	var placeholder_index = drag_placeholder.get_index() if drag_placeholder else get_child_count()
+	print("Placeholder index: ", placeholder_index, " out of ", get_child_count(), " children")
+	
+	# Remove placeholder BEFORE adding new child so indices stay correct
+	_remove_placeholder()
 	
 	# Create new perk at the placeholder position
 	var new_perk = perk_scene.instantiate()
 	new_perk.set_perk_data(perk)
 	add_child(new_perk)
+	print("Added perk, now has ", get_child_count(), " children, moving to index: ", placeholder_index)
 	move_child(new_perk, placeholder_index)
+	print("After move, perk is at index: ", new_perk.get_index())
 	
 	# The dragged node was already shrunk to height 0 during drag start
 	# Clear its restoration metadata and queue it for removal
@@ -236,12 +249,18 @@ func _handle_reorder(_pos: Vector2, data):
 	
 	# Find the best insertion point based on placeholder position
 	var placeholder_index = drag_placeholder.get_index() if drag_placeholder else get_child_count()
+	print("Reorder - Placeholder index: ", placeholder_index, " out of ", get_child_count(), " children")
+	
+	# Remove placeholder BEFORE adding new child so indices stay correct
+	_remove_placeholder()
 	
 	# Create new perk at the placeholder position
 	var new_perk = perk_scene.instantiate()
 	new_perk.set_perk_data(perk_data)
 	add_child(new_perk)
+	print("Reorder - Added perk, now has ", get_child_count(), " children, moving to index: ", placeholder_index)
 	move_child(new_perk, placeholder_index)
+	print("Reorder - After move, perk is at index: ", new_perk.get_index())
 	
 	# Clear the restoration metadata since we successfully placed it
 	if dragged_node:
@@ -332,10 +351,10 @@ func _update_placeholder_position(pos: Vector2):
 				break
 		_animate_placeholder_height(target_height * 0.8)
 	
-	# Get all non-placeholder children
+	# Get all perk children (exclude placeholder, BackgroundPanel, and SectionHeader)
 	var logical_children = []
 	for child in get_children():
-		if child != drag_placeholder:
+		if child != drag_placeholder and child.name != "BackgroundPanel" and child.name != "SectionHeader":
 			logical_children.append(child)
 	
 	# Find insertion index based on Y position
@@ -354,13 +373,21 @@ func _update_placeholder_position(pos: Vector2):
 			insert_index = i
 			break
 	
-	# Calculate the actual index considering the placeholder
-	var target_index = insert_index
+	# Map the logical index to the actual child index
+	# We need to account for BackgroundPanel and SectionHeader which are always at the start
+	var actual_index = insert_index
+	for i in range(get_child_count()):
+		var child = get_child(i)
+		if child.name == "BackgroundPanel" or child.name == "SectionHeader":
+			actual_index += 1
+		else:
+			break
+	
 	var current_placeholder_index = drag_placeholder.get_index()
 	
 	# Only move if the position has changed
-	if current_placeholder_index != target_index:
-		move_child(drag_placeholder, target_index)
+	if current_placeholder_index != actual_index:
+		move_child(drag_placeholder, actual_index)
 
 func _animate_placeholder_height(target_height: float):
 	if not drag_placeholder:
