@@ -10,6 +10,7 @@ extends Control
 @export var rainy_icon: Texture2D
 @export var weather_icon_texture: TextureRect
 @export var location_info_panel: PanelContainer
+@export var location_hover_area: Control  # The panel/control that should detect mouse hover
 
 func _ready():
 	# Connect to GameInfo signals
@@ -20,18 +21,28 @@ func _ready():
 	if location_info_panel:
 		location_info_panel.visible = false
 	
-	# Connect mouse signals for location hover (if this is a Panel/Control with mouse detection)
-	mouse_entered.connect(_on_mouse_entered)
-	mouse_exited.connect(_on_mouse_exited)
+	# Connect mouse signals for location hover
+	if location_hover_area:
+		location_hover_area.mouse_entered.connect(_on_mouse_entered)
+		location_hover_area.mouse_exited.connect(_on_mouse_exited)
+		location_hover_area.gui_input.connect(_on_location_gui_input)
+	else:
+		# Fallback: use self
+		mouse_entered.connect(_on_mouse_entered)
+		mouse_exited.connect(_on_mouse_exited)
 	
 	# Initial update
 	update_display()
 
-func _gui_input(event: InputEvent):
+func _on_location_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if location_info_panel:
 				location_info_panel.visible = not location_info_panel.visible
+
+func _gui_input(event: InputEvent):
+	# Fallback if location_hover_area is not set
+	_on_location_gui_input(event)
 
 func _on_mouse_entered():
 	if location_info_panel:
