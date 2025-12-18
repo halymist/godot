@@ -294,7 +294,7 @@ home_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home")
 home_button = NodePath("../Portrait/BottomUI/Buttons/Home/Button")
 arena_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Arena")
 arena_button = NodePath("../Portrait/BottomUI/Buttons/Arena/Button")
-character_button = NodePath("../Portrait/TopUI/HBoxContainer/Character/Button")
+character_button = NodePath("../Portrait/TopUI/Character/Button")
 character_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character")
 talents_button = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Talents/Button")
 talents_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Talents")
@@ -302,7 +302,7 @@ map_button = NodePath("../Portrait/BottomUI/Buttons/Map/Button")
 map_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Map")
 back_button = NodePath("../Portrait/TopUI/BackButton")
 settings_button = NodePath("../Portrait/TopUI/SettingsButton")
-rankings_button = NodePath("../Portrait/TopUI/HBoxContainer/VBoxContainer/AspectRatioContainer/RankingsButton")
+rankings_button = NodePath("../Portrait/TopUI/VBoxContainer/AspectRatioContainer/RankingsButton")
 chat_button = NodePath("../Portrait/BottomUI/Buttons/Chat/Button")
 chat_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay")
 combat_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat")
@@ -322,7 +322,7 @@ alchemist_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/A
 enchanter_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel")
 enemy_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy")
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
-payment_button = NodePath("../Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer/PaymentButton")
+payment_button = NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/PaymentButton")
 wide_home_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/HomeButtonContainer/HomeButton")
 wide_arena_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/ArenaButtonContainer/ArenaButton")
 wide_settings_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/ButtonsSection/SettingsButtonContainer/SettingsButton")
@@ -354,8 +354,8 @@ size_flags_horizontal = 4
 theme = SubResource("Theme_no_focus")
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 script = ExtResource("4_2cns2")
-gold_label = NodePath("HBoxContainer/VBoxContainer/SilverContainer/SilverValue")
-currency_label = NodePath("HBoxContainer/VBoxContainer/MushroomContainer/MushroomValue")
+gold_label = NodePath("VBoxContainer/SilverContainer/SilverValue")
+currency_label = NodePath("VBoxContainer/MushroomContainer/MushroomValue")
 location_label = NodePath("LocationPanel/HBoxContainer/LocationLabel")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
@@ -363,24 +363,16 @@ weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
 location_info_panel = NodePath("../GameSceneParent/Wrapper/GameScene/LocationInfoPanel")
 location_hover_area = NodePath("LocationPanel")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/TopUI"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.7
-anchor_bottom = 0.8
-offset_left = 10.0
-offset_top = 10.0
-offset_bottom = -10.0
-scale = Vector2(1, 1.00714)
-
-[node name="Character" type="TextureRect" parent="Portrait/TopUI/HBoxContainer"]
-layout_mode = 2
+[node name="Character" type="TextureRect" parent="Portrait/TopUI"]
+layout_mode = 0
+offset_right = 125.0
+offset_bottom = 125.0
 size_flags_horizontal = 3
 texture = ExtResource("9_7t8sx")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Character"]
+[node name="Button" type="Button" parent="Portrait/TopUI/Character"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -389,58 +381,65 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
-[node name="Avatar" parent="Portrait/TopUI/HBoxContainer/Character" instance=ExtResource("22_avatar")]
+[node name="Avatar" parent="Portrait/TopUI/Character" instance=ExtResource("22_avatar")]
 layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+anchor_bottom = 0.9
 mouse_filter = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/TopUI/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/TopUI"]
 layout_mode = 2
+offset_left = 140.0
+offset_top = 10.0
+offset_right = 445.0
+offset_bottom = 134.0
 size_flags_horizontal = 3
 
-[node name="MushroomContainer" type="HBoxContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+[node name="MushroomContainer" type="HBoxContainer" parent="Portrait/TopUI/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="MushroomIcon" type="TextureRect" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer"]
+[node name="MushroomIcon" type="TextureRect" parent="Portrait/TopUI/VBoxContainer/MushroomContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MushroomValue" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer"]
+[node name="MushroomValue" type="Label" parent="Portrait/TopUI/VBoxContainer/MushroomContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="PaymentButton" type="Button" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/MushroomContainer"]
+[node name="PaymentButton" type="Button" parent="Portrait/TopUI/VBoxContainer/MushroomContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="SilverContainer" type="HBoxContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+[node name="SilverContainer" type="HBoxContainer" parent="Portrait/TopUI/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="SilverIcon" type="TextureRect" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/SilverContainer"]
+[node name="SilverIcon" type="TextureRect" parent="Portrait/TopUI/VBoxContainer/SilverContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="SilverValue" type="Label" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/SilverContainer"]
+[node name="SilverValue" type="Label" parent="Portrait/TopUI/VBoxContainer/SilverContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/TopUI/HBoxContainer/VBoxContainer"]
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/TopUI/VBoxContainer"]
 layout_mode = 2
 alignment_horizontal = 0
 
-[node name="RankingsButton" type="Button" parent="Portrait/TopUI/HBoxContainer/VBoxContainer/AspectRatioContainer"]
+[node name="RankingsButton" type="Button" parent="Portrait/TopUI/VBoxContainer/AspectRatioContainer"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 size_flags_horizontal = 4
