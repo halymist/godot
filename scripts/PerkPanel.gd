@@ -210,8 +210,14 @@ func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data
 	# Update perk data to be inactive
 	perk.active = false
 	
-	# Place perk in inactive panel
-	place_perk_in_panel(perk)
+	# Get the placeholder position before it's removed
+	var placeholder_index = drag_placeholder.get_index() if drag_placeholder else get_child_count()
+	
+	# Create new perk at the placeholder position
+	var new_perk = perk_scene.instantiate()
+	new_perk.set_perk_data(perk)
+	add_child(new_perk)
+	move_child(new_perk, placeholder_index)
 	
 	# The dragged node was already shrunk to height 0 during drag start
 	# Clear its restoration metadata and queue it for removal
@@ -219,6 +225,9 @@ func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data
 	if source_node:
 		source_node.remove_meta("original_size")
 		source_node.queue_free()
+	
+	# Update active perks display in character screen
+	_update_character_active_perks()
 
 func _handle_reorder(_pos: Vector2, data):
 	# Get the dragged perk
@@ -238,6 +247,9 @@ func _handle_reorder(_pos: Vector2, data):
 	if dragged_node:
 		dragged_node.remove_meta("original_size")
 		dragged_node.queue_free()
+	
+	# Update active perks display in character screen
+	_update_character_active_perks()
 
 func place_perk_in_panel(perk_data: GameInfo.Perk):
 	print("Placing perk '", perk_data.perk_name, "' in panel: ", self.name)
