@@ -141,9 +141,6 @@ func _drop_data(_pos, data):
 	_remove_placeholder()
 	is_dragging_over = false
 	
-	# Restore all perks mouse filter since drag is ending successfully
-	_restore_all_perks_mouse_filter()
-	
 	# Extract perk and source container from drag package
 	var perk = data["perk"]
 	var source_container = data["source_container"]
@@ -372,30 +369,6 @@ func _notification(what):
 
 func _update_character_active_perks():
 	# Find and update the active perks display in character screen
-	var character_panel = get_tree().root.get_node("Game/Portrait/GameScene/Character")
-	if character_panel:
-		var active_perks_display = character_panel.get_node("ActivePerksBackground/ActivePerks")
-		if active_perks_display and active_perks_display.has_method("update_active_perks"):
-			active_perks_display.update_active_perks()
-
-func _restore_all_perks_mouse_filter():
-	# Find all perk nodes in all panels and restore their mouse filter
-	var game_scene = get_tree().root.get_node("Game/Portrait/GameScene")
-	if not game_scene:
-		return
-	
-	# Find all perk panels (both active and inactive)
-	var perk_panels = []
-	_find_perk_panels_recursive(game_scene, perk_panels)
-	
-	for panel in perk_panels:
-		for child in panel.get_children():
-			if child.has_method("get_perk_data"):  # This is a perk node
-				child.mouse_filter = Control.MOUSE_FILTER_STOP
-
-func _find_perk_panels_recursive(node: Node, panels: Array):
-	if node.has_method("place_perk_in_panel"):  # This is a PerkPanel
-		panels.append(node)
-	
-	for child in node.get_children():
-		_find_perk_panels_recursive(child, panels)
+	var active_perks_display = get_tree().root.find_child("ActivePerks", true, false)
+	if active_perks_display and active_perks_display.has_method("update_active_perks"):
+		active_perks_display.update_active_perks()

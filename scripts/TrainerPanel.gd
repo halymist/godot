@@ -41,7 +41,7 @@ func _on_visibility_changed():
 		update_stats_display()
 		update_button_states()
 
-func _on_gold_changed():
+func _on_gold_changed(_new_gold: int):
 	if visible and not Engine.is_editor_hint():
 		update_button_states()
 
