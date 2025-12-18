@@ -84,7 +84,7 @@ var mock_character_data = {
 	"perks": [
 		{
 			"id": 1,
-			"active": true,
+			"active": false,
 			"slot": 1
 		},
 		{

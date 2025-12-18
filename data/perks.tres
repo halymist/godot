@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="PerkDatabase" load_steps=6 format=3 uid="uid://bxh8cyad6lih5"]
+[gd_resource type="Resource" script_class="PerkDatabase" load_steps=8 format=3 uid="uid://bxh8cyad6lih5"]
 
 [ext_resource type="Script" uid="uid://d33tmwug4neyy" path="res://scripts/resources/PerkResource.gd" id="1_ocg54"]
 [ext_resource type="Texture2D" uid="uid://db2s8q0brdsna" path="res://data/perk_texture/perk.png" id="2_ptr4g"]
 [ext_resource type="Script" uid="uid://cph7aq216pdnc" path="res://scripts/resources/PerkDatabase.gd" id="2_txtgy"]
+[ext_resource type="Texture2D" uid="uid://de3hl0mcocv1p" path="res://assets/images/ui/Perks.png" id="3_ptr4g"]
 
 [sub_resource type="Resource" id="Resource_22ubc"]
 script = ExtResource("1_ocg54")
@@ -26,7 +27,18 @@ factor2 = 0.0
 icon = ExtResource("2_ptr4g")
 metadata/_custom_type_script = "uid://d33tmwug4neyy"
 
+[sub_resource type="Resource" id="Resource_uiww1"]
+script = ExtResource("1_ocg54")
+id = 3
+perk_name = "Perking it"
+effect1_id = 1
+factor1 = 5.0
+effect2_id = 2
+factor2 = 10.0
+icon = ExtResource("3_ptr4g")
+metadata/_custom_type_script = "uid://d33tmwug4neyy"
+
 [resource]
 script = ExtResource("2_txtgy")
-perks = Array[ExtResource("1_ocg54")]([SubResource("Resource_22ubc"), SubResource("Resource_4k4mo")])
+perks = Array[ExtResource("1_ocg54")]([SubResource("Resource_22ubc"), SubResource("Resource_4k4mo"), SubResource("Resource_uiww1")])
 metadata/_custom_type_script = "uid://cph7aq216pdnc"
