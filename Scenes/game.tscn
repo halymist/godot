@@ -1,4 +1,4 @@
-[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -51,6 +51,7 @@
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
+[ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
@@ -2048,7 +2049,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2113,6 +2113,18 @@ texture = ExtResource("9_7t8sx")
 expand_mode = 1
 stretch_mode = 5
 script = ExtResource("6_consumable")
+
+[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Middle/Character" instance=ExtResource("22_avatar")]
+layout_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Middle/Character"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
 
 [node name="Weapon1Slot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Middle" instance=ExtResource("6_itemslot")]
 layout_mode = 2
