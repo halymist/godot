@@ -15,14 +15,14 @@ func set_perk_data(data: GameInfo.Perk):
 		if data.effect1_description != "":
 			var effect1_text = data.effect1_description
 			if data.factor1 != 0.0:
-				effect1_text += " " + str(int(data.factor1))
+				effect1_text += " " + str(int(data.factor1)) + "%"
 			label_text += "\n" + effect1_text
 		
 		# Add effect 2 if it exists
 		if data.effect2_description != "":
 			var effect2_text = data.effect2_description
 			if data.factor2 != 0.0:
-				effect2_text += " " + str(int(data.factor2))
+				effect2_text += " " + str(int(data.factor2)) + "%"
 			label_text += "\n" + effect2_text
 		
 		label.text = label_text

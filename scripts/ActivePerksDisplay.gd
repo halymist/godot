@@ -117,14 +117,14 @@ func _on_perk_hover_start(perk_icon):
 		if perk_data.effect1_description != "":
 			var effect1_text = perk_data.effect1_description
 			if perk_data.factor1 != 0.0:
-				effect1_text += " " + str(int(perk_data.factor1))
+				effect1_text += " " + str(int(perk_data.factor1)) + "%"
 			tooltip_text += "\n" + effect1_text
 		
 		# Add effect 2 if it exists
 		if perk_data.effect2_description != "":
 			var effect2_text = perk_data.effect2_description
 			if perk_data.factor2 != 0.0:
-				effect2_text += " " + str(int(perk_data.factor2))
+				effect2_text += " " + str(int(perk_data.factor2)) + "%"
 			tooltip_text += "\n" + effect2_text
 		
 		TooltipManager.show_perk_tooltip(tooltip_text, perk_icon)
@@ -172,7 +172,7 @@ func _on_consumable_hover_start(consumable_icon):
 				if effect_data:
 					var effect_line = effect_data.description
 					if effect_map[effect_id] > 0:
-						effect_line += " " + str(effect_map[effect_id])
+						effect_line += " " + str(effect_map[effect_id]) + "%"
 					tooltip_text += "\n" + effect_line
 			
 		elif consumable_type == "Potion":
@@ -185,7 +185,7 @@ func _on_consumable_hover_start(consumable_icon):
 					if effect_data:
 						var effect_line = effect_data.description
 						if potion_item.effect_factor > 0:
-							effect_line += " " + str(int(potion_item.effect_factor))
+							effect_line += " " + str(int(potion_item.effect_factor)) + "%"
 						tooltip_text += "\n" + effect_line
 		
 		TooltipManager.show_perk_tooltip(tooltip_text, consumable_icon)
