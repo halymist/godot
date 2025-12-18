@@ -6,8 +6,8 @@ extends AspectRatioContainer
 @export var points: int = 0
 @export var isStarter: bool = false
 
-@export var description: String = ""
-@export var factor: float = 1.0
+@export var effect_id: int = 0  # Reference to effect in effects.tres
+@export var factor: float = 1.0  # Custom factor value for this talent
 
 @export var perk_slot: int = 0  # 0 = regular talent, >0 = perk talent with this slot ID
 
@@ -59,6 +59,26 @@ func _on_button_pressed():
 			perkScreen.visible = true
 			perkScreen.load_active_perks_for_slot(perk_slot)
 	else:
+		# Get effect description from effects database
+		var description = ""
+		if effect_id > 0:
+			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
+			if effect_data:
+				# Start with the effect description
+				description = effect_data.description
+				
+				# Calculate current and next level bonuses
+				var current_bonus = points * factor
+				var next_bonus = (points + 1) * factor
+				
+				# Add bonus values to description
+				if points >= maxPoints:
+					# Maxed out - only show current bonus
+					description += " " + str(int(current_bonus)) + "%"
+				else:
+					# Show current --> next level
+					description += " " + str(int(current_bonus)) + "% --> " + str(int(next_bonus)) + "%"
+		
 		# Get TogglePanel reference and show upgrade talent overlay
 		var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
 		if toggle_panel and toggle_panel.has_method("show_overlay"):

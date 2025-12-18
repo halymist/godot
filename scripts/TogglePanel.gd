@@ -112,15 +112,21 @@ func show_overlay(overlay: Control):
 	if overlay == null:
 		return
 	
-	# Chat is special - it can show over everything and doesn't hide other overlays
+	# Chat is special - it can show over everything but should toggle off if already active
 	if overlay == chat_panel:
-		chat_overlay_active = true
-		if overlay.has_method("show_chat"):
-			overlay.show_chat()
+		if chat_overlay_active:
+			# Chat is already active, toggle it off
+			hide_overlay(chat_panel)
+			return
 		else:
-			overlay.visible = true
-		print("Showing chat overlay")
-		return
+			# Show chat overlay
+			chat_overlay_active = true
+			if overlay.has_method("show_chat"):
+				overlay.show_chat()
+			else:
+				overlay.visible = true
+			print("Showing chat overlay")
+			return
 	
 	# For other overlays (settings/rankings/payment), hide current overlay if one exists
 	var current = GameInfo.get_current_panel_overlay()

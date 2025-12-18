@@ -8,7 +8,7 @@
 script = ExtResource("1_kykie")
 id = 1
 name = "Effect1"
-description = "Increases something by"
+description = "Increases critical strike chance by"
 slot = ""
 factor = 0
 metadata/_custom_type_script = "uid://p673jpbjsppe"
