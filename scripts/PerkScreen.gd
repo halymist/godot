@@ -74,6 +74,9 @@ func _setup_perk_instance(perk_instance: Node, perk: GameInfo.Perk):
 	perk_instance.set_perk_data(perk)
 
 func _on_button_pressed():
+	# Clear from GameInfo when closing via background click
+	if GameInfo.get_current_panel_overlay() == self:
+		GameInfo.set_current_panel_overlay(null)
 	visible = false
 
 func show_overlay():

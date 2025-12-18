@@ -61,7 +61,12 @@ func _on_button_pressed():
 	else:
 		# Get effect description from effects database
 		var description = ""
-		if effect_id > 0:
+		
+		# Check if this is a perk slot talent
+		if perk_slot > 0:
+			# Perk slot talents just show the unlock message
+			description = "Unlocks an additional perk slot"
+		elif effect_id > 0:
 			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
 			if effect_data:
 				# Start with the effect description
