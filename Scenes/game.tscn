@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -43,7 +43,6 @@
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="Texture2D" uid="uid://de5d80e8d58rl" path="res://assets/images/villages/vendor2.png" id="16_titue"]
-[ext_resource type="PackedScene" uid="uid://bmwipv6nvqjj2" path="res://Scenes/perk_tooltip.tscn" id="17_oeip8"]
 [ext_resource type="Texture2D" uid="uid://bmo5oqy3a5rr5" path="res://assets/images/villages/blacksmith25.png" id="18_htg8p"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="PackedScene" uid="uid://cducbq1tpj6uc" path="res://Scenes/bag.tscn" id="20_6xvgv"]
@@ -89,7 +88,6 @@
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
-[ext_resource type="PackedScene" uid="uid://d4lxsamibimaj" path="res://Scenes/item_description.tscn" id="87_b1mpw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -2163,7 +2161,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 
-[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground" node_paths=PackedStringArray("tooltip_panel")]
+[node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2172,7 +2170,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
-tooltip_panel = NodePath("../../../../PerkTooltip")
 
 [node name="Stats" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("gold_label", "currency_label", "player_name_label", "rank_label", "guild_label", "guild_icon", "profession_label", "profession_icon", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
@@ -5768,26 +5765,6 @@ offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
-
-[node name="PerkTooltip" parent="Portrait/GameSceneParent/Wrapper" instance=ExtResource("17_oeip8")]
-layout_mode = 3
-offset_top = 180.0
-offset_right = 200.0
-offset_bottom = 280.0
-
-[node name="ItemDescription" parent="Portrait/GameSceneParent/Wrapper" instance=ExtResource("87_b1mpw")]
-layout_mode = 0
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 112.0
-offset_bottom = 313.0
-grow_horizontal = 1
-grow_vertical = 1
 
 [node name="CancelQuest" type="Panel" parent="Portrait/GameSceneParent/Wrapper"]
 visible = false

@@ -1,7 +1,6 @@
 extends HBoxContainer
 
 @export var perk_mini_scene: PackedScene
-@export var tooltip_panel: PanelContainer
 
 func _ready():
 	# Connect to bag_slots_changed to update consumables immediately
@@ -110,170 +109,89 @@ func create_effect_display(effect: EffectResource):
 
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
-	if perk_data and tooltip_panel:
-		# Reset size to allow panel to resize for new content
-		tooltip_panel.reset_size()
-		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
-		if tooltip_label:
-			# Build tooltip with perk name and effects
-			var tooltip_text = perk_data.perk_name
-			
-			# Add effect 1 if it exists
-			if perk_data.effect1_description != "":
-				var effect1_text = perk_data.effect1_description
-				if perk_data.factor1 != 0.0:
-					effect1_text += " " + str(int(perk_data.factor1))
-				tooltip_text += "\n" + effect1_text
-			
-			# Add effect 2 if it exists
-			if perk_data.effect2_description != "":
-				var effect2_text = perk_data.effect2_description
-				if perk_data.factor2 != 0.0:
-					effect2_text += " " + str(int(perk_data.factor2))
-				tooltip_text += "\n" + effect2_text
-			
-			tooltip_label.text = tooltip_text
-			tooltip_panel.visible = true
+	if perk_data:
+		# Build tooltip with perk name and effects
+		var tooltip_text = perk_data.perk_name
 		
-		# Position tooltip above the perk icon
-		var icon_global_pos = perk_icon.global_position
-		var icon_size = perk_icon.size
-		var tooltip_size = tooltip_panel.size
+		# Add effect 1 if it exists
+		if perk_data.effect1_description != "":
+			var effect1_text = perk_data.effect1_description
+			if perk_data.factor1 != 0.0:
+				effect1_text += " " + str(int(perk_data.factor1))
+			tooltip_text += "\n" + effect1_text
 		
-		# Position above the icon, centered horizontally
-		tooltip_panel.global_position = Vector2(
-			icon_global_pos.x - tooltip_size.x / 2 + icon_size.x / 2,  # Center horizontally on icon
-			icon_global_pos.y - tooltip_size.y - 10  # Position above icon with 10px gap
-		)
+		# Add effect 2 if it exists
+		if perk_data.effect2_description != "":
+			var effect2_text = perk_data.effect2_description
+			if perk_data.factor2 != 0.0:
+				effect2_text += " " + str(int(perk_data.factor2))
+			tooltip_text += "\n" + effect2_text
 		
-		# Ensure tooltip stays within screen bounds
-		var viewport_size = get_viewport().get_visible_rect().size
-		if tooltip_panel.global_position.x < 0:
-			tooltip_panel.global_position.x = 0
-		elif tooltip_panel.global_position.x + tooltip_size.x > viewport_size.x:
-			tooltip_panel.global_position.x = viewport_size.x - tooltip_size.x
-		
-		if tooltip_panel.global_position.y < 0:
-			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10  # Show below if no space above
+		TooltipManager.show_perk_tooltip(tooltip_text, perk_icon)
 
 func _on_effect_hover_start(effect_icon):
 	"""Show tooltip for active effects"""
 	var effect_data = effect_icon.get_meta("effect_data")
-	if effect_data and tooltip_panel:
-		# Reset size to allow panel to resize for new content
-		tooltip_panel.reset_size()
-		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
-		if tooltip_label:
-			# Build tooltip with effect name and description
-			var tooltip_text = effect_data.name
-			if effect_data.description != "":
-				tooltip_text += "\n" + effect_data.description
-			
-			tooltip_label.text = tooltip_text
-			tooltip_panel.visible = true
+	if effect_data:
+		# Build tooltip with effect name and description
+		var tooltip_text = effect_data.name
+		if effect_data.description != "":
+			tooltip_text += "\n" + effect_data.description
 		
-		# Position tooltip above the effect icon
-		var icon_global_pos = effect_icon.global_position
-		var icon_size = effect_icon.size
-		var tooltip_size = tooltip_panel.size
-		
-		# Position above the icon, centered horizontally
-		tooltip_panel.global_position = Vector2(
-			icon_global_pos.x - tooltip_size.x / 2 + icon_size.x / 2,
-			icon_global_pos.y - tooltip_size.y - 10
-		)
-		
-		# Ensure tooltip stays within screen bounds
-		var viewport_size = get_viewport().get_visible_rect().size
-		if tooltip_panel.global_position.x < 0:
-			tooltip_panel.global_position.x = 0
-		elif tooltip_panel.global_position.x + tooltip_size.x > viewport_size.x:
-			tooltip_panel.global_position.x = viewport_size.x - tooltip_size.x
-		
-		if tooltip_panel.global_position.y < 0:
-			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10
+		TooltipManager.show_perk_tooltip(tooltip_text, effect_icon)
 
 func _on_consumable_hover_start(consumable_icon):
 	"""Show tooltip for equipped consumables"""
 	var consumable_type = consumable_icon.get_meta("consumable_type")
 	var item_id = consumable_icon.get_meta("item_id")
-	if consumable_type and tooltip_panel:
-		# Reset size to allow panel to resize for new content
-		tooltip_panel.reset_size()
-		var tooltip_label = tooltip_panel.get_node("MarginContainer/TooltipLabel")
-		if tooltip_label:
-			var tooltip_text = ""
+	if consumable_type:
+		var tooltip_text = ""
+		
+		if consumable_type == "Elixir":
+			# Decode elixir ID and show combined effects
+			tooltip_text = "Elixir"
+			var id_str = str(item_id)
+			var ingredient1_id = int(id_str.substr(4, 3))
+			var ingredient2_id = int(id_str.substr(7, 3))
+			var ingredient3_id = int(id_str.substr(10, 3))
 			
-			if consumable_type == "Elixir":
-				# Decode elixir ID and show combined effects
-				tooltip_text = "Elixir"
-				var id_str = str(item_id)
-				var ingredient1_id = int(id_str.substr(4, 3))
-				var ingredient2_id = int(id_str.substr(7, 3))
-				var ingredient3_id = int(id_str.substr(10, 3))
-				
-				# Build effect map to combine duplicate effects
-				var effect_map = {}  # Map effect_id to total factor
-				for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
-					if ingredient_id > 0:
-						var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
-						if ingredient_resource and ingredient_resource.effect_id > 0:
-							if effect_map.has(ingredient_resource.effect_id):
-								effect_map[ingredient_resource.effect_id] += ingredient_resource.effect_factor
-							else:
-								effect_map[ingredient_resource.effect_id] = ingredient_resource.effect_factor
-				
-				# Build effect text from combined effects
-				for effect_id in effect_map.keys():
-					var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
+			# Build effect map to combine duplicate effects
+			var effect_map = {}  # Map effect_id to total factor
+			for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
+				if ingredient_id > 0:
+					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
+					if ingredient_resource and ingredient_resource.effect_id > 0:
+						if effect_map.has(ingredient_resource.effect_id):
+							effect_map[ingredient_resource.effect_id] += ingredient_resource.effect_factor
+						else:
+							effect_map[ingredient_resource.effect_id] = ingredient_resource.effect_factor
+			
+			# Build effect text from combined effects
+			for effect_id in effect_map.keys():
+				var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
+				if effect_data:
+					var effect_line = effect_data.description
+					if effect_map[effect_id] > 0:
+						effect_line += " " + str(effect_map[effect_id])
+					tooltip_text += "\n" + effect_line
+			
+		elif consumable_type == "Potion":
+			# Show potion name and effect
+			var potion_item = GameInfo.items_db.get_item_by_id(item_id)
+			if potion_item:
+				tooltip_text = potion_item.item_name
+				if potion_item.effect_id > 0:
+					var effect_data = GameInfo.effects_db.get_effect_by_id(potion_item.effect_id)
 					if effect_data:
 						var effect_line = effect_data.description
-						if effect_map[effect_id] > 0:
-							effect_line += " " + str(effect_map[effect_id])
+						if potion_item.effect_factor > 0:
+							effect_line += " " + str(int(potion_item.effect_factor))
 						tooltip_text += "\n" + effect_line
-				
-			elif consumable_type == "Potion":
-				# Show potion name and effect
-				var potion_item = GameInfo.items_db.get_item_by_id(item_id)
-				if potion_item:
-					tooltip_text = potion_item.item_name
-					if potion_item.effect_id > 0:
-						var effect_data = GameInfo.effects_db.get_effect_by_id(potion_item.effect_id)
-						if effect_data:
-							var effect_line = effect_data.description
-							if potion_item.effect_factor > 0:
-								effect_line += " " + str(int(potion_item.effect_factor))
-							tooltip_text += "\n" + effect_line
-			
-			tooltip_label.text = tooltip_text
-			tooltip_panel.visible = true
 		
-		# Position tooltip above the consumable icon
-		var icon_global_pos = consumable_icon.global_position
-		var icon_size = consumable_icon.size
-		var tooltip_size = tooltip_panel.size
-		
-		# Position above the icon, centered horizontally
-		tooltip_panel.global_position = Vector2(
-			icon_global_pos.x - tooltip_size.x / 2 + icon_size.x / 2,
-			icon_global_pos.y - tooltip_size.y - 10
-		)
-		
-		# Ensure tooltip stays within screen bounds
-		var viewport_size = get_viewport().get_visible_rect().size
-		if tooltip_panel.global_position.x < 0:
-			tooltip_panel.global_position.x = 0
-		elif tooltip_panel.global_position.x + tooltip_size.x > viewport_size.x:
-			tooltip_panel.global_position.x = viewport_size.x - tooltip_size.x
-		
-		if tooltip_panel.global_position.y < 0:
-			tooltip_panel.global_position.y = icon_global_pos.y + icon_size.y + 10
+		TooltipManager.show_perk_tooltip(tooltip_text, consumable_icon)
 
 func _on_perk_hover_end():
-	if tooltip_panel:
-		tooltip_panel.visible = false
-		# Reset size to allow panel to resize for next hover
-		tooltip_panel.reset_size()
+	TooltipManager.hide_perk_tooltip()
 
 func get_active_perks() -> Array:
 	# Use the new helper method directly on the player
