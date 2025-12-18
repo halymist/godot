@@ -379,6 +379,9 @@ size_flags_horizontal = 3
 alignment_horizontal = 0
 alignment_vertical = 0
 
+[node name="Avatar" parent="Portrait/TopUI/HBoxContainer/Character" instance=ExtResource("22_avatar")]
+layout_mode = 2
+
 [node name="Button" type="Button" parent="Portrait/TopUI/HBoxContainer/Character"]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
@@ -2049,6 +2052,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -5232,6 +5236,9 @@ theme_override_constants/separation = 20
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 
+[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character" instance=ExtResource("22_avatar")]
+layout_mode = 2
+
 [node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
@@ -5967,6 +5974,9 @@ size_flags_vertical = 3
 [node name="Character" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Avatar" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character" instance=ExtResource("22_avatar")]
+layout_mode = 2
 
 [node name="CharacterButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character"]
 layout_mode = 2
