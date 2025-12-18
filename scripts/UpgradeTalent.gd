@@ -57,10 +57,16 @@ func set_talent_data(talent_name: String, description: String, factor: float, po
 		upgrade_button.visible = false
 
 func _on_button_pressed():
+	# Clear from GameInfo when closing via background click
+	if GameInfo.get_current_panel_overlay() == self:
+		GameInfo.set_current_panel_overlay(null)
 	visible = false
 
 func _on_upgrade_button_pressed():
 	print("Upgrade button pressed for talent: ", name_label.text)
 	talent_ref.upgrade_talent()
 	talents_container.update_title_label()  # Refresh the title after upgrading
+	# Clear from GameInfo when closing via upgrade
+	if GameInfo.get_current_panel_overlay() == self:
+		GameInfo.set_current_panel_overlay(null)
 	visible = false
