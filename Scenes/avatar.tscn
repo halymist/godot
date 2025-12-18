@@ -19,6 +19,7 @@ eyes_textures = Array[Texture2D]([ExtResource("2_angbi")])
 
 [node name="AvatarControl" type="Control" parent="."]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Face" type="TextureRect" parent="AvatarControl"]
 layout_mode = 1
@@ -28,6 +29,7 @@ anchor_bottom = 1.0
 texture = ExtResource("1_svpqn")
 expand_mode = 1
 stretch_mode = 5
+mouse_filter = 2
 
 [node name="Eyes" type="TextureRect" parent="AvatarControl"]
 layout_mode = 1
@@ -40,6 +42,7 @@ grow_vertical = 2
 texture = ExtResource("2_angbi")
 expand_mode = 1
 stretch_mode = 5
+mouse_filter = 2
 
 [node name="Hair" type="TextureRect" parent="AvatarControl"]
 layout_mode = 1
@@ -56,3 +59,4 @@ grow_vertical = 2
 texture = ExtResource("2_ofb85")
 expand_mode = 1
 stretch_mode = 5
+mouse_filter = 2
