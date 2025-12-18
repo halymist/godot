@@ -1,7 +1,5 @@
 extends Control
 
-@export var gold_label: Label
-@export var currency_label: Label
 @export var player_name_label: Label
 @export var rank_label: Label
 @export var guild_label: Label
@@ -17,23 +15,12 @@ extends Control
 
 func _ready():
 	print("LabelUpdate ready!")
-	GameInfo.gold_changed.connect(_on_gold_changed)
-	GameInfo.currency_changed.connect(_on_currency_changed)
 	GameInfo.stats_changed.connect(_on_stats_changed)
 	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
 
-	_on_gold_changed(GameInfo.player_gold)
-	_on_currency_changed(GameInfo.player_currency)
 	_on_stats_changed(GameInfo.get_player_stats())
 
-# Called when GameInfo curent player is updated
-func _on_gold_changed(new_gold: int):
-	print("Gold changed to: ", new_gold)
-	gold_label.text = "Gold: " + str(new_gold)
-
-func _on_currency_changed(new_currency: int):
-	currency_label.text = "Currency: " + str(new_currency)
-
+# Called when GameInfo current player is updated
 func _on_stats_changed(_stats: Dictionary):
 	print("Stats changed: ", _stats)
 	var total_stats = GameInfo.get_total_stats()
