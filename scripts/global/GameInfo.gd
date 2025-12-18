@@ -617,6 +617,9 @@ class GameCurrentPlayer:
 	var daily_quests: Array = []  # Array of quest IDs available today
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
 	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
+	var avatar_face: int = 1  # Face texture ID
+	var avatar_hair: int = 1  # Hair texture ID
+	var avatar_eyes: int = 1  # Eyes texture ID
 	
 	# Gold with automatic event emission
 	var _gold: int = 0
@@ -666,7 +669,10 @@ class GameCurrentPlayer:
 		"profession": "profession",
 		"daily_quests": "daily_quests",
 		"server_timezone": "server_timezone",
-		"weather": "weather"
+		"weather": "weather",
+		"avatar_face": "avatar_face",
+		"avatar_hair": "avatar_hair",
+		"avatar_eyes": "avatar_eyes"
 	}
 	
 	func load_from_msgpack(data: Dictionary):
