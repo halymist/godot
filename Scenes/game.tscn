@@ -365,8 +365,10 @@ location_hover_area = NodePath("LocationPanel")
 
 [node name="Character" type="TextureRect" parent="Portrait/TopUI"]
 layout_mode = 0
-offset_right = 125.0
-offset_bottom = 125.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 135.0
+offset_bottom = 135.0
 size_flags_horizontal = 3
 texture = ExtResource("9_7t8sx")
 expand_mode = 1
@@ -390,9 +392,9 @@ mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/TopUI"]
 layout_mode = 2
-offset_left = 140.0
+offset_left = 145.0
 offset_top = 10.0
-offset_right = 445.0
+offset_right = 329.0
 offset_bottom = 134.0
 size_flags_horizontal = 3
 
@@ -5978,8 +5980,8 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Character" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
-size_flags_vertical = 3
 texture = ExtResource("9_7t8sx")
 expand_mode = 1
 stretch_mode = 4
@@ -5995,6 +5997,9 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
 [node name="Avatar" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection/Character" instance=ExtResource("22_avatar")]
 layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+anchor_bottom = 0.9
 mouse_filter = 2
 
 [node name="CurrencyBackRow" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/VBoxContainer/TopSection"]
