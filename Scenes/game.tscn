@@ -276,7 +276,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 game_scene = NodePath("Portrait/GameSceneParent/Wrapper")
 portrait_game_parent = NodePath("Portrait/GameSceneParent")
-wide_game_parent = NodePath("Wide/AspectRatioContainer/HBoxContainer/GameSceneParent")
+wide_game_parent = NodePath("Wide/GameSceneParent")
 base_theme = ExtResource("2_nb51f")
 aspect_ratio_threshold = 0.7
 
@@ -323,15 +323,15 @@ enchanter_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/E
 enemy_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy")
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
 payment_button = NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/PaymentButton")
-wide_home_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/HomeButtonContainer/HomeButton")
-wide_arena_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/ArenaButtonContainer/ArenaButton")
-wide_settings_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/SettingsButtonContainer/SettingsButton")
-wide_chat_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/ChatButtonContainer/ChatButton")
-wide_map_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/MapButtonContainer/MapButton")
-wide_character_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/Character/CharacterButton")
-wide_rankings_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/RankingsButtonContainer/RankingsButton")
-wide_payment_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection/MushroomContainer/PaymentButton")
-wide_back_button = NodePath("../Wide/AspectRatioContainer/HBoxContainer/Sidebar/BackButton")
+wide_home_button = NodePath("../Wide/Sidebar/ButtonsSection/HomeButtonContainer/HomeButton")
+wide_arena_button = NodePath("../Wide/Sidebar/ButtonsSection/ArenaButtonContainer/ArenaButton")
+wide_settings_button = NodePath("../Wide/Sidebar/ButtonsSection/SettingsButtonContainer/SettingsButton")
+wide_chat_button = NodePath("../Wide/Sidebar/ButtonsSection/ChatButtonContainer/ChatButton")
+wide_map_button = NodePath("../Wide/Sidebar/ButtonsSection/MapButtonContainer/MapButton")
+wide_character_button = NodePath("../Wide/Sidebar/Character/CharacterButton")
+wide_rankings_button = NodePath("../Wide/Sidebar/ButtonsSection/RankingsButtonContainer/RankingsButton")
+wide_payment_button = NodePath("../Wide/Sidebar/CurrencySection/MushroomContainer/PaymentButton")
+wide_back_button = NodePath("../Wide/Sidebar/BackButton")
 
 [node name="Portrait" type="Control" parent="."]
 layout_mode = 1
@@ -5953,20 +5953,16 @@ grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("2_nb51f")
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Wide"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
+[node name="GameSceneParent" type="Control" parent="Wide"]
+anchors_preset = 0
+offset_right = 667.0
 offset_bottom = 667.0
-grow_horizontal = 2
-ratio = 1.33333
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer"]
-layout_mode = 2
-
-[node name="Sidebar" type="Panel" parent="Wide/AspectRatioContainer/HBoxContainer" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="Sidebar" type="Panel" parent="Wide" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
+layout_mode = 0
+offset_left = 667.0
+offset_right = 890.0
+offset_bottom = 667.0
 script = ExtResource("4_2cns2")
 gold_label = NodePath("CurrencySection/SilverContainer/SilverValue")
 currency_label = NodePath("CurrencySection/MushroomContainer/MushroomValue")
@@ -5974,10 +5970,10 @@ location_label = NodePath("LocationPanel/HBoxContainer/LocationLabel")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
 weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
-location_info_panel = NodePath("../../../../Portrait/GameSceneParent/Wrapper/GameScene/LocationInfoPanel")
+location_info_panel = NodePath("../../Portrait/GameSceneParent/Wrapper/GameScene/LocationInfoPanel")
 location_hover_area = NodePath("LocationPanel")
 
-[node name="Character" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar"]
+[node name="Character" type="TextureRect" parent="Wide/Sidebar"]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 10.0
@@ -5987,7 +5983,7 @@ texture = ExtResource("9_7t8sx")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="CharacterButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/Character"]
+[node name="CharacterButton" type="Button" parent="Wide/Sidebar/Character"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -5996,14 +5992,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
-[node name="Avatar" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/Character" instance=ExtResource("22_avatar")]
+[node name="Avatar" parent="Wide/Sidebar/Character" instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
 anchor_bottom = 0.9
 mouse_filter = 2
 
-[node name="CurrencySection" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar"]
+[node name="CurrencySection" type="VBoxContainer" parent="Wide/Sidebar"]
 layout_mode = 2
 offset_left = 25.0
 offset_top = 198.0
@@ -6011,46 +6007,46 @@ offset_right = 141.0
 offset_bottom = 273.0
 theme_override_constants/separation = 10
 
-[node name="MushroomContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection"]
+[node name="MushroomContainer" type="HBoxContainer" parent="Wide/Sidebar/CurrencySection"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="MushroomIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection/MushroomContainer"]
+[node name="MushroomIcon" type="TextureRect" parent="Wide/Sidebar/CurrencySection/MushroomContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MushroomValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection/MushroomContainer"]
+[node name="MushroomValue" type="Label" parent="Wide/Sidebar/CurrencySection/MushroomContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="PaymentButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection/MushroomContainer"]
+[node name="PaymentButton" type="Button" parent="Wide/Sidebar/CurrencySection/MushroomContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="SilverContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection"]
+[node name="SilverContainer" type="HBoxContainer" parent="Wide/Sidebar/CurrencySection"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="SilverIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection/SilverContainer"]
+[node name="SilverIcon" type="TextureRect" parent="Wide/Sidebar/CurrencySection/SilverContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="SilverValue" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/CurrencySection/SilverContainer"]
+[node name="SilverValue" type="Label" parent="Wide/Sidebar/CurrencySection/SilverContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="BackButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar"]
+[node name="BackButton" type="Button" parent="Wide/Sidebar"]
 layout_mode = 2
 offset_left = 133.166
 offset_top = 196.0
@@ -6060,7 +6056,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
 expand_icon = true
 
-[node name="LocationPanel" type="Panel" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar"]
+[node name="LocationPanel" type="Panel" parent="Wide/Sidebar"]
 layout_mode = 2
 offset_left = 20.0
 offset_top = 279.0
@@ -6068,7 +6064,7 @@ offset_right = 216.0
 offset_bottom = 315.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/LocationPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Wide/Sidebar/LocationPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -6077,21 +6073,21 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 5
 
-[node name="LocationLabel" type="Label" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/LocationPanel/HBoxContainer"]
+[node name="LocationLabel" type="Label" parent="Wide/Sidebar/LocationPanel/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 text = "Krasna Ves - 14:35"
 vertical_alignment = 1
 
-[node name="WeatherIcon" type="TextureRect" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/LocationPanel/HBoxContainer"]
+[node name="WeatherIcon" type="TextureRect" parent="Wide/Sidebar/LocationPanel/HBoxContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 texture = ExtResource("9_2cns2")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ButtonsSection" type="VBoxContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar"]
+[node name="ButtonsSection" type="VBoxContainer" parent="Wide/Sidebar"]
 layout_mode = 2
 offset_top = 319.0
 offset_right = 223.0
@@ -6099,79 +6095,74 @@ offset_bottom = 663.0
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="HomeButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection"]
+[node name="HomeButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 ratio = 3.4
 
-[node name="HomeButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/HomeButtonContainer"]
+[node name="HomeButton" type="Button" parent="Wide/Sidebar/ButtonsSection/HomeButtonContainer"]
 layout_mode = 2
 text = "Home"
 icon = ExtResource("14_81klo")
 expand_icon = true
 
-[node name="ArenaButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection"]
+[node name="ArenaButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 ratio = 3.4
 
-[node name="ArenaButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/ArenaButtonContainer"]
+[node name="ArenaButton" type="Button" parent="Wide/Sidebar/ButtonsSection/ArenaButtonContainer"]
 layout_mode = 2
 text = "Arena"
 icon = ExtResource("13_fkdbe")
 expand_icon = true
 
-[node name="MapButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection"]
+[node name="MapButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 ratio = 3.4
 
-[node name="MapButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/MapButtonContainer"]
+[node name="MapButton" type="Button" parent="Wide/Sidebar/ButtonsSection/MapButtonContainer"]
 layout_mode = 2
 text = "Map"
 icon = ExtResource("12_22asu")
 expand_icon = true
 
-[node name="RankingsButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection"]
+[node name="RankingsButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 ratio = 3.4
 
-[node name="RankingsButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/RankingsButtonContainer"]
+[node name="RankingsButton" type="Button" parent="Wide/Sidebar/ButtonsSection/RankingsButtonContainer"]
 layout_mode = 2
 text = "Rankings"
 icon = ExtResource("13_fkdbe")
 expand_icon = true
 
-[node name="ChatButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection"]
+[node name="ChatButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 ratio = 3.4
 
-[node name="ChatButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/ChatButtonContainer"]
+[node name="ChatButton" type="Button" parent="Wide/Sidebar/ButtonsSection/ChatButtonContainer"]
 layout_mode = 2
 text = "Chat"
 icon = ExtResource("11_vm72l")
 expand_icon = true
 
-[node name="SettingsButtonContainer" type="AspectRatioContainer" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection"]
+[node name="SettingsButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 ratio = 3.4
 
-[node name="SettingsButton" type="Button" parent="Wide/AspectRatioContainer/HBoxContainer/Sidebar/ButtonsSection/SettingsButtonContainer"]
+[node name="SettingsButton" type="Button" parent="Wide/Sidebar/ButtonsSection/SettingsButtonContainer"]
 layout_mode = 2
 text = "Settings"
 icon = ExtResource("5_settings")
 expand_icon = true
-
-[node name="GameSceneParent" type="Control" parent="Wide/AspectRatioContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
