@@ -159,7 +159,12 @@ func _handle_double_click():
 	
 	# Character panel equip/unequip (fallback - only if no utility panel is active)
 	var current_panel = GameInfo.get_current_panel()
-	if current_panel and current_panel.name == "Character":
+	var current_overlay = GameInfo.get_current_panel_overlay()
+	
+	# Check if we're on the character panel (either as main panel or overlay)
+	var on_character_panel = (current_panel and current_panel.name == "Character") or (current_overlay and current_overlay.name == "Character")
+	
+	if on_character_panel:
 		# If item is equipped (0-8), move it to bag
 		if item_data.bag_slot_id >= 0 and item_data.bag_slot_id <= 8:
 			_unequip_item_to_bag()
