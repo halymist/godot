@@ -16,7 +16,6 @@
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="8_85qyi"]
 [ext_resource type="Texture2D" uid="uid://cjgyacwkb877" path="res://assets/images/ui/sunny.png" id="8_e6ols"]
 [ext_resource type="Texture2D" uid="uid://814oroxowurk" path="res://assets/images/ui/rainy.png" id="9_2cns2"]
-[ext_resource type="Texture2D" uid="uid://dyxxqkaqexsp5" path="res://assets/images/ui/CharacterSlot.png" id="9_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="9_amulet"]
 [ext_resource type="Texture2D" uid="uid://54fu6pfqynod" path="res://assets/images/ui/chest_outline.png" id="9_chest"]
 [ext_resource type="Texture2D" uid="uid://ptj6j3cf4d76" path="res://assets/images/ui/gloves_outline.png" id="9_gloves"]
@@ -87,6 +86,7 @@
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
+[ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
 
@@ -375,7 +375,7 @@ offset_top = 10.0
 offset_right = 135.0
 offset_bottom = 135.0
 size_flags_horizontal = 3
-texture = ExtResource("9_7t8sx")
+texture = ExtResource("54_b1mpw")
 expand_mode = 1
 stretch_mode = 4
 
@@ -2059,7 +2059,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2118,12 +2117,16 @@ slot_type = "Foot"
 slot_id = 3
 
 [node name="Character" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip"]
-layout_mode = 0
-offset_left = 108.0
-offset_top = 12.0
-offset_right = 348.0
-offset_bottom = 242.0
-texture = ExtResource("9_7t8sx")
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -118.0
+offset_top = 14.0
+offset_right = 122.0
+offset_bottom = 244.0
+grow_horizontal = 2
+texture = ExtResource("54_b1mpw")
 expand_mode = 1
 stretch_mode = 5
 script = ExtResource("6_consumable")
@@ -2144,51 +2147,71 @@ anchor_top = 0.25
 anchor_bottom = 0.9
 
 [node name="Weapon1Slot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 190.0
-offset_top = 263.0
-offset_right = 275.0
-offset_bottom = 348.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -37.0
+offset_top = 257.0
+offset_right = 48.0
+offset_bottom = 342.0
+grow_horizontal = 2
 outline_texture = ExtResource("9_sword")
 slot_type = "Weapon"
 slot_id = 8
 
 [node name="BeltSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 354.0
-offset_top = 8.0
-offset_right = 439.0
-offset_bottom = 93.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -92.0
+offset_top = 1.0
+offset_right = -7.0
+offset_bottom = 86.0
+grow_horizontal = 0
 outline_texture = ExtResource("9_nnt18")
 slot_type = "Belt"
 slot_id = 4
 
 [node name="LegSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 355.0
-offset_top = 95.0
-offset_right = 440.0
-offset_bottom = 180.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -92.0
+offset_top = 82.0
+offset_right = -7.0
+offset_bottom = 167.0
+grow_horizontal = 0
 outline_texture = ExtResource("9_pants")
 slot_type = "Legs"
 slot_id = 5
 
 [node name="RingSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 355.0
-offset_top = 185.0
-offset_right = 440.0
-offset_bottom = 270.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -91.0
+offset_top = 164.0
+offset_right = -6.0
+offset_bottom = 249.0
+grow_horizontal = 0
 outline_texture = ExtResource("9_ring")
 slot_type = "Ring"
 slot_id = 6
 
 [node name="AmuletSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 356.0
-offset_top = 272.0
-offset_right = 441.0
-offset_bottom = 357.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -91.0
+offset_top = 248.0
+offset_right = -6.0
+offset_bottom = 333.0
+grow_horizontal = 0
 outline_texture = ExtResource("9_amulet")
 slot_type = "Amulet"
 slot_id = 7
@@ -6001,7 +6024,7 @@ offset_left = 20.0
 offset_top = 10.0
 offset_right = 200.0
 offset_bottom = 190.0
-texture = ExtResource("9_7t8sx")
+texture = ExtResource("54_b1mpw")
 expand_mode = 1
 stretch_mode = 4
 

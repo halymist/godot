@@ -51,7 +51,7 @@ func update_stats_display():
 	if not GameInfo.current_player:
 		return
 	
-	talent_points_label.text = "Talent Points: " + str(GameInfo.current_player.talent_points)
+	talent_points_label.text = "Talents: " + str(GameInfo.current_player.talent_points)
 	strength_label.text = "Strength: " + str(GameInfo.current_player.strength)
 	stamina_label.text = "Stamina: " + str(GameInfo.current_player.stamina)
 	agility_label.text = "Agility: " + str(GameInfo.current_player.agility)

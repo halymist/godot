@@ -46,15 +46,16 @@ func _update_layout():
 	var parent_width = parent.size.x
 	var parent_height = parent.size.y
 	
-	# Define max width threshold based on aspect ratio of height
-	# Using 1:1 aspect ratio (max_width = height) as threshold
-	var max_absolute_width = 500
+	# Calculate current aspect ratio
+	var current_aspect = parent_width / parent_height
+	var max_aspect = 2.6 / 3.0  # Threshold aspect ratio
+	var constrained_aspect = 2.2 / 3.0  # Target aspect ratio when constraining
 	
 	var panel_width = parent_width
 	
-	# Only apply aspect ratio constraint if we exceed the max width
-	if parent_width > max_absolute_width:
-		var constrained_width = parent_height * (2.2 / 3.0)
+	# Only apply aspect ratio constraint if current aspect exceeds max
+	if current_aspect > max_aspect:
+		var constrained_width = parent_height * constrained_aspect
 		panel_width = min(parent_width, constrained_width)
 	
 	var panel_height = parent_height
