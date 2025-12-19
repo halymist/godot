@@ -6,6 +6,7 @@ extends Control
 @export var arena_button: Button
 @export var character_button: Button
 @export var character_panel: Control
+@export var character_wrapper: Button
 @export var talents_button: Button
 @export var talents_panel: Control
 @export var map_button: Button
@@ -76,6 +77,10 @@ func _ready():
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
 	
+	# Connect character wrapper button
+	if character_wrapper:
+		character_wrapper.pressed.connect(_on_character_wrapper_clicked)
+	
 	# Connect Wide button signals to same handlers
 	if wide_home_button:
 		wide_home_button.pressed.connect(handle_home_button)
@@ -143,6 +148,13 @@ func show_overlay(overlay: Control):
 	# Set as current overlay in GameInfo
 	GameInfo.set_current_panel_overlay(overlay)
 	
+	# Show wrapper if this is the character panel (don't set panel visibility, just wrapper)
+	if overlay == character_panel and character_wrapper:
+		character_wrapper.visible = true
+		# Character panel inside wrapper is already visible by default
+		print("Showing overlay: ", overlay.name)
+		return
+	
 	# Call the overlay's specific show method based on its type
 	if overlay == quest_panel and overlay.has_method("show_quest"):
 		# Note: show_quest should already have been called with data, just make visible
@@ -169,6 +181,12 @@ func hide_overlay(overlay: Control):
 	# Clear from GameInfo if it's the current overlay
 	if GameInfo.get_current_panel_overlay() == overlay:
 		GameInfo.set_current_panel_overlay(null)
+	
+	# Hide wrapper if this is the character panel (don't touch panel visibility)
+	if overlay == character_panel and character_wrapper:
+		character_wrapper.visible = false
+		print("Hiding overlay: ", overlay.name)
+		return
 	
 	# Call the overlay's specific hide method based on its type
 	if overlay == chat_panel and overlay.has_method("hide_chat"):
@@ -325,6 +343,11 @@ func show_upgrade_talent():
 func show_perks_panel():
 	show_overlay(perks_panel)
 
+func _on_character_wrapper_clicked():
+	"""Hide character overlay when wrapper background is clicked"""
+	if character_wrapper:
+		hide_overlay(character_panel)
+
 func toggle_talents_bookmark():
 	var tween = create_tween()
 	tween.set_parallel(true)  # Allow multiple animations at once
@@ -446,7 +469,9 @@ func hide_utility_panel(panel: Control):
 func hide_all_panels():
 	home_panel.visible = false
 	arena_panel.visible = false
-	character_panel.visible = false
+	# Don't touch character_panel visibility - it's controlled by wrapper
+	if character_wrapper:
+		character_wrapper.visible = false
 	map_panel.visible = false
 	talents_panel.visible = false
 	combat_panel.visible = false
