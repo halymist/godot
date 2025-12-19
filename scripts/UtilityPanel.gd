@@ -1,5 +1,5 @@
 @tool
-extends Panel
+extends "res://scripts/ConstrainedPanel.gd"
 
 @export var village1_texture: Texture
 @export var village2_texture: Texture
@@ -24,6 +24,7 @@ func _on_wrapper_clicked():
 		wrapper.visible = false
 
 func _process(_delta):
+	super._process(_delta)  # Apply aspect constraint from parent class
 	_update_layout()
 
 func _update_layout():
@@ -38,31 +39,9 @@ func _update_layout():
 	if not background_container or not items_panel:
 		return
 	
-	# Get parent (wrapper button) size
-	var parent = get_parent()
-	if not parent:
-		return
-	
-	var parent_width = parent.size.x
-	var parent_height = parent.size.y
-	
-	# Calculate current aspect ratio
-	var current_aspect = parent_width / parent_height
-	var max_aspect = 2.6 / 3.0  # Threshold aspect ratio
-	var constrained_aspect = 2.2 / 3.0  # Target aspect ratio when constraining
-	
-	var panel_width = parent_width
-	
-	# Only apply aspect ratio constraint if current aspect exceeds max
-	if current_aspect > max_aspect:
-		var constrained_width = parent_height * constrained_aspect
-		panel_width = min(parent_width, constrained_width)
-	
-	var panel_height = parent_height
-	
-	# Update panel size and position (left-aligned)
-	size = Vector2(panel_width, panel_height)
-	position = Vector2(0, 0)
+	# Panel size is already constrained by parent class
+	var panel_width = size.x
+	var panel_height = size.y
 	
 	# Background: full panel width, height adjusted for 0.75 aspect ratio (width:height = 3:4)
 	var bg_height = panel_width / 1.5
