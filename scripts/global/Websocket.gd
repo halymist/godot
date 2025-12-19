@@ -39,7 +39,7 @@ var mock_character_data = {
 		{"quest_id": 2, "slides": [1, 2], "finished": false}
 	],
 	"gold": 1000,
-	"currency": 50,
+	"mushrooms": 50,
 	"traveling": null,
 	"traveling_destination": null,
 	"location": 1,

@@ -60,9 +60,9 @@ func update_display():
 	if gold_label:
 		gold_label.text = str(GameInfo.current_player.gold)
 	
-	# Update currency if label exists
+	# Update mushrooms if label exists
 	if currency_label:
-		currency_label.text = str(GameInfo.current_player.currency)
+		currency_label.text = str(GameInfo.current_player.mushrooms)
 	
 	# Update location if label exists
 	if location_label:

@@ -59,7 +59,7 @@ func get_profession_icon(profession_id: int) -> String:
 
 # Signals for UI updates
 signal gold_changed(new_gold)
-signal currency_changed(new_currency)
+signal mushrooms_changed(new_mushrooms)
 signal stats_changed(stats)
 signal bag_slots_changed
 signal on_player_data_loaded
@@ -630,14 +630,14 @@ class GameCurrentPlayer:
 			if game_info_ref:
 				game_info_ref.gold_changed.emit(_gold)
 	
-	# Currency with automatic event emission
-	var _currency: int = 0
-	var currency: int:
-		get: return _currency
+	# Mushrooms with automatic event emission
+	var _mushrooms: int = 0
+	var mushrooms: int:
+		get: return _mushrooms
 		set(value):
-			_currency = value
+			_mushrooms = value
 			if game_info_ref:
-				game_info_ref.currency_changed.emit(_currency)
+				game_info_ref.mushrooms_changed.emit(_mushrooms)
 	
 	# Extended MessagePack mapping (includes base + current player fields)
 	const CURRENT_PLAYER_MSGPACK_MAP = {
@@ -653,7 +653,7 @@ class GameCurrentPlayer:
 		"traveling": "traveling",
 		"traveling_destination": "traveling_destination",
 		"gold": "_gold",  # Use private field to avoid triggering setter
-		"currency": "_currency",  # Use private field to avoid triggering setter
+		"mushrooms": "_mushrooms",  # Use private field to avoid triggering setter
 		"talent_points": "talent_points",
 		"perk_points": "perk_points",
 		"blessing": "blessing",
@@ -694,9 +694,9 @@ class GameCurrentPlayer:
 		load_perks(data)
 		load_talents(data)
 		
-		# Trigger property setters for gold/currency to emit signals
+		# Trigger property setters for gold/mushrooms to emit signals
 		gold = _gold
-		currency = _currency
+		mushrooms = _mushrooms
 		
 		# Emit bag slots changed and stats changed
 		if game_info_ref:
@@ -706,7 +706,7 @@ class GameCurrentPlayer:
 	func get_player_stats() -> Dictionary:
 		var stats = get_total_stats()
 		stats["gold"] = gold
-		stats["currency"] = currency
+		stats["mushrooms"] = mushrooms
 		stats["talent_points"] = talent_points
 		stats["perk_points"] = perk_points
 		return stats
@@ -800,11 +800,11 @@ var player_gold: int:
 		if current_player:
 			current_player.gold = value
 
-var player_currency: int:
-	get: return current_player.currency if current_player else 0
+var player_mushrooms: int:
+	get: return current_player.mushrooms if current_player else 0
 	set(value):
 		if current_player:
-			current_player.currency = value
+			current_player.mushrooms = value
 
 func _ready():
 	print("GameInfo ready!")
@@ -850,9 +850,9 @@ func add_gold(amount: int):
 	if current_player:
 		current_player.gold += amount
 
-func add_currency(amount: int):
+func add_mushrooms(amount: int):
 	if current_player:
-		current_player.currency += amount
+		current_player.mushrooms += amount
 
 # Helper function to get player stats for UI
 func get_player_stats() -> Dictionary:
