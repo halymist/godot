@@ -2,8 +2,8 @@ extends "res://scripts/ConstrainedPanel.gd"
 
 @export var cosmetics_database: CosmeticDatabase
 
-@onready var avatar_instance: Node = $AvatarPreview/AvatarInstance
-@onready var selection_grid: GridContainer = $SelectionContainer/SelectionGrid
+@onready var avatar_instance: Node = $PreviewPanel/AvatarPreview/AvatarInstance
+@onready var selection_grid: GridContainer = $SelectionPanel/SelectionContainer/SelectionGrid
 @onready var face_button: Button = $CategoryButtons/FaceButton
 @onready var hair_button: Button = $CategoryButtons/HairButton
 @onready var eyes_button: Button = $CategoryButtons/EyesButton
@@ -12,6 +12,7 @@ extends "res://scripts/ConstrainedPanel.gd"
 @onready var change_button: Button = $ChangeButton
 @onready var change_label: Label = $ChangeButton/ButtonContent/ButtonLabel
 @onready var change_icon: TextureRect = $ChangeButton/ButtonContent/ButtonIcon
+@onready var change_paren: Label = $ChangeButton/ButtonContent/CloseParen
 
 var current_category: String = "Face"
 var selected_cosmetic_id: int = -1
@@ -146,11 +147,13 @@ func _update_change_button():
 	var total_cost = _calculate_total_cost()
 	
 	if total_cost > 0:
-		change_label.text = "CHANGE (%d)" % total_cost
+		change_label.text = "CHANGE (%d " % total_cost
 		change_icon.visible = true
+		change_paren.visible = true
 	else:
 		change_label.text = "CHANGE"
 		change_icon.visible = false
+		change_paren.visible = false
 	
 	# Enable/disable button based on affordability
 	if GameInfo.current_player:
@@ -182,6 +185,9 @@ func _on_change_pressed():
 		# Clear selected cosmetics and update button
 		selected_cosmetics.clear()
 		_update_change_button()
+		
+		# Hide avatar panel (same as back button behavior)
+		visible = false
 		
 		# TODO: Send to server to save
 		print("Avatar updated! Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id)
