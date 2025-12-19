@@ -150,6 +150,14 @@ func show_overlay(overlay: Control):
 	
 	# Show wrapper if this is the character panel (don't set panel visibility, just wrapper)
 	if overlay == character_panel and character_wrapper:
+		# Hide any open utility panel first
+		if current_utility_panel and current_utility_panel.visible:
+			hide_utility_panel(current_utility_panel)
+		
+		# Always hide talents panel when opening character to ensure we show character by default
+		if talents_panel:
+			talents_panel.visible = false
+		
 		character_wrapper.visible = true
 		# Character panel inside wrapper is already visible by default
 		print("Showing overlay: ", overlay.name)
@@ -402,8 +410,13 @@ func go_back():
 		hide_overlay(chat_panel)
 		return
 	
-	# Priority 2: Hide any other active overlay (settings/rankings/payment)
+	# Priority 2: Hide any other active overlay (settings/rankings/payment/character)
 	var current_overlay = GameInfo.get_current_panel_overlay()
+	# Special case: if we're in talents and character wrapper is visible, just hide talents
+	if current == talents_panel and character_wrapper and character_wrapper.visible and talents_panel.visible:
+		talents_panel.visible = false
+		return
+	# Otherwise hide the overlay normally
 	if current_overlay != null and current_overlay.visible:
 		hide_overlay(current_overlay)
 		return
@@ -438,7 +451,13 @@ func go_back():
 
 	# Priority 8: Handle panel-specific back navigation
 	if current == talents_panel:
-		toggle_talents_bookmark()  # Use bookmark animation to slide out
+		# If character wrapper is visible, just hide talents and stay in character panel
+		if character_wrapper and character_wrapper.visible:
+			talents_panel.visible = false
+			# Don't change current_panel tracking - character overlay is still active
+		else:
+			# Otherwise use the bookmark animation
+			toggle_talents_bookmark()
 	elif current == combat_panel:
 		show_panel(arena_panel)
 	else:
