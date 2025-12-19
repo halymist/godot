@@ -91,6 +91,10 @@ func set_selected(selected: bool):
 	update_style()
 
 func update_style():
+	# Ensure styles are initialized
+	if not default_style or not selected_style or not active_style:
+		return
+		
 	if is_active:
 		add_theme_stylebox_override("panel", active_style)
 	elif is_selected:
