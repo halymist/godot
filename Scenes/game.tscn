@@ -142,6 +142,44 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exi56"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22asu"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkdbe"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vm72l"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_talent_upgrade"]
+bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgy6u"]
+bg_color = Color(0.12, 0.08, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.5, 0.3, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combat_bg"]
 bg_color = Color(0.08, 0.05, 0.15, 0.9)
 border_width_left = 2
@@ -205,44 +243,6 @@ corner_radius_bottom_left = 4
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
 bg_color = Color(0.64014, 0.614233, 0.287706, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exi56"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22asu"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_color = Color(0.8, 0.8, 0.8, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkdbe"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_color = Color(0.8, 0.8, 0.8, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vm72l"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_talent_upgrade"]
-bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.8)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgy6u"]
-bg_color = Color(0.12, 0.08, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.7, 0.5, 0.3, 0.9)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cns2"]
 bg_color = Color(0.6, 0.6, 0.756863, 1)
 
@@ -301,7 +301,7 @@ arena_button = NodePath("../Portrait/BottomUI/ArenaButton")
 character_button = NodePath("../Portrait/TopUI/Character/Button")
 character_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character")
 talents_button = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Talents/Button")
-talents_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Talents")
+talents_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel")
 map_button = NodePath("../Portrait/BottomUI/MapButton")
 map_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Map")
 back_button = NodePath("../Portrait/TopUI/BackButton")
@@ -316,8 +316,8 @@ fight_button = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Arena/Fig
 quest_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/QuestAccept")
 quest = NodePath("../Portrait/GameSceneParent/Wrapper/Quest")
 cancel_quest = NodePath("../Portrait/GameSceneParent/Wrapper/CancelQuest")
-upgrade_talent = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Talents/Upgrade")
-perks_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Talents/PerkScreen")
+upgrade_talent = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Upgrade")
+perks_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/PerkScreen")
 vendor_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel")
 blacksmith_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel")
 trainer_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/TrainerWrapper/TrainerPanel")
@@ -2455,6 +2455,2417 @@ theme_override_font_sizes/font_size = 10
 text = "TALENTS"
 flat = true
 
+[node name="TalentsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
+script = ExtResource("1_constrained")
+
+[node name="Title" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.1
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 5.0
+offset_right = -15.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 35
+text = "Talent points: "
+vertical_alignment = 1
+
+[node name="Reset" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Title"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ResetButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Title/Reset"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel" node_paths=PackedStringArray("talents", "reset_button", "title_label")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 7
+script = ExtResource("14_vm72l")
+talents = [NodePath("Talent"), NodePath("Talent2"), NodePath("Talent3"), NodePath("Talent4"), NodePath("Talent5"), NodePath("Talent6"), NodePath("Talent7"), NodePath("Talent8"), NodePath("Talent9"), NodePath("Talent10"), NodePath("Talent11"), NodePath("Talent12"), NodePath("Talent13"), NodePath("Talent14"), NodePath("Talent15"), NodePath("Talent16"), NodePath("Talent17"), NodePath("Talent18"), NodePath("Talent19"), NodePath("Talent20"), NodePath("Talent21"), NodePath("Talent22"), NodePath("Talent23"), NodePath("Talent24"), NodePath("Talent25"), NodePath("Talent26"), NodePath("Talent27"), NodePath("Talent28"), NodePath("Talent29"), NodePath("Talent30"), NodePath("Talent31"), NodePath("Talent32"), NodePath("Talent33"), NodePath("Talent34"), NodePath("Talent35"), NodePath("Talent36"), NodePath("Talent37"), NodePath("Talent38"), NodePath("Talent39"), NodePath("Talent40"), NodePath("Talent41"), NodePath("Talent42"), NodePath("Talent43"), NodePath("Talent44"), NodePath("Talent45"), NodePath("Talent46"), NodePath("Talent47"), NodePath("Talent48"), NodePath("Talent49"), NodePath("Talent50"), NodePath("Talent51"), NodePath("Talent52"), NodePath("Talent53"), NodePath("Talent54"), NodePath("Talent55"), NodePath("Talent56")]
+reset_button = NodePath("../Title/Reset/ResetButton")
+title_label = NodePath("../Title/Label")
+
+[node name="Talent" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 55
+talentName = "Warrior's Might"
+maxPoints = 3
+effect_id = 1
+factor = 8.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent2" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 54
+talentName = "Iron Defense"
+maxPoints = 5
+effect_id = 1
+factor = 3.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent2"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent2"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent2"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent2"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent3" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 53
+talentName = "Swift Reflexes"
+maxPoints = 3
+effect_id = 1
+factor = 5.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent3"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent3"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent3"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent3"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent4" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 52
+talentName = "Combat Veteran"
+maxPoints = 3
+effect_id = 1
+factor = 6.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent4"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent4"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent4"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent4"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent5" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 51
+talentName = "Blade Mastery"
+maxPoints = 3
+effect_id = 1
+factor = 4.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent5"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent5"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent5"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent5"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent6" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 50
+talentName = "Fortitude"
+maxPoints = 3
+effect_id = 1
+factor = 25.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent6"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent6"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent6"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent6"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent7" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 49
+talentName = "Lucky Strike"
+maxPoints = 3
+effect_id = 1
+factor = 3.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent7"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent7"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent7"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent7"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent8" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 48
+talentName = "Shield Wall"
+maxPoints = 5
+effect_id = 1
+factor = 8.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent8"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent8"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent8"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent8"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent9" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 47
+talentName = "Bloodlust"
+maxPoints = 3
+effect_id = 1
+factor = 15.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent9"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent9"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent9"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent9"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent10" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 46
+talentName = "Random Name"
+maxPoints = 3
+effect_id = 1
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent10"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent10"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent10"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent10"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent11" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 45
+talentName = "Dual Wield Mastery"
+maxPoints = 3
+effect_id = 1
+factor = 15.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent11"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent11"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent11"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent11"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent12" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 44
+talentName = "Executioner"
+maxPoints = 3
+effect_id = 1
+factor = 20.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent12"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent12"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent12"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent12"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent13" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 43
+talentName = "Healing Touch"
+maxPoints = 3
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent13"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent13"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent13"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent13"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent14" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 42
+talentName = "Armor Breaker"
+maxPoints = 3
+effect_id = 1
+factor = 15.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent14"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent14"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent14"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent14"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent15" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 41
+talentName = "Weapon Master"
+maxPoints = 5
+effect_id = 1
+factor = 6.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent15"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent15"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent15"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent15"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent16" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 40
+talentName = "Battle Fury"
+maxPoints = 3
+effect_id = 1
+factor = 12.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent16"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent16"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent16"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent16"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent17" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 39
+talentName = "Elemental Ward"
+maxPoints = 4
+effect_id = 1
+factor = 8.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent17"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent17"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent17"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent17"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent18" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 38
+talentName = "Berserker Rage"
+maxPoints = 3
+effect_id = 1
+factor = 18.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent18"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent18"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent18"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent18"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent19" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 37
+talentName = "Poison Blade"
+maxPoints = 3
+effect_id = 1
+factor = 20.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent19"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent19"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent19"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent19"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent20" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 36
+talentName = "Mana Shield"
+maxPoints = 4
+effect_id = 1
+factor = 2.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent20"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent20"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent20"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent20"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent21" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 35
+talentName = "Spell Power"
+maxPoints = 5
+effect_id = 1
+factor = 7.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent21"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent21"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent21"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent21"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent22" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 34
+talentName = "Spell Crit"
+maxPoints = 4
+effect_id = 1
+factor = 4.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent22"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent22"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent22"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent22"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent23" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 33
+talentName = "Mana Efficiency"
+maxPoints = 5
+effect_id = 1
+factor = 5.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent23"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent23"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent23"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent23"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent24" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 32
+talentName = "Fire Mastery"
+maxPoints = 4
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent24"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent24"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent24"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent24"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent25" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 31
+talentName = "Ice Mastery"
+maxPoints = 4
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent25"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent25"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent25"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent25"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent26" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 30
+talentName = "Lightning Mastery"
+maxPoints = 4
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent26"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent26"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent26"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent26"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent27" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 29
+talentName = "Nature's Bond"
+maxPoints = 4
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent27"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent27"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent27"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent27"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent28" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 28
+talentName = "Spell Haste"
+maxPoints = 4
+effect_id = 1
+factor = 8.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent28"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent28"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent28"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent28"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent29" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 27
+talentName = "Mana Recovery"
+maxPoints = 5
+effect_id = 1
+factor = 12.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent29"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent29"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent29"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent29"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent30" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 26
+talentName = "Quick Draw"
+maxPoints = 3
+effect_id = 1
+factor = 8.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent30"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent30"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent30"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent30"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent31" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 25
+talentName = "Dodge Master"
+maxPoints = 5
+effect_id = 1
+factor = 3.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent31"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent31"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent31"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent31"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent32" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 24
+talentName = "Regeneration"
+maxPoints = 4
+effect_id = 1
+factor = 2.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent32"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent32"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent32"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent32"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent33" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 23
+talentName = "Tough Skin"
+maxPoints = 5
+effect_id = 1
+factor = 3.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent33"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent33"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent33"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent33"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent34" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 22
+talentName = "Critical Strike"
+maxPoints = 5
+effect_id = 1
+factor = 3.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent34"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent34"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent34"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent34"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent35" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 21
+talentName = "Heavy Hitter"
+maxPoints = 4
+effect_id = 1
+factor = 15.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent35"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent35"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent35"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent35"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent36" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 20
+talentName = "Parry Expert"
+maxPoints = 4
+effect_id = 1
+factor = 4.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent43"), NodePath("../Talent29")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent36"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent36"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent36"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent36"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent37" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 19
+talentName = "Weapon Reach"
+maxPoints = 3
+effect_id = 1
+factor = 12.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent36"), NodePath("../Talent38"), NodePath("../Talent30"), NodePath("../Talent44")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent37"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent37"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent37"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent37"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent38" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 18
+talentName = "Stamina Boost"
+maxPoints = 5
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent39"), NodePath("../Talent31"), NodePath("../Talent45")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent38"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent38"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent38"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent38"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent39" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 17
+talentName = "Endurance"
+maxPoints = 4
+effect_id = 1
+factor = 15.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent38"), NodePath("../Talent40"), NodePath("../Talent32"), NodePath("../Talent46")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent39"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent39"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent39"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent39"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent40" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 16
+talentName = "Mobility"
+maxPoints = 4
+effect_id = 1
+factor = 6.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent39"), NodePath("../Talent41"), NodePath("../Talent33"), NodePath("../Talent47")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent40"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent40"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent40"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent40"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent41" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 15
+talentName = "Counterattack"
+maxPoints = 3
+effect_id = 1
+factor = 25.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent40"), NodePath("../Talent42"), NodePath("../Talent48"), NodePath("../Talent34")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent41"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent41"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent41"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent41"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent42" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 14
+talentName = "Precision"
+maxPoints = 4
+effect_id = 1
+factor = 5.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent41"), NodePath("../Talent48"), NodePath("../Talent36")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent42"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent42"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent42"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent42"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent43" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 13
+talentName = "Shield Bash"
+maxPoints = 3
+effect_id = 1
+factor = 20.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent36"), NodePath("../Talent50")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent43"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent43"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent43"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent43"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent44" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 12
+talentName = "Block Master"
+maxPoints = 5
+effect_id = 1
+factor = 4.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent43"), NodePath("../Talent45"), NodePath("../Talent37"), NodePath("../Talent51")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent44"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent44"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent44"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent44"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent45" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 11
+talentName = "Spell Resist"
+maxPoints = 4
+effect_id = 1
+factor = 6.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent46"), NodePath("../Talent38"), NodePath("../Talent52")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent45"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent45"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent45"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent45"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 10
+talentName = "Perk Slot"
+maxPoints = 1
+effect_id = 1
+perk_slot = 2
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent45"), NodePath("../Talent47"), NodePath("../Talent39"), NodePath("../Talent53")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent46"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent46"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent46"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent46"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent47" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 9
+talentName = "Backstab"
+maxPoints = 3
+effect_id = 1
+factor = 25.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent46"), NodePath("../Talent48"), NodePath("../Talent40"), NodePath("../Talent54")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent47"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent47"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent47"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent47"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent48" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 8
+talentName = "Stealth"
+maxPoints = 4
+effect_id = 1
+factor = 3.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent47"), NodePath("../Talent49"), NodePath("../Talent41"), NodePath("../Talent55")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent48"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent48"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent48"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent48"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent49" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 7
+talentName = "Lockpicking"
+maxPoints = 5
+effect_id = 1
+factor = 15.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent42"), NodePath("../Talent56"), NodePath("../Talent48")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent49"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent49"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent49"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent49"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent50" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 12
+talentName = "Random Name"
+maxPoints = 3
+isStarter = true
+effect_id = 1
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent43")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent50"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent50"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent50"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent50"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent51" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 1
+talentName = "Survival"
+maxPoints = 3
+isStarter = true
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent52"), NodePath("../Talent50"), NodePath("../Talent44")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent51"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent51"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent51"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent51"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent52" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 2
+talentName = "Basic Combat"
+maxPoints = 3
+isStarter = true
+effect_id = 1
+factor = 8.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent53"), NodePath("../Talent45")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent52"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent52"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent52"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent52"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent53" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 3
+talentName = "Perk Slot"
+maxPoints = 1
+isStarter = true
+effect_id = 200
+perk_slot = 1
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent54"), NodePath("../Talent52"), NodePath("../Talent46")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent53"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent53"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent53"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent53"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent54" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 4
+talentName = "Health Boost"
+maxPoints = 5
+isStarter = true
+effect_id = 1
+factor = 20.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent53"), NodePath("../Talent47")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent54"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent54"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent54"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent54"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent55" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 5
+talentName = "Warrior Training"
+maxPoints = 3
+isStarter = true
+effect_id = 1
+factor = 10.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent56"), NodePath("../Talent54"), NodePath("../Talent48")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent55"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent55"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent55"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent55"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Talent56" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("15_22asu")
+alignment_vertical = 2
+script = ExtResource("14_7t8sx")
+talentID = 6
+talentName = "Mage Training"
+maxPoints = 3
+isStarter = true
+effect_id = 1
+factor = 15.0
+button = NodePath("Button")
+upgrade = NodePath("../../Upgrade")
+perkScreen = NodePath("../../PerkScreen")
+pointsLabel = NodePath("Label")
+neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent49")]
+
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent56"]
+layout_mode = 2
+texture = ExtResource("15_exi56")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent56"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent56"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+text = "2/3"
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/GridContainer/Talent56"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("14_7nbq1")
+texture = ExtResource("15_7nbq1")
+expand_mode = 1
+
+[node name="Upgrade" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel" node_paths=PackedStringArray("name_label", "description_label", "upgrade_button", "title_label", "talents_container")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
+script = ExtResource("18_mg4q0")
+name_label = NodePath("UpgradeTalent/Name")
+description_label = NodePath("UpgradeTalent/Description")
+upgrade_button = NodePath("UpgradeTalent/Button")
+title_label = NodePath("../Title/Label")
+talents_container = NodePath("../GridContainer")
+
+[node name="UpgradeTalent" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Upgrade"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -120.0
+offset_right = 150.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_talent_upgrade")
+
+[node name="Name" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Upgrade/UpgradeTalent"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -140.0
+offset_top = 10.0
+offset_right = 140.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 20
+text = "Talent name"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Upgrade/UpgradeTalent"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 15.0
+offset_top = -40.0
+offset_right = -15.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 14
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/Upgrade/UpgradeTalent"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Upgrade"
+
+[node name="PerkScreen" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel" node_paths=PackedStringArray("active_panel", "inactive_panel")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
+script = ExtResource("21_fkdbe")
+active_panel = NodePath("PerkPanel/Active")
+inactive_panel = NodePath("PerkPanel/Inactive")
+perk_scene = ExtResource("22_81klo")
+
+[node name="PerkPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/PerkScreen"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
+[node name="Inactive" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/PerkScreen/PerkPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.3
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("23_tgy6u")
+panel_type = "Inactive"
+perk_scene = ExtResource("22_81klo")
+
+[node name="Active" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsPanel/PerkScreen/PerkPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.2
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -0.400002
+theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
+script = ExtResource("23_tgy6u")
+perk_scene = ExtResource("22_81klo")
+
 [node name="Combat" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
 layout_mode = 1
@@ -2748,2417 +5159,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
-
-[node name="Talents" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
-script = ExtResource("1_constrained")
-
-[node name="Title" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.1
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/Title"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 5.0
-offset_right = -15.0
-offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 35
-text = "Talent points: "
-vertical_alignment = 1
-
-[node name="Reset" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/Title"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.9
-anchor_right = 1.0
-anchor_bottom = 1.0
-
-[node name="ResetButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/Title/Reset"]
-layout_mode = 2
-
-[node name="GridContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents" node_paths=PackedStringArray("talents", "reset_button", "title_label")]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-columns = 7
-script = ExtResource("14_vm72l")
-talents = [NodePath("Talent"), NodePath("Talent2"), NodePath("Talent3"), NodePath("Talent4"), NodePath("Talent5"), NodePath("Talent6"), NodePath("Talent7"), NodePath("Talent8"), NodePath("Talent9"), NodePath("Talent10"), NodePath("Talent11"), NodePath("Talent12"), NodePath("Talent13"), NodePath("Talent14"), NodePath("Talent15"), NodePath("Talent16"), NodePath("Talent17"), NodePath("Talent18"), NodePath("Talent19"), NodePath("Talent20"), NodePath("Talent21"), NodePath("Talent22"), NodePath("Talent23"), NodePath("Talent24"), NodePath("Talent25"), NodePath("Talent26"), NodePath("Talent27"), NodePath("Talent28"), NodePath("Talent29"), NodePath("Talent30"), NodePath("Talent31"), NodePath("Talent32"), NodePath("Talent33"), NodePath("Talent34"), NodePath("Talent35"), NodePath("Talent36"), NodePath("Talent37"), NodePath("Talent38"), NodePath("Talent39"), NodePath("Talent40"), NodePath("Talent41"), NodePath("Talent42"), NodePath("Talent43"), NodePath("Talent44"), NodePath("Talent45"), NodePath("Talent46"), NodePath("Talent47"), NodePath("Talent48"), NodePath("Talent49"), NodePath("Talent50"), NodePath("Talent51"), NodePath("Talent52"), NodePath("Talent53"), NodePath("Talent54"), NodePath("Talent55"), NodePath("Talent56")]
-reset_button = NodePath("../Title/Reset/ResetButton")
-title_label = NodePath("../Title/Label")
-
-[node name="Talent" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 55
-talentName = "Warrior's Might"
-maxPoints = 3
-effect_id = 1
-factor = 8.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent2" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 54
-talentName = "Iron Defense"
-maxPoints = 5
-effect_id = 1
-factor = 3.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent2"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent2"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent2"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent2"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent3" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 53
-talentName = "Swift Reflexes"
-maxPoints = 3
-effect_id = 1
-factor = 5.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent3"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent3"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent3"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent3"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent4" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 52
-talentName = "Combat Veteran"
-maxPoints = 3
-effect_id = 1
-factor = 6.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent4"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent4"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent4"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent4"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent5" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 51
-talentName = "Blade Mastery"
-maxPoints = 3
-effect_id = 1
-factor = 4.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent5"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent5"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent5"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent5"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent6" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 50
-talentName = "Fortitude"
-maxPoints = 3
-effect_id = 1
-factor = 25.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent6"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent6"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent6"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent6"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent7" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 49
-talentName = "Lucky Strike"
-maxPoints = 3
-effect_id = 1
-factor = 3.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent7"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent7"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent7"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent7"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent8" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 48
-talentName = "Shield Wall"
-maxPoints = 5
-effect_id = 1
-factor = 8.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent8"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent8"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent8"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent8"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent9" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 47
-talentName = "Bloodlust"
-maxPoints = 3
-effect_id = 1
-factor = 15.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent9"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent9"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent9"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent9"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent10" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 46
-talentName = "Random Name"
-maxPoints = 3
-effect_id = 1
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent10"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent10"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent10"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent10"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent11" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 45
-talentName = "Dual Wield Mastery"
-maxPoints = 3
-effect_id = 1
-factor = 15.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent11"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent11"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent11"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent11"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent12" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 44
-talentName = "Executioner"
-maxPoints = 3
-effect_id = 1
-factor = 20.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent12"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent12"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent12"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent12"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent13" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 43
-talentName = "Healing Touch"
-maxPoints = 3
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent13"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent13"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent13"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent13"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent14" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 42
-talentName = "Armor Breaker"
-maxPoints = 3
-effect_id = 1
-factor = 15.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent14"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent14"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent14"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent14"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent15" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 41
-talentName = "Weapon Master"
-maxPoints = 5
-effect_id = 1
-factor = 6.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent15"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent15"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent15"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent15"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent16" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 40
-talentName = "Battle Fury"
-maxPoints = 3
-effect_id = 1
-factor = 12.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent16"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent16"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent16"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent16"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent17" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 39
-talentName = "Elemental Ward"
-maxPoints = 4
-effect_id = 1
-factor = 8.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent17"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent17"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent17"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent17"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent18" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 38
-talentName = "Berserker Rage"
-maxPoints = 3
-effect_id = 1
-factor = 18.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent18"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent18"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent18"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent18"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent19" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 37
-talentName = "Poison Blade"
-maxPoints = 3
-effect_id = 1
-factor = 20.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent19"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent19"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent19"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent19"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent20" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 36
-talentName = "Mana Shield"
-maxPoints = 4
-effect_id = 1
-factor = 2.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent20"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent20"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent20"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent20"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent21" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 35
-talentName = "Spell Power"
-maxPoints = 5
-effect_id = 1
-factor = 7.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent21"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent21"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent21"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent21"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent22" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 34
-talentName = "Spell Crit"
-maxPoints = 4
-effect_id = 1
-factor = 4.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent22"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent22"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent22"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent22"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent23" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 33
-talentName = "Mana Efficiency"
-maxPoints = 5
-effect_id = 1
-factor = 5.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent23"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent23"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent23"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent23"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent24" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 32
-talentName = "Fire Mastery"
-maxPoints = 4
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent24"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent24"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent24"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent24"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent25" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 31
-talentName = "Ice Mastery"
-maxPoints = 4
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent25"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent25"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent25"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent25"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent26" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 30
-talentName = "Lightning Mastery"
-maxPoints = 4
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent26"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent26"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent26"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent26"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent27" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 29
-talentName = "Nature's Bond"
-maxPoints = 4
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent27"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent27"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent27"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent27"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent28" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 28
-talentName = "Spell Haste"
-maxPoints = 4
-effect_id = 1
-factor = 8.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent28"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent28"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent28"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent28"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent29" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 27
-talentName = "Mana Recovery"
-maxPoints = 5
-effect_id = 1
-factor = 12.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent29"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent29"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent29"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent29"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent30" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 26
-talentName = "Quick Draw"
-maxPoints = 3
-effect_id = 1
-factor = 8.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent30"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent30"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent30"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent30"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent31" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 25
-talentName = "Dodge Master"
-maxPoints = 5
-effect_id = 1
-factor = 3.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent31"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent31"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent31"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent31"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent32" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 24
-talentName = "Regeneration"
-maxPoints = 4
-effect_id = 1
-factor = 2.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent32"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent32"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent32"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent32"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent33" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 23
-talentName = "Tough Skin"
-maxPoints = 5
-effect_id = 1
-factor = 3.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent33"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent33"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent33"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent33"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent34" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 22
-talentName = "Critical Strike"
-maxPoints = 5
-effect_id = 1
-factor = 3.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent34"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent34"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent34"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent34"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent35" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 21
-talentName = "Heavy Hitter"
-maxPoints = 4
-effect_id = 1
-factor = 15.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent35"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent35"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent35"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent35"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent36" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 20
-talentName = "Parry Expert"
-maxPoints = 4
-effect_id = 1
-factor = 4.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent43"), NodePath("../Talent29")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent36"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent36"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent36"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent36"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent37" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 19
-talentName = "Weapon Reach"
-maxPoints = 3
-effect_id = 1
-factor = 12.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent36"), NodePath("../Talent38"), NodePath("../Talent30"), NodePath("../Talent44")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent37"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent37"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent37"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent37"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent38" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 18
-talentName = "Stamina Boost"
-maxPoints = 5
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent39"), NodePath("../Talent31"), NodePath("../Talent45")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent38"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent38"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent38"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent38"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent39" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 17
-talentName = "Endurance"
-maxPoints = 4
-effect_id = 1
-factor = 15.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent38"), NodePath("../Talent40"), NodePath("../Talent32"), NodePath("../Talent46")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent39"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent39"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent39"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent39"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent40" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 16
-talentName = "Mobility"
-maxPoints = 4
-effect_id = 1
-factor = 6.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent39"), NodePath("../Talent41"), NodePath("../Talent33"), NodePath("../Talent47")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent40"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent40"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent40"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent40"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent41" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 15
-talentName = "Counterattack"
-maxPoints = 3
-effect_id = 1
-factor = 25.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent40"), NodePath("../Talent42"), NodePath("../Talent48"), NodePath("../Talent34")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent41"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent41"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent41"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent41"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent42" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 14
-talentName = "Precision"
-maxPoints = 4
-effect_id = 1
-factor = 5.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent41"), NodePath("../Talent48"), NodePath("../Talent36")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent42"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent42"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent42"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent42"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent43" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 13
-talentName = "Shield Bash"
-maxPoints = 3
-effect_id = 1
-factor = 20.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent36"), NodePath("../Talent50")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent43"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent43"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent43"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent43"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent44" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 12
-talentName = "Block Master"
-maxPoints = 5
-effect_id = 1
-factor = 4.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent43"), NodePath("../Talent45"), NodePath("../Talent37"), NodePath("../Talent51")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent44"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent44"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent44"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent44"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent45" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 11
-talentName = "Spell Resist"
-maxPoints = 4
-effect_id = 1
-factor = 6.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent46"), NodePath("../Talent38"), NodePath("../Talent52")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent45"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent45"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent45"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent45"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 10
-talentName = "Perk Slot"
-maxPoints = 1
-effect_id = 1
-perk_slot = 2
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent45"), NodePath("../Talent47"), NodePath("../Talent39"), NodePath("../Talent53")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent46"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent46"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent46"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent46"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent47" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 9
-talentName = "Backstab"
-maxPoints = 3
-effect_id = 1
-factor = 25.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent46"), NodePath("../Talent48"), NodePath("../Talent40"), NodePath("../Talent54")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent47"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent47"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent47"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent47"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent48" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 8
-talentName = "Stealth"
-maxPoints = 4
-effect_id = 1
-factor = 3.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent47"), NodePath("../Talent49"), NodePath("../Talent41"), NodePath("../Talent55")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent48"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent48"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent48"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent48"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent49" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 7
-talentName = "Lockpicking"
-maxPoints = 5
-effect_id = 1
-factor = 15.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent42"), NodePath("../Talent56"), NodePath("../Talent48")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent49"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent49"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent49"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent49"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent50" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 12
-talentName = "Random Name"
-maxPoints = 3
-isStarter = true
-effect_id = 1
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent43")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent50"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent50"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent50"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent50"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent51" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 1
-talentName = "Survival"
-maxPoints = 3
-isStarter = true
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent52"), NodePath("../Talent50"), NodePath("../Talent44")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent51"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent51"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent51"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent51"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent52" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 2
-talentName = "Basic Combat"
-maxPoints = 3
-isStarter = true
-effect_id = 1
-factor = 8.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent53"), NodePath("../Talent45")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent52"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent52"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent52"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent52"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent53" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 3
-talentName = "Perk Slot"
-maxPoints = 1
-isStarter = true
-effect_id = 200
-perk_slot = 1
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent54"), NodePath("../Talent52"), NodePath("../Talent46")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent53"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent53"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent53"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent53"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent54" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 4
-talentName = "Health Boost"
-maxPoints = 5
-isStarter = true
-effect_id = 1
-factor = 20.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent53"), NodePath("../Talent47")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent54"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent54"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent54"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent54"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent55" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 5
-talentName = "Warrior Training"
-maxPoints = 3
-isStarter = true
-effect_id = 1
-factor = 10.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent56"), NodePath("../Talent54"), NodePath("../Talent48")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent55"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent55"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent55"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent55"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Talent56" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("15_22asu")
-alignment_vertical = 2
-script = ExtResource("14_7t8sx")
-talentID = 6
-talentName = "Mage Training"
-maxPoints = 3
-isStarter = true
-effect_id = 1
-factor = 15.0
-button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
-pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent49")]
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent56"]
-layout_mode = 2
-texture = ExtResource("15_exi56")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent56"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_exi56")
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent56"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 16
-text = "2/3"
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/GridContainer/Talent56"]
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("14_7nbq1")
-texture = ExtResource("15_7nbq1")
-expand_mode = 1
-
-[node name="Upgrade" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents" node_paths=PackedStringArray("name_label", "description_label", "upgrade_button", "title_label", "talents_container")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
-theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
-script = ExtResource("18_mg4q0")
-name_label = NodePath("UpgradeTalent/Name")
-description_label = NodePath("UpgradeTalent/Description")
-upgrade_button = NodePath("UpgradeTalent/Button")
-title_label = NodePath("../Title/Label")
-talents_container = NodePath("../GridContainer")
-
-[node name="UpgradeTalent" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/Upgrade"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -120.0
-offset_right = 150.0
-offset_bottom = 120.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_talent_upgrade")
-
-[node name="Name" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/Upgrade/UpgradeTalent"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -140.0
-offset_top = 10.0
-offset_right = 140.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 20
-text = "Talent name"
-horizontal_alignment = 1
-
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/Upgrade/UpgradeTalent"]
-clip_contents = true
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 15.0
-offset_top = -40.0
-offset_right = -15.0
-offset_bottom = 40.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 14
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/Upgrade/UpgradeTalent"]
-custom_minimum_size = Vector2(100, 40)
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Upgrade"
-
-[node name="PerkScreen" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents" node_paths=PackedStringArray("active_panel", "inactive_panel")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
-theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
-script = ExtResource("21_fkdbe")
-active_panel = NodePath("PerkPanel/Active")
-inactive_panel = NodePath("PerkPanel/Inactive")
-perk_scene = ExtResource("22_81klo")
-
-[node name="PerkPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/PerkScreen"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.4
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-
-[node name="Inactive" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/PerkScreen/PerkPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.3
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
-script = ExtResource("23_tgy6u")
-panel_type = "Inactive"
-perk_scene = ExtResource("22_81klo")
-
-[node name="Active" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents/PerkScreen/PerkPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.2
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -0.400002
-theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
-script = ExtResource("23_tgy6u")
-perk_scene = ExtResource("22_81klo")
 
 [node name="CombatPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false

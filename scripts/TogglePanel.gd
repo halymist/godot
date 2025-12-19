@@ -64,7 +64,7 @@ func _ready():
 	# Connect button signals using bind for all
 	home_button.pressed.connect(handle_home_button)
 	arena_button.pressed.connect(show_panel.bind(arena_panel))
-	character_button.pressed.connect(show_panel.bind(character_panel))
+	character_button.pressed.connect(show_overlay.bind(character_panel))
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
 	settings_button.pressed.connect(show_overlay.bind(settings_panel))
@@ -88,7 +88,7 @@ func _ready():
 	if wide_map_button:
 		wide_map_button.pressed.connect(handle_map_button)
 	if wide_character_button:
-		wide_character_button.pressed.connect(show_panel.bind(character_panel))
+		wide_character_button.pressed.connect(show_overlay.bind(character_panel))
 	if wide_rankings_button:
 		wide_rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
 	if wide_payment_button:
