@@ -32,14 +32,14 @@ var mock_character_data = {
 	"weather": 2,  # 1=sunny, 2=rainy
 	"daily_quests": [1, 2, 3],
 	"avatar_face": 1,
-	"avatar_hair": 2,
+	"avatar_hair": 1,
 	"avatar_eyes": 1,
 	"quest_log": [
 		{"quest_id": 1, "slides": [1], "finished": false},
 		{"quest_id": 2, "slides": [1, 2], "finished": false}
 	],
 	"gold": 1000,
-	"mushrooms": 50,
+	"mushrooms": 150,
 	"traveling": null,
 	"traveling_destination": null,
 	"location": 1,

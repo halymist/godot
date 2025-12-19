@@ -10,6 +10,8 @@ extends "res://scripts/ConstrainedPanel.gd"
 @onready var nose_button: Button = $CategoryButtons/NoseButton
 @onready var mouth_button: Button = $CategoryButtons/MouthButton
 @onready var change_button: Button = $ChangeButton
+@onready var change_label: Label = $ChangeButton/ButtonContent/ButtonLabel
+@onready var change_icon: TextureRect = $ChangeButton/ButtonContent/ButtonIcon
 
 var current_category: String = "Face"
 var selected_cosmetic_id: int = -1
@@ -114,6 +116,11 @@ func _on_cosmetic_selected(cosmetic: CosmeticResource):
 func _calculate_total_cost() -> int:
 	var total_cost = 0
 	
+	print("=== Calculating Cost ===")
+	print("Selected cosmetics: ", selected_cosmetics)
+	print("Original IDs - Face:", original_face_id, " Hair:", original_hair_id, " Eyes:", original_eyes_id)
+	print("Preview IDs - Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id)
+	
 	# Only count cost for changed cosmetics
 	for category in selected_cosmetics:
 		var cosmetic = selected_cosmetics[category]
@@ -127,18 +134,23 @@ func _calculate_total_cost() -> int:
 			"Eyes":
 				is_changed = (preview_eyes_id != original_eyes_id)
 		
+		print("Category:", category, " Changed:", is_changed, " Cost:", cosmetic.cost)
+		
 		if is_changed:
 			total_cost += cosmetic.cost
 	
+	print("Total cost:", total_cost)
 	return total_cost
 
 func _update_change_button():
 	var total_cost = _calculate_total_cost()
 	
 	if total_cost > 0:
-		change_button.text = "CHANGE (%d)" % total_cost
+		change_label.text = "CHANGE (%d)" % total_cost
+		change_icon.visible = true
 	else:
-		change_button.text = "CHANGE"
+		change_label.text = "CHANGE"
+		change_icon.visible = false
 	
 	# Enable/disable button based on affordability
 	if GameInfo.current_player:
