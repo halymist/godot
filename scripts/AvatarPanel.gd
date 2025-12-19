@@ -13,6 +13,7 @@ extends "res://scripts/ConstrainedPanel.gd"
 
 var current_category: String = "Face"
 var selected_cosmetic_id: int = -1
+var selected_cosmetics: Dictionary = {}  # Track selected cosmetics by category
 
 # Temporary preview selections (not yet applied)
 var preview_face_id: int = 1
@@ -20,6 +21,11 @@ var preview_hair_id: int = 1
 var preview_eyes_id: int = 1
 var preview_nose_id: int = 1
 var preview_mouth_id: int = 1
+
+# Original player values (to calculate cost)
+var original_face_id: int = 1
+var original_hair_id: int = 1
+var original_eyes_id: int = 1
 
 func _ready():
 	# Load cosmetics database
@@ -41,6 +47,12 @@ func _ready():
 		preview_face_id = GameInfo.current_player.avatar_face
 		preview_hair_id = GameInfo.current_player.avatar_hair
 		preview_eyes_id = GameInfo.current_player.avatar_eyes
+		original_face_id = preview_face_id
+		original_hair_id = preview_hair_id
+		original_eyes_id = preview_eyes_id
+	
+	# Update change button
+	_update_change_button()
 	
 	# Show face cosmetics by default
 	_on_category_selected("Face")
@@ -76,11 +88,8 @@ func _populate_selection_grid():
 		selection_grid.add_child(button)
 
 func _on_cosmetic_selected(cosmetic: CosmeticResource):
-	# Check if player can afford
-	if cosmetic.cost > 0 and GameInfo.current_player:
-		if GameInfo.current_player.mushrooms < cosmetic.cost:
-			print("Not enough mushrooms!")
-			return
+	# Store selected cosmetic for this category
+	selected_cosmetics[cosmetic.category] = cosmetic
 	
 	# Update preview based on category
 	match cosmetic.category:
@@ -99,29 +108,68 @@ func _on_cosmetic_selected(cosmetic: CosmeticResource):
 	if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
 		avatar_instance.set_avatar_from_ids(preview_face_id, preview_hair_id, preview_eyes_id)
 	
-	selected_cosmetic_id = cosmetic.id
+	# Update change button with new cost
+	_update_change_button()
+
+func _calculate_total_cost() -> int:
+	var total_cost = 0
+	
+	# Only count cost for changed cosmetics
+	for category in selected_cosmetics:
+		var cosmetic = selected_cosmetics[category]
+		var is_changed = false
+		
+		match category:
+			"Face":
+				is_changed = (preview_face_id != original_face_id)
+			"Hair":
+				is_changed = (preview_hair_id != original_hair_id)
+			"Eyes":
+				is_changed = (preview_eyes_id != original_eyes_id)
+		
+		if is_changed:
+			total_cost += cosmetic.cost
+	
+	return total_cost
+
+func _update_change_button():
+	var total_cost = _calculate_total_cost()
+	
+	if total_cost > 0:
+		change_button.text = "CHANGE (%d)" % total_cost
+	else:
+		change_button.text = "CHANGE"
+	
+	# Enable/disable button based on affordability
+	if GameInfo.current_player:
+		change_button.disabled = (total_cost > GameInfo.current_player.mushrooms)
+	else:
+		change_button.disabled = false
 
 func _on_change_pressed():
-	if selected_cosmetic_id < 0:
-		return
+	var total_cost = _calculate_total_cost()
 	
-	# Get the cosmetic
-	var cosmetic = cosmetics_database.get_cosmetic_by_id(selected_cosmetic_id)
-	if not cosmetic:
-		return
-	
-	# Check cost and deduct
-	if cosmetic.cost > 0 and GameInfo.current_player:
-		if GameInfo.current_player.mushrooms < cosmetic.cost:
+	# Check if player can afford
+	if total_cost > 0 and GameInfo.current_player:
+		if GameInfo.current_player.mushrooms < total_cost:
 			print("Not enough mushrooms!")
 			return
-		GameInfo.current_player.mushrooms -= cosmetic.cost
+		GameInfo.current_player.mushrooms -= total_cost
 	
 	# Apply changes to player data
 	if GameInfo.current_player:
 		GameInfo.current_player.avatar_face = preview_face_id
 		GameInfo.current_player.avatar_hair = preview_hair_id
 		GameInfo.current_player.avatar_eyes = preview_eyes_id
+		
+		# Update original values
+		original_face_id = preview_face_id
+		original_hair_id = preview_hair_id
+		original_eyes_id = preview_eyes_id
+		
+		# Clear selected cosmetics and update button
+		selected_cosmetics.clear()
+		_update_change_button()
 		
 		# TODO: Send to server to save
 		print("Avatar updated! Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id)

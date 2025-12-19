@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://mui2o1egfipm" path="res://assets/images/ui/ring_outline.png" id="9_ring"]
 [ext_resource type="Texture2D" uid="uid://b0w36ybd8s4jl" path="res://assets/images/ui/shoes_outline.png" id="9_shoes"]
 [ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="9_sword"]
+[ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="9_w4j8i"]
 [ext_resource type="PackedScene" path="res://Scenes/Utility.tscn" id="10_32sfa"]
 [ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="10_mg4q0"]
 [ext_resource type="Texture2D" uid="uid://d4eq827d0dkdd" path="res://assets/images/villages/tavern_interrior.png" id="11_631el"]
@@ -414,7 +415,7 @@ theme_override_constants/separation = 4
 [node name="MushroomIcon" type="TextureRect" parent="Portrait/TopUI/VBoxContainer/MushroomContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("32_ccfo7")
+texture = ExtResource("9_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
@@ -6159,7 +6160,7 @@ theme_override_constants/separation = 4
 [node name="MushroomIcon" type="TextureRect" parent="Wide/Sidebar/CurrencySection/MushroomContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("32_ccfo7")
+texture = ExtResource("9_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
