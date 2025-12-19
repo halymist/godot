@@ -6,18 +6,18 @@ const TALENT_POINT_COST = 100
 const STAT_COST = 5
 
 # Stat labels
-@onready var talent_points_label = $TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo/Label
-@onready var strength_label = $TrainingPanel/Content/StatsContainer/StrengthRow/StatInfo/Label
-@onready var stamina_label = $TrainingPanel/Content/StatsContainer/StaminaRow/StatInfo/Label
-@onready var agility_label = $TrainingPanel/Content/StatsContainer/AgilityRow/StatInfo/Label
-@onready var luck_label = $TrainingPanel/Content/StatsContainer/LuckRow/StatInfo/Label
+@onready var talent_points_label = $UtilityPanel/Content/StatsContainer/TalentPointsRow/StatInfo/Label
+@onready var strength_label = $UtilityPanel/Content/StatsContainer/StrengthRow/StatInfo/Label
+@onready var stamina_label = $UtilityPanel/Content/StatsContainer/StaminaRow/StatInfo/Label
+@onready var agility_label = $UtilityPanel/Content/StatsContainer/AgilityRow/StatInfo/Label
+@onready var luck_label = $UtilityPanel/Content/StatsContainer/LuckRow/StatInfo/Label
 
 # Plus buttons
-@onready var talent_points_button = $TrainingPanel/Content/StatsContainer/TalentPointsRow/StatInfo/PlusButton
-@onready var strength_button = $TrainingPanel/Content/StatsContainer/StrengthRow/StatInfo/PlusButton
-@onready var stamina_button = $TrainingPanel/Content/StatsContainer/StaminaRow/StatInfo/PlusButton
-@onready var agility_button = $TrainingPanel/Content/StatsContainer/AgilityRow/StatInfo/PlusButton
-@onready var luck_button = $TrainingPanel/Content/StatsContainer/LuckRow/StatInfo/PlusButton
+@onready var talent_points_button = $UtilityPanel/Content/StatsContainer/TalentPointsRow/StatInfo/PlusButton
+@onready var strength_button = $UtilityPanel/Content/StatsContainer/StrengthRow/StatInfo/PlusButton
+@onready var stamina_button = $UtilityPanel/Content/StatsContainer/StaminaRow/StatInfo/PlusButton
+@onready var agility_button = $UtilityPanel/Content/StatsContainer/AgilityRow/StatInfo/PlusButton
+@onready var luck_button = $UtilityPanel/Content/StatsContainer/LuckRow/StatInfo/PlusButton
 
 func _ready():
 	if Engine.is_editor_hint():

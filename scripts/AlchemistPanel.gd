@@ -9,8 +9,8 @@ const SLOT_2 = 102
 const SLOT_3 = 103
 
 # Node references
-@onready var result_preview = $ItemsPanel/Content/ResultPreview
-@onready var brew_button = $ItemsPanel/Content/BottomRow/BrewButton
+@onready var result_preview = $UtilityPanel/Content/ResultPreview
+@onready var brew_button = $UtilityPanel/Content/BottomRow/BrewButton
 
 func _ready():
 	super._ready()
@@ -251,4 +251,3 @@ func update_slot_visuals():
 					break
 			
 			container.update_slot_appearance()
-

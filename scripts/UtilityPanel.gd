@@ -31,11 +31,7 @@ func _update_layout():
 	if not background_container:
 		background_container = get_node_or_null("VendorBackground")
 	
-	var items_panel = get_node_or_null("ItemsPanel")
-	if not items_panel:
-		items_panel = get_node_or_null("TrainingPanel")
-	if not items_panel:
-		items_panel = get_node_or_null("BlessingsPanel")
+	var items_panel = get_node_or_null("UtilityPanel")
 	
 	var bag = get_node_or_null("Bag")
 	
@@ -50,11 +46,16 @@ func _update_layout():
 	var parent_width = parent.size.x
 	var parent_height = parent.size.y
 	
-	# Calculate max width based on 2.2:3 aspect ratio
-	var max_width = parent_height * (2.2 / 3.0)
+	# Define max width threshold - when we should start constraining
+	var max_absolute_width = 500.0  # Adjust this value as needed
 	
-	# Constrain panel width
-	var panel_width = min(parent_width, max_width)
+	var panel_width = parent_width
+	
+	# Only apply aspect ratio constraint if we exceed the max width
+	if parent_width > max_absolute_width:
+		var constrained_width = parent_height * (2.2 / 3.0)
+		panel_width = min(parent_width, constrained_width)
+	
 	var panel_height = parent_height
 	
 	# Update panel size and position (left-aligned)

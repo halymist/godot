@@ -4,8 +4,8 @@ extends "res://scripts/UtilityPanel.gd"
 const BLESSING_COST = 10
 const BlessingScene = preload("res://Scenes/blessing.tscn")
 
-@onready var blessings_container = $BlessingsPanel/Content/ScrollContainer/BlessingsContainer
-@onready var bless_button = $BlessingsPanel/Content/BlessButton
+@onready var blessings_container = $UtilityPanel/Content/ScrollContainer/BlessingsContainer
+@onready var bless_button = $UtilityPanel/Content/BlessButton
 
 var selected_blessing_id: int = -1
 var blessing_nodes: Dictionary = {}  # Maps effect_id to blessing node for highlighting

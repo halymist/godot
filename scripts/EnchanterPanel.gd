@@ -3,9 +3,9 @@ extends "res://scripts/UtilityPanel.gd"
 
 # EnchanterPanel-specific functionality
 
-@onready var enchanter_slot = $ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot
-@onready var enchant_button = $ItemsPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton
-@onready var effect_list = $ItemsPanel/Content/ItemSlotContainer/EffectsSection/EffectScrollContainer/EffectList
+@onready var enchanter_slot = $UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot
+@onready var enchant_button = $UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton
+@onready var effect_list = $UtilityPanel/Content/ItemSlotContainer/EffectsSection/EffectScrollContainer/EffectList
 
 const ENCHANT_COST = 10
 
