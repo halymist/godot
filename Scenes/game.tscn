@@ -1,4 +1,4 @@
-[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
@@ -90,6 +90,8 @@
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
+[ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
+[ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="69_cosmetics"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -2062,6 +2064,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="CharacterWrapper" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -5192,13 +5195,92 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Avatar" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("68_avatar_panel")
+cosmetics_database = ExtResource("69_cosmetics")
+
+[node name="AvatarPreview" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 230.0
+grow_horizontal = 2
+expand_mode = 1
+
+[node name="AvatarInstance" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/AvatarPreview" instance=ExtResource("22_avatar")]
+layout_mode = 1
+
+[node name="CategoryButtons" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 250.0
+offset_right = 200.0
+offset_bottom = 290.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="FaceButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Face"
+
+[node name="HairButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Hair"
+
+[node name="EyesButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Eyes"
+
+[node name="NoseButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Nose"
+
+[node name="MouthButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Mouth"
+
+[node name="SelectionContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 310.0
+offset_right = 200.0
+offset_bottom = 550.0
+grow_horizontal = 2
+
+[node name="SelectionGrid" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/SelectionContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 4
+
+[node name="ChangeButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -75.0
+offset_top = -60.0
+offset_right = 75.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "CHANGE"
 
 [node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
