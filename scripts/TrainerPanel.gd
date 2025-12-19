@@ -20,6 +20,8 @@ const STAT_COST = 5
 @onready var luck_button = $UtilityPanel/Content/StatsContainer/LuckRow/StatInfo/PlusButton
 
 func _ready():
+	super._ready()  # Call parent's _ready to get wrapper click functionality
+	
 	if Engine.is_editor_hint():
 		return
 	

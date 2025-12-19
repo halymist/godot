@@ -228,9 +228,9 @@ func _on_bag_slots_changed():
 func update_slot_visuals():
 	# Update ingredient slots 101-103
 	var slot_containers = [
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot1,
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot2,
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot3
+		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot1,
+		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot2,
+		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot3
 	]
 	var slot_ids = [101, 102, 103]
 	

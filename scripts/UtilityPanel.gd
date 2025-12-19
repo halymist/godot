@@ -46,8 +46,9 @@ func _update_layout():
 	var parent_width = parent.size.x
 	var parent_height = parent.size.y
 	
-	# Define max width threshold - when we should start constraining
-	var max_absolute_width = 500.0  # Adjust this value as needed
+	# Define max width threshold based on aspect ratio of height
+	# Using 1:1 aspect ratio (max_width = height) as threshold
+	var max_absolute_width = 500
 	
 	var panel_width = parent_width
 	

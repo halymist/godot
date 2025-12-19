@@ -1,4 +1,4 @@
-[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -110,6 +110,9 @@ corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
 bg_color = Color(0.372919, 0.641864, 0.750955, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_overlay_dark"]
+bg_color = Color(0.05, 0.03, 0.08, 0.75)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
 bg_color = Color(0.08, 0.05, 0.15, 0.85)
@@ -1029,11 +1032,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
-flat = true
+theme_override_styles/focus = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/hover = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/normal = SubResource("StyleBoxFlat_overlay_dark")
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper"]
 z_index = 100
@@ -1136,11 +1138,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
-flat = true
+theme_override_styles/focus = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/hover = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/normal = SubResource("StyleBoxFlat_overlay_dark")
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper"]
 z_index = 100
@@ -1290,11 +1291,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
-flat = true
+theme_override_styles/focus = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/hover = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/normal = SubResource("StyleBoxFlat_overlay_dark")
 
 [node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/TrainerWrapper"]
 z_index = 100
@@ -1533,11 +1533,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
-flat = true
+theme_override_styles/focus = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/hover = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/normal = SubResource("StyleBoxFlat_overlay_dark")
 
 [node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper"]
 z_index = 100
@@ -1653,11 +1652,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
-flat = true
+theme_override_styles/focus = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/hover = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/normal = SubResource("StyleBoxFlat_overlay_dark")
 
 [node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper"]
 z_index = 100
@@ -1827,11 +1825,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
-flat = true
+theme_override_styles/focus = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/hover = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_overlay_dark")
+theme_override_styles/normal = SubResource("StyleBoxFlat_overlay_dark")
 
 [node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper"]
 z_index = 100
