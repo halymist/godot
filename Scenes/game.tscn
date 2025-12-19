@@ -1,6 +1,7 @@
-[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
+[ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Script" uid="uid://dfyxboavsidpe" path="res://scripts/CurrencyDisplay.gd" id="4_2cns2"]
@@ -491,9 +492,10 @@ expand_icon = true
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.8
-anchor_right = 0.6
-anchor_bottom = 1.0
+anchor_bottom = 0.978
 offset_left = 10.0
+offset_right = 210.0
+offset_bottom = -0.0400085
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 
@@ -2059,6 +2061,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2066,6 +2069,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
+script = ExtResource("1_constrained")
 
 [node name="Equip" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
@@ -2754,6 +2758,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
+script = ExtResource("1_constrained")
 
 [node name="Title" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Talents"]
 layout_mode = 1
