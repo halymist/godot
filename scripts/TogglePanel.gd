@@ -35,6 +35,8 @@ extends Control
 @export var enemy_panel: Control
 @export var payment: Control
 @export var payment_button: Button
+@export var avatar_panel: Control
+@export var avatar_button: Button
 
 # Wide mode buttons
 @export_group("Wide Buttons")

@@ -1,4 +1,4 @@
-extends HBoxContainer
+extends Control
 @export var inventory_slots: Array[Control]
 @export var item_prefab: PackedScene
 @export var is_bag: bool = false
