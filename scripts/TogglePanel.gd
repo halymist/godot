@@ -77,6 +77,10 @@ func _ready():
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
 	
+	# Connect avatar button if it exists
+	if avatar_button:
+		avatar_button.pressed.connect(_on_avatar_button_pressed)
+	
 	# Connect character wrapper button
 	if character_wrapper:
 		character_wrapper.pressed.connect(_on_character_wrapper_clicked)
@@ -154,9 +158,11 @@ func show_overlay(overlay: Control):
 		if current_utility_panel and current_utility_panel.visible:
 			hide_utility_panel(current_utility_panel)
 		
-		# Always hide talents panel when opening character to ensure we show character by default
+		# Always hide talents and avatar panels when opening character to ensure we show character by default
 		if talents_panel:
 			talents_panel.visible = false
+		if avatar_panel:
+			avatar_panel.visible = false
 		
 		character_wrapper.visible = true
 		# Character panel inside wrapper is already visible by default
@@ -356,6 +362,12 @@ func _on_character_wrapper_clicked():
 	if character_wrapper:
 		hide_overlay(character_panel)
 
+func _on_avatar_button_pressed():
+	"""Show avatar panel when avatar button is clicked"""
+	if avatar_panel:
+		avatar_panel.visible = true
+		GameInfo.set_current_panel(avatar_panel)
+
 func toggle_talents_bookmark():
 	var tween = create_tween()
 	tween.set_parallel(true)  # Allow multiple animations at once
@@ -412,9 +424,12 @@ func go_back():
 	
 	# Priority 2: Hide any other active overlay (settings/rankings/payment/character)
 	var current_overlay = GameInfo.get_current_panel_overlay()
-	# Special case: if we're in talents and character wrapper is visible, just hide talents
+	# Special case: if we're in talents/avatar and character wrapper is visible, just hide talents/avatar
 	if current == talents_panel and character_wrapper and character_wrapper.visible and talents_panel.visible:
 		talents_panel.visible = false
+		return
+	if current == avatar_panel and character_wrapper and character_wrapper.visible and avatar_panel.visible:
+		avatar_panel.visible = false
 		return
 	# Otherwise hide the overlay normally
 	if current_overlay != null and current_overlay.visible:
@@ -458,6 +473,14 @@ func go_back():
 		else:
 			# Otherwise use the bookmark animation
 			toggle_talents_bookmark()
+	elif current == avatar_panel:
+		# If character wrapper is visible, just hide avatar and stay in character panel
+		if character_wrapper and character_wrapper.visible:
+			avatar_panel.visible = false
+			# Don't change current_panel tracking - character overlay is still active
+		else:
+			# Otherwise just hide avatar panel
+			avatar_panel.visible = false
 	elif current == combat_panel:
 		show_panel(arena_panel)
 	else:

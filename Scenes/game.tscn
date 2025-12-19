@@ -2062,7 +2062,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
 [node name="CharacterWrapper" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2143,10 +2142,17 @@ offset_top = 14.0
 offset_right = 122.0
 offset_bottom = 244.0
 grow_horizontal = 2
+mouse_filter = 2
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 stretch_mode = 5
 script = ExtResource("6_consumable")
+
+[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/CharacterWrapper/Character/Equip/Character" instance=ExtResource("22_avatar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.25
+anchor_bottom = 0.9
 
 [node name="ChangeAvatar" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/CharacterWrapper/Character/Equip/Character"]
 layout_mode = 1
@@ -2156,12 +2162,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 flat = true
-
-[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/CharacterWrapper/Character/Equip/Character" instance=ExtResource("22_avatar")]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.25
-anchor_bottom = 0.9
 
 [node name="Weapon1Slot" parent="Portrait/GameSceneParent/Wrapper/GameScene/CharacterWrapper/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 1
