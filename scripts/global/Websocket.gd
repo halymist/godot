@@ -1,17 +1,52 @@
 extends Node
 
+# Helper function to generate full player data
+func generate_mock_player_data(player_name: String, rank: int, guild: int, profession: int, honor: int) -> Dictionary:
+	# Generate varied stats based on rank (better players have higher stats)
+	var stat_bonus = max(0, (100 - rank) / 10)  # Top 10 get +9, rank 100 gets 0
+	
+	return {
+		"name": player_name,
+		"rank": rank,
+		"guild": guild,
+		"profession": profession,
+		"honor": honor,
+		"avatar_face": 1,
+		"avatar_hair": ((rank % 2) + 1),  # Alternate between hair styles
+		"avatar_eyes": 1,
+		"strength": 10 + stat_bonus + (rank % 5),
+		"stamina": 10 + stat_bonus + (rank % 4),
+		"agility": 10 + stat_bonus + (rank % 6),
+		"luck": 8 + (rank % 8),
+		"armor": 5 + (stat_bonus / 2),
+		"blessing": 50 + (rank % 100),
+		"potion": 0,
+		"elixir": 0,
+		"bag_slots": [
+			{"id": 1, "bag_slot_id": 0},  # Basic helmet
+			{"id": 2, "bag_slot_id": 2} if rank <= 50 else {}  # Better players have chest armor
+		],
+		"perks": [
+			{"id": 1, "active": true, "slot": 1} if rank <= 70 else {"id": 1, "active": false, "slot": 1}
+		],
+		"talents": [
+			{"talent_id": 1, "points": min(5, (100 - rank) / 20 + 1)},
+			{"talent_id": 2, "points": min(3, (100 - rank) / 30)} if rank <= 60 else {}
+		]
+	}
+
 func _ready():
 	print("Websocket ready!")
 	
-	# Generate 100 mock ranking entries
+	# Generate 100 mock enemy players with full data
 	for i in range(1, 101):
-		mock_rankings.append({
-			"name": "Player" + str(i),
-			"rank": i,
-			"guild": (i % 3) + 1,  # Distribute across 3 guilds
-			"profession": (i % 3) + 1,  # 3 professions
-			"honor": 10000 - (i * 50)  # Higher rank = higher honor
-		})
+		mock_rankings.append(generate_mock_player_data(
+			"Player" + str(i),
+			i,  # rank
+			(i % 3) + 1,  # guild
+			(i % 3) + 1,  # profession
+			10000 - (i * 50)  # honor
+		))
 
 # Mock quest log data - tracks quest completion status
 var mock_quest_log = [
@@ -113,128 +148,8 @@ var mock_character_data = {
 	]
 }
 
-# Mock arena opponents data
-var mock_arena_opponents = [
-	{
-		"name": "Goblin Warrior",
-		"rank": 8500,
-		"strength": 12,
-		"stamina": 10,
-		"agility": 14,
-		"luck": 8,
-		"armor": 3,
-		"bag_slots": [
-			{
-				"id": 1,
-				"bag_slot_id": 0
-			}
-		],
-		"perks": [
-			{
-				"id": 1,
-				"active": true,
-				"slot": 1
-			}
-		],
-		"talents": [
-			{
-				"talent_id": 1,
-				"points": 2
-			}
-		]
-	},
-	{
-		"name": "Orc Brute",
-		"rank": 12000,
-		"strength": 18,
-		"stamina": 16,
-		"agility": 8,
-		"luck": 6,
-		"armor": 8,
-		"bag_slots": [
-			{
-				"id": 1,
-				"bag_slot_id": 0
-			},
-			{
-				"id": 1,
-				"bag_slot_id": 2
-			}
-		],
-		"perks": [
-			{
-				"id": 1,
-				"active": true,
-				"slot": 1
-			},
-			{
-				"id": 1,
-				"active": true,
-				"slot": 2
-			}
-		],
-		"talents": [
-			{
-				"talent_id": 2,
-				"points": 3
-			},
-			{
-				"talent_id": 4,
-				"points": 1
-			}
-		]
-	},
-	{
-		"name": "Dark Assassin",
-		"rank": 18500,
-		"strength": 10,
-		"stamina": 8,
-		"agility": 20,
-		"luck": 15,
-		"armor": 2,
-		"bag_slots": [
-			{
-				"id": 1,
-				"bag_slot_id": 0
-			},
-			{
-				"id": 1,
-				"bag_slot_id": 1
-			}
-		],
-		"perks": [
-			{
-				"id": 1,
-				"active": true,
-				"slot": 1
-			},
-			{
-				"id": 1,
-				"active": true,
-				"slot": 2
-			},
-			{
-				"id": 1,
-				"active": false,
-				"slot": 3
-			}
-		],
-		"talents": [
-			{
-				"talent_id": 3,
-				"points": 4
-			},
-			{
-				"talent_id": 5,
-				"points": 2
-			},
-			{
-				"talent_id": 7,
-				"points": 1
-			}
-		]
-	}
-]
+# Mock arena opponents - now just references to enemy_players by name
+var mock_arena_opponents = ["Player5", "Player12", "Player25"]  # These will be looked up in enemy_players array
 
 # NPCs are now client-side resources - server only sends daily_quests array in character data
 

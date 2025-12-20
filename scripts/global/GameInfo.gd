@@ -354,21 +354,8 @@ class Talent:
 	}
 
 # Ranking Entry for lightweight rankings display
-class RankingEntry:
-	extends RefCounted
-	
-	var name: String = ""
-	var rank: int = 0
-	var guild: int = 0
-	var profession: int = 0
-	var honor: int = 0
-	
-	func _init(data: Dictionary = {}):
-		name = data.get("name", "")
-		rank = data.get("rank", 0)
-		guild = data.get("guild", 0)
-		profession = data.get("profession", 0)
-		honor = data.get("honor", 0)
+# RankingEntry class removed - now using full GameArenaOpponent data in enemy_players array
+# Rankings panel will reference enemy_players[rankings_indices[i]]
 
 class QuestOption:
 	extends MessagePackObject
@@ -736,6 +723,9 @@ class GameArenaOpponent:
 	extends GamePlayer
 	
 	var rank: int = 0  # Rank value for arena opponents
+	var guild: int = 0  # Guild affiliation
+	var profession: int = 0  # Profession type
+	var honor: int = 0  # Honor points
 	
 	const ARENA_OPPONENT_MSGPACK_MAP = {
 		# Base fields
@@ -746,7 +736,10 @@ class GameArenaOpponent:
 		"luck": "luck",
 		"armor": "armor",
 		# Arena opponent specific
-		"rank": "rank"
+		"rank": "rank",
+		"guild": "guild",
+		"profession": "profession",
+		"honor": "honor"
 	}
 	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):
@@ -771,14 +764,14 @@ class GameArenaOpponent:
 
 # GameInfo main class properties
 var current_player: GameCurrentPlayer
-var arena_opponents: Array[GameArenaOpponent] = []
-var arena_opponent: GameArenaOpponent = null
+var enemy_players: Array[GameArenaOpponent] = []  # Unified array for all enemy player data
+var current_arena_opponent: GameArenaOpponent = null  # Current opponent in arena
 var chat_messages: Array[ChatMessage] = []
 var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
 var npcs: Array[Dictionary] = []
 var vendor_items: Array[Item] = []
-var rankings: Array[RankingEntry] = []  # Rankings list (lightweight data)
+var rankings_indices: Array[int] = []  # Indices into enemy_players array (ordered by rank)
 
 # Quest system
 var quest_slides: Dictionary = {}  # questID -> Array[QuestSlide]
@@ -836,9 +829,9 @@ func _ready():
 		print("Warning: npcs.tres not found, NPCs will not spawn")
 	
 	load_player_data(Websocket.mock_character_data)
-	load_arena_opponents_data(Websocket.mock_arena_opponents)
+	load_enemy_players_data(Websocket.mock_rankings)  # Load all enemy players from rankings data
 	load_chat_messages_data(Websocket.mock_chat_messages)
-	load_rankings_data(Websocket.mock_rankings)
+	load_arena_opponent_names(Websocket.mock_arena_opponents)  # Set arena opponents by name
 	load_combat_logs_data(Websocket.mock_combat_logs)
 	load_vendor_items_data(Websocket.mock_vendor_items)
 	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
@@ -903,17 +896,27 @@ func get_total_stats() -> Dictionary:
 
 # Function to load arena opponent from MessagePack format
 func load_arena_opponent_msgpack(msgpack_data: Dictionary):
-	arena_opponent = GameArenaOpponent.new(msgpack_data, self)
-	print("Arena opponent loaded from MessagePack: ", arena_opponent.name)
+	current_arena_opponent = GameArenaOpponent.new(msgpack_data, self)
+	print("Arena opponent loaded from MessagePack: ", current_arena_opponent.name)
 
 # Function to load all arena opponents from mock data
-func load_arena_opponents_data(opponents_data: Array):
-	arena_opponents.clear()
-	for opponent_data in opponents_data:
-		var opponent = GameArenaOpponent.new(opponent_data, self)
-		arena_opponents.append(opponent)
-		print("Loaded arena opponent: ", opponent.name)
-	print("Total arena opponents loaded: ", arena_opponents.size())
+func load_enemy_players_data(players_data: Array):
+	# Load all enemy player data into unified array
+	enemy_players.clear()
+	rankings_indices.clear()
+	for i in range(players_data.size()):
+		var player_data = players_data[i]
+		var player = GameArenaOpponent.new(player_data, self)
+		enemy_players.append(player)
+		rankings_indices.append(i)  # Rankings ordered by array index
+		print("Loaded enemy player: ", player.name, " (Rank ", player.rank, ")")
+	print("Total enemy players loaded: ", enemy_players.size())
+	rankings_loaded.emit()
+
+func load_arena_opponent_names(opponent_names: Array):
+	# Find arena opponents by name in enemy_players array
+	print("Setting arena opponents from names: ", opponent_names)
+	# Arena panel will look up players from enemy_players by name when needed
 
 # Function to load chat messages from mock data
 func load_chat_messages_data(messages_data: Array):
@@ -947,13 +950,7 @@ func load_vendor_items_data(vendor_data: Array):
 		print("  Loaded vendor item: ", item.item_name)
 		vendor_items.append(item)
 
-func load_rankings_data(rankings_data: Array):
-	rankings.clear()
-	for entry_data in rankings_data:
-		var entry = RankingEntry.new(entry_data)
-		rankings.append(entry)
-	print("Loaded ", rankings.size(), " ranking entries")
-	rankings_loaded.emit()
+# load_rankings_data removed - rankings now loaded via load_enemy_players_data
 
 # Function to load quest slides by quest ID
 func load_quest_slides_data(quest_id: int, slides_data: Array):
@@ -1102,14 +1099,14 @@ func get_inactive_perks_for_character(character: GamePlayer) -> Array:
 
 # Debug function to print arena opponents info
 func print_arena_opponents_info():
-	print("=== Arena Opponents Info ===")
-	for i in range(arena_opponents.size()):
-		var opponent = arena_opponents[i]
-		print("Opponent ", i + 1, ":")
-		print("  Name: ", opponent.name)
+	print("\n=== Enemy Players Info (First 5) ===")
+	for i in range(min(5, enemy_players.size())):
+		var opponent = enemy_players[i]
+		print("Player ", i + 1, ":")
+		print("  Name: ", opponent.name, " (Rank: ", opponent.rank, ")")
 		print("  Stats: STR=", opponent.strength, " STA=", opponent.stamina, " AGI=", opponent.agility, " LCK=", opponent.luck, " ARM=", opponent.armor)
 		print("  Active Perks: ", opponent.get_active_perks().size())
 		print("  Inactive Perks: ", opponent.get_inactive_perks().size())
 		print("  Items: ", opponent.bag_slots.size())
 		print("  Talents: ", opponent.talents.size())
-	print("=== End Arena Opponents Info ===")
+	print("=== End Enemy Players Info ===")

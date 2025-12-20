@@ -63,19 +63,21 @@ func populate_rankings():
 	for child in table_content.get_children():
 		child.queue_free()
 	
-	# Populate with rankings from GameInfo
-	for entry in GameInfo.rankings:
-		var row = create_ranking_row(entry)
-		if row:
-			table_content.add_child(row)
+	# Populate with rankings from GameInfo (using indices into enemy_players)
+	for index in GameInfo.rankings_indices:
+		if index < GameInfo.enemy_players.size():
+			var player = GameInfo.enemy_players[index]
+			var row = create_ranking_row(player)
+			if row:
+				table_content.add_child(row)
 
-func create_ranking_row(entry: GameInfo.RankingEntry):
+func create_ranking_row(player: GameInfo.GameArenaOpponent):
 	if not ranking_row_scene:
 		print("Warning: ranking_row_scene not set in RankingsPanel")
 		return null
 	
 	var row = ranking_row_scene.instantiate()
-	row.set_data(entry.rank, entry.name, entry.guild, entry.profession, entry.honor)
+	row.set_data(player.rank, player.name, player.guild, player.profession, player.honor)
 	row.row_clicked.connect(_on_row_clicked)
 	return row
 

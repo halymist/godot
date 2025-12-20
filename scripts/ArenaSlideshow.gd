@@ -42,20 +42,31 @@ func _ready():
 	_update_display()
 
 func _load_opponent_data():
-	# Use actual arena opponents data from GameInfo
-	if GameInfo.arena_opponents.size() > 0:
-		for i in range(min(cards.size(), GameInfo.arena_opponents.size())):
+	# Look up arena opponents by name from mock data
+	var opponent_names = Websocket.mock_arena_opponents
+	if opponent_names.size() > 0 and GameInfo.enemy_players.size() > 0:
+		for i in range(min(cards.size(), opponent_names.size())):
 			var card = cards[i]
-			var opponent = GameInfo.arena_opponents[i]
+			var opponent_name = opponent_names[i]
 			
-			# Get total stats (base + equipment + perks)
-			var total_stats = opponent.get_total_stats()
+			# Find opponent by name in enemy_players
+			var opponent = null
+			for player in GameInfo.enemy_players:
+				if player.name == opponent_name:
+					opponent = player
+					break
 			
-			# Set the enemy data with calculated total stats
-			card.set_enemy_data(i + 1, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
-			
-			# Pass the full opponent data for perks display
-			card.set_opponent_data(opponent)
+			if opponent:
+				# Get total stats (base + equipment + perks)
+				var total_stats = opponent.get_total_stats()
+				
+				# Set the enemy data with calculated total stats
+				card.set_enemy_data(i + 1, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
+				
+				# Pass the full opponent data for perks display
+				card.set_opponent_data(opponent)
+			else:
+				print("Warning: Could not find opponent '", opponent_name, "' in enemy_players")
 	else:
 		print("Warning: No arena opponents data available")
 
@@ -98,10 +109,19 @@ func _style_buttons():
 	fight_button.add_theme_stylebox_override("hover", fight_hover_style)
 
 func _on_fight_pressed():
-	if GameInfo.arena_opponents.size() > current_index:
-		var current_opponent = GameInfo.arena_opponents[current_index]
-		print("Fighting enemy: ", current_opponent.name)
-		# TODO: Implement fight logic
+	var opponent_names = Websocket.mock_arena_opponents
+	if opponent_names.size() > current_index:
+		var opponent_name = opponent_names[current_index]
+		
+		# Find opponent in enemy_players
+		for player in GameInfo.enemy_players:
+			if player.name == opponent_name:
+				GameInfo.current_arena_opponent = player
+				print("Fighting enemy: ", player.name)
+				# TODO: Implement fight logic
+				return
+		
+		print("Could not find opponent: ", opponent_name)
 	else:
 		print("No opponent data available")
 
