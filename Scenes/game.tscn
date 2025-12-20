@@ -87,12 +87,12 @@
 [ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="45_7sqp1"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
-[ext_resource type="Texture2D" uid="uid://1uwnyou6bacl" path="res://assets/images/ui/agility.png" id="48_e6ols"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
 [ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="69_cosmetics"]
+[ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -5354,7 +5354,7 @@ text = "Location Bonuses:
 +5% Experience gain
 Weather: Rainy (-10% Travel Speed)"
 
-[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel")]
+[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel", "strength", "stamina", "agility", "luck", "armor")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5369,6 +5369,11 @@ player_card = NodePath("MainContainer/PlayerCard")
 search_input = NodePath("MainContainer/SearchBar/SearchInput")
 ranking_row_scene = ExtResource("36_ranking_row")
 enemy_panel = NodePath("../Enemy")
+strength = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength/StrengthValue")
+stamina = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina/StaminaValue")
+agility = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility/AgilityValue")
+luck = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck/LuckValue")
+armor = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor/ArmorValue")
 
 [node name="MainContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings"]
 layout_mode = 1
@@ -5481,7 +5486,7 @@ texture = ExtResource("44_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
+[node name="StrengthValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
@@ -5494,11 +5499,11 @@ theme_override_constants/separation = 5
 [node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("45_7sqp1")
+texture = ExtResource("46_gsm33")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
+[node name="StaminaValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
@@ -5511,11 +5516,11 @@ theme_override_constants/separation = 5
 [node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("46_gsm33")
+texture = ExtResource("66_7sqp1")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
+[node name="AgilityValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
@@ -5532,7 +5537,7 @@ texture = ExtResource("47_lrctp")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
+[node name="LuckValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
@@ -5545,11 +5550,11 @@ theme_override_constants/separation = 5
 [node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("48_e6ols")
+texture = ExtResource("86_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
+[node name="ArmorValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"

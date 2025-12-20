@@ -7,6 +7,13 @@ extends Panel
 @export var ranking_row_scene: PackedScene
 @export var enemy_panel: Control
 
+# Stat nodes from player card
+@export var strength: Label
+@export var stamina: Label
+@export var agility: Label
+@export var luck: Label
+@export var armor: Label
+
 @onready var table_content: VBoxContainer
 @onready var player_name_label: Label
 @onready var fight_button: Button
@@ -15,7 +22,6 @@ extends Panel
 
 var selected_row = null
 var selected_player: GameInfo.GameArenaOpponent = null
-var stat_nodes = []
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -35,13 +41,6 @@ func _ready():
 			character_button = character_container.get_node("Button")
 			if character_button:
 				character_button.pressed.connect(_on_character_button_pressed)
-		
-		# Get all stat nodes from StatsGrid
-		var stats_grid = player_info.get_node("StatsGrid")
-		for i in range(1, 6):  # Stat1 through Stat5
-			var stat_node = stats_grid.get_node("Stat" + str(i))
-			if stat_node:
-				stat_nodes.append(stat_node)
 		
 		var actions = card_content.get_node("FightButtonContainer")
 		fight_button = actions.get_node("FightButton")
@@ -127,12 +126,17 @@ func update_player_card():
 	# Get total stats (base + equipment + perks)
 	var total_stats = selected_player.get_total_stats()
 	
-	# Update stat values with actual player stats
-	var stats = [total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor]
-	for i in range(min(stat_nodes.size(), stats.size())):
-		var value_label = stat_nodes[i].get_node("Value")
-		if value_label:
-			value_label.text = str(stats[i])
+	# Update stat values directly on Label exports
+	if strength:
+		strength.text = str(total_stats.strength)
+	if stamina:
+		stamina.text = str(total_stats.stamina)
+	if agility:
+		agility.text = str(total_stats.agility)
+	if luck:
+		luck.text = str(total_stats.luck)
+	if armor:
+		armor.text = str(total_stats.armor)
 
 func _on_fight_pressed():
 	print("Fight button pressed!")
