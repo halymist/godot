@@ -12,6 +12,9 @@ func _ready():
 	print("=== AVATAR _ready() CALLED ===")
 	print("Avatar: GameInfo.current_player exists: ", GameInfo.current_player != null)
 	
+	# Connect to avatar changed signal
+	GameInfo.avatar_changed.connect(_on_avatar_changed)
+	
 	# Load from GameInfo if player data exists
 	if GameInfo.current_player:
 		print("Avatar: Loading from GameInfo with hair ID: ", GameInfo.current_player.avatar_hair)
@@ -24,6 +27,10 @@ func _ready():
 		# Fallback to default
 		print("Avatar: No player data, using defaults")
 		set_avatar_from_ids(1, 1, 1)
+
+func _on_avatar_changed(face_id: int, hair_id: int, eyes_id: int):
+	print("Avatar: Received avatar_changed signal - Face:", face_id, " Hair:", hair_id, " Eyes:", eyes_id)
+	set_avatar_from_ids(face_id, hair_id, eyes_id)
 
 func set_avatar_from_ids(face_id: int, hair_id: int, eyes_id: int):
 	"""Load textures from IDs (1-based indexing)"""

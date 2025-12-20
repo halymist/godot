@@ -182,6 +182,9 @@ func _on_change_pressed():
 		original_hair_id = preview_hair_id
 		original_eyes_id = preview_eyes_id
 		
+		# Emit signal to update all avatar displays
+		GameInfo.avatar_changed.emit(preview_face_id, preview_hair_id, preview_eyes_id)
+		
 		# Clear selected cosmetics and update button
 		selected_cosmetics.clear()
 		_update_change_button()

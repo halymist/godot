@@ -63,6 +63,7 @@ signal mushrooms_changed(new_mushrooms)
 signal stats_changed(stats)
 signal bag_slots_changed
 signal on_player_data_loaded
+signal avatar_changed(face_id, hair_id, eyes_id)
 signal current_panel_changed(new_panel)
 signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
 signal npc_clicked(npc) # Global NPC click signal
