@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://2m8wt3l383fl"]
+[gd_scene load_steps=6 format=3 uid="uid://2m8wt3l383fl"]
 
 [ext_resource type="Script" uid="uid://d13rdbsc5arag" path="res://scripts/ArenaOpponent.gd" id="1_arena_opp"]
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="2_jtndt"]
+[ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="3_avatar"]
 [ext_resource type="PackedScene" uid="uid://bmwipv6nvqjj2" path="res://Scenes/perk_tooltip.tscn" id="3_lcvgw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
@@ -19,7 +20,7 @@ shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 8
 shadow_offset = Vector2(3, 3)
 
-[node name="ArenaOpponent" type="Panel" node_paths=PackedStringArray("image_label", "name_label", "rank_label", "strength_label", "constitution_label", "dexterity_label", "luck_label", "armor_label", "perks_container", "tooltip_panel")]
+[node name="ArenaOpponent" type="Panel" node_paths=PackedStringArray("avatar_instance", "name_label", "rank_label", "strength_label", "constitution_label", "dexterity_label", "luck_label", "armor_label", "perks_container", "tooltip_panel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,7 +29,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 script = ExtResource("1_arena_opp")
 perk_mini_scene = ExtResource("2_jtndt")
-image_label = NodePath("AspectRatioContainer/ImagePanel/ImageLabel")
+avatar_instance = NodePath("AspectRatioContainer/ImagePanel/AvatarInstance")
 name_label = NodePath("EnemyName")
 rank_label = NodePath("RankLabel")
 strength_label = NodePath("StatsContainer/StrengthLabel")
@@ -90,20 +91,8 @@ grow_vertical = 2
 [node name="ImagePanel" type="Panel" parent="AspectRatioContainer"]
 layout_mode = 2
 
-[node name="ImageLabel" type="Label" parent="AspectRatioContainer/ImagePanel"]
+[node name="AvatarInstance" parent="AspectRatioContainer/ImagePanel" instance=ExtResource("3_avatar")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_font_sizes/font_size = 24
-text = "Enemy
-Image
-1"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="StatsContainer" type="GridContainer" parent="."]
 layout_mode = 1
@@ -182,12 +171,3 @@ grow_horizontal = 2
 theme_override_constants/separation = 5
 
 [node name="PerkTooltip" parent="." instance=ExtResource("3_lcvgw")]
-visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-grow_horizontal = 1
-grow_vertical = 1

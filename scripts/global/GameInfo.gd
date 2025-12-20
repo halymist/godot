@@ -726,6 +726,9 @@ class GameArenaOpponent:
 	var guild: int = 0  # Guild affiliation
 	var profession: int = 0  # Profession type
 	var honor: int = 0  # Honor points
+	var avatar_face: int = 1  # Avatar face style
+	var avatar_hair: int = 1  # Avatar hair style
+	var avatar_eyes: int = 1  # Avatar eyes style
 	
 	const ARENA_OPPONENT_MSGPACK_MAP = {
 		# Base fields
@@ -739,7 +742,10 @@ class GameArenaOpponent:
 		"rank": "rank",
 		"guild": "guild",
 		"profession": "profession",
-		"honor": "honor"
+		"honor": "honor",
+		"avatar_face": "avatar_face",
+		"avatar_hair": "avatar_hair",
+		"avatar_eyes": "avatar_eyes"
 	}
 	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):

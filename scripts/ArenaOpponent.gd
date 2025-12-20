@@ -1,6 +1,7 @@
 extends Panel
 
 @export var perk_mini_scene: PackedScene
+@export var avatar_instance: Node  # Reference to avatar.tscn instance
 @export var enemy_id: int = 1
 var enemy_name: String = "Enemy"
 var enemy_rank: int = 0
@@ -10,7 +11,6 @@ var enemy_agility: int = 10
 var enemy_luck: int = 10
 var enemy_armor: int = 0
 
-@export var image_label: Label
 @export var name_label: Label
 @export var rank_label: Label
 @export var strength_label: Label
@@ -29,7 +29,6 @@ func _ready():
 func _update_display():
 	name_label.text = enemy_name.to_upper()
 	rank_label.text = "Novice (" + str(enemy_rank) + ")"
-	image_label.text = "Enemy\nImage\n" + str(enemy_id)
 	strength_label.text = "STR: " + str(enemy_strength)
 	constitution_label.text = "STA: " + str(enemy_stamina)
 	dexterity_label.text = "AGI: " + str(enemy_agility)
@@ -54,6 +53,14 @@ func set_opponent_data(opponent):
 		var total_stats = opponent.get_total_stats()
 		enemy_rank = opponent.rank
 		set_enemy_data(enemy_id, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
+		
+		# Set avatar appearance from opponent data
+		if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
+			avatar_instance.set_avatar_from_ids(
+				opponent.avatar_face,
+				opponent.avatar_hair,
+				opponent.avatar_eyes
+			)
 
 func _update_perks_display():
 	if not perks_container or not opponent_data:
