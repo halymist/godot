@@ -729,6 +729,9 @@ class GameArenaOpponent:
 	var avatar_face: int = 1  # Avatar face style
 	var avatar_hair: int = 1  # Avatar hair style
 	var avatar_eyes: int = 1  # Avatar eyes style
+	var blessing: int = 0  # Active blessing effect ID
+	var potion: int = 0  # Equipped potion item ID
+	var elixir: int = 0  # Equipped elixir item ID
 	
 	const ARENA_OPPONENT_MSGPACK_MAP = {
 		# Base fields
@@ -745,7 +748,10 @@ class GameArenaOpponent:
 		"honor": "honor",
 		"avatar_face": "avatar_face",
 		"avatar_hair": "avatar_hair",
-		"avatar_eyes": "avatar_eyes"
+		"avatar_eyes": "avatar_eyes",
+		"blessing": "blessing",
+		"potion": "potion",
+		"elixir": "elixir"
 	}
 	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):

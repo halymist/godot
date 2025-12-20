@@ -20,14 +20,14 @@ func generate_mock_player_data(player_name: String, rank: int, guild: int, profe
 		"luck": 8 + (rank % 8),
 		"armor": 5 + (stat_bonus / 2),
 		"blessing": 50 + (rank % 100),
-		"potion": 0,
+		"potion": 400,
 		"elixir": 0,
 		"bag_slots": [
 			{"id": 1, "bag_slot_id": 0},  # Basic helmet
 			{"id": 2, "bag_slot_id": 2} if rank <= 50 else {}  # Better players have chest armor
 		],
 		"perks": [
-			{"id": 1, "active": true, "slot": 1} if rank <= 70 else {"id": 1, "active": false, "slot": 1}
+			{"id": 1, "active": true, "slot": 1} if rank <= 70 else {"id": 2, "active": true, "slot": 1}
 		],
 		"talents": [
 			{"talent_id": 1, "points": min(5, (100 - rank) / 20 + 1)},
