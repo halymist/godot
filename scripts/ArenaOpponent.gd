@@ -58,7 +58,9 @@ func set_opponent_data(opponent):
 			avatar_instance.set_avatar_from_ids(
 				opponent.avatar_face,
 				opponent.avatar_hair,
-				opponent.avatar_eyes
+				opponent.avatar_eyes,
+				opponent.avatar_nose,
+				opponent.avatar_mouth
 			)
 
 func _update_active_effects_display():

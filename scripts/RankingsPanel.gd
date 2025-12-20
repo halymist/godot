@@ -115,12 +115,14 @@ func update_player_card():
 	if player_name_label:
 		player_name_label.text = selected_player.name
 	
-	# Update avatar with player's face, hair, and eyes
+	# Update avatar with player's face, hair, eyes, nose, and mouth
 	if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
 		avatar_instance.set_avatar_from_ids(
 			selected_player.avatar_face,
 			selected_player.avatar_hair,
-			selected_player.avatar_eyes
+			selected_player.avatar_eyes,
+			selected_player.avatar_nose,
+			selected_player.avatar_mouth
 		)
 	
 	# Get total stats (base + equipment + perks)

@@ -8,6 +8,7 @@ var effects_db: EffectDatabase = null
 var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
 var npcs_db: NpcDatabase = null
+var cosmetics_db: CosmeticDatabase = null
 
 # Village names mapping
 const VILLAGE_NAMES = {
@@ -605,9 +606,11 @@ class GameCurrentPlayer:
 	var daily_quests: Array = []  # Array of quest IDs available today
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
 	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
-	var avatar_face: int = 1  # Face texture ID
-	var avatar_hair: int = 1  # Hair texture ID
-	var avatar_eyes: int = 1  # Eyes texture ID
+	var avatar_face: int = 1  # Face cosmetic ID from database
+	var avatar_hair: int = 10  # Hair cosmetic ID from database
+	var avatar_eyes: int = 20  # Eyes cosmetic ID from database
+	var avatar_nose: int = 30  # Nose cosmetic ID from database
+	var avatar_mouth: int = 40  # Mouth cosmetic ID from database
 	
 	# Gold with automatic event emission
 	var _gold: int = 0
@@ -660,7 +663,9 @@ class GameCurrentPlayer:
 		"weather": "weather",
 		"avatar_face": "avatar_face",
 		"avatar_hair": "avatar_hair",
-		"avatar_eyes": "avatar_eyes"
+		"avatar_eyes": "avatar_eyes",
+		"avatar_nose": "avatar_nose",
+		"avatar_mouth": "avatar_mouth"
 	}
 	
 	func load_from_msgpack(data: Dictionary):
@@ -726,9 +731,11 @@ class GameArenaOpponent:
 	var guild: int = 0  # Guild affiliation
 	var profession: int = 0  # Profession type
 	var honor: int = 0  # Honor points
-	var avatar_face: int = 1  # Avatar face style
-	var avatar_hair: int = 1  # Avatar hair style
-	var avatar_eyes: int = 1  # Avatar eyes style
+	var avatar_face: int = 1  # Avatar face cosmetic ID
+	var avatar_hair: int = 10  # Avatar hair cosmetic ID
+	var avatar_eyes: int = 20  # Avatar eyes cosmetic ID
+	var avatar_nose: int = 30  # Avatar nose cosmetic ID
+	var avatar_mouth: int = 40  # Avatar mouth cosmetic ID
 	var blessing: int = 0  # Active blessing effect ID
 	var potion: int = 0  # Equipped potion item ID
 	var elixir: int = 0  # Equipped elixir item ID
@@ -749,6 +756,8 @@ class GameArenaOpponent:
 		"avatar_face": "avatar_face",
 		"avatar_hair": "avatar_hair",
 		"avatar_eyes": "avatar_eyes",
+		"avatar_nose": "avatar_nose",
+		"avatar_mouth": "avatar_mouth",
 		"blessing": "blessing",
 		"potion": "potion",
 		"elixir": "elixir"
@@ -839,6 +848,12 @@ func _ready():
 		print("NPCs database loaded: ", npcs_db.npcs.size(), " NPCs")
 	else:
 		print("Warning: npcs.tres not found, NPCs will not spawn")
+	
+	if ResourceLoader.exists("res://data/cosmetics.tres"):
+		cosmetics_db = load("res://data/cosmetics.tres")
+		print("Cosmetics database loaded: ", cosmetics_db.cosmetics.size(), " cosmetics")
+	else:
+		print("Warning: cosmetics.tres not found, avatar customization will not work")
 	
 	load_player_data(Websocket.mock_character_data)
 	load_enemy_players_data(Websocket.mock_rankings)  # Load all enemy players from rankings data

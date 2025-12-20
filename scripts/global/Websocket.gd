@@ -11,9 +11,11 @@ func generate_mock_player_data(player_name: String, rank: int, guild: int, profe
 		"guild": guild,
 		"profession": profession,
 		"honor": honor,
-		"avatar_face": 1,
-		"avatar_hair": ((rank % 2) + 1),  # Alternate between hair styles
-		"avatar_eyes": 1,
+		"avatar_face": 1,  # Cosmetic ID from database
+		"avatar_hair": 10 if (rank % 2) == 0 else 11,  # Alternate between hair styles (IDs 10 and 11)
+		"avatar_eyes": 20,  # Cosmetic ID from database
+		"avatar_nose": 30,  # Cosmetic ID from database
+		"avatar_mouth": 40,  # Cosmetic ID from database
 		"strength": 10 + stat_bonus + (rank % 5),
 		"stamina": 10 + stat_bonus + (rank % 4),
 		"agility": 10 + stat_bonus + (rank % 6),
@@ -66,9 +68,11 @@ var mock_character_data = {
 	"server_timezone": "Europe/Stockholm",
 	"weather": 2,  # 1=sunny, 2=rainy
 	"daily_quests": [1, 2, 3],
-	"avatar_face": 1,
-	"avatar_hair": 1,
-	"avatar_eyes": 1,
+	"avatar_face": 1,  # Cosmetic ID from database
+	"avatar_hair": 10,  # Cosmetic ID from database
+	"avatar_eyes": 20,  # Cosmetic ID from database
+	"avatar_nose": 30,  # Cosmetic ID from database
+	"avatar_mouth": 40,  # Cosmetic ID from database
 	"quest_log": [
 		{"quest_id": 1, "slides": [1], "finished": false},
 		{"quest_id": 2, "slides": [1, 2], "finished": false}

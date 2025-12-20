@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://q4xv2fnly1a0"]
+[gd_scene load_steps=7 format=3 uid="uid://q4xv2fnly1a0"]
 
 [ext_resource type="Script" uid="uid://okly23jm43ke" path="res://scripts/Avatar.gd" id="1_avatar"]
 [ext_resource type="Texture2D" uid="uid://roqhm3xxklug" path="res://assets/images/ui/avatar/face/face.png" id="2_angbi"]
 [ext_resource type="Texture2D" uid="uid://c1x08lo7w3san" path="res://assets/images/ui/avatar/eyes/eyes1.png" id="3_15rpn"]
-[ext_resource type="Texture2D" uid="uid://c5435lqs2025j" path="res://assets/images/ui/avatar/hair/hair2.png" id="4_15rpn"]
 [ext_resource type="Texture2D" uid="uid://dvfbtclkhdp0f" path="res://assets/images/ui/avatar/hair/hair1.png" id="4_v4mrq"]
 [ext_resource type="Texture2D" uid="uid://jn54cq4lxnvd" path="res://assets/images/ui/avatar/nose/nose1.png" id="6_w3a18"]
 [ext_resource type="Texture2D" uid="uid://bttcj28xn4yan" path="res://assets/images/ui/avatar/mouth/mouth1.png" id="7_wuf14"]
@@ -15,9 +14,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_avatar")
-face_textures = Array[Texture2D]([ExtResource("2_angbi")])
-hair_textures = Array[Texture2D]([ExtResource("4_v4mrq"), ExtResource("4_15rpn")])
-eyes_textures = Array[Texture2D]([ExtResource("3_15rpn")])
 
 [node name="AvatarControl" type="Control" parent="."]
 layout_mode = 2

@@ -1,12 +1,10 @@
 extends AspectRatioContainer
 
-@export var face_textures: Array[Texture2D] = []
-@export var hair_textures: Array[Texture2D] = []
-@export var eyes_textures: Array[Texture2D] = []
-
 @onready var face_rect: TextureRect = $AvatarControl/Face
 @onready var hair_rect: TextureRect = $AvatarControl/Hair
 @onready var eyes_rect: TextureRect = $AvatarControl/Eyes
+@onready var nose_rect: TextureRect = $AvatarControl/Nose
+@onready var mouth_rect: TextureRect = $AvatarControl/Mouth
 
 func _ready():
 	print("=== AVATAR _ready() CALLED ===")
@@ -17,42 +15,67 @@ func _ready():
 	
 	# Load from GameInfo if player data exists
 	if GameInfo.current_player:
-		print("Avatar: Loading from GameInfo with hair ID: ", GameInfo.current_player.avatar_hair)
+		print("Avatar: Loading from GameInfo")
 		set_avatar_from_ids(
 			GameInfo.current_player.avatar_face,
 			GameInfo.current_player.avatar_hair,
-			GameInfo.current_player.avatar_eyes
+			GameInfo.current_player.avatar_eyes,
+			GameInfo.current_player.avatar_nose,
+			GameInfo.current_player.avatar_mouth
 		)
 	else:
-		# Fallback to default
+		# Fallback to default cosmetic IDs
 		print("Avatar: No player data, using defaults")
-		set_avatar_from_ids(1, 1, 1)
+		set_avatar_from_ids(1, 10, 20, 30, 40)
 
-func _on_avatar_changed(face_id: int, hair_id: int, eyes_id: int):
-	print("Avatar: Received avatar_changed signal - Face:", face_id, " Hair:", hair_id, " Eyes:", eyes_id)
-	set_avatar_from_ids(face_id, hair_id, eyes_id)
+func _on_avatar_changed(face_id: int, hair_id: int, eyes_id: int, nose_id: int = 30, mouth_id: int = 40):
+	print("Avatar: Received avatar_changed signal")
+	set_avatar_from_ids(face_id, hair_id, eyes_id, nose_id, mouth_id)
 
-func set_avatar_from_ids(face_id: int, hair_id: int, eyes_id: int):
-	"""Load textures from IDs (1-based indexing)"""
-	print("Avatar: Loading IDs - Face: ", face_id, " Hair: ", hair_id, " Eyes: ", eyes_id)
-	var face_index = face_id - 1
-	var hair_index = hair_id - 1
-	var eyes_index = eyes_id - 1
+func set_avatar_from_ids(face_id: int, hair_id: int, eyes_id: int, nose_id: int = 30, mouth_id: int = 40):
+	"""Load textures from cosmetics database using IDs"""
+	print("Avatar: Loading cosmetic IDs - Face: ", face_id, " Hair: ", hair_id, " Eyes: ", eyes_id, " Nose: ", nose_id, " Mouth: ", mouth_id)
 	
-	if face_index >= 0 and face_index < face_textures.size() and face_textures[face_index]:
-		face_rect.texture = face_textures[face_index]
-		print("Avatar: Loaded face texture at index ", face_index)
-	else:
-		print("Avatar: Failed to load face - index: ", face_index, " array size: ", face_textures.size())
+	if not GameInfo.cosmetics_db:
+		print("Avatar ERROR: Cosmetics database not loaded!")
+		return
 	
-	if hair_index >= 0 and hair_index < hair_textures.size() and hair_textures[hair_index]:
-		hair_rect.texture = hair_textures[hair_index]
-		print("Avatar: Loaded hair texture at index ", hair_index)
+	# Load face
+	var face_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(face_id)
+	if face_cosmetic and face_cosmetic.texture:
+		face_rect.texture = face_cosmetic.texture
+		print("Avatar: Loaded face cosmetic ID ", face_id)
 	else:
-		print("Avatar: Failed to load hair - index: ", hair_index, " array size: ", hair_textures.size())
+		print("Avatar: Failed to load face cosmetic ID ", face_id)
 	
-	if eyes_index >= 0 and eyes_index < eyes_textures.size() and eyes_textures[eyes_index]:
-		eyes_rect.texture = eyes_textures[eyes_index]
-		print("Avatar: Loaded eyes texture at index ", eyes_index)
+	# Load hair
+	var hair_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(hair_id)
+	if hair_cosmetic and hair_cosmetic.texture:
+		hair_rect.texture = hair_cosmetic.texture
+		print("Avatar: Loaded hair cosmetic ID ", hair_id)
 	else:
-		print("Avatar: Failed to load eyes - index: ", eyes_index, " array size: ", eyes_textures.size())
+		print("Avatar: Failed to load hair cosmetic ID ", hair_id)
+	
+	# Load eyes
+	var eyes_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(eyes_id)
+	if eyes_cosmetic and eyes_cosmetic.texture:
+		eyes_rect.texture = eyes_cosmetic.texture
+		print("Avatar: Loaded eyes cosmetic ID ", eyes_id)
+	else:
+		print("Avatar: Failed to load eyes cosmetic ID ", eyes_id)
+	
+	# Load nose
+	var nose_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(nose_id)
+	if nose_cosmetic and nose_cosmetic.texture:
+		nose_rect.texture = nose_cosmetic.texture
+		print("Avatar: Loaded nose cosmetic ID ", nose_id)
+	else:
+		print("Avatar: Failed to load nose cosmetic ID ", nose_id)
+	
+	# Load mouth
+	var mouth_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(mouth_id)
+	if mouth_cosmetic and mouth_cosmetic.texture:
+		mouth_rect.texture = mouth_cosmetic.texture
+		print("Avatar: Loaded mouth cosmetic ID ", mouth_id)
+	else:
+		print("Avatar: Failed to load mouth cosmetic ID ", mouth_id)

@@ -20,15 +20,17 @@ var selected_cosmetics: Dictionary = {}  # Track selected cosmetics by category
 
 # Temporary preview selections (not yet applied)
 var preview_face_id: int = 1
-var preview_hair_id: int = 1
-var preview_eyes_id: int = 1
-var preview_nose_id: int = 1
-var preview_mouth_id: int = 1
+var preview_hair_id: int = 10
+var preview_eyes_id: int = 20
+var preview_nose_id: int = 30
+var preview_mouth_id: int = 40
 
 # Original player values (to calculate cost)
 var original_face_id: int = 1
-var original_hair_id: int = 1
-var original_eyes_id: int = 1
+var original_hair_id: int = 10
+var original_eyes_id: int = 20
+var original_nose_id: int = 30
+var original_mouth_id: int = 40
 
 func _ready():
 	# Load cosmetics database
@@ -48,6 +50,16 @@ func _ready():
 	# Initialize with current player avatar
 	if GameInfo.current_player:
 		preview_face_id = GameInfo.current_player.avatar_face
+		preview_hair_id = GameInfo.current_player.avatar_hair
+		preview_eyes_id = GameInfo.current_player.avatar_eyes
+		preview_nose_id = GameInfo.current_player.avatar_nose
+		preview_mouth_id = GameInfo.current_player.avatar_mouth
+		
+		original_face_id = GameInfo.current_player.avatar_face
+		original_hair_id = GameInfo.current_player.avatar_hair
+		original_eyes_id = GameInfo.current_player.avatar_eyes
+		original_nose_id = GameInfo.current_player.avatar_nose
+		original_mouth_id = GameInfo.current_player.avatar_mouth
 		preview_hair_id = GameInfo.current_player.avatar_hair
 		preview_eyes_id = GameInfo.current_player.avatar_eyes
 		original_face_id = preview_face_id
@@ -99,9 +111,9 @@ func _on_cosmetic_selected(cosmetic: CosmeticResource):
 		"Face":
 			preview_face_id = cosmetic.id
 		"Hair":
-			preview_hair_id = cosmetic.id - 9  # Convert cosmetic ID to hair texture index
+			preview_hair_id = cosmetic.id
 		"Eyes":
-			preview_eyes_id = cosmetic.id - 19  # Convert cosmetic ID to eyes texture index
+			preview_eyes_id = cosmetic.id
 		"Nose":
 			preview_nose_id = cosmetic.id
 		"Mouth":
@@ -109,9 +121,7 @@ func _on_cosmetic_selected(cosmetic: CosmeticResource):
 	
 	# Update avatar preview
 	if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
-		avatar_instance.set_avatar_from_ids(preview_face_id, preview_hair_id, preview_eyes_id)
-	
-	# Update change button with new cost
+		avatar_instance.set_avatar_from_ids(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
 	_update_change_button()
 
 func _calculate_total_cost() -> int:
@@ -119,8 +129,8 @@ func _calculate_total_cost() -> int:
 	
 	print("=== Calculating Cost ===")
 	print("Selected cosmetics: ", selected_cosmetics)
-	print("Original IDs - Face:", original_face_id, " Hair:", original_hair_id, " Eyes:", original_eyes_id)
-	print("Preview IDs - Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id)
+	print("Original IDs - Face:", original_face_id, " Hair:", original_hair_id, " Eyes:", original_eyes_id, " Nose:", original_nose_id, " Mouth:", original_mouth_id)
+	print("Preview IDs - Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id, " Nose:", preview_nose_id, " Mouth:", preview_mouth_id)
 	
 	# Only count cost for changed cosmetics
 	for category in selected_cosmetics:
@@ -134,6 +144,10 @@ func _calculate_total_cost() -> int:
 				is_changed = (preview_hair_id != original_hair_id)
 			"Eyes":
 				is_changed = (preview_eyes_id != original_eyes_id)
+			"Nose":
+				is_changed = (preview_nose_id != original_nose_id)
+			"Mouth":
+				is_changed = (preview_mouth_id != original_mouth_id)
 		
 		print("Category:", category, " Changed:", is_changed, " Cost:", cosmetic.cost)
 		
@@ -147,7 +161,9 @@ func _has_changes() -> bool:
 	"""Check if any avatar part has been changed from original"""
 	return (preview_face_id != original_face_id or 
 			preview_hair_id != original_hair_id or 
-			preview_eyes_id != original_eyes_id)
+			preview_eyes_id != original_eyes_id or
+			preview_nose_id != original_nose_id or
+			preview_mouth_id != original_mouth_id)
 
 func _update_change_button():
 	var total_cost = _calculate_total_cost()
@@ -183,14 +199,18 @@ func _on_change_pressed():
 		GameInfo.current_player.avatar_face = preview_face_id
 		GameInfo.current_player.avatar_hair = preview_hair_id
 		GameInfo.current_player.avatar_eyes = preview_eyes_id
+		GameInfo.current_player.avatar_nose = preview_nose_id
+		GameInfo.current_player.avatar_mouth = preview_mouth_id
 		
 		# Update original values
 		original_face_id = preview_face_id
 		original_hair_id = preview_hair_id
 		original_eyes_id = preview_eyes_id
+		original_nose_id = preview_nose_id
+		original_mouth_id = preview_mouth_id
 		
 		# Emit signal to update all avatar displays
-		GameInfo.avatar_changed.emit(preview_face_id, preview_hair_id, preview_eyes_id)
+		GameInfo.avatar_changed.emit(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
 		
 		# Clear selected cosmetics and update button
 		selected_cosmetics.clear()
@@ -200,4 +220,4 @@ func _on_change_pressed():
 		visible = false
 		
 		# TODO: Send to server to save
-		print("Avatar updated! Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id)
+		print("Avatar updated! Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id, " Nose:", preview_nose_id, " Mouth:", preview_mouth_id)
