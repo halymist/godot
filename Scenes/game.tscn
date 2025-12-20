@@ -2466,8 +2466,7 @@ script = ExtResource("6_consumable")
 [node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/CharacterWrapper/Character/Equip/Character" instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.25
-anchor_bottom = 0.9
+anchor_top = 0.15
 
 [node name="ChangeAvatar" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/CharacterWrapper/Character/Equip/Character"]
 layout_mode = 1
@@ -5448,16 +5447,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="Character" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
-custom_minimum_size = Vector2(80, 0)
+[node name="Character" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
+custom_minimum_size = Vector2(100, 80)
 layout_mode = 2
-
-[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character" instance=ExtResource("22_avatar")]
-layout_mode = 2
+texture = ExtResource("54_b1mpw")
+expand_mode = 1
 
 [node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+
+[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character" instance=ExtResource("22_avatar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
 
 [node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 layout_mode = 2

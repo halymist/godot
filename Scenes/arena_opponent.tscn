@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://2m8wt3l383fl"]
+[gd_scene load_steps=6 format=3 uid="uid://2m8wt3l383fl"]
 
 [ext_resource type="Script" uid="uid://d13rdbsc5arag" path="res://scripts/ArenaOpponent.gd" id="1_arena_opp"]
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="2_jtndt"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="3_avatar"]
+[ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="3_b5iuq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
 bg_color = Color(0.15, 0.1, 0.2, 0.9)
@@ -86,27 +87,32 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ImagePanel" type="Panel" parent="AspectRatioContainer"]
+[node name="ImagePanel" type="TextureRect" parent="AspectRatioContainer"]
 layout_mode = 2
+texture = ExtResource("3_b5iuq")
+expand_mode = 1
 
 [node name="AvatarInstance" parent="AspectRatioContainer/ImagePanel" instance=ExtResource("3_avatar")]
 layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
 
 [node name="StatsContainer" type="GridContainer" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -77.5
-offset_top = -88.0
-offset_right = 77.5
+anchors_preset = -1
+anchor_left = 0.093
+anchor_top = 0.662
+anchor_right = 0.949
+anchor_bottom = 0.803
+offset_left = 0.149998
+offset_top = 0.199951
+offset_right = -0.0500183
+offset_bottom = 0.299988
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 5
-columns = 2
+columns = 3
 
 [node name="StrengthLabel" type="Label" parent="StatsContainer"]
 layout_mode = 2
@@ -161,9 +167,13 @@ horizontal_alignment = 1
 [node name="PerksContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.2
-anchor_top = 0.6
-anchor_right = 0.8
-anchor_bottom = 0.7
+anchor_left = 0.084
+anchor_top = 0.824
+anchor_right = 0.931
+anchor_bottom = 0.979
+offset_left = 0.199997
+offset_top = 0.399963
+offset_right = 0.0499878
+offset_bottom = -0.100037
 grow_horizontal = 2
 theme_override_constants/separation = 5
