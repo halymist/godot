@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://q4xv2fnly1a0"]
+[gd_scene load_steps=8 format=3 uid="uid://q4xv2fnly1a0"]
 
 [ext_resource type="Script" uid="uid://okly23jm43ke" path="res://scripts/Avatar.gd" id="1_avatar"]
 [ext_resource type="Texture2D" uid="uid://roqhm3xxklug" path="res://assets/images/ui/avatar/face/face.png" id="2_angbi"]
 [ext_resource type="Texture2D" uid="uid://c1x08lo7w3san" path="res://assets/images/ui/avatar/eyes/eyes1.png" id="3_15rpn"]
 [ext_resource type="Texture2D" uid="uid://c5435lqs2025j" path="res://assets/images/ui/avatar/hair/hair2.png" id="4_15rpn"]
 [ext_resource type="Texture2D" uid="uid://dvfbtclkhdp0f" path="res://assets/images/ui/avatar/hair/hair1.png" id="4_v4mrq"]
+[ext_resource type="Texture2D" uid="uid://jn54cq4lxnvd" path="res://assets/images/ui/avatar/nose/nose1.png" id="6_w3a18"]
+[ext_resource type="Texture2D" uid="uid://bttcj28xn4yan" path="res://assets/images/ui/avatar/mouth/mouth1.png" id="7_wuf14"]
 
 [node name="Avatar" type="AspectRatioContainer"]
 anchors_preset = 15
@@ -58,5 +60,41 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("4_v4mrq")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Nose" type="TextureRect" parent="AvatarControl"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.238
+anchor_top = 0.371
+anchor_right = 0.758
+anchor_bottom = 0.633
+offset_left = -0.100006
+offset_top = 0.0499878
+offset_right = -0.100006
+offset_bottom = 0.149994
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_w3a18")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Mouth" type="TextureRect" parent="AvatarControl"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.087
+anchor_top = 0.429
+anchor_right = 0.911
+anchor_bottom = 0.88
+offset_left = -0.150002
+offset_top = -0.0500031
+offset_right = 0.0499573
+offset_bottom = -3.05176e-05
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_wuf14")
 expand_mode = 1
 stretch_mode = 5
