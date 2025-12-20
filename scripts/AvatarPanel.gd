@@ -143,8 +143,15 @@ func _calculate_total_cost() -> int:
 	print("Total cost:", total_cost)
 	return total_cost
 
+func _has_changes() -> bool:
+	"""Check if any avatar part has been changed from original"""
+	return (preview_face_id != original_face_id or 
+			preview_hair_id != original_hair_id or 
+			preview_eyes_id != original_eyes_id)
+
 func _update_change_button():
 	var total_cost = _calculate_total_cost()
+	var has_changes = _has_changes()
 	
 	if total_cost > 0:
 		change_label.text = "CHANGE (%d " % total_cost
@@ -155,11 +162,11 @@ func _update_change_button():
 		change_icon.visible = false
 		change_paren.visible = false
 	
-	# Enable/disable button based on affordability
+	# Enable/disable button based on affordability and if there are changes
 	if GameInfo.current_player:
-		change_button.disabled = (total_cost > GameInfo.current_player.mushrooms)
+		change_button.disabled = not has_changes or (total_cost > GameInfo.current_player.mushrooms)
 	else:
-		change_button.disabled = false
+		change_button.disabled = not has_changes
 
 func _on_change_pressed():
 	var total_cost = _calculate_total_cost()

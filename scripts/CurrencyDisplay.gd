@@ -16,6 +16,8 @@ func _ready():
 	# Connect to GameInfo signals
 	if GameInfo:
 		GameInfo.bag_slots_changed.connect(update_display)
+		GameInfo.gold_changed.connect(_on_gold_changed)
+		GameInfo.mushrooms_changed.connect(_on_mushrooms_changed)
 	
 	# Hide info panel initially
 	if location_info_panel:
@@ -33,6 +35,14 @@ func _ready():
 	
 	# Initial update
 	update_display()
+
+func _on_gold_changed(new_gold: int):
+	if gold_label:
+		gold_label.text = str(new_gold)
+
+func _on_mushrooms_changed(new_mushrooms: int):
+	if currency_label:
+		currency_label.text = str(new_mushrooms)
 
 func _on_location_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:

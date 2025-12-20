@@ -62,9 +62,9 @@ func return_ingredients_to_bag():
 	
 	# Clear the visual slots
 	var slot_containers = [
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot1,
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot2,
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot3
+		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot1,
+		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot2,
+		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot3
 	]
 	
 	for container in slot_containers:
