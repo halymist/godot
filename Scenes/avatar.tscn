@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://q4xv2fnly1a0"]
 
 [ext_resource type="Script" uid="uid://okly23jm43ke" path="res://scripts/Avatar.gd" id="1_avatar"]
-[ext_resource type="Texture2D" uid="uid://duerxi8goqwwd" path="res://assets/images/ui/avatar/face/face_1.png" id="1_svpqn"]
-[ext_resource type="Texture2D" uid="uid://dayfdrk6q86cw" path="res://assets/images/ui/avatar/eyes/eyes_1.png" id="2_angbi"]
-[ext_resource type="Texture2D" uid="uid://b0ookm27t8ffr" path="res://assets/images/ui/avatar/hair/hair_1.png" id="2_ofb85"]
-[ext_resource type="Texture2D" uid="uid://t20evwmd1wmj" path="res://assets/images/ui/avatar/hair/hair_2.png" id="4_15rpn"]
+[ext_resource type="Texture2D" uid="uid://roqhm3xxklug" path="res://assets/images/ui/avatar/face/face.png" id="2_angbi"]
+[ext_resource type="Texture2D" uid="uid://c1x08lo7w3san" path="res://assets/images/ui/avatar/eyes/eyes1.png" id="3_15rpn"]
+[ext_resource type="Texture2D" uid="uid://c5435lqs2025j" path="res://assets/images/ui/avatar/hair/hair2.png" id="4_15rpn"]
+[ext_resource type="Texture2D" uid="uid://dvfbtclkhdp0f" path="res://assets/images/ui/avatar/hair/hair1.png" id="4_v4mrq"]
 
 [node name="Avatar" type="AspectRatioContainer"]
 anchors_preset = 15
@@ -13,9 +13,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_avatar")
-face_textures = Array[Texture2D]([ExtResource("1_svpqn")])
-hair_textures = Array[Texture2D]([ExtResource("2_ofb85"), ExtResource("4_15rpn")])
-eyes_textures = Array[Texture2D]([ExtResource("2_angbi")])
+face_textures = Array[Texture2D]([ExtResource("2_angbi")])
+hair_textures = Array[Texture2D]([ExtResource("4_v4mrq"), ExtResource("4_15rpn")])
+eyes_textures = Array[Texture2D]([ExtResource("3_15rpn")])
 
 [node name="AvatarControl" type="Control" parent="."]
 layout_mode = 2
@@ -26,10 +26,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-texture = ExtResource("1_svpqn")
+mouse_filter = 2
+texture = ExtResource("2_angbi")
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="Eyes" type="TextureRect" parent="AvatarControl"]
 layout_mode = 1
@@ -39,10 +39,10 @@ anchor_right = 0.809
 anchor_bottom = 0.802
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_angbi")
+mouse_filter = 2
+texture = ExtResource("3_15rpn")
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="Hair" type="TextureRect" parent="AvatarControl"]
 layout_mode = 1
@@ -56,7 +56,7 @@ offset_top = -0.0499954
 offset_bottom = 0.0499878
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_ofb85")
+mouse_filter = 2
+texture = ExtResource("4_v4mrq")
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2

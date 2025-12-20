@@ -2,17 +2,17 @@
 
 [ext_resource type="Script" uid="uid://dhultdeakr0nm" path="res://scripts/resources/CosmeticResource.gd" id="1_cosmetic"]
 [ext_resource type="Script" uid="uid://bokphu6bhophw" path="res://scripts/resources/CosmeticDatabase.gd" id="2_cosmeticdb"]
-[ext_resource type="Texture2D" uid="uid://duerxi8goqwwd" path="res://assets/images/ui/avatar/face/face_1.png" id="3_face1"]
-[ext_resource type="Texture2D" uid="uid://b0ookm27t8ffr" path="res://assets/images/ui/avatar/hair/hair_1.png" id="4_hair1"]
-[ext_resource type="Texture2D" uid="uid://t20evwmd1wmj" path="res://assets/images/ui/avatar/hair/hair_2.png" id="5_hair2"]
-[ext_resource type="Texture2D" uid="uid://dayfdrk6q86cw" path="res://assets/images/ui/avatar/eyes/eyes_1.png" id="6_eyes1"]
+[ext_resource type="Texture2D" uid="uid://roqhm3xxklug" path="res://assets/images/ui/avatar/face/face.png" id="2_rv8w6"]
+[ext_resource type="Texture2D" uid="uid://dvfbtclkhdp0f" path="res://assets/images/ui/avatar/hair/hair1.png" id="3_gw4r7"]
+[ext_resource type="Texture2D" uid="uid://c5435lqs2025j" path="res://assets/images/ui/avatar/hair/hair2.png" id="4_7clkc"]
+[ext_resource type="Texture2D" uid="uid://c1x08lo7w3san" path="res://assets/images/ui/avatar/eyes/eyes1.png" id="5_yjofd"]
 
 [sub_resource type="Resource" id="cosmetic_face_1"]
 script = ExtResource("1_cosmetic")
 id = 1
 cosmetic_name = "Default Face"
 category = "Face"
-texture = ExtResource("3_face1")
+texture = ExtResource("2_rv8w6")
 cost = 0
 
 [sub_resource type="Resource" id="cosmetic_hair_1"]
@@ -20,7 +20,7 @@ script = ExtResource("1_cosmetic")
 id = 10
 cosmetic_name = "Hair Style 1"
 category = "Hair"
-texture = ExtResource("4_hair1")
+texture = ExtResource("3_gw4r7")
 cost = 0
 
 [sub_resource type="Resource" id="cosmetic_hair_2"]
@@ -28,7 +28,7 @@ script = ExtResource("1_cosmetic")
 id = 11
 cosmetic_name = "Hair Style 2"
 category = "Hair"
-texture = ExtResource("5_hair2")
+texture = ExtResource("4_7clkc")
 cost = 100
 
 [sub_resource type="Resource" id="cosmetic_eyes_1"]
@@ -36,7 +36,7 @@ script = ExtResource("1_cosmetic")
 id = 20
 cosmetic_name = "Default Eyes"
 category = "Eyes"
-texture = ExtResource("6_eyes1")
+texture = ExtResource("5_yjofd")
 cost = 0
 
 [resource]
