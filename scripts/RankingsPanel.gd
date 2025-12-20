@@ -11,8 +11,10 @@ extends Panel
 @onready var player_name_label: Label
 @onready var fight_button: Button
 @onready var character_button: Button
+@onready var avatar_instance: Node
 
 var selected_row = null
+var selected_player: GameInfo.GameArenaOpponent = null
 var stat_nodes = []
 
 func _ready():
@@ -26,9 +28,10 @@ func _ready():
 		var player_info = card_content.get_node("PlayerInfo")
 		player_name_label = player_info.get_node("PlayerName")
 		
-		# Get character button
+		# Get character button and avatar instance
 		var character_container = card_content.get_node("Character")
 		if character_container:
+			avatar_instance = character_container.get_node("Avatar")
 			character_button = character_container.get_node("Button")
 			if character_button:
 				character_button.pressed.connect(_on_character_button_pressed)
@@ -84,6 +87,13 @@ func create_ranking_row(player: GameInfo.GameArenaOpponent):
 func _on_row_clicked(rank: int, player_name: String, guild: int, profession: int, honor: int):
 	print("Clicked on player: ", player_name, " Rank: ", rank, " Guild: ", guild, " Profession: ", profession, " Honor: ", honor)
 	
+	# Find the full player object from enemy_players
+	selected_player = null
+	for player in GameInfo.enemy_players:
+		if player.name == player_name:
+			selected_player = player
+			break
+	
 	# Deselect previous row
 	if selected_row and is_instance_valid(selected_row):
 		selected_row.set_selected(false)
@@ -96,19 +106,33 @@ func _on_row_clicked(rank: int, player_name: String, guild: int, profession: int
 				selected_row = child
 				break
 	
-	update_player_card(rank, player_name, guild, profession, honor)
+	if selected_player:
+		update_player_card()
 
-func update_player_card(rank: int, player_name: String, guild: int, profession: int, honor: int):
-	if player_name_label:
-		player_name_label.text = player_name
+func update_player_card():
+	if not selected_player:
+		return
 	
-	# TODO: Update with actual player stats when we load full player data
-	# For now, set placeholder values based on rank
-	for i in range(stat_nodes.size()):
-		if i < stat_nodes.size():
-			var value_label = stat_nodes[i].get_node("Value")
-			if value_label:
-				value_label.text = str(100 + i * 10)  # Placeholder values
+	if player_name_label:
+		player_name_label.text = selected_player.name
+	
+	# Update avatar with player's face, hair, and eyes
+	if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
+		avatar_instance.set_avatar_from_ids(
+			selected_player.avatar_face,
+			selected_player.avatar_hair,
+			selected_player.avatar_eyes
+		)
+	
+	# Get total stats (base + equipment + perks)
+	var total_stats = selected_player.get_total_stats()
+	
+	# Update stat values with actual player stats
+	var stats = [total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor]
+	for i in range(min(stat_nodes.size(), stats.size())):
+		var value_label = stat_nodes[i].get_node("Value")
+		if value_label:
+			value_label.text = str(stats[i])
 
 func _on_fight_pressed():
 	print("Fight button pressed!")

@@ -5470,86 +5470,86 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 5
 columns = 3
 
-[node name="Stat1" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+[node name="Strength" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat1"]
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("44_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat1"]
+[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
 vertical_alignment = 1
 
-[node name="Stat2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+[node name="Stamina" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat2"]
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("45_7sqp1")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat2"]
+[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
 vertical_alignment = 1
 
-[node name="Stat3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+[node name="Agility" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat3"]
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("46_gsm33")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat3"]
+[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
 vertical_alignment = 1
 
-[node name="Stat4" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+[node name="Luck" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat4"]
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("47_lrctp")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat4"]
+[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
 vertical_alignment = 1
 
-[node name="Stat5" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+[node name="Armor" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat5"]
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("48_e6ols")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stat5"]
+[node name="Value" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "100"
