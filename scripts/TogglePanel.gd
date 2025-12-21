@@ -63,8 +63,8 @@ func _ready():
 	
 	# Connect button signals using bind for all
 	home_button.pressed.connect(handle_home_button)
-	arena_button.pressed.connect(show_panel.bind(arena_panel))
-	character_button.pressed.connect(show_panel.bind(character_panel))
+	arena_button.pressed.connect(handle_arena_button)
+	character_button.pressed.connect(handle_character_button)
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
 	settings_button.pressed.connect(show_overlay.bind(settings_panel))
@@ -84,7 +84,7 @@ func _ready():
 	if wide_home_button:
 		wide_home_button.pressed.connect(handle_home_button)
 	if wide_arena_button:
-		wide_arena_button.pressed.connect(show_panel.bind(arena_panel))
+		wide_arena_button.pressed.connect(handle_arena_button)
 	if wide_settings_button:
 		wide_settings_button.pressed.connect(show_overlay.bind(settings_panel))
 	if wide_chat_button:
@@ -92,7 +92,7 @@ func _ready():
 	if wide_map_button:
 		wide_map_button.pressed.connect(handle_map_button)
 	if wide_character_button:
-		wide_character_button.pressed.connect(show_panel.bind(character_panel))
+		wide_character_button.pressed.connect(handle_character_button)
 	if wide_rankings_button:
 		wide_rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
 	if wide_payment_button:
@@ -283,6 +283,11 @@ func handle_map_button():
 	var destination = GameInfo.current_player.traveling_destination
 	print("Traveling: ", traveling, " Destination: ", destination)
 	
+	# Check if already on map panel - toggle off (go home)
+	if GameInfo.get_current_panel() == map_panel:
+		show_panel(home_panel)
+		return
+	
 	# Check quest states
 	if traveling > 0 and destination != null:
 		# Both values: traveling state - show map
@@ -294,6 +299,20 @@ func handle_map_button():
 	
 	# Normal state (both null) - standard map behavior
 	show_panel(map_panel)
+
+func handle_arena_button():
+	"""Toggle arena panel - show if not active, go home if already active"""
+	if GameInfo.get_current_panel() == arena_panel:
+		show_panel(home_panel)
+	else:
+		show_panel(arena_panel)
+
+func handle_character_button():
+	"""Toggle character panel - show if not active, go home if already active"""
+	if GameInfo.get_current_panel() == character_panel:
+		show_panel(home_panel)
+	else:
+		show_panel(character_panel)
 	
 func show_panel_overlay(panel_to_toggle: Control):
 	"""Legacy function - now uses the unified show_overlay function"""
