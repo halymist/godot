@@ -6164,17 +6164,17 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -445.0
-offset_top = -667.0
-offset_right = 445.0
+offset_left = -800.0
+offset_top = -900.0
+offset_right = 800.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("2_nb51f")
 
 [node name="Sidebar" type="Panel" parent="Wide" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
 layout_mode = 0
-offset_right = 223.0
-offset_bottom = 667.0
+offset_right = 400.0
+offset_bottom = 900.0
 script = ExtResource("4_2cns2")
 gold_label = NodePath("CurrencySection/SilverContainer/SilverValue")
 currency_label = NodePath("CurrencySection/MushroomContainer/MushroomValue")
@@ -6381,6 +6381,6 @@ expand_icon = true
 
 [node name="GameSceneParent" type="Control" parent="Wide"]
 anchors_preset = 0
-offset_left = 223.0
-offset_right = 890.0
-offset_bottom = 667.0
+offset_left = 400.0
+offset_right = 1600.0
+offset_bottom = 900.0

@@ -22,7 +22,7 @@ const ASPECT_16_9 = 0.5625  # Threshold to switch to wide mode
 
 # Base resolutions for each mode
 const PORTRAIT_BASE = Vector2i(405, 900)  # 21:9 aspect ratio base
-const WIDE_BASE = Vector2i(889, 667)  # 4:3 aspect
+const WIDE_BASE = Vector2i(1600, 900)  # GameScene 4:3 (1200x900) + Sidebar 1/3 width (400)
 
 # Store current layout as direct reference to the active UI root
 var current_layout: Control = null
