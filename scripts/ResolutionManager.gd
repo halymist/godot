@@ -27,6 +27,15 @@ var current_scale_factor = 1.0
 @export var rankings_panel: Control
 @export var enemy_panel: Control
 
+@export var vendor_panel: Control
+@export var blacksmith_panel: Control
+@export var trainer_panel: Control
+@export var church_panel: Control
+@export var alchemist_panel: Control
+@export var enchanter_panel: Control
+
+
+
 # Aspect ratio thresholds for portrait phone mode
 # 21:9 portrait = 9/21 = 0.4286 (base, tallest)
 # 16:9 portrait = 9/16 = 0.5625 (widest portrait before switching to wide)
@@ -75,6 +84,20 @@ func _build_wide_layout_map():
 		wide_panel_layout[avatar_panel] = "right"
 	if enemy_panel:
 		wide_panel_layout[enemy_panel] = "right"
+	
+	# Utility panels on right side
+	if vendor_panel:
+		wide_panel_layout[vendor_panel] = "right"
+	if blacksmith_panel:
+		wide_panel_layout[blacksmith_panel] = "right"
+	if trainer_panel:
+		wide_panel_layout[trainer_panel] = "right"
+	if church_panel:
+		wide_panel_layout[church_panel] = "right"
+	if alchemist_panel:
+		wide_panel_layout[alchemist_panel] = "right"
+	if enchanter_panel:
+		wide_panel_layout[enchanter_panel] = "right"
 	
 	print("Wide layout map built: ", wide_panel_layout.size(), " panels mapped")
 
@@ -155,6 +178,23 @@ func switch_layout(new_layout: Control, base_resolution: Vector2i, old_layout: C
 	if switching_to_wide and not switching_from_wide:
 		print("Reparenting panels to wide layout")
 		reparent_to_wide()
+		
+		# Auto-show companion panels when switching to wide
+		var current_panel = GameInfo.get_current_panel()
+		var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel]
+		
+		# If a utility panel is active as current panel, show character panel on left
+		if current_panel and current_panel in utility_panels:
+			print("Wide mode: Utility panel active, showing character panel on left")
+			if character_panel:
+				character_panel.visible = true
+		
+		# If character panel is current, show talents on right
+		elif current_panel == character_panel:
+			print("Wide mode: Character panel active, showing talents on right")
+			if talents_panel:
+				talents_panel.visible = true
+	
 	elif switching_from_wide and not switching_to_wide:
 		print("Reparenting panels to portrait layout")
 		reparent_to_portrait()
@@ -187,12 +227,22 @@ func reparent_to_wide():
 	wide_right.visible = false
 	wide_full.visible = false
 	
-	# Reparent all panels
+	# Collect all panels to reparent (from portrait container + utility panels)
+	var panels_to_process: Array[Control] = []
+	
+	# Add panels from portrait container
 	for child in portrait_container.get_children():
-		if not (child is Control):
-			continue
-		
-		var panel = child as Control
+		if child is Control:
+			panels_to_process.append(child)
+	
+	# Add utility panels explicitly (they may be elsewhere in the tree)
+	var utility_panels = [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel]
+	for utility in utility_panels:
+		if utility and utility not in panels_to_process:
+			panels_to_process.append(utility)
+	
+	# Reparent all panels
+	for panel in panels_to_process:
 		var target_side = wide_panel_layout.get(panel, null)
 		var was_visible = panel.visible
 		
@@ -204,6 +254,11 @@ func reparent_to_wide():
 		elif target_side == "right":
 			_move_to_container(panel, wide_right)
 			wide_right.visible = true
+			# Set high z-index for utility panels to ensure they're on top
+			if panel in utility_panels:
+				panel.z_index = 20
+				panel.mouse_filter = Control.MOUSE_FILTER_STOP
+				print("    Set utility panel z_index=20 and mouse_filter=STOP")
 		else:
 			_move_to_container(panel, wide_full)
 			wide_full.visible = true

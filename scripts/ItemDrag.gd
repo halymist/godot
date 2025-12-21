@@ -35,14 +35,13 @@ func _handle_double_click():
 	if not item_data:
 		return
 	
-	# Get current overlay panel (utility panels are overlays)
-	var current_utility = GameInfo.get_current_panel_overlay()
+	# Get current panel (utility panels are now tracked as current_panel)
+	var current_utility = GameInfo.get_current_panel()
 	
 	# Debug: Show current panel state
 	print("\n=== DOUBLE CLICK DEBUG ===")
 	print("Item: ", item_data.item_name, " (Type: ", item_data.type, ", Slot: ", item_data.bag_slot_id, ")")
-	print("Current Panel: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
-	print("Current Overlay: ", current_utility.name if current_utility else "null")
+	print("Current Panel: ", current_utility.name if current_utility else "null")
 	print("==========================\n")
 	
 	# Check if item is a consumable (Potion or Elixir) in bag - consume it
