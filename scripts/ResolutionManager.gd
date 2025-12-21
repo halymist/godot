@@ -255,8 +255,20 @@ func reparent_to_portrait():
 	
 	# Move all panels back to portrait
 	for panel in all_panels:
-		print("Moving ", panel.name, " back to portrait")
+		var was_visible = panel.visible
+		print("Moving ", panel.name, " back to portrait | visible: ", was_visible)
 		_move_to_container(panel, portrait_container)
+		if panel.visible != was_visible:
+			print("  WARNING: ", panel.name, " visibility changed during move! Was: ", was_visible, " Now: ", panel.visible)
+			panel.visible = was_visible
+		
+		# Set z_index for overlay panels so they render on top
+		if panel == rankings_panel or panel.name in ["Settings", "Payment", "ChatOverlay"]:
+			panel.z_index = 10
+			print("  Set ", panel.name, " z_index to 10 (overlay)")
+		
+		# Debug parent visibility
+		print("  ", panel.name, " parent after move: ", panel.get_parent().name, " | parent visible: ", panel.get_parent().visible)
 
 func _move_to_container(panel: Control, container: Control):
 	"""Move a panel to a container with full rect anchors"""
