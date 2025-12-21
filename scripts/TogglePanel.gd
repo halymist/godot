@@ -80,25 +80,6 @@ func _ready():
 	if avatar_button:
 		avatar_button.pressed.connect(_on_avatar_button_pressed)
 	
-	# Connect Wide button signals to same handlers
-	if wide_home_button:
-		wide_home_button.pressed.connect(handle_home_button)
-	if wide_arena_button:
-		wide_arena_button.pressed.connect(handle_arena_button)
-	if wide_settings_button:
-		wide_settings_button.pressed.connect(show_overlay.bind(settings_panel))
-	if wide_chat_button:
-		wide_chat_button.pressed.connect(show_overlay.bind(chat_panel))
-	if wide_map_button:
-		wide_map_button.pressed.connect(handle_map_button)
-	if wide_character_button:
-		wide_character_button.pressed.connect(handle_character_button)
-	if wide_rankings_button:
-		wide_rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
-	if wide_payment_button:
-		wide_payment_button.pressed.connect(show_overlay.bind(payment))
-	if wide_back_button:
-		wide_back_button.pressed.connect(go_back)
 	
 	# Connect cancel quest dialog buttons if they exist
 	if cancel_quest:
@@ -440,6 +421,7 @@ func go_back():
 func show_utility_panel(panel: Control):
 	"""Show a utility panel (blacksmith, vendor, etc.) and track it as overlay"""
 	if panel:
+		print("[TogglePanel] show_utility_panel called for: ", panel.name)
 		# Hide any currently active overlay first
 		var current_overlay = GameInfo.get_current_panel_overlay()
 		if current_overlay != null and current_overlay != panel:
@@ -449,6 +431,7 @@ func show_utility_panel(panel: Control):
 		panel.visible = true
 		# Track as current overlay in GameInfo
 		GameInfo.set_current_panel_overlay(panel)
+		print("[TogglePanel] Set current_panel_overlay to: ", GameInfo.get_current_panel_overlay().name if GameInfo.get_current_panel_overlay() else "null")
 
 func hide_utility_panel(panel: Control):
 	"""Hide a utility panel and clear tracking"""

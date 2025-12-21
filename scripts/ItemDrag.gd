@@ -35,10 +35,15 @@ func _handle_double_click():
 	if not item_data:
 		return
 	
-	# Get current utility panel from TogglePanel (unified tracking)
-	var game_root = get_tree().root.get_node_or_null("Game")
-	var toggle_panel = game_root.find_child("Background", true, false) if game_root else null
-	var current_utility = toggle_panel.current_utility_panel if toggle_panel else null
+	# Get current overlay panel (utility panels are overlays)
+	var current_utility = GameInfo.get_current_panel_overlay()
+	
+	# Debug: Show current panel state
+	print("\n=== DOUBLE CLICK DEBUG ===")
+	print("Item: ", item_data.item_name, " (Type: ", item_data.type, ", Slot: ", item_data.bag_slot_id, ")")
+	print("Current Panel: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
+	print("Current Overlay: ", current_utility.name if current_utility else "null")
+	print("==========================\n")
 	
 	# Check if item is a consumable (Potion or Elixir) in bag - consume it
 	# BUT only if no utility panel is open (only from character screen)

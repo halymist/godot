@@ -21,17 +21,18 @@ func _on_mouse_exited():
 
 func _on_button_pressed():
 	if target:
+		print("[Utility] Button pressed for: ", target.name)
 		# Set the location-specific background for utility panels
 		if target.has_method("set_location_texture"):
 			var location = GameInfo.current_player.location if GameInfo.current_player else 1
 			target.set_location_texture(location)
 		
-		# Use TogglePanel's show_utility_panel method
-		var game_root = get_tree().root.get_node_or_null("Game")
-		var toggle_panel = game_root.find_child("Background", true, false) if game_root else null
-		if toggle_panel and toggle_panel.has_method("show_utility_panel"):
-			toggle_panel.show_utility_panel(target)
-		else:
-			# Fallback: just show the target
-			target.visible = true
+		# Hide any currently active overlay first
+		var current_overlay = GameInfo.get_current_panel_overlay()
+		if current_overlay and current_overlay != target:
+			current_overlay.visible = false
+		
+		# Show the target panel and register it as overlay in GameInfo
+		target.visible = true
+		GameInfo.set_current_panel_overlay(target)
 	utility_clicked.emit(self)
