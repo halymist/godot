@@ -45,6 +45,9 @@ var current_layout: Control = null
 var last_aspect_ratio: float = 0.0
 var last_window_size: Vector2i = Vector2i.ZERO
 
+# Store portrait container reference for switching back from wide
+var portrait_container: Control = null
+
 signal user_font_scale_changed(new_scale)
 signal layout_changed(new_layout)
 
@@ -169,7 +172,7 @@ func reparent_to_wide():
 		print("ERROR: character_panel not set or invalid")
 		return
 	
-	var portrait_container = character_panel.get_parent()
+	portrait_container = character_panel.get_parent()
 	if not portrait_container:
 		print("ERROR: Could not get parent from character_panel")
 		return
@@ -228,24 +231,8 @@ func reparent_to_wide():
 
 func reparent_to_portrait():
 	"""Reparent all panels back to portrait layout"""
-	# Get portrait container from first wide container that has children
-	var portrait_container: Control = null
-	
-	# Check which wide container has panels
-	if wide_left and wide_left.get_child_count() > 0:
-		var first_child = wide_left.get_child(0)
-		# We need to know where to put them back - use character_panel parent or create reference
-		if character_panel and is_instance_valid(character_panel):
-			# Get the original parent (should be Wrapper in portrait)
-			portrait_container = character_panel.get_parent()
-	
 	if not portrait_container:
-		# Try getting from character_panel if it's still valid
-		if character_panel and is_instance_valid(character_panel):
-			portrait_container = character_panel.get_parent()
-	
-	if not portrait_container:
-		print("ERROR: Could not determine portrait container")
+		print("ERROR: portrait_container not stored from wide switch")
 		return
 	
 	print("=== Reparenting to Portrait ===")
