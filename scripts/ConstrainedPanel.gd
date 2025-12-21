@@ -1,8 +1,8 @@
 @tool
 extends Panel
 
-# Aspect ratio constraints - same for all constrained panels
-const ENABLE_CONSTRAINT: bool = true
+# Aspect ratio constraints - DISABLED
+const ENABLE_CONSTRAINT: bool = false
 const MAX_ASPECT_RATIO: float = 0.867  # Threshold aspect ratio (2.6/3.0)
 const CONSTRAINED_ASPECT_RATIO: float = 0.733  # Target aspect ratio when constraining (2.2/3.0)
 

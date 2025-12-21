@@ -11,17 +11,6 @@ func _ready():
 	if not Engine.is_editor_hint():
 		var location = GameInfo.current_player.location if GameInfo.current_player else 1
 		set_location_texture(location)
-		
-		# Connect wrapper button to hide itself when clicked
-		var wrapper = get_parent()
-		if wrapper and wrapper is Button:
-			wrapper.pressed.connect(_on_wrapper_clicked)
-
-func _on_wrapper_clicked():
-	# Hide the wrapper button when clicked
-	var wrapper = get_parent()
-	if wrapper:
-		wrapper.visible = false
 
 func _process(_delta):
 	super._process(_delta)  # Apply aspect constraint from parent class

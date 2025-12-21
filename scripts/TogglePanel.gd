@@ -6,7 +6,6 @@ extends Control
 @export var arena_button: Button
 @export var character_button: Button
 @export var character_panel: Control
-@export var character_wrapper: Button
 @export var talents_button: Button
 @export var talents_panel: Control
 @export var map_button: Button
@@ -65,7 +64,7 @@ func _ready():
 	# Connect button signals using bind for all
 	home_button.pressed.connect(handle_home_button)
 	arena_button.pressed.connect(show_panel.bind(arena_panel))
-	character_button.pressed.connect(show_overlay.bind(character_panel))
+	character_button.pressed.connect(show_panel.bind(character_panel))
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
 	settings_button.pressed.connect(show_overlay.bind(settings_panel))
@@ -81,10 +80,6 @@ func _ready():
 	if avatar_button:
 		avatar_button.pressed.connect(_on_avatar_button_pressed)
 	
-	# Connect character wrapper button
-	if character_wrapper:
-		character_wrapper.pressed.connect(_on_character_wrapper_clicked)
-	
 	# Connect Wide button signals to same handlers
 	if wide_home_button:
 		wide_home_button.pressed.connect(handle_home_button)
@@ -97,7 +92,7 @@ func _ready():
 	if wide_map_button:
 		wide_map_button.pressed.connect(handle_map_button)
 	if wide_character_button:
-		wide_character_button.pressed.connect(show_overlay.bind(character_panel))
+		wide_character_button.pressed.connect(show_panel.bind(character_panel))
 	if wide_rankings_button:
 		wide_rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
 	if wide_payment_button:
@@ -152,23 +147,6 @@ func show_overlay(overlay: Control):
 	# Set as current overlay in GameInfo
 	GameInfo.set_current_panel_overlay(overlay)
 	
-	# Show wrapper if this is the character panel (don't set panel visibility, just wrapper)
-	if overlay == character_panel and character_wrapper:
-		# Hide any open utility panel first
-		if current_utility_panel and current_utility_panel.visible:
-			hide_utility_panel(current_utility_panel)
-		
-		# Always hide talents and avatar panels when opening character to ensure we show character by default
-		if talents_panel:
-			talents_panel.visible = false
-		if avatar_panel:
-			avatar_panel.visible = false
-		
-		character_wrapper.visible = true
-		# Character panel inside wrapper is already visible by default
-		print("Showing overlay: ", overlay.name)
-		return
-	
 	# Call the overlay's specific show method based on its type
 	if overlay == quest_panel and overlay.has_method("show_quest"):
 		# Note: show_quest should already have been called with data, just make visible
@@ -196,12 +174,6 @@ func hide_overlay(overlay: Control):
 	if GameInfo.get_current_panel_overlay() == overlay:
 		GameInfo.set_current_panel_overlay(null)
 	
-	# Hide wrapper if this is the character panel (don't touch panel visibility)
-	if overlay == character_panel and character_wrapper:
-		character_wrapper.visible = false
-		print("Hiding overlay: ", overlay.name)
-		return
-	
 	# Call the overlay's specific hide method based on its type
 	if overlay == chat_panel and overlay.has_method("hide_chat"):
 		overlay.hide_chat()
@@ -221,34 +193,29 @@ func show_panel(panel: Control):
 	hide_all_panels()
 	
 	# Clear utility panel and chat tracking when switching main panels
+	if current_utility_panel:
+		hide_utility_panel(current_utility_panel)
 	current_utility_panel = null
 	chat_overlay_active = false
 	
-	# Also hide utility panel wrappers
+	# Clear any active overlay
+	var current_overlay = GameInfo.get_current_panel_overlay()
+	if current_overlay:
+		hide_overlay(current_overlay)
+	
+	# Hide all utility panels
 	if vendor_panel:
-		var vendor_wrapper = vendor_panel.get_parent()
-		if vendor_wrapper:
-			vendor_wrapper.visible = false
+		vendor_panel.visible = false
 	if blacksmith_panel:
-		var blacksmith_wrapper = blacksmith_panel.get_parent()
-		if blacksmith_wrapper:
-			blacksmith_wrapper.visible = false
+		blacksmith_panel.visible = false
 	if trainer_panel:
-		var trainer_wrapper = trainer_panel.get_parent()
-		if trainer_wrapper:
-			trainer_wrapper.visible = false
+		trainer_panel.visible = false
 	if church_panel:
-		var church_wrapper = church_panel.get_parent()
-		if church_wrapper:
-			church_wrapper.visible = false
+		church_panel.visible = false
 	if alchemist_panel:
-		var alchemist_wrapper = alchemist_panel.get_parent()
-		if alchemist_wrapper:
-			alchemist_wrapper.visible = false
+		alchemist_panel.visible = false
 	if enchanter_panel:
-		var enchanter_wrapper = enchanter_panel.get_parent()
-		if enchanter_wrapper:
-			enchanter_wrapper.visible = false
+		enchanter_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -274,31 +241,22 @@ func show_panel(panel: Control):
 			active_perks_display.update_active_perks()
 
 func handle_home_button():
-	# Hide utility panel wrappers when going home
+	# Hide utility panels when going home
+	if current_utility_panel:
+		hide_utility_panel(current_utility_panel)
+	
 	if vendor_panel:
-		var vendor_wrapper = vendor_panel.get_parent()
-		if vendor_wrapper:
-			vendor_wrapper.visible = false
+		vendor_panel.visible = false
 	if blacksmith_panel:
-		var blacksmith_wrapper = blacksmith_panel.get_parent()
-		if blacksmith_wrapper:
-			blacksmith_wrapper.visible = false
+		blacksmith_panel.visible = false
 	if trainer_panel:
-		var trainer_wrapper = trainer_panel.get_parent()
-		if trainer_wrapper:
-			trainer_wrapper.visible = false
+		trainer_panel.visible = false
 	if church_panel:
-		var church_wrapper = church_panel.get_parent()
-		if church_wrapper:
-			church_wrapper.visible = false
+		church_panel.visible = false
 	if alchemist_panel:
-		var alchemist_wrapper = alchemist_panel.get_parent()
-		if alchemist_wrapper:
-			alchemist_wrapper.visible = false
+		alchemist_panel.visible = false
 	if enchanter_panel:
-		var enchanter_wrapper = enchanter_panel.get_parent()
-		if enchanter_wrapper:
-			enchanter_wrapper.visible = false
+		enchanter_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
 	if rankings_panel:
@@ -356,11 +314,6 @@ func show_upgrade_talent():
 
 func show_perks_panel():
 	show_overlay(perks_panel)
-
-func _on_character_wrapper_clicked():
-	"""Hide character overlay when wrapper background is clicked"""
-	if character_wrapper:
-		hide_overlay(character_panel)
 
 func _on_avatar_button_pressed():
 	"""Show avatar panel when avatar button is clicked"""
@@ -422,16 +375,8 @@ func go_back():
 		hide_overlay(chat_panel)
 		return
 	
-	# Priority 2: Hide any other active overlay (settings/rankings/payment/character)
+	# Priority 2: Hide any other active overlay (settings/rankings/payment)
 	var current_overlay = GameInfo.get_current_panel_overlay()
-	# Special case: if we're in talents/avatar and character wrapper is visible, just hide talents/avatar
-	if current == talents_panel and character_wrapper and character_wrapper.visible and talents_panel.visible:
-		talents_panel.visible = false
-		return
-	if current == avatar_panel and character_wrapper and character_wrapper.visible and avatar_panel.visible:
-		avatar_panel.visible = false
-		return
-	# Otherwise hide the overlay normally
 	if current_overlay != null and current_overlay.visible:
 		hide_overlay(current_overlay)
 		return
@@ -466,21 +411,9 @@ func go_back():
 
 	# Priority 8: Handle panel-specific back navigation
 	if current == talents_panel:
-		# If character wrapper is visible, just hide talents and stay in character panel
-		if character_wrapper and character_wrapper.visible:
-			talents_panel.visible = false
-			# Don't change current_panel tracking - character overlay is still active
-		else:
-			# Otherwise use the bookmark animation
-			toggle_talents_bookmark()
+		toggle_talents_bookmark()
 	elif current == avatar_panel:
-		# If character wrapper is visible, just hide avatar and stay in character panel
-		if character_wrapper and character_wrapper.visible:
-			avatar_panel.visible = false
-			# Don't change current_panel tracking - character overlay is still active
-		else:
-			# Otherwise just hide avatar panel
-			avatar_panel.visible = false
+		avatar_panel.visible = false
 	elif current == combat_panel:
 		show_panel(arena_panel)
 	else:
@@ -489,31 +422,31 @@ func go_back():
 
 
 func show_utility_panel(panel: Control):
-	"""Show a utility panel (blacksmith, vendor, etc.) and track it"""
+	"""Show a utility panel (blacksmith, vendor, etc.) and track it as overlay"""
 	if panel:
+		# Hide any currently active overlay first
+		var current_overlay = GameInfo.get_current_panel_overlay()
+		if current_overlay != null and current_overlay != panel:
+			hide_overlay(current_overlay)
+		
 		current_utility_panel = panel
 		panel.visible = true
-		# Also make the wrapper visible if it exists
-		var wrapper = panel.get_parent()
-		if wrapper:
-			wrapper.visible = true
+		# Track as current overlay in GameInfo
+		GameInfo.set_current_panel_overlay(panel)
 
 func hide_utility_panel(panel: Control):
 	"""Hide a utility panel and clear tracking"""
 	if panel:
 		current_utility_panel = null
 		panel.visible = false
-		# Also hide the wrapper if it exists
-		var wrapper = panel.get_parent()
-		if wrapper:
-			wrapper.visible = false
+		# Clear from GameInfo overlay tracking
+		if GameInfo.get_current_panel_overlay() == panel:
+			GameInfo.set_current_panel_overlay(null)
 
 func hide_all_panels():
 	home_panel.visible = false
 	arena_panel.visible = false
-	# Don't touch character_panel visibility - it's controlled by wrapper
-	if character_wrapper:
-		character_wrapper.visible = false
+	character_panel.visible = false
 	map_panel.visible = false
 	talents_panel.visible = false
 	combat_panel.visible = false
