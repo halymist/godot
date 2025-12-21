@@ -285,7 +285,6 @@ game_scene = NodePath("Portrait/GameSceneParent/Wrapper")
 portrait_game_parent = NodePath("Portrait/GameSceneParent")
 wide_game_parent = NodePath("Wide/GameSceneParent")
 base_theme = ExtResource("2_nb51f")
-aspect_ratio_threshold = 0.7
 
 [node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "character_wrapper", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "avatar_panel", "avatar_button", "wide_home_button", "wide_arena_button", "wide_settings_button", "wide_chat_button", "wide_map_button", "wide_character_button", "wide_rankings_button", "wide_payment_button", "wide_back_button")]
 z_index = -1
@@ -1059,8 +1058,8 @@ village5_texture = ExtResource("16_titue")
 
 [node name="VendorBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel"]
 anchors_preset = 0
-offset_right = 450.0
-offset_bottom = 300.0
+offset_right = 405.0
+offset_bottom = 270.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel/VendorBackground"]
 layout_mode = 1
@@ -1074,8 +1073,8 @@ expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel"]
 layout_mode = 0
-offset_top = 300.0
-offset_right = 450.0
+offset_top = 270.0
+offset_right = 405.0
 offset_bottom = 545.0
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
@@ -1132,8 +1131,8 @@ slot_id = 112
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/VendorWrapper/VendorPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-offset_left = -49.3033
-offset_right = 49.3033
+offset_left = -220.5
+offset_right = 220.5
 
 [node name="BlacksmithWrapper" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home"]
 visible = false
@@ -1165,8 +1164,8 @@ village5_texture = ExtResource("20_fnkle")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel"]
 anchors_preset = 0
-offset_right = 450.0
-offset_bottom = 300.0
+offset_right = 405.0
+offset_bottom = 270.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel/UtilityBackground"]
 layout_mode = 1
@@ -1180,8 +1179,8 @@ expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel"]
 layout_mode = 0
-offset_top = 300.0
-offset_right = 450.0
+offset_top = 270.0
+offset_right = 405.0
 offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/BlacksmithWrapper/BlacksmithPanel/UtilityPanel"]
@@ -1318,8 +1317,8 @@ village5_texture = ExtResource("30_jcn4n")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/TrainerWrapper/TrainerPanel"]
 anchors_preset = 0
-offset_right = 450.0
-offset_bottom = 300.0
+offset_right = 405.0
+offset_bottom = 270.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/TrainerWrapper/TrainerPanel/UtilityBackground"]
 layout_mode = 1
@@ -1333,8 +1332,8 @@ expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/TrainerWrapper/TrainerPanel"]
 layout_mode = 0
-offset_top = 300.0
-offset_right = 450.0
+offset_top = 270.0
+offset_right = 405.0
 offset_bottom = 630.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/TrainerWrapper/TrainerPanel/UtilityPanel"]
@@ -1560,8 +1559,8 @@ village5_texture = ExtResource("31_j0obb")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper/ChurchPanel"]
 anchors_preset = 0
-offset_right = 450.0
-offset_bottom = 300.0
+offset_right = 405.0
+offset_bottom = 270.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper/ChurchPanel/UtilityBackground"]
 layout_mode = 1
@@ -1575,8 +1574,8 @@ expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper/ChurchPanel"]
 layout_mode = 0
-offset_top = 300.0
-offset_right = 450.0
+offset_top = 270.0
+offset_right = 405.0
 offset_bottom = 630.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/ChurchWrapper/ChurchPanel/UtilityPanel"]
@@ -1679,8 +1678,8 @@ village5_texture = ExtResource("36_lknxd")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel"]
 anchors_preset = 0
-offset_right = 450.0
-offset_bottom = 300.0
+offset_right = 405.0
+offset_bottom = 270.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel/UtilityBackground"]
 layout_mode = 1
@@ -1694,8 +1693,8 @@ expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel"]
 layout_mode = 0
-offset_top = 300.0
-offset_right = 450.0
+offset_top = 270.0
+offset_right = 405.0
 offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/AlchemistWapper/AlchemistPanel/UtilityPanel"]
@@ -1852,8 +1851,8 @@ village5_texture = ExtResource("40_q8b24")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel"]
 anchors_preset = 0
-offset_right = 450.0
-offset_bottom = 300.0
+offset_right = 405.0
+offset_bottom = 270.0
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel/UtilityBackground"]
 layout_mode = 1
@@ -1867,8 +1866,8 @@ expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel"]
 layout_mode = 0
-offset_top = 300.0
-offset_right = 450.0
+offset_top = 270.0
+offset_right = 405.0
 offset_bottom = 545.0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/EnchanterWrapper/EnchanterPanel/UtilityPanel"]

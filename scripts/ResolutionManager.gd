@@ -13,11 +13,15 @@ var current_scale_factor = 1.0
 @export var portrait_game_parent: Control
 @export var wide_game_parent: Control
 @export var base_theme: Theme
-@export var aspect_ratio_threshold: float = 1.3  # Below this = phone, above = desktop
-var min_phone_aspect_ratio: float = 0.4
+
+# Aspect ratio thresholds for portrait phone mode
+# 21:9 portrait = 9/21 = 0.4286 (base, tallest)
+# 16:9 portrait = 9/16 = 0.5625 (widest portrait before switching to wide)
+const ASPECT_21_9 = 0.4286  # Base aspect ratio (tallest portrait)
+const ASPECT_16_9 = 0.5625  # Threshold to switch to wide mode
 
 # Base resolutions for each mode
-const PORTRAIT_BASE = Vector2i(450, 900)
+const PORTRAIT_BASE = Vector2i(405, 900)  # 21:9 aspect ratio base
 const WIDE_BASE = Vector2i(889, 667)  # 4:3 aspect
 
 # Store current layout as direct reference to the active UI root
@@ -41,15 +45,45 @@ func _process(_delta):
 func calculate_layout():
 	var window_size = DisplayServer.window_get_size()
 	var aspect_ratio = float(window_size.x) / float(window_size.y)
-	print("Window size: ", window_size, " | Aspect: ", aspect_ratio, " | Threshold: ", aspect_ratio_threshold)
-	var new_layout = phone_ui_root if aspect_ratio < aspect_ratio_threshold else desktop_ui_root
-	print("Selected layout: ", new_layout.name if new_layout else "null")
-
+	
+	print("=== Resolution Manager ===")
+	print("Window size: ", window_size, " | Aspect: %.4f" % aspect_ratio)
+	print("21:9 threshold: %.4f | 16:9 threshold: %.4f" % [ASPECT_21_9, ASPECT_16_9])
+	
+	# Determine layout based on aspect ratio
+	var new_layout: Control
+	var target_base_resolution: Vector2i
+	
+	if aspect_ratio >= ASPECT_16_9:
+		# Wide mode: aspect ratio is 16:9 or wider (more landscape)
+		new_layout = desktop_ui_root
+		target_base_resolution = WIDE_BASE
+		print("Mode: WIDE (aspect >= 16:9)")
+	else:
+		# Portrait mode: aspect ratio is between narrowest phone and 16:9
+		new_layout = phone_ui_root
+		
+		if aspect_ratio < ASPECT_21_9:
+			# Narrower than 21:9: shrink height to maintain 21:9 minimum
+			# Calculate what height would give us 21:9 ratio with current width
+			var adjusted_height = int(window_size.x / ASPECT_21_9)
+			target_base_resolution = Vector2i(PORTRAIT_BASE.x, adjusted_height)
+			print("Mode: PORTRAIT (narrower than 21:9) - Adjusted height: ", adjusted_height)
+		else:
+			# Between 21:9 and 16:9: use base 21:9 resolution
+			target_base_resolution = PORTRAIT_BASE
+			print("Mode: PORTRAIT (21:9 to 16:9 range)")
+	
+	print("Selected layout: ", new_layout.name, " | Base resolution: ", target_base_resolution)
+	
 	if new_layout != current_layout:
-		switch_layout(new_layout)
+		switch_layout(new_layout, target_base_resolution)
+	else:
+		# Same layout but potentially different base resolution (for narrow phones)
+		update_content_scale(target_base_resolution)
 
 
-func switch_layout(new_layout: Control):
+func switch_layout(new_layout: Control, base_resolution: Vector2i):
 	if not new_layout:
 		print("Error: new_layout is null")
 		return
@@ -65,17 +99,8 @@ func switch_layout(new_layout: Control):
 	current_layout.visible = true
 	current_layout.process_mode = Node.PROCESS_MODE_INHERIT
 	
-	# Change the Window's content scale base resolution based on mode
-	var window = get_tree().root
-	window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
-	
-	if new_layout == phone_ui_root:
-		# Portrait mode: use portrait base resolution
-		window.content_scale_size = PORTRAIT_BASE
-	else:
-		# Wide mode: use wide base resolution (4:3)
-		window.content_scale_size = WIDE_BASE
+	# Update content scale with the calculated base resolution
+	update_content_scale(base_resolution)
 	
 	# Reparent GameScene between Portrait and Wide parents
 	if game_scene:
@@ -100,6 +125,14 @@ func switch_layout(new_layout: Control):
 			game_scene.offset_bottom = 0
 	
 	layout_changed.emit(current_layout)
+
+func update_content_scale(base_resolution: Vector2i):
+	"""Update the window's content scale base resolution"""
+	var window = get_tree().root
+	window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
+	window.content_scale_size = base_resolution
+	print("Content scale updated: ", base_resolution)
 
 # user font scale preference - only scales Label fonts
 func set_user_font_scale(new_scale: float):
