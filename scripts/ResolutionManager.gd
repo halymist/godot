@@ -14,6 +14,19 @@ var current_scale_factor = 1.0
 @export var wide_game_parent: Control
 @export var base_theme: Theme
 
+# Wide layout containers
+@export var wide_left: Control
+@export var wide_right: Control
+@export var wide_full: Control
+
+# Panel references for wide layout
+@export_group("Panels")
+@export var character_panel: Control
+@export var talents_panel: Control
+@export var avatar_panel: Control
+@export var rankings_panel: Control
+@export var enemy_panel: Control
+
 # Aspect ratio thresholds for portrait phone mode
 # 21:9 portrait = 9/21 = 0.4286 (base, tallest)
 # 16:9 portrait = 9/16 = 0.5625 (widest portrait before switching to wide)
@@ -24,6 +37,9 @@ const ASPECT_16_9 = 0.5625  # Threshold to switch to wide mode
 const PORTRAIT_BASE = Vector2i(405, 900)  # 21:9 aspect ratio base
 const WIDE_BASE = Vector2i(1600, 900)  # GameScene 4:3 (1200x900) + Sidebar 1/3 width (400)
 
+# Wide layout panel mapping: panel -> target container
+var wide_panel_layout = {}
+
 # Store current layout as direct reference to the active UI root
 var current_layout: Control = null
 var last_aspect_ratio: float = 0.0
@@ -33,8 +49,31 @@ signal user_font_scale_changed(new_scale)
 signal layout_changed(new_layout)
 
 func _ready():
+	# Build wide panel layout mapping
+	_build_wide_layout_map()
+	
 	current_layout = null  # Start as null so first calculate_layout triggers switch
 	calculate_layout()
+
+func _build_wide_layout_map():
+	"""Build the mapping of which panels go to which wide containers"""
+	wide_panel_layout.clear()
+	
+	# Left side panels
+	if character_panel:
+		wide_panel_layout[character_panel] = "left"
+	if rankings_panel:
+		wide_panel_layout[rankings_panel] = "left"
+	
+	# Right side panels
+	if talents_panel:
+		wide_panel_layout[talents_panel] = "right"
+	if avatar_panel:
+		wide_panel_layout[avatar_panel] = "right"
+	if enemy_panel:
+		wide_panel_layout[enemy_panel] = "right"
+	
+	print("Wide layout map built: ", wide_panel_layout.size(), " panels mapped")
 
 func _process(_delta):
 	var current_size = DisplayServer.window_get_size()
@@ -77,16 +116,21 @@ func calculate_layout():
 	print("Selected layout: ", new_layout.name, " | Base resolution: ", target_base_resolution)
 	
 	if new_layout != current_layout:
-		switch_layout(new_layout, target_base_resolution)
+		var old_layout = current_layout
+		switch_layout(new_layout, target_base_resolution, old_layout)
 	else:
 		# Same layout but potentially different base resolution (for narrow phones)
 		update_content_scale(target_base_resolution)
 
 
-func switch_layout(new_layout: Control, base_resolution: Vector2i):
+func switch_layout(new_layout: Control, base_resolution: Vector2i, old_layout: Control = null):
 	if not new_layout:
 		print("Error: new_layout is null")
 		return
+	
+	# Determine layout switch direction
+	var switching_to_wide = (new_layout == desktop_ui_root)
+	var switching_from_wide = (old_layout == desktop_ui_root)
 		
 	if current_layout:
 		print("Switching layout from ", current_layout.name, " to ", new_layout.name)
@@ -99,32 +143,148 @@ func switch_layout(new_layout: Control, base_resolution: Vector2i):
 	current_layout.visible = true
 	current_layout.process_mode = Node.PROCESS_MODE_INHERIT
 	
+	print("Current layout after switch - Name:", current_layout.name, " Visible:", current_layout.visible, " Size:", current_layout.size, " Position:", current_layout.position)
+	
 	# Update content scale with the calculated base resolution
 	update_content_scale(base_resolution)
 	
-	# Reparent GameScene between Portrait and Wide parents
-	if game_scene:
-		var current_parent = game_scene.get_parent()
-		var target_parent: Node = null
-		
-		if new_layout == phone_ui_root:
-			target_parent = portrait_game_parent
-		else:
-			target_parent = wide_game_parent
-		
-		if target_parent and current_parent != target_parent:
-			if current_parent:
-				current_parent.remove_child(game_scene)
-			target_parent.add_child(game_scene)
-			game_scene.position = Vector2.ZERO
-			game_scene.size = Vector2.ZERO
-			game_scene.set_anchors_preset(Control.PRESET_FULL_RECT)
-			game_scene.offset_left = 0
-			game_scene.offset_top = 0
-			game_scene.offset_right = 0
-			game_scene.offset_bottom = 0
+	# Handle panel reparenting based on layout switch
+	if switching_to_wide and not switching_from_wide:
+		print("Reparenting panels to wide layout")
+		reparent_to_wide()
+	elif switching_from_wide and not switching_to_wide:
+		print("Reparenting panels to portrait layout")
+		reparent_to_portrait()
 	
 	layout_changed.emit(current_layout)
+
+func reparent_to_wide():
+	"""Reparent panels from portrait to wide layout based on mapping"""
+	if not wide_left or not wide_right or not wide_full:
+		print("ERROR: Wide containers not set - left:", wide_left, " right:", wide_right, " full:", wide_full)
+		return
+	
+	# Get portrait container directly from character_panel's parent
+	if not character_panel or not is_instance_valid(character_panel):
+		print("ERROR: character_panel not set or invalid")
+		return
+	
+	var portrait_container = character_panel.get_parent()
+	if not portrait_container:
+		print("ERROR: Could not get parent from character_panel")
+		return
+	
+	print("=== Reparenting to Wide ===")
+	print("Portrait container: ", portrait_container.name, " (from character_panel parent)")
+	print("Portrait container has ", portrait_container.get_child_count(), " children")
+	print("Wide panel layout has ", wide_panel_layout.size(), " mapped panels")
+	
+	# Hide all wide containers initially
+	wide_left.visible = false
+	wide_right.visible = false
+	wide_full.visible = false
+	
+	# Reparent all panels
+	for child in portrait_container.get_children():
+		if not (child is Control):
+			continue
+		
+		var panel = child as Control
+		var target_side = wide_panel_layout.get(panel, null)
+		var was_visible = panel.visible
+		
+		print("  Processing: ", panel.name, " -> target: ", target_side if target_side else "FULL (unmapped)", " | visible: ", was_visible)
+		
+		if target_side == "left":
+			_move_to_container(panel, wide_left)
+			wide_left.visible = true
+		elif target_side == "right":
+			_move_to_container(panel, wide_right)
+			wide_right.visible = true
+		else:
+			_move_to_container(panel, wide_full)
+			wide_full.visible = true
+		
+		# Preserve panel visibility after reparenting
+		if panel.visible != was_visible:
+			print("    WARNING: Panel visibility changed during reparent! Restoring to: ", was_visible)
+			panel.visible = was_visible
+	
+	print("After reparenting - Left:", wide_left.get_child_count(), " Right:", wide_right.get_child_count(), " Full:", wide_full.get_child_count(), " children")
+	print("Container visibility - Left:", wide_left.visible, " Right:", wide_right.visible, " Full:", wide_full.visible)
+	
+	# Debug container layout
+	print("Wide Left - Position:", wide_left.position, " Size:", wide_left.size, " Anchors:", wide_left.anchor_left, ",", wide_left.anchor_right)
+	print("Wide Right - Position:", wide_right.position, " Size:", wide_right.size, " Anchors:", wide_right.anchor_left, ",", wide_right.anchor_right)
+	print("Wide Full - Position:", wide_full.position, " Size:", wide_full.size, " Anchors:", wide_full.anchor_left, ",", wide_full.anchor_right)
+	
+	# Debug character panel specifically
+	if character_panel:
+		print("Character panel - Visible:", character_panel.visible, " Parent:", character_panel.get_parent().name, " Position:", character_panel.position, " Size:", character_panel.size)
+	
+	# Debug wide_game_parent
+	if wide_game_parent:
+		print("Wide Game Parent - Visible:", wide_game_parent.visible, " Position:", wide_game_parent.position, " Size:", wide_game_parent.size, " Process mode:", wide_game_parent.process_mode)
+
+func reparent_to_portrait():
+	"""Reparent all panels back to portrait layout"""
+	# Get portrait container from first wide container that has children
+	var portrait_container: Control = null
+	
+	# Check which wide container has panels
+	if wide_left and wide_left.get_child_count() > 0:
+		var first_child = wide_left.get_child(0)
+		# We need to know where to put them back - use character_panel parent or create reference
+		if character_panel and is_instance_valid(character_panel):
+			# Get the original parent (should be Wrapper in portrait)
+			portrait_container = character_panel.get_parent()
+	
+	if not portrait_container:
+		# Try getting from character_panel if it's still valid
+		if character_panel and is_instance_valid(character_panel):
+			portrait_container = character_panel.get_parent()
+	
+	if not portrait_container:
+		print("ERROR: Could not determine portrait container")
+		return
+	
+	print("=== Reparenting to Portrait ===")
+	print("Portrait container: ", portrait_container.name)
+	
+	# Collect all panels from wide containers
+	var all_panels: Array[Control] = []
+	if wide_left:
+		for child in wide_left.get_children():
+			if child is Control:
+				all_panels.append(child)
+	if wide_right:
+		for child in wide_right.get_children():
+			if child is Control:
+				all_panels.append(child)
+	if wide_full:
+		for child in wide_full.get_children():
+			if child is Control:
+				all_panels.append(child)
+	
+	# Move all panels back to portrait
+	for panel in all_panels:
+		print("Moving ", panel.name, " back to portrait")
+		_move_to_container(panel, portrait_container)
+
+func _move_to_container(panel: Control, container: Control):
+	"""Move a panel to a container with full rect anchors"""
+	if panel.get_parent() != container:
+		var old_parent = panel.get_parent()
+		if old_parent:
+			old_parent.remove_child(panel)
+		container.add_child(panel)
+	
+	# Set to full rect
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 0
+	panel.offset_right = 0
+	panel.offset_top = 0
+	panel.offset_bottom = 0
 
 func update_content_scale(base_resolution: Vector2i):
 	"""Update the window's content scale base resolution"""
