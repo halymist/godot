@@ -548,7 +548,6 @@ theme = SubResource("Theme_no_focus")
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
-z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -642,7 +641,6 @@ offset_right = 220.5
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
-z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -783,7 +781,6 @@ offset_right = 220.5
 
 [node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
-z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1013,7 +1010,6 @@ vertical_alignment = 1
 
 [node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
-z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1120,7 +1116,6 @@ text = ")"
 
 [node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
-z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1281,7 +1276,6 @@ offset_right = 220.5
 
 [node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
-z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

@@ -128,6 +128,11 @@ func show_overlay(overlay: Control):
 	# Set as current overlay in GameInfo
 	GameInfo.set_current_panel_overlay(overlay)
 	
+	# Ensure overlay has high z-index to appear above everything (including utility panels at z=100)
+	overlay.z_index = 200
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	print("Set overlay z_index=200 and mouse_filter=STOP for: ", overlay.name)
+	
 	# Call the overlay's specific show method based on its type
 	if overlay == quest_panel and overlay.has_method("show_quest"):
 		# Note: show_quest should already have been called with data, just make visible
