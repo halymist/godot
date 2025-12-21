@@ -265,20 +265,26 @@ func handle_map_button():
 	print("Traveling: ", traveling, " Destination: ", destination)
 	
 	# Check if already on map panel - toggle off (go home)
-	if GameInfo.get_current_panel() == map_panel:
+	var current = GameInfo.get_current_panel()
+	print("[Map Button] Current panel: ", current.name if current else "null", " Map panel: ", map_panel.name if map_panel else "null")
+	if current == map_panel:
+		print("[Map Button] Already on map, going home")
 		show_panel(home_panel)
 		return
 	
 	# Check quest states
 	if traveling > 0 and destination != null:
 		# Both values: traveling state - show map
+		print("[Map Button] Traveling state - showing map")
 		show_panel(map_panel)
 		return
 	elif traveling == null and destination != null:
+		print("[Map Button] Quest available - showing quest")
 		show_panel(quest)
 		return
 	
 	# Normal state (both null) - standard map behavior
+	print("[Map Button] Normal state - showing map")
 	show_panel(map_panel)
 
 func handle_arena_button():

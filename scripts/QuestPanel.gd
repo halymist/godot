@@ -51,14 +51,13 @@ func _on_accept_pressed():
 	hide_panel()
 	print("Quest accepted: ", current_quest_data.get("questname", "Unknown Quest"))
 	
-	# Switch to map panel through the TogglePanel
-	var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
-	if toggle_panel and toggle_panel.has_method("show_panel"):
-		if map:
-			toggle_panel.show_panel(map)
-			print("Switched to map panel")
-		else:
-			print("Map panel reference not set")
+	# Switch to map panel directly through GameInfo
+	if map:
+		GameInfo.set_current_panel(map)
+		map.visible = true
+		print("Switched to map panel")
+	else:
+		print("Map panel reference not set")
 
 func show_quest(quest_data: Dictionary):
 	print("QuestPanel.show_quest called with data: ", quest_data)
