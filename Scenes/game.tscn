@@ -6125,10 +6125,10 @@ location_hover_area = NodePath("LocationPanel")
 
 [node name="Character" type="TextureRect" parent="Wide/Sidebar"]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = 200.0
-offset_bottom = 190.0
+offset_left = 83.5
+offset_top = 13.0
+offset_right = 344.5
+offset_bottom = 275.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 stretch_mode = 4
@@ -6147,14 +6147,16 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
 anchor_bottom = 0.9
+offset_top = 8.7
+offset_bottom = 8.70001
 mouse_filter = 2
 
 [node name="CurrencySection" type="VBoxContainer" parent="Wide/Sidebar"]
 layout_mode = 2
-offset_left = 25.0
-offset_top = 198.0
-offset_right = 141.0
-offset_bottom = 273.0
+offset_left = 24.0
+offset_top = 285.0
+offset_right = 230.0
+offset_bottom = 363.0
 theme_override_constants/separation = 10
 
 [node name="MushroomContainer" type="HBoxContainer" parent="Wide/Sidebar/CurrencySection"]
@@ -6198,10 +6200,10 @@ text = "0"
 
 [node name="BackButton" type="Button" parent="Wide/Sidebar"]
 layout_mode = 2
-offset_left = 133.166
-offset_top = 196.0
-offset_right = 193.166
-offset_bottom = 256.0
+offset_left = 275.0
+offset_top = 284.0
+offset_right = 351.0
+offset_bottom = 358.0
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
 expand_icon = true
@@ -6209,9 +6211,9 @@ expand_icon = true
 [node name="LocationPanel" type="Panel" parent="Wide/Sidebar"]
 layout_mode = 2
 offset_left = 20.0
-offset_top = 279.0
+offset_top = 358.0
 offset_right = 216.0
-offset_bottom = 315.0
+offset_bottom = 417.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Wide/Sidebar/LocationPanel"]
@@ -6239,17 +6241,17 @@ stretch_mode = 5
 
 [node name="ButtonsSection" type="VBoxContainer" parent="Wide/Sidebar"]
 layout_mode = 2
-offset_top = 319.0
-offset_right = 223.0
-offset_bottom = 663.0
+offset_top = 448.0
+offset_right = 402.0
+offset_bottom = 889.0
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
 [node name="HomeButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(220, 48)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-ratio = 3.4
+ratio = 4.0
 
 [node name="HomeButton" type="Button" parent="Wide/Sidebar/ButtonsSection/HomeButtonContainer"]
 layout_mode = 2
@@ -6258,10 +6260,10 @@ icon = ExtResource("14_81klo")
 expand_icon = true
 
 [node name="ArenaButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(220, 48)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-ratio = 3.4
+ratio = 4.0
 
 [node name="ArenaButton" type="Button" parent="Wide/Sidebar/ButtonsSection/ArenaButtonContainer"]
 layout_mode = 2
@@ -6270,10 +6272,10 @@ icon = ExtResource("13_fkdbe")
 expand_icon = true
 
 [node name="MapButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(220, 48)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-ratio = 3.4
+ratio = 4.0
 
 [node name="MapButton" type="Button" parent="Wide/Sidebar/ButtonsSection/MapButtonContainer"]
 layout_mode = 2
@@ -6282,10 +6284,10 @@ icon = ExtResource("12_22asu")
 expand_icon = true
 
 [node name="RankingsButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(220, 48)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-ratio = 3.4
+ratio = 4.0
 
 [node name="RankingsButton" type="Button" parent="Wide/Sidebar/ButtonsSection/RankingsButtonContainer"]
 layout_mode = 2
@@ -6294,10 +6296,10 @@ icon = ExtResource("13_fkdbe")
 expand_icon = true
 
 [node name="ChatButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(220, 48)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-ratio = 3.4
+ratio = 4.0
 
 [node name="ChatButton" type="Button" parent="Wide/Sidebar/ButtonsSection/ChatButtonContainer"]
 layout_mode = 2
@@ -6306,10 +6308,10 @@ icon = ExtResource("11_vm72l")
 expand_icon = true
 
 [node name="SettingsButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(220, 48)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-ratio = 3.4
+ratio = 4.0
 
 [node name="SettingsButton" type="Button" parent="Wide/Sidebar/ButtonsSection/SettingsButtonContainer"]
 layout_mode = 2
