@@ -316,10 +316,9 @@ func show_perks_panel():
 	show_overlay(perks_panel)
 
 func _on_avatar_button_pressed():
-	"""Show avatar panel when avatar button is clicked"""
+	"""Show avatar panel as overlay on top of character panel"""
 	if avatar_panel:
-		avatar_panel.visible = true
-		GameInfo.set_current_panel(avatar_panel)
+		show_overlay(avatar_panel)
 
 func toggle_talents_bookmark():
 	var tween = create_tween()
@@ -412,8 +411,6 @@ func go_back():
 	# Priority 8: Handle panel-specific back navigation
 	if current == talents_panel:
 		toggle_talents_bookmark()
-	elif current == avatar_panel:
-		avatar_panel.visible = false
 	elif current == combat_panel:
 		show_panel(arena_panel)
 	else:
