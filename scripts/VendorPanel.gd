@@ -2,7 +2,7 @@
 extends "res://scripts/UtilityPanel.gd"
 
 # VendorPanel-specific functionality
-
+@export var vendor_grid: GridContainer
 @onready var vendor_slots: Array[Control] = []
 
 func _ready():
@@ -12,7 +12,6 @@ func _ready():
 		return
 	
 	# Get vendor slot references (slots 105-112 for 8 items)
-	var vendor_grid = $UtilityPanel/VendorSlots
 	if vendor_grid:
 		for i in range(1, 9):  # Vendor1 through Vendor8
 			var vendor_slot = vendor_grid.get_node_or_null("Vendor%d" % i)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=122 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
@@ -43,6 +43,7 @@
 [ext_resource type="Script" uid="uid://df5c7at0y6dnh" path="res://scripts/SetTalents.gd" id="14_vm72l"]
 [ext_resource type="Texture2D" uid="uid://drrca05nqixdx" path="res://assets/images/ui/talents/survive.png" id="15_7nbq1"]
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
+[ext_resource type="Texture2D" uid="uid://x083py6ybw37" path="res://assets/images/villages/vendor_last.png" id="15_ewwwr"]
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="Texture2D" uid="uid://de5d80e8d58rl" path="res://assets/images/villages/vendor2.png" id="16_titue"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
@@ -546,7 +547,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("vendor_grid")]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -554,27 +556,31 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("40_vendor")
-village1_texture = ExtResource("14_v2cs8")
+vendor_grid = NodePath("VBoxContainer/UtilityPanel/VendorSlots")
+village1_texture = ExtResource("15_ewwwr")
 village2_texture = ExtResource("16_titue")
 village3_texture = ExtResource("16_titue")
 village4_texture = ExtResource("16_titue")
 village5_texture = ExtResource("16_titue")
 
-[node name="VendorBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
+[node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
 custom_minimum_size = Vector2(544, 306)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
+offset_left = -69.5
+offset_right = 69.5
+offset_bottom = 306.0
 grow_horizontal = 2
 
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VendorBackground"]
+[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityBackground"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("14_v2cs8")
+texture = ExtResource("15_ewwwr")
 expand_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
@@ -598,9 +604,15 @@ slot_id = 113
 
 [node name="VendorSlots" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -155.5
+offset_top = -67.5
+offset_right = 156.5
+offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
 columns = 4
