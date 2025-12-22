@@ -548,6 +548,7 @@ grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("vendor_grid")]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -568,9 +569,6 @@ custom_minimum_size = Vector2(544, 306)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = -69.5
-offset_right = 69.5
-offset_bottom = 306.0
 grow_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityBackground"]
@@ -1433,7 +1431,6 @@ offset_left = -220.5
 offset_right = 220.5
 
 [node name="Home" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("villages_container", "quest_panel", "quest_slide_panel", "map_panel")]
-visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

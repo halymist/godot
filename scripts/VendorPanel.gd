@@ -8,9 +8,6 @@ extends "res://scripts/UtilityPanel.gd"
 func _ready():
 	super._ready()
 	
-	if Engine.is_editor_hint():
-		return
-	
 	# Get vendor slot references (slots 105-112 for 8 items)
 	if vendor_grid:
 		for i in range(1, 9):  # Vendor1 through Vendor8
