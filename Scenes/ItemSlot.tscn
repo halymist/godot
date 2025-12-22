@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="3_item"]
 
 [node name="ItemSlot" type="Control"]
-custom_minimum_size = Vector2(85, 85)
+custom_minimum_size = Vector2(75, 75)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 85.0
