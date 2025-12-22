@@ -1,7 +1,6 @@
 extends Node
 
 # Resolution scaling manager
-var base_resolution = Vector2(375, 667)
 var current_scale_factor = 1.0
 
 # User preference scaling (can be changed via settings)
@@ -44,7 +43,7 @@ const ASPECT_16_9 = 0.5625  # Threshold to switch to wide mode
 
 # Base resolutions for each mode
 const PORTRAIT_BASE = Vector2i(405, 900)  # 21:9 aspect ratio base
-const WIDE_BASE = Vector2i(1600, 900)  # GameScene 4:3 (1200x900) + Sidebar 1/3 width (400)
+const WIDE_BASE = Vector2i(1050, 630) # GameScene 4:3 (1200x900) + Sidebar 1/3 width (400)
 
 # Wide layout panel mapping: panel -> target container
 var wide_panel_layout = {}
