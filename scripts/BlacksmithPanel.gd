@@ -13,13 +13,12 @@ const TEMPER_COST = 10
 func _ready():
 	super._ready()
 	# Connect to visibility changes to handle cleanup
-	if not Engine.is_editor_hint():
-		visibility_changed.connect(_on_visibility_changed)
-		GameInfo.bag_slots_changed.connect(_on_item_changed)
-		GameInfo.gold_changed.connect(_on_gold_changed)
-		if temper_button:
-			temper_button.pressed.connect(_on_temper_pressed)
-		update_temper_button_state()
+	visibility_changed.connect(_on_visibility_changed)
+	GameInfo.bag_slots_changed.connect(_on_item_changed)
+	GameInfo.gold_changed.connect(_on_gold_changed)
+	if temper_button:
+		temper_button.pressed.connect(_on_temper_pressed)
+	update_temper_button_state()
 
 func _on_gold_changed(_new_gold):
 	# Update button state when gold changes
