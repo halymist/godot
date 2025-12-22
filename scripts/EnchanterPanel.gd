@@ -1,11 +1,10 @@
-@tool
 extends "res://scripts/UtilityPanel.gd"
 
 # EnchanterPanel-specific functionality
 
-@onready var enchanter_slot = $UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/ItemSlot
-@onready var enchant_button = $UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton
-@onready var effect_list = $UtilityPanel/Content/ItemSlotContainer/EffectsSection/EffectScrollContainer/EffectList
+@export var enchanter_slot: Control
+@export var enchant_button: Button
+@export var effect_list: VBoxContainer
 
 const ENCHANT_COST = 10
 
@@ -15,14 +14,13 @@ var selected_effect_factor: float = 0.0
 func _ready():
 	super._ready()
 	# Connect to visibility changes to handle cleanup
-	if not Engine.is_editor_hint():
-		visibility_changed.connect(_on_visibility_changed)
-		GameInfo.bag_slots_changed.connect(_on_item_changed)
-		GameInfo.gold_changed.connect(_on_gold_changed)
-		if enchant_button:
-			enchant_button.pressed.connect(_on_enchant_pressed)
-		update_enchant_button_state()
-		populate_effect_list()
+	visibility_changed.connect(_on_visibility_changed)
+	GameInfo.bag_slots_changed.connect(_on_item_changed)
+	GameInfo.gold_changed.connect(_on_gold_changed)
+	if enchant_button:
+		enchant_button.pressed.connect(_on_enchant_pressed)
+	update_enchant_button_state()
+	populate_effect_list()
 
 func _on_gold_changed(_new_gold):
 	# Update button state when gold changes
@@ -101,7 +99,7 @@ func update_enchant_button_state():
 	enchant_button.disabled = not (has_item and has_gold and has_selection)
 
 func populate_effect_list():
-	if not effect_list or Engine.is_editor_hint():
+	if not effect_list:
 		return
 	
 	# Clear existing effects

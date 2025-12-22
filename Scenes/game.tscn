@@ -39,7 +39,6 @@
 [ext_resource type="Script" uid="uid://ltahebix3ehj" path="res://scripts/Talent.gd" id="14_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://do7kcopjw84ob" path="res://assets/images/ui/home.png" id="14_81klo"]
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="14_mucmn"]
-[ext_resource type="Texture2D" uid="uid://ddliema8y28md" path="res://assets/images/villages/vendor.png" id="14_v2cs8"]
 [ext_resource type="Script" uid="uid://df5c7at0y6dnh" path="res://scripts/SetTalents.gd" id="14_vm72l"]
 [ext_resource type="Texture2D" uid="uid://drrca05nqixdx" path="res://assets/images/ui/talents/survive.png" id="15_7nbq1"]
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
@@ -68,9 +67,10 @@
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
 [ext_resource type="Texture2D" uid="uid://cxqt6xldm0tqa" path="res://assets/images/villages/church2.png" id="31_j0obb"]
 [ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="32_ccfo7"]
-[ext_resource type="Texture2D" uid="uid://itwslgw5ib8e" path="res://assets/images/villages/alchemist.png" id="35_a2m5q"]
+[ext_resource type="Texture2D" uid="uid://dj7mr2ev3k7p7" path="res://assets/images/villages/witch.png" id="32_ewwwr"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
+[ext_resource type="Texture2D" uid="uid://o3x5685ybv3i" path="res://assets/images/villages/enchanting.png" id="36_ewwwr"]
 [ext_resource type="Texture2D" uid="uid://dujo2rqnf0oo8" path="res://assets/images/villages/alchemist2.png" id="36_lknxd"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/RankingsPanel.gd" id="36_rankings_panel"]
@@ -1129,7 +1129,8 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -1138,7 +1139,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
-village1_texture = ExtResource("35_a2m5q")
+result_preview = NodePath("VBoxContainer/UtilityPanel/ResultPreview")
+brew_button = NodePath("VBoxContainer/UtilityPanel/BottomRow/BrewButton")
+ingredient_slot1 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot1")
+ingredient_slot2 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot2")
+ingredient_slot3 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot3")
+village1_texture = ExtResource("32_ewwwr")
 village2_texture = ExtResource("36_lknxd")
 village3_texture = ExtResource("36_lknxd")
 village4_texture = ExtResource("36_lknxd")
@@ -1158,90 +1164,114 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("24_ewwwr")
+texture = ExtResource("32_ewwwr")
 expand_mode = 1
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
-layout_mode = 0
-offset_top = 270.0
-offset_right = 405.0
-offset_bottom = 545.0
-
-[node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -314.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content"]
-custom_minimum_size = Vector2(0, 60)
+[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -240.0
+offset_bottom = -180.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_vertical = 0
-text = "The alchemist can brew powerful elixirs from ingrediets. Comsdfsdfsdfs sfsdfsf s dsafsadf  safsdfasf as  fssaf"
+text = "Jesse, we need to cook"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ResultPreview" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content"]
+[node name="ResultPreview" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel"]
 custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -177.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_vertical = 3
 text = "Elixir Effects: None"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="BottomRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content"]
-layout_mode = 2
+[node name="BottomRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -70.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_vertical = 0
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow"]
+[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Slot1" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot1" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 101
 
-[node name="Plus1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/IngredientsRow"]
+[node name="Plus1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot2" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot2" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 102
 
-[node name="Plus2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/IngredientsRow"]
+[node name="Plus2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot3" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot3" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 103
 
-[node name="BrewButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow"]
-custom_minimum_size = Vector2(150, 50)
+[node name="BrewButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow"]
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -1254,7 +1284,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/BrewButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1263,35 +1293,33 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/BrewButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Brew ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/BrewButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/BrewButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Content/BottomRow/BrewButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
-layout_mode = 1
-offset_left = -220.5
-offset_right = 220.5
+layout_mode = 2
 
-[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("enchanter_slot", "enchant_button", "effect_list")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1301,16 +1329,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("31_enchanter")
-village1_texture = ExtResource("40_q8b24")
+enchanter_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/ItemSlot")
+enchant_button = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton")
+effect_list = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/EffectsSection/EffectScrollContainer/EffectList")
+village1_texture = ExtResource("36_ewwwr")
 village2_texture = ExtResource("39_ckj55")
 village3_texture = ExtResource("39_ckj55")
 village4_texture = ExtResource("40_q8b24")
 village5_texture = ExtResource("40_q8b24")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
-anchors_preset = 0
-offset_right = 405.0
-offset_bottom = 270.0
+custom_minimum_size = Vector2(544, 306)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityBackground"]
 layout_mode = 1
@@ -1319,59 +1352,75 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("14_v2cs8")
+texture = ExtResource("36_ewwwr")
 expand_mode = 1
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
-layout_mode = 0
-offset_top = 270.0
-offset_right = 405.0
-offset_bottom = 545.0
-
-[node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -316.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content"]
+[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -242.0
+offset_bottom = -184.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
-text = "The enchanter can imbue your equipment with magical properties. Drop an item below to enchant it."
+text = "The enchanter can imbue your equipment with magical properties."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ItemSlotContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content"]
-layout_mode = 2
+[node name="ItemSlotContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -162.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.6
 
-[node name="SlotAndButtonSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer"]
+[node name="SlotAndButtonSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.4
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection"]
 layout_mode = 2
 text = "Item to Enchant"
 horizontal_alignment = 1
 
-[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection" instance=ExtResource("6_itemslot")]
+[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 outline_texture = ExtResource("9_sword")
 slot_type = "Enchanter"
 slot_id = 104
 
-[node name="EnchantButtonContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection"]
+[node name="EnchantButtonContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 ratio = 1.33333
 
-[node name="EnchantButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer"]
+[node name="EnchantButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
@@ -1382,7 +1431,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1391,55 +1440,52 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Enchant ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer"]
+[node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.6
 
-[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/EffectsSection"]
+[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/EffectsSection"]
 layout_mode = 2
 text = "Available Enchantments"
 horizontal_alignment = 1
 
-[node name="EffectScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/EffectsSection"]
+[node name="EffectScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/EffectsSection"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="EffectList" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Content/ItemSlotContainer/EffectsSection/EffectScrollContainer"]
+[node name="EffectList" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/EffectsSection/EffectScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
-layout_mode = 1
-offset_left = -220.5
-offset_right = 220.5
+layout_mode = 2
 
 [node name="Home" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("villages_container", "quest_panel", "quest_slide_panel", "map_panel")]
-visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

@@ -9,8 +9,11 @@ const SLOT_2 = 102
 const SLOT_3 = 103
 
 # Node references
-@onready var result_preview = $UtilityPanel/Content/ResultPreview
-@onready var brew_button = $UtilityPanel/Content/BottomRow/BrewButton
+@export var result_preview: Label
+@export var brew_button: Button
+@export var ingredient_slot1: Control
+@export var ingredient_slot2: Control
+@export var ingredient_slot3: Control
 
 func _ready():
 	super._ready()
@@ -61,11 +64,7 @@ func return_ingredients_to_bag():
 				break
 	
 	# Clear the visual slots
-	var slot_containers = [
-		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot1,
-		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot2,
-		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot3
-	]
+	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
 	
 	for container in slot_containers:
 		if container and container.has_method("clear_slot"):
@@ -194,11 +193,7 @@ func _on_brew_button_pressed():
 
 func clear_ingredient_slots():
 	# Clear all three ingredient slot visuals
-	var slot_containers = [
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot1,
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot2,
-		$ItemsPanel/Content/BottomRow/IngredientsRow/Slot3
-	]
+	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
 	
 	for container in slot_containers:
 		if container and container.has_method("clear_slot"):
@@ -227,11 +222,7 @@ func _on_bag_slots_changed():
 
 func update_slot_visuals():
 	# Update ingredient slots 101-103
-	var slot_containers = [
-		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot1,
-		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot2,
-		$UtilityPanel/Content/BottomRow/IngredientsRow/Slot3
-	]
+	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
 	var slot_ids = [101, 102, 103]
 	
 	for i in range(3):
