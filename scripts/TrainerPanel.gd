@@ -6,18 +6,17 @@ const TALENT_POINT_COST = 100
 const STAT_COST = 5
 
 # Stat labels
-@onready var talent_points_label = $UtilityPanel/Content/StatsContainer/TalentPointsRow/StatInfo/Label
-@onready var strength_label = $UtilityPanel/Content/StatsContainer/StrengthRow/StatInfo/Label
-@onready var stamina_label = $UtilityPanel/Content/StatsContainer/StaminaRow/StatInfo/Label
-@onready var agility_label = $UtilityPanel/Content/StatsContainer/AgilityRow/StatInfo/Label
-@onready var luck_label = $UtilityPanel/Content/StatsContainer/LuckRow/StatInfo/Label
-
+@export var talent_points_label: Label
+@export var strength_label : Label
+@export var stamina_label: Label
+@export var agility_label: Label
+@export var luck_label: Label
 # Plus buttons
-@onready var talent_points_button = $UtilityPanel/Content/StatsContainer/TalentPointsRow/StatInfo/PlusButton
-@onready var strength_button = $UtilityPanel/Content/StatsContainer/StrengthRow/StatInfo/PlusButton
-@onready var stamina_button = $UtilityPanel/Content/StatsContainer/StaminaRow/StatInfo/PlusButton
-@onready var agility_button = $UtilityPanel/Content/StatsContainer/AgilityRow/StatInfo/PlusButton
-@onready var luck_button = $UtilityPanel/Content/StatsContainer/LuckRow/StatInfo/PlusButton
+@export var talent_points_button: Button
+@export var strength_button: Button
+@export var stamina_button: Button
+@export var agility_button: Button
+@export var luck_button: Button
 
 func _ready():
 	super._ready()  # Call parent's _ready to get wrapper click functionality
