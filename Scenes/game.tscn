@@ -641,7 +641,6 @@ offset_left = -220.5
 offset_right = 220.5
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("blacksmith_slot", "improved_stats_label", "temper_button")]
-visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -650,9 +649,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
-blacksmith_slot = NodePath("VBoxContainer/UtilityPanel/Content/ItemAndStats/ItemSlotContainer/ItemSlot")
-improved_stats_label = NodePath("VBoxContainer/UtilityPanel/Content/ItemAndStats/StatsContainer/ImprovedStats")
-temper_button = NodePath("VBoxContainer/UtilityPanel/Content/TemperButtonContainer/TemperButton")
+blacksmith_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlot")
+improved_stats_label = NodePath("VBoxContainer/UtilityPanel/StatsContainer/ImprovedStats")
+temper_button = NodePath("VBoxContainer/UtilityPanel/TemperButton")
 village1_texture = ExtResource("22_ewwwr")
 village2_texture = ExtResource("20_fnkle")
 village3_texture = ExtResource("20_fnkle")
@@ -695,65 +694,35 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
 
-[node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel"]
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_top = -8.0
+offset_bottom = 58.0
 grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content"]
-layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
-text = "The blacksmith is offering you his services for a fee.
-Drop an item below to see the improvements."
+text = "The blacksmith is offering you his services for a fee. Drop an item below to see the improvements."
 horizontal_alignment = 1
-vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ItemAndStats" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.6
-
-[node name="ItemSlotContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/ItemAndStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/ItemAndStats/ItemSlotContainer"]
-layout_mode = 2
-text = "Item to Temper"
-horizontal_alignment = 1
-
-[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/ItemAndStats/ItemSlotContainer" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel" instance=ExtResource("6_itemslot")]
+layout_mode = 1
+offset_left = 42.0
+offset_top = 74.0
+offset_right = 117.0
+offset_bottom = 149.0
 outline_texture = ExtResource("9_sword")
 slot_type = "Blacksmith"
 slot_id = 100
 
-[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/ItemAndStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="StatsTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/ItemAndStats/StatsContainer"]
-layout_mode = 2
-text = "Tempering Improvement:"
-
-[node name="ImprovedStats" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/ItemAndStats/StatsContainer"]
-layout_mode = 2
-text = "+10% to all stats"
-
-[node name="TemperButtonContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.2
-stretch_mode = 1
-
-[node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/TemperButtonContainer"]
-custom_minimum_size = Vector2(150, 50)
-layout_mode = 2
+[node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel"]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 181.0
+offset_right = 148.0
+offset_bottom = 222.0
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
@@ -762,7 +731,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/TemperButtonContainer/TemperButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/TemperButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -771,27 +740,42 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/TemperButtonContainer/TemperButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/TemperButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Temper ("
+text = "Temper:"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/TemperButtonContainer/TemperButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/TemperButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/TemperButtonContainer/TemperButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/TemperButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/Content/TemperButtonContainer/TemperButton/Content"]
+[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -253.0
+offset_top = 73.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="StatsTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/StatsContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = ")"
+text = "Tempering Improvement:"
+
+[node name="ImprovedStats" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel/StatsContainer"]
+layout_mode = 2
+text = "+10% to all stats"
 
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
@@ -1439,6 +1423,7 @@ offset_left = -220.5
 offset_right = 220.5
 
 [node name="Home" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("villages_container", "quest_panel", "quest_slide_panel", "map_panel")]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
