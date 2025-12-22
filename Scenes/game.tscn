@@ -61,8 +61,8 @@
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
+[ext_resource type="Texture2D" uid="uid://b46irn0coridq" path="res://assets/images/villages/druid_monastery.png" id="29_ewwwr"]
 [ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
-[ext_resource type="Texture2D" uid="uid://dntdd7a6t8hwf" path="res://assets/images/villages/church.png" id="30_fh6x0"]
 [ext_resource type="Texture2D" uid="uid://6iephe8o7hdc" path="res://assets/images/villages/trainer2.png" id="30_jcn4n"]
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
@@ -1018,6 +1018,7 @@ vertical_alignment = 1
 
 [node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1025,16 +1026,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("29_k5jl5")
-village1_texture = ExtResource("30_fh6x0")
+village1_texture = ExtResource("29_ewwwr")
 village2_texture = ExtResource("31_j0obb")
 village3_texture = ExtResource("31_j0obb")
 village4_texture = ExtResource("31_j0obb")
 village5_texture = ExtResource("31_j0obb")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
-anchors_preset = 0
-offset_right = 405.0
-offset_bottom = 270.0
+custom_minimum_size = Vector2(544, 306)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityBackground"]
 layout_mode = 1
@@ -1043,14 +1046,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("14_v2cs8")
+texture = ExtResource("29_ewwwr")
 expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
-layout_mode = 0
-offset_top = 270.0
-offset_right = 405.0
-offset_bottom = 630.0
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -318.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
 layout_mode = 1
@@ -1064,7 +1071,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 0
-text = "The church offers divine blessings to aid you in your journey. Each blessing provides unique benefits for a small donation. "
+text = "Hi there, ready to make a donation to a good cause?"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -1123,7 +1130,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
 [node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1138,9 +1145,11 @@ village4_texture = ExtResource("36_lknxd")
 village5_texture = ExtResource("36_lknxd")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
-anchors_preset = 0
-offset_right = 405.0
-offset_bottom = 270.0
+custom_minimum_size = Vector2(544, 306)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityBackground"]
 layout_mode = 1
@@ -1149,7 +1158,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("14_v2cs8")
+texture = ExtResource("24_ewwwr")
 expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
@@ -1284,6 +1293,7 @@ offset_right = 220.5
 
 [node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1429,6 +1439,7 @@ offset_left = -220.5
 offset_right = 220.5
 
 [node name="Home" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("villages_container", "quest_panel", "quest_slide_panel", "map_panel")]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
