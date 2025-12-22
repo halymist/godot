@@ -1,4 +1,4 @@
-[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=122 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
@@ -53,6 +53,7 @@
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
+[ext_resource type="Texture2D" uid="uid://txqic3xg5lti" path="res://assets/images/villages/blacksmith_better.png" id="22_ewwwr"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
@@ -641,6 +642,7 @@ offset_right = 220.5
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -648,16 +650,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
-village1_texture = ExtResource("18_htg8p")
+village1_texture = ExtResource("22_ewwwr")
 village2_texture = ExtResource("20_fnkle")
 village3_texture = ExtResource("20_fnkle")
 village4_texture = ExtResource("20_fnkle")
 village5_texture = ExtResource("20_fnkle")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
-anchors_preset = 0
-offset_right = 405.0
-offset_bottom = 270.0
+custom_minimum_size = Vector2(600, 300)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_right = 225.0
+offset_bottom = 300.0
+grow_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/UtilityBackground"]
 layout_mode = 1
@@ -670,10 +678,13 @@ texture = ExtResource("18_htg8p")
 expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
-layout_mode = 0
-offset_top = 270.0
-offset_right = 405.0
-offset_bottom = 545.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 350.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/UtilityPanel"]
 layout_mode = 1
@@ -6071,6 +6082,7 @@ expand_icon = true
 [node name="Wide" type="Control" parent="." node_paths=PackedStringArray("home_panel", "character_panel", "arena_panel", "map_panel", "talents_panel", "enemy_panel", "settings_panel", "rankings_panel", "payment", "chat_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "wide_home_button", "wide_character_button", "wide_arena_button", "wide_map_button", "wide_settings_button", "wide_rankings_button", "wide_payment_button", "wide_chat_button", "wide_back_button")]
 visible = false
 layout_mode = 1
+anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
