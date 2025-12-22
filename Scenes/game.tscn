@@ -547,7 +547,6 @@ grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -562,9 +561,11 @@ village4_texture = ExtResource("16_titue")
 village5_texture = ExtResource("16_titue")
 
 [node name="VendorBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
-anchors_preset = 0
-offset_right = 405.0
-offset_bottom = 270.0
+custom_minimum_size = Vector2(544, 306)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VendorBackground"]
 layout_mode = 1
@@ -576,70 +577,72 @@ grow_vertical = 2
 texture = ExtResource("14_v2cs8")
 expand_mode = 1
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
-layout_mode = 0
-offset_top = 270.0
-offset_right = 405.0
-offset_bottom = 545.0
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -312.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Sell"
 slot_id = 113
 
-[node name="VendorSlots" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel"]
+[node name="VendorSlots" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -220.0
-offset_top = -110.0
-offset_right = 220.0
-offset_bottom = 110.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 columns = 4
 
-[node name="Vendor1" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor1" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 105
 
-[node name="Vendor2" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor2" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 106
 
-[node name="Vendor3" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor3" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 107
 
-[node name="Vendor4" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor4" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 108
 
-[node name="Vendor5" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor5" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 109
 
-[node name="Vendor6" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor6" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 110
 
-[node name="Vendor7" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor7" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 111
 
-[node name="Vendor8" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor8" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 112
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
-layout_mode = 1
-offset_left = -220.5
-offset_right = 220.5
+layout_mode = 2
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("blacksmith_slot", "improved_stats_label", "temper_button")]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
