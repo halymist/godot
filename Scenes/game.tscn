@@ -1,4 +1,4 @@
-[gd_scene load_steps=122 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
@@ -45,7 +45,6 @@
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="Texture2D" uid="uid://de5d80e8d58rl" path="res://assets/images/villages/vendor2.png" id="16_titue"]
-[ext_resource type="Texture2D" uid="uid://bmo5oqy3a5rr5" path="res://assets/images/villages/blacksmith25.png" id="18_htg8p"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="PackedScene" uid="uid://cducbq1tpj6uc" path="res://Scenes/bag.tscn" id="20_6xvgv"]
 [ext_resource type="Texture2D" uid="uid://bl10e588p83eh" path="res://assets/images/villages/blacksmith26.png" id="20_fnkle"]
@@ -53,9 +52,9 @@
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
-[ext_resource type="Texture2D" uid="uid://txqic3xg5lti" path="res://assets/images/villages/blacksmith_better.png" id="22_ewwwr"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
+[ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="24_ewwwr"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
@@ -652,21 +651,17 @@ script = ExtResource("41_blacksmith")
 blacksmith_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlot")
 improved_stats_label = NodePath("VBoxContainer/UtilityPanel/StatsContainer/ImprovedStats")
 temper_button = NodePath("VBoxContainer/UtilityPanel/TemperButton")
-village1_texture = ExtResource("22_ewwwr")
+village1_texture = ExtResource("24_ewwwr")
 village2_texture = ExtResource("20_fnkle")
 village3_texture = ExtResource("20_fnkle")
 village4_texture = ExtResource("20_fnkle")
 village5_texture = ExtResource("20_fnkle")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
-custom_minimum_size = Vector2(600, 300)
+custom_minimum_size = Vector2(544, 306)
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -225.0
-offset_right = 225.0
-offset_bottom = 300.0
+anchors_preset = 10
+anchor_right = 1.0
 grow_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/UtilityBackground"]
@@ -676,7 +671,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("18_htg8p")
+texture = ExtResource("24_ewwwr")
 expand_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]

@@ -271,7 +271,6 @@ func handle_map_button():
 	
 	# Check if already on map panel - toggle off (go home)
 	var current = GameInfo.get_current_panel()
-	print("[Map Button] Current panel: ", current.name if current else "null", " Map panel: ", map_panel.name if map_panel else "null")
 	if current == map_panel:
 		print("[Map Button] Already on map, going home")
 		show_panel(home_panel)
@@ -442,7 +441,6 @@ func show_utility_panel(panel: Control):
 		panel.visible = true
 		# Track as current overlay in GameInfo
 		GameInfo.set_current_panel_overlay(panel)
-		print("[TogglePanel] Set current_panel_overlay to: ", GameInfo.get_current_panel_overlay().name if GameInfo.get_current_panel_overlay() else "null")
 
 func hide_utility_panel(panel: Control):
 	"""Hide a utility panel and clear tracking"""
