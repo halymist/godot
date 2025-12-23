@@ -47,27 +47,8 @@ func _on_gold_changed(_new_gold):
 func _on_item_changed():
 	# Update button state and effect list when item changes
 	if visible:
-		update_slot_visual()
 		update_enchant_button_state()
 		populate_effect_list()
-
-func update_slot_visual():
-	# Update the visual display of slot 104
-	if enchanter_slot and enchanter_slot.has_method("clear_slot"):
-		enchanter_slot.clear_slot()
-		
-		# Find item in slot 104
-		for item in GameInfo.current_player.bag_slots:
-			if item.bag_slot_id == 104:
-				# Get item prefab from the bag
-				var bag = get_node_or_null("Bag")
-				if bag and bag.item_prefab:
-					var icon = bag.item_prefab.instantiate()
-					icon.set_item_data(item)
-					enchanter_slot.add_child(icon)
-				break
-		
-		enchanter_slot.update_slot_appearance()
 
 func return_enchanter_item_to_bag():
 	# Find any item in slot 104 (enchanter slot) and return it to first available bag slot

@@ -41,36 +41,7 @@ func _on_gold_changed(_new_gold):
 func _on_item_changed():
 	# Update stats when item changes
 	if visible:
-		refresh_blacksmith_slot()
 		update_stats_display()
-
-func refresh_blacksmith_slot():
-	"""Refresh the visual display of the blacksmith slot"""
-	if not blacksmith_slot:
-		return
-	
-	# Clear existing items (except background/outline)
-	for child in blacksmith_slot.get_children():
-		if child.name != "Background" and child.name != "Outline":
-			child.queue_free()
-	
-	# Find item in slot 100
-	var item_in_slot = null
-	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 100:
-			item_in_slot = item
-			break
-	
-	# If there's an item, create its visual
-	if item_in_slot and blacksmith_slot.item_scene:
-		var item_icon = blacksmith_slot.item_scene.instantiate()
-		blacksmith_slot.add_child(item_icon)
-		if item_icon.has_method("set_item_data"):
-			item_icon.set_item_data(item_in_slot)
-	
-	# Update outline visibility
-	if blacksmith_slot.has_method("update_slot_appearance"):
-		blacksmith_slot.update_slot_appearance()
 
 func update_stats_display():
 	# Find item in slot 100

@@ -17,6 +17,9 @@ func _ready():
 	if outline_texture and item_outline:
 		item_outline.texture = outline_texture
 	
+	# Connect to bag changes to auto-refresh this slot
+	GameInfo.bag_slots_changed.connect(refresh_slot)
+	
 	# Update slot appearance to show outline if empty
 	update_slot_appearance()
 
@@ -360,6 +363,30 @@ func update_slot_appearance():
 	# Only show outline when empty AND outline_texture is set (equipment slots)
 	if item_outline:
 		item_outline.visible = (item_count == 0) and (outline_texture != null)
+
+func refresh_slot():
+	"""Refresh the slot's visual state - clear old items and update outline"""
+	# Clear existing item visuals (keep Background and Outline)
+	for child in get_children():
+		if child != slot_background and child != item_outline:
+			child.queue_free()
+	
+	# Find if this slot has an item
+	var has_item = false
+	for item in GameInfo.current_player.bag_slots:
+		if item.bag_slot_id == slot_id:
+			has_item = true
+			# Instantiate the item visual
+			if item_scene:
+				var item_icon = item_scene.instantiate()
+				add_child(item_icon)
+				if item_icon.has_method("set_item_data"):
+					item_icon.set_item_data(item)
+			break
+	
+	# Toggle outline visibility
+	if item_outline:
+		item_outline.visible = (not has_item) and (outline_texture != null)
 
 func get_item_data() -> GameInfo.Item:
 	if not is_slot_empty():

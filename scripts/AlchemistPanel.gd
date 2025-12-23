@@ -212,29 +212,5 @@ func _on_gold_changed(_new_gold: int):
 	update_brew_button_state()
 
 func _on_bag_slots_changed():
-	update_slot_visuals()
 	update_result_preview()
 	update_brew_button_state()
-
-func update_slot_visuals():
-	# Update ingredient slots 101-103
-	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
-	var slot_ids = [101, 102, 103]
-	
-	for i in range(3):
-		var container = slot_containers[i]
-		if container and container.has_method("clear_slot"):
-			container.clear_slot()
-			
-			# Find item in this slot
-			for item in GameInfo.current_player.bag_slots:
-				if item.bag_slot_id == slot_ids[i]:
-					# Get item prefab from the bag
-					var bag = get_node_or_null("Bag")
-					if bag and bag.item_prefab:
-						var icon = bag.item_prefab.instantiate()
-						icon.set_item_data(item)
-						container.add_child(icon)
-					break
-			
-			container.update_slot_appearance()
