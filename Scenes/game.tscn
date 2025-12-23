@@ -539,7 +539,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "vendor_grid")]
+[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "vendor_grid")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -551,6 +551,7 @@ grow_vertical = 2
 script = ExtResource("40_vendor")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("Description")
+bag = NodePath("VBoxContainer/Bag")
 vendor_grid = NodePath("VBoxContainer/UtilityPanel/VendorSlots")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
@@ -656,7 +657,7 @@ slot_id = 112
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -668,6 +669,7 @@ grow_vertical = 2
 script = ExtResource("41_blacksmith")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("VBoxContainer/UtilityPanel/Description")
+bag = NodePath("VBoxContainer/Bag")
 blacksmith_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlot")
 improved_stats_label = NodePath("VBoxContainer/UtilityPanel/StatsContainer/ImprovedStats")
 temper_button = NodePath("VBoxContainer/UtilityPanel/TemperButton")
@@ -1127,7 +1129,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1139,6 +1141,7 @@ grow_vertical = 2
 script = ExtResource("30_nqk4g")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("VBoxContainer/UtilityPanel/Description")
+bag = NodePath("VBoxContainer/Bag")
 result_preview = NodePath("VBoxContainer/UtilityPanel/ResultPreview")
 brew_button = NodePath("VBoxContainer/UtilityPanel/BottomRow/BrewButton")
 ingredient_slot1 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot1")
@@ -1314,7 +1317,7 @@ text = ")"
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "enchanter_slot", "enchant_button", "effect_list")]
+[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "enchanter_slot", "enchant_button", "effect_list")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1326,6 +1329,7 @@ grow_vertical = 2
 script = ExtResource("31_enchanter")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("VBoxContainer/UtilityPanel/Description")
+bag = NodePath("VBoxContainer/Bag")
 enchanter_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/ItemSlot")
 enchant_button = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton")
 effect_list = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/EffectsSection/EffectScrollContainer/EffectList")

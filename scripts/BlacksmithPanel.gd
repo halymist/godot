@@ -4,6 +4,7 @@ extends Panel
 
 @export var background_rect: TextureRect
 @export var description_label: Label
+@export var bag: Control
 @export var blacksmith_slot: Control
 @export var improved_stats_label: Label
 @export var temper_button: Button
@@ -19,6 +20,16 @@ func _ready():
 	if temper_button:
 		temper_button.pressed.connect(_on_temper_pressed)
 	update_temper_button_state()
+	# Connect to layout mode changes
+	var resolution_manager = get_tree().root.get_node("Game")
+	if resolution_manager:
+		print("BlacksmithPanel: connecting to layout_mode_changed signal")
+		resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
+
+func _on_layout_mode_changed(is_wide: bool):
+	print("BlacksmithPanel: layout mode changed, is_wide=", is_wide)
+	if bag:
+		bag.visible = not is_wide
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from blacksmith slot to bag

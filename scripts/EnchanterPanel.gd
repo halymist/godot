@@ -4,6 +4,7 @@ extends Panel
 
 @export var background_rect: TextureRect
 @export var description_label: Label
+@export var bag: Control
 @export var enchanter_slot: Control
 @export var enchant_button: Button
 @export var effect_list: VBoxContainer
@@ -23,6 +24,14 @@ func _ready():
 		enchant_button.pressed.connect(_on_enchant_pressed)
 	update_enchant_button_state()
 	populate_effect_list()
+	# Connect to layout mode changes
+	var resolution_manager = get_tree().root.get_node("Game")
+	if resolution_manager:
+		resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
+
+func _on_layout_mode_changed(is_wide: bool):
+	if bag:
+		bag.visible = not is_wide
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from enchanter slot to bag

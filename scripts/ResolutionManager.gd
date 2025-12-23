@@ -6,6 +6,9 @@ var current_scale_factor = 1.0
 # User preference scaling (can be changed via settings)
 @export var user_font_scale: float = 1.0  # 1.0 = normal, 1.2 = 20% bigger, 0.8 = 20% smaller
 
+# Signal emitted when layout mode changes
+signal layout_mode_changed(is_wide: bool)
+
 @export var phone_ui_root: Control
 @export var desktop_ui_root: Control
 @export var game_scene: Control
@@ -177,6 +180,7 @@ func switch_layout(new_layout: Control, base_resolution: Vector2i, old_layout: C
 	if switching_to_wide and not switching_from_wide:
 		print("Reparenting panels to wide layout")
 		reparent_to_wide()
+		layout_mode_changed.emit(true)  # Emit wide mode signal
 		
 		# Auto-show companion panels when switching to wide
 		var current_panel = GameInfo.get_current_panel()
@@ -197,6 +201,7 @@ func switch_layout(new_layout: Control, base_resolution: Vector2i, old_layout: C
 	elif switching_from_wide and not switching_to_wide:
 		print("Reparenting panels to portrait layout")
 		reparent_to_portrait()
+		layout_mode_changed.emit(false)  # Emit portrait mode signal
 	
 	layout_changed.emit(current_layout)
 

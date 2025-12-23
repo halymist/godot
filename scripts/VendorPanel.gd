@@ -3,6 +3,7 @@ extends Panel
 # VendorPanel-specific functionality
 @export var background_rect: TextureRect
 @export var description_label: Label
+@export var bag: Control
 @export var vendor_grid: GridContainer
 @onready var vendor_slots: Array[Control] = []
 
@@ -18,6 +19,14 @@ func _ready():
 	# Connect to bag_slots_changed to refresh vendor display when items are bought
 	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
 	populate_vendor_slots()
+	# Connect to layout mode changes
+	var resolution_manager = get_tree().root.get_node("Game")
+	if resolution_manager:
+		resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
+
+func _on_layout_mode_changed(is_wide: bool):
+	if bag:
+		bag.visible = not is_wide
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
