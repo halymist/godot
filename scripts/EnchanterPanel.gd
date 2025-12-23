@@ -13,6 +13,7 @@ var selected_effect_id: int = 0
 var selected_effect_factor: float = 0.0
 
 func _ready():
+	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	GameInfo.bag_slots_changed.connect(_on_item_changed)
@@ -27,25 +28,13 @@ func _on_visibility_changed():
 	if not visible:
 		return_enchanter_item_to_bag()
 	else:
-		# When panel becomes visible, load location content and update button state
-		_load_location_content()
 		update_enchant_button_state()
 		populate_effect_list()
 
 func _load_location_content():
-	"""Load background and content based on current location"""
-	if not GameInfo.current_player or not GameInfo.settlements_db:
-		return
-	
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if not location_data:
-		print("EnchanterPanel: No location data found for location ", GameInfo.current_player.location)
-		return
-	
-	# Load background if available
 	if background_rect and location_data.enchanter_background:
 		background_rect.texture = location_data.enchanter_background
-		print("EnchanterPanel: Loaded background for location ", GameInfo.current_player.location)
 
 func _on_gold_changed(_new_gold):
 	# Update button state when gold changes

@@ -10,6 +10,7 @@ extends Panel
 const TEMPER_COST = 10
 
 func _ready():
+	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	GameInfo.bag_slots_changed.connect(_on_item_changed)
@@ -23,36 +24,12 @@ func _on_visibility_changed():
 	if not visible:
 		return_blacksmith_item_to_bag()
 	else:
-		# When panel becomes visible, load location content and update stats
-		_load_location_content()
 		update_stats_display()
 
 func _load_location_content():
-	"""Load background and content based on current location"""
-	print("BlacksmithPanel: _load_location_content called")
-	print("BlacksmithPanel: GameInfo.current_player = ", GameInfo.current_player)
-	print("BlacksmithPanel: GameInfo.settlements_db = ", GameInfo.settlements_db)
-	
-	if not GameInfo.current_player or not GameInfo.settlements_db:
-		print("BlacksmithPanel: Missing current_player or settlements_db, returning")
-		return
-	
-	print("BlacksmithPanel: Looking for location_id: ", GameInfo.current_player.location)
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	print("BlacksmithPanel: location_data = ", location_data)
-	
-	if not location_data:
-		print("BlacksmithPanel: No location data found for location ", GameInfo.current_player.location)
-		return
-	
-	print("BlacksmithPanel: location_data.blacksmith_background = ", location_data.blacksmith_background)
-	
-	# Load background if available
 	if background_rect and location_data.blacksmith_background:
 		background_rect.texture = location_data.blacksmith_background
-		print("BlacksmithPanel: Loaded background for location ", GameInfo.current_player.location)
-	else:
-		print("BlacksmithPanel: background_rect = ", background_rect, ", blacksmith_background = ", location_data.blacksmith_background)
 
 func _on_gold_changed(_new_gold):
 	# Update button state when gold changes
@@ -159,8 +136,6 @@ func return_blacksmith_item_to_bag():
 					return
 
 func update_temper_button_state():
-	if not temper_button:
-		return
 	
 	# Check if there's an item in the blacksmith slot
 	var item_in_slot = null

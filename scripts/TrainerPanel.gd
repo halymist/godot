@@ -19,39 +19,27 @@ const STAT_COST = 5
 @export var luck_button: Button
 
 func _ready():
+	_load_location_content()
 	# Connect button signals
 	talent_points_button.pressed.connect(_on_talent_points_plus_pressed)
 	strength_button.pressed.connect(_on_strength_plus_pressed)
 	stamina_button.pressed.connect(_on_stamina_plus_pressed)
 	agility_button.pressed.connect(_on_agility_plus_pressed)
 	luck_button.pressed.connect(_on_luck_plus_pressed)
-	
 	# Update stats display when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
-	
 	# Connect to gold changes to update button states
 	GameInfo.gold_changed.connect(_on_gold_changed)
 
 func _on_visibility_changed():
 	if visible:
-		_load_location_content()
 		update_stats_display()
 		update_button_states()
 
 func _load_location_content():
-	"""Load background and content based on current location"""
-	if not GameInfo.current_player or not GameInfo.settlements_db:
-		return
-	
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if not location_data:
-		print("TrainerPanel: No location data found for location ", GameInfo.current_player.location)
-		return
-	
-	# Load background if available
 	if background_rect and location_data.trainer_background:
 		background_rect.texture = location_data.trainer_background
-		print("TrainerPanel: Loaded background for location ", GameInfo.current_player.location)
 
 func _on_gold_changed(_new_gold: int):
 	if visible:

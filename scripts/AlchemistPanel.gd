@@ -16,12 +16,11 @@ const SLOT_3 = 103
 @export var ingredient_slot3: Control
 
 func _ready():
+	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	
 	# Connect brew button
 	brew_button.pressed.connect(_on_brew_button_pressed)
-	
 	# Connect to gold and bag changes to update UI
 	GameInfo.gold_changed.connect(_on_gold_changed)
 	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
@@ -31,24 +30,12 @@ func _on_visibility_changed():
 	if not visible:
 		return_ingredients_to_bag()
 	else:
-		# When panel becomes visible, load location content and update preview
-		_load_location_content()
 		update_result_preview()
 
 func _load_location_content():
-	"""Load background and content based on current location"""
-	if not GameInfo.current_player or not GameInfo.settlements_db:
-		return
-	
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if not location_data:
-		print("AlchemistPanel: No location data found for location ", GameInfo.current_player.location)
-		return
-	
-	# Load background if available
 	if background_rect and location_data.alchemist_background:
 		background_rect.texture = location_data.alchemist_background
-		print("AlchemistPanel: Loaded background for location ", GameInfo.current_player.location)
 
 func return_ingredients_to_bag():
 	# Return items from ingredient slots (101, 102, 103) to bag

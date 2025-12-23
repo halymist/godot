@@ -6,6 +6,7 @@ extends Panel
 @onready var vendor_slots: Array[Control] = []
 
 func _ready():
+	_load_location_content()
 	# Get vendor slot references (slots 105-112 for 8 items)
 	if vendor_grid:
 		for i in range(1, 9):  # Vendor1 through Vendor8
@@ -15,30 +16,12 @@ func _ready():
 	
 	# Connect to bag_slots_changed to refresh vendor display when items are bought
 	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
-	
-	# Connect to visibility to load location content
-	visibility_changed.connect(_on_visibility_changed)
-	
 	populate_vendor_slots()
 
-func _on_visibility_changed():
-	if visible:
-		_load_location_content()
-
 func _load_location_content():
-	"""Load background and content based on current location"""
-	if not GameInfo.current_player or not GameInfo.settlements_db:
-		return
-	
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if not location_data:
-		print("VendorPanel: No location data found for location ", GameInfo.current_player.location)
-		return
-	
-	# Load background if available
 	if background_rect and location_data.vendor_background:
 		background_rect.texture = location_data.vendor_background
-		print("VendorPanel: Loaded background for location ", GameInfo.current_player.location)
 		background_rect.texture = location_data.vendor_background
 
 func _on_bag_slots_changed():
