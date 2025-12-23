@@ -1,21 +1,16 @@
-@tool
-extends "res://scripts/UtilityPanel.gd"
+extends Panel
 
 const BLESSING_COST = 10
 const BlessingScene = preload("res://Scenes/blessing.tscn")
 
-@onready var blessings_container = $UtilityPanel/Content/ScrollContainer/BlessingsContainer
-@onready var bless_button = $UtilityPanel/Content/BlessButton
+@export var background_rect: TextureRect
+@export var blessings_container: VBoxContainer
+@export var bless_button: Button
 
 var selected_blessing_id: int = -1
 var blessing_nodes: Dictionary = {}  # Maps effect_id to blessing node for highlighting
 
 func _ready():
-	if Engine.is_editor_hint():
-		return
-	
-	super._ready()
-	
 	# Connect bless button
 	if bless_button:
 		bless_button.pressed.connect(_on_bless_button_pressed)
@@ -27,12 +22,28 @@ func _ready():
 	GameInfo.gold_changed.connect(_on_gold_changed)
 
 func _on_visibility_changed():
-	if visible and not Engine.is_editor_hint():
+	if visible:
+		_load_location_content()
 		load_blessings()
 		update_bless_button_state()
 
+func _load_location_content():
+	"""Load background and content based on current location"""
+	if not GameInfo.current_player or not GameInfo.settlements_db:
+		return
+	
+	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
+	if not location_data:
+		print("ChurchPanel: No location data found for location ", GameInfo.current_player.location)
+		return
+	
+	# Load background if available
+	if background_rect and location_data.church_background:
+		background_rect.texture = location_data.church_background
+		print("ChurchPanel: Loaded background for location ", GameInfo.current_player.location)
+
 func _on_gold_changed(_new_gold: int = 0):
-	if visible and not Engine.is_editor_hint():
+	if visible:
 		update_bless_button_state()
 
 func load_blessings():

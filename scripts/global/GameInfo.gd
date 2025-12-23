@@ -9,6 +9,7 @@ var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
 var npcs_db: NpcDatabase = null
 var cosmetics_db: CosmeticDatabase = null
+var settlements_db: SettlementsDatabase = null
 
 # Village names mapping
 const VILLAGE_NAMES = {
@@ -22,6 +23,12 @@ const VILLAGE_NAMES = {
 func get_village_name(location_id: int) -> String:
 	"""Get the village name for a given location ID"""
 	return VILLAGE_NAMES.get(location_id, "Unknown Village")
+
+func get_location_data(location_id: int) -> LocationResource:
+	"""Get the location data for a given location ID"""
+	if settlements_db:
+		return settlements_db.get_location_by_id(location_id)
+	return null
 
 # Guild names and icons mapping
 const GUILD_DATA = {
@@ -854,6 +861,19 @@ func _ready():
 		print("Cosmetics database loaded: ", cosmetics_db.cosmetics.size(), " cosmetics")
 	else:
 		print("Warning: cosmetics.tres not found, avatar customization will not work")
+	
+	print("Checking for settlements.tres...")
+	print("ResourceLoader.exists('res://scripts/resources/settlements.tres'): ", ResourceLoader.exists("res://scripts/resources/settlements.tres"))
+	if ResourceLoader.exists("res://scripts/resources/settlements.tres"):
+		print("Loading settlements.tres...")
+		settlements_db = load("res://scripts/resources/settlements.tres")
+		print("settlements_db after load: ", settlements_db)
+		if settlements_db:
+			print("Settlements database loaded: ", settlements_db.settlements.size(), " settlements")
+		else:
+			print("ERROR: settlements.tres loaded but is null!")
+	else:
+		print("Warning: settlements.tres not found at res://scripts/resources/settlements.tres")
 	
 	load_player_data(Websocket.mock_character_data)
 	load_enemy_players_data(Websocket.mock_rankings)  # Load all enemy players from rankings data

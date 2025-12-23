@@ -1,9 +1,8 @@
-@tool
-extends "res://scripts/UtilityPanel.gd"
+extends Panel
 
-# BlacksmithPanel-specific functionality can be added here
-# For now, it uses all functionality from UtilityPanel
+# BlacksmithPanel-specific functionality
 
+@export var background_rect: TextureRect
 @export var blacksmith_slot: Control
 @export var improved_stats_label: Label
 @export var temper_button: Button
@@ -11,7 +10,6 @@ extends "res://scripts/UtilityPanel.gd"
 const TEMPER_COST = 10
 
 func _ready():
-	super._ready()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	GameInfo.bag_slots_changed.connect(_on_item_changed)
@@ -20,17 +18,45 @@ func _ready():
 		temper_button.pressed.connect(_on_temper_pressed)
 	update_temper_button_state()
 
-func _on_gold_changed(_new_gold):
-	# Update button state when gold changes
-	update_temper_button_state()
-
 func _on_visibility_changed():
 	# When panel is hidden, return item from blacksmith slot to bag
 	if not visible:
 		return_blacksmith_item_to_bag()
 	else:
-		# When panel becomes visible, update stats display
+		# When panel becomes visible, load location content and update stats
+		_load_location_content()
 		update_stats_display()
+
+func _load_location_content():
+	"""Load background and content based on current location"""
+	print("BlacksmithPanel: _load_location_content called")
+	print("BlacksmithPanel: GameInfo.current_player = ", GameInfo.current_player)
+	print("BlacksmithPanel: GameInfo.settlements_db = ", GameInfo.settlements_db)
+	
+	if not GameInfo.current_player or not GameInfo.settlements_db:
+		print("BlacksmithPanel: Missing current_player or settlements_db, returning")
+		return
+	
+	print("BlacksmithPanel: Looking for location_id: ", GameInfo.current_player.location)
+	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
+	print("BlacksmithPanel: location_data = ", location_data)
+	
+	if not location_data:
+		print("BlacksmithPanel: No location data found for location ", GameInfo.current_player.location)
+		return
+	
+	print("BlacksmithPanel: location_data.blacksmith_background = ", location_data.blacksmith_background)
+	
+	# Load background if available
+	if background_rect and location_data.blacksmith_background:
+		background_rect.texture = location_data.blacksmith_background
+		print("BlacksmithPanel: Loaded background for location ", GameInfo.current_player.location)
+	else:
+		print("BlacksmithPanel: background_rect = ", background_rect, ", blacksmith_background = ", location_data.blacksmith_background)
+
+func _on_gold_changed(_new_gold):
+	# Update button state when gold changes
+	update_temper_button_state()
 
 func _on_item_changed():
 	# Update stats when item changes

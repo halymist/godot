@@ -1,7 +1,8 @@
-extends "res://scripts/UtilityPanel.gd"
+extends Panel
 
 # EnchanterPanel-specific functionality
 
+@export var background_rect: TextureRect
 @export var enchanter_slot: Control
 @export var enchant_button: Button
 @export var effect_list: VBoxContainer
@@ -12,7 +13,6 @@ var selected_effect_id: int = 0
 var selected_effect_factor: float = 0.0
 
 func _ready():
-	super._ready()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	GameInfo.bag_slots_changed.connect(_on_item_changed)
@@ -22,18 +22,35 @@ func _ready():
 	update_enchant_button_state()
 	populate_effect_list()
 
-func _on_gold_changed(_new_gold):
-	# Update button state when gold changes
-	update_enchant_button_state()
-
 func _on_visibility_changed():
 	# When panel is hidden, return item from enchanter slot to bag
 	if not visible:
 		return_enchanter_item_to_bag()
 	else:
-		# When panel becomes visible, update button state and effect list
+		# When panel becomes visible, load location content and update button state
+		_load_location_content()
 		update_enchant_button_state()
 		populate_effect_list()
+
+func _load_location_content():
+	"""Load background and content based on current location"""
+	if not GameInfo.current_player or not GameInfo.settlements_db:
+		return
+	
+	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
+	if not location_data:
+		print("EnchanterPanel: No location data found for location ", GameInfo.current_player.location)
+		return
+	
+	# Load background if available
+	if background_rect and location_data.enchanter_background:
+		background_rect.texture = location_data.enchanter_background
+		print("EnchanterPanel: Loaded background for location ", GameInfo.current_player.location)
+
+func _on_gold_changed(_new_gold):
+	# Update button state when gold changes
+	update_enchant_button_state()
+	populate_effect_list()
 
 func _on_item_changed():
 	# Update button state and effect list when item changes

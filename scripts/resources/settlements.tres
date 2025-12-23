@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="SettlementsDatabase" load_steps=10 format=3 uid="uid://d1ggibhqe2sqs"]
+
+[ext_resource type="Script" uid="uid://dougakb8mecrw" path="res://scripts/resources/SettlementsDatabase.gd" id="1_4vit6"]
+[ext_resource type="Script" uid="uid://pwd267vyc7jv" path="res://scripts/LocationData.gd" id="2_ot23h"]
+[ext_resource type="Texture2D" uid="uid://dj7mr2ev3k7p7" path="res://assets/images/villages/witch.png" id="3_mli3h"]
+[ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="4_c0hw1"]
+[ext_resource type="Texture2D" uid="uid://b46irn0coridq" path="res://assets/images/villages/druid_monastery.png" id="5_7jouw"]
+[ext_resource type="Texture2D" uid="uid://o3x5685ybv3i" path="res://assets/images/villages/enchanting.png" id="6_n5k1k"]
+[ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="7_tvlym"]
+[ext_resource type="Texture2D" uid="uid://x083py6ybw37" path="res://assets/images/villages/vendor_last.png" id="8_yeplg"]
+
+[sub_resource type="Resource" id="Resource_48ku7"]
+script = ExtResource("2_ot23h")
+location_id = 1
+location_name = "Krasna"
+blacksmith_background = ExtResource("4_c0hw1")
+blacksmith_greetings = Array[String](["Hi"])
+vendor_background = ExtResource("8_yeplg")
+vendor_greetings = Array[String](["Hello"])
+alchemist_background = ExtResource("3_mli3h")
+alchemist_greetings = Array[String](["Sup SUp"])
+enchanter_background = ExtResource("6_n5k1k")
+enchanter_greetings = Array[String](["Hmmm"])
+trainer_background = ExtResource("7_tvlym")
+trainer_greetings = Array[String](["Not hmmm"])
+church_background = ExtResource("5_7jouw")
+church_greetings = Array[String](["What do you want"])
+metadata/_custom_type_script = "uid://pwd267vyc7jv"
+
+[resource]
+script = ExtResource("1_4vit6")
+settlements = Array[ExtResource("2_ot23h")]([SubResource("Resource_48ku7")])

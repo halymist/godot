@@ -1,4 +1,4 @@
-[gd_scene load_steps=122 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
@@ -44,17 +44,14 @@
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
 [ext_resource type="Texture2D" uid="uid://x083py6ybw37" path="res://assets/images/villages/vendor_last.png" id="15_ewwwr"]
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
-[ext_resource type="Texture2D" uid="uid://de5d80e8d58rl" path="res://assets/images/villages/vendor2.png" id="16_titue"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="PackedScene" uid="uid://cducbq1tpj6uc" path="res://Scenes/bag.tscn" id="20_6xvgv"]
-[ext_resource type="Texture2D" uid="uid://bl10e588p83eh" path="res://assets/images/villages/blacksmith26.png" id="20_fnkle"]
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
-[ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="24_ewwwr"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="26_ewwwr"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
@@ -62,16 +59,13 @@
 [ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
 [ext_resource type="Texture2D" uid="uid://b46irn0coridq" path="res://assets/images/villages/druid_monastery.png" id="29_ewwwr"]
 [ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
-[ext_resource type="Texture2D" uid="uid://6iephe8o7hdc" path="res://assets/images/villages/trainer2.png" id="30_jcn4n"]
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
-[ext_resource type="Texture2D" uid="uid://cxqt6xldm0tqa" path="res://assets/images/villages/church2.png" id="31_j0obb"]
 [ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="32_ccfo7"]
 [ext_resource type="Texture2D" uid="uid://dj7mr2ev3k7p7" path="res://assets/images/villages/witch.png" id="32_ewwwr"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
 [ext_resource type="Texture2D" uid="uid://o3x5685ybv3i" path="res://assets/images/villages/enchanting.png" id="36_ewwwr"]
-[ext_resource type="Texture2D" uid="uid://dujo2rqnf0oo8" path="res://assets/images/villages/alchemist2.png" id="36_lknxd"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/RankingsPanel.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
@@ -79,9 +73,7 @@
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
-[ext_resource type="Texture2D" uid="uid://dydlyg2ehudyl" path="res://assets/images/villages/enchanter.png" id="39_ckj55"]
 [ext_resource type="Script" uid="uid://rk346721f3le" path="res://scripts/SquareContent.gd" id="39_square"]
-[ext_resource type="Texture2D" uid="uid://jwddckmt0kna" path="res://assets/images/villages/enchanter2.png" id="40_q8b24"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
@@ -547,7 +539,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("vendor_grid")]
+[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "vendor_grid")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -557,12 +549,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("40_vendor")
+background_rect = NodePath("UtilityBackground/Background")
 vendor_grid = NodePath("VBoxContainer/UtilityPanel/VendorSlots")
-village1_texture = ExtResource("15_ewwwr")
-village2_texture = ExtResource("16_titue")
-village3_texture = ExtResource("16_titue")
-village4_texture = ExtResource("16_titue")
-village5_texture = ExtResource("16_titue")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
 custom_minimum_size = Vector2(544, 306)
@@ -651,7 +639,7 @@ slot_id = 112
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -661,14 +649,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
+background_rect = NodePath("UtilityBackground/Background")
 blacksmith_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlot")
 improved_stats_label = NodePath("VBoxContainer/UtilityPanel/StatsContainer/ImprovedStats")
 temper_button = NodePath("VBoxContainer/UtilityPanel/TemperButton")
-village1_texture = ExtResource("24_ewwwr")
-village2_texture = ExtResource("20_fnkle")
-village3_texture = ExtResource("20_fnkle")
-village4_texture = ExtResource("20_fnkle")
-village5_texture = ExtResource("20_fnkle")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 custom_minimum_size = Vector2(544, 306)
@@ -684,7 +668,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("24_ewwwr")
+texture = ExtResource("29_ewwwr")
 expand_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
@@ -789,7 +773,7 @@ text = "+10% to all stats"
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
+[node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -799,6 +783,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("28_sjh24")
+background_rect = NodePath("UtilityBackground/Background")
 talent_points_label = NodePath("UtilityPanel/StatsContainer/TalentPointsRow/TalentsRow/Label")
 strength_label = NodePath("UtilityPanel/StatsContainer/StrengthRow/StatInfo/Label")
 stamina_label = NodePath("UtilityPanel/StatsContainer/StaminaRow/StatInfo/Label")
@@ -809,11 +794,6 @@ strength_button = NodePath("UtilityPanel/StatsContainer/StrengthRow/StatInfo/Plu
 stamina_button = NodePath("UtilityPanel/StatsContainer/StaminaRow/StatInfo/PlusButton")
 agility_button = NodePath("UtilityPanel/StatsContainer/AgilityRow/StatInfo/PlusButton")
 luck_button = NodePath("UtilityPanel/StatsContainer/LuckRow/StatInfo/PlusButton")
-village1_texture = ExtResource("26_ewwwr")
-village2_texture = ExtResource("30_jcn4n")
-village3_texture = ExtResource("30_jcn4n")
-village4_texture = ExtResource("30_jcn4n")
-village5_texture = ExtResource("30_jcn4n")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel"]
 custom_minimum_size = Vector2(544, 306)
@@ -1016,7 +996,7 @@ size_flags_horizontal = 3
 text = "Increases critical chance"
 vertical_alignment = 1
 
-[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "blessings_container", "bless_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1026,11 +1006,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("29_k5jl5")
-village1_texture = ExtResource("29_ewwwr")
-village2_texture = ExtResource("31_j0obb")
-village3_texture = ExtResource("31_j0obb")
-village4_texture = ExtResource("31_j0obb")
-village5_texture = ExtResource("31_j0obb")
+background_rect = NodePath("UtilityBackground/Background")
+blessings_container = NodePath("UtilityPanel/Content/ScrollContainer/BlessingsContainer")
+bless_button = NodePath("UtilityPanel/Content/BlessButton")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
 custom_minimum_size = Vector2(544, 306)
@@ -1129,7 +1107,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1139,16 +1117,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
+background_rect = NodePath("UtilityBackground/Background")
 result_preview = NodePath("VBoxContainer/UtilityPanel/ResultPreview")
 brew_button = NodePath("VBoxContainer/UtilityPanel/BottomRow/BrewButton")
 ingredient_slot1 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot1")
 ingredient_slot2 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot2")
 ingredient_slot3 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot3")
-village1_texture = ExtResource("32_ewwwr")
-village2_texture = ExtResource("36_lknxd")
-village3_texture = ExtResource("36_lknxd")
-village4_texture = ExtResource("36_lknxd")
-village5_texture = ExtResource("36_lknxd")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
 custom_minimum_size = Vector2(544, 306)
@@ -1319,7 +1293,7 @@ text = ")"
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("enchanter_slot", "enchant_button", "effect_list")]
+[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "enchanter_slot", "enchant_button", "effect_list")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1329,14 +1303,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("31_enchanter")
+background_rect = NodePath("UtilityBackground/Background")
 enchanter_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/ItemSlot")
 enchant_button = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton")
 effect_list = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/EffectsSection/EffectScrollContainer/EffectList")
-village1_texture = ExtResource("36_ewwwr")
-village2_texture = ExtResource("39_ckj55")
-village3_texture = ExtResource("39_ckj55")
-village4_texture = ExtResource("40_q8b24")
-village5_texture = ExtResource("40_q8b24")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
 custom_minimum_size = Vector2(544, 306)
