@@ -539,7 +539,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "vendor_grid")]
+[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "vendor_grid")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -550,6 +550,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("40_vendor")
 background_rect = NodePath("UtilityBackground/Background")
+description_label = NodePath("Description")
 vendor_grid = NodePath("VBoxContainer/UtilityPanel/VendorSlots")
 
 [node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
@@ -569,13 +570,29 @@ grow_vertical = 2
 texture = ExtResource("15_ewwwr")
 expand_mode = 1
 
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -311.0
+offset_bottom = -267.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+text = "Buy something, now"
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -312.0
+offset_top = -252.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -596,9 +613,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -155.5
-offset_top = -67.5
+offset_top = -76.5
 offset_right = 156.5
-offset_bottom = 96.5
+offset_bottom = 83.5
 grow_horizontal = 2
 grow_vertical = 2
 columns = 4
@@ -639,7 +656,7 @@ slot_id = 112
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -650,6 +667,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
 background_rect = NodePath("UtilityBackground/Background")
+description_label = NodePath("VBoxContainer/UtilityPanel/Description")
 blacksmith_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlot")
 improved_stats_label = NodePath("VBoxContainer/UtilityPanel/StatsContainer/ImprovedStats")
 temper_button = NodePath("VBoxContainer/UtilityPanel/TemperButton")
@@ -773,7 +791,7 @@ text = "+10% to all stats"
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
+[node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -784,6 +802,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("28_sjh24")
 background_rect = NodePath("UtilityBackground/Background")
+description_label = NodePath("UtilityPanel/Description")
 talent_points_label = NodePath("UtilityPanel/StatsContainer/TalentPointsRow/TalentsRow/Label")
 strength_label = NodePath("UtilityPanel/StatsContainer/StrengthRow/StatInfo/Label")
 stamina_label = NodePath("UtilityPanel/StatsContainer/StaminaRow/StatInfo/Label")
@@ -996,7 +1015,7 @@ size_flags_horizontal = 3
 text = "Increases critical chance"
 vertical_alignment = 1
 
-[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "blessings_container", "bless_button")]
+[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "blessings_container", "bless_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1007,6 +1026,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("29_k5jl5")
 background_rect = NodePath("UtilityBackground/Background")
+description_label = NodePath("UtilityPanel/Content/Description")
 blessings_container = NodePath("UtilityPanel/Content/ScrollContainer/BlessingsContainer")
 bless_button = NodePath("UtilityPanel/Content/BlessButton")
 
@@ -1107,7 +1127,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1118,6 +1138,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
 background_rect = NodePath("UtilityBackground/Background")
+description_label = NodePath("VBoxContainer/UtilityPanel/Description")
 result_preview = NodePath("VBoxContainer/UtilityPanel/ResultPreview")
 brew_button = NodePath("VBoxContainer/UtilityPanel/BottomRow/BrewButton")
 ingredient_slot1 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot1")
@@ -1293,7 +1314,7 @@ text = ")"
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "enchanter_slot", "enchant_button", "effect_list")]
+[node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "enchanter_slot", "enchant_button", "effect_list")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1304,6 +1325,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("31_enchanter")
 background_rect = NodePath("UtilityBackground/Background")
+description_label = NodePath("VBoxContainer/UtilityPanel/Description")
 enchanter_slot = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/ItemSlot")
 enchant_button = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection/EnchantButtonContainer/EnchantButton")
 effect_list = NodePath("VBoxContainer/UtilityPanel/ItemSlotContainer/EffectsSection/EffectScrollContainer/EffectList")

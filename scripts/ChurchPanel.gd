@@ -4,6 +4,7 @@ const BLESSING_COST = 10
 const BlessingScene = preload("res://Scenes/blessing.tscn")
 
 @export var background_rect: TextureRect
+@export var description_label: Label
 @export var blessings_container: VBoxContainer
 @export var bless_button: Button
 
@@ -29,6 +30,8 @@ func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	if background_rect and location_data.church_background:
 		background_rect.texture = location_data.church_background
+	if description_label:
+		description_label.text = location_data.get_random_church_greeting()
 
 func _on_gold_changed(_new_gold: int = 0):
 	if visible:

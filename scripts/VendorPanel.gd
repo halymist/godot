@@ -2,6 +2,7 @@ extends Panel
 
 # VendorPanel-specific functionality
 @export var background_rect: TextureRect
+@export var description_label: Label
 @export var vendor_grid: GridContainer
 @onready var vendor_slots: Array[Control] = []
 
@@ -22,6 +23,8 @@ func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	if background_rect and location_data.vendor_background:
 		background_rect.texture = location_data.vendor_background
+	if description_label:
+		description_label.text = location_data.get_random_vendor_greeting()
 		background_rect.texture = location_data.vendor_background
 
 func _on_bag_slots_changed():

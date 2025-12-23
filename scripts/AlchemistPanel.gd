@@ -9,6 +9,7 @@ const SLOT_3 = 103
 
 # Node references
 @export var background_rect: TextureRect
+@export var description_label: Label
 @export var result_preview: Label
 @export var brew_button: Button
 @export var ingredient_slot1: Control
@@ -36,6 +37,8 @@ func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	if background_rect and location_data.alchemist_background:
 		background_rect.texture = location_data.alchemist_background
+	if description_label:
+		description_label.text = location_data.get_random_alchemist_greeting()
 
 func return_ingredients_to_bag():
 	# Return items from ingredient slots (101, 102, 103) to bag

@@ -6,6 +6,7 @@ const STAT_COST = 5
 
 # Stat labels
 @export var background_rect: TextureRect
+@export var description_label: Label
 @export var talent_points_label: Label
 @export var strength_label : Label
 @export var stamina_label: Label
@@ -40,6 +41,8 @@ func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	if background_rect and location_data.trainer_background:
 		background_rect.texture = location_data.trainer_background
+	if description_label:
+		description_label.text = location_data.get_random_trainer_greeting()
 
 func _on_gold_changed(_new_gold: int):
 	if visible:

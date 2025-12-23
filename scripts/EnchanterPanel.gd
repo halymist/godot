@@ -3,6 +3,7 @@ extends Panel
 # EnchanterPanel-specific functionality
 
 @export var background_rect: TextureRect
+@export var description_label: Label
 @export var enchanter_slot: Control
 @export var enchant_button: Button
 @export var effect_list: VBoxContainer
@@ -35,6 +36,8 @@ func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	if background_rect and location_data.enchanter_background:
 		background_rect.texture = location_data.enchanter_background
+	if description_label:
+		description_label.text = location_data.get_random_enchanter_greeting()
 
 func _on_gold_changed(_new_gold):
 	# Update button state when gold changes
