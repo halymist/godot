@@ -124,6 +124,14 @@ func _drop_data(_pos, data):
 		handle_vendor_sell(dragged_item, source_slot_id, source_container)
 		return
 	
+	# Special case: Consuming potion/elixir on avatar (slot 999)
+	if slot_id == 999:
+		if dragged_item.type == "Potion" or dragged_item.type == "Elixir":
+			_consume_item(dragged_item)
+			if source_container:
+				source_container.clear_slot()
+		return
+	
 	# Special case: Socketing a gem into an item
 	if dragged_item.type == "Gem" and not is_slot_empty():
 		var target_item = get_item_data()
@@ -315,6 +323,8 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 			return true  # Bag accepts everything
 		"Sell":
 			return true  # Sell slot accepts everything from player inventory
+		"Consume":
+			return item_type == "Potion" or item_type == "Elixir"  # Only consumables
 		_:
 			return false
 
@@ -406,9 +416,9 @@ func handle_double_click(item: GameInfo.Item):
 	print("==========================\n")
 	
 	# Check if item is a consumable (Potion or Elixir) in bag - consume it
-	# BUT only if no utility panel is open (only from character screen)
+	# Only consume on Character panel (not utility panels like Vendor, Blacksmith, etc.)
 	if (item.type == "Potion" or item.type == "Elixir") and item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
-		if current_utility == null:
+		if current_utility == null or (current_utility and current_utility.name == "Character"):
 			_consume_item(item)
 		return
 	

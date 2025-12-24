@@ -2095,6 +2095,19 @@ grow_horizontal = 2
 grow_vertical = 2
 flat = true
 
+[node name="ConsumeSlot" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("8_85qyi")
+item_scene = ExtResource("11_ewbju")
+slot_type = "Consume"
+slot_id = 999
+
 [node name="Weapon1Slot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 1
 anchors_preset = 5
