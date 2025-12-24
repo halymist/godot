@@ -395,3 +395,215 @@ func get_item_data() -> GameInfo.Item:
 				if child.has_method("get_item_data"):
 					return child.get_item_data()
 	return null
+
+func handle_double_click(item: GameInfo.Item):
+	"""Handle double-click on item - unified with drag-and-drop visual updates"""
+	var current_utility = GameInfo.get_current_panel()
+	
+	print("\n=== DOUBLE CLICK DEBUG ===")
+	print("Item: ", item.item_name, " (Type: ", item.type, ", Slot: ", item.bag_slot_id, ")")
+	print("Current Panel: ", current_utility.name if current_utility else "null")
+	print("==========================\n")
+	
+	# Check if item is a consumable (Potion or Elixir) in bag - consume it
+	# BUT only if no utility panel is open (only from character screen)
+	if (item.type == "Potion" or item.type == "Elixir") and item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+		if current_utility == null:
+			_consume_item(item)
+		return
+	
+	# Blacksmith: Move equippable items to slot 100
+	if current_utility and current_utility.name == "BlacksmithPanel":
+		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Gem":
+			if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+				var target_slot = _find_slot_by_id(100)
+				if target_slot and target_slot.is_slot_empty():
+					item.bag_slot_id = 100
+					target_slot.place_item_in_slot(item)
+					clear_slot()
+					GameInfo.bag_slots_changed.emit()
+		return
+	
+	# Enchanter: Move equippable items to slot 104
+	if current_utility and current_utility.name == "EnchanterPanel":
+		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Elixir" and item.type != "Potion" and item.type != "Gem":
+			if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+				var target_slot = _find_slot_by_id(104)
+				if target_slot and target_slot.is_slot_empty():
+					item.bag_slot_id = 104
+					target_slot.place_item_in_slot(item)
+					clear_slot()
+					GameInfo.bag_slots_changed.emit()
+		return
+	
+	# Alchemist: Move ingredients to slots 101-103
+	if current_utility and current_utility.name == "AlchemistPanel":
+		if item.type == "Ingredient" and item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+			for target_slot_id in [101, 102, 103]:
+				var target_slot = _find_slot_by_id(target_slot_id)
+				if target_slot and target_slot.is_slot_empty():
+					item.bag_slot_id = target_slot_id
+					target_slot.place_item_in_slot(item)
+					clear_slot()
+					GameInfo.bag_slots_changed.emit()
+					break
+		return
+	
+	# Vendor: Sell if in bag, buy if in vendor slots
+	if current_utility and current_utility.name == "VendorPanel":
+		# Selling: item in bag (10-14)
+		if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+			if item.price > 0:
+				GameInfo.current_player.gold += item.price
+				GameInfo.current_player.bag_slots.erase(item)
+				clear_slot()
+				GameInfo.bag_slots_changed.emit()
+				GameInfo.gold_changed.emit(GameInfo.current_player.gold)
+		# Buying: item in vendor slots (105-112)
+		elif item.bag_slot_id >= 105 and item.bag_slot_id <= 112:
+			var buy_price = item.price * 2
+			if GameInfo.current_player.gold >= buy_price:
+				# Find first empty bag slot
+				for bag_slot_id in range(10, 15):
+					var target_slot = _find_slot_by_id(bag_slot_id)
+					if target_slot and target_slot.is_slot_empty():
+						GameInfo.current_player.gold -= buy_price
+						# Create a copy of the item
+						var new_item = GameInfo.Item.new()
+						new_item.id = item.id
+						new_item.bag_slot_id = bag_slot_id
+						new_item.item_name = item.item_name
+						new_item.type = item.type
+						new_item.armor = item.armor
+						new_item.strength = item.strength
+						new_item.stamina = item.stamina
+						new_item.agility = item.agility
+						new_item.luck = item.luck
+						new_item.damage_min = item.damage_min
+						new_item.damage_max = item.damage_max
+						new_item.asset_id = item.asset_id
+						new_item.effect_id = item.effect_id
+						new_item.effect_factor = item.effect_factor
+						new_item.quality = item.quality
+						new_item.price = item.price
+						new_item.tempered = item.tempered
+						new_item.enchant_overdrive = item.enchant_overdrive
+						new_item.day = item.day
+						new_item.texture = item.texture
+						new_item.has_socket = item.has_socket
+						new_item.socketed_gem_id = item.socketed_gem_id
+						new_item.socketed_gem_day = item.socketed_gem_day
+						GameInfo.current_player.bag_slots.append(new_item)
+						target_slot.place_item_in_slot(new_item)
+						GameInfo.bag_slots_changed.emit()
+						GameInfo.gold_changed.emit(GameInfo.current_player.gold)
+						break
+		return
+	
+	# Character panel equip/unequip (fallback - only if no utility panel is active)
+	var current_panel = GameInfo.get_current_panel()
+	var current_overlay = GameInfo.get_current_panel_overlay()
+	var on_character_panel = (current_panel and current_panel.name == "Character") or (current_overlay and current_overlay.name == "Character")
+	
+	if on_character_panel:
+		# If item is equipped (0-8), move it to bag
+		if item.bag_slot_id >= 0 and item.bag_slot_id <= 8:
+			_unequip_item_to_bag(item)
+			return
+		# If item is in bag (10-14), equip it
+		elif item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+			if _can_equip_to_character(item):
+				_equip_item_to_character(item)
+				return
+
+func _consume_item(item: GameInfo.Item):
+	"""Consume a potion or elixir and apply its effects"""
+	print("Consuming item: ", item.item_name, " (Type: ", item.type, ")")
+	if item.type == "Potion":
+		GameInfo.current_player.potion = item.id
+		GameInfo.current_player.bag_slots.erase(item)
+		clear_slot()
+	elif item.type == "Elixir":
+		GameInfo.current_player.elixir = item.id
+		GameInfo.current_player.bag_slots.erase(item)
+		clear_slot()
+	
+	# Update active perks display
+	var game_root = get_tree().root.get_node_or_null("Game")
+	var active_perks_display = game_root.find_child("ActivePerks", true, false) if game_root else null
+	if active_perks_display:
+		active_perks_display.update_active_perks()
+	
+	GameInfo.emit_signal.call_deferred("bag_slots_changed")
+
+func _can_equip_to_character(item: GameInfo.Item) -> bool:
+	return item.type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]
+
+func _equip_item_to_character(item: GameInfo.Item):
+	"""Equip item from bag to character equipment slot"""
+	var target_slot_id = -1
+	match item.type:
+		"Head": target_slot_id = 0
+		"Chest": target_slot_id = 1
+		"Hands": target_slot_id = 2
+		"Foot": target_slot_id = 3
+		"Belt": target_slot_id = 4
+		"Legs": target_slot_id = 5
+		"Ring": target_slot_id = 6
+		"Amulet": target_slot_id = 7
+		"Weapon": target_slot_id = 8
+	
+	if target_slot_id == -1:
+		return
+	
+	var target_slot = _find_slot_by_id(target_slot_id)
+	if not target_slot:
+		return
+	
+	if target_slot.is_slot_empty():
+		# Simple equip - no swap
+		item.bag_slot_id = target_slot_id
+		target_slot.place_item_in_slot(item)
+		clear_slot()
+	else:
+		# Swap with existing equipped item
+		var existing_item = target_slot.get_item_data()
+		var source_slot_id = item.bag_slot_id
+		item.bag_slot_id = target_slot_id
+		existing_item.bag_slot_id = source_slot_id
+		target_slot.place_item_in_slot(item)
+		place_item_in_slot(existing_item)
+	
+	GameInfo.emit_signal.call_deferred("bag_slots_changed")
+
+func _unequip_item_to_bag(item: GameInfo.Item):
+	"""Move equipped item to first available bag slot"""
+	for bag_slot_id in range(10, 15):
+		var target_slot = _find_slot_by_id(bag_slot_id)
+		if target_slot and target_slot.is_slot_empty():
+			item.bag_slot_id = bag_slot_id
+			target_slot.place_item_in_slot(item)
+			clear_slot()
+			GameInfo.emit_signal.call_deferred("bag_slots_changed")
+			return
+
+func _find_slot_by_id(target_slot_id: int):
+	"""Find an InventorySlot by its slot_id"""
+	var game_root = get_tree().root.get_node_or_null("Game")
+	if not game_root:
+		return null
+	
+	# Search for slot with matching slot_id
+	var queue = [game_root]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		
+		# Check if this node is an InventorySlot with matching slot_id
+		if node.get_script() == get_script() and node.get("slot_id") == target_slot_id:
+			return node
+		
+		# Add children to queue
+		for child in node.get_children():
+			queue.append(child)
+	
+	return null

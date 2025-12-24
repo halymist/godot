@@ -2015,7 +2015,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
-script = ExtResource("1_constrained")
 
 [node name="Equip" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
