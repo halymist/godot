@@ -31,9 +31,10 @@ func _can_drop_data(_pos, data):
 	
 	print("DEBUG _can_drop_data: Target slot_id=", slot_id, " slot_type=", slot_type, " | Source slot_id=", source_slot_id, " | Dragged item type=", item_type)
 	
-	# Vendor slots (105-112) cannot accept drops - they're for purchasing only
+	# Vendor slots (105-112) accept drops from bag (10-14) for selling
 	if slot_id >= 105 and slot_id <= 112:
-		return false
+		# Only accept items from bag slots (10-14) for selling
+		return source_slot_id >= 10 and source_slot_id <= 14
 	
 	# Cannot drag between vendor slots
 	if source_slot_id >= 105 and source_slot_id <= 112 and slot_id >= 105 and slot_id <= 112:
@@ -119,8 +120,8 @@ func _drop_data(_pos, data):
 		handle_vendor_purchase(dragged_item, source_slot_id)
 		return
 	
-	# Special case: Selling to vendor (slot 113)
-	if slot_id == 113:
+	# Special case: Selling to vendor (slot 113 OR vendor display slots 105-112)
+	if slot_id == 113 or (slot_id >= 105 and slot_id <= 112):
 		handle_vendor_sell(dragged_item, source_slot_id, source_container)
 		return
 	
