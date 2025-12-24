@@ -73,9 +73,10 @@ func set_active_village(location_id: int):
 		return
 	
 	print("  Instantiating village scene...")
-	# Instantiate the village scene
+	# Instantiate the village scene and add it at index 0 (behind other panels)
 	var village_instance = location_data.village_scene.instantiate()
 	add_child(village_instance)
+	move_child(village_instance, 0)  # Move to first position so it renders behind quest panels
 	current_village_node = village_instance
 	print("  Village loaded successfully: ", location_data.location_name)
 	print("  Village instance: ", village_instance.name)

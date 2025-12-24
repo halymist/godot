@@ -65,4 +65,3 @@ func populate_vendor_slots():
 	for slot in vendor_slots:
 		if slot.has_method("update_slot_appearance"):
 			slot.update_slot_appearance()
-
