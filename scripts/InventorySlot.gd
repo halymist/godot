@@ -347,6 +347,10 @@ func place_item_in_slot(item_data: GameInfo.Item):
 	
 	# Auto-update appearance (hide outline)
 	update_slot_appearance()
+	
+	# Notify UIManager if this is a utility slot (100-104)
+	if slot_id >= 100 and slot_id <= 104:
+		UIManager.instance.notify_slot_changed(slot_id)
 
 func clear_slot():
 	# Collect children to remove (except Background and Outline)
@@ -361,6 +365,10 @@ func clear_slot():
 	
 	# Auto-update appearance (deferred so queue_free completes first)
 	call_deferred("update_slot_appearance")
+	
+	# Notify UIManager if this is a utility slot (100-104)
+	if slot_id >= 100 and slot_id <= 104:
+		UIManager.instance.notify_slot_changed(slot_id)
 
 func update_slot_appearance():
 	# Count non-background/outline children that aren't queued for deletion

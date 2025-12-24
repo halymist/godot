@@ -284,7 +284,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "resolution_manager")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -296,6 +296,12 @@ color = Color(0.1, 0.1, 0.15, 1)
 script = ExtResource("3_aujhx")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue"), NodePath("../Wide/Sidebar/CurrencySection/SilverContainer/SilverValue")]
 resolution_manager = NodePath("..")
+blacksmith = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
+alchemist = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
+enchanter = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
+vendor = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
+trainer = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
+church = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
 
 [node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1

@@ -18,7 +18,8 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	GameInfo.bag_slots_changed.connect(_on_item_changed)
+	# Connect to slot changes for enchanter slot (104)
+	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
 	update_enchant_button_state()
@@ -29,6 +30,11 @@ func _ready():
 func _on_layout_mode_changed(is_wide: bool):
 	if bag:
 		bag.visible = not is_wide
+
+func _on_utility_slot_changed(slot_id: int):
+	if slot_id == 104:  # Enchanter slot
+		update_enchant_button_state()
+		populate_effect_list()
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from enchanter slot to bag
@@ -43,12 +49,6 @@ func _load_location_content():
 	background_rect.texture = location_data.enchanter_background
 	description_label.text = location_data.get_random_enchanter_greeting()
 
-
-func _on_item_changed():
-	# Update button state and effect list when item changes
-	if visible:
-		update_enchant_button_state()
-		populate_effect_list()
 
 func return_enchanter_item_to_bag():
 	# Find any item in slot 104 (enchanter slot) and return it to first available bag slot

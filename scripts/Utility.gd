@@ -31,23 +31,20 @@ func _ready():
 	click_button.mouse_exited.connect(_on_mouse_exited)
 
 func _get_panel_for_type(type: PanelType) -> Panel:
-	var panel_name: String
-	
 	match type:
 		PanelType.BLACKSMITH:
-			panel_name = "BlacksmithPanel"
+			return UIManager.instance.blacksmith
 		PanelType.VENDOR:
-			panel_name = "VendorPanel"
+			return UIManager.instance.vendor
 		PanelType.ALCHEMIST:
-			panel_name = "AlchemistPanel"
+			return UIManager.instance.alchemist
 		PanelType.ENCHANTER:
-			panel_name = "EnchanterPanel"
+			return UIManager.instance.enchanter
 		PanelType.TRAINER:
-			panel_name = "TrainerPanel"
+			return UIManager.instance.trainer
 		PanelType.CHURCH:
-			panel_name = "ChurchPanel"
-	
-	return get_tree().root.find_child(panel_name, true, false) as Panel
+			return UIManager.instance.church
+	return null
 
 func _on_mouse_entered():
 	hover_area.color = Color(1, 1, 1, 0.3)

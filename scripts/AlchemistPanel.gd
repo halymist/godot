@@ -26,16 +26,19 @@ func _ready():
 	visibility_changed.connect(_on_visibility_changed)
 	# Connect brew button
 	brew_button.pressed.connect(_on_brew_button_pressed)
-	# Connect to bag changes to update UI
-	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
+	# Connect to slot changes for alchemist slots (101-103)
+	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 	# Connect to layout mode changes
-	var resolution_manager = get_tree().root.get_node("Game")
-	if resolution_manager:
-		resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
+	UIManager.instance.resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 
 func _on_layout_mode_changed(is_wide: bool):
 	if bag:
 		bag.visible = not is_wide
+
+func _on_utility_slot_changed(slot_id: int):
+	if slot_id >= 101 and slot_id <= 103:  # Alchemist ingredient slots
+		update_result_preview()
+		update_brew_button_state()
 
 func _on_visibility_changed():
 	# When panel is hidden, return items from ingredient slots to bag
@@ -224,8 +227,4 @@ func _update_silver():
 		var ui_manager = background.get_node_or_null("UIManager")
 		if ui_manager and ui_manager.has_method("update_display"):
 			ui_manager.update_display()
-	update_brew_button_state()
-
-func _on_bag_slots_changed():
-	update_result_preview()
 	update_brew_button_state()

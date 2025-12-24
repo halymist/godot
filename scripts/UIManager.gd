@@ -9,6 +9,16 @@ static var instance: UIManager
 # Reference to resolution manager (Game node)
 @export var resolution_manager: Node
 
+@export var blacksmith: Panel
+@export var alchemist: Panel
+@export var enchanter: Panel
+@export var vendor: Panel
+@export var trainer: Panel
+@export var church: Panel
+
+# Signal for utility slot changes (100-104)
+signal utility_slot_changed(slot_id: int)
+
 func _ready():
 	instance = self
 	# Initial update
@@ -32,3 +42,7 @@ func update_display():
 			label.text = silver_text
 		else:
 			print("Warning: null label in silver_labels array")
+
+func notify_slot_changed(slot_id: int):
+	"""Notify panels when a utility slot (100-104) changes"""
+	utility_slot_changed.emit(slot_id)

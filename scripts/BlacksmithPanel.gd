@@ -15,7 +15,8 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	GameInfo.bag_slots_changed.connect(_on_item_changed)
+	# Connect to slot changes for blacksmith slot (100)
+	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 	if temper_button:
 		temper_button.pressed.connect(_on_temper_pressed)
 	update_temper_button_state()
@@ -27,6 +28,10 @@ func _on_layout_mode_changed(is_wide: bool):
 	print("BlacksmithPanel: layout mode changed, is_wide=", is_wide)
 	if bag:
 		bag.visible = not is_wide
+
+func _on_utility_slot_changed(slot_id: int):
+	if slot_id == 100:  # Blacksmith slot
+		update_temper_button_state()
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from blacksmith slot to bag
@@ -42,10 +47,6 @@ func _load_location_content():
 	if description_label:
 		description_label.text = location_data.get_random_blacksmith_greeting()
 
-func _on_item_changed():
-	# Update stats when item changes
-	if visible:
-		update_stats_display()
 
 func update_stats_display():
 	# Find item in slot 100
