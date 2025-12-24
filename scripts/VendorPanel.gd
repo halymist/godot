@@ -1,10 +1,5 @@
 extends Panel
 
-# VendorPanel-specific functionality
-
-# Reference to Background node with SilverManager
-@export var background: Node
-
 @export var background_rect: TextureRect
 @export var description_label: Label
 @export var bag: Control
@@ -12,6 +7,7 @@ extends Panel
 @onready var vendor_slots: Array[Control] = []
 
 func _ready():
+	UIManager.instance.resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 	_load_location_content()
 	# Get vendor slot references (slots 105-112 for 8 items)
 	if vendor_grid:
@@ -23,10 +19,6 @@ func _ready():
 	# Connect to bag_slots_changed to refresh vendor display when items are bought
 	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
 	populate_vendor_slots()
-	# Connect to layout mode changes
-	var resolution_manager = get_tree().root.get_node("Game")
-	if resolution_manager:
-		resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 
 func _on_layout_mode_changed(is_wide: bool):
 	if bag:

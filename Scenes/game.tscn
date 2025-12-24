@@ -284,7 +284,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -295,6 +295,7 @@ grow_vertical = 2
 color = Color(0.1, 0.1, 0.15, 1)
 script = ExtResource("3_aujhx")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue"), NodePath("../Wide/Sidebar/CurrencySection/SilverContainer/SilverValue")]
+resolution_manager = NodePath("..")
 
 [node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1
@@ -534,7 +535,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "bag", "vendor_grid")]
+[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "vendor_grid")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -544,7 +545,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("40_vendor")
-background = NodePath("../../../../../Background")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("Description")
 bag = NodePath("VBoxContainer/Bag")
@@ -653,7 +653,7 @@ slot_id = 112
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -663,7 +663,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
-background = NodePath("../../../../../Background")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("VBoxContainer/UtilityPanel/Description")
 bag = NodePath("VBoxContainer/Bag")

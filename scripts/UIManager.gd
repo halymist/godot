@@ -6,6 +6,9 @@ static var instance: UIManager
 # Reference to all silver/gold display labels
 @export var silver_labels: Array[Label] = []
 
+# Reference to resolution manager (Game node)
+@export var resolution_manager: Node
+
 func _ready():
 	instance = self
 	# Initial update

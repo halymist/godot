@@ -20,10 +20,8 @@ func _ready():
 		temper_button.pressed.connect(_on_temper_pressed)
 	update_temper_button_state()
 	# Connect to layout mode changes
-	var resolution_manager = get_tree().root.get_node("Game")
-	if resolution_manager:
-		print("BlacksmithPanel: connecting to layout_mode_changed signal")
-		resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
+	print("BlacksmithPanel: connecting to layout_mode_changed signal")
+	UIManager.instance.resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 
 func _on_layout_mode_changed(is_wide: bool):
 	print("BlacksmithPanel: layout mode changed, is_wide=", is_wide)
