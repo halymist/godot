@@ -865,12 +865,8 @@ func _ready():
 	print("Checking for settlements.tres...")
 	print("ResourceLoader.exists('res://scripts/resources/settlements.tres'): ", ResourceLoader.exists("res://scripts/resources/settlements.tres"))
 	if ResourceLoader.exists("res://scripts/resources/settlements.tres"):
-		print("Loading settlements.tres...")
 		settlements_db = load("res://scripts/resources/settlements.tres")
-		print("settlements_db after load: ", settlements_db)
-		if settlements_db:
-			print("Settlements database loaded: ", settlements_db.settlements.size(), " settlements")
-		else:
+		if not settlements_db:
 			print("ERROR: settlements.tres loaded but is null!")
 	else:
 		print("Warning: settlements.tres not found at res://scripts/resources/settlements.tres")

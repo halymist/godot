@@ -12,7 +12,7 @@ var village_scroll_initialized: bool = false  # Track if village scroll has been
 
 func _ready():
 	print("=== VillageManager _ready START ===")
-	var location_id = GameInfo.current_player.location if GameInfo.current_player else 1
+	var location_id = GameInfo.current_player.location
 	print("Location ID from current_player: ", location_id)
 	
 	# Load village based on current player location
