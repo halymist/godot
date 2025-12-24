@@ -16,7 +16,6 @@ func _ready():
 	# Connect to GameInfo signals
 	if GameInfo:
 		GameInfo.bag_slots_changed.connect(update_display)
-		GameInfo.gold_changed.connect(_on_gold_changed)
 		GameInfo.mushrooms_changed.connect(_on_mushrooms_changed)
 	
 	# Hide info panel initially
@@ -35,10 +34,6 @@ func _ready():
 	
 	# Initial update
 	update_display()
-
-func _on_gold_changed(new_gold: int):
-	if gold_label:
-		gold_label.text = str(new_gold)
 
 func _on_mushrooms_changed(new_mushrooms: int):
 	if currency_label:
@@ -65,10 +60,6 @@ func _on_mouse_exited():
 func update_display():
 	if not GameInfo.current_player:
 		return
-	
-	# Update gold (silver) if label exists
-	if gold_label:
-		gold_label.text = str(GameInfo.current_player.gold)
 	
 	# Update mushrooms if label exists
 	if currency_label:

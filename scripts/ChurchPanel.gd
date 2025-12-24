@@ -3,6 +3,9 @@ extends Panel
 const BLESSING_COST = 10
 const BlessingScene = preload("res://Scenes/blessing.tscn")
 
+# Reference to Background node with SilverManager
+@export var background: Node
+
 @export var background_rect: TextureRect
 @export var description_label: Label
 @export var blessings_container: VBoxContainer
@@ -18,8 +21,6 @@ func _ready():
 		bless_button.pressed.connect(_on_bless_button_pressed)
 	# Load blessings when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to gold changes to update button state
-	GameInfo.gold_changed.connect(_on_gold_changed)
 
 func _on_visibility_changed():
 	if visible:
@@ -33,9 +34,13 @@ func _load_location_content():
 	if description_label:
 		description_label.text = location_data.get_random_church_greeting()
 
-func _on_gold_changed(_new_gold: int = 0):
-	if visible:
-		update_bless_button_state()
+func _update_silver():
+	"""Update silver display via SilverManager"""
+	if background:
+		var ui_manager = background.get_node_or_null("UIManager")
+		if ui_manager and ui_manager.has_method("update_display"):
+			ui_manager.update_display()
+	update_bless_button_state()
 
 func load_blessings():
 	if not GameInfo.effects_db or not blessings_container:
@@ -92,21 +97,20 @@ func update_bless_button_state():
 		return
 	
 	var has_selection = selected_blessing_id != -1
-	var has_gold = GameInfo.current_player.gold >= BLESSING_COST
+	var has_silver = GameInfo.current_player.silver >= BLESSING_COST
 	
-	bless_button.disabled = not has_selection or not has_gold
+	bless_button.disabled = not has_selection or not has_silver
 
 func _on_bless_button_pressed():
 	if selected_blessing_id == -1 or not GameInfo.current_player:
 		return
 	
-	if GameInfo.current_player.gold < BLESSING_COST:
+	if GameInfo.current_player.silver < BLESSING_COST:
 		print("Not enough gold for blessing")
 		return
 	
-	# Deduct gold
-	GameInfo.current_player.gold -= BLESSING_COST
-	GameInfo.gold_changed.emit()
+	# Deduct silver
+	UIManager.instance.update_silver(-BLESSING_COST)
 	
 	# Apply blessing effect
 	GameInfo.current_player.blessing = selected_blessing_id

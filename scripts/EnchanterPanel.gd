@@ -19,7 +19,6 @@ func _ready():
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	GameInfo.bag_slots_changed.connect(_on_item_changed)
-	GameInfo.gold_changed.connect(_on_gold_changed)
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
 	update_enchant_button_state()
@@ -43,15 +42,9 @@ func _on_visibility_changed():
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if background_rect and location_data.enchanter_background:
-		background_rect.texture = location_data.enchanter_background
-	if description_label:
-		description_label.text = location_data.get_random_enchanter_greeting()
+	background_rect.texture = location_data.enchanter_background
+	description_label.text = location_data.get_random_enchanter_greeting()
 
-func _on_gold_changed(_new_gold):
-	# Update button state when gold changes
-	update_enchant_button_state()
-	populate_effect_list()
 
 func _on_item_changed():
 	# Update button state and effect list when item changes
@@ -93,9 +86,9 @@ func update_enchant_button_state():
 	
 	# Button is enabled only if there's an item, player has enough gold, and an effect is selected
 	var has_item = item_in_slot != null
-	var has_gold = GameInfo.current_player.gold >= ENCHANT_COST
+	var has_silver = GameInfo.current_player.silver >= ENCHANT_COST
 	var has_selection = selected_effect_id > 0
-	enchant_button.disabled = not (has_item and has_gold and has_selection)
+	enchant_button.disabled = not (has_item and has_silver and has_selection)
 
 func populate_effect_list():
 	if not effect_list:
@@ -212,20 +205,11 @@ func _on_enchant_pressed():
 			item_in_slot = item
 			break
 	
-	if not item_in_slot:
+	if not item_in_slot or selected_effect_id == 0:
 		return
 	
-	# Check if player has enough gold
-	if GameInfo.current_player.gold < ENCHANT_COST:
-		return
-	
-	# Check if an effect is selected
-	if selected_effect_id == 0:
-		return
-	
-	# Deduct gold
-	GameInfo.current_player.gold -= ENCHANT_COST
-	GameInfo.gold_changed.emit(GameInfo.current_player.gold)
+	# Deduct silver
+	UIManager.instance.update_silver(-ENCHANT_COST)
 	
 	# Apply enchantment
 	if item_in_slot.effect_id > 0:

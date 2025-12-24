@@ -7,6 +7,9 @@ const SLOT_1 = 101
 const SLOT_2 = 102
 const SLOT_3 = 103
 
+# Reference to Background node with SilverManager
+@export var background: Node
+
 # Node references
 @export var background_rect: TextureRect
 @export var description_label: Label
@@ -23,8 +26,7 @@ func _ready():
 	visibility_changed.connect(_on_visibility_changed)
 	# Connect brew button
 	brew_button.pressed.connect(_on_brew_button_pressed)
-	# Connect to gold and bag changes to update UI
-	GameInfo.gold_changed.connect(_on_gold_changed)
+	# Connect to bag changes to update UI
 	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
 	# Connect to layout mode changes
 	var resolution_manager = get_tree().root.get_node("Game")
@@ -126,14 +128,14 @@ func update_brew_button_state():
 			break
 	
 	# Check if we have enough gold
-	var has_gold = GameInfo.current_player.gold >= BREW_COST
+	var has_silver = GameInfo.current_player.silver >= BREW_COST
 	
 	# Enable button only if both conditions are met
-	brew_button.disabled = not (has_ingredients and has_gold)
+	brew_button.disabled = not (has_ingredients and has_silver)
 
 func _on_brew_button_pressed():
 	# Check gold
-	if GameInfo.current_player.gold < BREW_COST:
+	if GameInfo.current_player.silver < BREW_COST:
 		return
 	
 	# Collect ingredient IDs from the slots
@@ -161,9 +163,8 @@ func _on_brew_button_pressed():
 	print("Brewing elixir with ID: ", encoded_id)
 	print("  Ingredient IDs: ", ingredient_ids)
 	
-	# Deduct gold
-	GameInfo.current_player.gold -= BREW_COST
-	GameInfo.gold_changed.emit(GameInfo.current_player.gold)
+	# Deduct silver
+	UIManager.instance.update_silver(-BREW_COST)
 	
 	# Create new elixir item and add to first available bag slot
 	var new_elixir = GameInfo.Item.new()
@@ -217,7 +218,12 @@ func find_empty_bag_slot() -> int:
 	
 	return 10  # Fallback to slot 10 if all full
 
-func _on_gold_changed(_new_gold: int):
+func _update_silver():
+	"""Update silver display via SilverManager"""
+	if background:
+		var ui_manager = background.get_node_or_null("UIManager")
+		if ui_manager and ui_manager.has_method("update_display"):
+			ui_manager.update_display()
 	update_brew_button_state()
 
 func _on_bag_slots_changed():

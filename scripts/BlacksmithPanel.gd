@@ -16,7 +16,6 @@ func _ready():
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	GameInfo.bag_slots_changed.connect(_on_item_changed)
-	GameInfo.gold_changed.connect(_on_gold_changed)
 	if temper_button:
 		temper_button.pressed.connect(_on_temper_pressed)
 	update_temper_button_state()
@@ -44,10 +43,6 @@ func _load_location_content():
 		background_rect.texture = location_data.blacksmith_background
 	if description_label:
 		description_label.text = location_data.get_random_blacksmith_greeting()
-
-func _on_gold_changed(_new_gold):
-	# Update button state when gold changes
-	update_temper_button_state()
 
 func _on_item_changed():
 	# Update stats when item changes
@@ -131,8 +126,8 @@ func update_temper_button_state():
 	
 	# Button is enabled only if there's an item and player has enough gold
 	var has_item = item_in_slot != null
-	var has_gold = GameInfo.current_player.gold >= TEMPER_COST
-	temper_button.disabled = not (has_item and has_gold)
+	var has_silver = GameInfo.current_player.silver >= TEMPER_COST
+	temper_button.disabled = not (has_item and has_silver)
 
 func _on_temper_pressed():
 	# Find item in slot 100
@@ -145,13 +140,13 @@ func _on_temper_pressed():
 	if not item_in_slot:
 		return
 	
-	# Check if player has enough gold
-	if GameInfo.current_player.gold < TEMPER_COST:
+	# Check if player has enough silver
+	if GameInfo.current_player.silver < TEMPER_COST:
 		return
 	
-	# Deduct gold
-	GameInfo.current_player.gold -= TEMPER_COST
-	GameInfo.gold_changed.emit(GameInfo.current_player.gold)
+	# Deduct silver
+	UIManager.instance.update_silver(-TEMPER_COST)
+	update_temper_button_state()
 	
 	# Improve item stats by 10% (rounded up)
 	if item_in_slot.get("strength") and item_in_slot.strength > 0:

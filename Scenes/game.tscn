@@ -1,8 +1,9 @@
-[gd_scene load_steps=106 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=107 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Script" uid="uid://b66x6ln0a8vgn" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
+[ext_resource type="Script" uid="uid://cjjfqcbtuil72" path="res://scripts/UIManager.gd" id="3_aujhx"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Script" uid="uid://dfyxboavsidpe" path="res://scripts/CurrencyDisplay.gd" id="4_2cns2"]
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
@@ -283,7 +284,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -292,6 +293,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.1, 0.15, 1)
+script = ExtResource("3_aujhx")
+silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue"), NodePath("../Wide/Sidebar/CurrencySection/SilverContainer/SilverValue")]
 
 [node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1
@@ -531,7 +534,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "vendor_grid")]
+[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "bag", "vendor_grid")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -541,6 +544,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("40_vendor")
+background = NodePath("../../../../../Background")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("Description")
 bag = NodePath("VBoxContainer/Bag")
@@ -649,7 +653,7 @@ slot_id = 112
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -659,6 +663,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
+background = NodePath("../../../../../Background")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("VBoxContainer/UtilityPanel/Description")
 bag = NodePath("VBoxContainer/Bag")
@@ -785,7 +790,7 @@ text = "+10% to all stats"
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
+[node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -795,6 +800,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("28_sjh24")
+background = NodePath("../../../../../Background")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("UtilityPanel/Description")
 talent_points_label = NodePath("UtilityPanel/StatsContainer/TalentPointsRow/TalentsRow/Label")
@@ -1009,7 +1015,7 @@ size_flags_horizontal = 3
 text = "Increases critical chance"
 vertical_alignment = 1
 
-[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "blessings_container", "bless_button")]
+[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "blessings_container", "bless_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1019,6 +1025,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("29_k5jl5")
+background = NodePath("../../../../../Background")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("UtilityPanel/Content/Description")
 blessings_container = NodePath("UtilityPanel/Content/ScrollContainer/BlessingsContainer")
@@ -1121,7 +1128,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1131,6 +1138,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
+background = NodePath("../../../../../Background")
 background_rect = NodePath("UtilityBackground/Background")
 description_label = NodePath("VBoxContainer/UtilityPanel/Description")
 bag = NodePath("VBoxContainer/Bag")

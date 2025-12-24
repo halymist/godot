@@ -188,8 +188,8 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	var purchase_price = vendor_item.price * 2
 	
 	# Check if player has enough gold
-	if GameInfo.current_player.gold < purchase_price:
-		print("Not enough gold to purchase item! Need ", purchase_price, " but have ", GameInfo.current_player.gold)
+	if GameInfo.current_player.silver < purchase_price:
+		print("Not enough gold to purchase item! Need ", purchase_price, " but have ", GameInfo.current_player.silver)
 		return
 	
 	# Check if target slot is empty
@@ -197,9 +197,9 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 		print("Target slot must be empty to purchase item")
 		return
 	
-	# Deduct gold
-	GameInfo.current_player.gold -= purchase_price
-	print("Purchased ", vendor_item.item_name, " for ", purchase_price, " gold. Remaining gold: ", GameInfo.current_player.gold)
+	# Deduct silver
+	UIManager.instance.update_silver(-purchase_price)
+	print("Purchased ", vendor_item.item_name, " for ", purchase_price, " silver. Remaining silver: ", GameInfo.current_player.silver)
 	
 	# Create a new item instance from vendor item (copy the data)
 	var purchased_item = GameInfo.Item.new({
@@ -240,9 +240,9 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 		print("Item not found in bag_slots")
 		return
 	
-	# Add gold for selling the item
-	GameInfo.current_player.gold += item_in_bag.price
-	print("Sold ", item_in_bag.item_name, " for ", item_in_bag.price, " gold. Total gold: ", GameInfo.current_player.gold)
+	# Add silver for selling the item
+	UIManager.instance.update_silver(item_in_bag.price)
+	print("Sold ", item_in_bag.item_name, " for ", item_in_bag.price, " silver. Total silver: ", GameInfo.current_player.silver)
 	
 	# Remove item from bag_slots
 	GameInfo.current_player.bag_slots.erase(item_in_bag)
@@ -465,20 +465,19 @@ func handle_double_click(item: GameInfo.Item):
 		# Selling: item in bag (10-14)
 		if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
 			if item.price > 0:
-				GameInfo.current_player.gold += item.price
+				UIManager.instance.update_silver(item.price)
 				GameInfo.current_player.bag_slots.erase(item)
 				clear_slot()
 				GameInfo.bag_slots_changed.emit()
-				GameInfo.gold_changed.emit(GameInfo.current_player.gold)
 		# Buying: item in vendor slots (105-112)
 		elif item.bag_slot_id >= 105 and item.bag_slot_id <= 112:
 			var buy_price = item.price * 2
-			if GameInfo.current_player.gold >= buy_price:
+			if GameInfo.current_player.silver >= buy_price:
 				# Find first empty bag slot
 				for bag_slot_id in range(10, 15):
 					var target_slot = _find_slot_by_id(bag_slot_id)
 					if target_slot and target_slot.is_slot_empty():
-						GameInfo.current_player.gold -= buy_price
+						UIManager.instance.update_silver(-buy_price)
 						# Create a copy of the item
 						var new_item = GameInfo.Item.new()
 						new_item.id = item.id
@@ -507,7 +506,7 @@ func handle_double_click(item: GameInfo.Item):
 						GameInfo.current_player.bag_slots.append(new_item)
 						target_slot.place_item_in_slot(new_item)
 						GameInfo.bag_slots_changed.emit()
-						GameInfo.gold_changed.emit(GameInfo.current_player.gold)
+
 						break
 		return
 	

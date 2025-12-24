@@ -66,7 +66,6 @@ func get_profession_icon(profession_id: int) -> String:
 	return data.get("icon", "")
 
 # Signals for UI updates
-signal gold_changed(new_gold)
 signal mushrooms_changed(new_mushrooms)
 signal stats_changed(stats)
 signal bag_slots_changed
@@ -619,14 +618,8 @@ class GameCurrentPlayer:
 	var avatar_nose: int = 30  # Nose cosmetic ID from database
 	var avatar_mouth: int = 40  # Mouth cosmetic ID from database
 	
-	# Gold with automatic event emission
-	var _gold: int = 0
-	var gold: int:
-		get: return _gold
-		set(value):
-			_gold = value
-			if game_info_ref:
-				game_info_ref.gold_changed.emit(_gold)
+	# Silver (no automatic emission - use UIManager.update_display())
+	var silver: int = 0
 	
 	# Mushrooms with automatic event emission
 	var _mushrooms: int = 0
@@ -650,7 +643,7 @@ class GameCurrentPlayer:
 		"location": "location",
 		"traveling": "traveling",
 		"traveling_destination": "traveling_destination",
-		"gold": "_gold",  # Use private field to avoid triggering setter
+		"silver": "silver",
 		"mushrooms": "_mushrooms",  # Use private field to avoid triggering setter
 		"talent_points": "talent_points",
 		"perk_points": "perk_points",
@@ -694,8 +687,7 @@ class GameCurrentPlayer:
 		load_perks(data)
 		load_talents(data)
 		
-		# Trigger property setters for gold/mushrooms to emit signals
-		gold = _gold
+		# Trigger property setter for mushrooms to emit signal
 		mushrooms = _mushrooms
 		
 		# Emit bag slots changed and stats changed
@@ -705,7 +697,7 @@ class GameCurrentPlayer:
 	
 	func get_player_stats() -> Dictionary:
 		var stats = get_total_stats()
-		stats["gold"] = gold
+		stats["silver"] = silver
 		stats["mushrooms"] = mushrooms
 		stats["talent_points"] = talent_points
 		stats["perk_points"] = perk_points
@@ -816,11 +808,11 @@ var current_panel_overlay: Control = null:
 		current_panel_overlay_changed.emit(value)
 
 # Legacy properties for backward compatibility
-var player_gold: int:
-	get: return current_player.gold if current_player else 0
+var player_silver: int:
+	get: return current_player.silver if current_player else 0
 	set(value): 
 		if current_player:
-			current_player.gold = value
+			current_player.silver = value
 
 var player_mushrooms: int:
 	get: return current_player.mushrooms if current_player else 0
@@ -883,9 +875,14 @@ func _ready():
 	print_arena_opponents_info()
 
 # Helper functions to modify values and emit signals
-func add_gold(amount: int):
+func add_silver(amount: int):
 	if current_player:
-		current_player.gold += amount
+		current_player.silver += amount
+
+func update_silver(amount: int):
+	"""Update silver via UIManager - for use by InventorySlot and other non-panel code"""
+	var background = get_tree().root.get_node("Game/Background")
+	background.update_silver(amount)
 
 func add_mushrooms(amount: int):
 	if current_player:
@@ -927,7 +924,7 @@ func load_player_data(character_data: Dictionary):
 
 	print("Player data loaded successfully!")
 	print("Player: ", current_player.name)
-	print("Gold: ", current_player.gold)
+	print("Silver: ", current_player.silver)
 	print("Items: ", current_player.bag_slots.size())
 	print("Perks: ", current_player.perks.size())
 	print("Talents: ", current_player.talents.size())

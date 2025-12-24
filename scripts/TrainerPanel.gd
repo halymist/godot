@@ -4,6 +4,9 @@ extends Panel
 const TALENT_POINT_COST = 100
 const STAT_COST = 5
 
+# Reference to Background node with SilverManager
+@export var background: Node
+
 # Stat labels
 @export var background_rect: TextureRect
 @export var description_label: Label
@@ -29,8 +32,6 @@ func _ready():
 	luck_button.pressed.connect(_on_luck_plus_pressed)
 	# Update stats display when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to gold changes to update button states
-	GameInfo.gold_changed.connect(_on_gold_changed)
 
 func _on_visibility_changed():
 	if visible:
@@ -44,8 +45,12 @@ func _load_location_content():
 	if description_label:
 		description_label.text = location_data.get_random_trainer_greeting()
 
-func _on_gold_changed(_new_gold: int):
-	if visible:
+func _update_silver():
+	"""Update silver display via UIManager"""
+	if background:
+		var ui_manager = background.get_node_or_null("UIManager")
+		if ui_manager and ui_manager.has_method("update_display"):
+			ui_manager.update_display()
 		update_button_states()
 
 func update_stats_display():
@@ -62,57 +67,49 @@ func update_button_states():
 	if not GameInfo.current_player:
 		return
 	
-	var gold = GameInfo.current_player.gold
+	var silver = GameInfo.current_player.silver
 	
 	# Enable/disable buttons based on gold availability
-	talent_points_button.disabled = gold < TALENT_POINT_COST
-	strength_button.disabled = gold < STAT_COST
-	stamina_button.disabled = gold < STAT_COST
-	agility_button.disabled = gold < STAT_COST
-	luck_button.disabled = gold < STAT_COST
+	talent_points_button.disabled = silver < TALENT_POINT_COST
+	strength_button.disabled = silver < STAT_COST
+	stamina_button.disabled = silver < STAT_COST
+	agility_button.disabled = silver < STAT_COST
+	luck_button.disabled = silver < STAT_COST
 
 # Training functions
 func _on_talent_points_plus_pressed():
-	if GameInfo.current_player.gold >= TALENT_POINT_COST:
-		GameInfo.current_player.gold -= TALENT_POINT_COST
+	if GameInfo.current_player.silver >= TALENT_POINT_COST:
+		UIManager.instance.update_silver(-TALENT_POINT_COST)
 		GameInfo.current_player.talent_points += 1
-		GameInfo.gold_changed.emit()
 		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Talent Points - cost: ", TALENT_POINT_COST, " gold")
 
 func _on_strength_plus_pressed():
-	if GameInfo.current_player.gold >= STAT_COST:
-		GameInfo.current_player.gold -= STAT_COST
+	if GameInfo.current_player.silver >= STAT_COST:
+		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.strength += 1
-		GameInfo.gold_changed.emit()
 		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Strength - cost: ", STAT_COST, " gold")
 
 func _on_stamina_plus_pressed():
-	if GameInfo.current_player.gold >= STAT_COST:
-		GameInfo.current_player.gold -= STAT_COST
+	if GameInfo.current_player.silver >= STAT_COST:
+		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.stamina += 1
-		GameInfo.gold_changed.emit()
 		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Stamina - cost: ", STAT_COST, " gold")
 
 func _on_agility_plus_pressed():
-	if GameInfo.current_player.gold >= STAT_COST:
-		GameInfo.current_player.gold -= STAT_COST
+	if GameInfo.current_player.silver >= STAT_COST:
+		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.agility += 1
-		GameInfo.gold_changed.emit()
 		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 		update_stats_display()
 		print("Trained Agility - cost: ", STAT_COST, " gold")
 
 func _on_luck_plus_pressed():
-	if GameInfo.current_player.gold >= STAT_COST:
-		GameInfo.current_player.gold -= STAT_COST
+	if GameInfo.current_player.silver >= STAT_COST:
+		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.luck += 1
-		GameInfo.gold_changed.emit()
-		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
-		update_stats_display()
-		print("Trained Luck - cost: ", STAT_COST, " gold")

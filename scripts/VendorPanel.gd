@@ -1,6 +1,10 @@
 extends Panel
 
 # VendorPanel-specific functionality
+
+# Reference to Background node with SilverManager
+@export var background: Node
+
 @export var background_rect: TextureRect
 @export var description_label: Label
 @export var bag: Control
