@@ -17,10 +17,6 @@ func _ready():
 	if outline_texture and item_outline:
 		item_outline.texture = outline_texture
 	
-	# Connect to bag changes to auto-refresh this slot
-	GameInfo.bag_slots_changed.connect(refresh_slot)
-	
-	# Update slot appearance to show outline if empty
 	update_slot_appearance()
 
 func _can_drop_data(_pos, data):
@@ -338,9 +334,8 @@ func place_item_in_slot(item_data: GameInfo.Item):
 	new_item.set_item_data(item_data)
 	add_child(new_item)
 	
-	# Hide outline when item is placed
-	if item_outline:
-		item_outline.visible = false
+	# Auto-update appearance (hide outline)
+	update_slot_appearance()
 
 func clear_slot():
 	# Collect children to remove (except Background and Outline)
@@ -352,6 +347,9 @@ func clear_slot():
 	# Free them with queue_free to avoid locked object errors
 	for child in children_to_remove:
 		child.queue_free()
+	
+	# Auto-update appearance (deferred so queue_free completes first)
+	call_deferred("update_slot_appearance")
 
 func update_slot_appearance():
 	# Count non-background/outline children that aren't queued for deletion
@@ -365,17 +363,19 @@ func update_slot_appearance():
 		item_outline.visible = (item_count == 0) and (outline_texture != null)
 
 func refresh_slot():
-	"""Refresh the slot's visual state - clear old items and update outline"""
+	"""Manual refresh - used by external systems that change bag_slots data directly"""
+	# Vendor slots (105-112) are managed by VendorPanel, don't auto-refresh them
+	if slot_id >= 105 and slot_id <= 112:
+		return
+	
 	# Clear existing item visuals (keep Background and Outline)
 	for child in get_children():
 		if child != slot_background and child != item_outline:
 			child.queue_free()
 	
-	# Find if this slot has an item
-	var has_item = false
+	# Find if this slot has an item in bag_slots
 	for item in GameInfo.current_player.bag_slots:
 		if item.bag_slot_id == slot_id:
-			has_item = true
 			# Instantiate the item visual
 			if item_scene:
 				var item_icon = item_scene.instantiate()
@@ -384,9 +384,8 @@ func refresh_slot():
 					item_icon.set_item_data(item)
 			break
 	
-	# Toggle outline visibility
-	if item_outline:
-		item_outline.visible = (not has_item) and (outline_texture != null)
+	# Update appearance (deferred so queue_free completes first)
+	call_deferred("update_slot_appearance")
 
 func get_item_data() -> GameInfo.Item:
 	if not is_slot_empty():
