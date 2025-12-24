@@ -1,22 +1,22 @@
 extends Panel
 
-# Export references to village containers
-# Structure: Home -> Village1, Village2, etc. (each contains VillageView + InteriorView)
-@export var villages_container: Control  # Parent node containing all village nodes
+# Export references
 @export var quest_panel: Control  # Old accept quest panel
 @export var quest_slide_panel: Control  # New quest slide panel (DynamicOptionsPanel)
 @export var map_panel: Control
 
-var current_village_node: Control = null  # Current active village (Village1, Village2, etc.)
+var current_village_node: Control = null  # Current active village instance
 var current_building: Building = null
 var is_in_interior: bool = false
 var village_scroll_initialized: bool = false  # Track if village scroll has been centered initially
 
 func _ready():
-	# Set current village based on player location
-	var player_location = GameInfo.current_player.location if GameInfo.current_player else 1
-	print("VillageManager: Player location from GameInfo: ", player_location)
-	set_active_village(player_location)
+	print("=== VillageManager _ready START ===")
+	var location_id = GameInfo.current_player.location if GameInfo.current_player else 1
+	print("Location ID from current_player: ", location_id)
+	
+	# Load village based on current player location
+	set_active_village(location_id)
 	
 	show_village()
 	connect_existing_buildings()
@@ -43,34 +43,43 @@ func _ready():
 	# Connect quest completed signal to redraw NPCs
 	GameInfo.quest_completed.connect(_on_quest_completed)
 	print("Connected to quest completed signal")
+	print("=== VillageManager _ready END ===")
 
 func set_active_village(location_id: int):
 	"""Set the active village based on location integer (1, 2, 3, etc.)"""
-	print("set_active_village called with location_id: ", location_id)
+	print("=== set_active_village START ===")
+	print("  location_id: ", location_id)
 	
-	if not villages_container:
-		print("Error: villages_container not assigned")
+	# Clear any existing village nodes
+	for child in get_children():
+		if child != quest_panel and child != quest_slide_panel and child != map_panel:
+			print("  Removing old child: ", child.name)
+			child.queue_free()
+	
+	# Load village scene from settlements database
+	print("  Getting location data from settlements_db...")
+	var location_data = GameInfo.get_location_data(location_id)
+	if not location_data:
+		print("  ERROR: No location data found for location_id: ", location_id)
+		print("  settlements_db exists: ", GameInfo.settlements_db != null)
+		if GameInfo.settlements_db:
+			print("  settlements count: ", GameInfo.settlements_db.settlements.size())
 		return
 	
-	# Hide all villages first
-	for village in villages_container.get_children():
-		village.visible = false
+	print("  Location data found: ", location_data.location_name)
 	
-	# Show the village matching the location ID
-	var village_name = "Village" + str(location_id)
-	var village_node = villages_container.get_node_or_null(village_name)
+	if not location_data.village_scene:
+		print("  ERROR: No village scene assigned for location: ", location_data.location_name)
+		return
 	
-	if village_node:
-		village_node.visible = true
-		current_village_node = village_node
-		print("Switched to village: ", village_name)
-	else:
-		print("Warning: Village node '", village_name, "' not found for location ", location_id)
-		# Fallback to first village if exists
-		if villages_container.get_child_count() > 0:
-			current_village_node = villages_container.get_child(0)
-			current_village_node.visible = true
-			print("Using fallback village: ", current_village_node.name)
+	print("  Instantiating village scene...")
+	# Instantiate the village scene
+	var village_instance = location_data.village_scene.instantiate()
+	add_child(village_instance)
+	current_village_node = village_instance
+	print("  Village loaded successfully: ", location_data.location_name)
+	print("  Village instance: ", village_instance.name)
+	print("=== set_active_village END ===")
 
 func connect_existing_buildings():
 	if not current_village_node:

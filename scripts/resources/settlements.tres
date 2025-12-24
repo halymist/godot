@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SettlementsDatabase" load_steps=10 format=3 uid="uid://d1ggibhqe2sqs"]
+[gd_resource type="Resource" script_class="SettlementsDatabase" load_steps=11 format=3 uid="uid://d1ggibhqe2sqs"]
 
 [ext_resource type="Script" uid="uid://dougakb8mecrw" path="res://scripts/resources/SettlementsDatabase.gd" id="1_4vit6"]
 [ext_resource type="Script" uid="uid://pwd267vyc7jv" path="res://scripts/LocationData.gd" id="2_ot23h"]
@@ -8,11 +8,13 @@
 [ext_resource type="Texture2D" uid="uid://o3x5685ybv3i" path="res://assets/images/villages/enchanting.png" id="6_n5k1k"]
 [ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="7_tvlym"]
 [ext_resource type="Texture2D" uid="uid://x083py6ybw37" path="res://assets/images/villages/vendor_last.png" id="8_yeplg"]
+[ext_resource type="PackedScene" uid="uid://ca5h3ut3o1kbo" path="res://assets/images/villages/settlements/krasna.tscn" id="9_c0hw1"]
 
 [sub_resource type="Resource" id="Resource_48ku7"]
 script = ExtResource("2_ot23h")
 location_id = 1
 location_name = "Krasna"
+village_scene = ExtResource("9_c0hw1")
 blacksmith_background = ExtResource("4_c0hw1")
 blacksmith_greetings = Array[String](["Hi"])
 vendor_background = ExtResource("8_yeplg")

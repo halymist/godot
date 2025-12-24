@@ -4,6 +4,9 @@ extends Resource
 @export var location_id: int
 @export var location_name: String
 
+# Village scene for this location
+@export var village_scene: PackedScene
+
 # Utility backgrounds (null = not available at this location)
 @export var blacksmith_background: Texture
 @export var blacksmith_greetings: Array[String] = []
