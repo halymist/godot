@@ -1,4 +1,4 @@
-[gd_scene load_steps=107 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=108 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -72,6 +72,7 @@
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
+[ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="49_ifeo7"]
 [ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="52_aujhx"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
@@ -2045,9 +2046,11 @@ expand_mode = 1
 
 [node name="Equip" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
-anchor_top = 0.3
+anchor_top = 0.392
 anchor_right = 1.0
 anchor_bottom = 0.88
+offset_top = 0.0399933
+offset_bottom = -0.400024
 grow_horizontal = 2
 script = ExtResource("6_iivbl")
 inventory_slots = [NodePath("HeadSlot"), NodePath("ChestSlot"), NodePath("HandSlot"), NodePath("ShoeSlot"), NodePath("BeltSlot"), NodePath("LegSlot"), NodePath("RingSlot"), NodePath("AmuletSlot"), NodePath("Weapon1Slot")]
@@ -2055,19 +2058,19 @@ item_prefab = ExtResource("11_ewbju")
 
 [node name="HeadSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 0
-offset_left = 12.0
-offset_top = 9.0
-offset_right = 97.0
-offset_bottom = 94.0
+offset_left = 16.0
+offset_top = -25.0
+offset_right = 91.0
+offset_bottom = 50.0
 outline_texture = ExtResource("9_helmet")
 slot_type = "Head"
 
 [node name="ChestSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 93.0
-offset_right = 96.0
-offset_bottom = 178.0
+offset_left = 14.0
+offset_top = 56.0
+offset_right = 89.0
+offset_bottom = 131.0
 outline_texture = ExtResource("9_chest")
 slot_type = "Chest"
 slot_id = 1
@@ -2075,19 +2078,19 @@ slot_id = 1
 [node name="HandSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 0
 offset_left = 14.0
-offset_top = 185.0
-offset_right = 99.0
-offset_bottom = 270.0
+offset_top = 134.0
+offset_right = 89.0
+offset_bottom = 209.0
 outline_texture = ExtResource("9_gloves")
 slot_type = "Hand"
 slot_id = 2
 
 [node name="ShoeSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 0
-offset_left = 9.0
-offset_top = 270.0
-offset_right = 94.0
-offset_bottom = 355.0
+offset_left = 16.0
+offset_top = 213.0
+offset_right = 91.0
+offset_bottom = 288.0
 outline_texture = ExtResource("9_shoes")
 slot_type = "Foot"
 slot_id = 3
@@ -2097,10 +2100,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -98.5
-offset_top = 18.0
+offset_left = -105.5
+offset_top = -23.0
 offset_right = 108.5
-offset_bottom = 232.0
+offset_bottom = 177.0
 grow_horizontal = 2
 mouse_filter = 2
 texture = ExtResource("54_b1mpw")
@@ -2140,10 +2143,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -34.5
-offset_top = 271.0
-offset_right = 50.5
-offset_bottom = 356.0
+offset_left = -35.5
+offset_top = 221.0
+offset_right = 39.5
+offset_bottom = 296.0
 grow_horizontal = 2
 outline_texture = ExtResource("9_sword")
 slot_type = "Weapon"
@@ -2154,10 +2157,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -92.0
-offset_top = 1.0
-offset_right = -7.0
-offset_bottom = 86.0
+offset_left = -95.0
+offset_top = -26.0
+offset_right = -20.0
+offset_bottom = 49.0
 grow_horizontal = 0
 outline_texture = ExtResource("9_nnt18")
 slot_type = "Belt"
@@ -2168,10 +2171,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -92.0
-offset_top = 82.0
-offset_right = -7.0
-offset_bottom = 167.0
+offset_left = -94.0
+offset_top = 50.0
+offset_right = -19.0
+offset_bottom = 125.0
 grow_horizontal = 0
 outline_texture = ExtResource("9_pants")
 slot_type = "Legs"
@@ -2182,10 +2185,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -91.0
-offset_top = 164.0
-offset_right = -6.0
-offset_bottom = 249.0
+offset_left = -94.0
+offset_top = 130.0
+offset_right = -19.0
+offset_bottom = 205.0
 grow_horizontal = 0
 outline_texture = ExtResource("9_ring")
 slot_type = "Ring"
@@ -2196,10 +2199,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -96.0
-offset_top = 271.0
-offset_right = -11.0
-offset_bottom = 356.0
+offset_left = -95.0
+offset_top = 213.0
+offset_right = -20.0
+offset_bottom = 288.0
 grow_horizontal = 0
 outline_texture = ExtResource("9_amulet")
 slot_type = "Amulet"
@@ -2212,13 +2215,18 @@ layout_mode = 1
 [node name="ActivePerksBackground" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.2
-anchor_right = 1.0
-anchor_bottom = 0.3
-offset_left = 15.0
-offset_right = -15.0
+anchor_left = 0.025
+anchor_top = 0.275
+anchor_right = 0.975
+anchor_bottom = 0.349
+offset_left = -0.125
+offset_top = -0.25
+offset_right = 0.125
+offset_bottom = 0.12999
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("49_ifeo7")
+expand_mode = 1
 
 [node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground"]
 layout_mode = 1
@@ -2232,6 +2240,7 @@ perk_mini_scene = ExtResource("14_mucmn")
 
 [node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label")]
 layout_mode = 1
+anchors_preset = 10
 anchor_right = 1.0
 offset_left = 15.0
 offset_right = -15.0
@@ -2253,6 +2262,7 @@ luck_aprox = NodePath("StatsContainer/LuckContainer/LuckAprox")
 armor_label = NodePath("StatsContainer/ArmorContainer/ArmorValue")
 
 [node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
+layout_mode = 0
 offset_right = 375.0
 offset_bottom = 39.0
 size_flags_vertical = 3
@@ -2261,9 +2271,10 @@ text = "Halymist"
 vertical_alignment = 1
 
 [node name="CharacterDetails" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
-offset_top = 48.0
+layout_mode = 0
+offset_top = 39.0
 offset_right = 375.0
-offset_bottom = 93.0
+offset_bottom = 76.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -2293,9 +2304,9 @@ vertical_alignment = 1
 
 [node name="StatsContainer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
 anchors_preset = 0
-offset_top = 97.0
+offset_top = 75.0
 offset_right = 375.0
-offset_bottom = 194.0
+offset_bottom = 173.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.67
@@ -2321,9 +2332,10 @@ text = "(10)"
 vertical_alignment = 1
 
 [node name="StaminaContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
-layout_mode = 2
-offset_left = 136.0
-offset_right = 264.0
+layout_mode = 1
+anchors_preset = -1
+offset_left = 180.0
+offset_right = 300.0
 offset_bottom = 29.0
 
 [node name="StaminaLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StaminaContainer"]
@@ -2363,10 +2375,11 @@ text = "(10)"
 vertical_alignment = 1
 
 [node name="LuckContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
-layout_mode = 2
-offset_left = 136.0
+layout_mode = 1
+anchors_preset = -1
+offset_left = 180.0
 offset_top = 33.0
-offset_right = 264.0
+offset_right = 300.0
 offset_bottom = 62.0
 
 [node name="LuckLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/LuckContainer"]
@@ -2402,10 +2415,14 @@ vertical_alignment = 1
 
 [node name="DetailsButton" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
 layout_mode = 1
-offset_left = 216.0
-offset_top = 420.0
-offset_right = 307.0
-offset_bottom = 454.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -147.0
+offset_top = 142.0
+offset_right = -86.0
+offset_bottom = 172.0
+grow_horizontal = 0
 texture = ExtResource("52_aujhx")
 expand_mode = 1
 
@@ -2426,10 +2443,14 @@ expand_icon = true
 
 [node name="TalentsButton" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
 layout_mode = 1
-offset_left = 114.0
-offset_top = 422.0
-offset_right = 209.0
-offset_bottom = 455.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -82.0
+offset_top = 143.0
+offset_right = -22.0
+offset_bottom = 171.0
+grow_horizontal = 0
 texture = ExtResource("52_aujhx")
 expand_mode = 1
 
@@ -4998,6 +5019,15 @@ offset_bottom = -0.400002
 theme_override_styles/panel = SubResource("StyleBoxFlat_tgy6u")
 script = ExtResource("23_tgy6u")
 perk_scene = ExtResource("22_81klo")
+
+[node name="DetailsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
