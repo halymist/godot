@@ -861,20 +861,6 @@ func _ready():
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 
-# Helper functions to modify values and emit signals
-func add_silver(amount: int):
-	if current_player:
-		current_player.silver += amount
-
-func update_silver(amount: int):
-	"""Update silver via UIManager - for use by InventorySlot and other non-panel code"""
-	var background = get_tree().root.get_node("Game/Background")
-	background.update_silver(amount)
-
-func add_mushrooms(amount: int):
-	if current_player:
-		current_player.mushrooms += amount
-
 # Helper function to get player stats for UI
 func get_player_stats() -> Dictionary:
 	return current_player.get_player_stats() if current_player else {}
