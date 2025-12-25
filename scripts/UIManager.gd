@@ -57,11 +57,7 @@ func update_display():
 	print("UIManager.update_display mushrooms_labels count: ", mushrooms_labels.size())
 	var mushrooms_text = str(GameInfo.current_player.mushrooms)
 	for m_label in mushrooms_labels:
-		if m_label:
-			print("Updating mushroom label to: ", mushrooms_text)
-			m_label.text = mushrooms_text
-		else:
-			print("Warning: null label in mushrooms_labels array")
+		m_label.text = mushrooms_text
 
 func refresh_bags():
 	"""Ask all registered bag views to refresh from GameInfo state"""

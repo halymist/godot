@@ -31,6 +31,7 @@ func _on_layout_mode_changed(is_wide: bool):
 
 func _on_utility_slot_changed(slot_id: int):
 	if slot_id == 100:  # Blacksmith slot
+		update_stats_display()
 		update_temper_button_state()
 
 func _on_visibility_changed():

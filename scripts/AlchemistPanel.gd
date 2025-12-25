@@ -22,13 +22,10 @@ const SLOT_3 = 103
 
 func _ready():
 	_load_location_content()
-	# Connect to visibility changes to handle cleanup
+
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect brew button
 	brew_button.pressed.connect(_on_brew_button_pressed)
-	# Connect to slot changes for alchemist slots (101-103)
 	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
-	# Connect to layout mode changes
 	UIManager.instance.resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 
 func _on_layout_mode_changed(is_wide: bool):
@@ -49,10 +46,8 @@ func _on_visibility_changed():
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if background_rect and location_data.alchemist_background:
-		background_rect.texture = location_data.alchemist_background
-	if description_label:
-		description_label.text = location_data.get_random_alchemist_greeting()
+	background_rect.texture = location_data.alchemist_background
+	description_label.text = location_data.get_random_alchemist_greeting()
 
 func return_ingredients_to_bag():
 	# Return items from ingredient slots (101, 102, 103) to bag
@@ -80,7 +75,8 @@ func return_ingredients_to_bag():
 		if container and container.has_method("clear_slot"):
 			container.clear_slot()
 	
-	GameInfo.bag_slots_changed.emit()
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
 
 func get_ingredient_in_slot(slot_id: int) -> GameInfo.Item:
 	for item in GameInfo.current_player.bag_slots:
@@ -198,7 +194,8 @@ func _on_brew_button_pressed():
 	# Clear the visual slots
 	clear_ingredient_slots()
 	
-	GameInfo.bag_slots_changed.emit()
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
 
 func clear_ingredient_slots():
 	# Clear all three ingredient slot visuals

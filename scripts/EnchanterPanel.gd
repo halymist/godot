@@ -68,7 +68,7 @@ func return_enchanter_item_to_bag():
 					# Clear the enchanter slot visually
 					if enchanter_slot and enchanter_slot.has_method("clear_slot"):
 						enchanter_slot.clear_slot()
-					GameInfo.bag_slots_changed.emit()
+					UIManager.instance.refresh_bags()
 					return
 
 func update_enchant_button_state():
