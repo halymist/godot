@@ -1,4 +1,3 @@
-@tool
 extends Panel
 
 @export var rankings_table: ScrollContainer

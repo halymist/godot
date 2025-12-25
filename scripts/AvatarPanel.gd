@@ -191,11 +191,8 @@ func _on_change_pressed():
 		if GameInfo.current_player.mushrooms < total_cost:
 			print("Not enough mushrooms!")
 			return
-		# Deduct mushrooms via UIManager to centralize updates
-		if UIManager.instance:
-			UIManager.instance.update_mushrooms(-total_cost)
-		else:
-			GameInfo.current_player.mushrooms -= total_cost
+
+		UIManager.instance.update_mushrooms(-total_cost)
 	
 	# Apply changes to player data
 	if GameInfo.current_player:
@@ -212,8 +209,9 @@ func _on_change_pressed():
 		original_nose_id = preview_nose_id
 		original_mouth_id = preview_mouth_id
 		
-		# Emit signal to update all avatar displays
-		GameInfo.avatar_changed.emit(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
+		# Update all avatar displays
+		if UIManager.instance:
+			UIManager.instance.refresh_avatars()
 		
 		# Clear selected cosmetics and update button
 		selected_cosmetics.clear()

@@ -9,6 +9,7 @@ static var instance: UIManager
 @export var bag_views: Array[Node] = []
 @export var stats_panel: Panel
 @export var active_effects: Node
+@export var avatars: Array[Node] = []
 
 # Reference to resolution manager (Game node)
 @export var resolution_manager: Node
@@ -75,6 +76,24 @@ func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs)"""
 	active_effects.refresh_effects()
 	refresh_stats()  # Blessings may affect stats
+
+func refresh_avatars():
+	"""Update all avatar displays with current player data"""
+	print("UIManager.refresh_avatars avatars count: ", avatars.size())
+	if not GameInfo.current_player:
+		return
+	
+	for avatar in avatars:
+		if avatar and avatar.has_method("_on_avatar_changed"):
+			avatar._on_avatar_changed(
+				GameInfo.current_player.avatar_face,
+				GameInfo.current_player.avatar_hair,
+				GameInfo.current_player.avatar_eyes,
+				GameInfo.current_player.avatar_nose,
+				GameInfo.current_player.avatar_mouth
+			)
+		else:
+			print("Warning: invalid avatar or missing _on_avatar_changed()")
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot (100-104) changes"""

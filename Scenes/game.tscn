@@ -1,7 +1,6 @@
-[gd_scene load_steps=107 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=106 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
-[ext_resource type="Script" path="res://scripts/ConstrainedPanel.gd" id="1_constrained"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
 [ext_resource type="Script" uid="uid://cjjfqcbtuil72" path="res://scripts/UIManager.gd" id="3_aujhx"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
@@ -284,7 +283,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -299,6 +298,7 @@ mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/Bag")]
 stats_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats")
 active_effects = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground/ActivePerks")
+avatars = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character/Avatar"), NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Wide/Sidebar/Character/Avatar")]
 resolution_manager = NodePath("..")
 blacksmith = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
 alchemist = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
@@ -2582,7 +2582,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
-script = ExtResource("1_constrained")
 
 [node name="Title" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel"]
 layout_mode = 1
