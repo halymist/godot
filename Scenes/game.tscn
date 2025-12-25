@@ -1,4 +1,4 @@
-[gd_scene load_steps=106 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=107 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -65,6 +65,7 @@
 [ext_resource type="Script" uid="uid://dl5m7uo6ahwk7" path="res://scripts/DragScrollContainer.gd" id="37_drag_scroll"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
+[ext_resource type="Texture2D" uid="uid://frdxqif0cyou" path="res://assets/images/ui/background_char.png" id="38_aujhx"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
@@ -2024,7 +2025,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2032,6 +2032,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
+
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("38_aujhx")
+expand_mode = 1
 
 [node name="Equip" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
