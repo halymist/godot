@@ -50,6 +50,9 @@ func load_active_perks_for_slot(slot: int):
 	
 	_clear_panel_children(active_panel)
 	
+	# Reload inactive perks to reflect any changes (e.g., after talent reset)
+	load_inactive_perks()
+	
 	# Get active perks for the specific slot from GameInfo
 	var game_perks = GameInfo.current_player.perks
 	var active_count = 0
