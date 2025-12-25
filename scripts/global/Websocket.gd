@@ -82,7 +82,7 @@ var mock_character_data = {
 	"traveling": null,
 	"traveling_destination": null,
 	"location": 1,
-	"strength": 15,
+	"strength": 150,
 	"stamina": 12,
 	"agility": 18,
 	"luck": 10,

@@ -70,9 +70,9 @@
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
-[ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="45_7sqp1"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
+[ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="52_aujhx"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
@@ -325,7 +325,7 @@ arena_panel = NodePath("GameSceneParent/Wrapper/GameScene/Arena")
 arena_button = NodePath("BottomUI/ArenaButton")
 character_button = NodePath("TopUI/Character/Button")
 character_panel = NodePath("GameSceneParent/Wrapper/GameScene/Character")
-talents_button = NodePath("GameSceneParent/Wrapper/GameScene/Character/Talents/Button")
+talents_button = NodePath("GameSceneParent/Wrapper/GameScene/Character/TalentsButton/Button")
 talents_panel = NodePath("GameSceneParent/Wrapper/GameScene/TalentsPanel")
 map_button = NodePath("BottomUI/MapButton")
 map_panel = NodePath("GameSceneParent/Wrapper/GameScene/Map")
@@ -2074,20 +2074,20 @@ slot_id = 1
 
 [node name="HandSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 0
-offset_left = 9.0
-offset_top = 181.0
-offset_right = 94.0
-offset_bottom = 266.0
+offset_left = 14.0
+offset_top = 185.0
+offset_right = 99.0
+offset_bottom = 270.0
 outline_texture = ExtResource("9_gloves")
 slot_type = "Hand"
 slot_id = 2
 
 [node name="ShoeSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 267.0
-offset_right = 95.0
-offset_bottom = 352.0
+offset_left = 9.0
+offset_top = 270.0
+offset_right = 94.0
+offset_bottom = 355.0
 outline_texture = ExtResource("9_shoes")
 slot_type = "Foot"
 slot_id = 3
@@ -2097,10 +2097,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -97.5
-offset_top = 11.0
+offset_left = -98.5
+offset_top = 18.0
 offset_right = 108.5
-offset_bottom = 215.0
+offset_bottom = 232.0
 grow_horizontal = 2
 mouse_filter = 2
 texture = ExtResource("54_b1mpw")
@@ -2140,10 +2140,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -37.0
-offset_top = 257.0
-offset_right = 48.0
-offset_bottom = 342.0
+offset_left = -34.5
+offset_top = 271.0
+offset_right = 50.5
+offset_bottom = 356.0
 grow_horizontal = 2
 outline_texture = ExtResource("9_sword")
 slot_type = "Weapon"
@@ -2196,10 +2196,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -91.0
-offset_top = 248.0
-offset_right = -6.0
-offset_bottom = 333.0
+offset_left = -96.0
+offset_top = 271.0
+offset_right = -11.0
+offset_bottom = 356.0
 grow_horizontal = 0
 outline_texture = ExtResource("9_amulet")
 slot_type = "Amulet"
@@ -2209,16 +2209,16 @@ slot_id = 7
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 
-[node name="ActivePerksBackground" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
+[node name="ActivePerksBackground" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.2
 anchor_right = 1.0
 anchor_bottom = 0.3
-offset_top = 10.0
+offset_left = 15.0
+offset_right = -15.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 
 [node name="ActivePerks" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground"]
 layout_mode = 1
@@ -2230,215 +2230,216 @@ grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 
-[node name="Stats" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "guild_icon", "profession_label", "profession_icon", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
+[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "guild_icon", "profession_label", "profession_icon", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
 layout_mode = 1
-anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.2
-offset_left = 0.0999994
-offset_top = 0.22998
+offset_left = 15.0
+offset_right = -15.0
+offset_bottom = 128.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 script = ExtResource("10_mg4q0")
-player_name_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/PlayerName")
-rank_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer/RankLabel")
-guild_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer/GuildLabel")
-guild_icon = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer/Icon")
-profession_label = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer/ProfessionLabel")
-profession_icon = NodePath("DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer/Icon")
-strength_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer/StrengthLabel")
-stamina_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer/StaminaLabel")
-agility_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer/AgilityLabel")
-luck_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/LuckContainer/LuckLabel")
-armor_label = NodePath("DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer/ArmorLabel")
+player_name_label = NodePath("PlayerName")
+rank_label = NodePath("CharacterDetails/RankContainer/RankLabel")
+guild_label = NodePath("CharacterDetails/GuildContainer/GuildLabel")
+guild_icon = NodePath("")
+profession_label = NodePath("CharacterDetails/ProfessionContainer/ProfessionLabel")
+profession_icon = NodePath("")
+strength_label = NodePath("StatsContainer/StrengthContainer/StrengthLabel")
+stamina_label = NodePath("StatsContainer/StaminaContainer/StaminaLabel")
+agility_label = NodePath("StatsContainer/AgilityContainer/AgilityLabel")
+luck_label = NodePath("StatsContainer/LuckContainer/LuckLabel")
+armor_label = NodePath("StatsContainer/ArmorContainer/ArmorLabel")
 
-[node name="DetailsAndStats" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
+offset_right = 375.0
+offset_bottom = 39.0
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Halymist"
+vertical_alignment = 1
 
-[node name="CharacterDetails" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats"]
-layout_mode = 2
+[node name="CharacterDetails" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
+offset_top = 48.0
+offset_right = 375.0
+offset_bottom = 93.0
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.33
-theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
+size_flags_vertical = 3
 
-[node name="DetailsGrid" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
-layout_mode = 2
-text = "Name"
-vertical_alignment = 1
-
-[node name="RankContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+[node name="GuildContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/CharacterDetails"]
 layout_mode = 2
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-stretch_mode = 5
-
-[node name="RankLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/RankContainer"]
-layout_mode = 2
-text = "Novice (20165)"
-vertical_alignment = 1
-
-[node name="GuildContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
-layout_mode = 2
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="GuildLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/GuildContainer"]
+[node name="GuildLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/CharacterDetails/GuildContainer"]
 layout_mode = 2
 text = "Mercantile"
 vertical_alignment = 1
 
-[node name="ProfessionContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid"]
+[node name="ProfessionContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/CharacterDetails"]
 layout_mode = 2
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="ProfessionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/CharacterDetails/DetailsGrid/ProfessionContainer"]
+[node name="ProfessionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/CharacterDetails/ProfessionContainer"]
 layout_mode = 2
 text = "Herbalist"
 vertical_alignment = 1
 
-[node name="StatsContainer" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats"]
+[node name="RankContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/CharacterDetails"]
 layout_mode = 2
+
+[node name="RankLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/CharacterDetails/RankContainer"]
+layout_mode = 2
+text = "Novice (20165)"
+vertical_alignment = 1
+
+[node name="StatsContainer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
+anchors_preset = 0
+offset_top = 97.0
+offset_right = 375.0
+offset_bottom = 194.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
 size_flags_stretch_ratio = 0.67
-theme_override_styles/panel = SubResource("StyleBoxFlat_e2o6t")
 
-[node name="StatsGrid" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer"]
+[node name="StrengthContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 5.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-columns = 2
+offset_right = 132.0
+offset_bottom = 29.0
 
-[node name="StrengthContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="StrengthLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StrengthContainer"]
 layout_mode = 2
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer"]
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-texture = ExtResource("44_k8ojv")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="StrengthLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StrengthContainer"]
-layout_mode = 2
-text = "Strength: 10"
+text = "Strength: "
 vertical_alignment = 1
 
-[node name="StaminaContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="StrengthValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StrengthContainer"]
 layout_mode = 2
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer"]
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-texture = ExtResource("46_gsm33")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="StaminaLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/StaminaContainer"]
-layout_mode = 2
-text = "Stamina: 10"
+text = "10"
 vertical_alignment = 1
 
-[node name="AgilityContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="StrAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StrengthContainer"]
 layout_mode = 2
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer"]
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-texture = ExtResource("66_7sqp1")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="AgilityLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/AgilityContainer"]
-layout_mode = 2
-text = "Agility: 10"
+text = "(10)"
 vertical_alignment = 1
 
-[node name="LuckContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
-layout_mode = 2
+[node name="StaminaContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 180.0
+offset_right = 350.0
+offset_bottom = 29.0
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/LuckContainer"]
-custom_minimum_size = Vector2(24, 24)
+[node name="StaminaLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StaminaContainer"]
 layout_mode = 2
-texture = ExtResource("47_lrctp")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="LuckLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/LuckContainer"]
-layout_mode = 2
-text = "Luck: 10"
+text = "Stamina: "
 vertical_alignment = 1
 
-[node name="ArmorContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid"]
+[node name="StamValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StaminaContainer"]
 layout_mode = 2
+text = "10"
+vertical_alignment = 1
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer"]
-custom_minimum_size = Vector2(24, 24)
+[node name="StamAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StaminaContainer"]
 layout_mode = 2
-texture = ExtResource("45_7sqp1")
-expand_mode = 1
-stretch_mode = 5
+text = "(10)"
+vertical_alignment = 1
 
-[node name="ArmorLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/DetailsAndStats/StatsContainer/StatsGrid/ArmorContainer"]
+[node name="AgilityContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
+layout_mode = 1
+offset_top = 33.0
+offset_right = 132.0
+offset_bottom = 62.0
+
+[node name="AgilityLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/AgilityContainer"]
+layout_mode = 2
+text = "Agility: "
+vertical_alignment = 1
+
+[node name="StrengthValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/AgilityContainer"]
+layout_mode = 2
+text = "10"
+vertical_alignment = 1
+
+[node name="StrAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/AgilityContainer"]
+layout_mode = 2
+text = "(10)"
+vertical_alignment = 1
+
+[node name="LuckContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 180.0
+offset_top = 33.0
+offset_right = 350.0
+offset_bottom = 62.0
+
+[node name="LuckLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/LuckContainer"]
+layout_mode = 2
+text = "Luck: "
+vertical_alignment = 1
+
+[node name="LuckValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/LuckContainer"]
+layout_mode = 2
+text = "10"
+vertical_alignment = 1
+
+[node name="LuckAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/LuckContainer"]
+layout_mode = 2
+text = "(10)"
+vertical_alignment = 1
+
+[node name="ArmorContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
+layout_mode = 1
+offset_top = 66.0
+offset_right = 132.0
+offset_bottom = 95.0
+
+[node name="ArmorLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/ArmorContainer"]
 layout_mode = 2
 text = "Armor: 5"
 vertical_alignment = 1
 
-[node name="Talents" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
+[node name="DetailsButton" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.92
-anchor_top = 0.7
+offset_left = 216.0
+offset_top = 420.0
+offset_right = 307.0
+offset_bottom = 454.0
+texture = ExtResource("52_aujhx")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/DetailsButton"]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.8
-offset_left = -8.0
-offset_top = -4.0
-offset_bottom = 4.0
-grow_horizontal = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
 grow_vertical = 2
-ratio = 1.2
-alignment_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 10
+action_mode = 0
+text = "Details
+"
+flat = true
+expand_icon = true
 
-[node name="Panel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Talents"]
-layout_mode = 2
+[node name="TalentsButton" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
+layout_mode = 1
+offset_left = 114.0
+offset_top = 422.0
+offset_right = 209.0
+offset_bottom = 455.0
+texture = ExtResource("52_aujhx")
+expand_mode = 1
 
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Talents"]
-layout_mode = 2
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/TalentsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 10
 text = "TALENTS"
 flat = true
+expand_icon = true
 
 [node name="Avatar" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false

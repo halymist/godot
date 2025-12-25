@@ -8,9 +8,13 @@ extends Control
 @export var profession_icon: TextureRect
 @export var talent_points_label: Label
 @export var strength_label: Label
+@export var strength_aprox: Label
 @export var stamina_label: Label
+@export var stamina_aprox: Label
 @export var agility_label: Label
+@export var agility_aprox: Label
 @export var luck_label: Label
+@export var luck_aprox: Label
 @export var armor_label: Label
 
 func _ready():

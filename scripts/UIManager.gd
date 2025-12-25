@@ -7,7 +7,7 @@ static var instance: UIManager
 @export var silver_labels: Array[Label] = []
 @export var mushrooms_labels: Array[Label] = []
 @export var bag_views: Array[Node] = []
-@export var stats_panel: Panel
+@export var stats_panel: Control
 @export var active_effects: Node
 @export var avatars: Array[Node] = []
 
