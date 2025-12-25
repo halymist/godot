@@ -3,9 +3,9 @@ extends HBoxContainer
 @export var perk_mini_scene: PackedScene
 
 func _ready():
-	update_active_perks()
+	refresh_effects()
 
-func update_active_perks():
+func refresh_effects():
 	print("ActivePerksDisplay: Updating active perks and effects...")
 	
 	# Clear existing icons

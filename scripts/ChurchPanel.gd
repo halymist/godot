@@ -116,6 +116,10 @@ func _on_bless_button_pressed():
 	GameInfo.current_player.blessing = selected_blessing_id
 	print("Received blessing ID: ", selected_blessing_id, " - cost: ", BLESSING_COST, " gold")
 	
+	# Refresh active effects and stats
+	if UIManager.instance:
+		UIManager.instance.refresh_active_effects()
+	
 	# Highlight the newly active blessing
 	highlight_active_blessing(selected_blessing_id)
 	

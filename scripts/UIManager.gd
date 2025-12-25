@@ -8,6 +8,7 @@ static var instance: UIManager
 @export var mushrooms_labels: Array[Label] = []
 @export var bag_views: Array[Node] = []
 @export var stats_panel: Panel
+@export var active_effects: Node
 
 # Reference to resolution manager (Game node)
 @export var resolution_manager: Node
@@ -69,6 +70,11 @@ func refresh_bags():
 func refresh_stats():
 	"""Ask all registered stats panels to recalculate stats"""
 	stats_panel.stats_changed(GameInfo.get_player_stats())
+
+func refresh_active_effects():
+	"""Refresh active effects display (blessings, potions, elixirs)"""
+	active_effects.refresh_effects()
+	refresh_stats()  # Blessings may affect stats
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot (100-104) changes"""
