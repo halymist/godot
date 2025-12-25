@@ -23,19 +23,25 @@ func load_inactive_perks():
 	# Clear existing inactive perk nodes
 	_clear_panel_children(inactive_panel)
 	
-	# Get all inactive perks from GameInfo
+	# Get all inactive perks from GameInfo and sort by slot
 	var game_perks = GameInfo.current_player.perks
-	var inactive_count = 0
+	var inactive_perks = []
 	
 	for perk in game_perks:
 		if not perk.active:  # Only inactive perks
-			print("Loading inactive perk:", perk.perk_name, "Slot:", perk.slot)
-			var perk_instance = perk_scene.instantiate()
-			_setup_perk_instance(perk_instance, perk)
-			inactive_panel.add_child(perk_instance)
-			inactive_count += 1
+			inactive_perks.append(perk)
 	
-	print("Loaded ", inactive_count, " inactive perks")
+	# Sort by slot number
+	inactive_perks.sort_custom(func(a, b): return a.slot < b.slot)
+	
+	# Add perks to panel in order
+	for perk in inactive_perks:
+		print("Loading inactive perk:", perk.perk_name, "Slot:", perk.slot)
+		var perk_instance = perk_scene.instantiate()
+		_setup_perk_instance(perk_instance, perk)
+		inactive_panel.add_child(perk_instance)
+	
+	print("Loaded ", inactive_perks.size(), " inactive perks")
 
 func load_active_perks_for_slot(slot: int):
 	print("Loading active perks for slot: ", slot)
