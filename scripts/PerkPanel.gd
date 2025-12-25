@@ -166,8 +166,17 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 	# Remove placeholder first
 	_remove_placeholder()
 	
+	# Store the old slot before changing active state
+	var old_slot = perk.slot
+	var was_active = perk.active
+	
 	# Update perk data to be active
 	perk.active = true
+	perk.slot = slot_filter  # Set to the active slot this panel represents
+	
+	# If perk was inactive, shift down all inactive perks that were below it
+	if not was_active:
+		_reorder_slots_after_removal(old_slot, false)
 	
 	# Check if active panel already has a perk (need to swap)
 	# Filter out BackgroundPanel and SectionHeader
@@ -184,6 +193,8 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		
 		# Update existing perk to be inactive
 		existing_perk_data.active = false
+		# Find the next available inactive slot
+		existing_perk_data.slot = _get_next_inactive_slot()
 		
 		# Place existing perk in source container
 		if source_container:
@@ -210,9 +221,16 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		if source_node:
 			source_node.remove_meta("original_size")
 			source_node.queue_free()
+	
+	# Debug: Print all perks from GameInfo
+	_print_perks_debug()
 
 func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data: Dictionary):
 	print("Moving perk to inactive panel")
+	
+	# Store whether it was active before
+	var was_active = perk.active
+	var old_slot = perk.slot
 	
 	# Update perk data to be inactive
 	perk.active = false
@@ -220,6 +238,15 @@ func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data
 	# Get the placeholder position before it's removed
 	var placeholder_index = drag_placeholder.get_index() if drag_placeholder else get_child_count()
 	print("Placeholder index: ", placeholder_index, " out of ", get_child_count(), " children")
+	
+	# Calculate the target slot based on visual position
+	var target_slot = _calculate_slot_from_index(placeholder_index)
+	perk.slot = target_slot
+	
+	# If perk was active, we don't need to reorder (just inserting into inactive list)
+	# If perk was inactive, shift slots to make room at target position
+	if not was_active:
+		_reorder_slots_for_insertion(target_slot, old_slot)
 	
 	# Remove placeholder BEFORE adding new child so indices stay correct
 	_remove_placeholder()
@@ -239,8 +266,15 @@ func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data
 		source_node.remove_meta("original_size")
 		source_node.queue_free()
 	
+	# Recalculate all inactive perk slots based on their visual order
+	# This ensures proper sequential numbering regardless of where the perk came from
+	_recalculate_inactive_slots(source_node)
+	
 	# Update active perks display in character screen
 	_update_character_active_perks()
+	
+	# Debug: Print all perks from GameInfo
+	_print_perks_debug()
 
 func _handle_reorder(_pos: Vector2, data):
 	# Get the dragged perk
@@ -267,8 +301,15 @@ func _handle_reorder(_pos: Vector2, data):
 		dragged_node.remove_meta("original_size")
 		dragged_node.queue_free()
 	
+	# Recalculate all inactive perk slots based on their visual order
+	# Pass the dragged node so we can skip it (it's queued for deletion but still in tree)
+	_recalculate_inactive_slots(dragged_node)
+	
 	# Update active perks display in character screen
 	_update_character_active_perks()
+	
+	# Debug: Print all perks from GameInfo
+	_print_perks_debug()
 
 func place_perk_in_panel(perk_data: GameInfo.Perk):
 	print("Placing perk '", perk_data.perk_name, "' in panel: ", self.name)
@@ -411,3 +452,88 @@ func _update_character_active_perks():
 	var active_perks_display = get_tree().root.find_child("ActivePerks", true, false)
 	if active_perks_display and active_perks_display.has_method("update_active_perks"):
 		active_perks_display.update_active_perks()
+
+func _print_perks_debug():
+	print("=== PERKS STATE AFTER DRAG ===")
+	if GameInfo.current_player and GameInfo.current_player.perks:
+		for perk in GameInfo.current_player.perks:
+			print("  Perk ID: %d | Active: %s | Slot: %d | Name: %s" % [perk.id, perk.active, perk.slot, perk.perk_name])
+	else:
+		print("  No perks found in GameInfo.current_player")
+	print("==============================")
+
+func _reorder_slots_after_removal(removed_slot: int, was_active: bool):
+	"""Shift down all perks that were below the removed perk"""
+	if not GameInfo.current_player or not GameInfo.current_player.perks:
+		return
+	
+	for perk in GameInfo.current_player.perks:
+		# Only reorder perks of the same active state
+		if perk.active == was_active and perk.slot > removed_slot:
+			perk.slot -= 1
+
+func _reorder_slots_for_insertion(target_slot: int, old_slot: int):
+	"""Shift slots when reordering within inactive list"""
+	if not GameInfo.current_player or not GameInfo.current_player.perks:
+		return
+	
+	for perk in GameInfo.current_player.perks:
+		# Only affect inactive perks
+		if not perk.active:
+			if old_slot < target_slot:
+				# Moving down: shift up perks between old and new position
+				if perk.slot > old_slot and perk.slot <= target_slot:
+					perk.slot -= 1
+			elif old_slot > target_slot:
+				# Moving up: shift down perks between new and old position
+				if perk.slot >= target_slot and perk.slot < old_slot:
+					perk.slot += 1
+
+func _get_next_inactive_slot() -> int:
+	"""Get the next available slot number for inactive perks"""
+	if not GameInfo.current_player or not GameInfo.current_player.perks:
+		return 1
+	
+	var max_slot = 0
+	for perk in GameInfo.current_player.perks:
+		if not perk.active and perk.slot > max_slot:
+			max_slot = perk.slot
+	
+	return max_slot + 1
+
+func _calculate_slot_from_index(child_index: int) -> int:
+	"""Calculate the slot number based on visual position in container"""
+	# Count how many actual perk children are before this index
+	var perk_count = 0
+	for i in range(child_index):
+		if i < get_child_count():
+			var child = get_child(i)
+			if child.name != "BackgroundPanel" and child.name != "SectionHeader":
+				perk_count += 1
+	
+	# Slot is 1-indexed
+	return perk_count + 1
+
+func _recalculate_inactive_slots(skip_node: Node = null):
+	"""Recalculate all inactive perk slots based on their visual order in the panel"""
+	if panel_type != "Inactive":
+		return
+	
+	if not GameInfo.current_player or not GameInfo.current_player.perks:
+		return
+	
+	# Get all perk children in visual order
+	var perk_children = []
+	for child in get_children():
+		if child.name != "BackgroundPanel" and child.name != "SectionHeader" and child.has_method("get_perk_data"):
+			# Skip the node that's being deleted (to avoid double-counting)
+			if skip_node and child == skip_node:
+				continue
+			perk_children.append(child)
+	
+	# Update slot numbers based on position (1-indexed)
+	for i in range(perk_children.size()):
+		var perk_data = perk_children[i].get_perk_data()
+		if perk_data and not perk_data.active:
+			perk_data.slot = i + 1
+			print("Recalculated: ", perk_data.perk_name, " -> slot ", perk_data.slot)

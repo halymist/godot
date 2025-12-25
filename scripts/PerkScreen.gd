@@ -44,6 +44,10 @@ func load_active_perks_for_slot(slot: int):
 		print("Error: active_panel is null")
 		return
 	
+	# Set the slot filter on the active panel so it knows which perk_slot it represents
+	if active_panel.has_method("set_slot_filter"):
+		active_panel.set_slot_filter(slot)
+	
 	_clear_panel_children(active_panel)
 	
 	# Get active perks for the specific slot from GameInfo
@@ -81,9 +85,12 @@ func _on_button_pressed():
 
 func show_overlay():
 	"""Show the perk screen with slide up animation"""
-	# Start positioned below the screen
-	position.y = get_viewport().get_visible_rect().size.y
+	# Make visible first
 	visible = true
+	
+	# Start positioned below the screen
+	var viewport_height = get_viewport().get_visible_rect().size.y
+	position.y = viewport_height
 	
 	# Slide up animation
 	var show_tween = create_tween()
