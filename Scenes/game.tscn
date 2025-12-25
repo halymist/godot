@@ -2230,7 +2230,7 @@ grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 
-[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "guild_icon", "profession_label", "profession_icon", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label")]
+[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label")]
 layout_mode = 1
 anchor_right = 1.0
 offset_left = 15.0
@@ -2241,14 +2241,16 @@ script = ExtResource("10_mg4q0")
 player_name_label = NodePath("PlayerName")
 rank_label = NodePath("CharacterDetails/RankContainer/RankLabel")
 guild_label = NodePath("CharacterDetails/GuildContainer/GuildLabel")
-guild_icon = NodePath("")
 profession_label = NodePath("CharacterDetails/ProfessionContainer/ProfessionLabel")
-profession_icon = NodePath("")
-strength_label = NodePath("StatsContainer/StrengthContainer/StrengthLabel")
-stamina_label = NodePath("StatsContainer/StaminaContainer/StaminaLabel")
-agility_label = NodePath("StatsContainer/AgilityContainer/AgilityLabel")
-luck_label = NodePath("StatsContainer/LuckContainer/LuckLabel")
-armor_label = NodePath("StatsContainer/ArmorContainer/ArmorLabel")
+strength_label = NodePath("StatsContainer/StrengthContainer/StrengthValue")
+strength_aprox = NodePath("StatsContainer/StrengthContainer/StrAprox")
+stamina_label = NodePath("StatsContainer/StaminaContainer/StamValue")
+stamina_aprox = NodePath("StatsContainer/StaminaContainer/StamAprox")
+agility_label = NodePath("StatsContainer/AgilityContainer/AgilityValue")
+agility_aprox = NodePath("StatsContainer/AgilityContainer/AgilityAprox")
+luck_label = NodePath("StatsContainer/LuckContainer/LuckValue")
+luck_aprox = NodePath("StatsContainer/LuckContainer/LuckAprox")
+armor_label = NodePath("StatsContainer/ArmorContainer/ArmorValue")
 
 [node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
 offset_right = 375.0
@@ -2299,7 +2301,7 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 0.67
 
 [node name="StrengthContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
-layout_mode = 1
+layout_mode = 2
 offset_right = 132.0
 offset_bottom = 29.0
 
@@ -2319,10 +2321,9 @@ text = "(10)"
 vertical_alignment = 1
 
 [node name="StaminaContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 180.0
-offset_right = 350.0
+layout_mode = 2
+offset_left = 136.0
+offset_right = 264.0
 offset_bottom = 29.0
 
 [node name="StaminaLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/StaminaContainer"]
@@ -2341,7 +2342,7 @@ text = "(10)"
 vertical_alignment = 1
 
 [node name="AgilityContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
-layout_mode = 1
+layout_mode = 2
 offset_top = 33.0
 offset_right = 132.0
 offset_bottom = 62.0
@@ -2351,22 +2352,21 @@ layout_mode = 2
 text = "Agility: "
 vertical_alignment = 1
 
-[node name="StrengthValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/AgilityContainer"]
+[node name="AgilityValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/AgilityContainer"]
 layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="StrAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/AgilityContainer"]
+[node name="AgilityAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/AgilityContainer"]
 layout_mode = 2
 text = "(10)"
 vertical_alignment = 1
 
 [node name="LuckContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 180.0
+layout_mode = 2
+offset_left = 136.0
 offset_top = 33.0
-offset_right = 350.0
+offset_right = 264.0
 offset_bottom = 62.0
 
 [node name="LuckLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/LuckContainer"]
@@ -2385,14 +2385,19 @@ text = "(10)"
 vertical_alignment = 1
 
 [node name="ArmorContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer"]
-layout_mode = 1
+layout_mode = 2
 offset_top = 66.0
 offset_right = 132.0
 offset_bottom = 95.0
 
 [node name="ArmorLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/ArmorContainer"]
 layout_mode = 2
-text = "Armor: 5"
+text = "Armor: "
+vertical_alignment = 1
+
+[node name="ArmorValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats/StatsContainer/ArmorContainer"]
+layout_mode = 2
+text = "10"
 vertical_alignment = 1
 
 [node name="DetailsButton" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character"]
