@@ -284,7 +284,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "mushrooms_labels", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -295,6 +295,7 @@ grow_vertical = 2
 color = Color(0.1, 0.1, 0.15, 1)
 script = ExtResource("3_aujhx")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue"), NodePath("../Wide/Sidebar/CurrencySection/SilverContainer/SilverValue")]
+mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue"), NodePath("../Wide/Sidebar/CurrencySection/MushroomContainer/MushroomValue")]
 resolution_manager = NodePath("..")
 blacksmith = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
 alchemist = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
@@ -2099,15 +2100,6 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
 
-[node name="ChangeAvatar" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-flat = true
-
 [node name="ConsumeSlot" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character"]
 layout_mode = 1
 anchors_preset = 15
@@ -2120,6 +2112,15 @@ script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Consume"
 slot_id = 999
+
+[node name="ChangeAvatar" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
 
 [node name="Weapon1Slot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 1

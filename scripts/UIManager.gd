@@ -5,6 +5,7 @@ static var instance: UIManager
 
 # Reference to all silver/gold display labels
 @export var silver_labels: Array[Label] = []
+@export var mushrooms_labels: Array[Label] = []
 
 # Reference to resolution manager (Game node)
 @export var resolution_manager: Node
@@ -32,6 +33,14 @@ func update_silver(amount: int):
 	print("Current silver after: ", GameInfo.current_player.silver)
 	update_display()
 
+func update_mushrooms(amount: int):
+	"""Add or subtract mushrooms and update all displays"""
+	print("UIManager.update_mushrooms called with amount: ", amount)
+	print("Current mushrooms before: ", GameInfo.current_player.mushrooms)
+	GameInfo.current_player.mushrooms += amount
+	print("Current mushrooms after: ", GameInfo.current_player.mushrooms)
+	update_display()
+
 func update_display():
 	"""Refresh all silver label displays"""
 	print("UIManager.update_display called, silver_labels count: ", silver_labels.size())
@@ -42,6 +51,16 @@ func update_display():
 			label.text = silver_text
 		else:
 			print("Warning: null label in silver_labels array")
+
+	# Refresh mushrooms label displays
+	print("UIManager.update_display mushrooms_labels count: ", mushrooms_labels.size())
+	var mushrooms_text = str(GameInfo.current_player.mushrooms)
+	for m_label in mushrooms_labels:
+		if m_label:
+			print("Updating mushroom label to: ", mushrooms_text)
+			m_label.text = mushrooms_text
+		else:
+			print("Warning: null label in mushrooms_labels array")
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot (100-104) changes"""

@@ -192,7 +192,11 @@ func _on_change_pressed():
 		if GameInfo.current_player.mushrooms < total_cost:
 			print("Not enough mushrooms!")
 			return
-		GameInfo.current_player.mushrooms -= total_cost
+		# Deduct mushrooms via UIManager to centralize updates
+		if UIManager.instance:
+			UIManager.instance.update_mushrooms(-total_cost)
+		else:
+			GameInfo.current_player.mushrooms -= total_cost
 	
 	# Apply changes to player data
 	if GameInfo.current_player:
