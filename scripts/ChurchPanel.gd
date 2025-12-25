@@ -114,7 +114,6 @@ func _on_bless_button_pressed():
 	
 	# Apply blessing effect
 	GameInfo.current_player.blessing = selected_blessing_id
-	GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
 	print("Received blessing ID: ", selected_blessing_id, " - cost: ", BLESSING_COST, " gold")
 	
 	# Highlight the newly active blessing

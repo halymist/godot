@@ -10,8 +10,6 @@ func _ready():
 	print("=== AVATAR _ready() CALLED ===")
 	print("Avatar: GameInfo.current_player exists: ", GameInfo.current_player != null)
 	
-	# Connect to avatar changed signal
-	GameInfo.avatar_changed.connect(_on_avatar_changed)
 	
 	# Load from GameInfo if player data exists
 	if GameInfo.current_player:

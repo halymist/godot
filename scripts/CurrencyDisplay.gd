@@ -13,10 +13,6 @@ extends Control
 @export var location_hover_area: Control  # The panel/control that should detect mouse hover
 
 func _ready():
-	# Connect to GameInfo signals
-	if GameInfo:
-		GameInfo.bag_slots_changed.connect(update_display)
-		GameInfo.mushrooms_changed.connect(_on_mushrooms_changed)
 	
 	# Hide info panel initially
 	if location_info_panel:

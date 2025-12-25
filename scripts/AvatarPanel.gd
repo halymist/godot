@@ -1,5 +1,4 @@
-extends "res://scripts/ConstrainedPanel.gd"
-
+extends Panel
 @export var cosmetics_database: CosmeticDatabase
 
 @onready var avatar_instance: Node = $PreviewPanel/AvatarPreview/AvatarInstance

@@ -111,7 +111,9 @@ func return_blacksmith_item_to_bag():
 					# Clear the blacksmith slot visually
 					if blacksmith_slot and blacksmith_slot.has_method("clear_slot"):
 						blacksmith_slot.clear_slot()
-					GameInfo.bag_slots_changed.emit()
+					# Notify all bag views to redraw
+					if UIManager.instance:
+						UIManager.instance.refresh_bags()
 					return
 
 func update_temper_button_state():
@@ -177,8 +179,9 @@ func _on_temper_pressed():
 				blacksmith_slot.clear_slot()
 			break
 	
-	# Emit signal to update UI
-	GameInfo.bag_slots_changed.emit()
 	
 	# Update stats display
 	update_stats_display()
+	# Notify all bag views to redraw
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()

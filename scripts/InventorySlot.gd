@@ -181,7 +181,8 @@ func _drop_data(_pos, data):
 			source_container.clear_slot()
 
 	print("Updated GameInfo: item moved to slot ", slot_id)
-	GameInfo.bag_slots_changed.emit()
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
 
 func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	# Vendor items cost 2x their base price
@@ -219,8 +220,9 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	# Place in visual slot
 	place_item_in_slot(purchased_item)
 	
-	# Emit signal to update UI
-	GameInfo.bag_slots_changed.emit()
+	# Notify all bag views to redraw
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
 	print("Item purchased and added to slot ", slot_id)
 
 func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_container):
@@ -251,8 +253,9 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 	if source_container:
 		source_container.clear_slot()
 	
-	# Emit signal to update UI
-	GameInfo.bag_slots_changed.emit()
+	# Notify all bag views to redraw
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
 	print("Item sold and removed from inventory")
 
 func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, gem_source_slot_id: int, gem_source_container):
@@ -290,8 +293,9 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 	# Update the item display in this slot to show the socketed gem
 	place_item_in_slot(target_item_in_array)
 	
-	# Emit signal to update UI
-	GameInfo.bag_slots_changed.emit()
+	# Notify all bag views to redraw
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
 	print("Gem socketing complete")
 
 func is_valid_item_for_slot(item_type: String) -> bool:
@@ -440,7 +444,7 @@ func handle_double_click(item: GameInfo.Item):
 					item.bag_slot_id = 100
 					target_slot.place_item_in_slot(item)
 					clear_slot()
-					GameInfo.bag_slots_changed.emit()
+					UIManager.instance.refresh_bags()
 		return
 	
 	# Enchanter: Move equippable items to slot 104
@@ -452,7 +456,8 @@ func handle_double_click(item: GameInfo.Item):
 					item.bag_slot_id = 104
 					target_slot.place_item_in_slot(item)
 					clear_slot()
-					GameInfo.bag_slots_changed.emit()
+					if UIManager.instance:
+						UIManager.instance.refresh_bags()
 		return
 	
 	# Alchemist: Move ingredients to slots 101-103
@@ -464,7 +469,8 @@ func handle_double_click(item: GameInfo.Item):
 					item.bag_slot_id = target_slot_id
 					target_slot.place_item_in_slot(item)
 					clear_slot()
-					GameInfo.bag_slots_changed.emit()
+					if UIManager.instance:
+						UIManager.instance.refresh_bags()
 					break
 		return
 	
@@ -476,7 +482,8 @@ func handle_double_click(item: GameInfo.Item):
 				UIManager.instance.update_silver(item.price)
 				GameInfo.current_player.bag_slots.erase(item)
 				clear_slot()
-				GameInfo.bag_slots_changed.emit()
+				if UIManager.instance:
+					UIManager.instance.refresh_bags()
 		# Buying: item in vendor slots (105-112)
 		elif item.bag_slot_id >= 105 and item.bag_slot_id <= 112:
 			var buy_price = item.price * 2
@@ -513,7 +520,8 @@ func handle_double_click(item: GameInfo.Item):
 						new_item.socketed_gem_day = item.socketed_gem_day
 						GameInfo.current_player.bag_slots.append(new_item)
 						target_slot.place_item_in_slot(new_item)
-						GameInfo.bag_slots_changed.emit()
+						if UIManager.instance:
+							UIManager.instance.refresh_bags()
 
 						break
 		return
@@ -552,7 +560,8 @@ func _consume_item(item: GameInfo.Item):
 	if active_perks_display:
 		active_perks_display.update_active_perks()
 	
-	GameInfo.emit_signal.call_deferred("bag_slots_changed")
+	if UIManager.instance:
+		UIManager.instance.call_deferred("refresh_bags")
 
 func _can_equip_to_character(item: GameInfo.Item) -> bool:
 	return item.type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]
@@ -592,7 +601,8 @@ func _equip_item_to_character(item: GameInfo.Item):
 		target_slot.place_item_in_slot(item)
 		place_item_in_slot(existing_item)
 	
-	GameInfo.emit_signal.call_deferred("bag_slots_changed")
+	if UIManager.instance:
+		UIManager.instance.call_deferred("refresh_bags")
 
 func _unequip_item_to_bag(item: GameInfo.Item):
 	"""Move equipped item to first available bag slot"""
@@ -602,7 +612,8 @@ func _unequip_item_to_bag(item: GameInfo.Item):
 			item.bag_slot_id = bag_slot_id
 			target_slot.place_item_in_slot(item)
 			clear_slot()
-			GameInfo.emit_signal.call_deferred("bag_slots_changed")
+			if UIManager.instance:
+				UIManager.instance.call_deferred("refresh_bags")
 			return
 
 func _find_slot_by_id(target_slot_id: int):

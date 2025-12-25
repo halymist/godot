@@ -3,14 +3,7 @@ extends HBoxContainer
 @export var perk_mini_scene: PackedScene
 
 func _ready():
-	# Connect to bag_slots_changed to update consumables immediately
-	if GameInfo:
-		GameInfo.bag_slots_changed.connect(update_active_perks)
-		GameInfo.on_player_data_loaded.connect(update_active_perks)
-		
-		# Initial update if player data is already loaded
-		if GameInfo.current_player:
-			update_active_perks()
+	update_active_perks()
 
 func update_active_perks():
 	print("ActivePerksDisplay: Updating active perks and effects...")

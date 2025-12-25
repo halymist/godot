@@ -14,10 +14,6 @@ extends Control
 @export var armor_label: Label
 
 func _ready():
-	print("LabelUpdate ready!")
-	GameInfo.stats_changed.connect(_on_stats_changed)
-	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
-
 	_on_stats_changed(GameInfo.get_player_stats())
 
 # Called when GameInfo current player is updated

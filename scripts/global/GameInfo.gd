@@ -66,11 +66,7 @@ func get_profession_icon(profession_id: int) -> String:
 	return data.get("icon", "")
 
 # Signals for UI updates
-signal mushrooms_changed(new_mushrooms)
-signal stats_changed(stats)
-signal bag_slots_changed
 signal on_player_data_loaded
-signal avatar_changed(face_id, hair_id, eyes_id)
 signal current_panel_changed(new_panel)
 signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
 signal npc_clicked(npc) # Global NPC click signal
@@ -627,8 +623,6 @@ class GameCurrentPlayer:
 		get: return _mushrooms
 		set(value):
 			_mushrooms = value
-			if game_info_ref:
-				game_info_ref.mushrooms_changed.emit(_mushrooms)
 	
 	# Extended MessagePack mapping (includes base + current player fields)
 	const CURRENT_PLAYER_MSGPACK_MAP = {
@@ -690,10 +684,6 @@ class GameCurrentPlayer:
 		# Trigger property setter for mushrooms to emit signal
 		mushrooms = _mushrooms
 		
-		# Emit bag slots changed and stats changed
-		if game_info_ref:
-			game_info_ref.bag_slots_changed.emit()
-			game_info_ref.stats_changed.emit(get_player_stats())
 	
 	func get_player_stats() -> Dictionary:
 		var stats = get_total_stats()

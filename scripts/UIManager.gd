@@ -6,6 +6,7 @@ static var instance: UIManager
 # Reference to all silver/gold display labels
 @export var silver_labels: Array[Label] = []
 @export var mushrooms_labels: Array[Label] = []
+@export var bag_views: Array[Node] = []
 
 # Reference to resolution manager (Game node)
 @export var resolution_manager: Node
@@ -61,6 +62,13 @@ func update_display():
 			m_label.text = mushrooms_text
 		else:
 			print("Warning: null label in mushrooms_labels array")
+
+func refresh_bags():
+	"""Ask all registered bag views to refresh from GameInfo state"""
+	print("UIManager.refresh_bags bag_views count: ", bag_views.size())
+	for view in bag_views:
+		view.update_equip_slots()
+
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot (100-104) changes"""

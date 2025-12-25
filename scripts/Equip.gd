@@ -6,10 +6,7 @@ extends Control
 func _ready():
 	update_equip_slots()
 	# Connect to bag slots changed signal to update when items move
-	GameInfo.bag_slots_changed.connect(_on_bag_slots_changed)
 
-func _on_bag_slots_changed():
-	update_equip_slots()
 
 func update_equip_slots():
 	# Clear only the ItemContainer, preserve backgrounds and outlines

@@ -4,13 +4,7 @@ extends GridContainer
 @export var title_label: Label
 
 func _ready():
-	if reset_button:
-		reset_button.pressed.connect(_on_reset_button_pressed)
-	
-	# Connect to stats_changed signal to update title label
-	GameInfo.stats_changed.connect(_on_stats_changed)
-	
-	# Initial update
+	reset_button.pressed.connect(_on_reset_button_pressed)
 	update_title_label()
 
 func _on_stats_changed(_stats: Dictionary):
@@ -18,8 +12,7 @@ func _on_stats_changed(_stats: Dictionary):
 
 func refresh_all_talents():
 	for talent in talents:
-		if talent.has_method("update_button_appearance"):
-			talent.update_button_appearance()
+		talent.update_button_appearance()
 
 func update_title_label():
 	if title_label:
@@ -43,8 +36,6 @@ func _on_reset_button_pressed():
 	
 	# Refresh all talent appearances
 	refresh_all_talents()
-	
-	# Update the title label to reflect reset talents
 	update_title_label()
 	
 	print("Reset complete - all talents reset to 0 points")
