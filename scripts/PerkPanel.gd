@@ -225,6 +225,10 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 			source_node.remove_meta("original_size")
 			source_node.queue_free()
 	
+	# Refresh active effects display since a perk was activated
+	if UIManager.instance:
+		UIManager.instance.refresh_active_effects()
+	
 	# Debug: Print all perks from GameInfo
 	_print_perks_debug()
 
@@ -275,6 +279,10 @@ func _handle_inactive_drop(perk: GameInfo.Perk, _source_container: Control, data
 	
 	# Update active perks display in character screen
 	_update_character_active_perks()
+	
+	# Refresh active effects display if an active perk was deactivated
+	if was_active and UIManager.instance:
+		UIManager.instance.refresh_active_effects()
 	
 	# Debug: Print all perks from GameInfo
 	_print_perks_debug()
