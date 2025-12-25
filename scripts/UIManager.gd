@@ -7,6 +7,7 @@ static var instance: UIManager
 @export var silver_labels: Array[Label] = []
 @export var mushrooms_labels: Array[Label] = []
 @export var bag_views: Array[Node] = []
+@export var stats_panel: Panel
 
 # Reference to resolution manager (Game node)
 @export var resolution_manager: Node
@@ -65,6 +66,9 @@ func refresh_bags():
 	for view in bag_views:
 		view.update_equip_slots()
 
+func refresh_stats():
+	"""Ask all registered stats panels to recalculate stats"""
+	stats_panel.stats_changed(GameInfo.get_player_stats())
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot (100-104) changes"""

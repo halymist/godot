@@ -183,6 +183,10 @@ func _drop_data(_pos, data):
 	print("Updated GameInfo: item moved to slot ", slot_id)
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
+		# Refresh stats if equipment slots (0-8) are involved
+		if slot_id <= 8 or source_slot_id <= 8:
+			UIManager.instance.refresh_stats()
+			UIManager.instance.refresh_stats()
 
 func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	# Vendor items cost 2x their base price
@@ -296,6 +300,9 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 	# Notify all bag views to redraw
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
+		# Refresh stats if the target item is equipped (slots 0-8)
+		if slot_id <= 8:
+			UIManager.instance.refresh_stats()
 	print("Gem socketing complete")
 
 func is_valid_item_for_slot(item_type: String) -> bool:
@@ -603,6 +610,7 @@ func _equip_item_to_character(item: GameInfo.Item):
 	
 	if UIManager.instance:
 		UIManager.instance.call_deferred("refresh_bags")
+		UIManager.instance.call_deferred("refresh_stats")
 
 func _unequip_item_to_bag(item: GameInfo.Item):
 	"""Move equipped item to first available bag slot"""
@@ -614,6 +622,7 @@ func _unequip_item_to_bag(item: GameInfo.Item):
 			clear_slot()
 			if UIManager.instance:
 				UIManager.instance.call_deferred("refresh_bags")
+				UIManager.instance.call_deferred("refresh_stats")
 			return
 
 func _find_slot_by_id(target_slot_id: int):
