@@ -84,17 +84,14 @@ func refresh_avatars():
 		return
 	
 	for avatar in avatars:
-		if avatar and avatar.has_method("_on_avatar_changed"):
-			avatar._on_avatar_changed(
-				GameInfo.current_player.avatar_face,
-				GameInfo.current_player.avatar_hair,
-				GameInfo.current_player.avatar_eyes,
-				GameInfo.current_player.avatar_nose,
-				GameInfo.current_player.avatar_mouth
-			)
-		else:
-			print("Warning: invalid avatar or missing _on_avatar_changed()")
-
+		avatar.refresh_avatar(
+			GameInfo.current_player.avatar_face,
+			GameInfo.current_player.avatar_hair,
+			GameInfo.current_player.avatar_eyes,
+			GameInfo.current_player.avatar_nose,
+			GameInfo.current_player.avatar_mouth
+		)
+		
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot (100-104) changes"""
 	utility_slot_changed.emit(slot_id)

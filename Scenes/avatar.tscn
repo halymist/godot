@@ -7,13 +7,18 @@
 [ext_resource type="Texture2D" uid="uid://jn54cq4lxnvd" path="res://assets/images/ui/avatar/nose/nose1.png" id="6_w3a18"]
 [ext_resource type="Texture2D" uid="uid://bttcj28xn4yan" path="res://assets/images/ui/avatar/mouth/mouth1.png" id="7_wuf14"]
 
-[node name="Avatar" type="AspectRatioContainer"]
+[node name="Avatar" type="AspectRatioContainer" node_paths=PackedStringArray("face_rect", "hair_rect", "eyes_rect", "nose_rect", "mouth_rect")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_avatar")
+face_rect = NodePath("AvatarControl/Face")
+hair_rect = NodePath("AvatarControl/Hair")
+eyes_rect = NodePath("AvatarControl/Eyes")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
 
 [node name="AvatarControl" type="Control" parent="."]
 layout_mode = 2

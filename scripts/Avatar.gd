@@ -1,20 +1,19 @@
 extends AspectRatioContainer
 
-@onready var face_rect: TextureRect = $AvatarControl/Face
-@onready var hair_rect: TextureRect = $AvatarControl/Hair
-@onready var eyes_rect: TextureRect = $AvatarControl/Eyes
-@onready var nose_rect: TextureRect = $AvatarControl/Nose
-@onready var mouth_rect: TextureRect = $AvatarControl/Mouth
+@export var face_rect: TextureRect
+@export var hair_rect: TextureRect
+@export var eyes_rect: TextureRect
+@export var nose_rect: TextureRect
+@export var mouth_rect: TextureRect
 
 func _ready():
 	print("=== AVATAR _ready() CALLED ===")
 	print("Avatar: GameInfo.current_player exists: ", GameInfo.current_player != null)
 	
-	
 	# Load from GameInfo if player data exists
 	if GameInfo.current_player:
 		print("Avatar: Loading from GameInfo")
-		set_avatar_from_ids(
+		refresh_avatar(
 			GameInfo.current_player.avatar_face,
 			GameInfo.current_player.avatar_hair,
 			GameInfo.current_player.avatar_eyes,
@@ -24,13 +23,9 @@ func _ready():
 	else:
 		# Fallback to default cosmetic IDs
 		print("Avatar: No player data, using defaults")
-		set_avatar_from_ids(1, 10, 20, 30, 40)
+		refresh_avatar(1, 10, 20, 30, 40)
 
-func _on_avatar_changed(face_id: int, hair_id: int, eyes_id: int, nose_id: int = 30, mouth_id: int = 40):
-	print("Avatar: Received avatar_changed signal")
-	set_avatar_from_ids(face_id, hair_id, eyes_id, nose_id, mouth_id)
-
-func set_avatar_from_ids(face_id: int, hair_id: int, eyes_id: int, nose_id: int = 30, mouth_id: int = 40):
+func refresh_avatar(face_id: int, hair_id: int, eyes_id: int, nose_id: int = 30, mouth_id: int = 40):
 	"""Load textures from cosmetics database using IDs"""
 	print("Avatar: Loading cosmetic IDs - Face: ", face_id, " Hair: ", hair_id, " Eyes: ", eyes_id, " Nose: ", nose_id, " Mouth: ", mouth_id)
 	
