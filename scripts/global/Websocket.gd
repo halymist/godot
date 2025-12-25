@@ -88,7 +88,6 @@ var mock_character_data = {
 	"luck": 10,
 	"armor": 5,
 	"talent_points": 10,
-	"perk_points": 2,
 	"blessing": 100,
 	"potion": 0,
 	"elixir": 0,

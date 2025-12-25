@@ -68,6 +68,5 @@ func _on_reset_button_pressed():
 	# Refresh active effects and stats since perks were deactivated
 	if UIManager.instance:
 		UIManager.instance.refresh_active_effects()
-		UIManager.instance.refresh_stats()
 	
 	print("Reset complete - all talents reset to 0 points")

@@ -7,7 +7,6 @@ extends Panel
 @export var local_button: Button
 
 var is_chat_open = false
-var slide_tween: Tween
 var saved_scroll_position: int = 0
 var last_message_time: String = ""
 var current_filter: String = "global"  # "global", "local", or "all"
@@ -90,19 +89,10 @@ func show_chat():
 		
 	is_chat_open = true
 	visible = true
+	chat_panel.position.x = 0
 	
-	# Animate sliding in
-	if slide_tween:
-		slide_tween.kill()
-	slide_tween = create_tween()
-	slide_tween.set_ease(Tween.EASE_OUT)
-	slide_tween.set_trans(Tween.TRANS_CUBIC)
-	
-	var target_x = 0.0
-	slide_tween.tween_property(chat_panel, "position:x", target_x, 0.3)
-	
-	# Restore scroll position after animation
-	slide_tween.tween_callback(_restore_scroll_position)
+	# Restore scroll position
+	_restore_scroll_position()
 
 func hide_chat():
 	if not is_chat_open or not chat_panel:
@@ -117,19 +107,7 @@ func hide_chat():
 	if GameInfo.get_current_panel_overlay() == self:
 		GameInfo.set_current_panel_overlay(null)
 	
-	# Animate sliding out
-	if slide_tween:
-		slide_tween.kill()
-	slide_tween = create_tween()
-	slide_tween.set_ease(Tween.EASE_IN)
-	slide_tween.set_trans(Tween.TRANS_CUBIC)
-	
-	var chat_width = get_viewport().get_visible_rect().size.x * 0.7
-	var target_x = -chat_width
-	slide_tween.tween_property(chat_panel, "position:x", target_x, 0.3)
-	
-	# Hide overlay after animation
-	slide_tween.tween_callback(func(): visible = false)
+	visible = false
 
 func toggle_chat():
 	if is_chat_open:

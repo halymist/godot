@@ -93,24 +93,10 @@ func _on_button_pressed():
 	visible = false
 
 func show_overlay():
-	"""Show the perk screen with slide up animation"""
-	# Make visible first
+	"""Show the perk screen"""
+	position.y = 0
 	visible = true
-	
-	# Start positioned below the screen
-	var viewport_height = get_viewport().get_visible_rect().size.y
-	position.y = viewport_height
-	
-	# Slide up animation
-	var show_tween = create_tween()
-	show_tween.set_ease(Tween.EASE_OUT)
-	show_tween.set_trans(Tween.TRANS_CUBIC)
-	show_tween.tween_property(self, "position:y", 0, 0.3)
 
 func hide_overlay():
-	"""Hide the perk screen with slide down animation"""
-	var hide_tween = create_tween()
-	hide_tween.set_ease(Tween.EASE_IN)
-	hide_tween.set_trans(Tween.TRANS_CUBIC)
-	hide_tween.tween_property(self, "position:y", get_viewport().get_visible_rect().size.y, 0.25)
-	hide_tween.tween_callback(func(): visible = false)
+	"""Hide the perk screen"""
+	visible = false

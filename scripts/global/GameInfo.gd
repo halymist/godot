@@ -597,7 +597,6 @@ class GameCurrentPlayer:
 	var slide: Variant = null
 	var slides: Array = []
 	var talent_points: int = 0
-	var perk_points: int = 0
 	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
 	var potion: int = 0  # Equipped potion item ID (0 = no potion)
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
@@ -640,7 +639,6 @@ class GameCurrentPlayer:
 		"silver": "silver",
 		"mushrooms": "_mushrooms",  # Use private field to avoid triggering setter
 		"talent_points": "talent_points",
-		"perk_points": "perk_points",
 		"blessing": "blessing",
 		"potion": "potion",
 		"elixir": "elixir",
@@ -690,7 +688,6 @@ class GameCurrentPlayer:
 		stats["silver"] = silver
 		stats["mushrooms"] = mushrooms
 		stats["talent_points"] = talent_points
-		stats["perk_points"] = perk_points
 		return stats
 	
 	# Helper functions to convert IDs to display names
