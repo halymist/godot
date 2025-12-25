@@ -193,12 +193,15 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		
 		# Update existing perk to be inactive
 		existing_perk_data.active = false
-		# Find the next available inactive slot
-		existing_perk_data.slot = _get_next_inactive_slot()
+		# Set to a temporary slot value (will be recalculated)
+		existing_perk_data.slot = 999
 		
 		# Place existing perk in source container
 		if source_container:
 			source_container.place_perk_in_panel(existing_perk_data)
+			# Recalculate inactive slots to get proper sequential order
+			if source_container.has_method("_recalculate_inactive_slots"):
+				source_container._recalculate_inactive_slots()
 		
 		# Clear this panel and place new perk
 		clear_panel()
