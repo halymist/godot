@@ -69,6 +69,7 @@ func _ready():
 	character_button.pressed.connect(handle_character_button)
 	map_button.pressed.connect(handle_map_button)
 	talents_button.pressed.connect(toggle_talents_bookmark)
+	details_button.pressed.connect(toggle_details_bookmark)
 	settings_button.pressed.connect(show_overlay.bind(settings_panel))
 	if payment_button:
 		payment_button.pressed.connect(show_overlay.bind(payment))
@@ -340,6 +341,14 @@ func toggle_talents_bookmark():
 		talents_panel.visible = true
 		GameInfo.set_current_panel(talents_panel)
 
+func toggle_details_bookmark():
+	if details_panel.visible:
+		details_panel.visible = false
+		GameInfo.set_current_panel(character_panel)
+	else:
+		details_panel.visible = true
+		GameInfo.set_current_panel(details_panel)
+
 
 func go_back():
 	var traveling = GameInfo.current_player.traveling
@@ -388,6 +397,8 @@ func go_back():
 	# Priority 8: Handle panel-specific back navigation
 	if current == talents_panel:
 		toggle_talents_bookmark()
+	elif current == details_panel:
+		toggle_details_bookmark()
 	elif current == combat_panel:
 		show_panel(arena_panel)
 	else:

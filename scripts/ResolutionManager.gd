@@ -25,6 +25,7 @@ signal layout_mode_changed(is_wide: bool)
 @export_group("Panels")
 @export var character_panel: Control
 @export var talents_panel: Control
+@export var details_panel: Control
 @export var avatar_panel: Control
 @export var rankings_panel: Control
 @export var enemy_panel: Control
@@ -78,6 +79,8 @@ func _build_wide_layout_map():
 		wide_panel_layout[character_panel] = "left"
 	if rankings_panel:
 		wide_panel_layout[rankings_panel] = "left"
+	if details_panel:
+		wide_panel_layout[details_panel] = "left"
 	
 	# Right side panels
 	if talents_panel:
