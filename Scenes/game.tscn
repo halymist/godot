@@ -5081,14 +5081,14 @@ text = "Effect"
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "On Self"
+text = "On Self (%)"
 horizontal_alignment = 2
 
 [node name="DefensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "On Enemy"
+text = "On Enemy (%)"
 horizontal_alignment = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]

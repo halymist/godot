@@ -42,59 +42,67 @@ func _ready():
 # Called when GameInfo current player is updated
 func stats_changed(_stats: Dictionary):
 	var total_stats = GameInfo.get_total_stats()
+	var total_effects = GameInfo.get_total_effects()
+	
 	player_name_label.text = str(total_stats.name)
 	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
 	guild_label.text = GameInfo.current_player.get_guild_name()
 	profession_label.text = GameInfo.current_player.get_profession_name()
-	strength_label.text = str(int(total_stats.strength))
+	
+	# Apply effect bonuses to stats (effects 1-4 boost stats by percentage)
+	var final_strength = total_stats.strength * (1.0 + total_effects[1] / 100.0)
+	var final_stamina = total_stats.stamina * (1.0 + total_effects[2] / 100.0)
+	var final_agility = total_stats.agility * (1.0 + total_effects[3] / 100.0)
+	var final_luck = total_stats.luck * (1.0 + total_effects[4] / 100.0)
+	
+	strength_label.text = str(int(round(final_strength)))
 	strength_aprox.text = "(100)"
-	stamina_label.text = str(int(total_stats.stamina))
+	stamina_label.text = str(int(round(final_stamina)))
 	stamina_aprox.text = "(100)"
-	agility_label.text = str(int(total_stats.agility))
+	agility_label.text = str(int(round(final_agility)))
 	agility_aprox.text = "(100)"
-	luck_label.text = str(int(total_stats.luck))
+	luck_label.text = str(int(round(final_luck)))
 	luck_aprox.text = "(100)"
 	armor_label.text = str(int(total_stats.armor))
 	
-	# Calculate and display effect values
-	var total_effects = GameInfo.get_total_effects()
+	# Calculate and display effect values (without % suffix)
 	if effect_strength_value:
-		effect_strength_value.text = "-" if total_effects[1] == 0 else str(int(total_effects[1])) + "%"
+		effect_strength_value.text = "-" if total_effects[1] == 0 else str(int(total_effects[1]))
 	if effect_stamina_value:
-		effect_stamina_value.text = "-" if total_effects[2] == 0 else str(int(total_effects[2])) + "%"
+		effect_stamina_value.text = "-" if total_effects[2] == 0 else str(int(total_effects[2]))
 	if effect_agility_value:
-		effect_agility_value.text = "-" if total_effects[3] == 0 else str(int(total_effects[3])) + "%"
+		effect_agility_value.text = "-" if total_effects[3] == 0 else str(int(total_effects[3]))
 	if effect_luck_value:
-		effect_luck_value.text = "-" if total_effects[4] == 0 else str(int(total_effects[4])) + "%"
+		effect_luck_value.text = "-" if total_effects[4] == 0 else str(int(total_effects[4]))
 	if effect_damage_value:
-		effect_damage_value.text = "-" if total_effects[5] == 0 else str(int(total_effects[5])) + "%"
+		effect_damage_value.text = "-" if total_effects[5] == 0 else str(int(total_effects[5]))
 	if effect_health_value:
-		effect_health_value.text = "-" if total_effects[6] == 0 else str(int(total_effects[6])) + "%"
+		effect_health_value.text = "-" if total_effects[6] == 0 else str(int(total_effects[6]))
 	if effect_crit_chance_value:
-		effect_crit_chance_value.text = "-" if total_effects[7] == 0 else str(int(total_effects[7])) + "%"
+		effect_crit_chance_value.text = "-" if total_effects[7] == 0 else str(int(total_effects[7]))
 	if effect_dodge_value:
-		effect_dodge_value.text = "-" if total_effects[8] == 0 else str(int(total_effects[8])) + "%"
+		effect_dodge_value.text = "-" if total_effects[8] == 0 else str(int(total_effects[8]))
 	if effect_damage_reduction_value:
-		effect_damage_reduction_value.text = "-" if total_effects[9] == 0 else str(int(total_effects[9])) + "%"
+		effect_damage_reduction_value.text = "-" if total_effects[9] == 0 else str(int(total_effects[9]))
 	if effect_initiative_value:
-		effect_initiative_value.text = "-" if total_effects[10] == 0 else str(int(total_effects[10])) + "%"
+		effect_initiative_value.text = "-" if total_effects[10] == 0 else str(int(total_effects[10]))
 	if effect_stun_value:
-		effect_stun_value.text = "-" if total_effects[11] == 0 else str(int(total_effects[11])) + "%"
+		effect_stun_value.text = "-" if total_effects[11] == 0 else str(int(total_effects[11]))
 	if effect_counter_attack_value:
-		effect_counter_attack_value.text = "-" if total_effects[12] == 0 else str(int(total_effects[12])) + "%"
+		effect_counter_attack_value.text = "-" if total_effects[12] == 0 else str(int(total_effects[12]))
 	if effect_attack_twice_value:
-		effect_attack_twice_value.text = "-" if total_effects[13] == 0 else str(int(total_effects[13])) + "%"
+		effect_attack_twice_value.text = "-" if total_effects[13] == 0 else str(int(total_effects[13]))
 	if effect_bleed_value:
-		effect_bleed_value.text = "-" if total_effects[14] == 0 else str(int(total_effects[14])) + "%"
+		effect_bleed_value.text = "-" if total_effects[14] == 0 else str(int(total_effects[14]))
 	if effect_lifesteal_value:
-		effect_lifesteal_value.text = "-" if total_effects[15] == 0 else str(int(total_effects[15])) + "%"
+		effect_lifesteal_value.text = "-" if total_effects[15] == 0 else str(int(total_effects[15]))
 	if effect_heal_value:
-		effect_heal_value.text = "-" if total_effects[16] == 0 else str(int(total_effects[16])) + "%"
+		effect_heal_value.text = "-" if total_effects[16] == 0 else str(int(total_effects[16]))
 	if effect_survive_value:
-		effect_survive_value.text = "-" if total_effects[17] == 0 else str(int(total_effects[17])) + "%"
+		effect_survive_value.text = "-" if total_effects[17] == 0 else str(int(total_effects[17]))
 	if effect_healing_boost_value:
-		effect_healing_boost_value.text = "-" if total_effects[18] == 0 else str(int(total_effects[18])) + "%"
+		effect_healing_boost_value.text = "-" if total_effects[18] == 0 else str(int(total_effects[18]))
 	if effect_crit_damage_value:
-		effect_crit_damage_value.text = "-" if total_effects[19] == 0 else str(int(total_effects[19])) + "%"
+		effect_crit_damage_value.text = "-" if total_effects[19] == 0 else str(int(total_effects[19]))
 	if effect_counter_damage_value:
-		effect_counter_damage_value.text = "-" if total_effects[20] == 0 else str(int(total_effects[20])) + "%"
+		effect_counter_damage_value.text = "-" if total_effects[20] == 0 else str(int(total_effects[20]))
