@@ -1,4 +1,4 @@
-[gd_scene load_steps=108 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=109 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -75,6 +75,7 @@
 [ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="49_ifeo7"]
 [ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="52_aujhx"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
+[ext_resource type="Texture2D" uid="uid://dgc2cv8slfwg3" path="res://assets/images/ui/talents_back.png" id="56_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
@@ -2028,6 +2029,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2601,22 +2603,33 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
 
-[node name="Title" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel"]
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.1
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("56_qj5kr")
+expand_mode = 1
+
+[node name="Title" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel"]
+layout_mode = 1
+anchor_left = 0.064
+anchor_top = 0.019
+anchor_right = 0.948
+anchor_bottom = 0.111
+offset_top = 0.0299988
+offset_right = 0.059967
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/Title"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 5.0
-offset_right = -15.0
-offset_bottom = -5.0
+offset_top = 1.0
+offset_right = 1.92001
+offset_bottom = 5.06999
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 35
@@ -2636,9 +2649,14 @@ layout_mode = 2
 [node name="GridContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel" node_paths=PackedStringArray("talents", "reset_button", "title_label")]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.1
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_left = 0.081
+anchor_top = 0.175
+anchor_right = 0.931
+anchor_bottom = 0.975
+offset_left = 0.195
+offset_top = -0.250008
+offset_right = -0.0550232
+offset_bottom = -0.25
 grow_horizontal = 2
 grow_vertical = 2
 columns = 7
@@ -5043,14 +5061,14 @@ text = "Effect"
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Offensive"
+text = "On Self"
 horizontal_alignment = 2
 
 [node name="DefensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Defensive"
+text = "On Enemy"
 horizontal_alignment = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]
