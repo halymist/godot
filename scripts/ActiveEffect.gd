@@ -1,12 +1,14 @@
 extends PanelContainer
 
 var effect: EffectResource
+var factor: float = 0.0
 var tooltip_panel: Panel
 
 @onready var icon = $IconContainer/Icon
 
-func setup(effect_data: EffectResource, tooltip_ref: Panel = null):
+func setup(effect_data: EffectResource, tooltip_ref: Panel = null, effect_factor: float = 0.0):
 	effect = effect_data
+	factor = effect_factor
 	tooltip_panel = tooltip_ref
 	
 	# Get icon node directly if @onready hasn't run yet
@@ -29,6 +31,10 @@ func _on_hover_start():
 			var tooltip_text = effect.name
 			if effect.description != "":
 				tooltip_text += "\n" + effect.description
+			# Add factor if non-zero
+			if factor > 0:
+				var factor_text = str(int(factor)) if factor == int(factor) else str(factor)
+				tooltip_text += " " + factor_text + "%"
 			
 			tooltip_label.text = tooltip_text
 			tooltip_panel.visible = true

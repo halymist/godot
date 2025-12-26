@@ -43,7 +43,7 @@ func _update_silver():
 	update_bless_button_state()
 
 func load_blessings():
-	if not GameInfo.effects_db or not blessings_container:
+	if not GameInfo.perks_db or not blessings_container:
 		return
 	
 	# Clear existing blessing nodes
@@ -51,10 +51,10 @@ func load_blessings():
 		child.queue_free()
 	blessing_nodes.clear()
 	
-	# Load all effects with id >= 100 (blessings)
-	for effect in GameInfo.effects_db.effects:
-		if effect.id >= 100:
-			create_blessing_row(effect)
+	# Load all perks with id >= 100 (blessings)
+	for perk in GameInfo.perks_db.perks:
+		if perk.id >= 100:
+			create_blessing_row(perk)
 	
 	# Highlight currently active blessing if any
 	if GameInfo.current_player and GameInfo.current_player.blessing > 0:
@@ -62,13 +62,13 @@ func load_blessings():
 	
 	print("Loaded ", blessing_nodes.size(), " blessings")
 
-func create_blessing_row(effect: EffectResource):
+func create_blessing_row(perk: PerkResource):
 	# Instantiate blessing scene
 	var blessing = BlessingScene.instantiate()
-	blessing.setup(effect)
+	blessing.setup_from_perk(perk)
 	
 	# Store reference
-	blessing_nodes[effect.id] = blessing
+	blessing_nodes[perk.id] = blessing
 	
 	# Connect to selection signal
 	blessing.blessing_selected.connect(_on_blessing_selected)

@@ -2,7 +2,7 @@ extends PanelContainer
 
 signal blessing_selected(blessing_id: int)
 
-var effect: EffectResource
+var perk: PerkResource
 var blessing_id: int = 0
 var is_active: bool = false
 var is_selected: bool = false
@@ -64,23 +64,38 @@ func _ready():
 	# Set initial style
 	set_active(false)
 
-func setup(blessing_effect: EffectResource):
-	effect = blessing_effect
-	blessing_id = blessing_effect.id
+func setup_from_perk(blessing_perk: PerkResource):
+	perk = blessing_perk
+	blessing_id = blessing_perk.id
+	
+	# Get effect details from the perk's effect1_id
+	var effect = GameInfo.effects_db.get_effect_by_id(blessing_perk.effect1_id) if GameInfo.effects_db else null
 	
 	# Get nodes directly if @onready hasn't run yet
 	var icon_node = icon if icon else $Content/IconContainer/Icon
 	var name_node = name_label if name_label else $Content/Info/Name
 	var desc_node = description_label if description_label else $Content/Info/Description
 	
-	if icon_node and blessing_effect.icon:
-		icon_node.texture = blessing_effect.icon
+	if icon_node and blessing_perk.icon:
+		icon_node.texture = blessing_perk.icon
 	
 	if name_node:
-		name_node.text = blessing_effect.name
+		name_node.text = blessing_perk.perk_name
 	
-	if desc_node:
-		desc_node.text = blessing_effect.description
+	if desc_node and effect:
+		# Display effect description with factor
+		var factor_text = str(int(blessing_perk.factor1)) if blessing_perk.factor1 == int(blessing_perk.factor1) else str(blessing_perk.factor1)
+		desc_node.text = effect.description + " " + factor_text + "%"
+
+func setup(blessing_effect: EffectResource):
+	# Legacy support - converts effect to perk-like structure
+	var fake_perk = PerkResource.new()
+	fake_perk.id = blessing_effect.id
+	fake_perk.perk_name = blessing_effect.name
+	fake_perk.effect1_id = blessing_effect.id
+	fake_perk.factor1 = blessing_effect.factor
+	fake_perk.icon = blessing_effect.icon
+	setup_from_perk(fake_perk)
 
 func set_active(active: bool):
 	is_active = active
