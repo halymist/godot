@@ -12,6 +12,7 @@ extends Control
 # Companion panels (shown alongside main panels)
 @export var talents_panel: Control
 @export var enemy_panel: Control
+@export var details_panel: Control
 
 # Overlay panels
 @export var settings_panel: Control
@@ -106,7 +107,9 @@ func show_panel(panel: Control):
 		character_panel.visible = true
 		if talents_panel:
 			talents_panel.visible = true
-		print("Wide: Showing Character (left) + Talents (right)")
+		if details_panel:
+			details_panel.visible = true
+		print("Wide: Showing Character (left) + Talents + Details (right)")
 	else:
 		# Other panels show in full container
 		panel.visible = true
@@ -204,6 +207,8 @@ func hide_all_panels():
 		map_panel.visible = false
 	if talents_panel:
 		talents_panel.visible = false
+	if details_panel:
+		details_panel.visible = false
 	if enemy_panel:
 		enemy_panel.visible = false
 	

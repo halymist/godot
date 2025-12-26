@@ -80,7 +80,7 @@
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
 [ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="69_cosmetics"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
-[ext_resource type="Script" path="res://scripts/TogglePanel_Wide.gd" id="94_fykvq"]
+[ext_resource type="Script" uid="uid://cqdrglw3ojju2" path="res://scripts/TogglePanel_Wide.gd" id="94_fykvq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -5831,7 +5831,7 @@ grow_vertical = 2
 icon = ExtResource("14_81klo")
 expand_icon = true
 
-[node name="Wide" type="Control" parent="." node_paths=PackedStringArray("home_panel", "character_panel", "arena_panel", "map_panel", "talents_panel", "enemy_panel", "settings_panel", "rankings_panel", "payment", "chat_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "wide_home_button", "wide_character_button", "wide_arena_button", "wide_map_button", "wide_settings_button", "wide_rankings_button", "wide_payment_button", "wide_chat_button", "wide_back_button")]
+[node name="Wide" type="Control" parent="." node_paths=PackedStringArray("home_panel", "character_panel", "arena_panel", "map_panel", "talents_panel", "enemy_panel", "details_panel", "settings_panel", "rankings_panel", "payment", "chat_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "wide_home_button", "wide_character_button", "wide_arena_button", "wide_map_button", "wide_settings_button", "wide_rankings_button", "wide_payment_button", "wide_chat_button", "wide_back_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 7
@@ -5852,6 +5852,7 @@ arena_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Arena")
 map_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Map")
 talents_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel")
 enemy_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy")
+details_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel")
 settings_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Settings")
 rankings_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Rankings")
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
