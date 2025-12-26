@@ -2221,7 +2221,7 @@ grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 
-[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label")]
+[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label", "effect_strength_value", "effect_stamina_value", "effect_agility_value", "effect_luck_value", "effect_damage_value", "effect_health_value", "effect_crit_chance_value", "effect_dodge_value", "effect_damage_reduction_value", "effect_initiative_value", "effect_stun_value", "effect_counter_attack_value", "effect_attack_twice_value", "effect_bleed_value", "effect_lifesteal_value", "effect_heal_value", "effect_survive_value", "effect_healing_boost_value", "effect_crit_damage_value", "effect_counter_damage_value")]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -2243,6 +2243,26 @@ agility_aprox = NodePath("StatsContainer/AgilityContainer/AgilityAprox")
 luck_label = NodePath("StatsContainer/LuckContainer/LuckValue")
 luck_aprox = NodePath("StatsContainer/LuckContainer/LuckAprox")
 armor_label = NodePath("StatsContainer/ArmorContainer/ArmorValue")
+effect_strength_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1/OnSelfValue")
+effect_stamina_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2/OnSelfValue")
+effect_agility_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3/OnSelfValue")
+effect_luck_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4/OnSelfValue")
+effect_damage_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5/OnSelfValue")
+effect_health_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6/OnSelfValue")
+effect_crit_chance_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7/OnSelfValue")
+effect_dodge_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8/OnSelfValue")
+effect_damage_reduction_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9/OnSelfValue")
+effect_initiative_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10/OnSelfValue")
+effect_stun_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11/OnSelfValue")
+effect_counter_attack_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12/OnSelfValue")
+effect_attack_twice_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13/OnSelfValue")
+effect_bleed_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14/OnSelfValue")
+effect_lifesteal_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15/OnSelfValue")
+effect_heal_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16/OnSelfValue")
+effect_survive_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17/OnSelfValue")
+effect_healing_boost_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18/OnSelfValue")
+effect_crit_damage_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19/OnSelfValue")
+effect_counter_damage_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20/OnSelfValue")
 
 [node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
 layout_mode = 0

@@ -563,6 +563,20 @@ class GamePlayer:
 		
 		return total_stats
 	
+	func get_total_effects() -> Dictionary:
+		# Initialize effect totals for all 20 effects (IDs 1-20)
+		var total_effects = {}
+		for i in range(1, 21):
+			total_effects[i] = 0
+		
+		# Sum effects from equipped items (slots 0-9)
+		for item in bag_slots:
+			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
+				if item.effect_id > 0 and item.effect_id <= 20:
+					total_effects[item.effect_id] += item.effect_factor
+		
+		return total_effects
+	
 	func has_talent(talent_id: int) -> bool:
 		for talent in talents:
 			if talent.talent_id == talent_id:
@@ -906,6 +920,9 @@ func load_player_data(character_data: Dictionary):
 
 func get_total_stats() -> Dictionary:
 	return current_player.get_total_stats() if current_player else {}
+
+func get_total_effects() -> Dictionary:
+	return current_player.get_total_effects() if current_player else {}
 
 # Function to load arena opponent from MessagePack format
 func load_arena_opponent_msgpack(msgpack_data: Dictionary):
