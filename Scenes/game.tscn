@@ -5010,7 +5010,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -5021,417 +5021,422 @@ offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 3
-
-[node name="MainContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/separation = 15
 
-[node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Combat Effects"
 horizontal_alignment = 1
 
-[node name="HeaderRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="HeaderRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/HeaderRow"]
+[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "Effect"
 
-[node name="OffensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/HeaderRow"]
+[node name="OffensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Offensive"
 horizontal_alignment = 2
 
-[node name="DefensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/HeaderRow"]
+[node name="DefensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Defensive"
 horizontal_alignment = 2
 
-[node name="CriticalStrike" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="EffectsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="CriticalStrike" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Critical Strike Damage"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+25%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-20%"
 horizontal_alignment = 2
 
-[node name="Damage" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Damage" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Damage"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+15%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-12%"
 horizontal_alignment = 2
 
-[node name="ArmorPenetration" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="ArmorPenetration" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Armor Penetration"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+10%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="LifeSteal" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="LifeSteal" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Life Steal"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+8%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Dodge" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Dodge" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Dodge Chance"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+18%"
 horizontal_alignment = 2
 
-[node name="Block" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Block" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Block Chance"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+15%"
 horizontal_alignment = 2
 
-[node name="CriticalStrike2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="CriticalStrike2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike2"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Critical Strike Damage"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike2"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+25%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike2"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-20%"
 horizontal_alignment = 2
 
-[node name="Damage2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Damage2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage2"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Damage"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage2"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+15%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage2"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-12%"
 horizontal_alignment = 2
 
-[node name="ArmorPenetration2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="ArmorPenetration2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration2"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Armor Penetration"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration2"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+10%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration2"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="LifeSteal2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="LifeSteal2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal2"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Life Steal"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal2"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+8%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal2"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Dodge2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Dodge2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge2"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Dodge Chance"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge2"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge2"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+18%"
 horizontal_alignment = 2
 
-[node name="Block2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Block2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block2"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Block Chance"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block2"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block2"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+15%"
 horizontal_alignment = 2
 
-[node name="CriticalStrike3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="CriticalStrike3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike3"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Critical Strike Damage"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike3"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+25%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/CriticalStrike3"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/CriticalStrike3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-20%"
 horizontal_alignment = 2
 
-[node name="Damage3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Damage3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage3"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Damage"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage3"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+15%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Damage3"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Damage3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-12%"
 horizontal_alignment = 2
 
-[node name="ArmorPenetration3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="ArmorPenetration3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration3"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Armor Penetration"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration3"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+10%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/ArmorPenetration3"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/ArmorPenetration3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="LifeSteal3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="LifeSteal3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal3"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Life Steal"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal3"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+8%"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/LifeSteal3"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/LifeSteal3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Dodge3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Dodge3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge3"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Dodge Chance"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge3"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Dodge3"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Dodge3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+18%"
 horizontal_alignment = 2
 
-[node name="Block3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer"]
+[node name="Block3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block3"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Block Chance"
 
-[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block3"]
+[node name="OffensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/MainContainer/Block3"]
+[node name="DefensiveValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Block3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "+15%"
