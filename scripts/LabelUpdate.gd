@@ -14,6 +14,28 @@ extends Control
 @export var luck_aprox: Label
 @export var armor_label: Label
 
+# Effect value labels (On Self column)
+@export var effect_strength_value: Label  # ID 1
+@export var effect_stamina_value: Label   # ID 2
+@export var effect_agility_value: Label   # ID 3
+@export var effect_luck_value: Label      # ID 4
+@export var effect_damage_value: Label    # ID 5
+@export var effect_health_value: Label    # ID 6
+@export var effect_crit_chance_value: Label  # ID 7
+@export var effect_dodge_value: Label     # ID 8
+@export var effect_damage_reduction_value: Label  # ID 9
+@export var effect_initiative_value: Label  # ID 10
+@export var effect_stun_value: Label      # ID 11
+@export var effect_counter_attack_value: Label  # ID 12
+@export var effect_attack_twice_value: Label  # ID 13
+@export var effect_bleed_value: Label     # ID 14
+@export var effect_lifesteal_value: Label  # ID 15
+@export var effect_heal_value: Label      # ID 16
+@export var effect_survive_value: Label   # ID 17
+@export var effect_healing_boost_value: Label  # ID 18
+@export var effect_crit_damage_value: Label  # ID 19
+@export var effect_counter_damage_value: Label  # ID 20
+
 func _ready():
 	stats_changed(GameInfo.get_player_stats())
 
