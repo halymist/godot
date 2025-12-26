@@ -309,7 +309,7 @@ vendor = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
 trainer = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
 church = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "avatar_panel", "avatar_button")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -328,6 +328,8 @@ character_button = NodePath("TopUI/Character/Button")
 character_panel = NodePath("GameSceneParent/Wrapper/GameScene/Character")
 talents_button = NodePath("GameSceneParent/Wrapper/GameScene/Character/TalentsButton/Button")
 talents_panel = NodePath("GameSceneParent/Wrapper/GameScene/TalentsPanel")
+details_panel = NodePath("GameSceneParent/Wrapper/GameScene/DetailsPanel")
+details_button = NodePath("GameSceneParent/Wrapper/GameScene/Character/DetailsButton/Button")
 map_button = NodePath("BottomUI/MapButton")
 map_panel = NodePath("GameSceneParent/Wrapper/GameScene/Map")
 back_button = NodePath("TopUI/BackButton")
@@ -2046,51 +2048,48 @@ expand_mode = 1
 
 [node name="Equip" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("inventory_slots")]
 layout_mode = 1
-anchor_top = 0.392
+anchor_top = 0.275
 anchor_right = 1.0
 anchor_bottom = 0.88
-offset_top = 0.0399933
+offset_top = -0.25
 offset_bottom = -0.400024
 grow_horizontal = 2
 script = ExtResource("6_iivbl")
-inventory_slots = [NodePath("HeadSlot"), NodePath("ChestSlot"), NodePath("HandSlot"), NodePath("ShoeSlot"), NodePath("BeltSlot"), NodePath("LegSlot"), NodePath("RingSlot"), NodePath("AmuletSlot"), NodePath("Weapon1Slot")]
+inventory_slots = [NodePath("VBoxContainer/HeadSlot"), NodePath("VBoxContainer/ChestSlot"), NodePath("VBoxContainer/HandSlot"), NodePath("VBoxContainer/ShoeSlot"), NodePath("VBoxContainer2/BeltSlot"), NodePath("VBoxContainer2/LegSlot"), NodePath("VBoxContainer2/RingSlot"), NodePath("VBoxContainer2/AmuletSlot"), NodePath("Weapon1Slot")]
 item_prefab = ExtResource("11_ewbju")
 
-[node name="HeadSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 16.0
-offset_top = -25.0
-offset_right = 91.0
-offset_bottom = 50.0
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.037
+anchor_top = 0.121
+anchor_right = 0.269
+anchor_bottom = 0.963
+offset_left = 0.0149994
+offset_top = -0.101002
+offset_right = 0.0549927
+offset_bottom = 0.0969849
+alignment = 2
+
+[node name="HeadSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_helmet")
 slot_type = "Head"
 
-[node name="ChestSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 14.0
-offset_top = 56.0
-offset_right = 89.0
-offset_bottom = 131.0
+[node name="ChestSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_chest")
 slot_type = "Chest"
 slot_id = 1
 
-[node name="HandSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 14.0
-offset_top = 134.0
-offset_right = 89.0
-offset_bottom = 209.0
+[node name="HandSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_gloves")
 slot_type = "Hand"
 slot_id = 2
 
-[node name="ShoeSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 0
-offset_left = 16.0
-offset_top = 213.0
-offset_right = 91.0
-offset_bottom = 288.0
+[node name="ShoeSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_shoes")
 slot_type = "Foot"
 slot_id = 3
@@ -2101,9 +2100,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -105.5
-offset_top = -23.0
+offset_top = 62.0
 offset_right = 108.5
-offset_bottom = 177.0
+offset_bottom = 253.0
 grow_horizontal = 2
 mouse_filter = 2
 texture = ExtResource("54_b1mpw")
@@ -2144,66 +2143,48 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -35.5
-offset_top = 221.0
+offset_top = 290.0
 offset_right = 39.5
-offset_bottom = 296.0
+offset_bottom = 365.0
 grow_horizontal = 2
 outline_texture = ExtResource("9_sword")
 slot_type = "Weapon"
 slot_id = 8
 
-[node name="BeltSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = -1
+anchor_left = 0.736
+anchor_top = 0.134
 anchor_right = 1.0
-offset_left = -95.0
-offset_top = -26.0
-offset_right = -20.0
-offset_bottom = 49.0
+anchor_bottom = 0.958
+offset_left = -0.0800171
+offset_top = -0.0540009
+offset_bottom = 0.00198364
 grow_horizontal = 0
+grow_vertical = 2
+alignment = 2
+
+[node name="BeltSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer2" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_nnt18")
 slot_type = "Belt"
 slot_id = 4
 
-[node name="LegSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -94.0
-offset_top = 50.0
-offset_right = -19.0
-offset_bottom = 125.0
-grow_horizontal = 0
+[node name="LegSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer2" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_pants")
 slot_type = "Legs"
 slot_id = 5
 
-[node name="RingSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -94.0
-offset_top = 130.0
-offset_right = -19.0
-offset_bottom = 205.0
-grow_horizontal = 0
+[node name="RingSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer2" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_ring")
 slot_type = "Ring"
 slot_id = 6
 
-[node name="AmuletSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -95.0
-offset_top = 213.0
-offset_right = -20.0
-offset_bottom = 288.0
-grow_horizontal = 0
+[node name="AmuletSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/VBoxContainer2" instance=ExtResource("6_itemslot")]
+layout_mode = 2
 outline_texture = ExtResource("9_amulet")
 slot_type = "Amulet"
 slot_id = 7

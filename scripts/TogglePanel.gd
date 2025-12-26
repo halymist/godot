@@ -8,6 +8,8 @@ extends Control
 @export var character_panel: Control
 @export var talents_button: Button
 @export var talents_panel: Control
+@export var details_panel: Control
+@export var details_button: Button
 @export var map_button: Button
 @export var map_panel: Control
 @export var back_button: Button
