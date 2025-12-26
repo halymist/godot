@@ -5116,7 +5116,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1"]
@@ -5139,7 +5139,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2"]
@@ -5162,7 +5162,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3"]
@@ -5185,7 +5185,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4"]
@@ -5208,7 +5208,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5"]
@@ -5231,7 +5231,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6"]
@@ -5254,7 +5254,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7"]
@@ -5277,7 +5277,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8"]
@@ -5300,7 +5300,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9"]
@@ -5323,7 +5323,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10"]
@@ -5346,7 +5346,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11"]
@@ -5369,7 +5369,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12"]
@@ -5392,7 +5392,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13"]
@@ -5415,7 +5415,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14"]
@@ -5438,7 +5438,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15"]
@@ -5461,7 +5461,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16"]
@@ -5484,7 +5484,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17"]
@@ -5507,7 +5507,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18"]
@@ -5530,7 +5530,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19"]
@@ -5553,7 +5553,7 @@ autowrap_mode = 2
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "0"
+text = "-"
 horizontal_alignment = 2
 
 [node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20"]
