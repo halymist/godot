@@ -435,6 +435,7 @@ func hide_all_panels():
 	character_panel.visible = false
 	map_panel.visible = false
 	talents_panel.visible = false
+	details_panel.visible = false
 	combat_panel.visible = false
 	quest.visible = false
 	
