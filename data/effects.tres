@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EffectDatabase" load_steps=17 format=3 uid="uid://bkg18l7ls21gy"]
+[gd_resource type="Resource" script_class="EffectDatabase" load_steps=30 format=3 uid="uid://bkg18l7ls21gy"]
 
 [ext_resource type="Script" uid="uid://p673jpbjsppe" path="res://scripts/resources/EffectResource.gd" id="1_kykie"]
 [ext_resource type="Texture2D" uid="uid://de3hl0mcocv1p" path="res://assets/images/ui/Perks.png" id="2_j0sy3"]
@@ -7,7 +7,7 @@
 [sub_resource type="Resource" id="Resource_kykie"]
 script = ExtResource("1_kykie")
 id = 1
-name = "Increase strength"
+name = "Strength boost"
 description = "Increase strength by"
 slot = "Hand"
 factor = 1
@@ -16,10 +16,55 @@ metadata/_custom_type_script = "uid://p673jpbjsppe"
 [sub_resource type="Resource" id="Resource_jpqpk"]
 script = ExtResource("1_kykie")
 id = 2
-name = "Effect2"
-description = "Increases the critical strike damage by "
-slot = ""
+name = "Increase stamina"
+description = "Increase stamina by"
+slot = "Chest"
+factor = 1
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_0aeja"]
+script = ExtResource("1_kykie")
+id = 3
+name = "Increase agility"
+description = "Increases agility by"
+slot = "Foot"
+factor = 1
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_adnf4"]
+script = ExtResource("1_kykie")
+id = 4
+name = "Increase luck"
+description = "Increases luck by"
+slot = "Amulet"
+factor = 1
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_dr05w"]
+script = ExtResource("1_kykie")
+id = 5
+name = "Increase damage"
+description = "increases damage dealt by"
+slot = "Weapon"
 factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_sfyhn"]
+script = ExtResource("1_kykie")
+id = 6
+name = "Increases health"
+description = "Increase health by"
+slot = "Legs"
+factor = 3
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_mu2gr"]
+script = ExtResource("1_kykie")
+id = 7
+name = "Increase ctritical strike"
+description = "Increses critical strike chance by "
+slot = "Legs"
+factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
 [sub_resource type="Resource" id="Resource_lkg4j"]
@@ -72,51 +117,6 @@ factor = 0
 icon = ExtResource("2_j0sy3")
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
-[sub_resource type="Resource" id="Resource_0aeja"]
-script = ExtResource("1_kykie")
-id = 3
-name = "HelmetEffect1"
-description = "Reduces chance to get stunned by"
-slot = "Head"
-factor = 10
-metadata/_custom_type_script = "uid://p673jpbjsppe"
-
-[sub_resource type="Resource" id="Resource_adnf4"]
-script = ExtResource("1_kykie")
-id = 4
-name = "HelmetEffect2"
-description = "Reduces chance to get stunned by"
-slot = "Head"
-factor = 10
-metadata/_custom_type_script = "uid://p673jpbjsppe"
-
-[sub_resource type="Resource" id="Resource_dr05w"]
-script = ExtResource("1_kykie")
-id = 5
-name = "HelmetEffect3"
-description = "Reduces chance to get stunned by"
-slot = "Head"
-factor = 30
-metadata/_custom_type_script = "uid://p673jpbjsppe"
-
-[sub_resource type="Resource" id="Resource_sfyhn"]
-script = ExtResource("1_kykie")
-id = 6
-name = "LegsEffect1"
-description = "LegsEffect1"
-slot = "Legs"
-factor = 20
-metadata/_custom_type_script = "uid://p673jpbjsppe"
-
-[sub_resource type="Resource" id="Resource_mu2gr"]
-script = ExtResource("1_kykie")
-id = 7
-name = "LegsEffect1"
-description = "Increses critical strike by "
-slot = "Legs"
-factor = 10
-metadata/_custom_type_script = "uid://p673jpbjsppe"
-
 [sub_resource type="Resource" id="Resource_dvyco"]
 script = ExtResource("1_kykie")
 id = 200
@@ -126,6 +126,123 @@ slot = ""
 factor = 0
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
+[sub_resource type="Resource" id="Resource_7nrcq"]
+script = ExtResource("1_kykie")
+id = 8
+name = "Increase dodge"
+description = "Increases dodge chance by"
+slot = "Legs"
+factor = 2
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_gew70"]
+script = ExtResource("1_kykie")
+id = 9
+name = "Damage reduction"
+description = "Increases damage reduciton by"
+slot = "Belt"
+factor = 2
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_bqdpo"]
+script = ExtResource("1_kykie")
+id = 10
+name = "Initiative"
+description = "Increses chance to start first by"
+slot = "Ring"
+factor = 10
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_ksklk"]
+script = ExtResource("1_kykie")
+id = 11
+name = "Stun"
+description = "Increases chance to stun by"
+slot = "Weapon"
+factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_7lpy8"]
+script = ExtResource("1_kykie")
+id = 12
+name = "Counter attack"
+description = "Increases chance to counter attacky by"
+slot = "Weapon"
+factor = 10
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_s6jy5"]
+script = ExtResource("1_kykie")
+id = 13
+name = "Attack twice"
+description = "Increases chance to attack twice by"
+slot = "Weapon"
+factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_g1jkk"]
+script = ExtResource("1_kykie")
+id = 14
+name = "Bleed"
+description = "Increases chance to apply bleed by"
+slot = "Weapon"
+factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_i21du"]
+script = ExtResource("1_kykie")
+id = 15
+name = "Lifesteal"
+description = "Increases health restored from your attack by"
+slot = "Weapon"
+factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_vwfcc"]
+script = ExtResource("1_kykie")
+id = 16
+name = "Heal"
+description = "Increases chance to heal yourself by"
+slot = "Chest"
+factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_h7k6w"]
+script = ExtResource("1_kykie")
+id = 17
+name = "Survive"
+description = "Increases chance to survive the killing blow by"
+slot = "Amulet"
+factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_ne60l"]
+script = ExtResource("1_kykie")
+id = 18
+name = "Healing boost"
+description = "Increases healing done by"
+slot = "Hand"
+factor = 5
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_vvgik"]
+script = ExtResource("1_kykie")
+id = 19
+name = "Critical damage"
+description = "Increases critical strike damage by"
+slot = "Hand"
+factor = 10
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
+[sub_resource type="Resource" id="Resource_kcjfi"]
+script = ExtResource("1_kykie")
+id = 20
+name = "Counter attack damage"
+description = "Increases counter attack damage by"
+slot = "Hand"
+factor = 10
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
 [resource]
 script = ExtResource("2_jpqpk")
-effects = Array[ExtResource("1_kykie")]([SubResource("Resource_kykie"), SubResource("Resource_jpqpk"), SubResource("Resource_lkg4j"), SubResource("Resource_j0sy3"), SubResource("Resource_j56hd"), SubResource("Resource_73tjy"), SubResource("Resource_ur02h"), SubResource("Resource_0aeja"), SubResource("Resource_adnf4"), SubResource("Resource_dr05w"), SubResource("Resource_sfyhn"), SubResource("Resource_mu2gr"), SubResource("Resource_dvyco")])
+effects = Array[ExtResource("1_kykie")]([SubResource("Resource_kykie"), SubResource("Resource_jpqpk"), SubResource("Resource_0aeja"), SubResource("Resource_adnf4"), SubResource("Resource_dr05w"), SubResource("Resource_sfyhn"), SubResource("Resource_mu2gr"), SubResource("Resource_lkg4j"), SubResource("Resource_j0sy3"), SubResource("Resource_j56hd"), SubResource("Resource_73tjy"), SubResource("Resource_ur02h"), SubResource("Resource_dvyco"), SubResource("Resource_7nrcq"), SubResource("Resource_gew70"), SubResource("Resource_bqdpo"), SubResource("Resource_ksklk"), SubResource("Resource_7lpy8"), SubResource("Resource_s6jy5"), SubResource("Resource_g1jkk"), SubResource("Resource_i21du"), SubResource("Resource_vwfcc"), SubResource("Resource_h7k6w"), SubResource("Resource_ne60l"), SubResource("Resource_vvgik"), SubResource("Resource_kcjfi")])
