@@ -26,9 +26,12 @@ func refresh_effects():
 	
 	# Add active blessing effect third if any
 	if GameInfo.current_player and GameInfo.current_player.blessing > 0:
-		var blessing_effect = GameInfo.effects_db.get_effect_by_id(GameInfo.current_player.blessing)
-		if blessing_effect:
-			create_effect_display(blessing_effect)
+		var blessing_perk = GameInfo.perks_db.get_perk_by_id(GameInfo.current_player.blessing) if GameInfo.perks_db else null
+		if blessing_perk:
+			# Get the effect referenced by the blessing perk
+			var blessing_effect = GameInfo.effects_db.get_effect_by_id(blessing_perk.effect1_id) if GameInfo.effects_db else null
+			if blessing_effect:
+				create_blessing_display(blessing_perk, blessing_effect)
 	
 	# Get active perks from GameInfo
 	var active_perks = get_active_perks()
@@ -83,12 +86,36 @@ func create_consumable_display(icon_texture: Texture2D, consumable_type: String,
 		add_child(consumable_icon)
 		print("ActivePerksDisplay: Added consumable icon to HBox")
 
-func create_effect_display(effect: EffectResource):
+func create_blessing_display(perk: PerkResource, effect: EffectResource):
+	"""Create a display for an active blessing (from perks.tres)"""
+	if perk_mini_scene:
+		var blessing_icon = perk_mini_scene.instantiate()
+		# Store perk and effect data for hover functionality
+		blessing_icon.set_meta("blessing_perk", perk)
+		blessing_icon.set_meta("blessing_effect", effect)
+		
+		# Use the icon from the perk (not the effect)
+		var texture_rect = blessing_icon.get_node("TextureRect")
+		if texture_rect and perk.icon:
+			texture_rect.texture = perk.icon
+		
+		# Enable mouse detection for hover
+		blessing_icon.mouse_filter = Control.MOUSE_FILTER_PASS
+		
+		# Connect hover signals for blessing
+		blessing_icon.mouse_entered.connect(_on_blessing_hover_start.bind(blessing_icon))
+		blessing_icon.mouse_exited.connect(_on_perk_hover_end)
+		
+		add_child(blessing_icon)
+		print("ActivePerksDisplay: Added blessing icon to HBox")
+
+func create_effect_display(effect: EffectResource, factor: float = 0.0):
 	"""Create a display for an active effect (like blessing)"""
 	if perk_mini_scene:
 		var effect_icon = perk_mini_scene.instantiate()
-		# Store effect data in the icon for hover functionality
+		# Store effect data and factor in the icon for hover functionality
 		effect_icon.set_meta("effect_data", effect)
+		effect_icon.set_meta("effect_factor", factor)
 		
 		# Set the effect texture if available
 		var texture_rect = effect_icon.get_node("TextureRect")
@@ -127,14 +154,35 @@ func _on_perk_hover_start(perk_icon):
 		
 		TooltipManager.show_perk_tooltip(tooltip_text, perk_icon)
 
+func _on_blessing_hover_start(blessing_icon):
+	"""Show tooltip for blessings"""
+	var perk_data = blessing_icon.get_meta("blessing_perk")
+	var effect_data = blessing_icon.get_meta("blessing_effect")
+	if perk_data and effect_data:
+		# Build tooltip with perk name (not effect name) and effect description with factor
+		var tooltip_text = perk_data.perk_name
+		if effect_data.description != "":
+			tooltip_text += "\n" + effect_data.description
+			# Add factor
+			if perk_data.factor1 > 0:
+				var factor_text = str(int(perk_data.factor1)) if perk_data.factor1 == int(perk_data.factor1) else str(perk_data.factor1)
+				tooltip_text += " " + factor_text + "%"
+		
+		TooltipManager.show_perk_tooltip(tooltip_text, blessing_icon)
+
 func _on_effect_hover_start(effect_icon):
 	"""Show tooltip for active effects"""
 	var effect_data = effect_icon.get_meta("effect_data")
+	var effect_factor = effect_icon.get_meta("effect_factor", 0.0)
 	if effect_data:
 		# Build tooltip with effect name and description
 		var tooltip_text = effect_data.name
 		if effect_data.description != "":
 			tooltip_text += "\n" + effect_data.description
+			# Add factor if non-zero
+			if effect_factor > 0:
+				var factor_text = str(int(effect_factor)) if effect_factor == int(effect_factor) else str(effect_factor)
+				tooltip_text += " " + factor_text + "%"
 		
 		TooltipManager.show_perk_tooltip(tooltip_text, effect_icon)
 

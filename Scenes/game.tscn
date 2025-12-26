@@ -2243,26 +2243,26 @@ agility_aprox = NodePath("StatsContainer/AgilityContainer/AgilityAprox")
 luck_label = NodePath("StatsContainer/LuckContainer/LuckValue")
 luck_aprox = NodePath("StatsContainer/LuckContainer/LuckAprox")
 armor_label = NodePath("StatsContainer/ArmorContainer/ArmorValue")
-effect_strength_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1/OnSelfValue")
-effect_stamina_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2/OnSelfValue")
-effect_agility_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3/OnSelfValue")
-effect_luck_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4/OnSelfValue")
-effect_damage_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5/OnSelfValue")
-effect_health_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6/OnSelfValue")
-effect_crit_chance_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7/OnSelfValue")
-effect_dodge_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8/OnSelfValue")
-effect_damage_reduction_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9/OnSelfValue")
-effect_initiative_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10/OnSelfValue")
-effect_stun_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11/OnSelfValue")
-effect_counter_attack_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12/OnSelfValue")
-effect_attack_twice_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13/OnSelfValue")
-effect_bleed_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14/OnSelfValue")
-effect_lifesteal_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15/OnSelfValue")
-effect_heal_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16/OnSelfValue")
-effect_survive_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17/OnSelfValue")
-effect_healing_boost_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18/OnSelfValue")
-effect_crit_damage_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19/OnSelfValue")
-effect_counter_damage_value = NodePath("../../DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20/OnSelfValue")
+effect_strength_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect1/OnSelfValue")
+effect_stamina_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect2/OnSelfValue")
+effect_agility_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect3/OnSelfValue")
+effect_luck_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect4/OnSelfValue")
+effect_damage_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect5/OnSelfValue")
+effect_health_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect6/OnSelfValue")
+effect_crit_chance_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect7/OnSelfValue")
+effect_dodge_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect8/OnSelfValue")
+effect_damage_reduction_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect9/OnSelfValue")
+effect_initiative_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect10/OnSelfValue")
+effect_stun_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect11/OnSelfValue")
+effect_counter_attack_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect12/OnSelfValue")
+effect_attack_twice_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect13/OnSelfValue")
+effect_bleed_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect14/OnSelfValue")
+effect_lifesteal_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect15/OnSelfValue")
+effect_heal_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect16/OnSelfValue")
+effect_survive_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect17/OnSelfValue")
+effect_healing_boost_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect18/OnSelfValue")
+effect_crit_damage_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect19/OnSelfValue")
+effect_counter_damage_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect20/OnSelfValue")
 
 [node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
 layout_mode = 0
@@ -5040,6 +5040,7 @@ script = ExtResource("23_tgy6u")
 perk_scene = ExtResource("22_81klo")
 
 [node name="DetailsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -5047,515 +5048,523 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 15
+texture = ExtResource("56_qj5kr")
+expand_mode = 1
 
-[node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Combat Effects"
-horizontal_alignment = 1
-
-[node name="HeaderRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]
-layout_mode = 2
+[node name="HeaderRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 25.0
+offset_top = 16.0
+offset_right = -21.0
+offset_bottom = 76.0
+grow_horizontal = 2
 theme_override_constants/separation = 10
 
-[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
+[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "Effect"
+theme_override_font_sizes/font_size = 19
+text = "Description"
 
-[node name="OffensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
+[node name="OffensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/HeaderRow"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "On Self (%)"
 horizontal_alignment = 2
 
-[node name="DefensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/HeaderRow"]
+[node name="DefensiveLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/HeaderRow"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "On Enemy (%)"
 horizontal_alignment = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer"]
-layout_mode = 2
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = -524.0
+offset_right = -25.0
+offset_bottom = -19.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 
-[node name="EffectsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer"]
+[node name="EffectsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="Effect1" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect1" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect1"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increase strength by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect1"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect1"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect2" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect2"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increase stamina by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect3" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect3"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases agility by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect3"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect4" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect4" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect4"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases luck by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect4"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect4"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect5" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect5" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect5"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "increases damage dealt by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect5"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect5"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect6" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect6" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect6"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increase health by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect6"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect6"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect7" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect7" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect7"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increses critical strike chance by "
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect7"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect7"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect8" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect8" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect8"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases dodge chance by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect8"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect8"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect9" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect9" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect9"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases damage reduciton by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect9"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect9"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect10" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect10" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect10"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increses chance to start first by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect10"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect10"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect11" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect11" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect11"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to stun by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect11"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect11"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect12" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect12" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect12"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to counter attacky by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect12"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect12"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect13" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect13" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect13"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to attack twice by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect13"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect13"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect14" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect14" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect14"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to apply bleed by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect14"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect14"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect15" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect15" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect15"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases health restored from your attack by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect15"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect15"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect16" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect16" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect16"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to heal yourself by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect16"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect16"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect17" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect17" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect17"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to survive the killing blow by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect17"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect17"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect18" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect18" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect18"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases healing done by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect18"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect18"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect19" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect19" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect19"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases critical strike damage by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect19"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect19"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="Effect20" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer"]
+[node name="Effect20" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect20"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases counter attack damage by"
 autowrap_mode = 2
 
-[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20"]
+[node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect20"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
 horizontal_alignment = 2
 
-[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20"]
+[node name="OnEnemyValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/ScrollContainer/EffectsContainer/Effect20"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "-"
