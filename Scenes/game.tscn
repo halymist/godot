@@ -5087,9 +5087,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increase strength by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect1"]
 custom_minimum_size = Vector2(80, 0)
@@ -5108,9 +5110,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increase stamina by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect2"]
 custom_minimum_size = Vector2(80, 0)
@@ -5129,9 +5133,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases agility by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect3"]
 custom_minimum_size = Vector2(80, 0)
@@ -5150,9 +5156,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases luck by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect4"]
 custom_minimum_size = Vector2(80, 0)
@@ -5171,9 +5179,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "increases damage dealt by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect5"]
 custom_minimum_size = Vector2(80, 0)
@@ -5192,9 +5202,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increase health by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect6"]
 custom_minimum_size = Vector2(80, 0)
@@ -5213,9 +5225,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increses critical strike chance by "
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect7"]
 custom_minimum_size = Vector2(80, 0)
@@ -5234,9 +5248,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases dodge chance by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect8"]
 custom_minimum_size = Vector2(80, 0)
@@ -5255,9 +5271,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases damage reduciton by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect9"]
 custom_minimum_size = Vector2(80, 0)
@@ -5276,9 +5294,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increses chance to start first by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect10"]
 custom_minimum_size = Vector2(80, 0)
@@ -5297,9 +5317,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to stun by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect11"]
 custom_minimum_size = Vector2(80, 0)
@@ -5318,9 +5340,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to counter attacky by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect12"]
 custom_minimum_size = Vector2(80, 0)
@@ -5339,9 +5363,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to attack twice by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect13"]
 custom_minimum_size = Vector2(80, 0)
@@ -5360,9 +5386,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to apply bleed by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect14"]
 custom_minimum_size = Vector2(80, 0)
@@ -5381,9 +5409,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases health restored from your attack by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect15"]
 custom_minimum_size = Vector2(80, 0)
@@ -5402,9 +5432,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to heal yourself by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect16"]
 custom_minimum_size = Vector2(80, 0)
@@ -5423,9 +5455,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases chance to survive the killing blow by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect17"]
 custom_minimum_size = Vector2(80, 0)
@@ -5444,9 +5478,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases healing done by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect18"]
 custom_minimum_size = Vector2(80, 0)
@@ -5465,9 +5501,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases critical strike damage by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect19"]
 custom_minimum_size = Vector2(80, 0)
@@ -5486,9 +5524,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases counter attack damage by"
+autowrap_mode = 2
 
 [node name="OnSelfValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel/VBoxContainer/ScrollContainer/EffectsContainer/Effect20"]
 custom_minimum_size = Vector2(80, 0)
