@@ -1,4 +1,4 @@
-[gd_scene load_steps=109 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=108 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -62,7 +62,6 @@
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/RankingsPanel.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
-[ext_resource type="Script" uid="uid://dl5m7uo6ahwk7" path="res://scripts/DragScrollContainer.gd" id="37_drag_scroll"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Texture2D" uid="uid://frdxqif0cyou" path="res://assets/images/ui/background_char.png" id="38_aujhx"]
@@ -5651,7 +5650,6 @@ size_flags_vertical = 3
 follow_focus = true
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
-script = ExtResource("37_drag_scroll")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableScroll"]
 layout_mode = 2
@@ -6393,7 +6391,7 @@ grow_vertical = 2
 icon = ExtResource("14_81klo")
 expand_icon = true
 
-[node name="Wide" type="Control" parent="." node_paths=PackedStringArray("home_panel", "character_panel", "arena_panel", "map_panel", "talents_panel", "enemy_panel", "details_panel", "settings_panel", "rankings_panel", "payment", "chat_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "wide_home_button", "wide_character_button", "wide_arena_button", "wide_map_button", "wide_settings_button", "wide_rankings_button", "wide_payment_button", "wide_chat_button", "wide_back_button")]
+[node name="Wide" type="Control" parent="." node_paths=PackedStringArray("home_panel", "character_panel", "arena_panel", "map_panel", "talents_panel", "enemy_panel", "details_panel", "settings_panel", "rankings_panel", "payment", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "wide_home_button", "wide_character_button", "wide_arena_button", "wide_map_button", "wide_settings_button", "wide_rankings_button", "wide_payment_button", "wide_chat_button", "wide_back_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 7
@@ -6418,7 +6416,6 @@ details_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/DetailsP
 settings_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Settings")
 rankings_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Rankings")
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
-chat_panel = NodePath("")
 vendor_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
 blacksmith_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
 trainer_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
