@@ -15,11 +15,8 @@ var current_quest_data: Dictionary = {}
 signal quest_accepted(quest_data: Dictionary)
 
 func _ready():
-	if background_button:
-		background_button.pressed.connect(_on_background_pressed)
-	
-	if accept_button:
-		accept_button.pressed.connect(_on_accept_pressed)
+	background_button.pressed.connect(_on_background_pressed)
+	accept_button.pressed.connect(_on_accept_pressed)
 
 func _on_background_pressed():
 	hide_panel()
