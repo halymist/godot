@@ -6153,6 +6153,8 @@ offset_right = -10.0
 offset_bottom = -60.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 
 [node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/ScrollContainer"]
 layout_mode = 2
