@@ -242,6 +242,9 @@ func go_back():
 		var handled = home_panel.handle_back_navigation()
 		if handled:
 			return
+		else:
+			# Already in exterior, do nothing
+			return
 	
 	# Talents/Details bookmarks
 	if current == talents_panel:
