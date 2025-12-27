@@ -1,4 +1,4 @@
-extends Panel
+extends Button
 
 @export var chat_panel: Panel
 @export var chat_container: VBoxContainer
@@ -6,7 +6,6 @@ extends Panel
 @export var global_button: Button
 @export var local_button: Button
 
-var is_chat_open = false
 var saved_scroll_position: int = 0
 var last_message_time: String = ""
 var current_filter: String = "global"  # "global", "local", or "all"
@@ -17,11 +16,12 @@ var drag_start_position: Vector2
 var scroll_start_position: float
 
 func _ready():
+	# Connect background button to close chat
+	pressed.connect(_on_background_pressed)
+	
 	# Connect toggle buttons
-	if global_button:
-		global_button.pressed.connect(_on_global_button_pressed)
-	if local_button:
-		local_button.pressed.connect(_on_local_button_pressed)
+	global_button.pressed.connect(_on_global_button_pressed)
+	local_button.pressed.connect(_on_local_button_pressed)
 	
 	# Set initial button states
 	_update_button_states()
@@ -30,15 +30,14 @@ func _ready():
 	display_chat_messages()
 	
 	# Set up drag-to-scroll for the scroll container and chat container
-	if scroll_container:
-		scroll_container.gui_input.connect(_on_scroll_container_input)
-	if chat_container:
-		chat_container.gui_input.connect(_on_scroll_container_input)
-	
-	# Ensure chat starts hidden off-screen
-	if chat_panel:
-		var chat_width = get_viewport().get_visible_rect().size.x * 0.7
-		chat_panel.position.x = -chat_width
+	scroll_container.gui_input.connect(_on_scroll_container_input)
+	chat_container.gui_input.connect(_on_scroll_container_input)
+
+func _on_background_pressed():
+	"""Close chat when clicking on background"""
+	var toggle_panel = get_tree().get_first_node_in_group("toggle_panel")
+	if toggle_panel:
+		toggle_panel.show_overlay(self)
 
 func _on_scroll_container_input(event: InputEvent):
 	if not scroll_container:

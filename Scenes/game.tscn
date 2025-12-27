@@ -6085,7 +6085,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
 
-[node name="ChatOverlay" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
+[node name="ChatOverlay" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
 visible = false
 z_index = 200
 layout_mode = 1
@@ -6094,7 +6094,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 script = ExtResource("28_chat_panel")
 chat_panel = NodePath("ChatPanel")
 chat_container = NodePath("ChatPanel/ScrollContainer/ChatContainer")
@@ -6417,7 +6416,7 @@ details_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/DetailsP
 settings_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Settings")
 rankings_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Rankings")
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
-chat_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay")
+chat_panel = NodePath("")
 vendor_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
 blacksmith_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
 trainer_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")

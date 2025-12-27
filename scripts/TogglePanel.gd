@@ -16,7 +16,7 @@ extends Control
 @export var settings_button: Button
 @export var rankings_button: Button
 @export var chat_button: Button
-@export var chat_panel: Control
+@export var chat_panel: Button
 @export var combat_panel: Control
 @export var settings_panel: Control
 @export var rankings_panel: Control
