@@ -10,94 +10,7 @@ var drag_placeholder: Control = null
 var is_dragging_over: bool = false
 
 func _ready():
-	# Apply styling based on panel type
-	_apply_panel_styling()
-	# Add section header
-	_add_section_header()
-	# Configure container spacing
-	_configure_spacing()
-
-func _configure_spacing():
-	# For inactive panels (VBoxContainer), add consistent spacing
-	if panel_type == "Inactive":
-		add_theme_constant_override("separation", 8)  # 8 pixels between perks
-	elif panel_type == "Active":
-		# For active panels, we don't need separation since they hold one perk
-		pass
-
-func _add_section_header():
-	# Create a header label for the section
-	var header = Label.new()
-	header.name = "SectionHeader"
-	header.text = panel_type.to_upper() + " PERKS"
-	
-	# Style the header
-	header.add_theme_font_size_override("font_size", 18)
-	header.add_theme_color_override("font_color", Color.WHITE)
-	header.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
-	header.add_theme_constant_override("shadow_offset_x", 2)
-	header.add_theme_constant_override("shadow_offset_y", 2)
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	
-	# Position the header at the top
-	header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	header.size.y = 30
-	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
-	add_child(header)
-	
-	# Adjust content area to not overlap with header
-	if panel_type == "Active":
-		# Add some top margin for active panels
-		add_theme_constant_override("margin_top", 35)
-	elif panel_type == "Inactive":
-		# Add more top margin for inactive panels
-		add_theme_constant_override("margin_top", 35)
-
-func _apply_panel_styling():
-	var style = StyleBoxFlat.new()
-	
-	if panel_type == "Active":
-		# Active panel styling - warmer colors
-		style.bg_color = Color(0.3, 0.15, 0.1, 0.8)  # Dark reddish brown
-		style.border_color = Color(0.8, 0.4, 0.2, 1.0)  # Orange border
-		
-		# Ensure active panels are properly sized for single perks
-		custom_minimum_size = Vector2(0, 80)  # Just enough for one perk + padding
-		
-	elif panel_type == "Inactive":
-		# Inactive panel styling - cooler colors
-		style.bg_color = Color(0.1, 0.15, 0.3, 0.8)  # Dark blue
-		style.border_color = Color(0.2, 0.4, 0.8, 1.0)  # Blue border
-		
-		# Inactive panels can expand to fit multiple perks
-		custom_minimum_size = Vector2(0, 200)
-	
-	# Common styling
-	style.corner_radius_top_left = 12
-	style.corner_radius_top_right = 12
-	style.corner_radius_bottom_left = 12
-	style.corner_radius_bottom_right = 12
-	
-	style.border_width_left = 3
-	style.border_width_right = 3
-	style.border_width_top = 3
-	style.border_width_bottom = 3
-	
-	# Add inner shadow for depth
-	style.shadow_color = Color(0, 0, 0, 0.4)
-	style.shadow_size = 5
-	style.shadow_offset = Vector2(0, 3)
-	
-	# Apply the style - create a background panel since this is a Control
-	var bg_panel = Panel.new()
-	bg_panel.name = "BackgroundPanel"
-	bg_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bg_panel.add_theme_stylebox_override("panel", style)
-	add_child(bg_panel)
-	move_child(bg_panel, 0)  # Put it at the back
+	pass
 
 func _can_drop_data(pos, data):
 	# Check if data is valid drag package
@@ -179,10 +92,9 @@ func _handle_active_drop(perk: GameInfo.Perk, source_container: Control, data: D
 		_reorder_slots_after_removal(old_slot, false)
 	
 	# Check if active panel already has a perk (need to swap)
-	# Filter out BackgroundPanel and SectionHeader
 	var existing_perk_node = null
 	for child in get_children():
-		if child.name != "BackgroundPanel" and child.name != "SectionHeader" and child.has_method("get_perk_data"):
+		if child.has_method("get_perk_data"):
 			existing_perk_node = child
 			break
 	
@@ -340,8 +252,7 @@ func place_perk_in_panel(perk_data: GameInfo.Perk):
 
 func clear_panel():
 	for child in get_children():
-		# Don't clear the placeholder, background panel, or header
-		if child != drag_placeholder and child.name != "BackgroundPanel" and child.name != "SectionHeader":
+		if child != drag_placeholder:
 			child.queue_free()
 	
 	# Update active perks display when clearing
@@ -403,10 +314,10 @@ func _update_placeholder_position(pos: Vector2):
 				break
 		_animate_placeholder_height(target_height * 0.8)
 	
-	# Get all perk children (exclude placeholder, BackgroundPanel, and SectionHeader)
+	# Get all perk children (exclude placeholder)
 	var logical_children = []
 	for child in get_children():
-		if child != drag_placeholder and child.name != "BackgroundPanel" and child.name != "SectionHeader":
+		if child != drag_placeholder:
 			logical_children.append(child)
 	
 	# Find insertion index based on Y position
@@ -425,15 +336,8 @@ func _update_placeholder_position(pos: Vector2):
 			insert_index = i
 			break
 	
-	# Map the logical index to the actual child index
-	# We need to account for BackgroundPanel and SectionHeader which are always at the start
+	# Use the logical index directly
 	var actual_index = insert_index
-	for i in range(get_child_count()):
-		var child = get_child(i)
-		if child.name == "BackgroundPanel" or child.name == "SectionHeader":
-			actual_index += 1
-		else:
-			break
 	
 	var current_placeholder_index = drag_placeholder.get_index()
 	
@@ -518,9 +422,7 @@ func _calculate_slot_from_index(child_index: int) -> int:
 	var perk_count = 0
 	for i in range(child_index):
 		if i < get_child_count():
-			var child = get_child(i)
-			if child.name != "BackgroundPanel" and child.name != "SectionHeader":
-				perk_count += 1
+			perk_count += 1
 	
 	# Slot is 1-indexed
 	return perk_count + 1
@@ -536,7 +438,7 @@ func _recalculate_inactive_slots(skip_node: Node = null):
 	# Get all perk children in visual order
 	var perk_children = []
 	for child in get_children():
-		if child.name != "BackgroundPanel" and child.name != "SectionHeader" and child.has_method("get_perk_data"):
+		if child.has_method("get_perk_data"):
 			# Skip the node that's being deleted (to avoid double-counting)
 			if skip_node and child == skip_node:
 				continue
