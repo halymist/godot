@@ -17,19 +17,7 @@ func _ready():
 	
 	# Set initial button states
 	_update_button_states()
-	
-	# Load chat messages when the panel is ready
 	display_chat_messages()
-
-func _save_scroll_position():
-	if scroll_container:
-		saved_scroll_position = scroll_container.scroll_vertical
-
-func _restore_scroll_position():
-	if scroll_container:
-		# Wait a frame for the content to be properly sized
-		await get_tree().process_frame
-		scroll_container.scroll_vertical = saved_scroll_position
 
 func display_chat_messages():
 	if not chat_container:
@@ -56,8 +44,6 @@ func _should_show_message(chat_message: GameInfo.ChatMessage) -> bool:
 			return chat_message.type == "global"
 		"local":
 			return chat_message.type == "local"
-		"all":
-			return true
 		_:
 			return true  # Default to showing all messages
 
@@ -72,8 +58,6 @@ func _on_local_button_pressed():
 	display_chat_messages()
 
 func _update_button_states():
-	if not global_button or not local_button:
-		return
 	
 	# Update button colors based on active filter
 	match current_filter:
@@ -124,14 +108,6 @@ func add_chat_message(chat_message: GameInfo.ChatMessage):
 	
 	# Add to container
 	chat_container.add_child(message_label)
-
-func _scroll_to_bottom():
-	if scroll_container:
-		# Wait a frame for the content to be properly sized
-		await get_tree().process_frame
-		scroll_container.scroll_vertical = int(scroll_container.get_v_scroll_bar().max_value)
-		# Update saved position to bottom
-		saved_scroll_position = scroll_container.scroll_vertical
 
 func _add_timestamp_separator_if_needed(chat_message: GameInfo.ChatMessage):
 	if last_message_time == "":
