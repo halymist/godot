@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://ddgp4njhef2ac"]
+
+[node name="QuestOption" type="Panel"]
+custom_minimum_size = Vector2(50, 50)
+offset_right = 200.0
+offset_bottom = 50.0
+size_flags_horizontal = 3
+
+[node name="OptionButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Option Text"
+vertical_alignment = 1
+autowrap_mode = 3

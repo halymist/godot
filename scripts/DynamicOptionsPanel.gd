@@ -61,21 +61,28 @@ func display_quest_slide(quest_slide: QuestSlide):
 	for option in quest_slide.options:
 		add_option(option.text, _on_quest_option_pressed.bind(option))
 
-func add_option(text: String, callback: Callable) -> Button:
-	"""Add a button to options"""
+func add_option(text: String, callback: Callable) -> Control:
+	"""Add an option to the container using quest_option.tscn"""
 	if not options_container:
 		return null
 	
-	var button = Button.new()
-	button.text = text
-	button.custom_minimum_size = Vector2(0, 40)
-	button.size_flags_horizontal = Control.SIZE_FILL
+	var option_scene = load("res://Scenes/quest_option.tscn")
+	var option_instance = option_scene.instantiate()
+	
+	# Get references to child nodes
+	var button = option_instance.get_node("OptionButton")
+	var label = option_instance.get_node("HBoxContainer/Label")
+	var icon = option_instance.get_node("HBoxContainer/Icon")
+	
+	# Set properties
+	label.text = text
+	icon.visible = false  # No icon for now
 	
 	if callback.is_valid():
 		button.pressed.connect(callback)
 	
-	options_container.add_child(button)
-	return button
+	options_container.add_child(option_instance)
+	return option_instance
 
 func clear_options():
 	"""Remove all option buttons"""
@@ -114,8 +121,15 @@ func _finish_quest():
 	
 	# Call handle_quest_completed on active toggle panel through UIManager
 	# This will hide the panel and navigate home
+	print("UIManager exists: ", UIManager.instance != null)
 	if UIManager.instance:
+		print("Portrait visible: ", UIManager.instance.portrait_ui.visible)
+		print("Wide visible: ", UIManager.instance.wide_ui.visible)
 		if UIManager.instance.portrait_ui.visible:
+			print("Calling handle_quest_completed on portrait_ui")
 			UIManager.instance.portrait_ui.handle_quest_completed()
 		elif UIManager.instance.wide_ui.visible:
+			print("Calling handle_quest_completed on wide_ui")
 			UIManager.instance.wide_ui.handle_quest_completed()
+		else:
+			print("WARNING: Neither portrait nor wide UI is visible!")

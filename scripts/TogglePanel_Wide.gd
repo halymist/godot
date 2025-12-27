@@ -70,12 +70,10 @@ func handle_home_button():
 
 func handle_quest_completed():
 	"""Called when quest is finished - return to home"""
-	# Hide DynamicOptionsPanel if visible
-	var quest_ui = get_node_or_null("%DynamicOptionsPanel")
-	if quest_ui:
-		quest_ui.visible = false
-		
-	handle_home_button()
+	# Note: Wide mode may not have quest panel exported, handled by portrait
+	
+	# Use show_panel to properly toggle everything
+	show_panel(home_panel)
 
 func handle_character_button():
 	"""Character (left) + Talents (right)"""

@@ -290,12 +290,8 @@ func show_combat():
 
 func handle_quest_completed():
 	"""Called when quest is finished - return to home"""
-	# Hide DynamicOptionsPanel if visible
-	var quest_ui = get_node_or_null("%DynamicOptionsPanel")
-	if quest_ui:
-		quest_ui.visible = false
-		
-	handle_home_button()
+	quest.visible = false
+	show_panel(home_panel)
 
 # Cancel quest dialog functions
 func _on_cancel_quest_yes():
