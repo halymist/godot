@@ -3,9 +3,19 @@ extends GridContainer
 @export var reset_button: Button
 @export var title_label: Label
 
+var talents_registered_count: int = 0
+
 func _ready():
 	reset_button.pressed.connect(_on_reset_button_pressed)
 	update_title_label()
+	
+	# Wait for all talents to register, then refresh stats
+	await get_tree().process_frame
+	await get_tree().process_frame
+	print("All talents registered, refreshing stats...")
+	if UIManager.instance:
+		UIManager.instance.refresh_stats()
+		print("Stats refreshed after talent registration")
 
 func _on_stats_changed(_stats: Dictionary):
 	update_title_label()

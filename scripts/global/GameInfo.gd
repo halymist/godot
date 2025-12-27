@@ -11,6 +11,9 @@ var npcs_db: NpcDatabase = null
 var cosmetics_db: CosmeticDatabase = null
 var settlements_db: SettlementsDatabase = null
 
+# Runtime talent registry (populated by Talent.gd nodes on _ready)
+var talent_registry: Dictionary = {}  # {talent_id: {effect_id, factor, max_points, perk_slot}}
+
 # Village names mapping
 const VILLAGE_NAMES = {
 	1: "Krasna Ves",
@@ -29,6 +32,16 @@ func get_location_data(location_id: int) -> LocationResource:
 	if settlements_db:
 		return settlements_db.get_location_by_id(location_id)
 	return null
+
+func register_talent(id: int, effect_id: int, factor: float, max_points: int, perk_slot: int = 0):
+	"""Called by Talent.gd nodes on _ready() to register their metadata"""
+	talent_registry[id] = {
+		"effect_id": effect_id,
+		"factor": factor,
+		"max_points": max_points,
+		"perk_slot": perk_slot
+	}
+	print("Registered talent %d: effect=%d, factor=%.1f, max_points=%d, perk_slot=%d" % [id, effect_id, factor, max_points, perk_slot])
 
 # Guild names and icons mapping
 const GUILD_DATA = {
@@ -576,11 +589,16 @@ class GamePlayer:
 		for i in range(1, 21):
 			total_effects[i] = 0.0
 		
+		print("\n=== CALCULATING TOTAL EFFECTS ===")
+		print("Talent registry size: ", GameInfo.talent_registry.size())
+		print("Player talents count: ", talents.size())
+		
 		# 1. Sum effects from equipped items (slots 0-9)
 		for item in bag_slots:
 			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
 				if item.effect_id > 0 and item.effect_id <= 20:
 					total_effects[item.effect_id] += item.effect_factor
+					print("Item in slot %d adds %.1f to effect %d" % [item.bag_slot_id, item.effect_factor, item.effect_id])
 		
 		# 2. Add potion effect (if property exists in subclass)
 		if "potion" in self and self.potion > 0 and GameInfo and GameInfo.items_db:
@@ -618,6 +636,33 @@ class GamePlayer:
 						if ingredient and ingredient.effect_id > 0 and ingredient.effect_id <= 20:
 							total_effects[ingredient.effect_id] += ingredient.effect_factor
 		
+		# 6. Add talents effects (from runtime registry populated by Talent.gd nodes)
+		print("Processing talents...")
+		for talent in talents:
+			var talent_id = talent.talent_id
+			var points_spent = talent.points
+			
+			print("  Talent ID %d: %d points spent" % [talent_id, points_spent])
+			
+			# Look up metadata from registry
+			if talent_id in GameInfo.talent_registry:
+				var talent_meta = GameInfo.talent_registry[talent_id]
+				print("    Found in registry: effect_id=%d, factor=%.1f, perk_slot=%d" % [talent_meta.effect_id, talent_meta.factor, talent_meta.perk_slot])
+				
+				# Skip perk slot talents (they don't provide direct effects)
+				if talent_meta.perk_slot > 0:
+					print("    Skipping (perk slot talent)")
+					continue
+				
+				# Calculate talent contribution
+				if talent_meta.effect_id > 0 and talent_meta.effect_id <= 20:
+					var talent_effect = points_spent * talent_meta.factor
+					total_effects[talent_meta.effect_id] += talent_effect
+					print("    Adding %.1f to effect %d (total now: %.1f)" % [talent_effect, talent_meta.effect_id, total_effects[talent_meta.effect_id]])
+			else:
+				print("    WARNING: Talent ID %d not found in registry!" % talent_id)
+		
+		print("=== EFFECTS CALCULATION COMPLETE ===\n")
 		return total_effects
 	
 	func has_talent(talent_id: int) -> bool:

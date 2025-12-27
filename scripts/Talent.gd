@@ -19,6 +19,10 @@ extends AspectRatioContainer
 
 
 func _ready():
+	# Register this talent's metadata globally
+	GameInfo.register_talent(talentID, effect_id, factor, maxPoints, perk_slot)
+	print("Talent %d (%s) registered: effect_id=%d, factor=%.1f, points=%d" % [talentID, talentName, effect_id, factor, points])
+	
 	# Find the matching talent in GameInfo
 	var found = false
 	for talent in GameInfo.current_player.talents:
@@ -142,6 +146,11 @@ func upgrade_talent():
 		# Update UI
 		pointsLabel.text = "%d/%d" % [points, maxPoints]
 		get_parent().refresh_all_talents()
+		
+		# Refresh stats to recalculate effects
+		if UIManager.instance:
+			UIManager.instance.refresh_stats()
+			print("Stats refreshed after talent upgrade")
 		
 		print("Upgraded talent ", talentName, " to ", points, " points. Talent points remaining: ", GameInfo.current_player.talent_points)
 	else:
