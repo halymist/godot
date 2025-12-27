@@ -107,70 +107,36 @@ func show_overlay(overlay: Control):
 	if overlay == null:
 		return
 	
-	print("[show_overlay] Called for: ", overlay.name)
-	print("[show_overlay] Current panel before: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
-	print("[show_overlay] Current overlay before: ", GameInfo.get_current_panel_overlay().name if GameInfo.get_current_panel_overlay() else "null")
-	
-	# Chat is special - it can show over everything but should toggle off if already active
+	# Chat is special - it has its own toggle state
 	if overlay == chat_panel:
 		if chat_overlay_active:
-			# Chat is already active, toggle it off
 			hide_overlay(chat_panel)
 			return
 		else:
-			# Show chat overlay
 			chat_overlay_active = true
-			if overlay.has_method("show_chat"):
-				overlay.show_chat()
-			else:
-				overlay.visible = true
-			print("[show_overlay] Showing chat overlay")
-			return
 	
-	# For other overlays (settings/payment/enemy_panel), hide current overlay if one exists
+	# For all overlays, check if one is already active
 	var current = GameInfo.get_current_panel_overlay()
 	if current != null and current != overlay:
 		hide_overlay(current)
 	
-	# Don't show if it's already the current overlay - instead hide it (toggle behavior)
+	# Toggle behavior: if clicking same overlay, hide it
 	if current == overlay:
 		hide_overlay(overlay)
 		return
 	
-	# Set as current overlay in GameInfo (NOT as current panel!)
+	# Set as current overlay in GameInfo
 	GameInfo.set_current_panel_overlay(overlay)
-	print("[show_overlay] Set as current overlay: ", overlay.name)
 	
-	# Ensure overlay has high z-index to appear above everything (including utility panels at z=100)
+	# Ensure overlay appears above everything
 	overlay.z_index = 200
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	print("[show_overlay] Set overlay z_index=200 and mouse_filter=STOP for: ", overlay.name)
 	
-	# Call the overlay's specific show method based on its type
-	# IMPORTANT: These methods should NOT call GameInfo.set_current_panel()
-	if overlay == quest_panel and overlay.has_method("show_quest"):
-		# Note: show_quest should already have been called with data, just make visible
-		overlay.visible = true
-	elif overlay == enemy_panel:
-		# Enemy panel is an overlay - use simple visibility, don't call show_panel()
-		print("[show_overlay] Using simple visibility for enemy panel (overlay)")
-		overlay.visible = true
-	elif overlay.has_method("show_overlay"):
-		print("[show_overlay] Calling show_overlay() method on: ", overlay.name)
-		overlay.show_overlay()
-	elif overlay.has_method("show_panel"):
-		print("[show_overlay] Calling show_panel() method on: ", overlay.name)
-		overlay.show_panel()
-	else:
-		# Fallback to simple visibility
-		print("[show_overlay] Using simple visibility for: ", overlay.name)
-		overlay.visible = true
+	# Show the overlay - just make it visible
+	overlay.visible = true
 	
-	print("[show_overlay] Current panel after: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
-	print("[show_overlay] Current overlay after: ", GameInfo.get_current_panel_overlay().name if GameInfo.get_current_panel_overlay() else "null")
-
 func hide_overlay(overlay: Control):
-	"""Hide a specific overlay using its own hide method"""
+	"""Hide a specific overlay"""
 	if overlay == null:
 		return
 	
@@ -182,20 +148,8 @@ func hide_overlay(overlay: Control):
 	if GameInfo.get_current_panel_overlay() == overlay:
 		GameInfo.set_current_panel_overlay(null)
 	
-	# Call the overlay's specific hide method based on its type
-	if overlay == chat_panel and overlay.has_method("hide_chat"):
-		overlay.hide_chat()
-	elif overlay == quest_panel and overlay.has_method("hide_panel"):
-		overlay.hide_panel()
-	elif overlay.has_method("hide_overlay"):
-		overlay.hide_overlay()
-	elif overlay.has_method("hide_panel"):
-		overlay.hide_panel()
-	else:
-		# Fallback to simple visibility
-		overlay.visible = false
-	
-	print("Hiding overlay: ", overlay.name)
+	# Hide the overlay - just make it invisible
+	overlay.visible = false
 
 func show_panel(panel: Control):
 	hide_all_panels()

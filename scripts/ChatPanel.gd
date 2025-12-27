@@ -29,9 +29,6 @@ func _ready():
 	# Load chat messages when the panel is ready
 	display_chat_messages()
 	
-	# Connect click on overlay to close chat
-	gui_input.connect(_on_overlay_input)
-	
 	# Set up drag-to-scroll for the scroll container and chat container
 	if scroll_container:
 		scroll_container.gui_input.connect(_on_scroll_container_input)
@@ -42,16 +39,6 @@ func _ready():
 	if chat_panel:
 		var chat_width = get_viewport().get_visible_rect().size.x * 0.7
 		chat_panel.position.x = -chat_width
-
-func _on_overlay_input(event: InputEvent):
-	if event is InputEventMouseButton:
-		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			# Check if click was outside the chat panel
-			var click_pos = event.position
-			var chat_rect = Rect2(chat_panel.position, chat_panel.size)
-			
-			if not chat_rect.has_point(click_pos):
-				hide_chat()
 
 func _on_scroll_container_input(event: InputEvent):
 	if not scroll_container:
@@ -83,37 +70,6 @@ func _on_scroll_container_input(event: InputEvent):
 		# Update saved position
 		saved_scroll_position = scroll_container.scroll_vertical
 
-func show_chat():
-	if is_chat_open or not chat_panel:
-		return
-		
-	is_chat_open = true
-	visible = true
-	chat_panel.position.x = 0
-	
-	# Restore scroll position
-	_restore_scroll_position()
-
-func hide_chat():
-	if not is_chat_open or not chat_panel:
-		return
-	
-	# Save current scroll position before hiding
-	_save_scroll_position()
-		
-	is_chat_open = false
-	
-	# Clear from GameInfo if it's the current overlay
-	if GameInfo.get_current_panel_overlay() == self:
-		GameInfo.set_current_panel_overlay(null)
-	
-	visible = false
-
-func toggle_chat():
-	if is_chat_open:
-		hide_chat()
-	else:
-		show_chat()
 
 func _save_scroll_position():
 	if scroll_container:
