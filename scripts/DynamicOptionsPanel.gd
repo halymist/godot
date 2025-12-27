@@ -77,36 +77,9 @@ func add_option(text: String, option_type: QuestOption.OptionType, callback: Cal
 	var option_scene = load("res://Scenes/quest_option.tscn")
 	var option_instance = option_scene.instantiate()
 	
-	# Get references to child nodes
-	var button = option_instance.get_node("OptionButton")
-	var label = option_instance.get_node("HBoxContainer/MarginContainer/ContentHBox/Label")
-	var icon = option_instance.get_node("HBoxContainer/MarginContainer/ContentHBox/Icon")
-	
-	# Set properties
+	# Get label
+	var label = option_instance.get_node("Label")
 	label.text = text
-	
-	# Set icon based on option type
-	var icon_texture: Texture2D = null
-	match option_type:
-		QuestOption.OptionType.DIALOGUE:
-			icon_texture = dialogue_icon
-		QuestOption.OptionType.COMBAT:
-			icon_texture = combat_icon
-		QuestOption.OptionType.SKILL_CHECK:
-			icon_texture = skill_check_icon
-		QuestOption.OptionType.CURRENCY_CHECK:
-			icon_texture = currency_check_icon
-		QuestOption.OptionType.END:
-			icon_texture = end_icon
-	
-	if icon_texture:
-		icon.texture = icon_texture
-		icon.visible = true
-	else:
-		icon.visible = false
-	
-	if callback.is_valid():
-		button.pressed.connect(callback)
 	
 	options_container.add_child(option_instance)
 	return option_instance
