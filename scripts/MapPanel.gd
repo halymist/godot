@@ -141,13 +141,13 @@ func _on_travel_completed():
 	GameInfo.current_player.traveling = 0
 	
 	# Re-enable skip button
-	if skip_button:
-		skip_button.disabled = false
+	skip_button.disabled = false
 	
-	# Emit simple quest arrival signal and show quest panel
-	quest.quest_arrived.emit()
-	GameInfo.set_current_panel(quest)
-	quest.visible = true
+	# Call handle_quest_arrived on active toggle panel through UIManager
+	if UIManager.instance.portrait_ui.visible:
+		UIManager.instance.portrait_ui.handle_quest_arrived()
+	elif UIManager.instance.wide_ui.visible:
+		UIManager.instance.wide_ui.handle_quest_arrived()
 
 func _on_enter_dungeon_pressed():
 	# Placeholder for dungeon functionality

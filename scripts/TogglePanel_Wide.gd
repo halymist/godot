@@ -75,6 +75,12 @@ func handle_quest_completed():
 	# Use show_panel to properly toggle everything
 	show_panel(home_panel)
 
+func handle_quest_arrived():
+	"""Called when travel is completed - delegate to portrait"""
+	# In wide mode, quest is handled by portrait UI
+	if UIManager.instance and UIManager.instance.portrait_ui:
+		UIManager.instance.portrait_ui.handle_quest_arrived()
+
 func handle_character_button():
 	"""Character (left) + Talents (right)"""
 	if GameInfo.get_current_panel() == character_panel:

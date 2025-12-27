@@ -293,6 +293,15 @@ func handle_quest_completed():
 	quest.visible = false
 	show_panel(home_panel)
 
+func handle_quest_arrived():
+	"""Called when travel is completed - show quest panel"""
+	# Emit quest arrival signal
+	if quest:
+		quest.quest_arrived.emit()
+	
+	# Show quest panel properly
+	show_panel(quest)
+
 # Cancel quest dialog functions
 func _on_cancel_quest_yes():
 	# Get the quest ID before clearing it
