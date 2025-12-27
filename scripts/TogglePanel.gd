@@ -118,6 +118,11 @@ func show_panel(panel: Control):
 	var current_panel = GameInfo.get_current_panel()
 	if current_panel:
 		current_panel.visible = false
+		
+		# Reset home panel to default view when leaving it
+		if current_panel == home_panel:
+			home_panel.handle_back_navigation()
+			home_panel.center_village_view()
 	
 	# Hide current overlay
 	var current_overlay = GameInfo.get_current_panel_overlay()
@@ -184,7 +189,7 @@ func handle_rankings_button():
 		show_panel(rankings_panel)
 
 func toggle_talents_bookmark():
-	if talents_panel.visible:
+	if GameInfo.get_current_panel() == talents_panel:
 		talents_panel.visible = false
 		GameInfo.set_current_panel(character_panel)
 	else:
@@ -192,7 +197,7 @@ func toggle_talents_bookmark():
 		GameInfo.set_current_panel(talents_panel)
 
 func toggle_details_bookmark():
-	if details_panel.visible:
+	if GameInfo.get_current_panel() == details_panel:
 		details_panel.visible = false
 		GameInfo.set_current_panel(character_panel)
 	else:
