@@ -214,7 +214,7 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 	else:
 		visible = false
 
-func position_near_slot(slot_node: Control):
+func position_near_slot(_slot_node: Control):
 	# Wait for panel to auto-size
 	await get_tree().process_frame
 	await get_tree().process_frame  # Wait extra frame to ensure size is stable

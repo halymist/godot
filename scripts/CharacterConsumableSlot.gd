@@ -2,14 +2,14 @@ extends TextureRect
 
 # Handles drag-and-drop consumption of potions and elixirs
 
-func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
 	# Accept only Potion or Elixir types
 	if data is Dictionary and data.has("item"):
 		var item: GameInfo.Item = data["item"]
 		return item.type == "Potion" or item.type == "Elixir"
 	return false
 
-func _drop_data(at_position: Vector2, data: Variant) -> void:
+func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data is Dictionary and data.has("item"):
 		var item: GameInfo.Item = data["item"]
 		consume_item(item)
