@@ -303,7 +303,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -313,6 +313,8 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.1, 0.15, 1)
 script = ExtResource("3_aujhx")
+portrait_ui = NodePath("../Portrait")
+wide_ui = NodePath("../Wide")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue"), NodePath("../Wide/Sidebar/CurrencySection/SilverContainer/SilverValue")]
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue"), NodePath("../Wide/Sidebar/CurrencySection/MushroomContainer/MushroomValue")]
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/Bag")]

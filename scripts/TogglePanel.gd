@@ -288,6 +288,15 @@ func show_combat():
 	combat_panel.visible = true
 	GameInfo.set_current_panel(combat_panel)
 
+func handle_quest_completed():
+	"""Called when quest is finished - return to home"""
+	# Hide DynamicOptionsPanel if visible
+	var quest_ui = get_node_or_null("%DynamicOptionsPanel")
+	if quest_ui:
+		quest_ui.visible = false
+		
+	handle_home_button()
+
 # Cancel quest dialog functions
 func _on_cancel_quest_yes():
 	# Get the quest ID before clearing it

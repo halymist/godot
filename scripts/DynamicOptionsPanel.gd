@@ -87,32 +87,35 @@ func clear_options():
 
 func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click"""
-	match option.type:
-		"dialogue":
+	match option.option_type:
+		QuestOption.OptionType.DIALOGUE:
 			if option.slide_target > 0:
 				load_quest(current_quest_id, option.slide_target)
-		"combat":
+		QuestOption.OptionType.COMBAT:
 			# Random outcome for now
 			var won = randf() > 0.5
 			if won and option.on_win_slide > 0:
 				load_quest(current_quest_id, option.on_win_slide)
-			elif not won and option.on_loose_slide > 0:
-				load_quest(current_quest_id, option.on_loose_slide)
-		"end":
+			elif not won and option.on_lose_slide > 0:
+				load_quest(current_quest_id, option.on_lose_slide)
+		QuestOption.OptionType.END:
 			_finish_quest()
 
 func _finish_quest():
 	"""End quest and return home"""
 	# Mark quest as completed in quest log
-	if current_quest_id > 0:
-		GameInfo.complete_quest(current_quest_id)
-	
+	print("Finishing quest ID: ", current_quest_id)
+
+	GameInfo.complete_quest(current_quest_id)
 	GameInfo.current_player.traveling_destination = null
 	GameInfo.current_player.traveling = 0
 	current_quest_id = 0
 	current_slide_number = 1
 	
-	# Return to home through TogglePanel
-	var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
-	if toggle_panel and toggle_panel.has_method("handle_home_button"):
-		toggle_panel.handle_home_button()
+	# Call handle_quest_completed on active toggle panel through UIManager
+	# This will hide the panel and navigate home
+	if UIManager.instance:
+		if UIManager.instance.portrait_ui.visible:
+			UIManager.instance.portrait_ui.handle_quest_completed()
+		elif UIManager.instance.wide_ui.visible:
+			UIManager.instance.wide_ui.handle_quest_completed()

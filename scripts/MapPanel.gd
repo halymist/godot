@@ -37,11 +37,11 @@ func _ready():
 	# Initial update
 	update_travel_display()
 
-func start_travel(quest_travel_text: String, duration_minutes: int):
+func start_travel(quest_travel_text: String, duration_seconds: int):
 	"""Start traveling with the given text and duration"""
 	travel_text = quest_travel_text
-	travel_duration = duration_minutes * 60.0  # Convert to seconds
-	print("Started travel: '", travel_text, "' for ", duration_minutes, " minutes")
+	travel_duration = float(duration_seconds)  # Duration is already in seconds
+	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds")
 	print("Travel duration in seconds: ", travel_duration)
 	
 	# Force immediate UI update to show travel info

@@ -42,7 +42,7 @@ func _on_accept_pressed():
 		var travel_time = quest_definition.travel_time
 		if travel_time > 0:
 			var current_time = Time.get_unix_time_from_system()
-			var travel_end_time = current_time + (travel_time * 60) # Convert minutes to seconds
+			var travel_end_time = current_time + travel_time # travel_time is already in seconds
 			
 			# Update GameInfo with travel data
 			GameInfo.current_player.traveling = travel_end_time
@@ -129,5 +129,5 @@ func show_quest(quest_data: Dictionary):
 
 func hide_panel():
 	visible = false
-	GameInfo.set_current_panel_overlay(null)
+	GameInfo.set_current_panel(null)
 	print("Quest panel hidden")

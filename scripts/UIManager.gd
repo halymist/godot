@@ -3,6 +3,10 @@ class_name UIManager
 
 static var instance: UIManager
 
+@export var portrait_ui: Control
+@export var wide_ui: Control
+
+
 # Reference to all silver/gold display labels
 @export var silver_labels: Array[Label] = []
 @export var mushrooms_labels: Array[Label] = []

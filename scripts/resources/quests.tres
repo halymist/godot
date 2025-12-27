@@ -49,7 +49,7 @@ metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 [sub_resource type="Resource" id="Resource_o23ke"]
 script = ExtResource("3_d2n6j")
 option_index = 1
-option_type = 0
+option_type = 4
 text = "Done"
 slide_target = -1
 enemy_id = -1
@@ -85,7 +85,7 @@ metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 [sub_resource type="Resource" id="Resource_l00m3"]
 script = ExtResource("3_d2n6j")
 option_index = 0
-option_type = 0
+option_type = 4
 text = "What an adventure"
 slide_target = -1
 enemy_id = -1

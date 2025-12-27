@@ -68,6 +68,15 @@ func _ready():
 func handle_home_button():
 	show_panel(home_panel)
 
+func handle_quest_completed():
+	"""Called when quest is finished - return to home"""
+	# Hide DynamicOptionsPanel if visible
+	var quest_ui = get_node_or_null("%DynamicOptionsPanel")
+	if quest_ui:
+		quest_ui.visible = false
+		
+	handle_home_button()
+
 func handle_character_button():
 	"""Character (left) + Talents (right)"""
 	if GameInfo.get_current_panel() == character_panel:
