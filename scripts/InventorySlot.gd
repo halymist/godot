@@ -569,6 +569,7 @@ func _consume_item(item: GameInfo.Item):
 	
 	if UIManager.instance:
 		UIManager.instance.call_deferred("refresh_bags")
+		UIManager.instance.call_deferred("refresh_stats")
 
 func _can_equip_to_character(item: GameInfo.Item) -> bool:
 	return item.type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]
