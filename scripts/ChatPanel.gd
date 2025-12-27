@@ -10,15 +10,7 @@ var saved_scroll_position: int = 0
 var last_message_time: String = ""
 var current_filter: String = "global"  # "global", "local", or "all"
 
-# Drag-to-scroll variables
-var is_dragging = false
-var drag_start_position: Vector2
-var scroll_start_position: float
-
 func _ready():
-	# Connect background button to close chat
-	pressed.connect(_on_background_pressed)
-	
 	# Connect toggle buttons
 	global_button.pressed.connect(_on_global_button_pressed)
 	local_button.pressed.connect(_on_local_button_pressed)
@@ -28,47 +20,6 @@ func _ready():
 	
 	# Load chat messages when the panel is ready
 	display_chat_messages()
-	
-	# Set up drag-to-scroll for the scroll container and chat container
-	scroll_container.gui_input.connect(_on_scroll_container_input)
-	chat_container.gui_input.connect(_on_scroll_container_input)
-
-func _on_background_pressed():
-	"""Close chat when clicking on background"""
-	var toggle_panel = get_tree().get_first_node_in_group("toggle_panel")
-	if toggle_panel:
-		toggle_panel.show_overlay(self)
-
-func _on_scroll_container_input(event: InputEvent):
-	if not scroll_container:
-		return
-		
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				# Start dragging
-				is_dragging = true
-				drag_start_position = event.position
-				scroll_start_position = scroll_container.scroll_vertical
-			else:
-				# Stop dragging
-				is_dragging = false
-	
-	elif event is InputEventMouseMotion and is_dragging:
-		# Calculate scroll delta based on mouse movement
-		var delta = drag_start_position.y - event.position.y
-		var new_scroll = scroll_start_position + delta
-		
-		# Clamp to valid scroll range
-		var max_scroll = scroll_container.get_v_scroll_bar().max_value
-		new_scroll = clamp(new_scroll, 0, max_scroll)
-		
-		# Apply the scroll
-		scroll_container.scroll_vertical = int(new_scroll)
-		
-		# Update saved position
-		saved_scroll_position = scroll_container.scroll_vertical
-
 
 func _save_scroll_position():
 	if scroll_container:

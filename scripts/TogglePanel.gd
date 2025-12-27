@@ -60,6 +60,7 @@ func _ready():
 	settings_button.pressed.connect(show_overlay.bind(settings_panel))
 	payment_button.pressed.connect(show_overlay.bind(payment))
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
+	chat_panel.pressed.connect(hide_overlay.bind(chat_panel))  # Close chat when clicking background
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
 	avatar_button.pressed.connect(show_overlay.bind(avatar_panel))
