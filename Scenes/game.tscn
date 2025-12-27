@@ -310,7 +310,7 @@ vendor = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
 trainer = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
 church = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "payment", "payment_button", "avatar_panel", "avatar_button")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -354,6 +354,7 @@ church_panel = NodePath("GameSceneParent/Wrapper/GameScene/ChurchPanel")
 alchemist_panel = NodePath("GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 enemy_panel = NodePath("GameSceneParent/Wrapper/GameScene/Enemy")
+enemy = [NodePath("GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character/Button")]
 payment = NodePath("GameSceneParent/Wrapper/GameScene/Payment")
 payment_button = NodePath("TopUI/VBoxContainer/MushroomContainer/PaymentButton")
 avatar_panel = NodePath("GameSceneParent/Wrapper/GameScene/Avatar")
@@ -2011,15 +2012,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
 
 [node name="CombatPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Enemy" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5687,6 +5679,11 @@ layout_mode = 2
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
+[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character" instance=ExtResource("22_avatar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+
 [node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
 layout_mode = 1
 anchors_preset = 15
@@ -5695,11 +5692,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-
-[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character" instance=ExtResource("22_avatar")]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.15
 
 [node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 layout_mode = 2
@@ -5824,6 +5816,15 @@ placeholder_text = "Enter name or rank..."
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 text = "🔍"
+
+[node name="Enemy" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false

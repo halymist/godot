@@ -35,6 +35,7 @@ extends Control
 @export var alchemist_panel: Control
 @export var enchanter_panel: Control
 @export var enemy_panel: Control
+@export var enemy: Array[Button] = []
 @export var payment: Control
 @export var payment_button: Button
 @export var avatar_panel: Control
@@ -74,7 +75,7 @@ func _ready():
 	if payment_button:
 		payment_button.pressed.connect(show_overlay.bind(payment))
 	if rankings_button:
-		rankings_button.pressed.connect(show_overlay.bind(rankings_panel))
+		rankings_button.pressed.connect(handle_rankings_button)
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
@@ -83,6 +84,10 @@ func _ready():
 	if avatar_button:
 		avatar_button.pressed.connect(_on_avatar_button_pressed)
 	
+	# Connect enemy buttons to show enemy panel overlay
+	for button in enemy:
+		if button:
+			button.pressed.connect(show_enemy_panel)
 	
 	# Connect cancel quest dialog buttons if they exist
 	if cancel_quest:
@@ -102,6 +107,10 @@ func show_overlay(overlay: Control):
 	if overlay == null:
 		return
 	
+	print("[show_overlay] Called for: ", overlay.name)
+	print("[show_overlay] Current panel before: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
+	print("[show_overlay] Current overlay before: ", GameInfo.get_current_panel_overlay().name if GameInfo.get_current_panel_overlay() else "null")
+	
 	# Chat is special - it can show over everything but should toggle off if already active
 	if overlay == chat_panel:
 		if chat_overlay_active:
@@ -115,10 +124,10 @@ func show_overlay(overlay: Control):
 				overlay.show_chat()
 			else:
 				overlay.visible = true
-			print("Showing chat overlay")
+			print("[show_overlay] Showing chat overlay")
 			return
 	
-	# For other overlays (settings/rankings/payment), hide current overlay if one exists
+	# For other overlays (settings/payment/enemy_panel), hide current overlay if one exists
 	var current = GameInfo.get_current_panel_overlay()
 	if current != null and current != overlay:
 		hide_overlay(current)
@@ -128,27 +137,37 @@ func show_overlay(overlay: Control):
 		hide_overlay(overlay)
 		return
 	
-	# Set as current overlay in GameInfo
+	# Set as current overlay in GameInfo (NOT as current panel!)
 	GameInfo.set_current_panel_overlay(overlay)
+	print("[show_overlay] Set as current overlay: ", overlay.name)
 	
 	# Ensure overlay has high z-index to appear above everything (including utility panels at z=100)
 	overlay.z_index = 200
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	print("Set overlay z_index=200 and mouse_filter=STOP for: ", overlay.name)
+	print("[show_overlay] Set overlay z_index=200 and mouse_filter=STOP for: ", overlay.name)
 	
 	# Call the overlay's specific show method based on its type
+	# IMPORTANT: These methods should NOT call GameInfo.set_current_panel()
 	if overlay == quest_panel and overlay.has_method("show_quest"):
 		# Note: show_quest should already have been called with data, just make visible
 		overlay.visible = true
+	elif overlay == enemy_panel:
+		# Enemy panel is an overlay - use simple visibility, don't call show_panel()
+		print("[show_overlay] Using simple visibility for enemy panel (overlay)")
+		overlay.visible = true
 	elif overlay.has_method("show_overlay"):
+		print("[show_overlay] Calling show_overlay() method on: ", overlay.name)
 		overlay.show_overlay()
 	elif overlay.has_method("show_panel"):
+		print("[show_overlay] Calling show_panel() method on: ", overlay.name)
 		overlay.show_panel()
 	else:
 		# Fallback to simple visibility
+		print("[show_overlay] Using simple visibility for: ", overlay.name)
 		overlay.visible = true
 	
-	print("Showing overlay: ", overlay.name)
+	print("[show_overlay] Current panel after: ", GameInfo.get_current_panel().name if GameInfo.get_current_panel() else "null")
+	print("[show_overlay] Current overlay after: ", GameInfo.get_current_panel_overlay().name if GameInfo.get_current_panel_overlay() else "null")
 
 func hide_overlay(overlay: Control):
 	"""Hide a specific overlay using its own hide method"""
@@ -207,13 +226,8 @@ func show_panel(panel: Control):
 		enchanter_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
-	if rankings_panel:
-		rankings_panel.visible = false
 	if payment:
 		payment.visible = false
-	# Hide enemy panel when switching to other panels
-	if enemy_panel:
-		enemy_panel.visible = false
 	
 	# If switching away from home panel, ensure we're back to village outside view
 	if GameInfo.get_current_panel() == home_panel and panel != home_panel:
@@ -248,13 +262,8 @@ func handle_home_button():
 		enchanter_panel.visible = false
 	if settings_panel:
 		settings_panel.visible = false
-	if rankings_panel:
-		rankings_panel.visible = false
 	if payment:
 		payment.visible = false
-	# Hide enemy panel when going home
-	if enemy_panel:
-		enemy_panel.visible = false
 	
 	# If we're in an interior, exit to village
 	if home_panel.has_method("handle_back_navigation"):
@@ -307,6 +316,13 @@ func handle_character_button():
 		show_panel(home_panel)
 	else:
 		show_panel(character_panel)
+
+func handle_rankings_button():
+	"""Toggle rankings panel - show if not active, go home if already active"""
+	if GameInfo.get_current_panel() == rankings_panel:
+		show_panel(home_panel)
+	else:
+		show_panel(rankings_panel)
 	
 func show_panel_overlay(panel_to_toggle: Control):
 	"""Legacy function - now uses the unified show_overlay function"""
@@ -327,6 +343,11 @@ func show_upgrade_talent():
 
 func show_perks_panel():
 	show_overlay(perks_panel)
+
+func show_enemy_panel():
+	"""Show enemy panel as overlay on top of rankings panel"""
+	if enemy_panel:
+		show_overlay(enemy_panel)
 
 func _on_avatar_button_pressed():
 	"""Show avatar panel as overlay on top of character panel"""
@@ -355,19 +376,28 @@ func go_back():
 	var destination = GameInfo.current_player.traveling_destination
 	var current = GameInfo.get_current_panel()
 	
+	print("[go_back] Back button pressed")
+	print("[go_back] Current panel: ", current.name if current else "null")
+	print("[go_back] Chat overlay active: ", chat_overlay_active)
+	
 	# Priority 1: Check if chat is visible (top priority - chat overlay)
 	if chat_overlay_active and chat_panel and chat_panel.visible:
+		print("[go_back] Priority 1: Hiding chat overlay")
 		hide_overlay(chat_panel)
 		return
 	
-	# Priority 2: Hide any other active overlay (settings/rankings/payment)
+	# Priority 2: Hide any other active overlay (settings/payment/enemy_panel)
 	var current_overlay = GameInfo.get_current_panel_overlay()
+	print("[go_back] Current overlay: ", current_overlay.name if current_overlay else "null")
 	if current_overlay != null and current_overlay.visible:
+		print("[go_back] Priority 2: Hiding overlay: ", current_overlay.name)
 		hide_overlay(current_overlay)
 		return
 	
 	# Priority 3: Utility panel (blacksmith, vendor, etc.) - middle priority
+	print("[go_back] Current utility panel: ", current_utility_panel.name if current_utility_panel else "null")
 	if current_utility_panel and current_utility_panel.visible:
+		print("[go_back] Priority 3: Hiding utility panel")
 		hide_utility_panel(current_utility_panel)
 		return
 	
@@ -381,20 +411,14 @@ func go_back():
 		show_overlay(cancel_quest)
 		return
 
-	# Priority 6: Check if current panel is enemy_panel - toggle it off
-	if enemy_panel != null and current == enemy_panel:
-		enemy_panel.visible = false
-		GameInfo.set_current_panel(rankings_panel)
-		return
-
-	# Priority 7: Check if we're in a building interior in the home panel
+	# Priority 6: Check if we're in a building interior in the home panel
 	if current == home_panel:
 		if home_panel.has_method("handle_back_navigation"):
 			var handled = home_panel.handle_back_navigation()
 			if handled:
 				return
 
-	# Priority 8: Handle panel-specific back navigation
+	# Priority 7: Handle panel-specific back navigation
 	if current == talents_panel:
 		toggle_talents_bookmark()
 	elif current == details_panel:
@@ -438,6 +462,8 @@ func hide_all_panels():
 	details_panel.visible = false
 	combat_panel.visible = false
 	quest.visible = false
+	if rankings_panel:
+		rankings_panel.visible = false
 	
 	# Hide any active overlay using GameInfo system
 	var current_overlay = GameInfo.get_current_panel_overlay()
