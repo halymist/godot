@@ -1,4 +1,4 @@
-[gd_scene load_steps=109 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=110 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -79,6 +79,7 @@
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
 [ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="69_cosmetics"]
+[ext_resource type="Texture2D" uid="uid://cgcpygii1l82g" path="res://assets/images/ui/fight.png" id="79_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
 [ext_resource type="Script" uid="uid://cqdrglw3ojju2" path="res://scripts/TogglePanel_Wide.gd" id="94_fykvq"]
 
@@ -6247,6 +6248,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
 quest_text_label = NodePath("BookScroll/BookContent/CenterContainer/QuestText")
 options_container = NodePath("OptionsContainer")
+dialogue_icon = ExtResource("11_vm72l")
+combat_icon = ExtResource("79_qj5kr")
+skill_check_icon = ExtResource("44_k8ojv")
+currency_check_icon = ExtResource("32_ccfo7")
+end_icon = ExtResource("11_vm72l")
 portrait = NodePath("../../..")
 
 [node name="QuestTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest"]

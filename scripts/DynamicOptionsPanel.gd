@@ -4,6 +4,14 @@ extends Panel
 @export var quest_text_label: RichTextLabel  # Text (replaces, doeshern't accumulate)
 @export var options_container: VBoxContainer  # Buttons below text
 
+# Icon textures for different option types
+@export_group("Option Icons")
+@export var dialogue_icon: Texture2D
+@export var combat_icon: Texture2D
+@export var skill_check_icon: Texture2D
+@export var currency_check_icon: Texture2D
+@export var end_icon: Texture2D
+
 # Quest state
 var current_quest_id: int = 0
 var current_slide_number: int = 1
@@ -59,9 +67,9 @@ func display_quest_slide(quest_slide: QuestSlide):
 	# Update options
 	clear_options()
 	for option in quest_slide.options:
-		add_option(option.text, _on_quest_option_pressed.bind(option))
+		add_option(option.text, option.option_type, _on_quest_option_pressed.bind(option))
 
-func add_option(text: String, callback: Callable) -> Control:
+func add_option(text: String, option_type: QuestOption.OptionType, callback: Callable) -> Control:
 	"""Add an option to the container using quest_option.tscn"""
 	if not options_container:
 		return null
@@ -71,12 +79,31 @@ func add_option(text: String, callback: Callable) -> Control:
 	
 	# Get references to child nodes
 	var button = option_instance.get_node("OptionButton")
-	var label = option_instance.get_node("HBoxContainer/Label")
-	var icon = option_instance.get_node("HBoxContainer/Icon")
+	var label = option_instance.get_node("HBoxContainer/MarginContainer/ContentHBox/Label")
+	var icon = option_instance.get_node("HBoxContainer/MarginContainer/ContentHBox/Icon")
 	
 	# Set properties
 	label.text = text
-	icon.visible = false  # No icon for now
+	
+	# Set icon based on option type
+	var icon_texture: Texture2D = null
+	match option_type:
+		QuestOption.OptionType.DIALOGUE:
+			icon_texture = dialogue_icon
+		QuestOption.OptionType.COMBAT:
+			icon_texture = combat_icon
+		QuestOption.OptionType.SKILL_CHECK:
+			icon_texture = skill_check_icon
+		QuestOption.OptionType.CURRENCY_CHECK:
+			icon_texture = currency_check_icon
+		QuestOption.OptionType.END:
+			icon_texture = end_icon
+	
+	if icon_texture:
+		icon.texture = icon_texture
+		icon.visible = true
+	else:
+		icon.visible = false
 	
 	if callback.is_valid():
 		button.pressed.connect(callback)
