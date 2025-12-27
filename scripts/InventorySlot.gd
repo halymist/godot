@@ -562,14 +562,9 @@ func _consume_item(item: GameInfo.Item):
 		clear_slot()
 	
 	# Update active perks display
-	var game_root = get_tree().root.get_node_or_null("Game")
-	var active_perks_display = game_root.find_child("ActivePerks", true, false) if game_root else null
-	if active_perks_display:
-		active_perks_display.refresh_effects()
-	
-	if UIManager.instance:
-		UIManager.instance.call_deferred("refresh_bags")
-		UIManager.instance.call_deferred("refresh_stats")
+	UIManager.instance.refresh_active_effects()
+	UIManager.instance.refresh_bags()
+	UIManager.instance.refresh_stats()
 
 func _can_equip_to_character(item: GameInfo.Item) -> bool:
 	return item.type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]
