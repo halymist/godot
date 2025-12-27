@@ -561,6 +561,13 @@ class GamePlayer:
 				total_stats.luck += gem_stats.luck
 				total_stats.armor += gem_stats.armor
 		
+		# Apply effect bonuses to stats (effects 1-4 boost stats by percentage)
+		var total_effects = get_total_effects()
+		total_stats.strength = int(round(total_stats.strength * (1.0 + total_effects[1] / 100.0)))
+		total_stats.stamina = int(round(total_stats.stamina * (1.0 + total_effects[2] / 100.0)))
+		total_stats.agility = int(round(total_stats.agility * (1.0 + total_effects[3] / 100.0)))
+		total_stats.luck = int(round(total_stats.luck * (1.0 + total_effects[4] / 100.0)))
+		
 		return total_stats
 	
 	func get_total_effects() -> Dictionary:

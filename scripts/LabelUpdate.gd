@@ -49,21 +49,16 @@ func stats_changed(_stats: Dictionary):
 	guild_label.text = GameInfo.current_player.get_guild_name()
 	profession_label.text = GameInfo.current_player.get_profession_name()
 	
-	# Apply effect bonuses to stats (effects 1-4 boost stats by percentage)
-	var final_strength = total_stats.strength * (1.0 + total_effects[1] / 100.0)
-	var final_stamina = total_stats.stamina * (1.0 + total_effects[2] / 100.0)
-	var final_agility = total_stats.agility * (1.0 + total_effects[3] / 100.0)
-	var final_luck = total_stats.luck * (1.0 + total_effects[4] / 100.0)
-	
-	strength_label.text = str(int(round(final_strength)))
+	# Display already-calculated stats from GameInfo
+	strength_label.text = str(total_stats.strength)
 	strength_aprox.text = "(100)"
-	stamina_label.text = str(int(round(final_stamina)))
+	stamina_label.text = str(total_stats.stamina)
 	stamina_aprox.text = "(100)"
-	agility_label.text = str(int(round(final_agility)))
+	agility_label.text = str(total_stats.agility)
 	agility_aprox.text = "(100)"
-	luck_label.text = str(int(round(final_luck)))
+	luck_label.text = str(total_stats.luck)
 	luck_aprox.text = "(100)"
-	armor_label.text = str(int(total_stats.armor))
+	armor_label.text = str(total_stats.armor)
 	
 	# Calculate and display effect values (without % suffix)
 	if effect_strength_value:
