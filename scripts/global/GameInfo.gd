@@ -567,13 +567,49 @@ class GamePlayer:
 		# Initialize effect totals for all 20 effects (IDs 1-20)
 		var total_effects = {}
 		for i in range(1, 21):
-			total_effects[i] = 0
+			total_effects[i] = 0.0
 		
-		# Sum effects from equipped items (slots 0-9)
+		# 1. Sum effects from equipped items (slots 0-9)
 		for item in bag_slots:
 			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
 				if item.effect_id > 0 and item.effect_id <= 20:
 					total_effects[item.effect_id] += item.effect_factor
+		
+		# 2. Add potion effect (if property exists in subclass)
+		if "potion" in self and self.potion > 0 and GameInfo and GameInfo.items_db:
+			var potion_item = GameInfo.items_db.get_item_by_id(self.potion)
+			if potion_item and potion_item.effect_id > 0 and potion_item.effect_id <= 20:
+				total_effects[potion_item.effect_id] += potion_item.effect_factor
+		
+		# 3. Add blessing effect (if property exists in subclass)
+		if "blessing" in self and self.blessing > 0 and GameInfo and GameInfo.perks_db:
+			var blessing_perk = GameInfo.perks_db.get_perk_by_id(self.blessing)
+			if blessing_perk and blessing_perk.effect1_id > 0 and blessing_perk.effect1_id <= 20:
+				total_effects[blessing_perk.effect1_id] += blessing_perk.factor1
+		
+		# 4. Add active perks effects
+		var active_perks = get_active_perks()
+		for perk in active_perks:
+			# Effect 1
+			if perk.effect1_id > 0 and perk.effect1_id <= 20:
+				total_effects[perk.effect1_id] += perk.factor1
+			# Effect 2
+			if perk.effect2_id > 0 and perk.effect2_id <= 20:
+				total_effects[perk.effect2_id] += perk.factor2
+		
+		# 5. Add elixir effects (decode ID and sum ingredient effects) (if property exists in subclass)
+		if "elixir" in self and self.elixir > 0 and GameInfo and GameInfo.items_db:
+			var id_str = str(self.elixir)
+			if id_str.length() >= 13:  # Format: 1000XXXYYYZZZZ
+				var ingredient1_id = int(id_str.substr(4, 3))
+				var ingredient2_id = int(id_str.substr(7, 3))
+				var ingredient3_id = int(id_str.substr(10, 3))
+				
+				for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
+					if ingredient_id > 0:
+						var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
+						if ingredient and ingredient.effect_id > 0 and ingredient.effect_id <= 20:
+							total_effects[ingredient.effect_id] += ingredient.effect_factor
 		
 		return total_effects
 	
