@@ -148,7 +148,6 @@ func _on_search_changed(new_text: String):
 	print("Search: ", new_text)
 
 func _on_character_button_pressed():
-	if enemy_panel:
-		enemy_panel.visible = !enemy_panel.visible
-		if enemy_panel.visible:
-			GameInfo.set_current_panel(enemy_panel)
+	# Enemy panel is now managed by TogglePanel overlay system
+	# This function can be removed or used for other purposes
+	pass

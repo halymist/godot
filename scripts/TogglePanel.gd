@@ -209,15 +209,24 @@ func toggle_details_bookmark():
 func go_back():
 	"""Back button - priority: chat > overlay > panel custom behavior > home"""
 	var current = GameInfo.get_current_panel()
+	var current_overlay = GameInfo.get_current_panel_overlay()
+	
+	print("=== BACK BUTTON DEBUG ===")
+	print("Current panel: ", current.name if current else "null")
+	print("Current overlay: ", current_overlay.name if current_overlay else "null")
+	print("Current overlay visible: ", current_overlay.visible if current_overlay else "N/A")
+	print("Chat overlay active: ", chat_overlay_active)
+	print("========================")
 	
 	# Priority 1: Hide chat overlay
 	if chat_overlay_active and chat_panel.visible:
+		print("-> Hiding chat overlay")
 		hide_overlay(chat_panel)
 		return
 	
 	# Priority 2: Hide current overlay
-	var current_overlay = GameInfo.get_current_panel_overlay()
 	if current_overlay and current_overlay.visible:
+		print("-> Hiding current overlay: ", current_overlay.name)
 		hide_overlay(current_overlay)
 		return
 	
@@ -228,38 +237,46 @@ func go_back():
 	# Map panel: show cancel quest if traveling
 	if current == map_panel:
 		if traveling > 0 and destination != null:
+			print("-> Map panel with active quest, showing cancel dialog")
 			show_overlay(cancel_quest)
 			return
 	
 	# Quest panel: show cancel quest if arrived
 	if current == quest:
 		if traveling == 0 and destination != null:
+			print("-> Quest panel with completed travel, showing cancel dialog")
 			show_overlay(cancel_quest)
 			return
 	
 	# Home panel: check for interior navigation
 	if current == home_panel:
+		print("-> Home panel, checking interior navigation")
 		var handled = home_panel.handle_back_navigation()
 		if handled:
+			print("   -> Handled interior navigation")
 			return
 		else:
-			# Already in exterior, do nothing
+			print("   -> Already in exterior, do nothing")
 			return
 	
 	# Talents/Details bookmarks
 	if current == talents_panel:
+		print("-> Talents panel, toggling bookmark")
 		toggle_talents_bookmark()
 		return
 	if current == details_panel:
+		print("-> Details panel, toggling bookmark")
 		toggle_details_bookmark()
 		return
 	
 	# Combat: return to arena
 	if current == combat_panel:
+		print("-> Combat panel, returning to arena")
 		show_panel(arena_panel)
 		return
 	
 	# Default: go home
+	print("-> Default case, going home")
 	show_panel(home_panel)
 
 
