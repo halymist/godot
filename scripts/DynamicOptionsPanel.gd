@@ -31,7 +31,7 @@ func load_quest(quest_id: int, slide_number: int = 1):
 		if quest_data:
 			var title_label = get_node_or_null("QuestTitle")
 			if title_label:
-				title_label.text = quest_data.get("quest_name", "Unknown Quest")
+				title_label.text = quest_data.quest_name
 	
 	current_quest_id = quest_id
 	current_slide_number = slide_number
@@ -42,7 +42,7 @@ func load_quest(quest_id: int, slide_number: int = 1):
 	var quest_slide = GameInfo.get_quest_slide(quest_id, slide_number)
 	display_quest_slide(quest_slide)
 
-func display_quest_slide(quest_slide: GameInfo.QuestSlide):
+func display_quest_slide(quest_slide: QuestSlide):
 	"""Replace text with fade effect and show options"""
 	# Fade out
 	var tween = create_tween()
@@ -85,7 +85,7 @@ func clear_options():
 	for child in options_container.get_children():
 		child.queue_free()
 
-func _on_quest_option_pressed(option: GameInfo.QuestOption):
+func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click"""
 	match option.type:
 		"dialogue":

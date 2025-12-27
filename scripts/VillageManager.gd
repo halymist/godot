@@ -142,7 +142,7 @@ func spawn_npcs(building_id: int = 0):
 		if dialogue_entry and dialogue_entry.isQuest:
 			var quest_data = GameInfo.get_quest_data(dialogue_entry.questID)
 			if quest_data:
-				quest_name = quest_data.get("quest_name", "Unknown Quest")
+				quest_name = quest_data.quest_name
 		
 		var npc_data = {
 			"name": npc_resource.name,
@@ -204,8 +204,8 @@ func _on_quest_accepted(quest_data: Dictionary):
 	# Get quest definition from GameInfo to access travel data
 	var quest_definition = GameInfo.get_quest_data(quest_id)
 	if quest_definition:
-		var travel_text = quest_definition.get("travel_text", "Traveling to quest...")
-		var travel_minutes = quest_definition.get("travel_time", 5)
+		var travel_text = quest_definition.travel_text if quest_definition.travel_text else "Traveling to quest..."
+		var travel_minutes = quest_definition.travel_time
 		
 		print("Quest travel time: ", travel_minutes)
 		

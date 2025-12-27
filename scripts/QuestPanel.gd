@@ -27,10 +27,19 @@ func _on_accept_pressed():
 	# Get quest ID from NPC data
 	var quest_id = current_quest_data.get("questid", 0)
 	
+	print("=== Quest Accept Debug ===")
+	print("Quest ID: ", quest_id)
+	
 	# Get quest definition from GameInfo to access travel data
 	var quest_definition = GameInfo.get_quest_data(quest_id)
+	print("Quest definition found: ", quest_definition != null)
+	
 	if quest_definition:
-		var travel_time = quest_definition.get("travel_time", 0)
+		print("Quest name: ", quest_definition.quest_name)
+		print("Travel time: ", quest_definition.travel_time)
+		print("Travel text: ", quest_definition.travel_text)
+		
+		var travel_time = quest_definition.travel_time
 		if travel_time > 0:
 			var current_time = Time.get_unix_time_from_system()
 			var travel_end_time = current_time + (travel_time * 60) # Convert minutes to seconds
@@ -44,6 +53,11 @@ func _on_accept_pressed():
 			# Immediately update MapPanel if it exists
 			if map and map.has_method("update_travel_display"):
 				map.update_travel_display()
+	else:
+		print("ERROR: Quest definition not found for quest_id: ", quest_id)
+		print("quests_db exists: ", GameInfo.quests_db != null)
+		if GameInfo.quests_db:
+			print("Number of quests in database: ", GameInfo.quests_db.quests.size())
 	
 	hide_panel()
 	print("Quest accepted: ", current_quest_data.get("questname", "Unknown Quest"))

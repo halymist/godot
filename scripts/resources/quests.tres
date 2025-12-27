@@ -1,0 +1,132 @@
+[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=16 format=3 uid="uid://qpxy3xo35sm8"]
+
+[ext_resource type="Script" uid="uid://dyylwqohml0nt" path="res://scripts/resources/QuestData.gd" id="1_76t0t"]
+[ext_resource type="Script" uid="uid://ctr1a0kn3bxmx" path="res://scripts/resources/QuestSlide.gd" id="2_67rkd"]
+[ext_resource type="Script" uid="uid://d38qh2u25d5fb" path="res://scripts/resources/QuestsDatabase.gd" id="2_m1nfe"]
+[ext_resource type="Script" uid="uid://cqtb7hjvuh4dy" path="res://scripts/resources/QuestOption.gd" id="3_d2n6j"]
+[ext_resource type="Script" uid="uid://n5j4pekoeaet" path="res://scripts/resources/QuestReward.gd" id="4_gr8oa"]
+
+[sub_resource type="Resource" id="Resource_jgsu5"]
+script = ExtResource("3_d2n6j")
+option_index = 1
+option_type = 0
+text = "Go left"
+slide_target = 2
+enemy_id = -1
+on_win_slide = -1
+on_lose_slide = -1
+required_stat = ""
+required_amount = 0
+on_success_slide = -1
+on_fail_slide = -1
+required_silver = 0
+metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
+
+[sub_resource type="Resource" id="Resource_enrg4"]
+script = ExtResource("3_d2n6j")
+option_index = 2
+option_type = 0
+text = "Go right"
+slide_target = 3
+enemy_id = -1
+on_win_slide = -1
+on_lose_slide = -1
+required_stat = ""
+required_amount = 0
+on_success_slide = -1
+on_fail_slide = -1
+required_silver = 0
+metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
+
+[sub_resource type="Resource" id="Resource_eurwf"]
+script = ExtResource("2_67rkd")
+slide_id = 1
+asset_id = 0
+text = "This is the first slide"
+options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_jgsu5"), SubResource("Resource_enrg4")])
+metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
+
+[sub_resource type="Resource" id="Resource_o23ke"]
+script = ExtResource("3_d2n6j")
+option_index = 1
+option_type = 0
+text = "Done"
+slide_target = -1
+enemy_id = -1
+on_win_slide = -1
+on_lose_slide = -1
+required_stat = ""
+required_amount = 0
+on_success_slide = -1
+on_fail_slide = -1
+required_silver = 0
+metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
+
+[sub_resource type="Resource" id="Resource_xqufw"]
+script = ExtResource("4_gr8oa")
+silver = 10
+item_id = 0
+perk_id = 0
+strength_boost = 0
+stamina_boost = 0
+agility_boost = 0
+luck_boost = 0
+metadata/_custom_type_script = "uid://n5j4pekoeaet"
+
+[sub_resource type="Resource" id="Resource_qwv23"]
+script = ExtResource("2_67rkd")
+slide_id = 2
+asset_id = 0
+text = "U went left"
+options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_o23ke")])
+reward = SubResource("Resource_xqufw")
+metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
+
+[sub_resource type="Resource" id="Resource_l00m3"]
+script = ExtResource("3_d2n6j")
+option_index = 0
+option_type = 0
+text = "What an adventure"
+slide_target = -1
+enemy_id = -1
+on_win_slide = -1
+on_lose_slide = -1
+required_stat = ""
+required_amount = 0
+on_success_slide = -1
+on_fail_slide = -1
+required_silver = 0
+metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
+
+[sub_resource type="Resource" id="Resource_ivt0s"]
+script = ExtResource("4_gr8oa")
+silver = 20
+item_id = 0
+perk_id = 0
+strength_boost = 0
+stamina_boost = 0
+agility_boost = 0
+luck_boost = 0
+metadata/_custom_type_script = "uid://n5j4pekoeaet"
+
+[sub_resource type="Resource" id="Resource_tsudj"]
+script = ExtResource("2_67rkd")
+slide_id = 3
+asset_id = 0
+text = "U went right"
+options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_l00m3")])
+reward = SubResource("Resource_ivt0s")
+metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
+
+[sub_resource type="Resource" id="Resource_tqocc"]
+script = ExtResource("1_76t0t")
+quest_id = 1
+quest_name = "Test"
+travel_time = 30
+travel_text = "Hi im testing stuff right now"
+slides = Array[ExtResource("2_67rkd")]([SubResource("Resource_eurwf"), SubResource("Resource_qwv23"), SubResource("Resource_tsudj")])
+metadata/_custom_type_script = "uid://dyylwqohml0nt"
+
+[resource]
+script = ExtResource("2_m1nfe")
+quests = Array[ExtResource("1_76t0t")]([SubResource("Resource_tqocc")])

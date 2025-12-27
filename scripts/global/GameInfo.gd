@@ -10,6 +10,7 @@ var perks_db: PerkDatabase = null
 var npcs_db: NpcDatabase = null
 var cosmetics_db: CosmeticDatabase = null
 var settlements_db: SettlementsDatabase = null
+var quests_db: QuestsDatabase = null
 
 # Runtime talent registry (populated by Talent.gd nodes on _ready)
 var talent_registry: Dictionary = {}  # {talent_id: {effect_id, factor, max_points, perk_slot}}
@@ -372,56 +373,6 @@ class Talent:
 # Ranking Entry for lightweight rankings display
 # RankingEntry class removed - now using full GameArenaOpponent data in enemy_players array
 # Rankings panel will reference enemy_players[rankings_indices[i]]
-
-class QuestOption:
-	extends MessagePackObject
-	
-	# MessagePack properties matching Go QuestOption struct
-	var option_index: int = 0
-	var type: String = ""
-	var text: String = ""
-	var slide_target: int = 0
-	var enemy: int = 0
-	var on_win_slide: int = 0
-	var on_loose_slide: int = 0
-	
-	const MSGPACK_MAP = {
-		"optionIndex": "option_index",
-		"type": "type",
-		"text": "text",
-		"slideTarget": "slide_target",
-		"enemy": "enemy",
-		"onWinSlide": "on_win_slide",
-		"onLooseSlide": "on_loose_slide"
-	}
-
-class QuestSlide:
-	extends MessagePackObject
-	
-	# MessagePack properties matching Go QuestSlide struct
-	var slide: int = 0
-	var asset_id: int = 0
-	var text: String = ""
-	var options: Array[QuestOption] = []
-	var reward: Dictionary = {}
-	
-	const MSGPACK_MAP = {
-		"slide": "slide",
-		"assetID": "asset_id",
-		"text": "text",
-		"options": "options",
-		"reward": "reward"
-	}
-	
-	func load_from_msgpack(data: Dictionary):
-		super.load_from_msgpack(data)
-		# Convert options array
-		if data.has("options") and data["options"] is Array:
-			options.clear()
-			for option_data in data["options"]:
-				if option_data is Dictionary:
-					var option = QuestOption.new(option_data)
-					options.append(option)
 
 class ChatMessage:
 	extends MessagePackObject
@@ -929,6 +880,12 @@ func _ready():
 	else:
 		print("Warning: cosmetics.tres not found, avatar customization will not work")
 	
+	if ResourceLoader.exists("res://scripts/resources/quests.tres"):
+		quests_db = load("res://scripts/resources/quests.tres")
+		print("Quests database loaded: ", quests_db.quests.size(), " quests")
+	else:
+		print("Warning: quests.tres not found, quests will not be available")
+	
 	print("Checking for settlements.tres...")
 	print("ResourceLoader.exists('res://scripts/resources/settlements.tres'): ", ResourceLoader.exists("res://scripts/resources/settlements.tres"))
 	if ResourceLoader.exists("res://scripts/resources/settlements.tres"):
@@ -945,7 +902,7 @@ func _ready():
 	load_combat_logs_data(Websocket.mock_combat_logs)
 	load_vendor_items_data(Websocket.mock_vendor_items)
 	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
-	load_all_quests_data(Websocket.mock_quests)  # Load all quests by ID
+	# Quest loading removed - will use quests.tres database instead
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 
@@ -1056,23 +1013,8 @@ func load_vendor_items_data(vendor_data: Array):
 
 # load_rankings_data removed - rankings now loaded via load_enemy_players_data
 
-# Function to load quest slides by quest ID
-func load_quest_slides_data(quest_id: int, slides_data: Array):
-	var slides_array: Array[QuestSlide] = []
-	for slide_data in slides_data:
-		var quest_slide = QuestSlide.new(slide_data)
-		slides_array.append(quest_slide)
-	quest_slides[quest_id] = slides_array
-	print("Loaded quest ", quest_id, " with ", slides_array.size(), " slides")
-
-# Function to load all quests from mock data
-func load_all_quests_data(quests_data: Dictionary):
-	quest_slides.clear()
-	for quest_id in quests_data:
-		var quest_info = quests_data[quest_id]
-		if quest_info.has("slides"):
-			load_quest_slides_data(quest_id, quest_info["slides"])
-	print("Total quests loaded: ", quest_slides.size())
+# Quest loading functions removed - will use quests.tres Resource database
+# Old MessagePack quest loading (load_quest_slides_data, load_all_quests_data) removed
 
 # Function to load quest log
 func load_quest_log_data(quest_log_data: Array):
@@ -1148,18 +1090,16 @@ func complete_quest(quest_id: int):
 
 # Function to get quest slide by quest ID and slide number
 func get_quest_slide(quest_id: int, slide_number: int) -> QuestSlide:
-	if quest_slides.has(quest_id):
-		var slides = quest_slides[quest_id]
-		for slide in slides:
-			if slide.slide == slide_number:
-				return slide
+	if quests_db:
+		return quests_db.get_slide_by_id(quest_id, slide_number)
 	print("Quest slide not found: quest_id=", quest_id, " slide=", slide_number)
 	return null
 
-func get_quest_data(quest_id: int) -> Dictionary:
-	"""Get quest metadata (name, id, etc)"""
-	var quest_data = Websocket.mock_quests.get(quest_id, {})
-	return quest_data
+func get_quest_data(quest_id: int) -> QuestData:
+	"""Get quest data from quests.tres database"""
+	if quests_db:
+		return quests_db.get_quest_by_id(quest_id)
+	return null
 
 # Function to set player traveling destination to quest
 func accept_quest(quest_id: int):
