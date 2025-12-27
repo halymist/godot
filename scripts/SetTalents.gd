@@ -12,10 +12,8 @@ func _ready():
 	# Wait for all talents to register, then refresh stats
 	await get_tree().process_frame
 	await get_tree().process_frame
-	print("All talents registered, refreshing stats...")
 	if UIManager.instance:
 		UIManager.instance.refresh_stats()
-		print("Stats refreshed after talent registration")
 
 func _on_stats_changed(_stats: Dictionary):
 	update_title_label()
