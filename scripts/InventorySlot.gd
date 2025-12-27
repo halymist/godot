@@ -565,7 +565,7 @@ func _consume_item(item: GameInfo.Item):
 	var game_root = get_tree().root.get_node_or_null("Game")
 	var active_perks_display = game_root.find_child("ActivePerks", true, false) if game_root else null
 	if active_perks_display:
-		active_perks_display.update_active_perks()
+		active_perks_display.refresh_effects()
 	
 	if UIManager.instance:
 		UIManager.instance.call_deferred("refresh_bags")
