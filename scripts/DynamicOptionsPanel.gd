@@ -127,23 +127,24 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	var meets_stat_requirement = true
 	
 	if has_stat_requirement and GameInfo.current_player:
-		# Scale requirement by 2% per day (compounded)
+		# Scale requirement by 20% per day (compounded)
 		var server_day = GameInfo.current_player.server_day
-		var scaled_requirement = int(option_data.required_amount * pow(1.02, server_day - 1))
+		var scaled_requirement = int(option_data.required_amount * pow(1.20, server_day - 1))
 		
-		# Get player's stat value
+		# Get player's total stats (includes equipment, perks, etc.)
+		var total_stats = GameInfo.get_total_stats()
 		var player_stat_value = 0
 		match option_data.required_stat:
 			QuestOption.Stat.STRENGTH:
-				player_stat_value = GameInfo.current_player.strength
+				player_stat_value = total_stats.strength
 			QuestOption.Stat.STAMINA:
-				player_stat_value = GameInfo.current_player.stamina
+				player_stat_value = total_stats.stamina
 			QuestOption.Stat.AGILITY:
-				player_stat_value = GameInfo.current_player.agility
+				player_stat_value = total_stats.agility
 			QuestOption.Stat.LUCK:
-				player_stat_value = GameInfo.current_player.luck
+				player_stat_value = total_stats.luck
 			QuestOption.Stat.ARMOR:
-				player_stat_value = GameInfo.current_player.armor
+				player_stat_value = total_stats.armor
 		
 		meets_stat_requirement = player_stat_value >= scaled_requirement
 		print("Stat check: player ", option_data.required_stat, "=", player_stat_value, " required=", scaled_requirement, " (base=", option_data.required_amount, " day=", server_day, ") match=", meets_stat_requirement)
@@ -229,8 +230,35 @@ func _on_quest_option_pressed(option: QuestOption):
 		else:
 			print("WARNING: COMBAT option missing win/lose slides")
 	elif option.required_stat != QuestOption.Stat.NONE:
-		# Stat check option - TODO: implement stat checking logic
-		print("TODO: Stat check not yet implemented")
+		# Stat check option
+		# Scale requirement by 20% per day (compounded)
+		var server_day = GameInfo.current_player.server_day
+		var scaled_requirement = int(option.required_amount * pow(1.20, server_day - 1))
+		
+		# Get player's total stats (includes equipment, perks, etc.)
+		var total_stats = GameInfo.get_total_stats()
+		var player_stat_value = 0
+		match option.required_stat:
+			QuestOption.Stat.STRENGTH:
+				player_stat_value = total_stats.strength
+			QuestOption.Stat.STAMINA:
+				player_stat_value = total_stats.stamina
+			QuestOption.Stat.AGILITY:
+				player_stat_value = total_stats.agility
+			QuestOption.Stat.LUCK:
+				player_stat_value = total_stats.luck
+			QuestOption.Stat.ARMOR:
+				player_stat_value = total_stats.armor
+		
+		# Check if stat requirement is met
+		if player_stat_value >= scaled_requirement:
+			# Success - navigate to target slide
+			if option.slide_target > 0:
+				load_quest(current_quest_id, option.slide_target)
+			else:
+				print("WARNING: STAT CHECK option missing slide_target")
+		else:
+			print("Stat check failed: ", player_stat_value, " < ", scaled_requirement)
 	elif option.slide_target < 0:
 		# End option
 		_finish_quest()
