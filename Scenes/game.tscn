@@ -6240,7 +6240,7 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_text_label", "options_container", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_scroll", "quest_entries_container", "options_container", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6250,7 +6250,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
-quest_text_label = NodePath("BookScroll/BookContent/CenterContainer/QuestText")
+quest_scroll = NodePath("BookScroll")
+quest_entries_container = NodePath("BookScroll/MarginContainer/QuestEntries")
 options_container = NodePath("OptionsScroll/OptionsContainer")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
@@ -6284,30 +6285,26 @@ anchor_bottom = 1.0
 offset_left = 20.0
 offset_top = 60.0
 offset_right = -20.0
-offset_bottom = -197.0
+offset_bottom = -337.0
 grow_horizontal = 2
 grow_vertical = 2
+follow_focus = true
 horizontal_scroll_mode = 0
-vertical_scroll_mode = 3
+vertical_scroll_mode = 2
 
-[node name="BookContent" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll"]
+[node name="MarginContainer" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/margin_top = 400
+theme_override_constants/margin_bottom = 400
 
-[node name="CenterContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll/BookContent"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="QuestText" type="RichTextLabel" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll/BookContent/CenterContainer"]
-custom_minimum_size = Vector2(300, 0)
+[node name="QuestEntries" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
-bbcode_enabled = true
-text = "Quest text will appear here..."
-fit_content = true
-scroll_active = false
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
 
 [node name="OptionsScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/Quest"]
 layout_mode = 1

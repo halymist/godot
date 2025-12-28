@@ -1,7 +1,8 @@
 extends Panel
 
-# Simple book-style quest display
-@export var quest_text_label: RichTextLabel  # Text (replaces, doeshern't accumulate)
+# Eldrum-style scrolling quest display
+@export var quest_scroll: ScrollContainer  # Container for quest entries
+@export var quest_entries_container: VBoxContainer  # Stacked quest entries
 @export var options_container: VBoxContainer  # Buttons below text
 
 # Icon textures for different option types
@@ -27,11 +28,35 @@ extends Panel
 var current_quest_id: int = 0
 var current_slide_number: int = 1
 
+# Distance-based modulation settings
+const FOCAL_DISTANCE = 150.0  # Distance at which entries are fully faded
+const MIN_SCALE = 0.5
+const MIN_ALPHA = 0.15
+
 # Reference to portrait for navigation
 @export var portrait: Control
 
 # Quest signals
 signal quest_arrived()
+
+func _process(_delta):
+	"""Update entry modulation based on distance from focal point"""
+	if not quest_scroll or not quest_entries_container:
+		return
+	
+	# Focal point in lower third so newest entries are dominant
+	var focus_y = quest_scroll.global_position.y + quest_scroll.size.y * 0.65
+	
+	for entry in quest_entries_container.get_children():
+		if not entry is Control:
+			continue
+		
+		var entry_center_y = entry.global_position.y + entry.size.y * 0.5
+		var dist = abs(entry_center_y - focus_y)
+		var t = clamp(dist / FOCAL_DISTANCE, 0.0, 1.0)
+		
+		entry.scale = Vector2.ONE * lerp(1.0, MIN_SCALE, t)
+		entry.modulate.a = lerp(1.0, MIN_ALPHA, t)
 
 func _ready():
 	quest_arrived.connect(_on_quest_arrived)
@@ -64,60 +89,38 @@ func load_quest(quest_id: int, slide_number: int = 1):
 	display_quest_slide(quest_slide)
 
 func display_quest_slide(quest_slide: QuestSlide):
-	"""Display quest text and show options"""
+	"""Create new quest entry and scroll to it (Eldrum-style)"""
 	if not quest_slide:
 		print("ERROR: quest_slide is null")
 		return
 	
-	# Store old text for animation
-	var old_text = quest_text_label.text
-	var has_old_text = old_text != "" and old_text != quest_slide.text
+	if not quest_entries_container:
+		print("ERROR: quest_entries_container not set")
+		return
 	
-	if has_old_text:
-		# Create animation: old text shrinks and scrolls up while fading
-		# New text slides up from below
-		var old_label = RichTextLabel.new()
-		old_label.bbcode_enabled = true
-		old_label.fit_content = true
-		old_label.scroll_active = false
-		old_label.text = old_text
-		# Copy styling from original label
-		if quest_text_label.get("theme"):
-			old_label.theme = quest_text_label.theme
-		for theme_type in ["normal_font", "font_size"]:
-			if quest_text_label.has_theme_font_size_override(theme_type):
-				old_label.add_theme_font_size_override(theme_type, quest_text_label.get_theme_font_size(theme_type))
+	# Create new entry
+	var entry = create_quest_entry(quest_slide.text)
+	quest_entries_container.add_child(entry)
+	
+	# Wait for layout to calculate sizes
+	await get_tree().process_frame
+	
+	if quest_scroll:
+		# Start scroll at bottom (or beyond if elastic)
+		var max_scroll = max(0, quest_entries_container.size.y - quest_scroll.size.y)
+		quest_scroll.scroll_vertical = max_scroll + 100  # Start 100px beyond
 		
-		# Add old label above current one
-		var parent = quest_text_label.get_parent()
-		var label_index = quest_text_label.get_index()
-		parent.add_child(old_label)
-		parent.move_child(old_label, label_index)
+		# Calculate scroll to place new entry at focal point (65% down the viewport)
+		var entry_pos_in_container = entry.position.y + entry.size.y * 0.5
+		var focal_offset = quest_scroll.size.y * 0.65
+		var target_scroll = entry_pos_in_container - focal_offset
+		target_scroll = max(0, target_scroll)
 		
-		# Set new text
-		quest_text_label.text = quest_slide.text
-		quest_text_label.modulate.a = 0  # Start invisible
-		
-		# Animate both labels
+		# Animate scroll up to focal point
 		var tween = create_tween()
-		tween.set_parallel(true)
-		
-		# Old text: shrink, fade, move up
-		tween.tween_property(old_label, "scale", Vector2(0.8, 0.8), 0.3)
-		tween.tween_property(old_label, "modulate:a", 0.3, 0.3)
-		tween.tween_property(old_label, "position:y", old_label.position.y - 50, 0.3)
-		
-		# New text: fade in, slide up from below
-		quest_text_label.position.y += 30
-		tween.tween_property(quest_text_label, "modulate:a", 1.0, 0.3)
-		tween.tween_property(quest_text_label, "position:y", 0, 0.3)
-		
-		# Clean up old label when done
-		tween.set_parallel(false)
-		tween.tween_callback(old_label.queue_free)
-	else:
-		# No animation needed for first text or same text
-		quest_text_label.text = quest_slide.text
+		tween.tween_property(quest_scroll, "scroll_vertical", target_scroll, 0.6)\
+			.set_ease(Tween.EASE_OUT)\
+			.set_trans(Tween.TRANS_CUBIC)
 	
 	# Update options
 	clear_options()
@@ -129,6 +132,18 @@ func display_quest_slide(quest_slide: QuestSlide):
 				print("WARNING: Null option in quest_slide.options")
 	else:
 		print("WARNING: quest_slide.options is null or empty")
+
+func create_quest_entry(text: String) -> Control:
+	"""Create a quest entry node"""
+	var entry_scene = load("res://Scenes/quest_entry.tscn")
+	var entry = entry_scene.instantiate()
+	
+	# Set text
+	var label = entry.get_node("MarginContainer/EntryText")
+	if label:
+		label.text = text
+	
+	return entry
 
 func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=21 format=3 uid="uid://qpxy3xo35sm8"]
+[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=24 format=3 uid="uid://qpxy3xo35sm8"]
 
 [ext_resource type="Script" uid="uid://dyylwqohml0nt" path="res://scripts/resources/QuestData.gd" id="1_76t0t"]
 [ext_resource type="Script" uid="uid://ctr1a0kn3bxmx" path="res://scripts/resources/QuestSlide.gd" id="2_67rkd"]
@@ -126,6 +126,20 @@ required_silver = 0
 required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
+[sub_resource type="Resource" id="Resource_evd17"]
+script = ExtResource("3_d2n6j")
+option_index = 0
+text = "This is so cool"
+slide_target = 4
+enemy_id = -1
+on_win_slide = -1
+on_lose_slide = -1
+required_stat = 0
+required_amount = 0
+required_silver = 0
+required_faction = 0
+metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
+
 [sub_resource type="Resource" id="Resource_xqufw"]
 script = ExtResource("4_gr8oa")
 silver = 10
@@ -141,8 +155,8 @@ metadata/_custom_type_script = "uid://n5j4pekoeaet"
 script = ExtResource("2_67rkd")
 slide_id = 2
 asset_id = 0
-text = "U went left"
-options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_o23ke")])
+text = "U went left U went left U went left U went left U went left U went left U went left U went left went left U went left U went left U went left U went left"
+options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_o23ke"), SubResource("Resource_evd17")])
 reward = SubResource("Resource_xqufw")
 metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 
@@ -180,13 +194,35 @@ options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_l00m3")])
 reward = SubResource("Resource_ivt0s")
 metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 
+[sub_resource type="Resource" id="Resource_q25yr"]
+script = ExtResource("3_d2n6j")
+option_index = 0
+text = "Well lets go home"
+slide_target = -1
+enemy_id = -1
+on_win_slide = -1
+on_lose_slide = -1
+required_stat = 0
+required_amount = 0
+required_silver = 0
+required_faction = 0
+metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
+
+[sub_resource type="Resource" id="Resource_ghcxp"]
+script = ExtResource("2_67rkd")
+slide_id = 4
+asset_id = 0
+text = "What a life huh"
+options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_q25yr")])
+metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
+
 [sub_resource type="Resource" id="Resource_tqocc"]
 script = ExtResource("1_76t0t")
 quest_id = 1
 quest_name = "Test"
 travel_time = 30
 travel_text = "Hi im testing stuff right now"
-slides = Array[ExtResource("2_67rkd")]([SubResource("Resource_eurwf"), SubResource("Resource_qwv23"), SubResource("Resource_tsudj")])
+slides = Array[ExtResource("2_67rkd")]([SubResource("Resource_eurwf"), SubResource("Resource_qwv23"), SubResource("Resource_tsudj"), SubResource("Resource_ghcxp")])
 metadata/_custom_type_script = "uid://dyylwqohml0nt"
 
 [resource]
