@@ -89,7 +89,7 @@ func load_quest(quest_id: int, slide_number: int = 1):
 	display_quest_slide(quest_slide)
 
 func display_quest_slide(quest_slide: QuestSlide):
-	"""Create new quest entry and scroll to it (Eldrum-style)"""
+	"""Create new quest entry"""
 	if not quest_slide:
 		print("ERROR: quest_slide is null")
 		return
@@ -102,25 +102,37 @@ func display_quest_slide(quest_slide: QuestSlide):
 	var entry = create_quest_entry(quest_slide.text)
 	quest_entries_container.add_child(entry)
 	
-	# Wait for layout to calculate sizes
+	# Wait for layout to recalculate with new entry
 	await get_tree().process_frame
 	
+	# Recenter scroll after container size changed
 	if quest_scroll:
-		# Start scroll at bottom (or beyond if elastic)
-		var max_scroll = max(0, quest_entries_container.size.y - quest_scroll.size.y)
-		quest_scroll.scroll_vertical = max_scroll + 100  # Start 100px beyond
+		var vbox_height = quest_entries_container.size.y
+		var margin_container = quest_entries_container.get_parent()
+		var content_height = margin_container.size.y if margin_container else vbox_height
+		var viewport_height = quest_scroll.size.y
+		var max_scroll = quest_scroll.get_v_scroll_bar().max_value
 		
-		# Calculate scroll to place new entry at focal point (65% down the viewport)
-		var entry_pos_in_container = entry.position.y + entry.size.y * 0.5
-		var focal_offset = quest_scroll.size.y * 0.65
-		var target_scroll = entry_pos_in_container - focal_offset
-		target_scroll = max(0, target_scroll)
+		# Calculate where entries actually start (accounting for top margin)
+		var margin_top = 0
+		if margin_container is MarginContainer:
+			margin_top = margin_container.get_theme_constant("margin_top")
 		
-		# Animate scroll up to focal point
-		var tween = create_tween()
-		tween.tween_property(quest_scroll, "scroll_vertical", target_scroll, 0.6)\
-			.set_ease(Tween.EASE_OUT)\
-			.set_trans(Tween.TRANS_CUBIC)
+		# Center the entries in the viewport
+		# We want: margin_top + (vbox_height / 2) - (viewport_height / 2)
+		var center_scroll = margin_top + (vbox_height / 2.0) - (viewport_height / 2.0)
+		center_scroll = max(0, center_scroll)  # Don't go negative
+		
+		print("=== Scroll Centering ===")
+		print("VBox height: ", vbox_height)
+		print("Margin top: ", margin_top)
+		print("Viewport height: ", viewport_height)
+		print("Max scroll: ", max_scroll)
+		print("Calculated center scroll: ", center_scroll)
+		
+		quest_scroll.scroll_vertical = int(center_scroll)
+		print("Actual scroll after: ", quest_scroll.scroll_vertical)
+		print("========================")
 	
 	# Update options
 	clear_options()
