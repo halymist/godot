@@ -108,7 +108,7 @@ metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 script = ExtResource("2_67rkd")
 slide_id = 1
 asset_id = 0
-text = "This is the first slide"
+text = "This is the first slide This is the first slide This is the first slide This is the first slide"
 options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_jgsu5"), SubResource("Resource_enrg4"), SubResource("Resource_67rkd"), SubResource("Resource_d2n6j"), SubResource("Resource_gr8oa"), SubResource("Resource_17ocm"), SubResource("Resource_4ffti")])
 metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 
