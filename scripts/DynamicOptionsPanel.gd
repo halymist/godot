@@ -69,9 +69,9 @@ func display_quest_slide(quest_slide: QuestSlide):
 	# Update options
 	clear_options()
 	for option in quest_slide.options:
-		add_option(option.text, option.option_type, _on_quest_option_pressed.bind(option))
+		add_option(option.text, option.option_type, _on_quest_option_pressed.bind(option), option)
 
-func add_option(text: String, option_type: QuestOption.OptionType, callback: Callable) -> Control:
+func add_option(text: String, option_type: QuestOption.OptionType, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""
 	if not options_container:
 		return null
@@ -84,24 +84,36 @@ func add_option(text: String, option_type: QuestOption.OptionType, callback: Cal
 	if label:
 		label.text = text
 	
-	# Set icon based on option type
+	# Check if this is a currency check (has required_silver)
+	var has_currency_requirement = option_data and option_data.required_silver > 0
+	var can_afford = true
+	
+	if has_currency_requirement and GameInfo.current_player:
+		can_afford = GameInfo.current_player.silver >= option_data.required_silver
+	
+	# Set icon based on option type or currency requirement
 	var icon = option_instance.get_node("HBoxContainer/Icon")
 	if icon:
-		match option_type:
-			QuestOption.OptionType.DIALOGUE:
-				icon.texture = dialogue_icon
-			QuestOption.OptionType.COMBAT:
-				icon.texture = combat_icon
-			QuestOption.OptionType.SKILL_CHECK:
-				icon.texture = skill_check_icon
-			QuestOption.OptionType.CURRENCY_CHECK:
-				icon.texture = currency_check_icon
-			QuestOption.OptionType.END:
-				icon.texture = end_icon
+		if has_currency_requirement:
+			icon.texture = currency_check_icon
+		else:
+			match option_type:
+				QuestOption.OptionType.DIALOGUE:
+					icon.texture = dialogue_icon
+				QuestOption.OptionType.COMBAT:
+					icon.texture = combat_icon
+				QuestOption.OptionType.SKILL_CHECK:
+					icon.texture = skill_check_icon
+				QuestOption.OptionType.CURRENCY_CHECK:
+					icon.texture = currency_check_icon
+				QuestOption.OptionType.END:
+					icon.texture = end_icon
 	
 	# Connect button press
 	var button = option_instance.get_node("Button")
 	if button:
+		# Disable button if can't afford
+		button.disabled = has_currency_requirement and not can_afford
 		button.pressed.connect(callback)
 	
 	options_container.add_child(option_instance)
@@ -117,6 +129,17 @@ func clear_options():
 
 func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click"""
+	# Handle currency requirement first
+	if option.required_silver > 0:
+		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_silver:
+			# Deduct silver using UIManager
+			if UIManager.instance:
+				UIManager.instance.update_silver(-option.required_silver)
+				print("Deducted ", option.required_silver, " silver")
+		else:
+			print("Not enough silver for option: ", option.text)
+			return
+	
 	match option.option_type:
 		QuestOption.OptionType.DIALOGUE:
 			if option.slide_target > 0:

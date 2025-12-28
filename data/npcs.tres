@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="NpcDatabase" load_steps=9 format=3 uid="uid://be1d4svv6fxmq"]
+[gd_resource type="Resource" script_class="NpcDatabase" load_steps=10 format=3 uid="uid://be1d4svv6fxmq"]
 
 [ext_resource type="Script" uid="uid://b5vwu8i301q8y" path="res://scripts/resources/NpcResource.gd" id="1_hmuq0"]
 [ext_resource type="Texture2D" uid="uid://tcr12hayb453" path="res://data/npcs_textures/npc1.png" id="2_utwwl"]
@@ -22,11 +22,19 @@ isQuest = false
 dialogue = "Thanks for the help"
 metadata/_custom_type_script = "uid://bb5buly8hw1wp"
 
+[sub_resource type="Resource" id="Resource_utwwl"]
+script = ExtResource("3_gyykm")
+questID = 1
+stage = 3
+isQuest = false
+dialogue = "Wow"
+metadata/_custom_type_script = "uid://bb5buly8hw1wp"
+
 [sub_resource type="Resource" id="Resource_ll3tu"]
 script = ExtResource("1_hmuq0")
 id = 1
 name = "Bob"
-dialogues = Array[ExtResource("3_gyykm")]([SubResource("Resource_eq6f6"), SubResource("Resource_ru7c0")])
+dialogues = Array[ExtResource("3_gyykm")]([SubResource("Resource_eq6f6"), SubResource("Resource_ru7c0"), SubResource("Resource_utwwl")])
 asset = ExtResource("2_utwwl")
 portrait = ExtResource("4_4pi4t")
 spot = 1
