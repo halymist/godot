@@ -6251,7 +6251,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
 quest_scroll = NodePath("BookScroll")
-quest_entries_container = NodePath("BookScroll/MarginContainer/QuestEntries")
+quest_entries_container = NodePath("BookScroll/QuestEntries")
 options_container = NodePath("OptionsScroll/OptionsContainer")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
@@ -6289,23 +6289,15 @@ offset_bottom = -337.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-scroll_vertical = 250
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll"]
+[node name="QuestEntries" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_top = 400
-theme_override_constants/margin_bottom = 400
-
-[node name="QuestEntries" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 20
-alignment = 1
+size_flags_vertical = 8
+theme_override_constants/separation = 35
+alignment = 2
 
 [node name="OptionsScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/Quest"]
 layout_mode = 1

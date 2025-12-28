@@ -30,7 +30,7 @@ var current_slide_number: int = 1
 
 # Distance-based modulation settings
 const FOCAL_DISTANCE = 150.0  # Distance at which entries are fully faded
-const MIN_SCALE = 0.5
+const MIN_SCALE = 0.43
 const MIN_ALPHA = 0.15
 
 # Reference to portrait for navigation
@@ -51,6 +51,9 @@ func _process(_delta):
 		if not entry is Control:
 			continue
 		
+		# Set pivot to center so scaling happens from center
+		entry.pivot_offset = entry.size / 2.0
+		
 		var entry_center_y = entry.global_position.y + entry.size.y * 0.5
 		var dist = abs(entry_center_y - focus_y)
 		var t = clamp(dist / FOCAL_DISTANCE, 0.0, 1.0)
@@ -60,6 +63,14 @@ func _process(_delta):
 
 func _ready():
 	quest_arrived.connect(_on_quest_arrived)
+	
+	# Add top spacer for better scrolling appearance
+	if quest_entries_container:
+		var spacer = Control.new()
+		spacer.custom_minimum_size.y = 300  # Top padding
+		spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Allow dragging through it
+		quest_entries_container.add_child(spacer)
+		quest_entries_container.move_child(spacer, 0)
 
 func _on_quest_arrived():
 	"""Quest arrival from travel"""
@@ -102,42 +113,15 @@ func display_quest_slide(quest_slide: QuestSlide):
 	var entry = create_quest_entry(quest_slide.text)
 	quest_entries_container.add_child(entry)
 	
-	# Wait for layout to recalculate with new entry (double frame wait for consistency)
+	# Wait for layout to recalculate
 	await get_tree().process_frame
 	await get_tree().process_frame
 	
-	# Scroll to place new entry at focal point (65% down viewport)
-	if quest_scroll and entry:
-		var margin_container = quest_entries_container.get_parent()
-		var viewport_height = quest_scroll.size.y
-		var focal_point = viewport_height * 0.65  # 65% down the viewport
-		
-		# Get margin offset
-		var margin_top = 0
-		if margin_container is MarginContainer:
-			margin_top = margin_container.get_theme_constant("margin_top")
-		
-		# Get the new entry's position in the container
-		var entry_y = entry.position.y
-		var entry_center = entry_y + (entry.size.y / 2.0)
-		
-		# Calculate scroll to place entry center at focal point
-		var target_scroll = margin_top + entry_center - focal_point
-		target_scroll = clamp(target_scroll, 0, quest_scroll.get_v_scroll_bar().max_value)
-		
-		print("=== Scrolling to new entry ===")
-		print("Entry position: ", entry_y)
-		print("Entry size: ", entry.size)
-		print("Entry center: ", entry_center)
-		print("Margin top: ", margin_top)
-		print("Focal point (65%): ", focal_point)
-		print("Target scroll: ", target_scroll)
-		print("Max scroll: ", quest_scroll.get_v_scroll_bar().max_value)
-		print("==============================")
-		
-		# Animate to new entry position
+	# Scroll to bottom to show new entry
+	if quest_scroll:
+		var max_scroll = quest_scroll.get_v_scroll_bar().max_value
 		var tween = create_tween()
-		tween.tween_property(quest_scroll, "scroll_vertical", int(target_scroll), 0.5)\
+		tween.tween_property(quest_scroll, "scroll_vertical", int(max_scroll), 1.2)\
 			.set_ease(Tween.EASE_OUT)\
 			.set_trans(Tween.TRANS_CUBIC)
 	
