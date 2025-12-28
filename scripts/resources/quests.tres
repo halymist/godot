@@ -10,7 +10,7 @@
 script = ExtResource("3_d2n6j")
 option_index = 1
 option_type = 0
-text = "Go left"
+text = "Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left Go left v Go left Go left Go left Go left"
 slide_target = 2
 enemy_id = -1
 on_win_slide = -1

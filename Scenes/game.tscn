@@ -6237,7 +6237,6 @@ layout_mode = 2
 text = "Send"
 
 [node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_text_label", "options_container", "portrait")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
