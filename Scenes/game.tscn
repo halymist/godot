@@ -1,4 +1,4 @@
-[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -265,9 +265,6 @@ shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qj5kr"]
-bg_color = Color(0.945384, 0.416332, 0.215236, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
 bg_color = Color(0.2, 0.2, 0.2, 0.9)
@@ -6291,6 +6288,7 @@ offset_bottom = -197.0
 grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 
 [node name="BookContent" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll"]
 layout_mode = 2
@@ -6322,7 +6320,6 @@ offset_top = -176.0
 offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qj5kr")
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 

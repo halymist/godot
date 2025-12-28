@@ -1,9 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddgp4njhef2ac"]
+[gd_scene load_steps=7 format=3 uid="uid://ddgp4njhef2ac"]
 
 [ext_resource type="Script" uid="uid://dk7i8aj2wob6h" path="res://scripts/QuestOption.gd" id="1_vfk2w"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="2_tpdcj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpdcj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
+bg_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(1, 1, 1, 0.15)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(1, 1, 1, 0.25)
 
 [node name="QuestOption" type="MarginContainer"]
 custom_minimum_size = Vector2(0, 50)
@@ -40,8 +49,7 @@ vertical_alignment = 1
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 0)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 0.2)
-theme_override_colors/font_color = Color(1, 1, 1, 0)
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 0.3)
-flat = true
+theme_override_styles/disabled = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")

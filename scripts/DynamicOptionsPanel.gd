@@ -64,22 +64,60 @@ func load_quest(quest_id: int, slide_number: int = 1):
 	display_quest_slide(quest_slide)
 
 func display_quest_slide(quest_slide: QuestSlide):
-	"""Replace text with fade effect and show options"""
+	"""Display quest text and show options"""
 	if not quest_slide:
 		print("ERROR: quest_slide is null")
 		return
+	
+	# Store old text for animation
+	var old_text = quest_text_label.text
+	var has_old_text = old_text != "" and old_text != quest_slide.text
+	
+	if has_old_text:
+		# Create animation: old text shrinks and scrolls up while fading
+		# New text slides up from below
+		var old_label = RichTextLabel.new()
+		old_label.bbcode_enabled = true
+		old_label.fit_content = true
+		old_label.scroll_active = false
+		old_label.text = old_text
+		# Copy styling from original label
+		if quest_text_label.get("theme"):
+			old_label.theme = quest_text_label.theme
+		for theme_type in ["normal_font", "font_size"]:
+			if quest_text_label.has_theme_font_size_override(theme_type):
+				old_label.add_theme_font_size_override(theme_type, quest_text_label.get_theme_font_size(theme_type))
 		
-	# Fade out
-	var tween = create_tween()
-	tween.tween_property(quest_text_label, "modulate:a", 0.0, 0.2)
-	await tween.finished
-	
-	# Replace text
-	quest_text_label.text = quest_slide.text
-	
-	# Fade in
-	tween = create_tween()
-	tween.tween_property(quest_text_label, "modulate:a", 1.0, 0.3)
+		# Add old label above current one
+		var parent = quest_text_label.get_parent()
+		var label_index = quest_text_label.get_index()
+		parent.add_child(old_label)
+		parent.move_child(old_label, label_index)
+		
+		# Set new text
+		quest_text_label.text = quest_slide.text
+		quest_text_label.modulate.a = 0  # Start invisible
+		
+		# Animate both labels
+		var tween = create_tween()
+		tween.set_parallel(true)
+		
+		# Old text: shrink, fade, move up
+		tween.tween_property(old_label, "scale", Vector2(0.8, 0.8), 0.3)
+		tween.tween_property(old_label, "modulate:a", 0.3, 0.3)
+		tween.tween_property(old_label, "position:y", old_label.position.y - 50, 0.3)
+		
+		# New text: fade in, slide up from below
+		quest_text_label.position.y += 30
+		tween.tween_property(quest_text_label, "modulate:a", 1.0, 0.3)
+		tween.tween_property(quest_text_label, "position:y", 0, 0.3)
+		
+		# Clean up old label when done
+		tween.set_parallel(false)
+		tween.tween_callback(old_label.queue_free)
+	else:
+		# No animation needed for first text or same text
+		quest_text_label.text = quest_slide.text
 	
 	# Update options
 	clear_options()
