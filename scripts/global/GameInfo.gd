@@ -44,22 +44,17 @@ func register_talent(id: int, effect_id: int, factor: float, max_points: int, pe
 	}
 	print("Registered talent %d: effect=%d, factor=%.1f, max_points=%d, perk_slot=%d" % [id, effect_id, factor, max_points, perk_slot])
 
-# Guild names and icons mapping
-const GUILD_DATA = {
-	1: {"name": "Mercantile", "icon": "res://assets/images/ui/merchant.png"},
-	2: {"name": "Faithfull", "icon": "res://assets/images/ui/faith.png"},
-	3: {"name": "Fighters", "icon": "res://assets/images/ui/fighters.png"}
+# Faction names mapping
+const FACTION_DATA = {
+	1: {"name": "Order"},
+	2: {"name": "Guild"},
+	3: {"name": "Companions"}
 }
 
-func get_guild_name(guild_id: int) -> String:
-	"""Get the guild name for a given guild ID"""
-	var data = GUILD_DATA.get(guild_id, {})
+func get_faction_name(faction_id: int) -> String:
+	"""Get the faction name for a given faction ID"""
+	var data = FACTION_DATA.get(faction_id, {})
 	return data.get("name", "None")
-
-func get_guild_icon(guild_id: int) -> String:
-	"""Get the guild icon path for a given guild ID"""
-	var data = GUILD_DATA.get(guild_id, {})
-	return data.get("icon", "")
 
 # Profession names and icons mapping
 const PROFESSION_DATA = {
@@ -640,7 +635,7 @@ class GameCurrentPlayer:
 	var potion: int = 0  # Equipped potion item ID (0 = no potion)
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
-	var guild: int = 0  # Guild ID (1=Mercantile, 2=Warriors, 3=Mages, etc.)
+	var faction: int = 0  # Faction ID (1=Order, 2=Guild, 3=Companions)
 	var rank: int = 0  # Rank value (determines rank tier like Novice, Veteran, etc.)
 	var profession: int = 0  # Profession ID (1=Herbalist, 2=Blacksmith, etc.)
 	var daily_quests: Array = []  # Array of quest IDs available today
@@ -686,7 +681,7 @@ class GameCurrentPlayer:
 		"slide": "slide",
 		"slides": "slides",
 		"quest_log": "quest_log",
-		"guild": "guild",
+		"faction": "faction",
 		"rank": "rank",
 		"profession": "profession",
 		"daily_quests": "daily_quests",
@@ -730,11 +725,11 @@ class GameCurrentPlayer:
 		return stats
 	
 	# Helper functions to convert IDs to display names
-	func get_guild_name() -> String:
-		match guild:
-			1: return "Mercantile"
-			2: return "Warriors"
-			3: return "Mages"
+	func get_faction_name() -> String:
+		match faction:
+			1: return "Order"
+			2: return "Guild"
+			3: return "Companions"
 			_: return "None"
 	
 	func get_rank_name() -> String:
@@ -753,7 +748,7 @@ class GameArenaOpponent:
 	extends GamePlayer
 	
 	var rank: int = 0  # Rank value for arena opponents
-	var guild: int = 0  # Guild affiliation
+	var faction: int = 0  # Faction affiliation
 	var profession: int = 0  # Profession type
 	var honor: int = 0  # Honor points
 	var avatar_face: int = 1  # Avatar face cosmetic ID
@@ -775,7 +770,7 @@ class GameArenaOpponent:
 		"armor": "armor",
 		# Arena opponent specific
 		"rank": "rank",
-		"guild": "guild",
+		"faction": "faction",
 		"profession": "profession",
 		"honor": "honor",
 		"avatar_face": "avatar_face",

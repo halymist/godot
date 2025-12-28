@@ -1,18 +1,18 @@
 @tool
 extends Panel
 
-signal row_clicked(rank: int, player_name: String, guild: int, profession: int, honor: int)
+signal row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int)
 
 var rank: int = 0
 var player_name: String = ""
-var guild: int = 0
+var faction: int = 0
 var profession: int = 0
 var honor: int = 0
 var is_selected: bool = false
 
 @onready var rank_label: Label = $RowContent/Rank
 @onready var name_label: Label = $RowContent/NameContainer/PlayerName
-@onready var guild_icon: TextureRect = $RowContent/NameContainer/GuildIcon
+@onready var faction_icon: TextureRect = $RowContent/NameContainer/GuildIcon
 @onready var profession_icon: TextureRect = $RowContent/NameContainer/ProfessionIcon
 @onready var honor_label: Label = $RowContent/Honor
 @onready var click_button: Button = $ClickButton
@@ -26,10 +26,10 @@ func _ready():
 	
 	update_display()
 
-func set_data(p_rank: int, p_player_name: String, p_guild: int, p_profession: int, p_honor: int):
+func set_data(p_rank: int, p_player_name: String, p_faction: int, p_profession: int, p_honor: int):
 	rank = p_rank
 	player_name = p_player_name
-	guild = p_guild
+	faction = p_faction
 	profession = p_profession
 	honor = p_honor
 	update_display()
@@ -39,10 +39,7 @@ func update_display():
 		rank_label.text = str(rank)
 	if name_label:
 		name_label.text = player_name
-	if guild_icon:
-		var icon_path = GameInfo.get_guild_icon(guild)
-		if icon_path and ResourceLoader.exists(icon_path):
-			guild_icon.texture = load(icon_path)
+	# Faction icon removed - no longer needed
 	if profession_icon:
 		var icon_path = GameInfo.get_profession_icon(profession)
 		if icon_path and ResourceLoader.exists(icon_path):
@@ -58,4 +55,4 @@ func set_selected(selected: bool):
 		modulate = Color(1.0, 1.0, 1.0)  # Normal color
 
 func _on_clicked():
-	row_clicked.emit(rank, player_name, guild, profession, honor)
+	row_clicked.emit(rank, player_name, faction, profession, honor)

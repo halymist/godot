@@ -23,3 +23,6 @@ enum OptionType { DIALOGUE, COMBAT, SKILL_CHECK, CURRENCY_CHECK, END }
 
 # For currency checks
 @export var required_silver: int = 0
+
+# For faction checks
+@export var required_faction: int = 0  # 1=Order, 2=Guild, 3=Companions (0=no requirement)

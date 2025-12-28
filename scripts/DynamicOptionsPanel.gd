@@ -91,11 +91,20 @@ func add_option(text: String, option_type: QuestOption.OptionType, callback: Cal
 	if has_currency_requirement and GameInfo.current_player:
 		can_afford = GameInfo.current_player.silver >= option_data.required_silver
 	
-	# Set icon based on option type or currency requirement
+	# Check if this is a faction check (has required_faction)
+	var has_faction_requirement = option_data and option_data.required_faction > 0
+	var is_correct_faction = true
+	
+	if has_faction_requirement and GameInfo.current_player:
+		is_correct_faction = GameInfo.current_player.faction == option_data.required_faction
+	
+	# Set icon based on option type or requirements
 	var icon = option_instance.get_node("HBoxContainer/Icon")
 	if icon:
 		if has_currency_requirement:
 			icon.texture = currency_check_icon
+		elif has_faction_requirement:
+			icon.texture = skill_check_icon  # Use skill check icon for faction checks
 		else:
 			match option_type:
 				QuestOption.OptionType.DIALOGUE:
@@ -112,8 +121,8 @@ func add_option(text: String, option_type: QuestOption.OptionType, callback: Cal
 	# Connect button press
 	var button = option_instance.get_node("Button")
 	if button:
-		# Disable button if can't afford
-		button.disabled = has_currency_requirement and not can_afford
+		# Disable button if can't afford or wrong faction
+		button.disabled = (has_currency_requirement and not can_afford) or (has_faction_requirement and not is_correct_faction)
 		button.pressed.connect(callback)
 	
 	options_container.add_child(option_instance)

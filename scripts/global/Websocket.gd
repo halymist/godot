@@ -1,14 +1,14 @@
 extends Node
 
 # Helper function to generate full player data
-func generate_mock_player_data(player_name: String, rank: int, guild: int, profession: int, honor: int) -> Dictionary:
+func generate_mock_player_data(player_name: String, rank: int, faction: int, profession: int, honor: int) -> Dictionary:
 	# Generate varied stats based on rank (better players have higher stats)
 	var stat_bonus = max(0, (100 - rank) / 10)  # Top 10 get +9, rank 100 gets 0
 	
 	return {
 		"name": player_name,
 		"rank": rank,
-		"guild": guild,
+		"faction": faction,
 		"profession": profession,
 		"honor": honor,
 		"avatar_face": 1,  # Cosmetic ID from database
@@ -45,7 +45,7 @@ func _ready():
 		mock_rankings.append(generate_mock_player_data(
 			"Player" + str(i),
 			i,  # rank
-			(i % 3) + 1,  # guild
+			(i % 3) + 1,  # faction
 			(i % 3) + 1,  # profession
 			10000 - (i * 50)  # honor
 		))
@@ -62,7 +62,7 @@ var mock_rankings = []
 # Mock data for development/testing
 var mock_character_data = {
 	"name": "TestPlayer",
-	"guild": 1,
+	"faction": 1,
 	"rank": 15486,
 	"profession": 1,
 	"server_timezone": "Europe/Stockholm",

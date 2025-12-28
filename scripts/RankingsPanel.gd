@@ -78,12 +78,12 @@ func create_ranking_row(player: GameInfo.GameArenaOpponent):
 		return null
 	
 	var row = ranking_row_scene.instantiate()
-	row.set_data(player.rank, player.name, player.guild, player.profession, player.honor)
+	row.set_data(player.rank, player.name, player.faction, player.profession, player.honor)
 	row.row_clicked.connect(_on_row_clicked)
 	return row
 
-func _on_row_clicked(rank: int, player_name: String, guild: int, profession: int, honor: int):
-	print("Clicked on player: ", player_name, " Rank: ", rank, " Guild: ", guild, " Profession: ", profession, " Honor: ", honor)
+func _on_row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int):
+	print("Clicked on player: ", player_name, " Rank: ", rank, " Faction: ", faction, " Profession: ", profession, " Honor: ", honor)
 	
 	# Find the full player object from enemy_players
 	selected_player = null

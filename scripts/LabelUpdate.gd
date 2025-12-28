@@ -2,7 +2,7 @@ extends Control
 
 @export var player_name_label: Label
 @export var rank_label: Label
-@export var guild_label: Label
+@export var faction_label: Label
 @export var profession_label: Label
 @export var strength_label: Label
 @export var strength_aprox: Label
@@ -46,7 +46,7 @@ func stats_changed(_stats: Dictionary):
 	
 	player_name_label.text = str(total_stats.name)
 	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
-	guild_label.text = GameInfo.current_player.get_guild_name()
+	faction_label.text = GameInfo.current_player.get_faction_name()
 	profession_label.text = GameInfo.current_player.get_profession_name()
 	
 	# Display already-calculated stats from GameInfo

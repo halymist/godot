@@ -2236,7 +2236,7 @@ grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 
-[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "guild_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label", "effect_strength_value", "effect_stamina_value", "effect_agility_value", "effect_luck_value", "effect_damage_value", "effect_health_value", "effect_crit_chance_value", "effect_dodge_value", "effect_damage_reduction_value", "effect_initiative_value", "effect_stun_value", "effect_counter_attack_value", "effect_attack_twice_value", "effect_bleed_value", "effect_lifesteal_value", "effect_heal_value", "effect_survive_value", "effect_healing_boost_value", "effect_crit_damage_value", "effect_counter_damage_value")]
+[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "faction_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label", "effect_strength_value", "effect_stamina_value", "effect_agility_value", "effect_luck_value", "effect_damage_value", "effect_health_value", "effect_crit_chance_value", "effect_dodge_value", "effect_damage_reduction_value", "effect_initiative_value", "effect_stun_value", "effect_counter_attack_value", "effect_attack_twice_value", "effect_bleed_value", "effect_lifesteal_value", "effect_heal_value", "effect_survive_value", "effect_healing_boost_value", "effect_crit_damage_value", "effect_counter_damage_value")]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -2247,7 +2247,7 @@ grow_horizontal = 2
 script = ExtResource("10_mg4q0")
 player_name_label = NodePath("PlayerName")
 rank_label = NodePath("CharacterDetails/RankContainer/RankLabel")
-guild_label = NodePath("CharacterDetails/GuildContainer/GuildLabel")
+faction_label = NodePath("CharacterDetails/GuildContainer/GuildLabel")
 profession_label = NodePath("CharacterDetails/ProfessionContainer/ProfessionLabel")
 strength_label = NodePath("StatsContainer/StrengthContainer/StrengthValue")
 strength_aprox = NodePath("StatsContainer/StrengthContainer/StrAprox")
