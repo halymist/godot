@@ -44,11 +44,15 @@ func _process(_delta):
 	if not quest_scroll or not quest_entries_container:
 		return
 	
-	# Focal point in lower third so newest entries are dominant
-	var focus_y = quest_scroll.global_position.y + quest_scroll.size.y * 0.65
+	# Fixed focal point in middle of viewport
+	var focus_y = quest_scroll.global_position.y + quest_scroll.size.y * 0.5
 	
 	for entry in quest_entries_container.get_children():
 		if not entry is Control:
+			continue
+		
+		# Skip spacers
+		if entry.custom_minimum_size.y == 300 or entry.custom_minimum_size.y == 100:
 			continue
 		
 		# Set pivot to center so scaling happens from center
@@ -63,14 +67,6 @@ func _process(_delta):
 
 func _ready():
 	quest_arrived.connect(_on_quest_arrived)
-	
-	# Add top spacer for better scrolling appearance
-	if quest_entries_container:
-		var spacer = Control.new()
-		spacer.custom_minimum_size.y = 300  # Top padding
-		spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Allow dragging through it
-		quest_entries_container.add_child(spacer)
-		quest_entries_container.move_child(spacer, 0)
 
 func _on_quest_arrived():
 	"""Quest arrival from travel"""
@@ -112,6 +108,12 @@ func display_quest_slide(quest_slide: QuestSlide):
 	# Create new entry
 	var entry = create_quest_entry(quest_slide.text)
 	quest_entries_container.add_child(entry)
+	
+	# Insert before bottom spacer
+	var bottom_spacer = quest_entries_container.get_node_or_null("BottomSpacer")
+	if bottom_spacer:
+		var bottom_index = bottom_spacer.get_index()
+		quest_entries_container.move_child(entry, bottom_index)
 	
 	# Wait for layout to recalculate
 	await get_tree().process_frame
