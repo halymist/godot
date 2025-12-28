@@ -33,6 +33,8 @@ func _on_quest_arrived():
 
 func load_quest(quest_id: int, slide_number: int = 1):
 	"""Load a quest and display first slide"""
+	print("Loading quest ", quest_id, " slide ", slide_number)
+	
 	if current_quest_id != quest_id:
 		# Set quest title
 		var quest_data = GameInfo.get_quest_data(quest_id)
@@ -82,6 +84,21 @@ func add_option(text: String, option_type: QuestOption.OptionType, callback: Cal
 	if label:
 		label.text = text
 	
+	# Set icon based on option type
+	var icon = option_instance.get_node("HBoxContainer/Icon")
+	if icon:
+		match option_type:
+			QuestOption.OptionType.DIALOGUE:
+				icon.texture = dialogue_icon
+			QuestOption.OptionType.COMBAT:
+				icon.texture = combat_icon
+			QuestOption.OptionType.SKILL_CHECK:
+				icon.texture = skill_check_icon
+			QuestOption.OptionType.CURRENCY_CHECK:
+				icon.texture = currency_check_icon
+			QuestOption.OptionType.END:
+				icon.texture = end_icon
+	
 	# Connect button press
 	var button = option_instance.get_node("Button")
 	if button:
@@ -104,6 +121,8 @@ func _on_quest_option_pressed(option: QuestOption):
 		QuestOption.OptionType.DIALOGUE:
 			if option.slide_target > 0:
 				load_quest(current_quest_id, option.slide_target)
+			else:
+				print("WARNING: DIALOGUE option has no slide_target: ", option.text)
 		QuestOption.OptionType.COMBAT:
 			# Random outcome for now
 			var won = randf() > 0.5
@@ -111,6 +130,8 @@ func _on_quest_option_pressed(option: QuestOption):
 				load_quest(current_quest_id, option.on_win_slide)
 			elif not won and option.on_lose_slide > 0:
 				load_quest(current_quest_id, option.on_lose_slide)
+			else:
+				print("WARNING: COMBAT option missing win/lose slides")
 		QuestOption.OptionType.END:
 			_finish_quest()
 

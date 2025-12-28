@@ -6255,7 +6255,7 @@ dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 skill_check_icon = ExtResource("44_k8ojv")
 currency_check_icon = ExtResource("32_ccfo7")
-end_icon = ExtResource("11_vm72l")
+end_icon = ExtResource("14_81klo")
 portrait = NodePath("../../..")
 
 [node name="QuestTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest"]
@@ -6317,6 +6317,8 @@ vertical_scroll_mode = 2
 
 [node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/OptionsScroll"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 alignment = 2
 
 [node name="CancelQuest" type="Panel" parent="Portrait/GameSceneParent/Wrapper"]
