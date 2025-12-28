@@ -100,10 +100,9 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	var option_scene = load("res://Scenes/quest_option.tscn")
 	var option_instance = option_scene.instantiate()
 	
-	# Set text directly on the label
+	# We'll update label text after checking requirements (to include required values)
 	var label = option_instance.get_node("HBoxContainer/Label")
-	if label:
-		label.text = text
+	var label_text = text
 	
 	# Check if this is a currency check (has required_silver)
 	var has_currency_requirement = option_data and option_data.required_silver > 0
@@ -111,6 +110,8 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	
 	if has_currency_requirement and GameInfo.current_player:
 		can_afford = GameInfo.current_player.silver >= option_data.required_silver
+		# Add required silver to label
+		label_text = "(" + str(option_data.required_silver) + ") " + label_text
 	
 	# Check if this is a faction check (has required_faction)
 	var has_faction_requirement = option_data and option_data.required_faction != QuestOption.Faction.NONE
@@ -148,6 +149,8 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		
 		meets_stat_requirement = player_stat_value >= scaled_requirement
 		print("Stat check: player ", option_data.required_stat, "=", player_stat_value, " required=", scaled_requirement, " (base=", option_data.required_amount, " day=", server_day, ") match=", meets_stat_requirement)
+		# Add required stat amount to label
+		label_text = "(" + str(scaled_requirement) + ") " + label_text
 	
 	# Infer option type from data
 	var is_combat = option_data and option_data.enemy_id > 0
@@ -188,11 +191,20 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		else:
 			icon.texture = dialogue_icon
 	
-	# Connect button press
+	# Set the label text with prefixes
+	if label:
+		label.text = label_text
+	
+	# Connect button press and style based on requirements
 	var button = option_instance.get_node("Button")
+	var panel = option_instance.get_node("Panel")
 	if button:
 		# Disable button if can't afford, wrong faction, or doesn't meet stat requirement
-		button.disabled = (has_currency_requirement and not can_afford) or (has_faction_requirement and not is_correct_faction) or (has_stat_requirement and not meets_stat_requirement)
+		var is_disabled = (has_currency_requirement and not can_afford) or (has_faction_requirement and not is_correct_faction) or (has_stat_requirement and not meets_stat_requirement)
+		button.disabled = is_disabled
+		# Dim the panel when disabled
+		if panel and is_disabled:
+			panel.modulate = Color(0.5, 0.5, 0.5, 0.7)
 		button.pressed.connect(callback)
 	
 	options_container.add_child(option_instance)
