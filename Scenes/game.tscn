@@ -1,4 +1,4 @@
-[gd_scene load_steps=124 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=126 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -316,6 +316,18 @@ rebound_strength = 7.0
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
 
+[sub_resource type="Resource" id="Resource_rekvy"]
+script = ExtResource("68_2cns2")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="Resource" id="Resource_kwfbt"]
+script = ExtResource("68_2cns2")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
 bg_color = Color(0.2, 0.2, 0.2, 0.9)
 border_width_left = 3
@@ -412,7 +424,7 @@ settings_button = NodePath("TopUI/SettingsButton")
 rankings_button = NodePath("TopUI/VBoxContainer/AspectRatioContainer/RankingsButton")
 chat_button = NodePath("BottomUI/ChatButton")
 chat_panel = NodePath("GameSceneParent/Wrapper/GameScene/ChatOverlay")
-combat_panel = NodePath("GameSceneParent/Wrapper/GameScene/CombatPanel")
+combat_panel = NodePath("GameSceneParent/Wrapper/GameScene/Combat")
 settings_panel = NodePath("GameSceneParent/Wrapper/GameScene/Settings")
 rankings_panel = NodePath("GameSceneParent/Wrapper/GameScene/Rankings")
 fight_button = NodePath("GameSceneParent/Wrapper/GameScene/Arena/FightButton")
@@ -6339,6 +6351,7 @@ vertical_scroll_mode = 3
 script = ExtResource("67_e6ols")
 wheel_scroll_damper = SubResource("Resource_umggo")
 dragging_scroll_damper = SubResource("Resource_w4j8i")
+allow_horizontal_scroll = false
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="ChatContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel/ScrollContainer"]
@@ -6417,6 +6430,12 @@ grow_vertical = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
+script = ExtResource("67_e6ols")
+speed = 300.0
+wheel_scroll_damper = SubResource("Resource_rekvy")
+dragging_scroll_damper = SubResource("Resource_kwfbt")
+allow_horizontal_scroll = false
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="QuestEntries" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll"]
 layout_mode = 2
