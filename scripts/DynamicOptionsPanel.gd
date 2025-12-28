@@ -122,6 +122,32 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		is_correct_faction = GameInfo.current_player.faction == required_faction_int
 		print("Faction check: player faction=", GameInfo.current_player.faction, " required=", required_faction_int, " match=", is_correct_faction)
 	
+	# Check if this is a stat check (has required_stat)
+	var has_stat_requirement = option_data and option_data.required_stat != QuestOption.Stat.NONE and option_data.required_amount > 0
+	var meets_stat_requirement = true
+	
+	if has_stat_requirement and GameInfo.current_player:
+		# Scale requirement by 2% per day (compounded)
+		var server_day = GameInfo.current_player.server_day
+		var scaled_requirement = int(option_data.required_amount * pow(1.02, server_day - 1))
+		
+		# Get player's stat value
+		var player_stat_value = 0
+		match option_data.required_stat:
+			QuestOption.Stat.STRENGTH:
+				player_stat_value = GameInfo.current_player.strength
+			QuestOption.Stat.STAMINA:
+				player_stat_value = GameInfo.current_player.stamina
+			QuestOption.Stat.AGILITY:
+				player_stat_value = GameInfo.current_player.agility
+			QuestOption.Stat.LUCK:
+				player_stat_value = GameInfo.current_player.luck
+			QuestOption.Stat.ARMOR:
+				player_stat_value = GameInfo.current_player.armor
+		
+		meets_stat_requirement = player_stat_value >= scaled_requirement
+		print("Stat check: player ", option_data.required_stat, "=", player_stat_value, " required=", scaled_requirement, " (base=", option_data.required_amount, " day=", server_day, ") match=", meets_stat_requirement)
+	
 	# Infer option type from data
 	var is_combat = option_data and option_data.enemy_id > 0
 	var is_stat_check = option_data and option_data.required_stat != QuestOption.Stat.NONE
@@ -164,8 +190,8 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	# Connect button press
 	var button = option_instance.get_node("Button")
 	if button:
-		# Disable button if can't afford or wrong faction
-		button.disabled = (has_currency_requirement and not can_afford) or (has_faction_requirement and not is_correct_faction)
+		# Disable button if can't afford, wrong faction, or doesn't meet stat requirement
+		button.disabled = (has_currency_requirement and not can_afford) or (has_faction_requirement and not is_correct_faction) or (has_stat_requirement and not meets_stat_requirement)
 		button.pressed.connect(callback)
 	
 	options_container.add_child(option_instance)

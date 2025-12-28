@@ -640,6 +640,7 @@ class GameCurrentPlayer:
 	var profession: int = 0  # Profession ID (1=Herbalist, 2=Blacksmith, etc.)
 	var daily_quests: Array = []  # Array of quest IDs available today
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
+	var server_day: int = 1  # Current day on the server (starts at 1)
 	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
 	var avatar_face: int = 1  # Face cosmetic ID from database
 	var avatar_hair: int = 10  # Hair cosmetic ID from database
@@ -686,6 +687,7 @@ class GameCurrentPlayer:
 		"profession": "profession",
 		"daily_quests": "daily_quests",
 		"server_timezone": "server_timezone",
+		"server_day": "server_day",
 		"weather": "weather",
 		"avatar_face": "avatar_face",
 		"avatar_hair": "avatar_hair",
