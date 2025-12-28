@@ -78,16 +78,14 @@ func add_option(text: String, option_type: QuestOption.OptionType, callback: Cal
 	var option_instance = option_scene.instantiate()
 	
 	# Set text directly on the label
-	var label = option_instance.get_node("Label")
+	var label = option_instance.get_node("HBoxContainer/Label")
 	if label:
 		label.text = text
 	
 	# Connect button press
-	if label:
-		label.gui_input.connect(func(event):
-			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-				callback.call()
-		)
+	var button = option_instance.get_node("Button")
+	if button:
+		button.pressed.connect(callback)
 	
 	options_container.add_child(option_instance)
 	return option_instance

@@ -1,4 +1,4 @@
-[gd_scene load_steps=110 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=111 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -261,6 +261,9 @@ shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qj5kr"]
+bg_color = Color(0.945384, 0.416332, 0.215236, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
 bg_color = Color(0.2, 0.2, 0.2, 0.9)
@@ -6247,7 +6250,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
 quest_text_label = NodePath("BookScroll/BookContent/CenterContainer/QuestText")
-options_container = NodePath("OptionsContainer")
+options_container = NodePath("OptionsScroll/OptionsContainer")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 skill_check_icon = ExtResource("44_k8ojv")
@@ -6297,18 +6300,23 @@ text = "Quest text will appear here..."
 fit_content = true
 scroll_active = false
 
-[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest"]
+[node name="OptionsScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/Quest"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = -80.0
+offset_top = -153.0
 offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
-grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qj5kr")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/OptionsScroll"]
+layout_mode = 2
 
 [node name="CancelQuest" type="Panel" parent="Portrait/GameSceneParent/Wrapper"]
 visible = false

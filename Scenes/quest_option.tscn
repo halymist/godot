@@ -37,3 +37,7 @@ layout_mode = 2
 size_flags_vertical = 1
 text = "Go "
 vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+flat = true
