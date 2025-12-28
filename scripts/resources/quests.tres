@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=24 format=3 uid="uid://qpxy3xo35sm8"]
+[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=26 format=3 uid="uid://qpxy3xo35sm8"]
 
 [ext_resource type="Script" uid="uid://dyylwqohml0nt" path="res://scripts/resources/QuestData.gd" id="1_76t0t"]
 [ext_resource type="Script" uid="uid://ctr1a0kn3bxmx" path="res://scripts/resources/QuestSlide.gd" id="2_67rkd"]
@@ -104,12 +104,24 @@ required_silver = 0
 required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
+[sub_resource type="Resource" id="Resource_fdcwh"]
+script = ExtResource("4_gr8oa")
+silver = 0
+item_id = 0
+perk_id = 0
+strength_boost = 0
+stamina_boost = 10
+agility_boost = 0
+luck_boost = 0
+metadata/_custom_type_script = "uid://n5j4pekoeaet"
+
 [sub_resource type="Resource" id="Resource_eurwf"]
 script = ExtResource("2_67rkd")
 slide_id = 1
 asset_id = 0
 text = "This is the first slide This is the first slide This is the first slide This is the first slide"
 options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_jgsu5"), SubResource("Resource_enrg4"), SubResource("Resource_67rkd"), SubResource("Resource_d2n6j"), SubResource("Resource_gr8oa"), SubResource("Resource_17ocm"), SubResource("Resource_4ffti")])
+reward = SubResource("Resource_fdcwh")
 metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 
 [sub_resource type="Resource" id="Resource_o23ke"]
@@ -208,12 +220,24 @@ required_silver = 0
 required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
+[sub_resource type="Resource" id="Resource_v4f5w"]
+script = ExtResource("4_gr8oa")
+silver = 0
+item_id = 1
+perk_id = 0
+strength_boost = 0
+stamina_boost = 0
+agility_boost = 0
+luck_boost = 0
+metadata/_custom_type_script = "uid://n5j4pekoeaet"
+
 [sub_resource type="Resource" id="Resource_ghcxp"]
 script = ExtResource("2_67rkd")
 slide_id = 4
 asset_id = 0
 text = "What a life huh"
 options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_q25yr")])
+reward = SubResource("Resource_v4f5w")
 metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 
 [sub_resource type="Resource" id="Resource_tqocc"]

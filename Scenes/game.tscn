@@ -1,4 +1,4 @@
-[gd_scene load_steps=126 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=127 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -87,6 +87,7 @@
 [ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="83_lrctp"]
 [ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="84_e6ols"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
+[ext_resource type="Texture2D" uid="uid://cbpatceuy6750" path="res://assets/images/ui/quests/quest_background.jpg" id="87_2cns2"]
 [ext_resource type="Script" uid="uid://cqdrglw3ojju2" path="res://scripts/TogglePanel_Wide.gd" id="94_fykvq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
@@ -6379,7 +6380,7 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_scroll", "quest_entries_container", "options_container", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_scroll", "quest_entries_container", "options_container", "reward_label", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6392,6 +6393,7 @@ script = ExtResource("38_dynamic_options")
 quest_scroll = NodePath("BookScroll")
 quest_entries_container = NodePath("BookScroll/QuestEntries")
 options_container = NodePath("OptionsScroll/OptionsContainer")
+reward_label = NodePath("Reward")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
@@ -6405,6 +6407,18 @@ order_icon = ExtResource("82_gsm33")
 guild_icon = ExtResource("83_lrctp")
 companions_icon = ExtResource("84_e6ols")
 portrait = NodePath("../../..")
+
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/Quest"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -210.0
+offset_right = 210.0
+offset_bottom = 630.0
+grow_horizontal = 2
+texture = ExtResource("87_2cns2")
+expand_mode = 1
 
 [node name="QuestTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest"]
 layout_mode = 1
@@ -6443,6 +6457,16 @@ size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_override_constants/separation = 35
 alignment = 2
+
+[node name="Reward" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.479
+anchor_right = 0.906
+anchor_bottom = 0.611
+offset_top = 0.22998
+offset_right = 0.0700073
+offset_bottom = 0.0700073
 
 [node name="OptionsScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/Quest"]
 layout_mode = 1

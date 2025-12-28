@@ -4,6 +4,7 @@ extends Panel
 @export var quest_scroll: ScrollContainer  # Container for quest entries
 @export var quest_entries_container: VBoxContainer  # Stacked quest entries
 @export var options_container: VBoxContainer  # Buttons below text
+@export var reward_label: Label  # Label to display quest rewards
 
 # Icon textures for different option types
 @export_group("Option Icons")
@@ -127,6 +128,12 @@ func display_quest_slide(quest_slide: QuestSlide):
 			.set_ease(Tween.EASE_OUT)\
 			.set_trans(Tween.TRANS_CUBIC)
 	
+	# Display rewards if present
+	display_rewards(quest_slide)
+	
+	# Apply rewards to player
+	apply_rewards(quest_slide)
+	
 	# Update options
 	clear_options()
 	if quest_slide.options:
@@ -149,6 +156,111 @@ func create_quest_entry(text: String) -> Control:
 		label.text = text
 	
 	return entry
+
+func display_rewards(quest_slide: QuestSlide):
+	"""Display rewards in the reward label"""
+	if not reward_label or not quest_slide or not quest_slide.reward:
+		if reward_label:
+			reward_label.text = ""
+		return
+	
+	var reward = quest_slide.reward
+	var reward_parts = []
+	
+	# Check each reward type
+	if reward.silver > 0:
+		reward_parts.append(str(reward.silver) + " silver")
+	
+	if reward.item_id > 0:
+		var item_data = GameInfo.get_item(reward.item_id)
+		if item_data:
+			reward_parts.append(item_data.item_name)
+		else:
+			reward_parts.append("Item #" + str(reward.item_id))
+	
+	if reward.perk_id > 0:
+		var perk_data = GameInfo.get_perk(reward.perk_id)
+		if perk_data:
+			reward_parts.append(perk_data.perk_name)
+		else:
+			reward_parts.append("Perk #" + str(reward.perk_id))
+	
+	# Stat boosts
+	if reward.strength_boost > 0:
+		reward_parts.append(str(reward.strength_boost) + " Strength")
+	if reward.stamina_boost > 0:
+		reward_parts.append(str(reward.stamina_boost) + " Stamina")
+	if reward.agility_boost > 0:
+		reward_parts.append(str(reward.agility_boost) + " Agility")
+	if reward.luck_boost > 0:
+		reward_parts.append(str(reward.luck_boost) + " Luck")
+	
+	# Display rewards
+	if reward_parts.size() > 0:
+		reward_label.text = "You receive: " + ", ".join(reward_parts)
+	else:
+		reward_label.text = ""
+
+func apply_rewards(quest_slide: QuestSlide):
+	"""Apply rewards to the player"""
+	if not quest_slide or not quest_slide.reward:
+		return
+	
+	var reward = quest_slide.reward
+	
+	# Silver reward
+	if reward.silver > 0:
+		print("REWARD: Awarding ", reward.silver, " silver")
+		if UIManager.instance:
+			UIManager.instance.update_silver(reward.silver)
+		if GameInfo.current_player:
+			GameInfo.current_player.silver += reward.silver
+	
+	# Stat boosts
+	if GameInfo.current_player:
+		if reward.strength_boost > 0:
+			print("REWARD: Awarding ", reward.strength_boost, " Strength")
+			GameInfo.current_player.strength += reward.strength_boost
+		if reward.stamina_boost > 0:
+			print("REWARD: Awarding ", reward.stamina_boost, " Stamina")
+			GameInfo.current_player.stamina += reward.stamina_boost
+		if reward.agility_boost > 0:
+			print("REWARD: Awarding ", reward.agility_boost, " Agility")
+			GameInfo.current_player.agility += reward.agility_boost
+		if reward.luck_boost > 0:
+			print("REWARD: Awarding ", reward.luck_boost, " Luck")
+			GameInfo.current_player.luck += reward.luck_boost
+		
+		# Refresh stats display if any stat was boosted
+		if reward.strength_boost > 0 or reward.stamina_boost > 0 or reward.agility_boost > 0 or reward.luck_boost > 0:
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+	
+	# Item reward
+	if reward.item_id > 0:
+		print("REWARD: Attempting to award Item ID: ", reward.item_id)
+		var empty_slot = GameInfo.find_empty_bag_slot()
+		if empty_slot >= 0:
+			print("REWARD: Found empty bag slot ", empty_slot, ", assigning item")
+			GameInfo.current_player.bag[empty_slot] = reward.item_id
+			# TODO: Refresh bag UI when available
+			if UIManager.instance and UIManager.instance.has_method("refresh_bag"):
+				UIManager.instance.refresh_bag()
+		else:
+			print("REWARD: No empty bag slot available for item ", reward.item_id)
+	
+	# Perk reward
+	if reward.perk_id > 0:
+		print("REWARD: Attempting to award Perk ID: ", reward.perk_id)
+		if GameInfo.current_player:
+			# Find next available inactive perk slot
+			var next_slot = GameInfo.current_player.inactive_perks.size()
+			print("REWARD: Assigning perk to inactive slot ", next_slot)
+			GameInfo.current_player.inactive_perks.append({
+				"perk_id": reward.perk_id,
+				"active": false
+			})
+			# TODO: Refresh perk UI when available
 
 func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""
