@@ -1,4 +1,4 @@
-[gd_scene load_steps=111 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -80,6 +80,10 @@
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
 [ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="69_cosmetics"]
 [ext_resource type="Texture2D" uid="uid://cgcpygii1l82g" path="res://assets/images/ui/fight.png" id="79_qj5kr"]
+[ext_resource type="Texture2D" uid="uid://c0byjvygn0ygi" path="res://assets/images/ui/luc.png" id="81_d5jaa"]
+[ext_resource type="Texture2D" uid="uid://n3yj5br5mlr7" path="res://assets/images/ui/faith.png" id="82_gsm33"]
+[ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="83_lrctp"]
+[ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="84_e6ols"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
 [ext_resource type="Script" uid="uid://cqdrglw3ojju2" path="res://scripts/TogglePanel_Wide.gd" id="94_fykvq"]
 
@@ -6253,9 +6257,16 @@ quest_text_label = NodePath("BookScroll/BookContent/CenterContainer/QuestText")
 options_container = NodePath("OptionsScroll/OptionsContainer")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
-skill_check_icon = ExtResource("44_k8ojv")
 currency_check_icon = ExtResource("32_ccfo7")
 end_icon = ExtResource("14_81klo")
+strength_icon = ExtResource("44_k8ojv")
+stamina_icon = ExtResource("46_gsm33")
+agility_icon = ExtResource("66_7sqp1")
+luck_icon = ExtResource("81_d5jaa")
+armor_icon = ExtResource("86_w4j8i")
+order_icon = ExtResource("82_gsm33")
+guild_icon = ExtResource("83_lrctp")
+companions_icon = ExtResource("84_e6ols")
 portrait = NodePath("../../..")
 
 [node name="QuestTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest"]

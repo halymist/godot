@@ -1,10 +1,10 @@
 class_name QuestOption
 extends Resource
 
-enum OptionType { DIALOGUE, COMBAT, SKILL_CHECK, CURRENCY_CHECK, END }
+enum Faction { NONE, ORDER, GUILD, COMPANIONS }
+enum Stat { NONE, STRENGTH, STAMINA, AGILITY, LUCK, ARMOR }
 
 @export var option_index: int
-@export var option_type: OptionType = OptionType.DIALOGUE
 @export var text: String = ""
 
 # For dialogue/end options
@@ -16,13 +16,11 @@ enum OptionType { DIALOGUE, COMBAT, SKILL_CHECK, CURRENCY_CHECK, END }
 @export var on_lose_slide: int = -1
 
 # For skill checks
-@export var required_stat: String = ""  # "strength", "stamina", "agility", "luck"
+@export var required_stat: Stat = Stat.NONE
 @export var required_amount: int = 0
-@export var on_success_slide: int = -1
-@export var on_fail_slide: int = -1
 
 # For currency checks
 @export var required_silver: int = 0
 
 # For faction checks
-@export var required_faction: int = 0  # 1=Order, 2=Guild, 3=Companions (0=no requirement)
+@export var required_faction: Faction = Faction.NONE

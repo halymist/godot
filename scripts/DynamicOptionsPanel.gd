@@ -8,9 +8,20 @@ extends Panel
 @export_group("Option Icons")
 @export var dialogue_icon: Texture2D
 @export var combat_icon: Texture2D
-@export var skill_check_icon: Texture2D
 @export var currency_check_icon: Texture2D
 @export var end_icon: Texture2D
+
+@export_group("Stat Check Icons")
+@export var strength_icon: Texture2D
+@export var stamina_icon: Texture2D
+@export var agility_icon: Texture2D
+@export var luck_icon: Texture2D
+@export var armor_icon: Texture2D
+
+@export_group("Faction Check Icons")
+@export var order_icon: Texture2D
+@export var guild_icon: Texture2D
+@export var companions_icon: Texture2D
 
 # Quest state
 var current_quest_id: int = 0
@@ -54,6 +65,10 @@ func load_quest(quest_id: int, slide_number: int = 1):
 
 func display_quest_slide(quest_slide: QuestSlide):
 	"""Replace text with fade effect and show options"""
+	if not quest_slide:
+		print("ERROR: quest_slide is null")
+		return
+		
 	# Fade out
 	var tween = create_tween()
 	tween.tween_property(quest_text_label, "modulate:a", 0.0, 0.2)
@@ -68,10 +83,16 @@ func display_quest_slide(quest_slide: QuestSlide):
 	
 	# Update options
 	clear_options()
-	for option in quest_slide.options:
-		add_option(option.text, option.option_type, _on_quest_option_pressed.bind(option), option)
+	if quest_slide.options:
+		for option in quest_slide.options:
+			if option:
+				add_option(option.text, _on_quest_option_pressed.bind(option), option)
+			else:
+				print("WARNING: Null option in quest_slide.options")
+	else:
+		print("WARNING: quest_slide.options is null or empty")
 
-func add_option(text: String, option_type: QuestOption.OptionType, callback: Callable, option_data: QuestOption = null) -> Control:
+func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""
 	if not options_container:
 		return null
@@ -92,31 +113,53 @@ func add_option(text: String, option_type: QuestOption.OptionType, callback: Cal
 		can_afford = GameInfo.current_player.silver >= option_data.required_silver
 	
 	# Check if this is a faction check (has required_faction)
-	var has_faction_requirement = option_data and option_data.required_faction > 0
+	var has_faction_requirement = option_data and option_data.required_faction != QuestOption.Faction.NONE
 	var is_correct_faction = true
 	
 	if has_faction_requirement and GameInfo.current_player:
-		is_correct_faction = GameInfo.current_player.faction == option_data.required_faction
+		# Cast enum to int for comparison
+		var required_faction_int = int(option_data.required_faction)
+		is_correct_faction = GameInfo.current_player.faction == required_faction_int
+		print("Faction check: player faction=", GameInfo.current_player.faction, " required=", required_faction_int, " match=", is_correct_faction)
 	
-	# Set icon based on option type or requirements
+	# Infer option type from data
+	var is_combat = option_data and option_data.enemy_id > 0
+	var is_stat_check = option_data and option_data.required_stat != QuestOption.Stat.NONE
+	var is_end = option_data and option_data.slide_target < 0
+	
+	# Set icon based on inferred type or requirements
 	var icon = option_instance.get_node("HBoxContainer/Icon")
 	if icon:
 		if has_currency_requirement:
 			icon.texture = currency_check_icon
 		elif has_faction_requirement:
-			icon.texture = skill_check_icon  # Use skill check icon for faction checks
+			# Use specific faction icon
+			match option_data.required_faction:
+				QuestOption.Faction.ORDER:
+					icon.texture = order_icon
+				QuestOption.Faction.GUILD:
+					icon.texture = guild_icon
+				QuestOption.Faction.COMPANIONS:
+					icon.texture = companions_icon
+		elif is_stat_check:
+			# Use specific stat icon
+			match option_data.required_stat:
+				QuestOption.Stat.STRENGTH:
+					icon.texture = strength_icon
+				QuestOption.Stat.STAMINA:
+					icon.texture = stamina_icon
+				QuestOption.Stat.AGILITY:
+					icon.texture = agility_icon
+				QuestOption.Stat.LUCK:
+					icon.texture = luck_icon
+				QuestOption.Stat.ARMOR:
+					icon.texture = armor_icon
+		elif is_combat:
+			icon.texture = combat_icon
+		elif is_end:
+			icon.texture = end_icon
 		else:
-			match option_type:
-				QuestOption.OptionType.DIALOGUE:
-					icon.texture = dialogue_icon
-				QuestOption.OptionType.COMBAT:
-					icon.texture = combat_icon
-				QuestOption.OptionType.SKILL_CHECK:
-					icon.texture = skill_check_icon
-				QuestOption.OptionType.CURRENCY_CHECK:
-					icon.texture = currency_check_icon
-				QuestOption.OptionType.END:
-					icon.texture = end_icon
+			icon.texture = dialogue_icon
 	
 	# Connect button press
 	var button = option_instance.get_node("Button")
@@ -149,23 +192,28 @@ func _on_quest_option_pressed(option: QuestOption):
 			print("Not enough silver for option: ", option.text)
 			return
 	
-	match option.option_type:
-		QuestOption.OptionType.DIALOGUE:
-			if option.slide_target > 0:
-				load_quest(current_quest_id, option.slide_target)
-			else:
-				print("WARNING: DIALOGUE option has no slide_target: ", option.text)
-		QuestOption.OptionType.COMBAT:
-			# Random outcome for now
-			var won = randf() > 0.5
-			if won and option.on_win_slide > 0:
-				load_quest(current_quest_id, option.on_win_slide)
-			elif not won and option.on_lose_slide > 0:
-				load_quest(current_quest_id, option.on_lose_slide)
-			else:
-				print("WARNING: COMBAT option missing win/lose slides")
-		QuestOption.OptionType.END:
-			_finish_quest()
+	# Infer option type from data
+	if option.enemy_id > 0:
+		# Combat option
+		var won = randf() > 0.5
+		if won and option.on_win_slide > 0:
+			load_quest(current_quest_id, option.on_win_slide)
+		elif not won and option.on_lose_slide > 0:
+			load_quest(current_quest_id, option.on_lose_slide)
+		else:
+			print("WARNING: COMBAT option missing win/lose slides")
+	elif option.required_stat != QuestOption.Stat.NONE:
+		# Stat check option - TODO: implement stat checking logic
+		print("TODO: Stat check not yet implemented")
+	elif option.slide_target < 0:
+		# End option
+		_finish_quest()
+	else:
+		# Dialogue option
+		if option.slide_target > 0:
+			load_quest(current_quest_id, option.slide_target)
+		else:
+			print("WARNING: DIALOGUE option has no slide_target: ", option.text)
 
 func _finish_quest():
 	"""End quest and return home"""
