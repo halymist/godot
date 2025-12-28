@@ -3,7 +3,7 @@ extends MarginContainer
 
 @export var max_width: float = 300.0
 
-@onready var label = $Label
+@onready var label = $HBoxContainer/Label
 
 func _ready():
 	adjust_size()

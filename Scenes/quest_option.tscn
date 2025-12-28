@@ -1,19 +1,39 @@
-[gd_scene load_steps=2 format=3 uid="uid://ddgp4njhef2ac"]
+[gd_scene load_steps=4 format=3 uid="uid://ddgp4njhef2ac"]
 
 [ext_resource type="Script" uid="uid://dk7i8aj2wob6h" path="res://scripts/QuestOption.gd" id="1_vfk2w"]
+[ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="2_tpdcj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpdcj"]
 
 [node name="QuestOption" type="MarginContainer"]
 custom_minimum_size = Vector2(0, 50)
 offset_right = 50.0
 offset_bottom = 50.0
 size_flags_horizontal = 0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 script = ExtResource("1_vfk2w")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tpdcj")
 
-[node name="Label" type="Label" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_tpdcj")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-text = "Go left Go lef"
+text = "Go "
 vertical_alignment = 1
