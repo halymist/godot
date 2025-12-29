@@ -66,7 +66,7 @@ var mock_character_data = {
 	"rank": 15486,
 	"profession": 1,
 	"server_timezone": "Europe/Stockholm",
-	"server_day": 15,
+	"server_day": 50,
 	"weather": 2,  # 1=sunny, 2=rainy
 	"daily_quests": [1, 2, 3],
 	"avatar_face": 1,  # Cosmetic ID from database

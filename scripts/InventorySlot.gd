@@ -500,36 +500,20 @@ func handle_double_click(item: GameInfo.Item):
 					var target_slot = _find_slot_by_id(bag_slot_id)
 					if target_slot and target_slot.is_slot_empty():
 						UIManager.instance.update_silver(-buy_price)
-						# Create a copy of the item
-						var new_item = GameInfo.Item.new()
-						new_item.id = item.id
-						new_item.bag_slot_id = bag_slot_id
-						new_item.item_name = item.item_name
-						new_item.type = item.type
-						new_item.armor = item.armor
-						new_item.strength = item.strength
-						new_item.stamina = item.stamina
-						new_item.agility = item.agility
-						new_item.luck = item.luck
-						new_item.damage_min = item.damage_min
-						new_item.damage_max = item.damage_max
-						new_item.asset_id = item.asset_id
-						new_item.effect_id = item.effect_id
-						new_item.effect_factor = item.effect_factor
-						new_item.quality = item.quality
-						new_item.price = item.price
-						new_item.tempered = item.tempered
-						new_item.enchant_overdrive = item.enchant_overdrive
-						new_item.day = item.day
-						new_item.texture = item.texture
-						new_item.has_socket = item.has_socket
-						new_item.socketed_gem_id = item.socketed_gem_id
-						new_item.socketed_gem_day = item.socketed_gem_day
+						print("VENDOR: Purchased item ID ", item.id, " for ", buy_price, " silver")
+						
+						# Create simplified item (only id, bag_slot_id, and day)
+						var new_item = GameInfo.Item.new({
+							"id": item.id,
+							"bag_slot_id": bag_slot_id,
+							"day": GameInfo.current_player.server_day  # Current day for stat scaling
+						})
+						
 						GameInfo.current_player.bag_slots.append(new_item)
 						target_slot.place_item_in_slot(new_item)
-						if UIManager.instance:
-							UIManager.instance.refresh_bags()
-
+						print("VENDOR: Item added to bag slot ", bag_slot_id)
+						
+						UIManager.instance.refresh_bags()
 						break
 		return
 	
