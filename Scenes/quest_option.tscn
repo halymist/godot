@@ -15,10 +15,10 @@ bg_color = Color(1, 1, 1, 0.15)
 bg_color = Color(1, 1, 1, 0.25)
 
 [node name="QuestOption" type="MarginContainer"]
-custom_minimum_size = Vector2(0, 50)
-offset_right = 50.0
+custom_minimum_size = Vector2(350, 50)
+offset_right = 350.0
 offset_bottom = 50.0
-size_flags_horizontal = 0
+size_flags_horizontal = 4
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 8
@@ -42,10 +42,13 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "Go "
+text = "Go"
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2

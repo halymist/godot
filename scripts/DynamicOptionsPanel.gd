@@ -29,42 +29,11 @@ extends Panel
 var current_quest_id: int = 0
 var current_slide_number: int = 1
 
-# Distance-based modulation settings
-const FOCAL_DISTANCE = 150.0  # Distance at which entries are fully faded
-const MIN_SCALE = 0.43
-const MIN_ALPHA = 0.15
-
 # Reference to portrait for navigation
 @export var portrait: Control
 
 # Quest signals
 signal quest_arrived()
-
-func _process(_delta):
-	"""Update entry modulation based on distance from focal point"""
-	if not quest_scroll or not quest_entries_container:
-		return
-	
-	# Fixed focal point in middle of viewport
-	var focus_y = quest_scroll.global_position.y + quest_scroll.size.y * 0.5
-	
-	for entry in quest_entries_container.get_children():
-		if not entry is Control:
-			continue
-		
-		# Skip spacers
-		if entry.custom_minimum_size.y == 300 or entry.custom_minimum_size.y == 100:
-			continue
-		
-		# Set pivot to center so scaling happens from center
-		entry.pivot_offset = entry.size / 2.0
-		
-		var entry_center_y = entry.global_position.y + entry.size.y * 0.5
-		var dist = abs(entry_center_y - focus_y)
-		var t = clamp(dist / FOCAL_DISTANCE, 0.0, 1.0)
-		
-		entry.scale = Vector2.ONE * lerp(1.0, MIN_SCALE, t)
-		entry.modulate.a = lerp(1.0, MIN_ALPHA, t)
 
 func _ready():
 	quest_arrived.connect(_on_quest_arrived)
@@ -105,6 +74,11 @@ func display_quest_slide(quest_slide: QuestSlide):
 	if not quest_entries_container:
 		print("ERROR: quest_entries_container not set")
 		return
+	
+	# Clear previous entries (keep spacers)
+	for child in quest_entries_container.get_children():
+		if child.name != "TopSpacer" and child.name != "BottomSpacer":
+			child.queue_free()
 	
 	# Create new entry
 	var entry = create_quest_entry(quest_slide.text)
