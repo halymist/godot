@@ -2,8 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dk7i8aj2wob6h" path="res://scripts/QuestOption.gd" id="1_vfk2w"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="2_tpdcj"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpdcj"]
+[ext_resource type="Texture2D" uid="uid://b6ncqnw4w7uw1" path="res://assets/images/ui/options.png" id="2_vq2r0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
 bg_color = Color(1, 1, 1, 0)
@@ -25,9 +24,10 @@ theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 2
 script = ExtResource("1_vfk2w")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tpdcj")
+texture = ExtResource("2_vq2r0")
+expand_mode = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
