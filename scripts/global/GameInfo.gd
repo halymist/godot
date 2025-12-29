@@ -1004,8 +1004,11 @@ func load_vendor_items_data(vendor_data: Array):
 	vendor_items.clear()
 	print("Loading vendor_items: ", vendor_data.size(), " items found")
 	for item_id in vendor_data:
-		var item = Item.new({"id": item_id})
-		print("  Loaded vendor item: ", item.item_name)
+		var item = Item.new({
+			"id": item_id,
+			"day": current_player.server_day if current_player else 1  # Use current day for scaling
+		})
+		print("  Loaded vendor item: ", item.item_name, " (day ", item.day, ")")
 		vendor_items.append(item)
 
 # load_rankings_data removed - rankings now loaded via load_enemy_players_data

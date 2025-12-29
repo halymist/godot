@@ -172,9 +172,9 @@ func display_rewards(quest_slide: QuestSlide):
 		reward_parts.append(str(reward.silver) + " silver")
 	
 	if reward.item_id > 0:
-		var item_data = GameInfo.get_item(reward.item_id)
-		if item_data:
-			reward_parts.append(item_data.item_name)
+		var item_resource = GameInfo.items_db.get_item_by_id(reward.item_id)
+		if item_resource:
+			reward_parts.append(item_resource.item_name)
 		else:
 			reward_parts.append("Item #" + str(reward.item_id))
 	
@@ -239,14 +239,39 @@ func apply_rewards(quest_slide: QuestSlide):
 	# Item reward
 	if reward.item_id > 0:
 		print("REWARD: Attempting to award Item ID: ", reward.item_id)
-		var empty_slot = GameInfo.find_empty_bag_slot()
-		if empty_slot >= 0:
-			print("REWARD: Found empty bag slot ", empty_slot, ", assigning item")
-			GameInfo.current_player.bag[empty_slot] = reward.item_id
-			# TODO: Refresh bag UI when available
-			if UIManager.instance and UIManager.instance.has_method("refresh_bag"):
-				UIManager.instance.refresh_bag()
-		else:
+		# Find empty bag slot (10-14)
+		for bag_slot_id in range(10, 15):
+			var is_occupied = false
+			for existing_item in GameInfo.current_player.bag_slots:
+				if existing_item.bag_slot_id == bag_slot_id:
+					is_occupied = true
+					break
+			
+			if not is_occupied:
+				# Create simplified item (id, bag_slot_id, day)
+				var new_item = GameInfo.Item.new({
+					"id": reward.item_id,
+					"bag_slot_id": bag_slot_id,
+					"day": GameInfo.current_player.server_day if GameInfo.current_player else 1
+				})
+				
+				GameInfo.current_player.bag_slots.append(new_item)
+				print("REWARD: Item ", new_item.item_name, " added to bag slot ", bag_slot_id)
+				
+				# Refresh bag UI
+			if UIManager.instance:
+				UIManager.instance.refresh_bags()
+			break
+	
+	if reward.item_id > 0:
+		# Check if we went through the loop without finding empty slot
+		var found_slot = false
+		for existing_item in GameInfo.current_player.bag_slots:
+			if existing_item.id == reward.item_id and existing_item.bag_slot_id >= 10 and existing_item.bag_slot_id <= 14:
+				found_slot = true
+				break
+		
+		if not found_slot:
 			print("REWARD: No empty bag slot available for item ", reward.item_id)
 	
 	# Perk reward
