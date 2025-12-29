@@ -2,7 +2,6 @@ extends Panel
 
 # Eldrum-style scrolling quest display
 @export var quest_scroll: ScrollContainer  # Container for quest entries
-@export var quest_entries_container: VBoxContainer  # Stacked quest entries
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
 
@@ -71,36 +70,23 @@ func display_quest_slide(quest_slide: QuestSlide):
 		print("ERROR: quest_slide is null")
 		return
 	
-	if not quest_entries_container:
-		print("ERROR: quest_entries_container not set")
+	if not quest_scroll:
+		print("ERROR: quest_scroll not set")
 		return
 	
-	# Clear previous entries (keep spacers)
-	for child in quest_entries_container.get_children():
-		if child.name != "TopSpacer" and child.name != "BottomSpacer":
-			child.queue_free()
+	# Clear previous entry from the content container
+	var content_container = quest_scroll.get_node("ContentContainer")
+	for child in content_container.get_children():
+		child.queue_free()
 	
-	# Create new entry
+	# Create and add new entry to content container
 	var entry = create_quest_entry(quest_slide.text)
-	quest_entries_container.add_child(entry)
+	content_container.add_child(entry)
 	
-	# Insert before bottom spacer
-	var bottom_spacer = quest_entries_container.get_node_or_null("BottomSpacer")
-	if bottom_spacer:
-		var bottom_index = bottom_spacer.get_index()
-		quest_entries_container.move_child(entry, bottom_index)
-	
-	# Wait for layout to recalculate
+	# Wait for layout to recalculate then scroll to top
 	await get_tree().process_frame
-	await get_tree().process_frame
-	
-	# Scroll to bottom to show new entry
 	if quest_scroll:
-		var max_scroll = quest_scroll.get_v_scroll_bar().max_value
-		var tween = create_tween()
-		tween.tween_property(quest_scroll, "scroll_vertical", int(max_scroll), 1.2)\
-			.set_ease(Tween.EASE_OUT)\
-			.set_trans(Tween.TRANS_CUBIC)
+		quest_scroll.scroll_vertical = 0
 	
 	# Display rewards if present
 	display_rewards(quest_slide)
@@ -366,14 +352,13 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	
 	# Connect button press and style based on requirements
 	var button = option_instance.get_node("Button")
-	var panel = option_instance.get_node("Panel")
 	if button:
 		# Disable button if can't afford, wrong faction, or doesn't meet stat requirement
 		var is_disabled = (has_currency_requirement and not can_afford) or (has_faction_requirement and not is_correct_faction) or (has_stat_requirement and not meets_stat_requirement)
 		button.disabled = is_disabled
-		# Dim the panel when disabled
-		if panel and is_disabled:
-			panel.modulate = Color(0.5, 0.5, 0.5, 0.7)
+		# Dim the entire option when disabled
+		if is_disabled:
+			option_instance.modulate = Color(0.5, 0.5, 0.5, 0.7)
 		button.pressed.connect(callback)
 	
 	options_container.add_child(option_instance)
