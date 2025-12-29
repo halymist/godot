@@ -74,14 +74,15 @@ func display_quest_slide(quest_slide: QuestSlide):
 		print("ERROR: quest_scroll not set")
 		return
 	
-	# Clear previous entry from the content container
+	# Clear previous entry from the center container
 	var content_container = quest_scroll.get_node("ContentContainer")
-	for child in content_container.get_children():
+	var center_container = content_container.get_node("CenterContainer")
+	for child in center_container.get_children():
 		child.queue_free()
 	
-	# Create and add new entry to content container
+	# Create and add new entry to center container
 	var entry = create_quest_entry(quest_slide.text)
-	content_container.add_child(entry)
+	center_container.add_child(entry)
 	
 	# Wait for layout to recalculate then scroll to top
 	await get_tree().process_frame
@@ -106,16 +107,16 @@ func display_quest_slide(quest_slide: QuestSlide):
 		print("WARNING: quest_slide.options is null or empty")
 
 func create_quest_entry(text: String) -> Control:
-	"""Create a quest entry node"""
-	var entry_scene = load("res://Scenes/quest_entry.tscn")
-	var entry = entry_scene.instantiate()
-	
-	# Set text
-	var label = entry.get_node("MarginContainer/EntryText")
-	if label:
-		label.text = text
-	
-	return entry
+	"""Create a quest entry label"""
+	var label = Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	label.custom_minimum_size = Vector2(350, 0)
+	label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return label
 
 func display_rewards(quest_slide: QuestSlide):
 	"""Display rewards in the reward label"""

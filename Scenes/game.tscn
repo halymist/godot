@@ -6457,6 +6457,11 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
+[node name="CenterContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/BookScroll/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="Reward" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest"]
 layout_mode = 1
 anchors_preset = -1
