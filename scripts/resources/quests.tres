@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=26 format=3 uid="uid://qpxy3xo35sm8"]
+[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=23 format=3 uid="uid://qpxy3xo35sm8"]
 
 [ext_resource type="Script" uid="uid://dyylwqohml0nt" path="res://scripts/resources/QuestData.gd" id="1_76t0t"]
 [ext_resource type="Script" uid="uid://ctr1a0kn3bxmx" path="res://scripts/resources/QuestSlide.gd" id="2_67rkd"]
@@ -62,48 +62,6 @@ required_silver = 0
 required_faction = 1
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
-[sub_resource type="Resource" id="Resource_gr8oa"]
-script = ExtResource("3_d2n6j")
-option_index = 5
-text = "Guild check"
-slide_target = 3
-enemy_id = -1
-on_win_slide = -1
-on_lose_slide = -1
-required_stat = 0
-required_amount = 0
-required_silver = 0
-required_faction = 2
-metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
-
-[sub_resource type="Resource" id="Resource_17ocm"]
-script = ExtResource("3_d2n6j")
-option_index = 6
-text = "Strength check"
-slide_target = 2
-enemy_id = -1
-on_win_slide = -1
-on_lose_slide = -1
-required_stat = 1
-required_amount = 10
-required_silver = 0
-required_faction = 0
-metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
-
-[sub_resource type="Resource" id="Resource_4ffti"]
-script = ExtResource("3_d2n6j")
-option_index = 7
-text = "Stamina check"
-slide_target = 3
-enemy_id = -1
-on_win_slide = -1
-on_lose_slide = -1
-required_stat = 2
-required_amount = 10
-required_silver = 0
-required_faction = 0
-metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
-
 [sub_resource type="Resource" id="Resource_fdcwh"]
 script = ExtResource("4_gr8oa")
 silver = 0
@@ -120,7 +78,7 @@ script = ExtResource("2_67rkd")
 slide_id = 1
 asset_id = 0
 text = "This is the first slide This is the first slide This is the first slide This is the first slide"
-options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_jgsu5"), SubResource("Resource_enrg4"), SubResource("Resource_67rkd"), SubResource("Resource_d2n6j"), SubResource("Resource_gr8oa"), SubResource("Resource_17ocm"), SubResource("Resource_4ffti")])
+options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_jgsu5"), SubResource("Resource_enrg4"), SubResource("Resource_67rkd"), SubResource("Resource_d2n6j")])
 reward = SubResource("Resource_fdcwh")
 metadata/_custom_type_script = "uid://ctr1a0kn3bxmx"
 

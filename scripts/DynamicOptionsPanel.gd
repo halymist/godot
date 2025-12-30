@@ -4,6 +4,7 @@ extends Panel
 @export var quest_scroll: ScrollContainer  # Container for quest entries
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
+@export var overlay: ColorRect  # Overlay that can be pressed to hide UI
 
 # Icon textures for different option types
 @export_group("Option Icons")
@@ -36,6 +37,22 @@ signal quest_arrived()
 
 func _ready():
 	quest_arrived.connect(_on_quest_arrived)
+	
+	# Set up overlay press-to-hide functionality
+	if overlay:
+		overlay.gui_input.connect(_on_overlay_input)
+
+func _on_overlay_input(event: InputEvent):
+	"""Hide overlay and UI when pressed, show when released"""
+	if event is InputEventMouseButton:
+		var mouse_event = event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if mouse_event.pressed:
+				# Hide all UI elements (make overlay transparent)
+				overlay.modulate.a = 0
+			else:
+				# Show all UI elements (restore overlay)
+				overlay.modulate.a = 1
 
 func _on_quest_arrived():
 	"""Quest arrival from travel"""
