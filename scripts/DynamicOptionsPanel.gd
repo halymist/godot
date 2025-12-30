@@ -158,15 +158,20 @@ func display_rewards(quest_slide: QuestSlide):
 		else:
 			reward_parts.append("Perk #" + str(reward.perk_id))
 	
-	# Stat boosts
+	# Stat boosts (scaled by 2% per day)
+	var server_day = GameInfo.current_player.server_day if GameInfo.current_player else 1
 	if reward.strength_boost > 0:
-		reward_parts.append(str(reward.strength_boost) + " Strength")
+		var scaled = int(reward.strength_boost * pow(1.02, server_day - 1))
+		reward_parts.append(str(scaled) + " Strength")
 	if reward.stamina_boost > 0:
-		reward_parts.append(str(reward.stamina_boost) + " Stamina")
+		var scaled = int(reward.stamina_boost * pow(1.02, server_day - 1))
+		reward_parts.append(str(scaled) + " Stamina")
 	if reward.agility_boost > 0:
-		reward_parts.append(str(reward.agility_boost) + " Agility")
+		var scaled = int(reward.agility_boost * pow(1.02, server_day - 1))
+		reward_parts.append(str(scaled) + " Agility")
 	if reward.luck_boost > 0:
-		reward_parts.append(str(reward.luck_boost) + " Luck")
+		var scaled = int(reward.luck_boost * pow(1.02, server_day - 1))
+		reward_parts.append(str(scaled) + " Luck")
 	
 	# Display rewards
 	if reward_parts.size() > 0:
@@ -189,20 +194,25 @@ func apply_rewards(quest_slide: QuestSlide):
 		if GameInfo.current_player:
 			GameInfo.current_player.silver += reward.silver
 	
-	# Stat boosts
+	# Stat boosts (scaled by 2% per day)
 	if GameInfo.current_player:
+		var server_day = GameInfo.current_player.server_day
 		if reward.strength_boost > 0:
-			print("REWARD: Awarding ", reward.strength_boost, " Strength")
-			GameInfo.current_player.strength += reward.strength_boost
+			var scaled = int(reward.strength_boost * pow(1.02, server_day - 1))
+			print("REWARD: Awarding ", scaled, " Strength (base: ", reward.strength_boost, ")")
+			GameInfo.current_player.strength += scaled
 		if reward.stamina_boost > 0:
-			print("REWARD: Awarding ", reward.stamina_boost, " Stamina")
-			GameInfo.current_player.stamina += reward.stamina_boost
+			var scaled = int(reward.stamina_boost * pow(1.02, server_day - 1))
+			print("REWARD: Awarding ", scaled, " Stamina (base: ", reward.stamina_boost, ")")
+			GameInfo.current_player.stamina += scaled
 		if reward.agility_boost > 0:
-			print("REWARD: Awarding ", reward.agility_boost, " Agility")
-			GameInfo.current_player.agility += reward.agility_boost
+			var scaled = int(reward.agility_boost * pow(1.02, server_day - 1))
+			print("REWARD: Awarding ", scaled, " Agility (base: ", reward.agility_boost, ")")
+			GameInfo.current_player.agility += scaled
 		if reward.luck_boost > 0:
-			print("REWARD: Awarding ", reward.luck_boost, " Luck")
-			GameInfo.current_player.luck += reward.luck_boost
+			var scaled = int(reward.luck_boost * pow(1.02, server_day - 1))
+			print("REWARD: Awarding ", scaled, " Luck (base: ", reward.luck_boost, ")")
+			GameInfo.current_player.luck += scaled
 		
 		# Refresh stats display if any stat was boosted
 		if reward.strength_boost > 0 or reward.stamina_boost > 0 or reward.agility_boost > 0 or reward.luck_boost > 0:
