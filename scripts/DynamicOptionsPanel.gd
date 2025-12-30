@@ -147,42 +147,42 @@ func display_rewards(quest_slide: QuestSlide):
 	if reward.item_id > 0:
 		var item_resource = GameInfo.items_db.get_item_by_id(reward.item_id)
 		if item_resource:
-			reward_parts.append(item_resource.item_name)
+			reward_parts.append(item_resource.item_name + " (item)")
 		else:
-			reward_parts.append("Item #" + str(reward.item_id))
+			reward_parts.append("Item #" + str(reward.item_id) + " (item)")
 	
 	if reward.perk_id > 0:
-		var perk_data = GameInfo.get_perk(reward.perk_id)
-		if perk_data:
-			reward_parts.append(perk_data.perk_name)
+		var perk_resource = GameInfo.perks_db.get_perk_by_id(reward.perk_id) if GameInfo.perks_db else null
+		if perk_resource:
+			reward_parts.append(perk_resource.perk_name + " (perk)")
 		else:
-			reward_parts.append("Perk #" + str(reward.perk_id))
+			reward_parts.append("Perk #" + str(reward.perk_id) + " (perk)")
 	
 	# Stat boosts (scaled by 2% per day)
 	var server_day = GameInfo.current_player.server_day if GameInfo.current_player else 1
 	if reward.strength_boost > 0:
 		var scaled = int(reward.strength_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " Strength")
+		reward_parts.append(str(scaled) + " strength")
 	if reward.stamina_boost > 0:
 		var scaled = int(reward.stamina_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " Stamina")
+		reward_parts.append(str(scaled) + " stamina")
 	if reward.agility_boost > 0:
 		var scaled = int(reward.agility_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " Agility")
+		reward_parts.append(str(scaled) + " agility")
 	if reward.luck_boost > 0:
 		var scaled = int(reward.luck_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " Luck")
+		reward_parts.append(str(scaled) + " luck")
 	if reward.armor_boost > 0:
 		var scaled = int(reward.armor_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " Armor")
+		reward_parts.append(str(scaled) + " armor")
 	
 	# Talent points (not scaled)
 	if reward.talent_points > 0:
-		reward_parts.append(str(reward.talent_points) + " Talent Point" + ("s" if reward.talent_points > 1 else ""))
+		reward_parts.append(str(reward.talent_points) + " talent point" + ("s" if reward.talent_points > 1 else ""))
 	
 	# Display rewards
 	if reward_parts.size() > 0:
-		reward_label.text = "You receive: " + ", ".join(reward_parts)
+		reward_label.text = "You recieve " + ", ".join(reward_parts) + ".\n"
 	else:
 		reward_label.text = ""
 
@@ -277,14 +277,14 @@ func apply_rewards(quest_slide: QuestSlide):
 	if reward.perk_id > 0:
 		print("REWARD: Attempting to award Perk ID: ", reward.perk_id)
 		if GameInfo.current_player:
-			# Find next available inactive perk slot
-			var next_slot = GameInfo.current_player.inactive_perks.size()
-			print("REWARD: Assigning perk to inactive slot ", next_slot)
-			GameInfo.current_player.inactive_perks.append({
-				"perk_id": reward.perk_id,
-				"active": false
+			# Create new perk and add to perks array as inactive
+			var new_perk = GameInfo.Perk.new({
+				"id": reward.perk_id,
+				"active": false,
+				"slot": 0
 			})
-			# TODO: Refresh perk UI when available
+			GameInfo.current_player.perks.append(new_perk)
+			print("REWARD: Perk ", new_perk.perk_name, " added to inactive perks")
 
 func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""

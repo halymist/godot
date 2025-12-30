@@ -6446,6 +6446,7 @@ alignment = 2
 
 [node name="Reward" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BottomContainer"]
 layout_mode = 2
+theme_override_constants/line_spacing = 10
 
 [node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BottomContainer"]
 layout_mode = 2
