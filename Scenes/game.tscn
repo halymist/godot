@@ -6380,7 +6380,7 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_scroll", "options_container", "reward_label", "overlay", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_scroll", "center_container", "options_container", "reward_label", "overlay", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6390,7 +6390,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
-quest_scroll = NodePath("Overlay/BookScroll")
+quest_scroll = NodePath("Overlay/BookScroll/ScrollContainer")
+center_container = NodePath("Overlay/BookScroll/ScrollContainer/CenterContainer")
 options_container = NodePath("Overlay/OptionsContainer")
 reward_label = NodePath("Overlay/Reward")
 overlay = NodePath("Overlay")
@@ -6413,8 +6414,8 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -210.0
-offset_right = 210.0
+offset_left = -234.5
+offset_right = 235.5
 offset_bottom = 630.0
 grow_horizontal = 2
 texture = ExtResource("87_2cns2")
@@ -6429,27 +6430,22 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="QuestTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
+[node name="BookScroll" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 10.0
-offset_bottom = 50.0
+offset_top = 50.0
+offset_bottom = 151.0
 grow_horizontal = 2
-text = "Quest Title"
-horizontal_alignment = 1
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="BookScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = 60.0
-offset_right = -4.0
-offset_bottom = -337.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BookScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
@@ -6458,41 +6454,31 @@ wheel_scroll_damper = SubResource("Resource_rekvy")
 dragging_scroll_damper = SubResource("Resource_kwfbt")
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
-[node name="ContentContainer" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BookScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="CenterContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BookScroll/ContentContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BookScroll/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Reward" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.583
-anchor_right = 0.983
-anchor_bottom = 0.684
-offset_top = -10.29
-offset_right = -0.11499
-offset_bottom = -12.92
-
-[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
-layout_mode = 1
-anchors_preset = -1
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -236.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_top = -277.0
+offset_bottom = -207.0
 grow_horizontal = 2
+grow_vertical = 0
+
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -190.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_vertical = 8
 alignment = 2
 

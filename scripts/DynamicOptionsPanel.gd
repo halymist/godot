@@ -1,7 +1,8 @@
 extends Panel
 
 # Eldrum-style scrolling quest display
-@export var quest_scroll: ScrollContainer  # Container for quest entries
+@export var quest_scroll: ScrollContainer  # The actual scroll container
+@export var center_container: CenterContainer  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
 @export var overlay: ColorRect  # Overlay that can be pressed to hide UI
@@ -48,11 +49,13 @@ func _on_overlay_input(event: InputEvent):
 		var mouse_event = event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			if mouse_event.pressed:
-				# Hide all UI elements (make overlay transparent)
-				overlay.modulate.a = 0
+				# Fade out overlay smoothly
+				var tween = create_tween()
+				tween.tween_property(overlay, "modulate:a", 0.0, 0.2).set_ease(Tween.EASE_OUT)
 			else:
-				# Show all UI elements (restore overlay)
-				overlay.modulate.a = 1
+				# Fade in overlay smoothly
+				var tween = create_tween()
+				tween.tween_property(overlay, "modulate:a", 1.0, 0.2).set_ease(Tween.EASE_IN)
 
 func _on_quest_arrived():
 	"""Quest arrival from travel"""
@@ -92,14 +95,20 @@ func display_quest_slide(quest_slide: QuestSlide):
 		return
 	
 	# Clear previous entry from the center container
-	var content_container = quest_scroll.get_node("ContentContainer")
-	var center_container = content_container.get_node("CenterContainer")
 	for child in center_container.get_children():
 		child.queue_free()
 	
 	# Create and add new entry to center container
 	var entry = create_quest_entry(quest_slide.text)
 	center_container.add_child(entry)
+	
+	# Animate entry sliding up from below
+	entry.modulate.a = 0
+	entry.position.y = 20
+	var entry_tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	
 	# Wait for layout to recalculate then scroll to top
 	await get_tree().process_frame

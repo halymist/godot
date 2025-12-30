@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PerkDatabase" load_steps=10 format=3 uid="uid://bxh8cyad6lih5"]
+[gd_resource type="Resource" script_class="PerkDatabase" load_steps=11 format=3 uid="uid://bxh8cyad6lih5"]
 
 [ext_resource type="Script" uid="uid://d33tmwug4neyy" path="res://scripts/resources/PerkResource.gd" id="1_ocg54"]
 [ext_resource type="Texture2D" uid="uid://db2s8q0brdsna" path="res://data/perk_texture/perk.png" id="2_ptr4g"]
@@ -60,7 +60,18 @@ factor2 = 0.0
 icon = ExtResource("3_ptr4g")
 metadata/_custom_type_script = "uid://d33tmwug4neyy"
 
+[sub_resource type="Resource" id="Resource_p4f38"]
+script = ExtResource("1_ocg54")
+id = 4
+perk_name = "Perk reward"
+effect1_id = 1
+factor1 = 20.0
+effect2_id = 2
+factor2 = 20.0
+icon = ExtResource("3_ptr4g")
+metadata/_custom_type_script = "uid://d33tmwug4neyy"
+
 [resource]
 script = ExtResource("2_txtgy")
-perks = Array[ExtResource("1_ocg54")]([SubResource("Resource_22ubc"), SubResource("Resource_4k4mo"), SubResource("Resource_uiww1"), SubResource("Resource_ptr4g"), SubResource("Resource_dsu5a")])
+perks = Array[ExtResource("1_ocg54")]([SubResource("Resource_22ubc"), SubResource("Resource_4k4mo"), SubResource("Resource_uiww1"), SubResource("Resource_ptr4g"), SubResource("Resource_dsu5a"), SubResource("Resource_p4f38")])
 metadata/_custom_type_script = "uid://cph7aq216pdnc"
