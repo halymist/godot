@@ -1,4 +1,4 @@
-[gd_scene load_steps=127 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=125 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -316,18 +316,6 @@ rebound_strength = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
-
-[sub_resource type="Resource" id="Resource_rekvy"]
-script = ExtResource("68_2cns2")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
-
-[sub_resource type="Resource" id="Resource_kwfbt"]
-script = ExtResource("68_2cns2")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
 bg_color = Color(0.2, 0.2, 0.2, 0.9)
@@ -6380,7 +6368,7 @@ placeholder_text = "Type your message..."
 layout_mode = 2
 text = "Send"
 
-[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("quest_scroll", "center_container", "options_container", "reward_label", "overlay", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "overlay", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6390,10 +6378,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
 script = ExtResource("38_dynamic_options")
-quest_scroll = NodePath("Overlay/BookScroll/ScrollContainer")
-center_container = NodePath("Overlay/BookScroll/ScrollContainer/CenterContainer")
-options_container = NodePath("Overlay/OptionsContainer")
-reward_label = NodePath("Overlay/Reward")
+text_container = NodePath("Overlay/TextContainer")
+options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
+reward_label = NodePath("Overlay/BottomContainer/Reward")
 overlay = NodePath("Overlay")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
@@ -6430,55 +6417,37 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="BookScroll" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
+[node name="TextContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
 offset_top = 50.0
-offset_bottom = 151.0
+offset_right = -10.0
+offset_bottom = -241.0
 grow_horizontal = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BookScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-follow_focus = true
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 3
-script = ExtResource("67_e6ols")
-wheel_scroll_damper = SubResource("Resource_rekvy")
-dragging_scroll_damper = SubResource("Resource_kwfbt")
-metadata/_custom_type_script = "uid://bgqglerkcylxx"
-
-[node name="CenterContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BookScroll/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Reward" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
+[node name="BottomContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -277.0
-offset_bottom = -207.0
+offset_left = 19.0
+offset_top = -231.0
+offset_right = -14.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
+alignment = 2
 
-[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -190.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="Reward" type="Label" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BottomContainer"]
+layout_mode = 2
+
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/Quest/Overlay/BottomContainer"]
+layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 

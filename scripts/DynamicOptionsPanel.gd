@@ -1,8 +1,7 @@
 extends Panel
 
 # Eldrum-style scrolling quest display
-@export var quest_scroll: ScrollContainer  # The actual scroll container
-@export var center_container: CenterContainer  # Center container for quest text
+@export var text_container: CenterContainer  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
 @export var overlay: ColorRect  # Overlay that can be pressed to hide UI
@@ -86,21 +85,13 @@ func load_quest(quest_id: int, slide_number: int = 1):
 
 func display_quest_slide(quest_slide: QuestSlide):
 	"""Create new quest entry"""
-	if not quest_slide:
-		print("ERROR: quest_slide is null")
-		return
-	
-	if not quest_scroll:
-		print("ERROR: quest_scroll not set")
-		return
-	
-	# Clear previous entry from the center container
-	for child in center_container.get_children():
+	# Clear previous entry from the text container
+	for child in text_container.get_children():
 		child.queue_free()
 	
-	# Create and add new entry to center container
+	# Create and add new entry to text container
 	var entry = create_quest_entry(quest_slide.text)
-	center_container.add_child(entry)
+	text_container.add_child(entry)
 	
 	# Animate entry sliding up from below
 	entry.modulate.a = 0
@@ -109,11 +100,6 @@ func display_quest_slide(quest_slide: QuestSlide):
 	entry_tween.set_parallel(true)
 	entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
 	entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-	
-	# Wait for layout to recalculate then scroll to top
-	await get_tree().process_frame
-	if quest_scroll:
-		quest_scroll.scroll_vertical = 0
 	
 	# Display rewards if present
 	display_rewards(quest_slide)
