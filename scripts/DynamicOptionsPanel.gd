@@ -172,6 +172,13 @@ func display_rewards(quest_slide: QuestSlide):
 	if reward.luck_boost > 0:
 		var scaled = int(reward.luck_boost * pow(1.02, server_day - 1))
 		reward_parts.append(str(scaled) + " Luck")
+	if reward.armor_boost > 0:
+		var scaled = int(reward.armor_boost * pow(1.02, server_day - 1))
+		reward_parts.append(str(scaled) + " Armor")
+	
+	# Talent points (not scaled)
+	if reward.talent_points > 0:
+		reward_parts.append(str(reward.talent_points) + " Talent Point" + ("s" if reward.talent_points > 1 else ""))
 	
 	# Display rewards
 	if reward_parts.size() > 0:
@@ -213,9 +220,18 @@ func apply_rewards(quest_slide: QuestSlide):
 			var scaled = int(reward.luck_boost * pow(1.02, server_day - 1))
 			print("REWARD: Awarding ", scaled, " Luck (base: ", reward.luck_boost, ")")
 			GameInfo.current_player.luck += scaled
+		if reward.armor_boost > 0:
+			var scaled = int(reward.armor_boost * pow(1.02, server_day - 1))
+			print("REWARD: Awarding ", scaled, " Armor (base: ", reward.armor_boost, ")")
+			GameInfo.current_player.armor += scaled
+		
+		# Talent points (not scaled)
+		if reward.talent_points > 0:
+			print("REWARD: Awarding ", reward.talent_points, " Talent Points")
+			GameInfo.current_player.talent_points += reward.talent_points
 		
 		# Refresh stats display if any stat was boosted
-		if reward.strength_boost > 0 or reward.stamina_boost > 0 or reward.agility_boost > 0 or reward.luck_boost > 0:
+		if reward.strength_boost > 0 or reward.stamina_boost > 0 or reward.agility_boost > 0 or reward.luck_boost > 0 or reward.armor_boost > 0 or reward.talent_points > 0:
 			if UIManager.instance:
 				UIManager.instance.refresh_stats()
 	

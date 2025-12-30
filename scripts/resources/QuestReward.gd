@@ -8,3 +8,5 @@ extends Resource
 @export var stamina_boost: int = 0
 @export var agility_boost: int = 0
 @export var luck_boost: int = 0
+@export var armor_boost: int = 0
+@export var talent_points: int = 0

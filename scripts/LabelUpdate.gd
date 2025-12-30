@@ -13,6 +13,7 @@ extends Control
 @export var luck_label: Label
 @export var luck_aprox: Label
 @export var armor_label: Label
+@export var talents_label: Label
 
 # Effect value labels (On Self column)
 @export var effect_strength_value: Label  # ID 1
@@ -59,6 +60,12 @@ func stats_changed(_stats: Dictionary):
 	luck_label.text = str(total_stats.luck)
 	luck_aprox.text = "(100)"
 	armor_label.text = str(total_stats.armor)
+
+	var spent_points = 0
+	for talent in GameInfo.current_player.talents:
+		spent_points += talent.points
+		
+	talents_label.text = "Talent points: %d/%d" % [spent_points, GameInfo.current_player.talent_points]
 	
 	# Calculate and display effect values (without % suffix)
 	if effect_strength_value:
