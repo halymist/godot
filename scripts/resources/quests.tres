@@ -146,9 +146,9 @@ metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_ivt0s"]
 script = ExtResource("4_gr8oa")
-silver = 20
+silver = 0
 item_id = 0
-perk_id = 0
+perk_id = 4
 strength_boost = 0
 stamina_boost = 0
 agility_boost = 0
