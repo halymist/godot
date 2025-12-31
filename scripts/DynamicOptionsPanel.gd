@@ -294,89 +294,84 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	var option_scene = load("res://Scenes/quest_option.tscn")
 	var option_instance = option_scene.instantiate()
 	
-	# We'll update label text after checking requirements (to include required values)
 	var label = option_instance.get_node("HBoxContainer/Label")
 	var label_text = text
+	var meets_requirement = true
+	var scaled_requirement = 0
 	
-	# Check if this is a currency check (has required_silver)
-	var has_currency_requirement = option_data and option_data.required_silver > 0
-	var can_afford = true
-	
-	if has_currency_requirement and GameInfo.current_player:
-		can_afford = GameInfo.current_player.silver >= option_data.required_silver
-		# Add required silver to label
-		label_text = "(" + str(option_data.required_silver) + ") " + label_text
-	
-	# Check if this is a faction check (has required_faction)
-	var has_faction_requirement = option_data and option_data.required_faction != QuestOption.Faction.NONE
-	var is_correct_faction = true
-	
-	if has_faction_requirement and GameInfo.current_player:
-		# Cast enum to int for comparison
-		var required_faction_int = int(option_data.required_faction)
-		is_correct_faction = GameInfo.current_player.faction == required_faction_int
-		print("Faction check: player faction=", GameInfo.current_player.faction, " required=", required_faction_int, " match=", is_correct_faction)
-	
-	# Check if this is a stat check (has required_stat)
-	var has_stat_requirement = option_data and option_data.required_stat != QuestOption.Stat.NONE and option_data.required_amount > 0
-	var meets_stat_requirement = true
-	
-	if has_stat_requirement and GameInfo.current_player:
-		# Scale requirement by 20% per day (compounded)
-		var server_day = GameInfo.current_player.server_day
-		var scaled_requirement = int(option_data.required_amount * pow(1.20, server_day - 1))
+	# Check unified requirement
+	if option_data and option_data.required_type != QuestOption.RequirementType.NONE and GameInfo.current_player:
+		var req_type = option_data.required_type
+		var req_amount = option_data.required_amount
 		
-		# Get player's total stats (includes equipment, perks, etc.)
-		var total_stats = GameInfo.get_total_stats()
-		var player_stat_value = 0
-		match option_data.required_stat:
-			QuestOption.Stat.STRENGTH:
-				player_stat_value = total_stats.strength
-			QuestOption.Stat.STAMINA:
-				player_stat_value = total_stats.stamina
-			QuestOption.Stat.AGILITY:
-				player_stat_value = total_stats.agility
-			QuestOption.Stat.LUCK:
-				player_stat_value = total_stats.luck
-			QuestOption.Stat.ARMOR:
-				player_stat_value = total_stats.armor
+		# Determine if requirement needs day scaling (only stats scale, effects/silver/factions don't)
+		var needs_scaling = req_type >= QuestOption.RequirementType.STRENGTH and req_type <= QuestOption.RequirementType.ARMOR
 		
-		meets_stat_requirement = player_stat_value >= scaled_requirement
-		print("Stat check: player ", option_data.required_stat, "=", player_stat_value, " required=", scaled_requirement, " (base=", option_data.required_amount, " day=", server_day, ") match=", meets_stat_requirement)
-		# Add required stat amount to label
-		label_text = "(" + str(scaled_requirement) + ") " + label_text
+		if needs_scaling:
+			var server_day = GameInfo.current_player.server_day
+			scaled_requirement = int(req_amount * pow(1.20, server_day - 1))
+		else:
+			scaled_requirement = req_amount
+		
+		# Check requirement based on type
+		match req_type:
+			QuestOption.RequirementType.SILVER:
+				meets_requirement = GameInfo.current_player.silver >= scaled_requirement
+			QuestOption.RequirementType.ORDER:
+				meets_requirement = GameInfo.current_player.faction == 1
+			QuestOption.RequirementType.GUILD:
+				meets_requirement = GameInfo.current_player.faction == 2
+			QuestOption.RequirementType.COMPANIONS:
+				meets_requirement = GameInfo.current_player.faction == 3
+			QuestOption.RequirementType.STRENGTH, QuestOption.RequirementType.STAMINA, \
+			QuestOption.RequirementType.AGILITY, QuestOption.RequirementType.LUCK, \
+			QuestOption.RequirementType.ARMOR:
+				var total_stats = GameInfo.get_total_stats()
+				var player_value = 0
+				match req_type:
+					QuestOption.RequirementType.STRENGTH: player_value = total_stats.strength
+					QuestOption.RequirementType.STAMINA: player_value = total_stats.stamina
+					QuestOption.RequirementType.AGILITY: player_value = total_stats.agility
+					QuestOption.RequirementType.LUCK: player_value = total_stats.luck
+					QuestOption.RequirementType.ARMOR: player_value = total_stats.armor
+				meets_requirement = player_value >= scaled_requirement
+			_:
+				# Effect requirements (EFFECT_1 through EFFECT_20)
+				if req_type >= QuestOption.RequirementType.EFFECT_1 and req_type <= QuestOption.RequirementType.EFFECT_20:
+					var effect_id = req_type - QuestOption.RequirementType.EFFECT_1 + 1
+					var total_effects = GameInfo.get_total_effects()
+					var player_effect = total_effects.get(effect_id, 0.0)
+					meets_requirement = player_effect >= scaled_requirement
+		
+		# Add requirement to label if not faction check
+		if req_type < QuestOption.RequirementType.ORDER or req_type > QuestOption.RequirementType.COMPANIONS:
+			label_text = "(" + str(scaled_requirement) + ") " + label_text
 	
-	# Infer option type from data
-	var is_combat = option_data and option_data.enemy_id > 0
-	var is_stat_check = option_data and option_data.required_stat != QuestOption.Stat.NONE
-	var is_end = option_data and option_data.slide_target < 0
-	
-	# Set icon based on inferred type or requirements
+	# Set icon based on requirement type and option type
 	var icon = option_instance.get_node("HBoxContainer/Icon")
 	if icon:
-		if has_currency_requirement:
-			icon.texture = currency_check_icon
-		elif has_faction_requirement:
-			# Use specific faction icon
-			match option_data.required_faction:
-				QuestOption.Faction.ORDER:
+		var is_combat = option_data and option_data.enemy_id > 0
+		var is_end = option_data and option_data.slide_target < 0
+		
+		if option_data and option_data.required_type != QuestOption.RequirementType.NONE:
+			match option_data.required_type:
+				QuestOption.RequirementType.SILVER:
+					icon.texture = currency_check_icon
+				QuestOption.RequirementType.ORDER:
 					icon.texture = order_icon
-				QuestOption.Faction.GUILD:
+				QuestOption.RequirementType.GUILD:
 					icon.texture = guild_icon
-				QuestOption.Faction.COMPANIONS:
+				QuestOption.RequirementType.COMPANIONS:
 					icon.texture = companions_icon
-		elif is_stat_check:
-			# Use specific stat icon
-			match option_data.required_stat:
-				QuestOption.Stat.STRENGTH:
+				QuestOption.RequirementType.STRENGTH:
 					icon.texture = strength_icon
-				QuestOption.Stat.STAMINA:
+				QuestOption.RequirementType.STAMINA:
 					icon.texture = stamina_icon
-				QuestOption.Stat.AGILITY:
+				QuestOption.RequirementType.AGILITY:
 					icon.texture = agility_icon
-				QuestOption.Stat.LUCK:
+				QuestOption.RequirementType.LUCK:
 					icon.texture = luck_icon
-				QuestOption.Stat.ARMOR:
+				QuestOption.RequirementType.ARMOR:
 					icon.texture = armor_icon
 		elif is_combat:
 			icon.texture = combat_icon
@@ -385,18 +380,15 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		else:
 			icon.texture = dialogue_icon
 	
-	# Set the label text with prefixes
+	# Set label text
 	if label:
 		label.text = label_text
 	
-	# Connect button press and style based on requirements
+	# Connect button and handle disabled state
 	var button = option_instance.get_node("Button")
 	if button:
-		# Disable button if can't afford, wrong faction, or doesn't meet stat requirement
-		var is_disabled = (has_currency_requirement and not can_afford) or (has_faction_requirement and not is_correct_faction) or (has_stat_requirement and not meets_stat_requirement)
-		button.disabled = is_disabled
-		# Dim the entire option when disabled
-		if is_disabled:
+		button.disabled = not meets_requirement
+		if not meets_requirement:
 			option_instance.modulate = Color(0.5, 0.5, 0.5, 0.7)
 		button.pressed.connect(callback)
 	
@@ -413,62 +405,47 @@ func clear_options():
 
 func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click"""
-	# Handle currency requirement first
-	if option.required_silver > 0:
-		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_silver:
-			# Deduct silver using UIManager
+	# Handle currency cost (silver requirement)
+	if option.required_type == QuestOption.RequirementType.SILVER and option.required_amount > 0:
+		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_amount:
 			if UIManager.instance:
-				UIManager.instance.update_silver(-option.required_silver)
-				print("Deducted ", option.required_silver, " silver")
+				UIManager.instance.update_silver(-option.required_amount)
+				print("Deducted ", option.required_amount, " silver")
 		else:
 			print("Not enough silver for option: ", option.text)
 			return
 	
-	# Infer option type from data
+	# Determine navigation based on option type
 	if option.enemy_id > 0:
 		# Combat option
 		var won = randf() > 0.5
-		if won and option.on_win_slide > 0:
-			load_quest(current_quest_id, option.on_win_slide)
-		elif not won and option.on_lose_slide > 0:
-			load_quest(current_quest_id, option.on_lose_slide)
-		else:
-			print("WARNING: COMBAT option missing win/lose slides")
-	elif option.required_stat != QuestOption.Stat.NONE:
-		# Stat check option
-		# Scale requirement by 20% per day (compounded)
-		var server_day = GameInfo.current_player.server_day
-		var scaled_requirement = int(option.required_amount * pow(1.20, server_day - 1))
-		
-		# Get player's total stats (includes equipment, perks, etc.)
-		var total_stats = GameInfo.get_total_stats()
-		var player_stat_value = 0
-		match option.required_stat:
-			QuestOption.Stat.STRENGTH:
-				player_stat_value = total_stats.strength
-			QuestOption.Stat.STAMINA:
-				player_stat_value = total_stats.stamina
-			QuestOption.Stat.AGILITY:
-				player_stat_value = total_stats.agility
-			QuestOption.Stat.LUCK:
-				player_stat_value = total_stats.luck
-			QuestOption.Stat.ARMOR:
-				player_stat_value = total_stats.armor
-		
-		# Check if stat requirement is met
-		if player_stat_value >= scaled_requirement:
-			# Success - navigate to target slide
+		if won:
+			# Win: use slide_target
 			if option.slide_target > 0:
 				load_quest(current_quest_id, option.slide_target)
 			else:
-				print("WARNING: STAT CHECK option missing slide_target")
+				print("WARNING: COMBAT option missing slide_target for win")
 		else:
-			print("Stat check failed: ", player_stat_value, " < ", scaled_requirement)
+			# Lose: use on_lose_slide
+			if option.on_lose_slide > 0:
+				load_quest(current_quest_id, option.on_lose_slide)
+			else:
+				print("WARNING: COMBAT option missing on_lose_slide for loss")
+	elif option.required_type != QuestOption.RequirementType.NONE and option.required_type != QuestOption.RequirementType.SILVER:
+		# Requirement check (stat, effect, or faction - all already validated in add_option)
+		# Success: use slide_target
+		if option.slide_target > 0:
+			load_quest(current_quest_id, option.slide_target)
+		elif option.on_lose_slide > 0:
+			# Some checks might have alternative failure path
+			load_quest(current_quest_id, option.on_lose_slide)
+		else:
+			print("WARNING: CHECK option missing slide_target")
 	elif option.slide_target < 0:
 		# End option
 		_finish_quest()
 	else:
-		# Dialogue option
+		# Normal dialogue option
 		if option.slide_target > 0:
 			load_quest(current_quest_id, option.slide_target)
 		else:

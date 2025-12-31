@@ -11,13 +11,10 @@ script = ExtResource("3_d2n6j")
 option_index = 1
 text = "Go left and dont look back"
 slide_target = 2
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
+enemy_id = -1
+required_type = 0
 required_amount = 0
-required_silver = 0
-required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_enrg4"]
@@ -25,13 +22,10 @@ script = ExtResource("3_d2n6j")
 option_index = 2
 text = "Go right"
 slide_target = 3
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
+enemy_id = -1
+required_type = 0
 required_amount = 0
-required_silver = 0
-required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_67rkd"]
@@ -39,27 +33,21 @@ script = ExtResource("3_d2n6j")
 option_index = 3
 text = "Pay to go to the right"
 slide_target = 3
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
-required_amount = 0
-required_silver = 10
-required_faction = 0
+enemy_id = -1
+required_type = 6
+required_amount = 20
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_d2n6j"]
 script = ExtResource("3_d2n6j")
 option_index = 4
-text = "Order check"
+text = "effect 1 check"
 slide_target = 3
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
-required_amount = 0
-required_silver = 0
-required_faction = 1
+enemy_id = -1
+required_type = 10
+required_amount = 20
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_fdcwh"]
@@ -89,13 +77,10 @@ script = ExtResource("3_d2n6j")
 option_index = 1
 text = "Done"
 slide_target = -1
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
+enemy_id = -1
+required_type = 0
 required_amount = 0
-required_silver = 0
-required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_evd17"]
@@ -103,13 +88,10 @@ script = ExtResource("3_d2n6j")
 option_index = 0
 text = "This is so cool"
 slide_target = 4
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
+enemy_id = -1
+required_type = 0
 required_amount = 0
-required_silver = 0
-required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_xqufw"]
@@ -139,13 +121,10 @@ script = ExtResource("3_d2n6j")
 option_index = 0
 text = "What an adventure"
 slide_target = -1
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
+enemy_id = -1
+required_type = 0
 required_amount = 0
-required_silver = 0
-required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_ivt0s"]
@@ -175,13 +154,10 @@ script = ExtResource("3_d2n6j")
 option_index = 0
 text = "Well lets go home"
 slide_target = -1
-enemy_id = -1
-on_win_slide = -1
 on_lose_slide = -1
-required_stat = 0
+enemy_id = -1
+required_type = 0
 required_amount = 0
-required_silver = 0
-required_faction = 0
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_v4f5w"]
