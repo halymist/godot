@@ -2,6 +2,8 @@ extends Panel
 
 # Combat panel that displays combat log data from GameInfo
 
+@onready var arena_background = $CharacterArea/ArenaBackground
+@onready var combat_log_texture = $CombatLogArea/CombatLogTexture
 @onready var player_icon = $CharacterArea/CharacterContainer/PlayerSection/PlayerIcon
 @onready var player_health_bar = $CharacterArea/CharacterContainer/PlayerSection/PlayerHealthBar
 @onready var player_label = $CharacterArea/CharacterContainer/PlayerSection/PlayerLabel

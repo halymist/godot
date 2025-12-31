@@ -1,4 +1,4 @@
-[gd_scene load_steps=125 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=127 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -62,9 +62,11 @@
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/RankingsPanel.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
+[ext_resource type="Texture2D" uid="uid://cndn224c71n5j" path="res://assets/images/ui/arena_image_back.png" id="37_b1mpw"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Texture2D" uid="uid://frdxqif0cyou" path="res://assets/images/ui/background_char.png" id="38_aujhx"]
+[ext_resource type="Texture2D" uid="uid://bou72u7ekluu2" path="res://assets/images/ui/combatlog_back.png" id="38_ccfo7"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
@@ -1807,12 +1809,22 @@ script = ExtResource("35_combat_panel")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -5.0
+anchor_bottom = 0.478
+offset_bottom = -0.140015
 theme_override_styles/panel = SubResource("StyleBoxFlat_character_area")
+
+[node name="ArenaBackground" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -224.5
+offset_right = 225.5
+offset_bottom = 300.0
+grow_horizontal = 2
+texture = ExtResource("37_b1mpw")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="CharacterContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea"]
 layout_mode = 1
@@ -1891,19 +1903,34 @@ text = "Enemy"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="CombatLogArea" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
+[node name="CombatLogArea" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.5
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 5.0
-offset_right = -10.0
-offset_bottom = -80.0
+offset_top = -321.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("38_ccfo7")
+expand_mode = 1
+
+[node name="CombatLogTexture" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="LogHeaders" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 30.0
+grow_horizontal = 2
 
 [node name="PlayerLogLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea/LogHeaders"]
 layout_mode = 2
@@ -1925,8 +1952,13 @@ text = "Enemy Actions"
 horizontal_alignment = 1
 
 [node name="UnifiedLogScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea"]
-layout_mode = 2
-size_flags_vertical = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 30.0
+grow_horizontal = 2
+grow_vertical = 2
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 script = ExtResource("67_e6ols")
