@@ -1,49 +1,37 @@
 extends Panel
 
-# Combat panel that displays combat log data from GameInfo
+# Combat panel that displays combat messages with fade in/out
 
-@onready var arena_background = $CharacterArea/ArenaBackground
-@onready var combat_log_texture = $CombatLogArea/CombatLogTexture
-@onready var player_avatar = $CharacterArea/CharacterContainer/PlayerSection/PlayerIcon/PlayerAvatar
-@onready var player_health_bar = $CharacterArea/CharacterContainer/PlayerSection/PlayerHealthBar
-@onready var player_label = $CharacterArea/CharacterContainer/PlayerSection/PlayerLabel
-@onready var enemy_avatar = $CharacterArea/CharacterContainer/EnemySection/EnemyIcon/EnemyAvatar
-@onready var enemy_health_bar = $CharacterArea/CharacterContainer/EnemySection/EnemyHealthBar
-@onready var enemy_label = $CharacterArea/CharacterContainer/EnemySection/EnemyLabel
-@onready var combat_log_container = $CombatLogArea/UnifiedLogScroll/CombatLogContainer
+@onready var combat_background = $CombatBackground
+@onready var player_avatar = $PlayerContainer/PlayerIcon/PlayerAvatar
+@onready var player_health_bar = $PlayerContainer/PlayerHealthBar
+@onready var player_label = $PlayerContainer/PlayerLabel
+@onready var enemy_avatar = $EnemyContainer/EnemyIcon/EnemyAvatar
+@onready var enemy_health_bar = $EnemyContainer/EnemyHealthBar
+@onready var enemy_label = $EnemyContainer/EnemyLabel
+@onready var message_label = $MessageArea/MessageLabel
 @onready var skip_replay_button = $SkipReplayButton
-@onready var unified_scroll = $CombatLogArea/UnifiedLogScroll
 
-var current_turn_display = 0
-var display_timer: Timer
 var action_timer: Timer
+var fade_timer: Timer
 var is_combat_finished = false
-var current_player1_health: float
-var current_player2_health: float
-
-# For turn-based display
-var organized_turns = []
 var current_action_index = 0
 var all_actions = []
-var is_displaying_actions = false
-
-# Drag-to-scroll variables for combat log
-var is_dragging_combat = false
-var drag_start_position_combat: Vector2
-var scroll_start_position_combat: float
+var current_message_tween: Tween
 
 func _ready():
-	# Create timer for displaying combat turns
-	display_timer = Timer.new()
-	display_timer.wait_time = 1.5  # 1.5 seconds per turn
-	display_timer.timeout.connect(_display_next_turn)
-	add_child(display_timer)
-	
-	# Create timer for individual actions
+	# Create timer for displaying actions
 	action_timer = Timer.new()
-	action_timer.wait_time = 0.6  # 0.6 seconds per action
+	action_timer.wait_time = 1.5  # 1.5 seconds per message
 	action_timer.timeout.connect(_display_next_action)
 	add_child(action_timer)
+	
+	# Create timer for message fading
+	fade_timer = Timer.new()
+	fade_timer.wait_time = 1.0  # Message visible for 1 second before fading
+	fade_timer.one_shot = true
+	fade_timer.timeout.connect(_fade_current_message)
+	add_child(fade_timer)
 	
 	# Connect to visibility changes
 	visibility_changed.connect(_on_visibility_changed)
@@ -51,9 +39,8 @@ func _ready():
 	# Connect button signal
 	skip_replay_button.pressed.connect(_on_skip_replay_pressed)
 	
-	# Set up drag-to-scroll for the combat log
-	if unified_scroll:
-		unified_scroll.gui_input.connect(_on_combat_scroll_input)
+	# Hide message initially
+	message_label.modulate.a = 0
 
 func display_combat_log():
 	if not GameInfo.current_combat_log:
@@ -77,268 +64,97 @@ func display_combat_log():
 		)
 	enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)
 	
-	# Set initial health bars and store starting values
+	# Set initial health bars
 	player_health_bar.max_value = combat.player1_health
 	enemy_health_bar.max_value = combat.player2_health
 	player_health_bar.value = combat.player1_health
 	enemy_health_bar.value = combat.player2_health
-	current_player1_health = combat.player1_health
-	current_player2_health = combat.player2_health
 	
-	# Clear existing log entries
-	clear_log_containers()
-	
-	# Organize combat data by turns
-	organize_combat_by_turns(combat)
-	
-	# Create a flat list of all actions for sequential display
-	create_action_sequence()
+	# Build action list
+	create_action_sequence(combat)
 	
 	# Reset state
-	current_turn_display = 0
 	current_action_index = 0
 	is_combat_finished = false
-	is_displaying_actions = false
 	skip_replay_button.text = "Skip"
+	message_label.modulate.a = 0
 	
-	if organized_turns.size() > 0:
-		call_deferred("_start_display_timer")
+	if all_actions.size() > 0:
+		call_deferred("_start_action_timer")
 	else:
-		add_combat_result_to_log(combat.final_message)
-		is_combat_finished = true
-		skip_replay_button.text = "Replay"
-
-func _start_display_timer():
-	if is_inside_tree():
-		display_timer.start()
+		show_final_message(combat.final_message)
 
 func _start_action_timer():
 	if is_inside_tree():
 		action_timer.start()
 
-func add_combat_result_to_log(message: String):
-	# Add spacing before result
-	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 20)
-	combat_log_container.add_child(spacer)
-	
-	# Add separator
-	var separator = HSeparator.new()
-	separator.add_theme_color_override("separator", Color(0.8, 0.6, 0.3, 0.9))
-	combat_log_container.add_child(separator)
-	
-	# Add another small spacer
-	var spacer2 = Control.new()
-	spacer2.custom_minimum_size = Vector2(0, 10)
-	combat_log_container.add_child(spacer2)
-	
-	# Add result label
-	var result_label = Label.new()
-	result_label.text = message
-	result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	result_label.add_theme_font_size_override("font_size", 18)
-	result_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.5, 1))
-	result_label.add_theme_color_override("font_shadow_color", Color.BLACK)
-	result_label.add_theme_constant_override("shadow_offset_x", 2)
-	result_label.add_theme_constant_override("shadow_offset_y", 2)
-	result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	combat_log_container.add_child(result_label)
-	
-	# Add bottom spacer for scroll padding
-	var spacer3 = Control.new()
-	spacer3.custom_minimum_size = Vector2(0, 20)
-	combat_log_container.add_child(spacer3)
-
-func clear_log_containers():
-	for child in combat_log_container.get_children():
-		child.queue_free()
-
-func organize_combat_by_turns(combat: GameInfo.CombatResponse):
-	organized_turns.clear()
-	
-	# Group entries by turn
-	var turns_data = {}
-	for entry in combat.combat_log:
-		if not turns_data.has(entry.turn):
-			turns_data[entry.turn] = []
-		turns_data[entry.turn].append(entry)
-	
-	# Sort turns and organize them
-	var turn_numbers = turns_data.keys()
-	turn_numbers.sort()
-	
-	for turn_num in turn_numbers:
-		var turn_entries = turns_data[turn_num]
-		var turn_data = {
-			"turn_number": turn_num,
-			"player1_actions": [],
-			"player2_actions": []
-		}
-		
-		# Separate actions by player
-		for entry in turn_entries:
-			if entry.player == combat.player1_name:
-				turn_data.player1_actions.append(entry)
-			else:
-				turn_data.player2_actions.append(entry)
-		
-		organized_turns.append(turn_data)
-
-func create_action_sequence():
+func create_action_sequence(combat: GameInfo.CombatResponse):
 	all_actions.clear()
 	
-	for turn_data in organized_turns:
-		# Add turn header action
+	# Add all combat log entries as individual messages
+	for entry in combat.combat_log:
 		all_actions.append({
-			"type": "turn_header",
-			"turn_number": turn_data.turn_number
+			"type": "combat_action",
+			"entry": entry
 		})
-		
-		# Create a flat list of all individual actions for this turn
-		var all_turn_actions = []
-		
-		# Add all player1 actions
-		for action in turn_data.player1_actions:
-			all_turn_actions.append({
-				"type": "individual_action",
-				"action": action,
-				"player_side": "player1"
-			})
-		
-		# Add all player2 actions
-		for action in turn_data.player2_actions:
-			all_turn_actions.append({
-				"type": "individual_action", 
-				"action": action,
-				"player_side": "player2"
-			})
-		
-		# Sort actions by their original order in combat log to maintain sequence
-		all_turn_actions.sort_custom(func(a, b): 
-			return GameInfo.current_combat_log.combat_log.find(a.action) < GameInfo.current_combat_log.combat_log.find(b.action)
-		)
-		
-		# Add each individual action to the sequence
-		for action_data in all_turn_actions:
-			all_actions.append(action_data)
-
-func _display_next_turn():
-	if not is_displaying_actions:
-		# This is the first turn - start action sequence
-		display_timer.stop()
-		is_displaying_actions = true
-		current_action_index = 0
-		
-		# Check if first action is a turn header - display it immediately
-		if current_action_index < all_actions.size():
-			var first_action = all_actions[current_action_index]
-			if first_action.type == "turn_header":
-				display_turn_header(first_action.turn_number)
-				current_action_index += 1
-				call_deferred("smooth_scroll_to_bottom")
-		
-		# Start the timer for actual actions
-		call_deferred("_start_action_timer")
+	
+	# Add final message
+	all_actions.append({
+		"type": "final_message",
+		"message": combat.final_message
+	})
 
 func _display_next_action():
 	if current_action_index >= all_actions.size():
 		action_timer.stop()
-		var final_msg = GameInfo.current_combat_log.final_message if GameInfo.current_combat_log else "Combat Complete"
-		add_combat_result_to_log(final_msg)
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
-		call_deferred("smooth_scroll_to_bottom")
 		return
 	
 	var action_data = all_actions[current_action_index]
 	
-	if action_data.type == "turn_header":
-		# Display turn header immediately without delay
-		display_turn_header(action_data.turn_number)
-		current_action_index += 1
-		call_deferred("smooth_scroll_to_bottom")
-		
-		# Continue immediately to next action (no timer restart needed)
-		call_deferred("_display_next_action")
-		return
-	elif action_data.type == "individual_action":
-		display_individual_action(action_data)
+	if action_data.type == "combat_action":
+		var entry = action_data.entry
+		display_combat_message(entry)
+		apply_action_health_changes(entry)
+	elif action_data.type == "final_message":
+		show_final_message(action_data.message)
 	
 	current_action_index += 1
-	call_deferred("smooth_scroll_to_bottom")
 
-func display_turn_header(turn_number: int):
-	# Create turn separator and title
-	var turn_separator_top = HSeparator.new()
-	turn_separator_top.add_theme_color_override("separator", Color(0.6, 0.4, 0.2, 0.8))
-	combat_log_container.add_child(turn_separator_top)
-	
-	# Turn title
-	var turn_title = Label.new()
-	turn_title.text = "Turn " + str(turn_number)
-	turn_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	turn_title.add_theme_font_size_override("font_size", 16)
-	turn_title.add_theme_color_override("font_color", Color(0.9, 0.7, 0.4, 1))
-	turn_title.add_theme_color_override("font_shadow_color", Color.BLACK)
-	turn_title.add_theme_constant_override("shadow_offset_x", 1)
-	turn_title.add_theme_constant_override("shadow_offset_y", 1)
-	combat_log_container.add_child(turn_title)
-	
-	# Bottom separator
-	var turn_separator_bottom = HSeparator.new()
-	turn_separator_bottom.add_theme_color_override("separator", Color(0.6, 0.4, 0.2, 0.8))
-	combat_log_container.add_child(turn_separator_bottom)
-	
-	# Create actions container for this turn if it doesn't exist
-	var actions_container = HBoxContainer.new()
-	actions_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	actions_container.name = "ActionsContainer_" + str(turn_number)
-	combat_log_container.add_child(actions_container)
-	
-	# Player actions column
-	var player_column = VBoxContainer.new()
-	player_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	player_column.name = "PlayerColumn"
-	actions_container.add_child(player_column)
-	
-	# Enemy actions column  
-	var enemy_column = VBoxContainer.new()
-	enemy_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	enemy_column.name = "EnemyColumn"
-	actions_container.add_child(enemy_column)
+func display_combat_message(entry: GameInfo.CombatLogEntry):
+	var message_text = format_combat_entry(entry)
+	show_message(message_text)
 
-func display_individual_action(action_data: Dictionary):
-	# Find the most recent actions container
-	var actions_container = null
-	for i in range(combat_log_container.get_child_count() - 1, -1, -1):
-		var child = combat_log_container.get_child(i)
-		if child is HBoxContainer and child.name.begins_with("ActionsContainer_"):
-			actions_container = child
-			break
+func show_message(text: String):
+	# Cancel any existing tweens
+	if current_message_tween:
+		current_message_tween.kill()
 	
-	if not actions_container:
-		return
+	# Set message text and fade in
+	message_label.text = text
+	current_message_tween = create_tween()
+	current_message_tween.tween_property(message_label, "modulate:a", 1.0, 0.3)
 	
-	var action = action_data.action
-	var player_side = action_data.player_side
+	# Wait a bit then fade out
+	await get_tree().create_timer(0.8).timeout
+	if is_inside_tree() and message_label.text == text:  # Only fade if message hasn't changed
+		var fade_tween = create_tween()
+		fade_tween.tween_property(message_label, "modulate:a", 0.0, 0.3)
+
+func show_final_message(message: String):
+	# Cancel any existing tweens
+	if current_message_tween:
+		current_message_tween.kill()
 	
-	# Determine which column to add to
-	var target_column = null
-	if player_side == "player1":
-		target_column = actions_container.get_node("PlayerColumn")
-	else:
-		target_column = actions_container.get_node("EnemyColumn")
-	
-	if target_column:
-		# Create and add the action label
-		var action_label = Label.new()
-		action_label.text = format_combat_entry(action)
-		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		action_label.add_theme_font_size_override("font_size", 14)
-		target_column.add_child(action_label)
-		
-		# Apply health changes for this individual action
-		apply_action_health_changes(action)
+	# Show final message and keep it visible
+	message_label.text = message
+	current_message_tween = create_tween()
+	current_message_tween.tween_property(message_label, "modulate:a", 1.0, 0.5)
+
+func _fade_current_message():
+	var tween = create_tween()
+	tween.tween_property(message_label, "modulate:a", 0.0, 0.3)
 
 func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	var combat = GameInfo.current_combat_log
@@ -410,114 +226,57 @@ func animate_health_decrease(health_bar: ProgressBar, damage: int):
 		return
 	
 	var new_health = max(0, health_bar.value - damage)
-	
-	# Create tween for smooth health bar animation
 	var tween = create_tween()
 	tween.tween_property(health_bar, "value", new_health, 0.5)
-	tween.tween_callback(func(): pass)  # Optional callback when animation completes
 
 func animate_health_increase(health_bar: ProgressBar, heal_amount: int):
 	if heal_amount <= 0:
 		return
 	
 	var new_health = min(health_bar.max_value, health_bar.value + heal_amount)
-	
-	# Create tween for smooth health bar animation
 	var tween = create_tween()
 	tween.tween_property(health_bar, "value", new_health, 0.5)
-	tween.tween_callback(func(): pass)  # Optional callback when animation completes
 
-# Helper function to check if an action causes damage
 func is_damage_action(action: String) -> bool:
 	return action in ["hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
 
-# Helper function to scroll to bottom of the log with smooth animation
-func smooth_scroll_to_bottom():
-	if unified_scroll:
-		await get_tree().process_frame
-		await get_tree().process_frame
-		
-		var target_value = unified_scroll.get_v_scroll_bar().max_value
-		var current_value = unified_scroll.get_v_scroll_bar().value
-		
-		if target_value > current_value:
-			var tween = create_tween()
-			tween.tween_property(unified_scroll.get_v_scroll_bar(), "value", target_value, 0.4)
-
-# Helper function to scroll to bottom of the log
-func scroll_to_bottom():
-	if unified_scroll:
-		# Force the scroll container to update its scroll range
-		unified_scroll.get_v_scroll_bar().value = unified_scroll.get_v_scroll_bar().max_value
-
-# Called when the combat panel becomes visible
 func _on_visibility_changed():
 	if visible:
 		display_combat_log()
 
-# Button handler for skip/replay
 func _on_skip_replay_pressed():
 	if is_combat_finished:
 		# Replay the combat
 		display_combat_log()
 	else:
-		# Skip to the end - show all remaining actions instantly
-		display_timer.stop()
+		# Skip to the end
 		action_timer.stop()
+		if fade_timer:
+			fade_timer.stop()
 		
-		# Display all remaining actions
+		# Apply all remaining actions instantly
 		while current_action_index < all_actions.size():
 			var action_data = all_actions[current_action_index]
 			
-			if action_data.type == "turn_header":
-				display_turn_header(action_data.turn_number)
-			elif action_data.type == "individual_action":
-				display_individual_action(action_data)
-				
+			if action_data.type == "combat_action":
+				var entry = action_data.entry
 				# Apply health changes instantly (no animation)
-				var action = action_data.action
-				if is_damage_action(action.action):
-					if action_data.player_side == "player1":
-						player_health_bar.value = max(0, player_health_bar.value - action.factor)
+				var combat = GameInfo.current_combat_log
+				if combat:
+					var health_bar = null
+					if entry.player == combat.player1_name:
+						health_bar = player_health_bar
 					else:
-						enemy_health_bar.value = max(0, enemy_health_bar.value - action.factor)
-				elif action.action == "heal" and action.factor > 0:
-					if action_data.player_side == "player1":
-						player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + action.factor)
-					else:
-						enemy_health_bar.value = min(enemy_health_bar.max_value, enemy_health_bar.value + action.factor)
+						health_bar = enemy_health_bar
+					
+					if is_damage_action(entry.action):
+						health_bar.value = max(0, health_bar.value - entry.factor)
+					elif entry.action == "heal" and entry.factor > 0:
+						health_bar.value = min(health_bar.max_value, health_bar.value + entry.factor)
+			elif action_data.type == "final_message":
+				show_final_message(action_data.message)
 			
 			current_action_index += 1
 		
-		if GameInfo.current_combat_log:
-			add_combat_result_to_log(GameInfo.current_combat_log.final_message)
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
-		call_deferred("scroll_to_bottom")
-
-func _on_combat_scroll_input(event: InputEvent):
-	if not unified_scroll:
-		return
-		
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				# Start dragging
-				is_dragging_combat = true
-				drag_start_position_combat = event.position
-				scroll_start_position_combat = unified_scroll.scroll_vertical
-			else:
-				# Stop dragging
-				is_dragging_combat = false
-	
-	elif event is InputEventMouseMotion and is_dragging_combat:
-		# Calculate scroll delta based on mouse movement
-		var delta = drag_start_position_combat.y - event.position.y
-		var new_scroll = scroll_start_position_combat + delta
-		
-		# Clamp to valid scroll range
-		var max_scroll = unified_scroll.get_v_scroll_bar().max_value
-		new_scroll = clamp(new_scroll, 0, max_scroll)
-		
-		# Apply the scroll
-		unified_scroll.scroll_vertical = int(new_scroll)

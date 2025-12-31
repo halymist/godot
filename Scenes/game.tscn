@@ -1,4 +1,4 @@
-[gd_scene load_steps=125 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -62,11 +62,10 @@
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/RankingsPanel.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
-[ext_resource type="Texture2D" uid="uid://cndn224c71n5j" path="res://assets/images/ui/arena_image_back.png" id="37_b1mpw"]
+[ext_resource type="Texture2D" uid="uid://d7skxybllre3" path="res://assets/images/ui/arena_full.png" id="37_b1mpw"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Texture2D" uid="uid://frdxqif0cyou" path="res://assets/images/ui/background_char.png" id="38_aujhx"]
-[ext_resource type="Texture2D" uid="uid://bou72u7ekluu2" path="res://assets/images/ui/combatlog_back.png" id="38_ccfo7"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
@@ -140,11 +139,6 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character_area"]
-bg_color = Color(0.12, 0.08, 0.2, 0.7)
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.6)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_bg"]
 bg_color = Color(0.2, 0.1, 0.1, 0.8)
 border_width_left = 1
@@ -163,18 +157,6 @@ corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
-
-[sub_resource type="Resource" id="Resource_fykvq"]
-script = ExtResource("68_2cns2")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
-
-[sub_resource type="Resource" id="Resource_ewwwr"]
-script = ExtResource("68_2cns2")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
 bg_color = Color(0.64014, 0.614233, 0.287706, 1)
@@ -354,7 +336,7 @@ mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/Bag")]
 stats_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats")
 active_effects = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground/ActivePerks")
-avatars = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character/Avatar"), NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Wide/Sidebar/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection/PlayerIcon/PlayerAvatar")]
+avatars = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character/Avatar"), NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Wide/Sidebar/Character/Avatar"), null]
 resolution_manager = NodePath("..")
 blacksmith = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
 alchemist = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
@@ -1781,170 +1763,120 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_combat_bg")
 script = ExtResource("35_combat_panel")
 
-[node name="CharacterArea" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
+[node name="CombatBackground" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.478
-offset_bottom = -0.140015
-theme_override_styles/panel = SubResource("StyleBoxFlat_character_area")
-
-[node name="ArenaBackground" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -224.5
-offset_right = 225.5
-offset_bottom = 300.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("37_b1mpw")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="CharacterContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea"]
+[node name="PlayerContainer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = -15.0
-offset_bottom = -15.0
-grow_horizontal = 2
-grow_vertical = 2
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.1
+anchor_bottom = 0.1
 
-[node name="PlayerSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
-
-[node name="PlayerIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
+[node name="PlayerIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(130, 130)
-layout_mode = 2
-size_flags_horizontal = 4
+layout_mode = 0
+offset_right = 130.0
+offset_bottom = 130.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="PlayerAvatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection/PlayerIcon" instance=ExtResource("22_avatar")]
+[node name="PlayerAvatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon" instance=ExtResource("22_avatar")]
 layout_mode = 1
 
-[node name="PlayerHealthBar" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
+[node name="PlayerHealthBar" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer"]
 custom_minimum_size = Vector2(130, 20)
-layout_mode = 2
-size_flags_horizontal = 4
+layout_mode = 0
+offset_top = 135.0
+offset_right = 130.0
+offset_bottom = 155.0
 theme_override_styles/background = SubResource("StyleBoxFlat_health_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 value = 100.0
 show_percentage = false
 
-[node name="PlayerLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/PlayerSection"]
-clip_contents = true
+[node name="PlayerLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer"]
 custom_minimum_size = Vector2(130, 0)
-layout_mode = 2
-size_flags_horizontal = 4
+layout_mode = 0
+offset_top = 160.0
+offset_right = 130.0
+offset_bottom = 180.0
 theme_override_font_sizes/font_size = 12
 text = "You"
 horizontal_alignment = 1
-autowrap_mode = 3
 
-[node name="Spacer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_horizontal = 4
+[node name="EnemyContainer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
+layout_mode = 1
+anchor_left = 0.9
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.1
+offset_left = -130.0
 
-[node name="EnemySection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
-
-[node name="EnemyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
+[node name="EnemyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(130, 130)
-layout_mode = 2
-size_flags_horizontal = 4
+layout_mode = 0
+offset_right = 130.0
+offset_bottom = 130.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="EnemyAvatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection/EnemyIcon" instance=ExtResource("22_avatar")]
+[node name="EnemyAvatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer/EnemyIcon" instance=ExtResource("22_avatar")]
 layout_mode = 1
 
-[node name="EnemyHealthBar" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
+[node name="EnemyHealthBar" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer"]
 custom_minimum_size = Vector2(130, 20)
-layout_mode = 2
-size_flags_horizontal = 4
+layout_mode = 0
+offset_top = 135.0
+offset_right = 130.0
+offset_bottom = 155.0
 theme_override_styles/background = SubResource("StyleBoxFlat_health_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 value = 100.0
 show_percentage = false
 
-[node name="EnemyLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CharacterArea/CharacterContainer/EnemySection"]
-clip_contents = true
+[node name="EnemyLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer"]
 custom_minimum_size = Vector2(130, 0)
-layout_mode = 2
-size_flags_horizontal = 4
+layout_mode = 0
+offset_top = 160.0
+offset_right = 130.0
+offset_bottom = 180.0
 theme_override_font_sizes/font_size = 12
 text = "Enemy"
 horizontal_alignment = 1
-autowrap_mode = 3
 
-[node name="CombatLogArea" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -329.0
-grow_horizontal = 2
-grow_vertical = 0
-texture = ExtResource("38_ccfo7")
-expand_mode = 1
-
-[node name="LogHeaders" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea"]
+[node name="MessageArea" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-offset_bottom = 56.0
-grow_horizontal = 2
-
-[node name="PlayerLogLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea/LogHeaders"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "Your Actions"
-horizontal_alignment = 1
-
-[node name="HeaderSeparator" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea/LogHeaders"]
-custom_minimum_size = Vector2(3, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="EnemyLogLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea/LogHeaders"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "Enemy Actions"
-horizontal_alignment = 1
-
-[node name="UnifiedLogScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 49.0
+anchor_left = 0.007
+anchor_top = 0.552
+anchor_right = 0.995
+anchor_bottom = 0.873
+offset_left = 0.165
+offset_top = 0.23996
+offset_right = 0.0249634
+offset_bottom = 0.0100098
 grow_horizontal = 2
 grow_vertical = 2
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 3
-script = ExtResource("67_e6ols")
-wheel_scroll_damper = SubResource("Resource_fykvq")
-dragging_scroll_damper = SubResource("Resource_ewwwr")
-metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
-[node name="CombatLogContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/CombatLogArea/UnifiedLogScroll"]
+[node name="MessageLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Combat begins!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="SkipReplayButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
 layout_mode = 1
