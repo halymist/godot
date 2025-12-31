@@ -4,14 +4,13 @@ extends Panel
 
 @onready var arena_background = $CharacterArea/ArenaBackground
 @onready var combat_log_texture = $CombatLogArea/CombatLogTexture
-@onready var player_icon = $CharacterArea/CharacterContainer/PlayerSection/PlayerIcon
+@onready var player_avatar = $CharacterArea/CharacterContainer/PlayerSection/PlayerIcon/PlayerAvatar
 @onready var player_health_bar = $CharacterArea/CharacterContainer/PlayerSection/PlayerHealthBar
 @onready var player_label = $CharacterArea/CharacterContainer/PlayerSection/PlayerLabel
-@onready var enemy_icon = $CharacterArea/CharacterContainer/EnemySection/EnemyIcon
+@onready var enemy_avatar = $CharacterArea/CharacterContainer/EnemySection/EnemyIcon/EnemyAvatar
 @onready var enemy_health_bar = $CharacterArea/CharacterContainer/EnemySection/EnemyHealthBar
 @onready var enemy_label = $CharacterArea/CharacterContainer/EnemySection/EnemyLabel
 @onready var combat_log_container = $CombatLogArea/UnifiedLogScroll/CombatLogContainer
-@onready var combat_result = $CombatResult
 @onready var skip_replay_button = $SkipReplayButton
 @onready var unified_scroll = $CombatLogArea/UnifiedLogScroll
 
@@ -67,6 +66,17 @@ func display_combat_log():
 	player_label.text = combat.player1_name
 	enemy_label.text = combat.player2_name
 	
+	# Update avatar cosmetics
+	if GameInfo.current_player:
+		player_avatar.refresh_avatar(
+			GameInfo.current_player.avatar_face,
+			GameInfo.current_player.avatar_hair,
+			GameInfo.current_player.avatar_eyes,
+			GameInfo.current_player.avatar_nose,
+			GameInfo.current_player.avatar_mouth
+		)
+	enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)
+	
 	# Set initial health bars and store starting values
 	player_health_bar.max_value = combat.player1_health
 	enemy_health_bar.max_value = combat.player2_health
@@ -89,15 +99,55 @@ func display_combat_log():
 	current_action_index = 0
 	is_combat_finished = false
 	is_displaying_actions = false
-	combat_result.text = ""
 	skip_replay_button.text = "Skip"
 	
 	if organized_turns.size() > 0:
-		display_timer.start()
+		call_deferred("_start_display_timer")
 	else:
-		combat_result.text = combat.final_message
+		add_combat_result_to_log(combat.final_message)
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
+
+func _start_display_timer():
+	if is_inside_tree():
+		display_timer.start()
+
+func _start_action_timer():
+	if is_inside_tree():
+		action_timer.start()
+
+func add_combat_result_to_log(message: String):
+	# Add spacing before result
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(0, 20)
+	combat_log_container.add_child(spacer)
+	
+	# Add separator
+	var separator = HSeparator.new()
+	separator.add_theme_color_override("separator", Color(0.8, 0.6, 0.3, 0.9))
+	combat_log_container.add_child(separator)
+	
+	# Add another small spacer
+	var spacer2 = Control.new()
+	spacer2.custom_minimum_size = Vector2(0, 10)
+	combat_log_container.add_child(spacer2)
+	
+	# Add result label
+	var result_label = Label.new()
+	result_label.text = message
+	result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	result_label.add_theme_font_size_override("font_size", 18)
+	result_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.5, 1))
+	result_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	result_label.add_theme_constant_override("shadow_offset_x", 2)
+	result_label.add_theme_constant_override("shadow_offset_y", 2)
+	result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	combat_log_container.add_child(result_label)
+	
+	# Add bottom spacer for scroll padding
+	var spacer3 = Control.new()
+	spacer3.custom_minimum_size = Vector2(0, 20)
+	combat_log_container.add_child(spacer3)
 
 func clear_log_containers():
 	for child in combat_log_container.get_children():
@@ -188,12 +238,13 @@ func _display_next_turn():
 				call_deferred("smooth_scroll_to_bottom")
 		
 		# Start the timer for actual actions
-		action_timer.start()
+		call_deferred("_start_action_timer")
 
 func _display_next_action():
 	if current_action_index >= all_actions.size():
 		action_timer.stop()
-		combat_result.text = GameInfo.current_combat_log.final_message if GameInfo.current_combat_log else "Combat Complete"
+		var final_msg = GameInfo.current_combat_log.final_message if GameInfo.current_combat_log else "Combat Complete"
+		add_combat_result_to_log(final_msg)
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
 		call_deferred("smooth_scroll_to_bottom")
@@ -439,7 +490,7 @@ func _on_skip_replay_pressed():
 			current_action_index += 1
 		
 		if GameInfo.current_combat_log:
-			combat_result.text = GameInfo.current_combat_log.final_message
+			add_combat_result_to_log(GameInfo.current_combat_log.final_message)
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
 		call_deferred("scroll_to_bottom")
