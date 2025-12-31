@@ -1869,14 +1869,10 @@ offset_bottom = 0.0100098
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MessageLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea"]
-custom_minimum_size = Vector2(400, 0)
+[node name="MessageContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Combat begins!"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
+theme_override_constants/separation = 5
+alignment = 1
 
 [node name="SkipReplayButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
 layout_mode = 1

@@ -9,8 +9,11 @@ extends Panel
 @onready var enemy_avatar = $EnemyContainer/EnemyIcon/EnemyAvatar
 @onready var enemy_health_bar = $EnemyContainer/EnemyHealthBar
 @onready var enemy_label = $EnemyContainer/EnemyLabel
-@onready var message_label = $MessageArea/MessageLabel
+@onready var message_container = $MessageArea/MessageContainer
 @onready var skip_replay_button = $SkipReplayButton
+
+const MAX_MESSAGES = 3
+var message_labels = []
 
 var action_timer: Timer
 var fade_timer: Timer
@@ -38,9 +41,6 @@ func _ready():
 	
 	# Connect button signal
 	skip_replay_button.pressed.connect(_on_skip_replay_pressed)
-	
-	# Hide message initially
-	message_label.modulate.a = 0
 
 func display_combat_log():
 	if not GameInfo.current_combat_log:
@@ -77,7 +77,7 @@ func display_combat_log():
 	current_action_index = 0
 	is_combat_finished = false
 	skip_replay_button.text = "Skip"
-	message_label.modulate.a = 0
+	clear_messages()
 	
 	if all_actions.size() > 0:
 		call_deferred("_start_action_timer")
@@ -124,37 +124,61 @@ func _display_next_action():
 
 func display_combat_message(entry: GameInfo.CombatLogEntry):
 	var message_text = format_combat_entry(entry)
-	show_message(message_text)
+	add_message(message_text)
 
-func show_message(text: String):
-	# Cancel any existing tweens
-	if current_message_tween:
-		current_message_tween.kill()
+func add_message(text: String):
+	# Create new message label
+	var new_label = Label.new()
+	new_label.text = text
+	new_label.custom_minimum_size = Vector2(400, 0)
+	new_label.add_theme_font_size_override("font_size", 16)
+	new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	new_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	new_label.modulate.a = 0
 	
-	# Set message text and fade in
-	message_label.text = text
-	current_message_tween = create_tween()
-	current_message_tween.tween_property(message_label, "modulate:a", 1.0, 0.3)
+	# Add to container
+	message_container.add_child(new_label)
+	message_labels.append(new_label)
 	
-	# Wait a bit then fade out
-	await get_tree().create_timer(0.8).timeout
-	if is_inside_tree() and message_label.text == text:  # Only fade if message hasn't changed
+	# Fade in the new message
+	var tween = create_tween()
+	tween.tween_property(new_label, "modulate:a", 1.0, 0.3)
+	
+	# Remove oldest message if we exceed max
+	if message_labels.size() > MAX_MESSAGES:
+		var oldest_label = message_labels.pop_front()
 		var fade_tween = create_tween()
-		fade_tween.tween_property(message_label, "modulate:a", 0.0, 0.3)
+		fade_tween.tween_property(oldest_label, "modulate:a", 0.0, 0.2)
+		fade_tween.tween_callback(oldest_label.queue_free)
 
 func show_final_message(message: String):
-	# Cancel any existing tweens
-	if current_message_tween:
-		current_message_tween.kill()
+	# Clear all messages
+	clear_messages()
 	
-	# Show final message and keep it visible
-	message_label.text = message
-	current_message_tween = create_tween()
-	current_message_tween.tween_property(message_label, "modulate:a", 1.0, 0.5)
+	# Show final message with larger font
+	var final_label = Label.new()
+	final_label.text = message
+	final_label.custom_minimum_size = Vector2(400, 0)
+	final_label.add_theme_font_size_override("font_size", 20)
+	final_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.5, 1))
+	final_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	final_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	final_label.modulate.a = 0
+	
+	message_container.add_child(final_label)
+	message_labels.append(final_label)
+	
+	# Fade in
+	var tween = create_tween()
+	tween.tween_property(final_label, "modulate:a", 1.0, 0.5)
+
+func clear_messages():
+	for label in message_labels:
+		label.queue_free()
+	message_labels.clear()
 
 func _fade_current_message():
-	var tween = create_tween()
-	tween.tween_property(message_label, "modulate:a", 0.0, 0.3)
+	pass  # No longer needed
 
 func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	var combat = GameInfo.current_combat_log
