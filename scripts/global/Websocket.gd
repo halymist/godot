@@ -80,8 +80,8 @@ var mock_character_data = {
 	],
 	"silver": 1000,
 	"mushrooms": 150,
-	"traveling": 1735762200,
-	"traveling_destination": 1,
+	"traveling": null,
+	"traveling_destination": null,
 	"location": 1,
 	"strength": 150,
 	"stamina": 12,
@@ -100,6 +100,11 @@ var mock_character_data = {
 			"id": 1,
 			"effect_overdrive": 4,
 			"bag_slot_id": 0,
+			"day": 40
+		},
+		{
+			"id": 5,
+			"bag_slot_id": 9,
 			"day": 40
 		},
 		{

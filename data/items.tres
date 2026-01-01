@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDatabase" load_steps=21 format=3 uid="uid://vft5y80xsrjn"]
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=22 format=3 uid="uid://vft5y80xsrjn"]
 
 [ext_resource type="Script" uid="uid://5xjtibn1drlf" path="res://scripts/resources/ItemResource.gd" id="1_plm77"]
 [ext_resource type="Script" uid="uid://0io63usdvbbp" path="res://scripts/resources/ItemDatabase.gd" id="2_lxu8k"]
@@ -241,7 +241,30 @@ socketed_gem_id = -1
 icon = ExtResource("9_lpggr")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
+[sub_resource type="Resource" id="Resource_kkqur"]
+script = ExtResource("1_plm77")
+id = 5
+item_name = "Epic sword"
+type = "Weapon"
+armor = 0
+strength = 10
+stamina = 0
+agility = 0
+luck = 0
+damage_min = 10
+damage_max = 20
+effect_id = 0
+effect_factor = 0
+quality = 0
+price = 30
+tempered = 0
+enchant_overdrive = 0
+has_socket = false
+socketed_gem_id = -1
+icon = ExtResource("2_tpttd")
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
 [resource]
 script = ExtResource("2_lxu8k")
-items = Array[ExtResource("1_plm77")]([SubResource("Resource_4egq1"), SubResource("Resource_lxu8k"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr"), SubResource("Resource_giyri"), SubResource("Resource_3m58g"), SubResource("Resource_gi1ch")])
+items = Array[ExtResource("1_plm77")]([SubResource("Resource_4egq1"), SubResource("Resource_lxu8k"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr"), SubResource("Resource_giyri"), SubResource("Resource_3m58g"), SubResource("Resource_gi1ch"), SubResource("Resource_kkqur")])
 metadata/_custom_type_script = "uid://0io63usdvbbp"
