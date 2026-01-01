@@ -9,9 +9,9 @@ extends Panel
 @onready var enemy_avatar = $EnemyContainer/EnemyIcon/EnemyAvatar
 @onready var enemy_health_bar = $EnemyContainer/EnemyHealthBar
 @onready var enemy_label = $EnemyContainer/EnemyLabel
-@onready var message1 = $MessageArea/MessageContainer/Message1
-@onready var message2 = $MessageArea/MessageContainer/Message2
-@onready var message3 = $MessageArea/MessageContainer/Message3
+@onready var message1 = $MessageOverlay/MessageContainer/Message1
+@onready var message2 = $MessageOverlay/MessageContainer/Message2
+@onready var message3 = $MessageOverlay/MessageContainer/Message3
 @onready var skip_replay_button = $SkipReplayButton
 
 var message_labels = []
@@ -139,11 +139,11 @@ func add_message(text: String):
 	message_labels[2].text = text
 
 func show_final_message(message: String):
-	# Clear old combat messages
+	# Clear top and bottom labels
 	message_labels[0].text = ""
-	message_labels[1].text = ""
-	# Add final message to bottom slot
-	message_labels[2].text = message
+	message_labels[2].text = ""
+	# Add final message to middle slot for vertical centering
+	message_labels[1].text = message
 
 func clear_messages():
 	for label in message_labels:
