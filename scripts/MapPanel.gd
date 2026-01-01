@@ -34,6 +34,18 @@ func _ready():
 	add_child(update_timer)
 	update_timer.start()
 	
+	# Check if travel is already complete (old timestamp) - if so, complete immediately
+	var current_player = GameInfo.current_player
+	if current_player and current_player.traveling_destination != null:
+		var current_time = Time.get_unix_time_from_system()
+		var travel_end_time = current_player.traveling
+		if travel_end_time != null and travel_end_time > 0:
+			var time_remaining = travel_end_time - current_time
+			if time_remaining <= 0:
+				print("MapPanel: Travel already complete on startup, completing immediately")
+				call_deferred("_on_travel_completed")
+				return
+	
 	# Initial update
 	update_travel_display()
 

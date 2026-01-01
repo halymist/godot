@@ -100,9 +100,7 @@ class MessagePackObject:
 				var local_key = msgpack_map[msgpack_key]
 				if data.has(msgpack_key):
 					set(local_key, data[msgpack_key])
-				else:
-					# Log missing key for debugging
-					print("Warning: Missing key '", msgpack_key, "' in MessagePack data for class ", get_script().get_global_name())
+				# Silently skip missing keys - they're optional fields
 	
 	func to_msgpack() -> Dictionary:
 		var result = {}

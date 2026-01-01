@@ -44,7 +44,7 @@ func _on_visibility_changed():
 	"""Load quest when panel becomes visible"""
 	if not visible:
 		return
-	
+	print("Quest panel is now visible")
 	var destination = GameInfo.current_player.traveling_destination
 	# Only load if there's a destination and it's not already loaded
 	if destination != null and current_quest_id != destination:

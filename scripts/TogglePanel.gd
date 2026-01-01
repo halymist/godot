@@ -56,11 +56,27 @@ func is_on_active_quest() -> bool:
 	return destination != null and traveling == 0
 
 func _ready():
-	# Check if player is on an active quest at startup
+	# Check player's quest state at startup
 	var start_panel = home_panel
-	if is_on_active_quest():
-		print("Player is on active quest at startup, showing quest panel")
+	var destination = GameInfo.current_player.traveling_destination
+	var traveling = GameInfo.current_player.traveling
+	
+	print("=== STARTUP QUEST STATE DEBUG ===")
+	print("destination: ", destination, " (type: ", typeof(destination), ")")
+	print("traveling: ", traveling, " (type: ", typeof(traveling), ")")
+	print("================================")
+	
+	if destination != null and traveling != null and traveling != 0:
+		# Player is currently traveling to a quest - show map panel
+		print("-> Traveling to quest, showing map panel")
+		start_panel = map_panel
+	elif destination != null:
+		# Player has arrived at quest - show quest panel
+		print("-> Arrived at quest, showing quest panel")
 		start_panel = quest
+	else:
+		# No quest active - show home panel
+		print("-> No quest active, showing home panel")
 	
 	# Start with appropriate panel visible
 	GameInfo.set_current_panel(start_panel)
