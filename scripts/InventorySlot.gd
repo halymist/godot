@@ -140,8 +140,8 @@ func _drop_data(_pos, data):
 		handle_vendor_sell(dragged_item, source_slot_id, source_container)
 		return
 	
-	# Special case: Consuming potion/elixir on avatar (slot 999)
-	if slot_id == 999:
+	# Special case: Consuming potion/elixir on avatar (slot 9)
+	if slot_id == CONSUME_SLOT:
 		if dragged_item.type == "Potion" or dragged_item.type == "Elixir":
 			_consume_item(dragged_item)
 			if source_container:

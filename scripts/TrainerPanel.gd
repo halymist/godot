@@ -81,7 +81,7 @@ func _on_talent_points_plus_pressed():
 	if GameInfo.current_player.silver >= TALENT_POINT_COST:
 		UIManager.instance.update_silver(-TALENT_POINT_COST)
 		GameInfo.current_player.talent_points += 1
-		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
+		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Talent Points - cost: ", TALENT_POINT_COST, " gold")
 
@@ -89,7 +89,7 @@ func _on_strength_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
 		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.strength += 1
-		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
+		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Strength - cost: ", STAT_COST, " gold")
 
@@ -97,7 +97,7 @@ func _on_stamina_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
 		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.stamina += 1
-		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
+		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Stamina - cost: ", STAT_COST, " gold")
 
@@ -105,7 +105,7 @@ func _on_agility_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
 		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.agility += 1
-		GameInfo.stats_changed.emit(GameInfo.current_player.get_player_stats())
+		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Agility - cost: ", STAT_COST, " gold")
 
@@ -113,3 +113,6 @@ func _on_luck_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
 		UIManager.instance.update_silver(-STAT_COST)
 		GameInfo.current_player.luck += 1
+		UIManager.instance.refresh_stats()
+		update_stats_display()
+		print("Trained Luck - cost: ", STAT_COST, " gold")
