@@ -26,6 +26,8 @@ extends Resource
 @export var church_background: Texture
 @export var church_greetings: Array[String] = []
 
+@export var arena_background: Texture
+
 func has_blacksmith() -> bool:
 	return blacksmith_background != null
 

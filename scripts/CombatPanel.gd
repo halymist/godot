@@ -58,6 +58,9 @@ func display_combat_log():
 	
 	var combat = GameInfo.current_combat_log
 	
+	# Set combat background based on location
+	set_combat_background()
+	
 	# Set up character info
 	player_label.text = combat.player1_name
 	enemy_label.text = combat.player2_name
@@ -256,6 +259,18 @@ func _on_button_hover():
 
 func _on_button_unhover():
 	skip_replay_button.modulate = Color(1, 1, 1)  # Reset to normal
+
+func set_combat_background():
+	"""Set the combat background texture based on current location"""
+	if not combat_background:
+		return
+	
+	var location = GameInfo.current_player.location if GameInfo.current_player else 1
+	
+	# Get location data from settlements database
+	var location_data = GameInfo.get_location_data(location)
+	if location_data and location_data.arena_background:
+		combat_background.texture = location_data.arena_background
 
 func _on_visibility_changed():
 	if visible:
