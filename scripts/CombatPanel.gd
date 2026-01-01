@@ -90,6 +90,8 @@ func display_combat_log():
 
 func _start_action_timer():
 	if is_inside_tree():
+		# Small delay to let user look around before combat starts
+		await get_tree().create_timer(0.5).timeout
 		# Display first action immediately (no delay)
 		_display_next_action()
 		# Start timer for subsequent actions
@@ -114,10 +116,10 @@ func create_action_sequence(combat: GameInfo.CombatResponse):
 func _display_next_action():
 	if current_action_index >= all_actions.size():
 		action_timer.stop()
-		# Wait for final message to scroll into view
-		await get_tree().create_timer(2.0).timeout
 		is_combat_finished = true
 		skip_replay_button.text = "Replay"
+		# Wait a bit before allowing replay
+		await get_tree().create_timer(2.0).timeout
 		return
 	
 	var action_data = all_actions[current_action_index]
@@ -128,6 +130,10 @@ func _display_next_action():
 		apply_action_health_changes(entry)
 	elif action_data.type == "final_message":
 		show_final_message(action_data.message)
+		# Change button immediately when final message shows
+		action_timer.stop()
+		is_combat_finished = true
+		skip_replay_button.text = "Replay"
 	
 	current_action_index += 1
 
