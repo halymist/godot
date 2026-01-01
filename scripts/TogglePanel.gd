@@ -269,12 +269,6 @@ func go_back():
 		toggle_details_bookmark()
 		return
 	
-	# Combat: return to arena
-	if current == combat_panel:
-		print("-> Combat panel, returning to arena")
-		show_panel(arena_panel)
-		return
-	
 	# Default: go home
 	print("-> Default case, going home")
 	show_panel(home_panel)
