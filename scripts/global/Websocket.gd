@@ -75,7 +75,7 @@ var mock_character_data = {
 	"avatar_nose": 30,  # Cosmetic ID from database
 	"avatar_mouth": 40,  # Cosmetic ID from database
 	"quest_log": [
-		{"quest_id": 1, "slides": [1], "finished": false},
+		{"quest_id": 1, "slides": [1, 2], "finished": false},
 		{"quest_id": 2, "slides": [1, 2], "finished": false}
 	],
 	"silver": 1000,

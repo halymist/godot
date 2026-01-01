@@ -48,8 +48,17 @@ func _on_visibility_changed():
 	var destination = GameInfo.current_player.traveling_destination
 	# Only load if there's a destination and it's not already loaded
 	if destination != null and current_quest_id != destination:
-		print("Quest panel became visible, loading quest ", destination)
-		load_quest(destination, 1)
+		# Find the current slide from quest log, default to 1 if not found
+		var start_slide = 1
+		for quest_log_entry in GameInfo.current_player.quest_log:
+			if quest_log_entry.quest_id == destination:
+				# Get the last slide from the slides array (most recent progress)
+				if quest_log_entry.slides.size() > 0:
+					start_slide = quest_log_entry.slides[-1]
+				break
+		
+		print("Quest panel became visible, loading quest ", destination, " at slide ", start_slide)
+		load_quest(destination, start_slide)
 
 func _on_overlay_input(event: InputEvent):
 	"""Hide overlay and UI when pressed, show when released"""
