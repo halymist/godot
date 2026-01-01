@@ -32,15 +32,24 @@ var current_slide_number: int = 1
 # Reference to portrait for navigation
 @export var portrait: Control
 
-# Quest signals
-signal quest_arrived()
-
 func _ready():
-	quest_arrived.connect(_on_quest_arrived)
-	
 	# Set up overlay press-to-hide functionality
 	if overlay:
 		overlay.gui_input.connect(_on_overlay_input)
+	
+	# Connect to visibility changes to load quest when panel becomes visible
+	visibility_changed.connect(_on_visibility_changed)
+
+func _on_visibility_changed():
+	"""Load quest when panel becomes visible"""
+	if not visible:
+		return
+	
+	var destination = GameInfo.current_player.traveling_destination
+	# Only load if there's a destination and it's not already loaded
+	if destination != null and current_quest_id != destination:
+		print("Quest panel became visible, loading quest ", destination)
+		load_quest(destination, 1)
 
 func _on_overlay_input(event: InputEvent):
 	"""Hide overlay and UI when pressed, show when released"""
@@ -55,12 +64,6 @@ func _on_overlay_input(event: InputEvent):
 				# Fade in overlay smoothly
 				var tween = create_tween()
 				tween.tween_property(overlay, "modulate:a", 1.0, 0.2).set_ease(Tween.EASE_IN)
-
-func _on_quest_arrived():
-	"""Quest arrival from travel"""
-	var quest_id = GameInfo.current_player.traveling_destination if GameInfo.current_player else null
-	if quest_id:
-		load_quest(quest_id, 1)
 
 func load_quest(quest_id: int, slide_number: int = 1):
 	"""Load a quest and display first slide"""

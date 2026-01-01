@@ -56,9 +56,15 @@ func is_on_active_quest() -> bool:
 	return destination != null and traveling == 0
 
 func _ready():
-	# Start with home panel visible
-	GameInfo.set_current_panel(home_panel)
-	home_panel.visible = true
+	# Check if player is on an active quest at startup
+	var start_panel = home_panel
+	if is_on_active_quest():
+		print("Player is on active quest at startup, showing quest panel")
+		start_panel = quest
+	
+	# Start with appropriate panel visible
+	GameInfo.set_current_panel(start_panel)
+	start_panel.visible = true
 	
 	# Connect button signals
 	home_button.pressed.connect(handle_home_button)
@@ -327,11 +333,7 @@ func handle_quest_completed():
 
 func handle_quest_arrived():
 	"""Called when travel is completed - show quest panel"""
-	# Emit quest arrival signal
-	if quest:
-		quest.quest_arrived.emit()
-	
-	# Show quest panel properly
+	# Show quest panel - it will automatically load the quest via visibility_changed
 	show_panel(quest)
 
 # Cancel quest dialog functions
