@@ -227,7 +227,7 @@ func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	
 	return text
 
-func animate_health_decrease(health_bar: ProgressBar, damage: int):
+func animate_health_decrease(health_bar: TextureProgressBar, damage: int):
 	if damage <= 0:
 		return
 	
@@ -235,7 +235,7 @@ func animate_health_decrease(health_bar: ProgressBar, damage: int):
 	var tween = create_tween()
 	tween.tween_property(health_bar, "value", new_health, 0.5)
 
-func animate_health_increase(health_bar: ProgressBar, heal_amount: int):
+func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 	if heal_amount <= 0:
 		return
 	

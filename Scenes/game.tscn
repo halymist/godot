@@ -1,4 +1,4 @@
-[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -43,6 +43,7 @@
 [ext_resource type="Script" uid="uid://4fyf6nopj5gd" path="res://scripts/PerkScreen.gd" id="21_fkdbe"]
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
+[ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
 [ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
@@ -138,25 +139,6 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_bg"]
-bg_color = Color(0.2, 0.1, 0.1, 0.8)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.4, 0.2, 0.2, 0.9)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_fill"]
-bg_color = Color(0.8, 0.2, 0.2, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jktm"]
 bg_color = Color(0.64014, 0.614233, 0.287706, 1)
@@ -1793,16 +1775,10 @@ expand_mode = 1
 [node name="PlayerAvatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon" instance=ExtResource("22_avatar")]
 layout_mode = 1
 
-[node name="PlayerHealthBar" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer"]
-custom_minimum_size = Vector2(130, 20)
+[node name="PlayerHealthBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer" instance=ExtResource("22_healthbar")]
 layout_mode = 0
 offset_top = 135.0
-offset_right = 130.0
 offset_bottom = 155.0
-theme_override_styles/background = SubResource("StyleBoxFlat_health_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
-value = 100.0
-show_percentage = false
 
 [node name="PlayerLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer"]
 custom_minimum_size = Vector2(130, 0)
@@ -1834,16 +1810,10 @@ expand_mode = 1
 [node name="EnemyAvatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer/EnemyIcon" instance=ExtResource("22_avatar")]
 layout_mode = 1
 
-[node name="EnemyHealthBar" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer"]
-custom_minimum_size = Vector2(130, 20)
+[node name="EnemyHealthBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer" instance=ExtResource("22_healthbar")]
 layout_mode = 0
 offset_top = 135.0
-offset_right = 130.0
 offset_bottom = 155.0
-theme_override_styles/background = SubResource("StyleBoxFlat_health_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
-value = 100.0
-show_percentage = false
 
 [node name="EnemyLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer"]
 custom_minimum_size = Vector2(130, 0)

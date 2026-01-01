@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfqdh24nwh6nc"]
+
+[ext_resource type="Texture2D" uid="uid://bbs4w4kbvqd7q" path="res://assets/images/ui/healthbar (2).png" id="1_1v5t1"]
+[ext_resource type="Texture2D" uid="uid://bt1vtlhlu7wgb" path="res://assets/images/ui/healthbar_fill.png" id="2_bngtt"]
+
+[node name="HealthBar" type="TextureProgressBar"]
+custom_minimum_size = Vector2(130, 20)
+offset_right = 130.0
+offset_bottom = 20.0
+value = 100.0
+nine_patch_stretch = true
+texture_under = ExtResource("1_1v5t1")
+texture_progress = ExtResource("2_bngtt")
