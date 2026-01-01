@@ -26,7 +26,7 @@ var current_message_tween: Tween
 func _ready():
 	# Create timer for displaying actions
 	action_timer = Timer.new()
-	action_timer.wait_time = 0.8  # 0.8 seconds per message
+	action_timer.wait_time = 1.2  # 1.2 seconds per message
 	action_timer.timeout.connect(_display_next_action)
 	add_child(action_timer)
 	
@@ -90,6 +90,9 @@ func display_combat_log():
 
 func _start_action_timer():
 	if is_inside_tree():
+		# Display first action immediately (no delay)
+		_display_next_action()
+		# Start timer for subsequent actions
 		action_timer.start()
 
 func create_action_sequence(combat: GameInfo.CombatResponse):
