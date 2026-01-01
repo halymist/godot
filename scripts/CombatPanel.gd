@@ -13,6 +13,7 @@ extends Panel
 @onready var message2 = $MessageOverlay/MessageContainer/Message2
 @onready var message3 = $MessageOverlay/MessageContainer/Message3
 @onready var skip_replay_button = $SkipReplayButton
+@onready var button_label = $SkipReplayButton/Label
 
 var message_labels = []
 
@@ -42,6 +43,10 @@ func _ready():
 	
 	# Connect button signal
 	skip_replay_button.pressed.connect(_on_skip_replay_pressed)
+	
+	# Add hover effects to button (not label)
+	skip_replay_button.mouse_entered.connect(_on_button_hover)
+	skip_replay_button.mouse_exited.connect(_on_button_unhover)
 	
 	# Set up message labels array
 	message_labels = [message1, message2, message3]
@@ -80,7 +85,7 @@ func display_combat_log():
 	# Reset state
 	current_action_index = 0
 	is_combat_finished = false
-	skip_replay_button.text = "Skip"
+	button_label.text = "Skip"
 	clear_messages()
 	
 	if all_actions.size() > 0:
@@ -117,8 +122,8 @@ func _display_next_action():
 	if current_action_index >= all_actions.size():
 		action_timer.stop()
 		is_combat_finished = true
-		skip_replay_button.text = "Replay"
-		# Wait a bit before allowing replay
+		button_label.text = "Continue"
+		# Wait a bit before allowing continue
 		await get_tree().create_timer(2.0).timeout
 		return
 	
@@ -133,7 +138,7 @@ func _display_next_action():
 		# Change button immediately when final message shows
 		action_timer.stop()
 		is_combat_finished = true
-		skip_replay_button.text = "Replay"
+		button_label.text = "Continue"
 	
 	current_action_index += 1
 
@@ -246,14 +251,20 @@ func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 func is_damage_action(action: String) -> bool:
 	return action in ["hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
 
+func _on_button_hover():
+	skip_replay_button.modulate = Color(1.2, 1.2, 1.2)  # Brighten button on hover
+
+func _on_button_unhover():
+	skip_replay_button.modulate = Color(1, 1, 1)  # Reset to normal
+
 func _on_visibility_changed():
 	if visible:
 		display_combat_log()
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
-		# Replay the combat
-		display_combat_log()
+		# Continue after combat - close combat panel or return to village
+		self.visible = false
 	else:
 		# Skip to the end
 		action_timer.stop()
@@ -285,4 +296,4 @@ func _on_skip_replay_pressed():
 			current_action_index += 1
 		
 		is_combat_finished = true
-		skip_replay_button.text = "Replay"
+		button_label.text = "Continue"

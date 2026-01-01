@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -68,6 +68,7 @@
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Texture2D" uid="uid://frdxqif0cyou" path="res://assets/images/ui/background_char.png" id="38_aujhx"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
+[ext_resource type="Texture2D" uid="uid://sxpgeuuomsc1" path="res://assets/images/ui/button_texture.png" id="39_umggo"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
@@ -1878,12 +1879,24 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -70.0
-offset_top = -70.0
-offset_right = -10.0
+offset_left = -109.0
+offset_top = -71.0
+offset_right = -25.0
 offset_bottom = -10.0
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+icon = ExtResource("39_umggo")
+flat = true
+expand_icon = true
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/SkipReplayButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "Skip"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Map" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button", "quest")]
 visible = false
