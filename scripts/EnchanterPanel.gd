@@ -2,6 +2,11 @@ extends Panel
 
 # EnchanterPanel-specific functionality
 
+# Slot numbering constants
+const ENCHANTER_SLOT = 15
+const BAG_MIN = 10
+const BAG_MAX = 14
+
 @export var background_rect: TextureRect
 @export var description_label: Label
 @export var bag: Control
@@ -18,7 +23,7 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to slot changes for enchanter slot (104)
+	# Connect to slot changes for enchanter slot (15)
 	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
@@ -32,7 +37,7 @@ func _on_layout_mode_changed(is_wide: bool):
 		bag.visible = not is_wide
 
 func _on_utility_slot_changed(slot_id: int):
-	if slot_id == 104:  # Enchanter slot
+	if slot_id == ENCHANTER_SLOT:
 		update_enchant_button_state()
 		populate_effect_list()
 
@@ -51,11 +56,11 @@ func _load_location_content():
 
 
 func return_enchanter_item_to_bag():
-	# Find any item in slot 104 (enchanter slot) and return it to first available bag slot
+	# Find any item in enchanter slot and return it to first available bag slot
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 104:
-			# Find first available bag slot (10-14)
-			for slot_id in range(10, 15):
+		if item.bag_slot_id == ENCHANTER_SLOT:
+			# Find first available bag slot
+			for slot_id in range(BAG_MIN, BAG_MAX + 1):
 				var slot_occupied = false
 				for check_item in GameInfo.current_player.bag_slots:
 					if check_item.bag_slot_id == slot_id:
@@ -78,7 +83,7 @@ func update_enchant_button_state():
 	# Check if there's an item in the enchanter slot
 	var item_in_slot = null
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 104:
+		if item.bag_slot_id == ENCHANTER_SLOT:
 			item_in_slot = item
 			break
 	
@@ -103,7 +108,7 @@ func populate_effect_list():
 	var item_in_slot = null
 	var item_type = ""
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 104:
+		if item.bag_slot_id == ENCHANTER_SLOT:
 			item_in_slot = item
 			item_type = item.type
 			break
@@ -196,10 +201,10 @@ func _on_effect_selected(effect_id: int, factor: float, button: Button):
 	update_enchant_button_state()
 
 func _on_enchant_pressed():
-	# Find item in slot 104
+	# Find item in enchanter slot
 	var item_in_slot = null
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 104:
+		if item.bag_slot_id == ENCHANTER_SLOT:
 			item_in_slot = item
 			break
 	

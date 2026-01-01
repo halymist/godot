@@ -1,6 +1,21 @@
 # SlotContainer.gd - Attach to the slot Control (root level)
 extends Control
 
+# Slot numbering constants
+const EQUIPMENT_MIN = 0
+const EQUIPMENT_MAX = 8
+const CONSUME_SLOT = 9
+const BAG_MIN = 10
+const BAG_MAX = 14
+const ENCHANTER_SLOT = 15
+const BLACKSMITH_SLOT = 16
+const ALCHEMIST_SLOT_1 = 17
+const ALCHEMIST_SLOT_2 = 18
+const ALCHEMIST_SLOT_3 = 19
+const VENDOR_SELL_SLOT = 20
+const VENDOR_MIN = 21
+const VENDOR_MAX = 28
+
 @export var item_scene: PackedScene
 @export var outline_texture: Texture2D  # Outline texture for equipment slots (bag slots leave empty)
 @onready var slot_background = get_node_or_null("Background")
@@ -31,13 +46,13 @@ func _can_drop_data(_pos, data):
 	
 	print("DEBUG _can_drop_data: Target slot_id=", slot_id, " slot_type=", slot_type, " | Source slot_id=", source_slot_id, " | Dragged item type=", item_type)
 	
-	# Vendor slots (105-112) accept drops from bag (10-14) for selling
-	if slot_id >= 105 and slot_id <= 112:
+	# Vendor slots (21-28) accept drops from bag (10-14) for selling
+	if slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
 		# Only accept items from bag slots (10-14) for selling
 		return source_slot_id >= 10 and source_slot_id <= 14
 	
 	# Cannot drag between vendor slots
-	if source_slot_id >= 105 and source_slot_id <= 112 and slot_id >= 105 and slot_id <= 112:
+	if source_slot_id >= VENDOR_MIN and source_slot_id <= VENDOR_MAX and slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
 		return false
 	
 	# Special case: Allow gems to be dropped on equipment slots (0-8) if item has a socket
@@ -115,13 +130,13 @@ func _drop_data(_pos, data):
 	var source_container = data["source_container"]
 	var source_slot_id = source_container.slot_id if source_container else -1
 	
-	# Special case: Purchasing from vendor (slots 105-112)
-	if source_slot_id >= 105 and source_slot_id <= 112:
+	# Special case: Purchasing from vendor (slots 21-28)
+	if source_slot_id >= VENDOR_MIN and source_slot_id <= VENDOR_MAX:
 		handle_vendor_purchase(dragged_item, source_slot_id)
 		return
 	
-	# Special case: Selling to vendor (slot 113 OR vendor display slots 105-112)
-	if slot_id == 113 or (slot_id >= 105 and slot_id <= 112):
+	# Special case: Selling to vendor (slot 20 OR vendor display slots 21-28)
+	if slot_id == VENDOR_SELL_SLOT or (slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX):
 		handle_vendor_sell(dragged_item, source_slot_id, source_container)
 		return
 	
@@ -216,7 +231,7 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	GameInfo.current_player.bag_slots.append(purchased_item)
 	
 	# Remove item from vendor_items (don't replenish)
-	var vendor_slot_index = _vendor_slot_id - 105  # Convert slot_id to index (105->0, 106->1, etc.)
+	var vendor_slot_index = _vendor_slot_id - VENDOR_MIN  # Convert slot_id to index
 	if vendor_slot_index >= 0 and vendor_slot_index < GameInfo.vendor_items.size():
 		GameInfo.vendor_items.remove_at(vendor_slot_index)
 		print("Removed item from vendor inventory at index ", vendor_slot_index)
@@ -359,8 +374,8 @@ func place_item_in_slot(item_data: GameInfo.Item):
 	# Auto-update appearance (hide outline)
 	update_slot_appearance()
 	
-	# Notify UIManager if this is a utility slot (100-104)
-	if slot_id >= 100 and slot_id <= 104:
+	# Notify UIManager if this is a utility slot (15-19)
+	if slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3:
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func clear_slot():
@@ -377,8 +392,8 @@ func clear_slot():
 	# Auto-update appearance (deferred so queue_free completes first)
 	call_deferred("update_slot_appearance")
 	
-	# Notify UIManager if this is a utility slot (100-104)
-	if slot_id >= 100 and slot_id <= 104:
+	# Notify UIManager if this is a utility slot (15-19)
+	if slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3:
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func update_slot_appearance():
@@ -394,8 +409,8 @@ func update_slot_appearance():
 
 func refresh_slot():
 	"""Manual refresh - used by external systems that change bag_slots data directly"""
-	# Vendor slots (105-112) are managed by VendorPanel, don't auto-refresh them
-	if slot_id >= 105 and slot_id <= 112:
+	# Vendor slots (21-28) are managed by VendorPanel, don't auto-refresh them
+	if slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
 		return
 	
 	# Clear existing item visuals (keep Background and Outline)
@@ -437,40 +452,40 @@ func handle_double_click(item: GameInfo.Item):
 	
 	# Check if item is a consumable (Potion or Elixir) in bag - consume it
 	# Only consume on Character panel (not utility panels like Vendor, Blacksmith, etc.)
-	if (item.type == "Potion" or item.type == "Elixir") and item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+	if (item.type == "Potion" or item.type == "Elixir") and item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
 		if current_utility == null or (current_utility and current_utility.name == "Character"):
 			_consume_item(item)
 		return
 	
-	# Blacksmith: Move equippable items to slot 100
+	# Blacksmith: Move equippable items to slot 16
 	if current_utility and current_utility.name == "BlacksmithPanel":
 		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Gem":
-			if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
-				var target_slot = _find_slot_by_id(100)
+			if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+				var target_slot = _find_slot_by_id(BLACKSMITH_SLOT)
 				if target_slot and target_slot.is_slot_empty():
-					item.bag_slot_id = 100
+					item.bag_slot_id = BLACKSMITH_SLOT
 					target_slot.place_item_in_slot(item)
 					clear_slot()
 					UIManager.instance.refresh_bags()
 		return
 	
-	# Enchanter: Move equippable items to slot 104
+	# Enchanter: Move equippable items to slot 15
 	if current_utility and current_utility.name == "EnchanterPanel":
 		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Elixir" and item.type != "Potion" and item.type != "Gem":
-			if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
-				var target_slot = _find_slot_by_id(104)
+			if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+				var target_slot = _find_slot_by_id(ENCHANTER_SLOT)
 				if target_slot and target_slot.is_slot_empty():
-					item.bag_slot_id = 104
+					item.bag_slot_id = ENCHANTER_SLOT
 					target_slot.place_item_in_slot(item)
 					clear_slot()
 					if UIManager.instance:
 						UIManager.instance.refresh_bags()
 		return
 	
-	# Alchemist: Move ingredients to slots 101-103
+	# Alchemist: Move ingredients to slots 17-19
 	if current_utility and current_utility.name == "AlchemistPanel":
-		if item.type == "Ingredient" and item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
-			for target_slot_id in [101, 102, 103]:
+		if item.type == "Ingredient" and item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+			for target_slot_id in [ALCHEMIST_SLOT_1, ALCHEMIST_SLOT_2, ALCHEMIST_SLOT_3]:
 				var target_slot = _find_slot_by_id(target_slot_id)
 				if target_slot and target_slot.is_slot_empty():
 					item.bag_slot_id = target_slot_id
@@ -481,22 +496,22 @@ func handle_double_click(item: GameInfo.Item):
 					break
 		return
 	
-	# Vendor: Sell if in bag, buy if in vendor slots
+	# Vendor: Sell if in bag/equipment, buy if in vendor slots
 	if current_utility and current_utility.name == "VendorPanel":
-		# Selling: item in bag (10-14)
-		if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+		# Selling: item in equipment (0-8) or bag (10-14)
+		if (item.bag_slot_id >= EQUIPMENT_MIN and item.bag_slot_id <= EQUIPMENT_MAX) or (item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX):
 			if item.price > 0:
 				UIManager.instance.update_silver(item.price)
 				GameInfo.current_player.bag_slots.erase(item)
 				clear_slot()
 				if UIManager.instance:
 					UIManager.instance.refresh_bags()
-		# Buying: item in vendor slots (105-112)
-		elif item.bag_slot_id >= 105 and item.bag_slot_id <= 112:
+		# Buying: item in vendor slots (21-29)
+		elif item.bag_slot_id >= VENDOR_MIN and item.bag_slot_id <= VENDOR_MAX:
 			var buy_price = item.price * 2
 			if GameInfo.current_player.silver >= buy_price:
 				# Find first empty bag slot
-				for bag_slot_id in range(10, 15):
+				for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
 					var target_slot = _find_slot_by_id(bag_slot_id)
 					if target_slot and target_slot.is_slot_empty():
 						UIManager.instance.update_silver(-buy_price)
@@ -524,11 +539,11 @@ func handle_double_click(item: GameInfo.Item):
 	
 	if on_character_panel:
 		# If item is equipped (0-8), move it to bag
-		if item.bag_slot_id >= 0 and item.bag_slot_id <= 8:
+		if item.bag_slot_id >= EQUIPMENT_MIN and item.bag_slot_id <= EQUIPMENT_MAX:
 			_unequip_item_to_bag(item)
 			return
 		# If item is in bag (10-14), equip it
-		elif item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+		elif item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
 			if _can_equip_to_character(item):
 				_equip_item_to_character(item)
 				return
@@ -594,7 +609,7 @@ func _equip_item_to_character(item: GameInfo.Item):
 
 func _unequip_item_to_bag(item: GameInfo.Item):
 	"""Move equipped item to first available bag slot"""
-	for bag_slot_id in range(10, 15):
+	for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
 		var target_slot = _find_slot_by_id(bag_slot_id)
 		if target_slot and target_slot.is_slot_empty():
 			item.bag_slot_id = bag_slot_id

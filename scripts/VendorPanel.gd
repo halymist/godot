@@ -1,5 +1,9 @@
 extends Panel
 
+# Slot numbering constants
+const VENDOR_MIN = 21
+const VENDOR_MAX = 28
+
 @export var background_rect: TextureRect
 @export var description_label: Label
 @export var bag: Control
@@ -9,7 +13,7 @@ extends Panel
 func _ready():
 	UIManager.instance.resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 	_load_location_content()
-	# Get vendor slot references (slots 105-112 for 8 items)
+	# Get vendor slot references (slots 21-28 for 8 items)
 	if vendor_grid:
 		for i in range(1, 9):  # Vendor1 through Vendor8
 			var vendor_slot = vendor_grid.get_node_or_null("Vendor%d" % i)
@@ -45,8 +49,8 @@ func populate_vendor_slots():
 	for i in range(min(GameInfo.vendor_items.size(), vendor_slots.size())):
 		var item = GameInfo.vendor_items[i]
 		var slot = vendor_slots[i]
-		# Set bag_slot_id to vendor slot ID (105-112) for pricing
-		item.bag_slot_id = 105 + i
+		# Set bag_slot_id to vendor slot ID (21-28) for pricing
+		item.bag_slot_id = VENDOR_MIN + i
 		
 		# Get item scene and instantiate
 		var item_scene = load("res://Scenes/item.tscn")

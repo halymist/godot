@@ -3,9 +3,11 @@ extends Panel
 const BREW_COST = 10
 
 # Ingredient slot IDs
-const SLOT_1 = 101
-const SLOT_2 = 102
-const SLOT_3 = 103
+const SLOT_1 = 17
+const SLOT_2 = 18
+const SLOT_3 = 19
+const BAG_MIN = 10
+const BAG_MAX = 14
 
 # Reference to Background node with SilverManager
 @export var background: Node
@@ -33,7 +35,7 @@ func _on_layout_mode_changed(is_wide: bool):
 		bag.visible = not is_wide
 
 func _on_utility_slot_changed(slot_id: int):
-	if slot_id >= 101 and slot_id <= 103:  # Alchemist ingredient slots
+	if slot_id >= SLOT_1 and slot_id <= SLOT_3:
 		update_result_preview()
 		update_brew_button_state()
 
@@ -50,12 +52,12 @@ func _load_location_content():
 	description_label.text = location_data.get_random_alchemist_greeting()
 
 func return_ingredients_to_bag():
-	# Return items from ingredient slots (101, 102, 103) to bag
+	# Return items from ingredient slots to bag
 	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
 		for item in GameInfo.current_player.bag_slots:
 			if item.bag_slot_id == slot_id:
-				# Find first available bag slot (10-14)
-				for bag_slot_id in range(10, 15):
+				# Find first available bag slot
+				for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
 					var slot_occupied = false
 					for check_item in GameInfo.current_player.bag_slots:
 						if check_item.bag_slot_id == bag_slot_id:
@@ -206,17 +208,17 @@ func clear_ingredient_slots():
 			container.clear_slot()
 
 func find_empty_bag_slot() -> int:
-	# Find first empty slot in bag (slots 10-14, the visible bag slots)
+	# Find first empty slot in bag
 	var occupied_slots = []
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id >= 10 and item.bag_slot_id <= 14:
+		if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
 			occupied_slots.append(item.bag_slot_id)
 	
-	for i in range(10, 15):
+	for i in range(BAG_MIN, BAG_MAX + 1):
 		if not i in occupied_slots:
 			return i
 	
-	return 10  # Fallback to slot 10 if all full
+	return BAG_MIN  # Fallback to first bag slot if all full
 
 func _update_silver():
 	"""Update silver display via SilverManager"""

@@ -14,24 +14,25 @@ func update_equip_slots():
 		if slot.has_method("clear_slot"):
 			slot.clear_slot()
 
-	#eq slotsID: 0-8, bagslots: 10-14, special slots: 100+
+	# Slot numbering: Equipment 0-8, Consume 9, Bag 10-14, Special 15+
 	for item in GameInfo.current_player.bag_slots:
-		var bag_slot_id = item.bag_slot_id  # Use property instead of dictionary access
-		
-		# Skip special slots like blacksmith (100+)
-		if bag_slot_id >= 100:
-			continue
+		var bag_slot_id = item.bag_slot_id
 		
 		var valid = false
 		var slot_id = 0
-		if is_bag and bag_slot_id >= 10:
-			slot_id = bag_slot_id - 10
-			valid = true
-		elif not is_bag and bag_slot_id < 10:
-			slot_id = bag_slot_id
-			valid = true
+		
+		if is_bag:
+			# Bag slots: 10-14 → display as indices 0-4
+			if bag_slot_id >= 10 and bag_slot_id <= 14:
+				slot_id = bag_slot_id - 10
+				valid = true
+		else:
+			# Equipment slots: 0-8 → display as indices 0-8
+			if bag_slot_id >= 0 and bag_slot_id <= 8:
+				slot_id = bag_slot_id
+				valid = true
 
-		if valid:
+		if valid and slot_id < inventory_slots.size():
 			var icon = item_prefab.instantiate()
 			icon.set_item_data(item)
 			inventory_slots[slot_id].add_child(icon)

@@ -634,7 +634,7 @@ size_flags_stretch_ratio = 4.0
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Sell"
-slot_id = 113
+slot_id = 20
 
 [node name="VendorSlots" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel"]
 layout_mode = 1
@@ -653,35 +653,35 @@ columns = 4
 
 [node name="Vendor1" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 105
+slot_id = 21
 
 [node name="Vendor2" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 106
+slot_id = 22
 
 [node name="Vendor3" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 107
+slot_id = 23
 
 [node name="Vendor4" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 108
+slot_id = 24
 
 [node name="Vendor5" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 109
+slot_id = 25
 
 [node name="Vendor6" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 110
+slot_id = 26
 
 [node name="Vendor7" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 111
+slot_id = 27
 
 [node name="Vendor8" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
-slot_id = 112
+slot_id = 28
 
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
@@ -757,7 +757,7 @@ offset_right = 117.0
 offset_bottom = 149.0
 outline_texture = ExtResource("9_sword")
 slot_type = "Blacksmith"
-slot_id = 100
+slot_id = 16
 
 [node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/VBoxContainer/UtilityPanel"]
 layout_mode = 0
@@ -1271,7 +1271,7 @@ custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
-slot_id = 101
+slot_id = 17
 
 [node name="Plus1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow"]
 layout_mode = 2
@@ -1285,7 +1285,7 @@ custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
-slot_id = 102
+slot_id = 18
 
 [node name="Plus2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow"]
 layout_mode = 2
@@ -1299,7 +1299,7 @@ custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
-slot_id = 103
+slot_id = 19
 
 [node name="BrewButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow"]
 custom_minimum_size = Vector2(100, 50)
@@ -1442,7 +1442,7 @@ horizontal_alignment = 1
 layout_mode = 2
 outline_texture = ExtResource("9_sword")
 slot_type = "Enchanter"
-slot_id = 104
+slot_id = 15
 
 [node name="EnchantButtonContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/UtilityPanel/ItemSlotContainer/SlotAndButtonSection"]
 custom_minimum_size = Vector2(100, 0)
@@ -2138,7 +2138,7 @@ mouse_filter = 1
 script = ExtResource("8_85qyi")
 item_scene = ExtResource("11_ewbju")
 slot_type = "Consume"
-slot_id = 999
+slot_id = 10
 
 [node name="Weapon1Slot" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip" instance=ExtResource("6_itemslot")]
 layout_mode = 1

@@ -103,28 +103,23 @@ var mock_character_data = {
 			"day": 40
 		},
 		{
-			"id": 5,
-			"bag_slot_id": 9,
-			"day": 40
-		},
-		{
 			"id": 2,
-			"bag_slot_id": 11,
+			"bag_slot_id": 10,
 			"day": 3
 		},
 		{
 			"id": 400,
-			"bag_slot_id": 12,
+			"bag_slot_id": 11,
 			"day": 5
 		},
 		{
 			"id": 500,
-			"bag_slot_id": 13,
+			"bag_slot_id": 12,
 			"day": 2
 		},
 		{
 			"id": 390,
-			"bag_slot_id": 14,
+			"bag_slot_id": 13,
 			"day": 40
 		}
 	],

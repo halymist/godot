@@ -2,6 +2,11 @@ extends Panel
 
 # BlacksmithPanel-specific functionality
 
+# Slot numbering constants
+const BLACKSMITH_SLOT = 16
+const BAG_MIN = 10
+const BAG_MAX = 14
+
 @export var background_rect: TextureRect
 @export var description_label: Label
 @export var bag: Control
@@ -15,7 +20,7 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to slot changes for blacksmith slot (100)
+	# Connect to slot changes for blacksmith slot (16)
 	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 	if temper_button:
 		temper_button.pressed.connect(_on_temper_pressed)
@@ -30,7 +35,7 @@ func _on_layout_mode_changed(is_wide: bool):
 		bag.visible = not is_wide
 
 func _on_utility_slot_changed(slot_id: int):
-	if slot_id == 100:  # Blacksmith slot
+	if slot_id == BLACKSMITH_SLOT:
 		update_stats_display()
 		update_temper_button_state()
 
@@ -50,10 +55,10 @@ func _load_location_content():
 
 
 func update_stats_display():
-	# Find item in slot 100
+	# Find item in blacksmith slot
 	var item_in_slot = null
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 100:
+		if item.bag_slot_id == BLACKSMITH_SLOT:
 			item_in_slot = item
 			break
 	
@@ -95,11 +100,11 @@ func update_stats_display():
 	update_temper_button_state()
 
 func return_blacksmith_item_to_bag():
-	# Find any item in slot 100 (blacksmith slot) and return it to first available bag slot
+	# Find any item in blacksmith slot and return it to first available bag slot
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 100:
-			# Find first available bag slot (10-14)
-			for slot_id in range(10, 15):
+		if item.bag_slot_id == BLACKSMITH_SLOT:
+			# Find first available bag slot
+			for slot_id in range(BAG_MIN, BAG_MAX + 1):
 				var slot_occupied = false
 				for check_item in GameInfo.current_player.bag_slots:
 					if check_item.bag_slot_id == slot_id:
@@ -122,7 +127,7 @@ func update_temper_button_state():
 	# Check if there's an item in the blacksmith slot
 	var item_in_slot = null
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 100:
+		if item.bag_slot_id == BLACKSMITH_SLOT:
 			item_in_slot = item
 			break
 	
@@ -132,10 +137,10 @@ func update_temper_button_state():
 	temper_button.disabled = not (has_item and has_silver)
 
 func _on_temper_pressed():
-	# Find item in slot 100
+	# Find item in blacksmith slot
 	var item_in_slot = null
 	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == 100:
+		if item.bag_slot_id == BLACKSMITH_SLOT:
 			item_in_slot = item
 			break
 	
@@ -166,7 +171,7 @@ func _on_temper_pressed():
 	item_in_slot.tempered += 1
 	
 	# Move item back to bag after tempering
-	for slot_id in range(10, 15):
+	for slot_id in range(BAG_MIN, BAG_MAX + 1):
 		var slot_occupied = false
 		for check_item in GameInfo.current_player.bag_slots:
 			if check_item.bag_slot_id == slot_id:
