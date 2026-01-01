@@ -5,15 +5,20 @@ extends Panel
 @onready var combat_background = $CombatBackground
 @onready var player_avatar = $PlayerContainer/PlayerIcon/PlayerAvatar
 @onready var player_health_bar = $PlayerContainer/PlayerHealthBar
+@onready var player_health_label = $PlayerContainer/PlayerHealthBar/HealthLabel
 @onready var player_label = $PlayerContainer/PlayerLabel
 @onready var enemy_avatar = $EnemyContainer/EnemyIcon/EnemyAvatar
 @onready var enemy_health_bar = $EnemyContainer/EnemyHealthBar
+@onready var enemy_health_label = $EnemyContainer/EnemyHealthBar/HealthLabel
 @onready var enemy_label = $EnemyContainer/EnemyLabel
 @onready var message1 = $MessageOverlay/MessageContainer/Message1
 @onready var message2 = $MessageOverlay/MessageContainer/Message2
 @onready var message3 = $MessageOverlay/MessageContainer/Message3
 @onready var skip_replay_button = $SkipReplayButton
 @onready var button_label = $SkipReplayButton/Label
+
+# Client-side victory message (will be generated based on combat results later)
+var victory_message = "Victory! You defeated your opponent!"
 
 var message_labels = []
 
@@ -61,8 +66,8 @@ func display_combat_log():
 	# Set combat background based on location
 	set_combat_background()
 	
-	# Set up character info
-	player_label.text = combat.player1_name
+	# Set up character info - player is always "You", use GameInfo for name
+	player_label.text = "You" if GameInfo.current_player else "Player"
 	enemy_label.text = combat.player2_name
 	
 	# Update avatar cosmetics
@@ -76,11 +81,15 @@ func display_combat_log():
 		)
 	enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)
 	
-	# Set initial health bars
+	# Set initial health bars and labels
 	player_health_bar.max_value = combat.player1_health
 	enemy_health_bar.max_value = combat.player2_health
 	player_health_bar.value = combat.player1_health
 	enemy_health_bar.value = combat.player2_health
+	
+	# Update health labels
+	update_health_label(player_health_label, combat.player1_health, combat.player1_health)
+	update_health_label(enemy_health_label, combat.player2_health, combat.player2_health)
 	
 	# Build action list
 	create_action_sequence(combat)
@@ -115,10 +124,10 @@ func create_action_sequence(combat: GameInfo.CombatResponse):
 			"entry": entry
 		})
 	
-	# Add final message
+	# Add final message (client-side)
 	all_actions.append({
 		"type": "final_message",
-		"message": combat.final_message
+		"message": victory_message
 	})
 
 func _display_next_action():
@@ -177,7 +186,7 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	
 	# Determine which health bar to affect based on player
 	var health_bar = null
-	if action.player == combat.player1_name:
+	if action.player == "You":
 		health_bar = player_health_bar
 	else:
 		health_bar = enemy_health_bar
@@ -192,44 +201,60 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 
 func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	var text = ""
+	var player_name = "You" if entry.player == "You" else entry.player
 	
 	match entry.action:
 		"attack":
-			text += entry.player + " attacks!"
+			text += player_name + " attacks!"
 		"dodge":
-			text += entry.player + " dodges!"
+			text += player_name + " dodges!"
 		"hit":
 			if entry.factor > 0:
-				text += entry.player + " takes " + str(entry.factor) + " damage!"
+				text += player_name + " takes " + str(entry.factor) + " damage!"
 			else:
-				text += entry.player + " is hit!"
+				text += player_name + " is hit!"
 		"miss":
-			text += entry.player + " misses!"
+			text += player_name + " misses!"
 		"burn damage":
-			text += entry.player + " suffers " + str(entry.factor) + " burn damage!"
+			if entry.factor > 0:
+				text += player_name + " suffers " + str(entry.factor) + " burn damage!"
+			else:
+				text += player_name + " suffers burn damage!"
 		"fire damage":
-			text += entry.player + " takes " + str(entry.factor) + " fire damage!"
+			if entry.factor > 0:
+				text += player_name + " takes " + str(entry.factor) + " fire damage!"
+			else:
+				text += player_name + " takes fire damage!"
 		"poison damage":
-			text += entry.player + " takes " + str(entry.factor) + " poison damage!"
+			if entry.factor > 0:
+				text += player_name + " takes " + str(entry.factor) + " poison damage!"
+			else:
+				text += player_name + " takes poison damage!"
 		"heal":
 			if entry.factor > 0:
-				text += entry.player + " heals for " + str(entry.factor) + " HP!"
+				text += player_name + " heals for " + str(entry.factor) + " HP!"
 			else:
-				text += entry.player + " heals!"
+				text += player_name + " heals!"
 		"cast spell":
-			text += entry.player + " casts a spell!"
+			text += player_name + " casts a spell!"
 		"shield":
-			text += entry.player + " raises a shield!"
+			text += player_name + " raises a shield!"
 		"rage":
-			text += entry.player + " enters a rage!"
+			text += player_name + " enters a rage!"
 		"fire breath":
-			text += entry.player + " breathes fire!"
+			if entry.factor > 0:
+				text += player_name + " breathes fire for " + str(entry.factor) + " damage!"
+			else:
+				text += player_name + " breathes fire!"
 		"intimidate":
-			text += entry.player + " intimidates!"
+			text += player_name + " intimidates!"
 		"claw strike":
-			text += entry.player + " strikes with claws!"
+			if entry.factor > 0:
+				text += player_name + " strikes with claws for " + str(entry.factor) + " damage!"
+			else:
+				text += player_name + " strikes with claws!"
 		_:
-			text += entry.player + " " + entry.action
+			text += player_name + " " + entry.action
 			if entry.factor > 0:
 				text += " (" + str(entry.factor) + ")"
 	
@@ -242,6 +267,11 @@ func animate_health_decrease(health_bar: TextureProgressBar, damage: int):
 	var new_health = max(0, health_bar.value - damage)
 	var tween = create_tween()
 	tween.tween_property(health_bar, "value", new_health, 0.5)
+	
+	# Update health label
+	var health_label = health_bar.get_node_or_null("HealthLabel")
+	if health_label:
+		update_health_label(health_label, new_health, health_bar.max_value)
 
 func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 	if heal_amount <= 0:
@@ -250,9 +280,18 @@ func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 	var new_health = min(health_bar.max_value, health_bar.value + heal_amount)
 	var tween = create_tween()
 	tween.tween_property(health_bar, "value", new_health, 0.5)
+	
+	# Update health label
+	var health_label = health_bar.get_node_or_null("HealthLabel")
+	if health_label:
+		update_health_label(health_label, new_health, health_bar.max_value)
 
 func is_damage_action(action: String) -> bool:
 	return action in ["hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
+
+func update_health_label(label: Label, current: float, maximum: float):
+	"""Update health label to show current/max format"""
+	label.text = str(int(current)) + "/" + str(int(maximum))
 
 func _on_button_hover():
 	skip_replay_button.modulate = Color(1.2, 1.2, 1.2)  # Brighten button on hover
@@ -303,15 +342,22 @@ func _on_skip_replay_pressed():
 				var combat = GameInfo.current_combat_log
 				if combat:
 					var health_bar = null
-					if entry.player == combat.player1_name:
+					var health_label = null
+					if entry.player == "You":
 						health_bar = player_health_bar
+						health_label = player_health_label
 					else:
 						health_bar = enemy_health_bar
+						health_label = enemy_health_label
 					
 					if is_damage_action(entry.action):
 						health_bar.value = max(0, health_bar.value - entry.factor)
 					elif entry.action == "heal" and entry.factor > 0:
 						health_bar.value = min(health_bar.max_value, health_bar.value + entry.factor)
+					
+					# Update health label
+					if health_label:
+						update_health_label(health_label, health_bar.value, health_bar.max_value)
 			elif action_data.type == "final_message":
 				show_final_message(action_data.message)
 			

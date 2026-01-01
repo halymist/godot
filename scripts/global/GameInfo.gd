@@ -405,19 +405,15 @@ class CombatLogEntry:
 class CombatResponse:
 	extends MessagePackObject
 	
-	var player1_name: String = ""
 	var player1_health: int = 0
 	var player2_name: String = ""
 	var player2_health: int = 0
-	var final_message: String = ""
 	var combat_log: Array[CombatLogEntry] = []
 	
 	const MSGPACK_MAP = {
-		"player1name": "player1_name",
 		"player1health": "player1_health",
 		"player2name": "player2_name", 
 		"player2health": "player2_health",
-		"final_message": "final_message",
 		"logs": "combat_log"
 	}
 	
@@ -1111,15 +1107,15 @@ func accept_quest(quest_id: int):
 func set_current_combat_log(combat_index: int = 0):
 	if combat_index >= 0 and combat_index < combat_logs.size():
 		current_combat_log = combat_logs[combat_index]
-		print("Set current combat log: ", current_combat_log.player1_name, " vs ", current_combat_log.player2_name)
+		print("Set current combat log: You vs ", current_combat_log.player2_name)
 	else:
 		print("Invalid combat log index: ", combat_index)
 
-# Function to get combat logs for a specific player
+# Function to get combat logs for a specific player (as opponent)
 func get_combat_logs_for_player(player_name: String) -> Array[CombatResponse]:
 	var player_combats: Array[CombatResponse] = []
 	for combat in combat_logs:
-		if combat.player1_name == player_name or combat.player2_name == player_name:
+		if combat.player2_name == player_name:
 			player_combats.append(combat)
 	return player_combats
 

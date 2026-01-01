@@ -347,11 +347,9 @@ var mock_chat_messages = [
 # Mock combat data for development/testing
 var mock_combat_logs = [
 	{
-		"player1name": "Sir Galahad",
 		"player1health": 100,
 		"player2name": "Dark Knight",
 		"player2health": 120,
-		"final_message": "Sir Galahad emerges victorious!",
 		"logs": [
 			{
 				"turn": 1,
@@ -440,11 +438,9 @@ var mock_combat_logs = [
 		]
 	},
 	{
-		"player1name": "You",
 		"player1health": 85,
 		"player2name": "Goblin Warrior",
 		"player2health": 60,
-		"final_message": "Victory! You gain experience and gold.",
 		"logs": [
 			{
 				"turn": 1,
@@ -533,11 +529,9 @@ var mock_combat_logs = [
 		]
 	},
 	{
-		"player1name": "Wizard Eldara",
 		"player1health": 80,
 		"player2name": "Fire Demon",
 		"player2health": 150,
-		"final_message": "The Fire Demon is defeated by magical prowess! and suffers a humiliating defeat. anyways we should have a celebration, invite the wenches and lets drink to our victory!",
 		"logs": [
 			{
 				"turn": 1,
