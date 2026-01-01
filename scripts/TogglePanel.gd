@@ -71,9 +71,17 @@ func _ready():
 		print("-> Traveling to quest, showing map panel")
 		start_panel = map_panel
 	elif destination != null:
-		# Player has arrived at quest - show quest panel
+		# Player has arrived at quest - show quest panel and load it directly
 		print("-> Arrived at quest, showing quest panel")
 		start_panel = quest
+		# Load quest directly after panel is set up
+		var start_slide = 1
+		for quest_log_entry in GameInfo.current_player.quest_log:
+			if quest_log_entry.quest_id == destination:
+				if quest_log_entry.slides.size() > 0:
+					start_slide = quest_log_entry.slides[-1]
+				break
+		call_deferred("_load_quest_on_startup", destination, start_slide)
 	else:
 		# No quest active - show home panel
 		print("-> No quest active, showing home panel")
@@ -374,3 +382,7 @@ func _on_cancel_quest_yes():
 func _on_cancel_quest_no():
 	# Just hide the dialog using unified overlay system, continue with quest
 	hide_overlay(cancel_quest)
+
+func _load_quest_on_startup(quest_id: int, slide: int):
+	"""Helper to load quest on startup after panel is visible"""
+	quest.load_quest(quest_id, slide)

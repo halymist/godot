@@ -150,12 +150,25 @@ func _on_skip_button_pressed():
 
 func _on_travel_completed():
 	print("Travel completed - clearing travel state and showing quest")
+	var quest_id = GameInfo.current_player.traveling_destination
 	GameInfo.current_player.traveling = 0
 	
 	# Re-enable skip button
 	skip_button.disabled = false
 	
-	# Call handle_quest_arrived on active toggle panel through UIManager
+	# Find the current slide from quest log
+	var start_slide = 1
+	for quest_log_entry in GameInfo.current_player.quest_log:
+		if quest_log_entry.quest_id == quest_id:
+			if quest_log_entry.slides.size() > 0:
+				start_slide = quest_log_entry.slides[-1]
+			break
+	
+	# Load quest directly on the quest panel, then show it
+	if quest:
+		quest.load_quest(quest_id, start_slide)
+	
+	# Call handle_quest_arrived on active toggle panel through UIManager to show quest panel
 	if UIManager.instance.portrait_ui.visible:
 		UIManager.instance.portrait_ui.handle_quest_arrived()
 	elif UIManager.instance.wide_ui.visible:
