@@ -167,6 +167,11 @@ func handle_home_button():
 
 func handle_map_button():
 	"""Navigate to map panel - with custom quest logic"""
+	# Block navigation if player is on an active quest
+	if is_on_active_quest():
+		print("Cannot go to map - player is on an active quest")
+		return
+	
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
 	var current = GameInfo.get_current_panel()
@@ -199,14 +204,22 @@ func handle_arena_button():
 func handle_character_button():
 	"""Toggle character panel"""
 	if GameInfo.get_current_panel() == character_panel:
-		show_panel(home_panel)
+		# When toggling off, return to quest if on active quest, otherwise home
+		if is_on_active_quest():
+			show_panel(quest)
+		else:
+			show_panel(home_panel)
 	else:
 		show_panel(character_panel)
 
 func handle_rankings_button():
 	"""Toggle rankings panel"""
 	if GameInfo.get_current_panel() == rankings_panel:
-		show_panel(home_panel)
+		# When toggling off, return to quest if on active quest, otherwise home
+		if is_on_active_quest():
+			show_panel(quest)
+		else:
+			show_panel(home_panel)
 	else:
 		show_panel(rankings_panel)
 
