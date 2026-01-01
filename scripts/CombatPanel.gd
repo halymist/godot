@@ -79,7 +79,18 @@ func display_combat_log():
 			GameInfo.current_player.avatar_nose,
 			GameInfo.current_player.avatar_mouth
 		)
-	enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)
+	
+	# Use enemy avatar from combat data
+	if combat.player2_avatar.size() >= 5:
+		enemy_avatar.refresh_avatar(
+			combat.player2_avatar[0],
+			combat.player2_avatar[1],
+			combat.player2_avatar[2],
+			combat.player2_avatar[3],
+			combat.player2_avatar[4]
+		)
+	else:
+		enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)  # Fallback to defaults
 	
 	# Set initial health bars and labels
 	player_health_bar.max_value = combat.player1_health
@@ -184,9 +195,9 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	if not combat:
 		return
 	
-	# Determine which health bar to affect based on player
+	# Determine which health bar to affect based on player (1 = player, 2 = enemy)
 	var health_bar = null
-	if action.player == "You":
+	if action.player == 1:
 		health_bar = player_health_bar
 	else:
 		health_bar = enemy_health_bar
@@ -201,7 +212,8 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 
 func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	var text = ""
-	var player_name = "You" if entry.player == "You" else entry.player
+	var combat = GameInfo.current_combat_log
+	var player_name = "You" if entry.player == 1 else (combat.player2_name if combat else "Enemy")
 	
 	match entry.action:
 		"attack":
@@ -290,8 +302,8 @@ func is_damage_action(action: String) -> bool:
 	return action in ["hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
 
 func update_health_label(label: Label, current: float, maximum: float):
-	"""Update health label to show current/max format"""
-	label.text = str(int(current)) + "/" + str(int(maximum))
+	"""Update health label to show current health value"""
+	label.text = str(int(current))
 
 func _on_button_hover():
 	skip_replay_button.modulate = Color(1.2, 1.2, 1.2)  # Brighten button on hover
@@ -343,7 +355,7 @@ func _on_skip_replay_pressed():
 				if combat:
 					var health_bar = null
 					var health_label = null
-					if entry.player == "You":
+					if entry.player == 1:  # 1 = player, 2 = enemy
 						health_bar = player_health_bar
 						health_label = player_health_label
 					else:

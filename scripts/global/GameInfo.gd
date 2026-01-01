@@ -390,13 +390,11 @@ class ChatMessage:
 class CombatLogEntry:
 	extends MessagePackObject
 	
-	var turn: int = 0
-	var player: String = ""
+	var player: int = 1  # 1 = player, 2 = enemy
 	var action: String = ""
 	var factor: int = 0  # Optional damage/heal amount
 	
 	const MSGPACK_MAP = {
-		"turn": "turn",
 		"player": "player",
 		"action": "action",
 		"factor": "factor"
@@ -408,12 +406,14 @@ class CombatResponse:
 	var player1_health: int = 0
 	var player2_name: String = ""
 	var player2_health: int = 0
+	var player2_avatar: Array = [1, 11, 21, 31, 41]  # [face, hair, eyes, nose, mouth]
 	var combat_log: Array[CombatLogEntry] = []
 	
 	const MSGPACK_MAP = {
 		"player1health": "player1_health",
 		"player2name": "player2_name", 
 		"player2health": "player2_health",
+		"player2_avatar": "player2_avatar",
 		"logs": "combat_log"
 	}
 	
