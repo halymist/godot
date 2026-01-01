@@ -44,6 +44,17 @@ extends Control
 # Track UI state
 var chat_overlay_active: bool = false
 
+func is_on_active_quest() -> bool:
+	"""Check if player is on an active quest (arrived at destination, not traveling)"""
+	if not GameInfo.current_player:
+		return false
+	
+	var traveling = GameInfo.current_player.traveling
+	var destination = GameInfo.current_player.traveling_destination
+	
+	# Player is on active quest if: destination exists AND not currently traveling
+	return destination != null and traveling == 0
+
 func _ready():
 	# Start with home panel visible
 	GameInfo.set_current_panel(home_panel)
@@ -142,6 +153,11 @@ func show_panel(panel: Control):
 
 func handle_home_button():
 	"""Navigate to home panel - with custom home panel behavior"""
+	# Block navigation if player is on an active quest
+	if is_on_active_quest():
+		print("Cannot go home - player is on an active quest")
+		return
+	
 	# Custom home panel behavior: exit interior and center view
 	home_panel.handle_back_navigation()
 	home_panel.center_village_view()
@@ -170,6 +186,11 @@ func handle_map_button():
 
 func handle_arena_button():
 	"""Toggle arena panel"""
+	# Block navigation if player is on an active quest
+	if is_on_active_quest():
+		print("Cannot go to arena - player is on an active quest")
+		return
+	
 	if GameInfo.get_current_panel() == arena_panel:
 		show_panel(home_panel)
 	else:
@@ -269,9 +290,13 @@ func go_back():
 		toggle_details_bookmark()
 		return
 	
-	# Default: go home
-	print("-> Default case, going home")
-	show_panel(home_panel)
+	# Default: go home, or go to quest panel if on active quest
+	if is_on_active_quest():
+		print("-> Active quest detected, returning to quest panel")
+		show_panel(quest)
+	else:
+		print("-> Default case, going home")
+		show_panel(home_panel)
 
 
 func show_combat():
