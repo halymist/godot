@@ -1855,24 +1855,60 @@ theme_override_font_sizes/font_size = 12
 text = "Enemy"
 horizontal_alignment = 1
 
-[node name="MessageArea" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
+[node name="MessageArea" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.007
-anchor_top = 0.552
+anchor_top = 0.681
 anchor_right = 0.995
 anchor_bottom = 0.873
 offset_left = 0.165
-offset_top = 0.23996
+offset_top = -0.0300293
 offset_right = 0.0249634
 offset_bottom = 0.0100098
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="MessageOverlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
 [node name="MessageContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 5
 alignment = 1
+
+[node name="Message1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea/MessageContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Message2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea/MessageContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Message3" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/MessageArea/MessageContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="SkipReplayButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat"]
 layout_mode = 1
