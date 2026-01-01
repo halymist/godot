@@ -138,7 +138,7 @@ func _display_next_action():
 		# Change button immediately when final message shows
 		action_timer.stop()
 		is_combat_finished = true
-		button_label.text = "Continue"
+		button_label.text = "Next"
 	
 	current_action_index += 1
 
@@ -263,8 +263,11 @@ func _on_visibility_changed():
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
-		# Continue after combat - close combat panel or return to village
-		self.visible = false
+		# Continue after combat - return to home panel
+		if UIManager.instance and UIManager.instance.portrait_ui:
+			UIManager.instance.portrait_ui.handle_home_button()
+		else:
+			self.visible = false
 	else:
 		# Skip to the end
 		action_timer.stop()
