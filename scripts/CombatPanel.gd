@@ -263,9 +263,13 @@ func _on_visibility_changed():
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
-		# Continue after combat - return to home panel
+		# Continue after combat - return to home panel using proper panel management
 		if UIManager.instance and UIManager.instance.portrait_ui:
-			UIManager.instance.portrait_ui.handle_home_button()
+			var home_panel = UIManager.instance.portrait_ui.get_node_or_null("Home")
+			if home_panel:
+				UIManager.instance.portrait_ui.show_panel(home_panel)
+			else:
+				UIManager.instance.portrait_ui.handle_home_button()
 		else:
 			self.visible = false
 	else:
