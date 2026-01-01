@@ -99,8 +99,8 @@ func display_combat_log():
 	enemy_health_bar.value = combat.player2_health
 	
 	# Update health labels
-	update_health_label(player_health_label, combat.player1_health, combat.player1_health)
-	update_health_label(enemy_health_label, combat.player2_health, combat.player2_health)
+	update_health_label(player_health_label, combat.player1_health)
+	update_health_label(enemy_health_label, combat.player2_health)
 	
 	# Build action list
 	create_action_sequence(combat)
@@ -197,7 +197,7 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	
 	# Determine which health bar to affect based on player (1 = player, 2 = enemy)
 	var health_bar = null
-	if action.player == 1:
+	if int(action.player) == 1:
 		health_bar = player_health_bar
 	else:
 		health_bar = enemy_health_bar
@@ -213,7 +213,7 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	var text = ""
 	var combat = GameInfo.current_combat_log
-	var player_name = "You" if entry.player == 1 else (combat.player2_name if combat else "Enemy")
+	var player_name = "You" if int(entry.player) == 1 else (combat.player2_name if combat else "Enemy")
 	
 	match entry.action:
 		"attack":
@@ -283,7 +283,7 @@ func animate_health_decrease(health_bar: TextureProgressBar, damage: int):
 	# Update health label
 	var health_label = health_bar.get_node_or_null("HealthLabel")
 	if health_label:
-		update_health_label(health_label, new_health, health_bar.max_value)
+		update_health_label(health_label, new_health)
 
 func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 	if heal_amount <= 0:
@@ -296,12 +296,12 @@ func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 	# Update health label
 	var health_label = health_bar.get_node_or_null("HealthLabel")
 	if health_label:
-		update_health_label(health_label, new_health, health_bar.max_value)
+		update_health_label(health_label, new_health)
 
 func is_damage_action(action: String) -> bool:
 	return action in ["hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
 
-func update_health_label(label: Label, current: float, maximum: float):
+func update_health_label(label: Label, current: float):
 	"""Update health label to show current health value"""
 	label.text = str(int(current))
 
@@ -355,7 +355,7 @@ func _on_skip_replay_pressed():
 				if combat:
 					var health_bar = null
 					var health_label = null
-					if entry.player == 1:  # 1 = player, 2 = enemy
+					if int(entry.player) == 1:  # 1 = player, 2 = enemy
 						health_bar = player_health_bar
 						health_label = player_health_label
 					else:
@@ -369,7 +369,7 @@ func _on_skip_replay_pressed():
 					
 					# Update health label
 					if health_label:
-						update_health_label(health_label, health_bar.value, health_bar.max_value)
+						update_health_label(health_label, health_bar.value)
 			elif action_data.type == "final_message":
 				show_final_message(action_data.message)
 			
