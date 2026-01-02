@@ -1,4 +1,4 @@
-[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -91,7 +91,6 @@
 [ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="83_lrctp"]
 [ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="84_e6ols"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
-[ext_resource type="Texture2D" uid="uid://cbpatceuy6750" path="res://assets/images/ui/quests/quest_background.jpg" id="87_2cns2"]
 [ext_resource type="Script" uid="uid://cqdrglw3ojju2" path="res://scripts/TogglePanel_Wide.gd" id="94_fykvq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
@@ -1907,14 +1906,16 @@ background = NodePath("TextureRect")
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -112.0
-offset_right = 112.0
+offset_left = -312.0
+offset_right = 312.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("41_w4j8i")
 expand_mode = 1
+stretch_mode = 5
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
 layout_mode = 1
@@ -6309,7 +6310,7 @@ script = ExtResource("38_dynamic_options")
 text_container = NodePath("Overlay/TextContainer")
 options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
-background = NodePath("TextureRect")
+background = NodePath("Bakcground")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
@@ -6324,17 +6325,19 @@ guild_icon = ExtResource("83_lrctp")
 companions_icon = ExtResource("84_e6ols")
 portrait = NodePath("../../../..")
 
-[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest"]
+[node name="Bakcground" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -234.5
-offset_right = 235.5
-offset_bottom = 630.0
+anchor_bottom = 1.0
+offset_left = -312.0
+offset_right = 312.0
 grow_horizontal = 2
-texture = ExtResource("87_2cns2")
+grow_vertical = 2
+texture = ExtResource("41_w4j8i")
 expand_mode = 1
+stretch_mode = 5
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest"]
 layout_mode = 1
