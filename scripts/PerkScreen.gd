@@ -66,6 +66,18 @@ func load_all_perks():
 	
 	print("Loaded ", all_perks.size(), " perks")
 
+func refresh_perks_grid():
+	"""Force reload the perks grid (called when new perks are added)"""
+	print("Refreshing perks grid...")
+	perks_loaded = false
+	load_all_perks()
+	perks_loaded = true
+	_update_all_perk_highlighting()
+	# Update the active perk display if one is selected for current slot
+	var active_perk = _get_active_perk_for_slot(current_slot)
+	if active_perk:
+		_update_active_display(active_perk)
+
 func load_active_perks_for_slot(slot: int):
 	"""Called when opening the perk screen for a specific active slot (1-3)"""
 	print("Loading perks for slot: ", slot)

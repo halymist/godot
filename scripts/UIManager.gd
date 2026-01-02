@@ -24,6 +24,7 @@ static var instance: UIManager
 @export var vendor: Panel
 @export var trainer: Panel
 @export var church: Panel
+@export var perk_screen: Control
 
 # Signal for utility slot changes (100-104)
 signal utility_slot_changed(slot_id: int)
@@ -80,6 +81,10 @@ func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs)"""
 	active_effects.refresh_effects()
 	refresh_stats()  # Blessings may affect stats
+
+func refresh_perks():
+	"""Refresh perks grid when new perks are added"""
+	perk_screen.refresh_perks_grid()
 
 func refresh_avatars():
 	"""Update all avatar displays with current player data"""

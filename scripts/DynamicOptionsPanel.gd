@@ -296,8 +296,9 @@ func apply_rewards(quest_slide: QuestSlide):
 				"slot": 0
 			})
 			GameInfo.current_player.perks.append(new_perk)
-			print("REWARD: Perk ", new_perk.perk_name, " added to inactive perks")
-
+			print("REWARD: Perk ", new_perk.perk_name, " added to inactive perks")		# Refresh the perks grid if it's open
+		if UIManager.instance:
+			UIManager.instance.refresh_perks()
 func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""
 	if not options_container:

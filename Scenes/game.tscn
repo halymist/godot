@@ -286,7 +286,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church", "perk_screen")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -311,6 +311,7 @@ enchanter = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPan
 vendor = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
 trainer = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
 church = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
+perk_screen = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen")
 
 [node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1
