@@ -636,7 +636,7 @@ class GameCurrentPlayer:
 	
 	# Current player specific properties with automatic events
 	var location: int = 1
-	var traveling: int = 0  # Unix timestamp when travel ends, 0 if not traveling
+	var traveling: float = 0.0  # Unix timestamp when travel ends, 0 if not traveling
 	var traveling_destination: Variant = null
 	var dungeon: bool = false
 	var destination: Variant = null

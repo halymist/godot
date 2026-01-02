@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -70,6 +70,7 @@
 [ext_resource type="Texture2D" uid="uid://sxpgeuuomsc1" path="res://assets/images/ui/button_texture.png" id="39_umggo"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
+[ext_resource type="Texture2D" uid="uid://c0at4wwrwueri" path="res://assets/images/villages/forest2.png" id="41_w4j8i"]
 [ext_resource type="Script" uid="uid://uvb45o8c4dhi" path="res://scripts/PressHoldOverlay.gd" id="42_umggo"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
@@ -1906,13 +1907,13 @@ background = NodePath("TextureRect")
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -234.5
-offset_right = 235.5
-offset_bottom = 630.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -112.0
+offset_right = 112.0
 grow_horizontal = 2
-texture = ExtResource("87_2cns2")
+grow_vertical = 2
+texture = ExtResource("41_w4j8i")
 expand_mode = 1
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
