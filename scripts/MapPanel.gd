@@ -76,8 +76,17 @@ func update_travel_display():
 	var current_player = GameInfo.current_player
 	
 	if current_player.traveling == 0:
-		# No active travel
-		travel_text_label.text = "No active travel"
+		# No active travel - show location expedition info
+		var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
+		if location_data:
+			if quest_name_label:
+				quest_name_label.text = location_data.location_name
+			if location_data.expedition_texture and background:
+				background.texture = location_data.expedition_texture
+			travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
+		else:
+			travel_text_label.text = "No active travel"
+		
 		travel_progress.value = 0
 		travel_time_label.text = ""
 		is_skipping = false

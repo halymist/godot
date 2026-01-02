@@ -7,6 +7,10 @@ extends Resource
 # Village scene for this location
 @export var village_scene: PackedScene
 
+# Expedition/Map panel when not traveling
+@export var expedition_texture: Texture2D
+@export var expedition_text: String = ""
+
 # Utility backgrounds (null = not available at this location)
 @export var blacksmith_background: Texture
 @export var blacksmith_greetings: Array[String] = []
