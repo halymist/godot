@@ -11,6 +11,7 @@ extends Button
 var current_slot: int = 0  # Which active perk slot (1-3) we're binding to
 var selected_perk: GameInfo.Perk = null
 var selected_perk_button: Button = null
+var perks_loaded: bool = false  # Track if we've already loaded the grid
 
 func _ready():
 	pressed.connect(_on_button_pressed)
@@ -70,16 +71,13 @@ func load_active_perks_for_slot(slot: int):
 	print("Loading perks for slot: ", slot)
 	current_slot = slot
 	
-	# Load all perks
-	load_all_perks()
+	# Load all perks only once
+	if not perks_loaded:
+		load_all_perks()
+		perks_loaded = true
 	
-	# Highlight ALL active perks from all slots
-	for child in inactive_perks_grid.get_children():
-		if child.has_meta("perk_data"):
-			var perk_data = child.get_meta("perk_data")
-			if perk_data.active:
-				# Green tint for any active perk
-				child.modulate = Color(0.5, 1.0, 0.5, 1)
+	# Update highlighting to show all active perks
+	_update_all_perk_highlighting()
 	
 	# Check if there's already an active perk in this slot
 	var active_perk = _get_active_perk_for_slot(slot)
@@ -96,6 +94,18 @@ func _get_active_perk_for_slot(slot: int) -> GameInfo.Perk:
 		if perk.active and perk.slot == slot:
 			return perk
 	return null
+
+func _update_all_perk_highlighting():
+	"""Update highlighting for all perks to show active state"""
+	for child in inactive_perks_grid.get_children():
+		if child.has_meta("perk_data"):
+			var perk_data = child.get_meta("perk_data")
+			if perk_data.active:
+				# Green tint for any active perk
+				child.modulate = Color(0.5, 1.0, 0.5, 1)
+			else:
+				# Normal color
+				child.modulate = Color(1, 1, 1, 1)
 
 func _on_perk_clicked(perk_button: Button, perk: GameInfo.Perk):
 	"""Handle clicking on an inactive perk"""
@@ -213,15 +223,7 @@ func _on_bind_pressed():
 	_update_active_display(selected_perk)
 	
 	# Update visual highlighting - show ALL active perks
-	for child in inactive_perks_grid.get_children():
-		if child.has_meta("perk_data"):
-			var perk_data = child.get_meta("perk_data")
-			if perk_data.active:
-				# Any active perk gets green tint
-				child.modulate = Color(0.5, 1.0, 0.5, 1)
-			else:
-				# Reset to normal
-				child.modulate = Color(1, 1, 1, 1)
+	_update_all_perk_highlighting()
 	
 	# Clear selection and disable bind button
 	selected_perk = null
