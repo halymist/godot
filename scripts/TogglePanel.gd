@@ -27,7 +27,7 @@ extends Control
 @export var quest: Control
 @export var cancel_quest: Control
 @export var upgrade_talent: Control
-@export var perks_panel: Control
+@export var perk_screen: Control
 @export var vendor_panel: Control
 @export var blacksmith_panel: Control
 @export var trainer_panel: Control
@@ -155,7 +155,7 @@ func hide_overlay(overlay: Control):
 	overlay.visible = false
 
 func show_panel(panel: Control):
-	"""Show main panel - hides all overlays and current panel"""
+	"""Show main panel - hides all overlays and current panel"""	
 	# Hide current panel
 	var current_panel = GameInfo.get_current_panel()
 	if current_panel:
@@ -284,7 +284,18 @@ func go_back():
 		hide_overlay(chat_panel)
 		return
 	
-	# Priority 2: Hide current overlay
+	# Priority 2: Hide sub-overlays (upgrade/perkscreen on talents)
+	if upgrade_talent and upgrade_talent.visible:
+		print("-> Hiding upgrade sub-overlay")
+		upgrade_talent.visible = false
+		return
+	
+	if perk_screen and perk_screen.visible:
+		print("-> Hiding perks sub-overlay")
+		perk_screen.visible = false
+		return
+	
+	# Priority 3: Hide current overlay
 	if current_overlay and current_overlay.visible:
 		print("-> Hiding current overlay: ", current_overlay.name)
 		hide_overlay(current_overlay)

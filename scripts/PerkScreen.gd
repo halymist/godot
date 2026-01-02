@@ -229,8 +229,6 @@ func _get_next_inactive_slot() -> int:
 
 func _on_button_pressed():
 	"""Handle clicking the background to close"""
-	if GameInfo.get_current_panel_overlay() == self:
-		GameInfo.set_current_panel_overlay(null)
 	visible = false
 
 func show_overlay():

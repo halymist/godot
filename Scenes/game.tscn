@@ -287,7 +287,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church", "perk_screen")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church", "perk_screen", "upgrade_talent")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -313,8 +313,9 @@ vendor = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
 trainer = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
 church = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
 perk_screen = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen")
+upgrade_talent = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/Upgrade")
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perks_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -349,8 +350,8 @@ fight_button = NodePath("GameSceneParent/Wrapper/GameScene/Arena/FightButton")
 quest_panel = NodePath("GameSceneParent/Wrapper/GameScene/Home/QuestAccept")
 quest = NodePath("GameSceneParent/Wrapper/GameScene/Quest")
 cancel_quest = NodePath("GameSceneParent/Wrapper/GameScene/CancelQuest")
-upgrade_talent = NodePath("GameSceneParent/Wrapper/GameScene/TalentsPanel/Upgrade/UpgradeTalent")
-perks_panel = NodePath("GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel")
+upgrade_talent = NodePath("GameSceneParent/Wrapper/GameScene/TalentsPanel/Upgrade")
+perk_screen = NodePath("GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen")
 vendor_panel = NodePath("GameSceneParent/Wrapper/GameScene/VendorPanel")
 blacksmith_panel = NodePath("GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
 trainer_panel = NodePath("GameSceneParent/Wrapper/GameScene/TrainerPanel")
@@ -2751,7 +2752,7 @@ talents = [NodePath("Talent"), NodePath("Talent2"), NodePath("Talent3"), NodePat
 reset_button = NodePath("../Title/Reset/ResetButton")
 title_label = NodePath("../Title/Label")
 
-[node name="Talent" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2764,7 +2765,6 @@ maxPoints = 3
 effect_id = 1
 factor = 8.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent"]
@@ -2790,7 +2790,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent2" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent2" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2803,7 +2803,6 @@ maxPoints = 5
 effect_id = 1
 factor = 3.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent2"]
@@ -2829,7 +2828,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent3" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent3" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2842,7 +2841,6 @@ maxPoints = 3
 effect_id = 1
 factor = 5.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent3"]
@@ -2868,7 +2866,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent4" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent4" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2881,7 +2879,6 @@ maxPoints = 3
 effect_id = 1
 factor = 6.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent4"]
@@ -2907,7 +2904,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent5" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent5" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2920,7 +2917,6 @@ maxPoints = 3
 effect_id = 1
 factor = 4.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent5"]
@@ -2946,7 +2942,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent6" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent6" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2959,7 +2955,6 @@ maxPoints = 3
 effect_id = 1
 factor = 25.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent6"]
@@ -2985,7 +2980,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent7" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent7" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2998,7 +2993,6 @@ maxPoints = 3
 effect_id = 1
 factor = 3.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent7"]
@@ -3024,7 +3018,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent8" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent8" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3037,7 +3031,6 @@ maxPoints = 5
 effect_id = 1
 factor = 8.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent8"]
@@ -3063,7 +3056,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent9" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent9" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3076,7 +3069,6 @@ maxPoints = 3
 effect_id = 1
 factor = 15.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent9"]
@@ -3102,7 +3094,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent10" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent10" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3114,7 +3106,6 @@ talentName = "Random Name"
 maxPoints = 3
 effect_id = 1
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent10"]
@@ -3140,7 +3131,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent11" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent11" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3153,7 +3144,6 @@ maxPoints = 3
 effect_id = 1
 factor = 15.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent11"]
@@ -3179,7 +3169,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent12" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent12" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3192,7 +3182,6 @@ maxPoints = 3
 effect_id = 1
 factor = 20.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent12"]
@@ -3218,7 +3207,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent13" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent13" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3231,7 +3220,6 @@ maxPoints = 3
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent13"]
@@ -3257,7 +3245,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent14" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent14" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3270,7 +3258,6 @@ maxPoints = 3
 effect_id = 1
 factor = 15.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent14"]
@@ -3296,7 +3283,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent15" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent15" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3309,7 +3296,6 @@ maxPoints = 5
 effect_id = 1
 factor = 6.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent15"]
@@ -3335,7 +3321,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent16" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent16" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3348,7 +3334,6 @@ maxPoints = 3
 effect_id = 1
 factor = 12.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent16"]
@@ -3374,7 +3359,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent17" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent17" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3387,7 +3372,6 @@ maxPoints = 4
 effect_id = 1
 factor = 8.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent17"]
@@ -3413,7 +3397,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent18" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent18" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3426,7 +3410,6 @@ maxPoints = 3
 effect_id = 1
 factor = 18.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent18"]
@@ -3452,7 +3435,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent19" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent19" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3465,7 +3448,6 @@ maxPoints = 3
 effect_id = 1
 factor = 20.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent19"]
@@ -3491,7 +3473,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent20" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent20" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3504,7 +3486,6 @@ maxPoints = 4
 effect_id = 1
 factor = 2.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent20"]
@@ -3530,7 +3511,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent21" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent21" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3543,7 +3524,6 @@ maxPoints = 5
 effect_id = 1
 factor = 7.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent21"]
@@ -3569,7 +3549,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent22" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent22" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3582,7 +3562,6 @@ maxPoints = 4
 effect_id = 1
 factor = 4.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent22"]
@@ -3608,7 +3587,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent23" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent23" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3621,7 +3600,6 @@ maxPoints = 5
 effect_id = 1
 factor = 5.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent23"]
@@ -3647,7 +3625,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent24" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent24" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3660,7 +3638,6 @@ maxPoints = 4
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent24"]
@@ -3686,7 +3663,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent25" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent25" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3699,7 +3676,6 @@ maxPoints = 4
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent25"]
@@ -3725,7 +3701,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent26" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent26" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3738,7 +3714,6 @@ maxPoints = 4
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent26"]
@@ -3764,7 +3739,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent27" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent27" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3777,7 +3752,6 @@ maxPoints = 4
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent27"]
@@ -3803,7 +3777,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent28" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent28" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3816,7 +3790,6 @@ maxPoints = 4
 effect_id = 1
 factor = 8.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent28"]
@@ -3842,7 +3815,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent29" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent29" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3855,7 +3828,6 @@ maxPoints = 5
 effect_id = 1
 factor = 12.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent29"]
@@ -3881,7 +3853,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent30" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent30" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3894,7 +3866,6 @@ maxPoints = 3
 effect_id = 1
 factor = 8.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent30"]
@@ -3920,7 +3891,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent31" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent31" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3933,7 +3904,6 @@ maxPoints = 5
 effect_id = 1
 factor = 3.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent31"]
@@ -3959,7 +3929,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent32" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent32" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3972,7 +3942,6 @@ maxPoints = 4
 effect_id = 1
 factor = 2.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent32"]
@@ -3998,7 +3967,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent33" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent33" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4011,7 +3980,6 @@ maxPoints = 5
 effect_id = 1
 factor = 3.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent33"]
@@ -4037,7 +4005,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent34" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent34" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4050,7 +4018,6 @@ maxPoints = 5
 effect_id = 1
 factor = 3.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent34"]
@@ -4076,7 +4043,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent35" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel")]
+[node name="Talent35" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4089,7 +4056,6 @@ maxPoints = 4
 effect_id = 1
 factor = 15.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 
 [node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer/Talent35"]
@@ -4115,7 +4081,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent36" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent36" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4128,7 +4094,6 @@ maxPoints = 4
 effect_id = 1
 factor = 4.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent43"), NodePath("../Talent29")]
 
@@ -4155,7 +4120,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent37" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent37" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4168,7 +4133,6 @@ maxPoints = 3
 effect_id = 1
 factor = 12.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent36"), NodePath("../Talent38"), NodePath("../Talent30"), NodePath("../Talent44")]
 
@@ -4195,7 +4159,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent38" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent38" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4208,7 +4172,6 @@ maxPoints = 5
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent39"), NodePath("../Talent31"), NodePath("../Talent45")]
 
@@ -4235,7 +4198,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent39" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent39" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4248,7 +4211,6 @@ maxPoints = 4
 effect_id = 1
 factor = 15.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent38"), NodePath("../Talent40"), NodePath("../Talent32"), NodePath("../Talent46")]
 
@@ -4275,7 +4237,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent40" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent40" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4288,7 +4250,6 @@ maxPoints = 4
 effect_id = 1
 factor = 6.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent39"), NodePath("../Talent41"), NodePath("../Talent33"), NodePath("../Talent47")]
 
@@ -4315,7 +4276,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent41" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent41" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4328,7 +4289,6 @@ maxPoints = 3
 effect_id = 1
 factor = 25.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent40"), NodePath("../Talent42"), NodePath("../Talent48"), NodePath("../Talent34")]
 
@@ -4355,7 +4315,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent42" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent42" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4368,7 +4328,6 @@ maxPoints = 4
 effect_id = 1
 factor = 5.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent41"), NodePath("../Talent48"), NodePath("../Talent36")]
 
@@ -4395,7 +4354,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent43" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent43" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4408,7 +4367,6 @@ maxPoints = 3
 effect_id = 1
 factor = 20.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent36"), NodePath("../Talent50")]
 
@@ -4435,7 +4393,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent44" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent44" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4448,7 +4406,6 @@ maxPoints = 5
 effect_id = 1
 factor = 4.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent43"), NodePath("../Talent45"), NodePath("../Talent37"), NodePath("../Talent51")]
 
@@ -4475,7 +4432,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent45" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent45" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4488,7 +4445,6 @@ maxPoints = 4
 effect_id = 1
 factor = 6.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent46"), NodePath("../Talent38"), NodePath("../Talent52")]
 
@@ -4515,7 +4471,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4528,8 +4484,6 @@ maxPoints = 1
 effect_id = 1
 perk_slot = 2
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent45"), NodePath("../Talent47"), NodePath("../Talent39"), NodePath("../Talent53")]
 
@@ -4556,7 +4510,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent47" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent47" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4569,7 +4523,6 @@ maxPoints = 3
 effect_id = 1
 factor = 25.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent46"), NodePath("../Talent48"), NodePath("../Talent40"), NodePath("../Talent54")]
 
@@ -4596,7 +4549,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent48" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "pointsLabel", "neighbor_talents")]
+[node name="Talent48" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4609,7 +4562,6 @@ maxPoints = 4
 effect_id = 1
 factor = 3.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent47"), NodePath("../Talent49"), NodePath("../Talent41"), NodePath("../Talent55")]
 
@@ -4636,7 +4588,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent49" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent49" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4649,8 +4601,6 @@ maxPoints = 5
 effect_id = 1
 factor = 15.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent42"), NodePath("../Talent56"), NodePath("../Talent48")]
 
@@ -4677,7 +4627,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent50" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent50" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4690,8 +4640,6 @@ maxPoints = 3
 isStarter = true
 effect_id = 1
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent43")]
 
@@ -4718,7 +4666,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent51" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent51" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4732,8 +4680,6 @@ isStarter = true
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent52"), NodePath("../Talent50"), NodePath("../Talent44")]
 
@@ -4760,7 +4706,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent52" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent52" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4774,8 +4720,6 @@ isStarter = true
 effect_id = 1
 factor = 8.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent53"), NodePath("../Talent45")]
 
@@ -4802,7 +4746,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent53" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent53" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4816,8 +4760,6 @@ isStarter = true
 effect_id = 200
 perk_slot = 1
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent54"), NodePath("../Talent52"), NodePath("../Talent46")]
 
@@ -4844,7 +4786,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent54" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent54" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4858,8 +4800,6 @@ isStarter = true
 effect_id = 1
 factor = 20.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent53"), NodePath("../Talent47")]
 
@@ -4886,7 +4826,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent55" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent55" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4900,8 +4840,6 @@ isStarter = true
 effect_id = 1
 factor = 10.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent56"), NodePath("../Talent54"), NodePath("../Talent48")]
 
@@ -4928,7 +4866,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent56" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "upgrade", "perkScreen", "pointsLabel", "neighbor_talents")]
+[node name="Talent56" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4942,8 +4880,6 @@ isStarter = true
 effect_id = 1
 factor = 15.0
 button = NodePath("Button")
-upgrade = NodePath("../../Upgrade")
-perkScreen = NodePath("../../PerkScreen")
 pointsLabel = NodePath("Label")
 neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent49")]
 

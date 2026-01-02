@@ -12,8 +12,6 @@ extends AspectRatioContainer
 @export var perk_slot: int = 0  # 0 = regular talent, >0 = perk talent with this slot ID
 
 @export var button: Button
-@export var upgrade: Button
-@export var perkScreen: Button
 @export var pointsLabel: Label
 @export var neighbor_talents: Array[AspectRatioContainer] = []
 
@@ -48,54 +46,47 @@ func update_button_appearance():
 		modulate = Color(0.4, 0.4, 0.4, 1.0)  # Dark grey
 
 func _on_button_pressed():
-	var eligible_for_upgrade = can_upgrade()
+	print("Talent button pressed: ", talentName)
+	
+	# Check if this is a perk slot talent (to select a perk)
 	if perk_slot > 0 and points >= maxPoints:
-		# Get TogglePanel reference and show perks overlay
-		var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
-		if toggle_panel and toggle_panel.has_method("show_overlay"):
-			# Load active perks for the specific slot that was clicked
-			perkScreen.load_active_perks_for_slot(perk_slot)
-			toggle_panel.show_overlay(perkScreen)
+		print("  -> Showing perk screen for slot ", perk_slot)
+		if UIManager.instance and UIManager.instance.perk_screen:
+			UIManager.instance.perk_screen.load_active_perks_for_slot(perk_slot)
+			UIManager.instance.perk_screen.z_index = 300
+			UIManager.instance.perk_screen.mouse_filter = Control.MOUSE_FILTER_STOP
+			UIManager.instance.perk_screen.visible = true
 		else:
-			# Fallback to old method
-			GameInfo.current_panel_overlay = perkScreen
-			perkScreen.visible = true
-			perkScreen.load_active_perks_for_slot(perk_slot)
+			print("  -> ERROR: perk_screen is NULL!")
 	else:
-		# Get effect description from effects database
+		# Show upgrade screen for all other cases (unlock perk slot or upgrade regular talent)
+		print("  -> Showing upgrade screen")
+		
+		var eligible_for_upgrade = can_upgrade()
 		var description = ""
 		
 		# Check if this is a perk slot talent
 		if perk_slot > 0:
-			# Perk slot talents just show the unlock message
 			description = "Unlocks an additional perk slot"
 		elif effect_id > 0:
 			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
 			if effect_data:
-				# Start with the effect description
 				description = effect_data.description
-				
-				# Calculate current and next level bonuses
 				var current_bonus = points * factor
 				var next_bonus = (points + 1) * factor
 				
-				# Add bonus values to description
 				if points >= maxPoints:
-					# Maxed out - only show current bonus
 					description += " " + str(int(current_bonus)) + "%"
 				else:
-					# Show current --> next level
 					description += " " + str(int(current_bonus)) + "% --> " + str(int(next_bonus)) + "%"
 		
-		# Get TogglePanel reference and show upgrade talent overlay
-		var toggle_panel = get_tree().current_scene.find_child("Background", true, false)
-		if toggle_panel and toggle_panel.has_method("show_overlay"):
-			upgrade.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
-			toggle_panel.show_overlay(upgrade)
+		if UIManager.instance and UIManager.instance.upgrade_talent:
+			UIManager.instance.upgrade_talent.z_index = 300
+			UIManager.instance.upgrade_talent.mouse_filter = Control.MOUSE_FILTER_STOP
+			UIManager.instance.upgrade_talent.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
+			print("  -> Upgrade visible: ", UIManager.instance.upgrade_talent.visible)
 		else:
-			# Fallback to old method
-			GameInfo.current_panel_overlay = upgrade
-			upgrade.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
+			print("  -> ERROR: upgrade_talent is NULL!")
 
 func can_upgrade() -> bool:
 	# Check if talent is already maxed out
