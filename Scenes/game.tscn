@@ -1884,7 +1884,8 @@ text = "Skip"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Map" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button", "quest", "background")]
+[node name="Map" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("quest_name_label", "travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button", "quest", "background")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1893,7 +1894,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
 script = ExtResource("37_map_panel")
-travel_text_label = NodePath("Overlay/TravelTextLabel")
+quest_name_label = NodePath("Overlay/TravelInfoContainer/QuestNameLabel")
+travel_text_label = NodePath("Overlay/TravelInfoContainer/TravelTextLabel")
 travel_progress = NodePath("Overlay/TravelBarContainer/TravelProgress")
 travel_time_label = NodePath("Overlay/TravelBarContainer/TravelTimeLabel")
 skip_button = NodePath("Overlay/SkipButton")
@@ -1923,21 +1925,39 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="TravelTextLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]
-clip_contents = true
+[node name="TravelInfoContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_top = 405.0
-offset_bottom = -91.0
+offset_left = -152.5
+offset_top = -202.0
+offset_right = 140.5
+offset_bottom = -104.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "No active travel"
+grow_vertical = 0
+
+[node name="QuestNameLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay/TravelInfoContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+text = "Quest name"
 horizontal_alignment = 1
-vertical_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 3
+
+[node name="TravelTextLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay/TravelInfoContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "No active travel
+"
+horizontal_alignment = 1
+vertical_alignment = 2
 autowrap_mode = 3
 
 [node name="TravelBarContainer" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]

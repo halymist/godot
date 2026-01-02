@@ -1,6 +1,7 @@
 extends Panel
 class_name MapPanel
 
+@export var quest_name_label: Label
 @export var travel_text_label: Label
 @export var travel_progress: ProgressBar
 @export var travel_time_label: Label
@@ -57,12 +58,15 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds")
 	print("Travel duration in seconds: ", travel_duration)
 	
-	# Apply quest background texture
+	# Apply quest background texture and set quest name
 	if quest_id > 0 and background:
 		var quest_data = GameInfo.get_quest_data(quest_id)
-		if quest_data and quest_data.background_texture:
-			background.texture = quest_data.background_texture
-			print("Applied quest background texture")
+		if quest_data:
+			if quest_data.background_texture:
+				background.texture = quest_data.background_texture
+				print("Applied quest background texture")
+			if quest_name_label:
+				quest_name_label.text = quest_data.quest_name
 	
 	# Force immediate UI update to show travel info
 	call_deferred("update_travel_display")
