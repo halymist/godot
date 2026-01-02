@@ -19,9 +19,9 @@ func _ready():
 		bind_button.disabled = true
 	visible = false
 
-func load_inactive_perks():
-	"""Load all inactive perks into the grid"""
-	print("Loading inactive perks into grid...")
+func load_all_perks():
+	"""Load all available perks into the grid"""
+	print("Loading all perks into grid...")
 	
 	if not inactive_perks_grid:
 		print("Error: inactive_perks_grid is null")
@@ -31,19 +31,18 @@ func load_inactive_perks():
 	for child in inactive_perks_grid.get_children():
 		child.queue_free()
 	
-	# Get all inactive perks from GameInfo and sort by slot
+	# Get ALL perks from GameInfo and sort by slot
 	var game_perks = GameInfo.current_player.perks
-	var inactive_perks = []
+	var all_perks = []
 	
 	for perk in game_perks:
-		if not perk.active:  # Only inactive perks
-			inactive_perks.append(perk)
+		all_perks.append(perk)
 	
 	# Sort by slot number
-	inactive_perks.sort_custom(func(a, b): return a.slot < b.slot)
+	all_perks.sort_custom(func(a, b): return a.slot < b.slot)
 	
 	# Create perk buttons in grid
-	for perk in inactive_perks:
+	for perk in all_perks:
 		print("Creating perk button:", perk.perk_name)
 		var perk_button = perk_scene.instantiate()
 		
@@ -64,15 +63,23 @@ func load_inactive_perks():
 		
 		inactive_perks_grid.add_child(perk_button)
 	
-	print("Loaded ", inactive_perks.size(), " inactive perks")
+	print("Loaded ", all_perks.size(), " perks")
 
 func load_active_perks_for_slot(slot: int):
 	"""Called when opening the perk screen for a specific active slot (1-3)"""
 	print("Loading perks for slot: ", slot)
 	current_slot = slot
 	
-	# Load all inactive perks
-	load_inactive_perks()
+	# Load all perks
+	load_all_perks()
+	
+	# Highlight ALL active perks from all slots
+	for child in inactive_perks_grid.get_children():
+		if child.has_meta("perk_data"):
+			var perk_data = child.get_meta("perk_data")
+			if perk_data.active:
+				# Green tint for any active perk
+				child.modulate = Color(0.5, 1.0, 0.5, 1)
 	
 	# Check if there's already an active perk in this slot
 	var active_perk = _get_active_perk_for_slot(slot)
@@ -110,14 +117,23 @@ func _on_perk_clicked(perk_button: Button, perk: GameInfo.Perk):
 
 func _update_perk_selection_visuals():
 	"""Update visual feedback for which perk is selected"""
-	# Reset all perk buttons to normal style
+	# Reset all perk buttons and apply active highlighting for ALL active perks
 	for child in inactive_perks_grid.get_children():
 		if child is Button:
-			child.modulate = Color(1, 1, 1, 1)
+			if child.has_meta("perk_data"):
+				var perk_data = child.get_meta("perk_data")
+				if perk_data.active:
+					# Any active perk gets green tint
+					child.modulate = Color(0.5, 1.0, 0.5, 1)
+				else:
+					# Normal color
+					child.modulate = Color(1, 1, 1, 1)
+			else:
+				child.modulate = Color(1, 1, 1, 1)
 	
-	# Highlight the selected perk
+	# Highlight the selected perk with yellow tint (overrides active color if same)
 	if selected_perk_button:
-		selected_perk_button.modulate = Color(1.3, 1.3, 1, 1)
+		selected_perk_button.modulate = Color(1.3, 1.3, 0.5, 1)
 
 func _update_active_display(perk: GameInfo.Perk):
 	"""Update the active perk display area with perk details"""
@@ -192,13 +208,26 @@ func _on_bind_pressed():
 	
 	# TODO: Send update to server
 	# Websocket.send_perk_update(selected_perk)
-		# Clear selection and disable bind button
+	
+	# Update the active perk display to show the newly bound perk
+	_update_active_display(selected_perk)
+	
+	# Update visual highlighting - show ALL active perks
+	for child in inactive_perks_grid.get_children():
+		if child.has_meta("perk_data"):
+			var perk_data = child.get_meta("perk_data")
+			if perk_data.active:
+				# Any active perk gets green tint
+				child.modulate = Color(0.5, 1.0, 0.5, 1)
+			else:
+				# Reset to normal
+				child.modulate = Color(1, 1, 1, 1)
+	
+	# Clear selection and disable bind button
 	selected_perk = null
 	selected_perk_button = null
 	if bind_button:
 		bind_button.disabled = true
-		# Reload the perks display
-	load_active_perks_for_slot(current_slot)
 	
 	print("Perk bound successfully")
 
