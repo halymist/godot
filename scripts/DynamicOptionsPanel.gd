@@ -4,7 +4,6 @@ extends Panel
 @export var text_container: CenterContainer  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
-@export var overlay: ColorRect
 @export var background: TextureRect
 
 # Icon textures for different option types
@@ -34,10 +33,6 @@ var current_slide_number: int = 1
 @export var portrait: Control
 
 func _ready():
-	# Set up overlay press-to-hide functionality
-	if overlay:
-		overlay.gui_input.connect(_on_overlay_input)
-	
 	# Connect to visibility changes to load quest when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
 
@@ -60,20 +55,6 @@ func _on_visibility_changed():
 		
 		print("Quest panel became visible, loading quest ", destination, " at slide ", start_slide)
 		load_quest(destination, start_slide)
-
-func _on_overlay_input(event: InputEvent):
-	"""Hide overlay and UI when pressed, show when released"""
-	if event is InputEventMouseButton:
-		var mouse_event = event as InputEventMouseButton
-		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
-			if mouse_event.pressed:
-				# Fade out overlay smoothly
-				var tween = create_tween()
-				tween.tween_property(overlay, "modulate:a", 0.0, 0.2).set_ease(Tween.EASE_OUT)
-			else:
-				# Fade in overlay smoothly
-				var tween = create_tween()
-				tween.tween_property(overlay, "modulate:a", 1.0, 0.2).set_ease(Tween.EASE_IN)
 
 func load_quest(quest_id: int, slide_number: int = 1):
 	"""Load a quest and display first slide"""

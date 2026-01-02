@@ -1,4 +1,4 @@
-[gd_scene load_steps=119 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -70,6 +70,7 @@
 [ext_resource type="Texture2D" uid="uid://sxpgeuuomsc1" path="res://assets/images/ui/button_texture.png" id="39_umggo"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
+[ext_resource type="Script" uid="uid://uvb45o8c4dhi" path="res://scripts/PressHoldOverlay.gd" id="42_umggo"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
@@ -1892,7 +1893,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
 script = ExtResource("37_map_panel")
-travel_text_label = NodePath("Overlay/TravelTextPanel/TravelTextLabel")
+travel_text_label = NodePath("Overlay/TravelTextLabel")
 travel_progress = NodePath("Overlay/TravelBarContainer/TravelProgress")
 travel_time_label = NodePath("Overlay/TravelBarContainer/TravelTimeLabel")
 skip_button = NodePath("Overlay/SkipButton")
@@ -1920,31 +1921,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
 
-[node name="TravelTextPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -202.5
-offset_top = -225.0
-offset_right = 202.5
-offset_bottom = -98.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-
-[node name="TravelTextLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay/TravelTextPanel"]
+[node name="TravelTextLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 405.0
+offset_bottom = -91.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -6289,7 +6275,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
 
-[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "overlay", "background", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6302,7 +6288,6 @@ script = ExtResource("38_dynamic_options")
 text_container = NodePath("Overlay/TextContainer")
 options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
-overlay = NodePath("Overlay")
 background = NodePath("TextureRect")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
@@ -6338,6 +6323,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
 
 [node name="TextContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest/Overlay"]
 layout_mode = 1
