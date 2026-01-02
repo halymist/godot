@@ -254,20 +254,16 @@ func handle_rankings_button():
 		show_panel(rankings_panel)
 
 func toggle_talents_bookmark():
-	if GameInfo.get_current_panel() == talents_panel:
-		talents_panel.visible = false
-		GameInfo.set_current_panel(character_panel)
+	if talents_panel.visible:
+		hide_overlay(talents_panel)
 	else:
-		talents_panel.visible = true
-		GameInfo.set_current_panel(talents_panel)
+		show_overlay(talents_panel)
 
 func toggle_details_bookmark():
-	if GameInfo.get_current_panel() == details_panel:
-		details_panel.visible = false
-		GameInfo.set_current_panel(character_panel)
+	if details_panel.visible:
+		hide_overlay(details_panel)
 	else:
-		details_panel.visible = true
-		GameInfo.set_current_panel(details_panel)
+		show_overlay(details_panel)
 
 
 func go_back():
@@ -323,14 +319,16 @@ func go_back():
 			print("   -> Already in exterior, do nothing")
 			return
 	
-	# Talents/Details bookmarks
-	if current == talents_panel:
-		print("-> Talents panel, toggling bookmark")
-		toggle_talents_bookmark()
-		return
-	if current == details_panel:
-		print("-> Details panel, toggling bookmark")
-		toggle_details_bookmark()
+	# Talents/Details bookmarks - handled by overlay system now
+	# (removed specific cases since they're overlays)
+	
+	# Rankings panel: go back to home or quest
+	if current == rankings_panel:
+		print("-> Rankings panel, going back")
+		if is_on_active_quest():
+			show_panel(quest)
+		else:
+			show_panel(home_panel)
 		return
 	
 	# Default: go home, or go to quest panel if on active quest
