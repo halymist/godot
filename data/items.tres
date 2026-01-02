@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDatabase" load_steps=22 format=3 uid="uid://vft5y80xsrjn"]
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=23 format=3 uid="uid://vft5y80xsrjn"]
 
 [ext_resource type="Script" uid="uid://5xjtibn1drlf" path="res://scripts/resources/ItemResource.gd" id="1_plm77"]
 [ext_resource type="Script" uid="uid://0io63usdvbbp" path="res://scripts/resources/ItemDatabase.gd" id="2_lxu8k"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://v7871n2duiiy" path="res://assets/images/fallback/potion.png" id="7_v0hy1"]
 [ext_resource type="Texture2D" uid="uid://c6ngvejyd3kkk" path="res://assets/images/ui/gem_red.png" id="8_5s0y6"]
 [ext_resource type="Texture2D" uid="uid://dbj6suuwvlpu0" path="res://assets/images/ui/gem_green.png" id="9_lpggr"]
+[ext_resource type="Texture2D" uid="uid://dv45jiyafrqus" path="res://data/item_textures/8.png" id="10_giyri"]
 
 [sub_resource type="Resource" id="Resource_4egq1"]
 script = ExtResource("1_plm77")
@@ -217,7 +218,7 @@ effect_id = 0
 effect_factor = 0
 price = 30
 has_socket = false
-icon = ExtResource("2_tpttd")
+icon = ExtResource("10_giyri")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
 [resource]

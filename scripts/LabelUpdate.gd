@@ -14,7 +14,7 @@ extends Control
 @export var luck_aprox: Label
 @export var armor_label: Label
 @export var talents_label: Label
-@export var health_bar: ProgressBar
+@export var health_bar: TextureProgressBar
 @export var damage_spread_label: Label
 
 # Effect value labels (On Self column)
@@ -74,7 +74,8 @@ func stats_changed(_stats: Dictionary):
 		var max_health = total_stats.stamina * 10
 		health_bar.max_value = max_health
 		health_bar.value = max_health
-		health_bar.get_node("HealthLabel").text = str(max_health)
+		if health_bar.has_node("HealthLabel"):
+			health_bar.get_node("HealthLabel").text = str(max_health)
 	
 	# Calculate and display damage spread (strength * weapon damage range)
 	if damage_spread_label:
