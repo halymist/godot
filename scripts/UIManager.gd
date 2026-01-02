@@ -84,7 +84,8 @@ func refresh_active_effects():
 
 func refresh_perks():
 	"""Refresh perks grid when new perks are added"""
-	perk_screen.refresh_perks_grid()
+	if perk_screen and perk_screen.has_method("refresh_perks"):
+		perk_screen.refresh_perks()
 
 func refresh_avatars():
 	"""Update all avatar displays with current player data"""

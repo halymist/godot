@@ -11,7 +11,6 @@ extends Button
 var current_slot: int = 0  # Which active perk slot (1-3) we're binding to
 var selected_perk: GameInfo.Perk = null
 var selected_perk_button: Button = null
-var perks_loaded: bool = false  # Track if we've already loaded the grid
 
 func _ready():
 	pressed.connect(_on_button_pressed)
@@ -19,10 +18,12 @@ func _ready():
 		bind_button.pressed.connect(_on_bind_pressed)
 		bind_button.disabled = true
 	visible = false
+	# Load perks on ready
+	refresh_perks()
 
-func load_all_perks():
-	"""Load all available perks into the grid"""
-	print("Loading all perks into grid...")
+func refresh_perks():
+	"""Refresh the perks grid from GameInfo - call this when perks change"""
+	print("Refreshing perks grid...")
 	
 	if not inactive_perks_grid:
 		print("Error: inactive_perks_grid is null")
@@ -44,7 +45,6 @@ func load_all_perks():
 	
 	# Create perk buttons in grid
 	for perk in all_perks:
-		print("Creating perk button:", perk.perk_name)
 		var perk_button = perk_scene.instantiate()
 		
 		# Set perk data
@@ -56,6 +56,12 @@ func load_all_perks():
 		if label:
 			label.text = perk.perk_name
 		
+		# Apply highlighting based on active state
+		if perk.active:
+			perk_button.modulate = Color(0.5, 1.0, 0.5, 1)  # Green for active
+		else:
+			perk_button.modulate = Color(1, 1, 1, 1)  # Normal
+		
 		# Store perk data reference
 		perk_button.set_meta("perk_data", perk)
 		
@@ -66,30 +72,10 @@ func load_all_perks():
 	
 	print("Loaded ", all_perks.size(), " perks")
 
-func refresh_perks_grid():
-	"""Force reload the perks grid (called when new perks are added)"""
-	print("Refreshing perks grid...")
-	perks_loaded = false
-	load_all_perks()
-	perks_loaded = true
-	_update_all_perk_highlighting()
-	# Update the active perk display if one is selected for current slot
-	var active_perk = _get_active_perk_for_slot(current_slot)
-	if active_perk:
-		_update_active_display(active_perk)
-
 func load_active_perks_for_slot(slot: int):
 	"""Called when opening the perk screen for a specific active slot (1-3)"""
 	print("Loading perks for slot: ", slot)
 	current_slot = slot
-	
-	# Load all perks only once
-	if not perks_loaded:
-		load_all_perks()
-		perks_loaded = true
-	
-	# Update highlighting to show all active perks
-	_update_all_perk_highlighting()
 	
 	# Check if there's already an active perk in this slot
 	var active_perk = _get_active_perk_for_slot(slot)
@@ -106,18 +92,6 @@ func _get_active_perk_for_slot(slot: int) -> GameInfo.Perk:
 		if perk.active and perk.slot == slot:
 			return perk
 	return null
-
-func _update_all_perk_highlighting():
-	"""Update highlighting for all perks to show active state"""
-	for child in inactive_perks_grid.get_children():
-		if child.has_meta("perk_data"):
-			var perk_data = child.get_meta("perk_data")
-			if perk_data.active:
-				# Green tint for any active perk
-				child.modulate = Color(0.5, 1.0, 0.5, 1)
-			else:
-				# Normal color
-				child.modulate = Color(1, 1, 1, 1)
 
 func _on_perk_clicked(perk_button: Button, perk: GameInfo.Perk):
 	"""Handle clicking on an inactive perk"""
@@ -234,8 +208,8 @@ func _on_bind_pressed():
 	# Update the active perk display to show the newly bound perk
 	_update_active_display(selected_perk)
 	
-	# Update visual highlighting - show ALL active perks
-	_update_all_perk_highlighting()
+	# Refresh the entire grid to update highlighting
+	refresh_perks()
 	
 	# Clear selection and disable bind button
 	selected_perk = null
