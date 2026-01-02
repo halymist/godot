@@ -3,7 +3,6 @@ extends Button
 @export var active_perk_display: Control
 @export var inactive_perks_grid: GridContainer
 @export var bind_button: Button
-@export var perk_name_label: Label
 @export var effect1_label: Label
 @export var effect2_label: Label
 @export var perk_icon: TextureRect
@@ -17,6 +16,7 @@ func _ready():
 	pressed.connect(_on_button_pressed)
 	if bind_button:
 		bind_button.pressed.connect(_on_bind_pressed)
+		bind_button.disabled = true
 	visible = false
 
 func load_inactive_perks():
@@ -98,6 +98,10 @@ func _on_perk_clicked(perk_button: Button, perk: GameInfo.Perk):
 	selected_perk = perk
 	selected_perk_button = perk_button
 	
+	# Enable bind button now that a perk is selected
+	if bind_button:
+		bind_button.disabled = false
+	
 	# Update visual feedback - highlight selected perk
 	_update_perk_selection_visuals()
 	
@@ -124,10 +128,6 @@ func _update_active_display(perk: GameInfo.Perk):
 	# Update icon
 	if perk_icon:
 		perk_icon.texture = perk.texture
-	
-	# Update name
-	if perk_name_label:
-		perk_name_label.text = perk.perk_name
 	
 	# Update effect 1
 	if effect1_label:
@@ -157,8 +157,6 @@ func _clear_active_display():
 	"""Clear the active perk display"""
 	if perk_icon:
 		perk_icon.texture = null
-	if perk_name_label:
-		perk_name_label.text = "No Perk Selected"
 	if effect1_label:
 		effect1_label.text = ""
 		effect1_label.visible = false
@@ -194,8 +192,12 @@ func _on_bind_pressed():
 	
 	# TODO: Send update to server
 	# Websocket.send_perk_update(selected_perk)
-	
-	# Reload the perks display
+		# Clear selection and disable bind button
+	selected_perk = null
+	selected_perk_button = null
+	if bind_button:
+		bind_button.disabled = true
+		# Reload the perks display
 	load_active_perks_for_slot(current_slot)
 	
 	print("Perk bound successfully")
