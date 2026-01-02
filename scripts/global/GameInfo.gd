@@ -114,130 +114,153 @@ class MessagePackObject:
 class Item:
 	extends MessagePackObject
 	
-	# MessagePack properties matching C# Item class
+	# Server data (user-specific modifications)
 	var id: int = 0
 	var bag_slot_id: int = 0
-	var item_name: String = ""
-	var type: String = ""
-	var armor: int = 0
-	var strength: int = 0
-	var stamina: int = 0
-	var agility: int = 0
-	var luck: int = 0
-	var damage_min: int = 0
-	var damage_max: int = 0
-	var asset_id: int = 0
-	var effect_id: int = 0
-	var effect_name: String = ""  # Looked up from effects_db
-	var effect_description: String = ""  # Looked up from effects_db
-	var effect_factor: float = 0.0
-	var quality: int = 0
-	var price: int = 0
-	var tempered: int = 0  # Tracks tempering level (0 = not tempered, 1+ = tempered)
-	var enchant_overdrive: int = 0  # Enchanting overdrive level
 	var day: int = 0  # Day when item was acquired (for stat scaling: 2% per day)
-	var has_socket: bool = false  # Whether item has a socket slot
-	var socketed_gem_id: int = -1  # ID of socketed gem (-1 = empty socket)
-	var socketed_gem_day: int = 0  # Day value of socketed gem for stat scaling
+	var effect_overdrive: int = 0  # Enchanting overdrive level
+	var tempered: int = 0  # Tracks tempering level (0 = not tempered, 1+ = tempered)
+	var socket_id: int = -1  # ID of socketed gem (-1 = empty socket)
+	var socket_day: int = 0  # Day value of socketed gem for stat scaling
 	
-	# Client-side only (not serialized)
+	# Client-side cache (not serialized)
 	var texture: Texture2D = null
+	var _resource_cache: ItemResource = null
 	
-	# MessagePack field mapping matching your actual data format
+	# MessagePack field mapping
 	const MSGPACK_MAP = {
 		"id": "id",
 		"bag_slot_id": "bag_slot_id",
-		"item_name": "item_name",
-		"type": "type",
-		"subtype": "subtype",
-		"armor": "armor",
-		"strength": "strength",
-		"stamina": "stamina",
-		"agility": "agility",
-		"luck": "luck",
-		"damage_min": "damage_min",
-		"damage_max": "damage_max",
-		"asset_id": "asset_id",
-		"effect_id": "effect_id",
-		"effect_factor": "effect_factor",
-		"quality": "quality",
-		"price": "price",
-		"tempered": "tempered",
-		"enchant_overdrive": "enchant_overdrive",
-		"effect_overdrive": "enchant_overdrive",
 		"day": "day",
-		"has_socket": "has_socket",
-		"socketed_gem_id": "socketed_gem_id",
-		"socketed_gem_day": "socketed_gem_day"
+		"effect_overdrive": "effect_overdrive",
+		"tempered": "tempered",
+		"socket_id": "socket_id",
+		"socket_day": "socket_day"
 	}
 	
 	func _init(data: Dictionary = {}):
 		super._init(data)
-		# Get item data from items_db if available
+		# Cache texture for performance
 		if GameInfo and GameInfo.items_db:
-			var item_resource = GameInfo.items_db.get_item_by_id(id)
-			if item_resource:
-				# Copy static data from resource
-				item_name = item_resource.item_name
-				type = item_resource.get_type_string()
-				armor = item_resource.armor
-				strength = item_resource.strength
-				stamina = item_resource.stamina
-				agility = item_resource.agility
-				luck = item_resource.luck
-				damage_min = item_resource.damage_min
-				damage_max = item_resource.damage_max
-				effect_id = item_resource.effect_id
-				effect_factor = item_resource.effect_factor
-				price = item_resource.price
-				# Copy socket field from ItemResource if not provided by server
-				if not data.has("has_socket"):
-					has_socket = item_resource.has_socket
-				texture = item_resource.icon
-		
-		# Apply tempering improvements if item is tempered
-		# Each tempering level adds 10% to base stats (compounding)
-		if tempered > 0:
-			var multiplier = pow(1.1, tempered)
-			armor = ceil(armor * multiplier)
-			strength = ceil(strength * multiplier)
-			stamina = ceil(stamina * multiplier)
-			agility = ceil(agility * multiplier)
-			luck = ceil(luck * multiplier)
-		
-		# Apply day-based scaling (2% improvement per day, compounding)
-		# day represents when the item was acquired, so we scale by (1.02^day)
-		if day > 0:
-			var day_multiplier = pow(1.02, day)
-			armor = ceil(armor * day_multiplier)
-			strength = ceil(strength * day_multiplier)
-			stamina = ceil(stamina * day_multiplier)
-			agility = ceil(agility * day_multiplier)
-			luck = ceil(luck * day_multiplier)
-			damage_min = ceil(damage_min * day_multiplier)
-			damage_max = ceil(damage_max * day_multiplier)
-		
-		# Handle effect_overdrive: override effect with data from effects_db
-		# enchant_overdrive comes from server data (via MSGPACK), not items_db
-		if enchant_overdrive > 0 and GameInfo and GameInfo.effects_db:
-			var overdrive_effect = GameInfo.effects_db.get_effect_by_id(enchant_overdrive)
-			if overdrive_effect:
-				effect_id = enchant_overdrive
-				effect_factor = overdrive_effect.factor
-				effect_name = overdrive_effect.name
-				effect_description = overdrive_effect.description
-		else:
-			# No effect_overdrive: look up effect details from effects_db
-			if GameInfo and GameInfo.effects_db and effect_id > 0:
-				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
-				if effect:
-					effect_name = effect.name
-					effect_description = effect.description
+			var res = get_resource()
+			if res:
+				texture = res.icon
 	
-	func get_socketed_gem():
+	# Helper to get ItemResource (cached)
+	func get_resource() -> ItemResource:
+		if not _resource_cache and GameInfo and GameInfo.items_db:
+			_resource_cache = GameInfo.items_db.get_item_by_id(id)
+		return _resource_cache
+	
+	# Property getters for static data (looked up from items_db)
+	var item_name: String:
+		get:
+			var res = get_resource()
+			return res.item_name if res else ""
+	
+	var type: String:
+		get:
+			var res = get_resource()
+			return res.get_type_string() if res else ""
+	
+	var price: int:
+		get:
+			var res = get_resource()
+			return res.price if res else 0
+	
+	var has_socket: bool:
+		get:
+			var res = get_resource()
+			return res.has_socket if res else false
+	
+	# Base stats from ItemResource (before modifications)
+	func _get_base_stat(stat_name: String) -> int:
+		var res = get_resource()
+		if not res:
+			return 0
+		var base = res.get(stat_name)
+		if base == null:
+			return 0
+		
+		# Apply tempering (10% per level, compounding)
+		if tempered > 0:
+			base = ceil(base * pow(1.1, tempered))
+		
+		# Apply day scaling (2% per day, compounding)
+		if day > 0:
+			base = ceil(base * pow(1.02, day))
+		
+		return int(base)
+	
+	# Stat properties with scaling applied
+	var strength: int:
+		get: return _get_base_stat("strength")
+	
+	var stamina: int:
+		get: return _get_base_stat("stamina")
+	
+	var agility: int:
+		get: return _get_base_stat("agility")
+	
+	var luck: int:
+		get: return _get_base_stat("luck")
+	
+	var armor: int:
+		get: return _get_base_stat("armor")
+	
+	var damage_min: int:
+		get: return _get_base_stat("damage_min")
+	
+	var damage_max: int:
+		get: return _get_base_stat("damage_max")
+	
+	# Effect properties
+	var effect_id: int:
+		get:
+			if effect_overdrive > 0:
+				return effect_overdrive
+			var res = get_resource()
+			return res.effect_id if res else 0
+	
+	var effect_factor: float:
+		get:
+			if effect_overdrive > 0 and GameInfo and GameInfo.effects_db:
+				var effect = GameInfo.effects_db.get_effect_by_id(effect_overdrive)
+				return effect.factor if effect else 0.0
+			var res = get_resource()
+			return res.effect_factor if res else 0.0
+	
+	var effect_name: String:
+		get:
+			if effect_id > 0 and GameInfo and GameInfo.effects_db:
+				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
+				return effect.name if effect else ""
+			return ""
+	
+	var effect_description: String:
+		get:
+			if effect_id > 0 and GameInfo and GameInfo.effects_db:
+				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
+				return effect.description if effect else ""
+			return ""
+	
+	# Legacy aliases for renamed fields
+	var enchant_overdrive: int:
+		get: return effect_overdrive
+		set(value): effect_overdrive = value
+	
+	var socketed_gem_id: int:
+		get: return socket_id
+		set(value): socket_id = value
+	
+	var socketed_gem_day: int:
+		get: return socket_day
+		set(value): socket_day = value
+	
+	func get_socketed_gem() -> ItemResource:
 		"""Get the socketed gem's ItemResource if one exists"""
-		if socketed_gem_id > 0 and GameInfo and GameInfo.items_db:
-			return GameInfo.items_db.get_item_by_id(socketed_gem_id)
+		if socket_id > 0 and GameInfo and GameInfo.items_db:
+			return GameInfo.items_db.get_item_by_id(socket_id)
 		return null
 	
 	func get_base_stats_without_gem() -> Dictionary:

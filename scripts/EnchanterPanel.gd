@@ -214,24 +214,9 @@ func _on_enchant_pressed():
 	# Deduct silver
 	UIManager.instance.update_silver(-ENCHANT_COST)
 	
-	# Apply enchantment
-	if item_in_slot.effect_id > 0:
-		# Item already has an effect - apply to overdrive
-		item_in_slot.enchant_overdrive = selected_effect_id
-		print("Applied enchantment to overdrive: ", selected_effect_id, " with factor ", selected_effect_factor)
-	else:
-		# Item has no effect - apply as main effect
-		item_in_slot.effect_id = selected_effect_id
-		item_in_slot.effect_factor = selected_effect_factor
-		
-		# Look up effect details
-		if GameInfo.effects_db:
-			var effect = GameInfo.effects_db.get_effect_by_id(selected_effect_id)
-			if effect:
-				item_in_slot.effect_name = effect.name
-				item_in_slot.effect_description = effect.description
-		
-		print("Applied enchantment as main effect: ", selected_effect_id, " with factor ", selected_effect_factor)
+	# Apply enchantment overdrive (always use effect_overdrive for user enchants)
+	item_in_slot.effect_overdrive = selected_effect_id
+	print("Applied enchantment overdrive: ", selected_effect_id)
 	
 	# Move item back to bag (like tempering)
 	return_enchanter_item_to_bag()

@@ -168,17 +168,18 @@ func _on_brew_button_pressed():
 	UIManager.instance.update_silver(-BREW_COST)
 	
 	# Create new elixir item and add to first available bag slot
-	var new_elixir = GameInfo.Item.new()
-	new_elixir.id = encoded_id
-	new_elixir.bag_slot_id = find_empty_bag_slot()
+	var new_elixir = GameInfo.Item.new({
+		"id": encoded_id,
+		"bag_slot_id": find_empty_bag_slot()
+	})
 	
-	# Manually load elixir base data since _init might not have access to GameInfo yet
-	var base_elixir = GameInfo.items_db.get_item_by_id(1000)
-	if base_elixir:
-		new_elixir.item_name = base_elixir.item_name
-		new_elixir.type = base_elixir.type
-		new_elixir.texture = base_elixir.icon
-		print("Elixir created: ", new_elixir.item_name, " with texture: ", new_elixir.texture != null)
+	# Elixirs use base texture from id 1000
+	if not new_elixir.texture:
+		var base_elixir_resource = GameInfo.items_db.get_item_by_id(1000)
+		if base_elixir_resource:
+			new_elixir.texture = base_elixir_resource.icon
+	
+	print("Elixir created with ID: ", new_elixir.id, " name: ", new_elixir.item_name)
 	
 	# Add to player's bag
 	GameInfo.current_player.bag_slots.append(new_elixir)
