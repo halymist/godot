@@ -236,6 +236,7 @@ func apply_rewards(quest_slide: QuestSlide):
 	if reward.item_id > 0:
 		print("REWARD: Attempting to award Item ID: ", reward.item_id)
 		# Find empty bag slot (10-14)
+		var found_empty_slot = false
 		for bag_slot_id in range(10, 15):
 			var is_occupied = false
 			for existing_item in GameInfo.current_player.bag_slots:
@@ -253,21 +254,14 @@ func apply_rewards(quest_slide: QuestSlide):
 				
 				GameInfo.current_player.bag_slots.append(new_item)
 				print("REWARD: Item ", new_item.item_name, " added to bag slot ", bag_slot_id)
+				found_empty_slot = true
 				
 				# Refresh bag UI
-			if UIManager.instance:
-				UIManager.instance.refresh_bags()
-			break
-	
-	if reward.item_id > 0:
-		# Check if we went through the loop without finding empty slot
-		var found_slot = false
-		for existing_item in GameInfo.current_player.bag_slots:
-			if existing_item.id == reward.item_id and existing_item.bag_slot_id >= 10 and existing_item.bag_slot_id <= 14:
-				found_slot = true
+				if UIManager.instance:
+					UIManager.instance.refresh_bags()
 				break
 		
-		if not found_slot:
+		if not found_empty_slot:
 			print("REWARD: No empty bag slot available for item ", reward.item_id)
 	
 	# Perk reward
