@@ -7,6 +7,7 @@ class_name MapPanel
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
 @export var quest: Control 
+@export var background: TextureRect
 
 var update_timer: Timer
 var is_skipping: bool = false

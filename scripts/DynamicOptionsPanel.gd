@@ -4,7 +4,8 @@ extends Panel
 @export var text_container: CenterContainer  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
-@export var overlay: ColorRect  # Overlay that can be pressed to hide UI
+@export var overlay: ColorRect
+@export var background: TextureRect
 
 # Icon textures for different option types
 @export_group("Option Icons")
@@ -85,6 +86,9 @@ func load_quest(quest_id: int, slide_number: int = 1):
 			var title_label = get_node_or_null("QuestTitle")
 			if title_label:
 				title_label.text = quest_data.quest_name
+			
+			# Apply background texture
+			background.texture = quest_data.background_texture
 	
 	current_quest_id = quest_id
 	current_slide_number = slide_number

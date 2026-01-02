@@ -1893,34 +1893,32 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7jktm")
 script = ExtResource("37_map_panel")
-travel_text_label = NodePath("VBoxContainer/TravelTextPanel/TravelTextLabel")
-travel_progress = NodePath("VBoxContainer/TravelBarContainer/TravelProgress")
-travel_time_label = NodePath("VBoxContainer/TravelBarContainer/TravelTimeLabel")
-skip_button = NodePath("VBoxContainer/SkipButton")
-enter_dungeon_button = NodePath("VBoxContainer/TravelBarContainer/EnterDungeonButton")
+travel_text_label = NodePath("TravelTextPanel/TravelTextLabel")
+travel_progress = NodePath("TravelBarContainer/TravelProgress")
+travel_time_label = NodePath("TravelBarContainer/TravelTimeLabel")
+skip_button = NodePath("SkipButton")
+enter_dungeon_button = NodePath("TravelBarContainer/EnterDungeonButton")
 quest = NodePath("../Quest")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Spacer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="TravelTextPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer"]
+[node name="TravelTextPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
 custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -202.5
+offset_top = -225.0
+offset_right = 202.5
+offset_bottom = -98.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="TravelTextLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer/TravelTextPanel"]
+[node name="TravelTextLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/TravelTextPanel"]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -1935,14 +1933,25 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="TravelBarContainer" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer"]
+[node name="TravelBarContainer" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
 custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -179.5
+offset_top = -92.0
+offset_right = 182.5
+offset_bottom = -36.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="TravelProgress" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer/TravelBarContainer"]
+[node name="TravelProgress" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/TravelBarContainer"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.1
@@ -1953,7 +1962,7 @@ grow_horizontal = 2
 grow_vertical = 2
 show_percentage = false
 
-[node name="TravelTimeLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer/TravelBarContainer"]
+[node name="TravelTimeLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/TravelBarContainer"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1972,7 +1981,7 @@ text = "00:00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EnterDungeonButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer/TravelBarContainer"]
+[node name="EnterDungeonButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/TravelBarContainer"]
 modulate = Color(1, 1, 1, 0.8)
 layout_mode = 1
 anchors_preset = -1
@@ -1991,9 +2000,19 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Enter Dungeon"
 
-[node name="SkipButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/VBoxContainer"]
+[node name="SkipButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
 custom_minimum_size = Vector2(120, 30)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -30.0
+offset_right = 60.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
@@ -6249,7 +6268,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
 
-[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "overlay", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "overlay", "background", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6263,6 +6282,7 @@ text_container = NodePath("Overlay/TextContainer")
 options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
 overlay = NodePath("Overlay")
+background = NodePath("TextureRect")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
