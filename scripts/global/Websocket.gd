@@ -103,6 +103,11 @@ var mock_character_data = {
 			"day": 40
 		},
 		{
+			"id": 5,
+			"bag_slot_id": 8,
+			"day": 40
+		},
+		{
 			"id": 2,
 			"bag_slot_id": 10,
 			"day": 3

@@ -179,7 +179,7 @@ class Item:
 			if item_resource:
 				# Copy static data from resource
 				item_name = item_resource.item_name
-				type = item_resource.type
+				type = item_resource.get_type_string()
 				armor = item_resource.armor
 				strength = item_resource.strength
 				stamina = item_resource.stamina
@@ -189,15 +189,10 @@ class Item:
 				damage_max = item_resource.damage_max
 				effect_id = item_resource.effect_id
 				effect_factor = item_resource.effect_factor
-				quality = item_resource.quality
 				price = item_resource.price
-				tempered = item_resource.tempered
-				# Copy socket fields from ItemResource if not provided by server
+				# Copy socket field from ItemResource if not provided by server
 				if not data.has("has_socket"):
 					has_socket = item_resource.has_socket
-				if not data.has("socketed_gem_id"):
-					socketed_gem_id = item_resource.socketed_gem_id
-				# Note: enchant_overdrive comes from server data, not items_db
 				texture = item_resource.icon
 		
 		# Apply tempering improvements if item is tempered
