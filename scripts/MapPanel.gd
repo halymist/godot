@@ -80,7 +80,7 @@ func update_travel_display():
 		var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
 		if location_data:
 			if quest_name_label:
-				quest_name_label.text = location_data.location_name
+				quest_name_label.text = "Expedition"
 			if location_data.expedition_texture and background:
 				background.texture = location_data.expedition_texture
 			travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"

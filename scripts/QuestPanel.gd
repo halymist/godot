@@ -38,11 +38,11 @@ func _on_accept_pressed():
 		print("Quest name: ", quest_definition.quest_name)
 		print("Travel text: ", quest_definition.travel_text)
 		
-		var travel_time = 20  # Always 20 seconds
+		var travel_time = 20.0  # Always 20 seconds
 		var current_time = Time.get_unix_time_from_system()
-		var travel_end_time = current_time + travel_time
+		var travel_end_time: float = current_time + travel_time
 		
-		# Update GameInfo with travel data
+		# Update GameInfo with travel data (traveling is a timestamp)
 		GameInfo.current_player.traveling = travel_end_time
 		GameInfo.accept_quest(quest_id)  # This sets traveling_destination
 		
