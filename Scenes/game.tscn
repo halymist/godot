@@ -2027,7 +2027,7 @@ theme_override_font_sizes/font_size = 16
 theme_override_styles/hover = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
-text = "Enter Dungeon"
+text = "Venture into the Wilds"
 
 [node name="SkipButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]
 custom_minimum_size = Vector2(120, 30)
