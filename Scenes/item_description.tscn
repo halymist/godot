@@ -16,7 +16,7 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="ItemDescription" type="PanelContainer" node_paths=PackedStringArray("name_label", "price_label", "price_icon", "strength", "stamina", "agility", "luck", "armor", "effect", "socket_label", "socket_icon", "gem_icon")]
+[node name="ItemDescription" type="PanelContainer" node_paths=PackedStringArray("name_label", "price_label", "price_icon", "strength", "stamina", "agility", "luck", "armor", "damage_label", "effect", "socket_label", "socket_icon", "gem_icon")]
 visible = false
 z_index = 1500
 anchors_preset = 8
@@ -40,6 +40,7 @@ stamina = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/Value")
 agility = NodePath("MarginContainer/VBoxContainer/HBoxContainer3/Value")
 luck = NodePath("MarginContainer/VBoxContainer/HBoxContainer4/Value")
 armor = NodePath("MarginContainer/VBoxContainer/HBoxContainer5/Value")
+damage_label = NodePath("MarginContainer/VBoxContainer/DamageContainer/Value")
 effect = NodePath("MarginContainer/VBoxContainer/Effect")
 socket_label = NodePath("MarginContainer/VBoxContainer/SocketContainer/Value")
 socket_icon = NodePath("MarginContainer/VBoxContainer/SocketContainer/SocketIcon")
@@ -113,6 +114,17 @@ text = "Armor"
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer5"]
 layout_mode = 2
 text = "20"
+
+[node name="DamageContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Damage" type="Label" parent="MarginContainer/VBoxContainer/DamageContainer"]
+layout_mode = 2
+text = "Damage"
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer/DamageContainer"]
+layout_mode = 2
+text = "0 - 0"
 
 [node name="Effect" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

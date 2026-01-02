@@ -7,6 +7,7 @@ extends PanelContainer
 @export var agility: Label
 @export var luck: Label
 @export var armor: Label
+@export var damage_label: Label
 @export var effect: Label
 @export var socket_label: Label
 @export var socket_icon: TextureRect
@@ -20,6 +21,7 @@ extends PanelContainer
 @onready var agility_container = agility.get_parent()
 @onready var luck_container = luck.get_parent()
 @onready var armor_container = armor.get_parent()
+@onready var damage_container = damage_label.get_parent() if damage_label else null
 
 func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 	# Reset size to allow panel to resize for new content
@@ -55,6 +57,8 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 			agility_container.visible = false
 			luck_container.visible = false
 			armor_container.visible = false
+			if damage_container:
+				damage_container.visible = false
 			
 			# Decode ingredient IDs from elixir ID using string manipulation
 			# Format: 1000000000000 + ingredientID1(3 digits) + ingredientID2(3 digits) + ingredientID3(3 digits)
@@ -146,6 +150,14 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				armor_container.visible = true
 			else:
 				armor_container.visible = false
+			
+			# Handle weapon damage - show for weapons only
+			if damage_label and damage_container:
+				if item_data.type == "Weapon" and (item_data.damage_min > 0 or item_data.damage_max > 0):
+					damage_label.text = str(item_data.damage_min) + " - " + str(item_data.damage_max)
+					damage_container.visible = true
+				else:
+					damage_container.visible = false
 			
 			# Handle effect description - show enchant_overdrive if present, otherwise show regular effect
 			var display_effect_id = item_data.effect_id

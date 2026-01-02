@@ -14,6 +14,8 @@ extends Control
 @export var luck_aprox: Label
 @export var armor_label: Label
 @export var talents_label: Label
+@export var health_bar: ProgressBar
+@export var damage_spread_label: Label
 
 # Effect value labels (On Self column)
 @export var effect_strength_value: Label  # ID 1
@@ -66,6 +68,30 @@ func stats_changed(_stats: Dictionary):
 		spent_points += talent.points
 		
 	talents_label.text = "Talent points: %d/%d" % [spent_points, GameInfo.current_player.talent_points]
+	
+	# Calculate and display health bar (stamina * 10)
+	if health_bar:
+		var max_health = total_stats.stamina * 10
+		health_bar.max_value = max_health
+		health_bar.value = max_health
+		health_bar.get_node("HealthLabel").text = str(max_health)
+	
+	# Calculate and display damage spread (strength * weapon damage range)
+	if damage_spread_label:
+		var weapon_item = null
+		# Find equipped weapon in slots 0-8
+		for item in GameInfo.current_player.bag_slots:
+			if item != null and item.bag_slot_id >= 0 and item.bag_slot_id <= 8:
+				if item.type == "Weapon":
+					weapon_item = item
+					break
+		
+		if weapon_item != null:
+			var min_damage = total_stats.strength * weapon_item.damage_min
+			var max_damage = total_stats.strength * weapon_item.damage_max
+			damage_spread_label.text = str(min_damage) + " - " + str(max_damage)
+		else:
+			damage_spread_label.text = "0 - 0"
 	
 	# Calculate and display effect values (without % suffix)
 	if effect_strength_value:
