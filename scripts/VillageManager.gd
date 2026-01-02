@@ -205,12 +205,12 @@ func _on_quest_accepted(quest_data: Dictionary):
 	var quest_definition = GameInfo.get_quest_data(quest_id)
 	if quest_definition:
 		var travel_text = quest_definition.travel_text if quest_definition.travel_text else "Traveling to quest..."
-		var travel_minutes = quest_definition.travel_time
+		var travel_seconds = 20  # Always 20 seconds
 		
-		print("Quest travel time: ", travel_minutes)
+		print("Quest travel time: ", travel_seconds, " seconds")
 		
 		# Pass travel info to MapPanel
-		map_panel.start_travel(travel_text, travel_minutes)
+		map_panel.start_travel(travel_text, travel_seconds, quest_id)
 	
 	GameInfo.set_current_panel(map_panel)
 

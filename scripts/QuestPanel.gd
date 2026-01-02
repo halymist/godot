@@ -36,23 +36,21 @@ func _on_accept_pressed():
 	
 	if quest_definition:
 		print("Quest name: ", quest_definition.quest_name)
-		print("Travel time: ", quest_definition.travel_time)
 		print("Travel text: ", quest_definition.travel_text)
 		
-		var travel_time = quest_definition.travel_time
-		if travel_time > 0:
-			var current_time = Time.get_unix_time_from_system()
-			var travel_end_time = current_time + travel_time # travel_time is already in seconds
-			
-			# Update GameInfo with travel data
-			GameInfo.current_player.traveling = travel_end_time
-			GameInfo.accept_quest(quest_id)  # This sets traveling_destination
-			
-			print("Travel started - Duration: ", travel_time, " minutes, End time: ", travel_end_time)
-			
-			# Immediately update MapPanel if it exists
-			if map and map.has_method("update_travel_display"):
-				map.update_travel_display()
+		var travel_time = 20  # Always 20 seconds
+		var current_time = Time.get_unix_time_from_system()
+		var travel_end_time = current_time + travel_time
+		
+		# Update GameInfo with travel data
+		GameInfo.current_player.traveling = travel_end_time
+		GameInfo.accept_quest(quest_id)  # This sets traveling_destination
+		
+		print("Travel started - Duration: ", travel_time, " seconds, End time: ", travel_end_time)
+		
+		# Immediately update MapPanel if it exists
+		if map and map.has_method("update_travel_display"):
+			map.update_travel_display()
 	else:
 		print("ERROR: Quest definition not found for quest_id: ", quest_id)
 		print("quests_db exists: ", GameInfo.quests_db != null)

@@ -50,12 +50,19 @@ func _ready():
 	# Initial update
 	update_travel_display()
 
-func start_travel(quest_travel_text: String, duration_seconds: int):
+func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: int = 0):
 	"""Start traveling with the given text and duration"""
 	travel_text = quest_travel_text
 	travel_duration = float(duration_seconds)  # Duration is already in seconds
 	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds")
 	print("Travel duration in seconds: ", travel_duration)
+	
+	# Apply quest background texture
+	if quest_id > 0 and background:
+		var quest_data = GameInfo.get_quest_data(quest_id)
+		if quest_data and quest_data.background_texture:
+			background.texture = quest_data.background_texture
+			print("Applied quest background texture")
 	
 	# Force immediate UI update to show travel info
 	call_deferred("update_travel_display")
