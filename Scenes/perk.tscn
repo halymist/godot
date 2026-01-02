@@ -1,6 +1,5 @@
-[gd_scene load_steps=5 format=3 uid="uid://bmj5lho3avnou"]
+[gd_scene load_steps=4 format=3 uid="uid://bmj5lho3avnou"]
 
-[ext_resource type="Script" uid="uid://cqb6i7umltnhb" path="res://scripts/PerkDrag.gd" id="1_aud06"]
 [ext_resource type="Texture2D" uid="uid://hnw7v8c52ws7" path="res://assets/images/ui/armor.png" id="1_rdxla"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_perk"]
@@ -23,22 +22,24 @@ bg_color = Color(1, 1, 1, 0.1)
 corner_radius_top_left = 8
 corner_radius_bottom_left = 8
 
-[node name="Perk" type="Panel"]
-clip_contents = true
-custom_minimum_size = Vector2(0, 70)
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 70.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_perk")
-script = ExtResource("1_aud06")
+[node name="Perk" type="Button"]
+custom_minimum_size = Vector2(100, 100)
+theme_override_styles/normal = SubResource("StyleBoxFlat_perk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_perk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_perk")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
 layout_mode = 1
-anchors_preset = 9
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 70.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -30.0
+grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="IconBackground" type="Panel" parent="AspectRatioContainer"]
 layout_mode = 2
@@ -47,26 +48,25 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_icon")
 
 [node name="TextureRect" type="TextureRect" parent="AspectRatioContainer"]
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("1_rdxla")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="."]
-clip_contents = true
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = 80.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = 65.0
+anchor_bottom = 1.0
+offset_top = -25.0
 grow_horizontal = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
+grow_vertical = 0
+mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 13
-text = "Perk Name
-does so much more damage and also some other cool stuff"
-autowrap_mode = 3
+theme_override_font_sizes/font_size = 11
+text = "Perk Name"
+horizontal_alignment = 1
+vertical_alignment = 1

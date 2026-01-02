@@ -1,4 +1,4 @@
-[gd_scene load_steps=121 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=119 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -44,7 +44,6 @@
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
-[ext_resource type="Script" uid="uid://chmp6vl25jone" path="res://scripts/PerkPanel.gd" id="23_tgy6u"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="26_ewwwr"]
@@ -181,21 +180,6 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inactive_perk"]
-bg_color = Color(0.1, 0.15, 0.3, 0.8)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.2, 0.4, 0.8, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0, 0, 0, 0.4)
-shadow_size = 5
-shadow_offset = Vector2(0, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_active_perk"]
 bg_color = Color(0.3, 0.15, 0.1, 0.8)
@@ -5017,7 +5001,7 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Upgrade"
 
-[node name="PerkScreen" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel" node_paths=PackedStringArray("active_panel", "inactive_panel")]
+[node name="PerkScreen" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel" node_paths=PackedStringArray("active_perk_display", "inactive_perks_grid", "bind_button", "perk_name_label", "effect1_label", "effect2_label", "perk_icon")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5029,25 +5013,27 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
 theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
 script = ExtResource("21_fkdbe")
-active_panel = NodePath("PerkPanel/Active")
-inactive_panel = NodePath("PerkPanel/Inactive")
+active_perk_display = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay")
+inactive_perks_grid = NodePath("PerkPanel/VBoxContainer/InactivePerksSection/ScrollContainer/GridContainer")
+bind_button = NodePath("PerkPanel/VBoxContainer/BindButton")
+perk_name_label = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/DetailsVBox/PerkNameLabel")
+effect1_label = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/DetailsVBox/Effect1Label")
+effect2_label = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/DetailsVBox/Effect2Label")
+perk_icon = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/IconContainer/TextureRect")
 perk_scene = ExtResource("22_81klo")
 
 [node name="PerkPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen"]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.4
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="Inactive" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel"]
-custom_minimum_size = Vector2(0, 200)
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel"]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
@@ -5055,58 +5041,120 @@ offset_top = 10.0
 offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 8
-script = ExtResource("23_tgy6u")
-panel_type = "Inactive"
-perk_scene = ExtResource("22_81klo")
+grow_vertical = 2
+theme_override_constants/separation = 10
 
-[node name="Background" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/Inactive"]
-show_behind_parent = true
+[node name="ActivePerkDisplay" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_inactive_perk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_active_perk")
 
-[node name="Header" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/Inactive"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 18
-text = "INACTIVE PERKS"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Active" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel"]
-custom_minimum_size = Vector2(0, 80)
+[node name="VBox" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.2
+anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = -10.0
-offset_bottom = -0.400002
-theme_override_styles/panel = SubResource("StyleBoxFlat_active_perk")
-script = ExtResource("23_tgy6u")
-perk_scene = ExtResource("22_81klo")
-
-[node name="Header" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/Active"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 30.0
+offset_bottom = -10.0
 grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
+
+[node name="Header" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 18
-text = "ACTIVE PERKS"
+theme_override_font_sizes/font_size = 16
+text = "SELECTED PERK"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="IconContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/IconContainer"]
+layout_mode = 2
+expand_mode = 1
+
+[node name="DetailsVBox" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="PerkNameLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/DetailsVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 0.5, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 14
+text = "No Perk Selected"
+
+[node name="Effect1Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/DetailsVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 3
+
+[node name="Effect2Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/HBox/DetailsVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 3
+
+[node name="InactivePerksSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="Header" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/InactivePerksSection"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 16
+text = "AVAILABLE PERKS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/InactivePerksSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer/InactivePerksSection/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="BindButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen/PerkPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "BIND PERK"
 
 [node name="DetailsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
