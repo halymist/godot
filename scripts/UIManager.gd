@@ -26,6 +26,7 @@ static var instance: UIManager
 @export var church: Panel
 @export var perk_screen: Control
 @export var upgrade_talent: Control
+@export var combat: Node
 
 # Signal for utility slot changes (100-104)
 signal utility_slot_changed(slot_id: int)

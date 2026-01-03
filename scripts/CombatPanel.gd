@@ -2,6 +2,9 @@ extends Panel
 
 # Combat panel that displays combat messages with fade in/out
 
+# Signal emitted when combat finishes and player clicks continue
+signal combat_finished(player_won: bool)
+
 @onready var combat_background = $CombatBackground
 @onready var player_avatar = $PlayerContainer/PlayerIcon/PlayerAvatar
 @onready var player_health_bar = $PlayerContainer/PlayerHealthBar
@@ -360,15 +363,22 @@ func _on_visibility_changed():
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
-		# Continue after combat - return to home panel using proper panel management
-		if UIManager.instance and UIManager.instance.portrait_ui:
-			var home_panel = UIManager.instance.portrait_ui.get_node_or_null("Home")
-			if home_panel:
-				UIManager.instance.portrait_ui.show_panel(home_panel)
+		# Combat finished - determine winner and emit signal
+		var player_won = player_health_bar.value > enemy_health_bar.value
+		
+		# Emit signal for quest system to handle navigation
+		combat_finished.emit(player_won)
+		
+		# Fallback: Return to home panel if no one is listening to the signal
+		if not combat_finished.is_connected(Callable()):
+			if UIManager.instance and UIManager.instance.portrait_ui:
+				var home_panel = UIManager.instance.portrait_ui.get_node_or_null("Home")
+				if home_panel:
+					UIManager.instance.portrait_ui.show_panel(home_panel)
+				else:
+					UIManager.instance.portrait_ui.handle_home_button()
 			else:
-				UIManager.instance.portrait_ui.handle_home_button()
-		else:
-			self.visible = false
+				self.visible = false
 	else:
 		# Skip to the end
 		action_timer.stop()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=125 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=126 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -45,6 +45,7 @@
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
 [ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="22_kwfbt"]
+[ext_resource type="Texture2D" uid="uid://6wg11fjkxk0f" path="res://assets/images/ui/texturere.png" id="23_6l37k"]
 [ext_resource type="Texture2D" uid="uid://coehmowcbbl5r" path="res://assets/images/ui/preview_back.png" id="23_ewwwr"]
 [ext_resource type="Texture2D" uid="uid://bi1my5c1ceytg" path="res://assets/images/ui/greetbox.png" id="23_rekvy"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
@@ -292,7 +293,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church", "perk_screen", "upgrade_talent")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church", "perk_screen", "upgrade_talent", "combat")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -319,6 +320,7 @@ trainer = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
 church = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
 perk_screen = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen")
 upgrade_talent = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/Upgrade")
+combat = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat")
 
 [node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button")]
 layout_mode = 1
@@ -713,6 +715,18 @@ grow_vertical = 2
 texture = ExtResource("22_kwfbt")
 expand_mode = 1
 
+[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -324.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("23_6l37k")
+expand_mode = 1
+
 [node name="GreetingArea" type="NinePatchRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1
 anchors_preset = 8
@@ -749,7 +763,7 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -178.5
-offset_top = 14.0
+offset_top = 30.0
 offset_right = 177.5
 offset_bottom = 186.0
 grow_horizontal = 2
@@ -778,7 +792,7 @@ anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -224.0
-offset_top = 20.0
+offset_top = 16.0
 offset_right = -11.0
 offset_bottom = -12.0
 grow_horizontal = 0
@@ -799,7 +813,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.803
 anchor_bottom = 0.924
-offset_top = 0.109985
+offset_top = 1.11002
 offset_bottom = -0.119995
 
 [node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]

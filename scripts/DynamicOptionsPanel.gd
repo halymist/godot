@@ -28,6 +28,7 @@ extends Panel
 # Quest state
 var current_quest_id: int = 0
 var current_slide_number: int = 1
+var pending_combat_option: QuestOption = null  # Store option for after combat
 
 # Reference to portrait for navigation
 @export var portrait: Control
@@ -406,21 +407,10 @@ func _on_quest_option_pressed(option: QuestOption):
 			return
 	
 	# Determine navigation based on option type
-	if option.enemy_id > 0:
-		# Combat option
-		var won = randf() > 0.5
-		if won:
-			# Win: use slide_target
-			if option.slide_target > 0:
-				load_quest(current_quest_id, option.slide_target)
-			else:
-				print("WARNING: COMBAT option missing slide_target for win")
-		else:
-			# Lose: use on_lose_slide
-			if option.on_lose_slide > 0:
-				load_quest(current_quest_id, option.on_lose_slide)
-			else:
-				print("WARNING: COMBAT option missing on_lose_slide for loss")
+	if option.required_type == QuestOption.RequirementType.COMBAT:
+		# Combat option - start combat flow
+		pending_combat_option = option
+		_start_combat()
 	elif option.required_type != QuestOption.RequirementType.NONE and option.required_type != QuestOption.RequirementType.SILVER:
 		# Requirement check (stat, effect, or faction - all already validated in add_option)
 		# Success: use slide_target
@@ -440,6 +430,66 @@ func _on_quest_option_pressed(option: QuestOption):
 			load_quest(current_quest_id, option.slide_target)
 		else:
 			print("WARNING: DIALOGUE option has no slide_target: ", option.text)
+
+func _start_combat():
+	"""Initialize combat by loading a random mock combat log and showing combat panel"""
+	# Pick a random combat log from mock data
+	var random_index = randi() % GameInfo.combat_logs.size()
+	GameInfo.set_current_combat_log(random_index)
+	
+	print("Starting combat with log index: ", random_index)
+	
+	# Get combat panel and toggle UI through UIManager
+	if not UIManager.instance:
+		print("ERROR: UIManager not available!")
+		return
+	
+	var active_ui = UIManager.instance.portrait_ui if UIManager.instance.portrait_ui.visible else UIManager.instance.wide_ui
+	var combat_panel = active_ui.combat_panel
+	
+	if not combat_panel:
+		print("ERROR: Could not find Combat panel!")
+		return
+	
+	# Connect to combat panel's completion signal if not already connected
+	if not combat_panel.is_connected("combat_finished", _on_combat_finished):
+		combat_panel.combat_finished.connect(_on_combat_finished)
+	
+	# Show combat panel using TogglePanel's show_panel method
+	active_ui.show_panel(combat_panel)
+	GameInfo.set_current_panel(combat_panel)
+
+func _on_combat_finished(player_won: bool):
+	"""Called when combat ends - navigate to appropriate quest slide"""
+	print("Combat finished. Player won: ", player_won)
+	
+	if not pending_combat_option:
+		print("ERROR: No pending combat option!")
+		return
+	
+	# Show quest panel via UIManager's show_panel
+	if UIManager.instance:
+		var active_ui = UIManager.instance.portrait_ui if UIManager.instance.portrait_ui.visible else UIManager.instance.wide_ui
+		active_ui.show_panel(self)
+		GameInfo.set_current_panel(self)
+	# Navigate based on result
+	if player_won:
+		# Win: use slide_target
+		if pending_combat_option.slide_target > 0:
+			load_quest(current_quest_id, pending_combat_option.slide_target)
+		elif pending_combat_option.slide_target < 0:
+			# Combat win leads to quest end
+			_finish_quest()
+		else:
+			print("WARNING: COMBAT option missing slide_target for win")
+	else:
+		# Lose: use on_lose_slide
+		if pending_combat_option.on_lose_slide > 0:
+			load_quest(current_quest_id, pending_combat_option.on_lose_slide)
+		else:
+			print("WARNING: COMBAT option missing on_lose_slide for loss")
+	
+	pending_combat_option = null
 
 func _finish_quest():
 	"""End quest and return home"""
