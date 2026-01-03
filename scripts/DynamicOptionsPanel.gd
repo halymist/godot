@@ -341,10 +341,11 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	# Set icon based on requirement type and option type
 	var icon_texture = dialogue_icon  # Default icon
 	if option_data:
-		var is_combat = option_data.enemy_id > 0
 		var is_end = option_data.slide_target < 0
 		
-		if option_data.required_type != QuestOption.RequirementType.NONE:
+		if option_data.required_type == QuestOption.RequirementType.COMBAT:
+			icon_texture = combat_icon
+		elif option_data.required_type != QuestOption.RequirementType.NONE:
 			match option_data.required_type:
 				QuestOption.RequirementType.SILVER:
 					icon_texture = currency_check_icon
@@ -364,8 +365,6 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 					icon_texture = luck_icon
 				QuestOption.RequirementType.ARMOR:
 					icon_texture = armor_icon
-		elif is_combat:
-			icon_texture = combat_icon
 		elif is_end:
 			icon_texture = end_icon
 	

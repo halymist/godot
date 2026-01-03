@@ -3,6 +3,8 @@ extends Resource
 
 enum RequirementType {
 	NONE,
+	# Combat
+	COMBAT,
 	# Stats
 	STRENGTH,
 	STAMINA,
@@ -28,9 +30,6 @@ enum RequirementType {
 # Slide navigation (slide_target for normal/win, on_lose_slide for failure)
 @export var slide_target: int = -1  # Default/win slide
 @export var on_lose_slide: int = -1  # Failure slide (for combat/checks)
-
-# Combat option
-@export var enemy_id: int = -1
 
 # Unified requirement system
 @export var required_type: RequirementType = RequirementType.NONE
