@@ -3,7 +3,7 @@ class_name MapPanel
 
 @export var quest_name_label: Label
 @export var travel_text_label: Label
-@export var travel_progress: ProgressBar
+@export var travel_progress: TextureProgressBar
 @export var travel_time_label: Label
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
@@ -121,7 +121,7 @@ func update_travel_display():
 	if time_remaining <= 0:
 		# Travel completed
 		travel_text_label.text = "Travel completed!"
-		travel_progress.value = 100
+		travel_progress.value = travel_progress.max_value
 		travel_time_label.text = "00:00"
 		if skip_button:
 			skip_button.visible = false
@@ -147,8 +147,7 @@ func update_travel_display():
 	# Calculate progress using stored duration
 	if travel_duration > 0:
 		var elapsed_time = travel_duration - time_remaining
-		var progress_percent = (elapsed_time / travel_duration) * 100
-		travel_progress.value = max(0, min(100, progress_percent))
+		travel_progress.value = (elapsed_time / travel_duration) * travel_progress.max_value
 	
 	# Format remaining time as MM:SS
 	var minutes = int(time_remaining / 60)

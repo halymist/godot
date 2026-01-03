@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=122 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -72,6 +72,8 @@
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 [ext_resource type="Texture2D" uid="uid://c0at4wwrwueri" path="res://assets/images/villages/forest2.png" id="41_w4j8i"]
 [ext_resource type="Script" uid="uid://uvb45o8c4dhi" path="res://scripts/PressHoldOverlay.gd" id="42_umggo"]
+[ext_resource type="Texture2D" uid="uid://bbs4w4kbvqd7q" path="res://assets/images/ui/healthbar (2).png" id="43_fykvq"]
+[ext_resource type="Texture2D" uid="uid://bt1vtlhlu7wgb" path="res://assets/images/ui/healthbar_fill.png" id="44_ewwwr"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
@@ -508,8 +510,8 @@ anchors_preset = -1
 anchor_top = 0.8
 anchor_bottom = 0.978
 offset_left = 10.0
-offset_right = 210.0
-offset_bottom = -0.0400085
+offset_right = 199.0
+offset_bottom = -0.0399933
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 
@@ -1898,7 +1900,7 @@ script = ExtResource("37_map_panel")
 quest_name_label = NodePath("Overlay/TravelInfoContainer/QuestNameLabel")
 travel_text_label = NodePath("Overlay/TravelInfoContainer/TravelTextLabel")
 travel_progress = NodePath("Overlay/TravelBarContainer/TravelProgress")
-travel_time_label = NodePath("Overlay/TravelBarContainer/TravelTimeLabel")
+travel_time_label = NodePath("Overlay/TravelBarContainer/TravelProgress/TravelTimeLabel")
 skip_button = NodePath("Overlay/SkipButton")
 enter_dungeon_button = NodePath("Overlay/TravelBarContainer/EnterDungeonButton")
 quest = NodePath("../Quest")
@@ -1936,9 +1938,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -152.5
-offset_top = -202.0
+offset_top = -185.0
 offset_right = 140.5
-offset_bottom = -104.0
+offset_bottom = -87.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -1963,7 +1965,7 @@ horizontal_alignment = 1
 vertical_alignment = 2
 autowrap_mode = 3
 
-[node name="TravelBarContainer" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]
+[node name="TravelBarContainer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 1
 anchors_preset = 7
@@ -1979,9 +1981,8 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="TravelProgress" type="ProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay/TravelBarContainer"]
+[node name="TravelProgress" type="TextureProgressBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay/TravelBarContainer"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.1
@@ -1990,9 +1991,12 @@ anchor_right = 0.9
 anchor_bottom = 0.7
 grow_horizontal = 2
 grow_vertical = 2
-show_percentage = false
+max_value = 1000.0
+nine_patch_stretch = true
+texture_under = ExtResource("43_fykvq")
+texture_progress = ExtResource("44_ewwwr")
 
-[node name="TravelTimeLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay/TravelBarContainer"]
+[node name="TravelTimeLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map/Overlay/TravelBarContainer/TravelProgress"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -2000,9 +2004,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -40.0
-offset_top = -8.0
+offset_top = -9.49999
 offset_right = 40.0
-offset_bottom = 8.0
+offset_bottom = 9.50001
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -2019,6 +2023,8 @@ anchor_left = 0.1
 anchor_top = 0.1
 anchor_right = 0.9
 anchor_bottom = 0.9
+offset_right = 3.05176e-05
+offset_bottom = 9.08
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
