@@ -394,6 +394,20 @@ func clear_options():
 	for child in options_container.get_children():
 		child.queue_free()
 
+func refresh_quest_options_internal():
+	"""Refresh quest options when stats/requirements change"""
+	if current_quest_id == 0:
+		return
+	
+	# Get current slide and rebuild options (same as display_quest_slide)
+	var quest_slide = GameInfo.get_quest_slide(current_quest_id, current_slide_number)
+	if quest_slide:
+		clear_options()
+		if quest_slide.options:
+			for option in quest_slide.options:
+				if option:
+					add_option(option.text, _on_quest_option_pressed.bind(option), option)
+
 func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click"""
 	# Handle currency cost (silver requirement)

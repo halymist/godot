@@ -65,18 +65,24 @@ func _can_drop_data(_pos, data):
 		# If slot is empty or item doesn't have a socket, reject
 		return false
 	
-	# Special case: Allow hammers to be dropped on any slot with a temperable item
+	# Special case: Allow hammers to be dropped on any slot with a temperable item OR empty bag slots
 	if item_type == "Hammer":
+		# Allow movement to empty bag slots (10-14)
+		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
+			return true
 		if not is_slot_empty():
 			var target_item = get_item_data()
 			# Check if target item is temperable (not Gem, Scroll, Hammer, Ingredient, Potion, Ration, Elixir)
 			if target_item and target_item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
 				return true
-		# If slot is empty or item is not temperable, reject
+		# If slot has non-temperable item, reject
 		return false
 	
-	# Special case: Allow scrolls to be dropped on any slot with an enchantable item (same restrictions as hammer)
+	# Special case: Allow scrolls to be dropped on any slot with an enchantable item OR empty bag slots
 	if item_type == "Scroll":
+		# Allow movement to empty bag slots (10-14)
+		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
+			return true
 		if not is_slot_empty():
 			var target_item = get_item_data()
 			# Check if target item is enchantable (not Gem, Scroll, Hammer, Ingredient, Potion, Ration, Elixir)
@@ -90,7 +96,7 @@ func _can_drop_data(_pos, data):
 						var effect_slot = effect.get_slot_string()
 						if effect_slot == "" or effect_slot == target_item.type:
 							return true
-		# If slot is empty, item is not enchantable, or effect slot doesn't match, reject
+		# If slot has non-enchantable item or effect doesn't match, reject
 		return false
 	
 	# Check if dragged item can go into this slot
