@@ -87,7 +87,8 @@ func _can_drop_data(_pos, data):
 					var effect = GameInfo.effects_db.get_effect_by_id(dragged_item_data.effect_id)
 					if effect:
 						# If effect has a slot requirement, it must match the target item type
-						if effect.slot == "" or effect.slot == target_item.type:
+						var effect_slot = effect.get_slot_string()
+						if effect_slot == "" or effect_slot == target_item.type:
 							return true
 		# If slot is empty, item is not enchantable, or effect slot doesn't match, reject
 		return false
@@ -200,7 +201,8 @@ func _drop_data(_pos, data):
 			# Check effect slot compatibility
 			if dragged_item.effect_id > 0 and GameInfo.effects_db:
 				var effect = GameInfo.effects_db.get_effect_by_id(dragged_item.effect_id)
-				if effect and (effect.slot == "" or effect.slot == target_item.type):
+				var effect_slot = effect.get_slot_string() if effect else ""
+				if effect and (effect_slot == "" or effect_slot == target_item.type):
 					# Enchant the item with the scroll
 					handle_scroll_enchanting(dragged_item, target_item, source_slot_id, source_container)
 					return

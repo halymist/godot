@@ -122,7 +122,8 @@ func populate_effect_list():
 			continue
 		
 		# Filter by item type if an item is in the slot
-		if item_in_slot and effect.slot != "" and effect.slot != item_type:
+		var effect_slot = effect.get_slot_string()
+		if item_in_slot and effect_slot != "" and effect_slot != item_type:
 			continue
 		
 		# Create effect button with description

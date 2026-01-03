@@ -8,7 +8,7 @@ script = ExtResource("1_kykie")
 id = 200
 name = "Perk slot"
 description = "Unlocks an additional slot for a perk"
-slot = ""
+slot = 0
 factor = 0
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -17,7 +17,7 @@ script = ExtResource("1_kykie")
 id = 1
 name = "Strength boost"
 description = "Increase strength by"
-slot = "Hand"
+slot = 3
 factor = 1
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -26,7 +26,7 @@ script = ExtResource("1_kykie")
 id = 2
 name = "Increase stamina"
 description = "Increase stamina by"
-slot = "Chest"
+slot = 2
 factor = 1
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -35,7 +35,7 @@ script = ExtResource("1_kykie")
 id = 3
 name = "Increase agility"
 description = "Increases agility by"
-slot = "Foot"
+slot = 4
 factor = 1
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -44,7 +44,7 @@ script = ExtResource("1_kykie")
 id = 4
 name = "Increase luck"
 description = "Increases luck by"
-slot = "Amulet"
+slot = 8
 factor = 1
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -53,7 +53,7 @@ script = ExtResource("1_kykie")
 id = 5
 name = "Increase damage"
 description = "increases damage dealt by"
-slot = "Weapon"
+slot = 7
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -62,7 +62,7 @@ script = ExtResource("1_kykie")
 id = 6
 name = "Increases health"
 description = "Increase health by"
-slot = "Legs"
+slot = 2
 factor = 3
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -71,7 +71,7 @@ script = ExtResource("1_kykie")
 id = 7
 name = "Increase ctritical strike"
 description = "Increses critical strike chance by "
-slot = "Legs"
+slot = 3
 factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -80,7 +80,7 @@ script = ExtResource("1_kykie")
 id = 8
 name = "Increase dodge"
 description = "Increases dodge chance by"
-slot = "Legs"
+slot = 6
 factor = 2
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -89,7 +89,7 @@ script = ExtResource("1_kykie")
 id = 9
 name = "Damage reduction"
 description = "Increases damage reduciton by"
-slot = "Belt"
+slot = 1
 factor = 2
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -98,7 +98,7 @@ script = ExtResource("1_kykie")
 id = 10
 name = "Initiative"
 description = "Increses chance to start first by"
-slot = "Ring"
+slot = 1
 factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -107,7 +107,7 @@ script = ExtResource("1_kykie")
 id = 11
 name = "Stun"
 description = "Increases chance to stun by"
-slot = "Weapon"
+slot = 9
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -116,7 +116,7 @@ script = ExtResource("1_kykie")
 id = 12
 name = "Counter attack"
 description = "Increases chance to counter attacky by"
-slot = "Weapon"
+slot = 9
 factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -125,7 +125,7 @@ script = ExtResource("1_kykie")
 id = 13
 name = "Attack twice"
 description = "Increases chance to attack twice by"
-slot = "Weapon"
+slot = 9
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -134,7 +134,7 @@ script = ExtResource("1_kykie")
 id = 14
 name = "Bleed"
 description = "Increases chance to apply bleed by"
-slot = "Weapon"
+slot = 9
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -143,7 +143,7 @@ script = ExtResource("1_kykie")
 id = 15
 name = "Lifesteal"
 description = "Increases health restored from your attack by"
-slot = "Weapon"
+slot = 9
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -152,7 +152,7 @@ script = ExtResource("1_kykie")
 id = 16
 name = "Heal"
 description = "Increases chance to heal yourself by"
-slot = "Chest"
+slot = 5
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -161,7 +161,7 @@ script = ExtResource("1_kykie")
 id = 17
 name = "Survive"
 description = "Increases chance to survive the killing blow by"
-slot = "Amulet"
+slot = 5
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -170,7 +170,7 @@ script = ExtResource("1_kykie")
 id = 18
 name = "Healing boost"
 description = "Increases healing done by"
-slot = "Hand"
+slot = 5
 factor = 5
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -179,7 +179,7 @@ script = ExtResource("1_kykie")
 id = 19
 name = "Critical damage"
 description = "Increases critical strike damage by"
-slot = "Hand"
+slot = 8
 factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -188,7 +188,7 @@ script = ExtResource("1_kykie")
 id = 20
 name = "Counter attack damage"
 description = "Increases counter attack damage by"
-slot = "Hand"
+slot = 3
 factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
@@ -197,7 +197,7 @@ script = ExtResource("1_kykie")
 id = 201
 name = "Tempering"
 description = "Improve equipment by"
-slot = ""
+slot = 0
 factor = 0
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
