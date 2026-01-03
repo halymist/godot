@@ -174,20 +174,23 @@ class Item:
 			return res.has_socket if res else false
 	
 	# Centralized stat calculation function - used by Item properties, previews, and displays
-	# Each tempering level adds 5 days to the effective age for compound growth
+	# Tempering is a separate 10% multiplicative bonus on top of day scaling
 	func calculate_scaled_stat(base_value: int, day_value: int, tempered_value: int) -> int:
 		if base_value == 0:
 			return 0
 		
+		# First, apply day scaling and round
 		var result = float(base_value)
+		if day_value > 0:
+			result = result * pow(1.02, day_value)
+		result = round(result)
 		
-		# Apply day scaling with tempering bonus (2% per day, compounding)
-		# Each tempering level adds 5 days to the effective age
-		var effective_days = day_value + (tempered_value * 5)
-		if effective_days > 0:
-			result = result * pow(1.02, effective_days)
+		# Then apply tempering bonus iteratively (10% per level with rounding at each step)
+		# This ensures each tempering level applies 10% to the current rounded value
+		for i in range(tempered_value):
+			result = round(result * 1.1)
 		
-		return int(round(result))
+		return int(result)
 	
 	# Base stats from ItemResource (before modifications)
 	func _get_base_stat(stat_name: String) -> int:

@@ -103,7 +103,7 @@ func update_stats_display():
 		improved_stats_label.text = stats_text if stats_text != "" else "No stat improvements"
 	else:
 		# No item in slot
-		improved_stats_label.text = "+5 days growth"
+		improved_stats_label.text = "+10% to all stats"
 	
 	update_temper_button_state()
 
