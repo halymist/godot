@@ -71,7 +71,7 @@ script = ExtResource("1_kykie")
 id = 7
 name = "Increase ctritical strike"
 description = "Increses critical strike chance by "
-slot = 3
+slot = 6
 factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 

@@ -301,7 +301,7 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		
 		if needs_scaling:
 			var server_day = GameInfo.current_player.server_day
-			scaled_requirement = int(req_amount * pow(1.20, server_day - 1))
+			scaled_requirement = int(req_amount * pow(1.02, server_day - 1))
 		else:
 			scaled_requirement = req_amount
 		
@@ -335,8 +335,8 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 					var player_effect = total_effects.get(effect_id, 0.0)
 					meets_requirement = player_effect >= scaled_requirement
 		
-		# Add requirement to label if not faction check
-		if req_type < QuestOption.RequirementType.ORDER or req_type > QuestOption.RequirementType.COMPANIONS:
+		# Add requirement to label if not faction check and not combat
+		if req_type != QuestOption.RequirementType.COMBAT and (req_type < QuestOption.RequirementType.ORDER or req_type > QuestOption.RequirementType.COMPANIONS):
 			label_text = "(" + str(scaled_requirement) + ") " + label_text
 	
 	# Set icon based on requirement type and option type
@@ -489,15 +489,13 @@ func _start_combat():
 	active_ui.show_panel(combat_panel)
 	GameInfo.set_current_panel(combat_panel)
 
-func _on_combat_finished(player_won: bool):
+func _on_combat_finished():
 	"""Called when combat ends - just return to quest panel (navigation already done)"""
 	print("Combat animation finished. Returning to quest panel.")
 	
-	# Show quest panel via UIManager's show_panel
-	if UIManager.instance:
-		var active_ui = UIManager.instance.portrait_ui if UIManager.instance.portrait_ui.visible else UIManager.instance.wide_ui
-		active_ui.show_panel(self)
-		GameInfo.set_current_panel(self)
+	var active_ui = UIManager.instance.portrait_ui if UIManager.instance.portrait_ui.visible else UIManager.instance.wide_ui
+	active_ui.show_panel(self)
+	GameInfo.set_current_panel(self)
 
 func _finish_quest():
 	"""End quest and return home"""
