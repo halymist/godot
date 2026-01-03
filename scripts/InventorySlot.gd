@@ -75,6 +75,23 @@ func _can_drop_data(_pos, data):
 		# If slot is empty or item is not temperable, reject
 		return false
 	
+	# Special case: Allow scrolls to be dropped on any slot with an enchantable item (same restrictions as hammer)
+	if item_type == "Scroll":
+		if not is_slot_empty():
+			var target_item = get_item_data()
+			# Check if target item is enchantable (not Gem, Scroll, Hammer, Ingredient, Potion, Ration, Elixir)
+			if target_item and target_item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
+				# Get the scroll's effect and check if the effect slot matches target item type
+				var dragged_item_data = data.get("item") if data else null
+				if dragged_item_data and dragged_item_data.effect_id > 0 and GameInfo.effects_db:
+					var effect = GameInfo.effects_db.get_effect_by_id(dragged_item_data.effect_id)
+					if effect:
+						# If effect has a slot requirement, it must match the target item type
+						if effect.slot == "" or effect.slot == target_item.type:
+							return true
+		# If slot is empty, item is not enchantable, or effect slot doesn't match, reject
+		return false
+	
 	# Check if dragged item can go into this slot
 	if not is_valid_item_for_slot(item_type):
 		return false
@@ -174,6 +191,19 @@ func _drop_data(_pos, data):
 			# Temper the item with the hammer
 			handle_hammer_tempering(dragged_item, target_item, source_slot_id, source_container)
 			return
+	
+	# Special case: Using a scroll to enchant an item
+	if dragged_item.type == "Scroll" and not is_slot_empty():
+		var target_item = get_item_data()
+		# Check if target item is enchantable
+		if target_item and target_item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
+			# Check effect slot compatibility
+			if dragged_item.effect_id > 0 and GameInfo.effects_db:
+				var effect = GameInfo.effects_db.get_effect_by_id(dragged_item.effect_id)
+				if effect and (effect.slot == "" or effect.slot == target_item.type):
+					# Enchant the item with the scroll
+					handle_scroll_enchanting(dragged_item, target_item, source_slot_id, source_container)
+					return
 	
 	# Update GameInfo directly based on the operation
 	if not is_slot_empty():
@@ -386,6 +416,51 @@ func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.I
 		hammer_source_container.clear_slot()
 	
 	# Update the item display in this slot to show the tempered stats
+	place_item_in_slot(target_item_in_array)
+	
+	# Notify all bag views to redraw
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
+		# Refresh stats if the target item is equipped (slots 0-8)
+		if slot_id <= 8:
+			UIManager.instance.refresh_stats()
+
+func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.Item, scroll_source_slot_id: int, scroll_source_container):
+	"""Use a scroll to enchant an item (apply effect_overdrive from scroll's effect_id)"""
+	print("Enchanting ", target_item.item_name, " with ", scroll_item.item_name)
+	
+	# Find the actual target item in GameInfo.bag_slots
+	var target_item_in_array = null
+	for game_item in GameInfo.current_player.bag_slots:
+		if game_item.bag_slot_id == slot_id:
+			target_item_in_array = game_item
+			break
+	
+	if not target_item_in_array:
+		print("Error: Target item not found in bag_slots")
+		return
+	
+	# Apply enchantment: set effect_overdrive to the scroll's effect_id
+	if scroll_item.effect_id > 0:
+		target_item_in_array.effect_overdrive = scroll_item.effect_id
+		print("Applied enchantment effect_overdrive: ", scroll_item.effect_id)
+	else:
+		print("Warning: Scroll has no effect_id")
+		return
+	
+	# Remove the scroll from the player's inventory
+	for i in range(GameInfo.current_player.bag_slots.size()):
+		var game_item = GameInfo.current_player.bag_slots[i]
+		if game_item.bag_slot_id == scroll_source_slot_id:
+			GameInfo.current_player.bag_slots.remove_at(i)
+			print("Removed scroll from slot ", scroll_source_slot_id)
+			break
+	
+	# Clear the source slot visually
+	if scroll_source_container:
+		scroll_source_container.clear_slot()
+	
+	# Update the item display in this slot to show the enchanted effect
 	place_item_in_slot(target_item_in_array)
 	
 	# Notify all bag views to redraw

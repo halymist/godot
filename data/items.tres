@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ItemDatabase" load_steps=26 format=3 uid="uid://vft5y80xsrjn"]
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=27 format=3 uid="uid://vft5y80xsrjn"]
 
 [ext_resource type="Script" uid="uid://5xjtibn1drlf" path="res://scripts/resources/ItemResource.gd" id="1_plm77"]
+[ext_resource type="Texture2D" uid="uid://3lxpfdl0cjp8" path="res://data/item_textures/scroll.png" id="2_gi1ch"]
 [ext_resource type="Script" uid="uid://0io63usdvbbp" path="res://scripts/resources/ItemDatabase.gd" id="2_lxu8k"]
 [ext_resource type="Texture2D" uid="uid://bi5yse66s4xm" path="res://data/item_textures/item1.png" id="2_tpttd"]
 [ext_resource type="Texture2D" uid="uid://t2w6ivqnfx4" path="res://assets/images/fallback/elixir.png" id="3_tpttd"]
@@ -29,6 +30,7 @@ effect_id = 7
 effect_factor = 10
 price = 20
 has_socket = false
+icon = ExtResource("2_gi1ch")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
 [sub_resource type="Resource" id="Resource_dlfjs"]
