@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDatabase" load_steps=25 format=3 uid="uid://vft5y80xsrjn"]
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=26 format=3 uid="uid://vft5y80xsrjn"]
 
 [ext_resource type="Script" uid="uid://5xjtibn1drlf" path="res://scripts/resources/ItemResource.gd" id="1_plm77"]
 [ext_resource type="Script" uid="uid://0io63usdvbbp" path="res://scripts/resources/ItemDatabase.gd" id="2_lxu8k"]
@@ -13,23 +13,41 @@
 [ext_resource type="Texture2D" uid="uid://dv45jiyafrqus" path="res://data/item_textures/8.png" id="10_giyri"]
 [ext_resource type="Texture2D" uid="uid://b32env7vihqm7" path="res://data/item_textures/hammer2.png" id="11_3m58g"]
 
-[sub_resource type="Resource" id="Resource_4egq1"]
+[sub_resource type="Resource" id="Resource_0ncmm"]
 script = ExtResource("1_plm77")
-id = 1
-item_name = "Simple helmet"
-type = 0
-armor = 20
-strength = 5
+id = 401
+item_name = "Scroll"
+type = 12
+armor = 0
+strength = 0
 stamina = 0
 agility = 0
 luck = 0
 damage_min = 0
 damage_max = 0
-effect_id = 1
-effect_factor = 20
-price = 50
-has_socket = true
-icon = ExtResource("2_tpttd")
+effect_id = 7
+effect_factor = 10
+price = 20
+has_socket = false
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
+[sub_resource type="Resource" id="Resource_dlfjs"]
+script = ExtResource("1_plm77")
+id = 400
+item_name = "Hammer"
+type = 13
+armor = 0
+strength = 0
+stamina = 0
+agility = 0
+luck = 0
+damage_min = 0
+damage_max = 0
+effect_id = 201
+effect_factor = 10
+price = 20
+has_socket = false
+icon = ExtResource("11_3m58g")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
 [sub_resource type="Resource" id="Resource_lxu8k"]
@@ -49,6 +67,25 @@ effect_factor = 20
 price = 20
 has_socket = false
 icon = ExtResource("3_xygrn")
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
+[sub_resource type="Resource" id="Resource_4egq1"]
+script = ExtResource("1_plm77")
+id = 1
+item_name = "Simple helmet"
+type = 0
+armor = 20
+strength = 5
+stamina = 0
+agility = 0
+luck = 0
+damage_min = 0
+damage_max = 0
+effect_id = 1
+effect_factor = 20
+price = 50
+has_socket = true
+icon = ExtResource("2_tpttd")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
 [sub_resource type="Resource" id="Resource_tpttd"]
@@ -222,26 +259,7 @@ has_socket = false
 icon = ExtResource("10_giyri")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
-[sub_resource type="Resource" id="Resource_dlfjs"]
-script = ExtResource("1_plm77")
-id = 600
-item_name = "Hammer"
-type = 13
-armor = 0
-strength = 0
-stamina = 0
-agility = 0
-luck = 0
-damage_min = 0
-damage_max = 0
-effect_id = 201
-effect_factor = 10
-price = 20
-has_socket = false
-icon = ExtResource("11_3m58g")
-metadata/_custom_type_script = "uid://5xjtibn1drlf"
-
 [resource]
 script = ExtResource("2_lxu8k")
-items = Array[ExtResource("1_plm77")]([SubResource("Resource_4egq1"), SubResource("Resource_lxu8k"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr"), SubResource("Resource_giyri"), SubResource("Resource_3m58g"), SubResource("Resource_gi1ch"), SubResource("Resource_kkqur"), SubResource("Resource_dlfjs")])
+items = Array[ExtResource("1_plm77")]([SubResource("Resource_0ncmm"), SubResource("Resource_dlfjs"), SubResource("Resource_lxu8k"), SubResource("Resource_4egq1"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr"), SubResource("Resource_giyri"), SubResource("Resource_3m58g"), SubResource("Resource_gi1ch"), SubResource("Resource_kkqur")])
 metadata/_custom_type_script = "uid://0io63usdvbbp"

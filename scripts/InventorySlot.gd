@@ -65,8 +65,8 @@ func _can_drop_data(_pos, data):
 		# If slot is empty or item doesn't have a socket, reject
 		return false
 	
-	# Special case: Allow hammers to be dropped on equipment slots (0-8) if item is temperable
-	if item_type == "Hammer" and slot_id >= 0 and slot_id <= 8:
+	# Special case: Allow hammers to be dropped on any slot with a temperable item
+	if item_type == "Hammer":
 		if not is_slot_empty():
 			var target_item = get_item_data()
 			# Check if target item is temperable (not Gem, Scroll, Hammer, Ingredient, Potion, Ration, Elixir)
@@ -533,9 +533,9 @@ func handle_double_click(item: GameInfo.Item):
 			_consume_item(item)
 		return
 	
-	# Blacksmith: Move equippable items to slot 16
+	# Blacksmith: Move temperable items to slot 16
 	if current_utility and current_utility.name == "BlacksmithPanel":
-		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Gem":
+		if item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
 			if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
 				var target_slot = _find_slot_by_id(BLACKSMITH_SLOT)
 				if target_slot and target_slot.is_slot_empty():
