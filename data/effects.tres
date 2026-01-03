@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EffectDatabase" load_steps=24 format=3 uid="uid://bkg18l7ls21gy"]
+[gd_resource type="Resource" script_class="EffectDatabase" load_steps=25 format=3 uid="uid://bkg18l7ls21gy"]
 
 [ext_resource type="Script" uid="uid://p673jpbjsppe" path="res://scripts/resources/EffectResource.gd" id="1_kykie"]
 [ext_resource type="Script" uid="uid://tlx57q68wsqo" path="res://scripts/resources/EffectDatabase.gd" id="2_jpqpk"]
@@ -192,6 +192,15 @@ slot = "Hand"
 factor = 10
 metadata/_custom_type_script = "uid://p673jpbjsppe"
 
+[sub_resource type="Resource" id="Resource_lkg4j"]
+script = ExtResource("1_kykie")
+id = 201
+name = "Tempering"
+description = "Improve equipment by"
+slot = ""
+factor = 0
+metadata/_custom_type_script = "uid://p673jpbjsppe"
+
 [resource]
 script = ExtResource("2_jpqpk")
-effects = Array[ExtResource("1_kykie")]([SubResource("Resource_dvyco"), SubResource("Resource_kykie"), SubResource("Resource_jpqpk"), SubResource("Resource_0aeja"), SubResource("Resource_adnf4"), SubResource("Resource_dr05w"), SubResource("Resource_sfyhn"), SubResource("Resource_mu2gr"), SubResource("Resource_7nrcq"), SubResource("Resource_gew70"), SubResource("Resource_bqdpo"), SubResource("Resource_ksklk"), SubResource("Resource_7lpy8"), SubResource("Resource_s6jy5"), SubResource("Resource_g1jkk"), SubResource("Resource_i21du"), SubResource("Resource_vwfcc"), SubResource("Resource_h7k6w"), SubResource("Resource_ne60l"), SubResource("Resource_vvgik"), SubResource("Resource_kcjfi")])
+effects = Array[ExtResource("1_kykie")]([SubResource("Resource_dvyco"), SubResource("Resource_kykie"), SubResource("Resource_jpqpk"), SubResource("Resource_0aeja"), SubResource("Resource_adnf4"), SubResource("Resource_dr05w"), SubResource("Resource_sfyhn"), SubResource("Resource_mu2gr"), SubResource("Resource_7nrcq"), SubResource("Resource_gew70"), SubResource("Resource_bqdpo"), SubResource("Resource_ksklk"), SubResource("Resource_7lpy8"), SubResource("Resource_s6jy5"), SubResource("Resource_g1jkk"), SubResource("Resource_i21du"), SubResource("Resource_vwfcc"), SubResource("Resource_h7k6w"), SubResource("Resource_ne60l"), SubResource("Resource_vvgik"), SubResource("Resource_kcjfi"), SubResource("Resource_lkg4j")])

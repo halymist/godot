@@ -65,6 +65,16 @@ func _can_drop_data(_pos, data):
 		# If slot is empty or item doesn't have a socket, reject
 		return false
 	
+	# Special case: Allow hammers to be dropped on equipment slots (0-8) if item is temperable
+	if item_type == "Hammer" and slot_id >= 0 and slot_id <= 8:
+		if not is_slot_empty():
+			var target_item = get_item_data()
+			# Check if target item is temperable (not Gem, Scroll, Hammer, Ingredient, Potion, Ration, Elixir)
+			if target_item and target_item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
+				return true
+		# If slot is empty or item is not temperable, reject
+		return false
+	
 	# Check if dragged item can go into this slot
 	if not is_valid_item_for_slot(item_type):
 		return false
@@ -154,6 +164,15 @@ func _drop_data(_pos, data):
 		if target_item and target_item.has_socket and target_item.socketed_gem_id == -1:
 			# Socket the gem into the item
 			handle_gem_socketing(dragged_item, target_item, source_slot_id, source_container)
+			return
+	
+	# Special case: Using a hammer to temper an item
+	if dragged_item.type == "Hammer" and not is_slot_empty():
+		var target_item = get_item_data()
+		# Check if target item is temperable
+		if target_item and target_item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
+			# Temper the item with the hammer
+			handle_hammer_tempering(dragged_item, target_item, source_slot_id, source_container)
 			return
 	
 	# Update GameInfo directly based on the operation
@@ -318,6 +337,63 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 		# Refresh stats if the target item is equipped (slots 0-8)
 		if slot_id <= 8:
 			UIManager.instance.refresh_stats()
+
+func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.Item, hammer_source_slot_id: int, hammer_source_container):
+	"""Use a hammer to temper an item (+10% to all stats, rounded up)"""
+	print("Tempering ", target_item.item_name, " with ", hammer_item.item_name)
+	
+	# Find the actual target item in GameInfo.bag_slots
+	var target_item_in_array = null
+	for game_item in GameInfo.current_player.bag_slots:
+		if game_item.bag_slot_id == slot_id:
+			target_item_in_array = game_item
+			break
+	
+	if not target_item_in_array:
+		print("Error: Target item not found in bag_slots")
+		return
+	
+	# Apply tempering: +10% to all stats (rounded up)
+	if target_item_in_array.get("strength") and target_item_in_array.strength > 0:
+		target_item_in_array.strength += ceil(target_item_in_array.strength * 0.1)
+	if target_item_in_array.get("stamina") and target_item_in_array.stamina > 0:
+		target_item_in_array.stamina += ceil(target_item_in_array.stamina * 0.1)
+	if target_item_in_array.get("agility") and target_item_in_array.agility > 0:
+		target_item_in_array.agility += ceil(target_item_in_array.agility * 0.1)
+	if target_item_in_array.get("luck") and target_item_in_array.luck > 0:
+		target_item_in_array.luck += ceil(target_item_in_array.luck * 0.1)
+	if target_item_in_array.get("armor") and target_item_in_array.armor > 0:
+		target_item_in_array.armor += ceil(target_item_in_array.armor * 0.1)
+	
+	# Increment tempered counter
+	if target_item_in_array.get("tempered"):
+		target_item_in_array.tempered += 1
+	else:
+		target_item_in_array.tempered = 1
+	
+	print("Tempered item to level ", target_item_in_array.tempered)
+	
+	# Remove the hammer from the player's inventory
+	for i in range(GameInfo.current_player.bag_slots.size()):
+		var game_item = GameInfo.current_player.bag_slots[i]
+		if game_item.bag_slot_id == hammer_source_slot_id:
+			GameInfo.current_player.bag_slots.remove_at(i)
+			print("Removed hammer from slot ", hammer_source_slot_id)
+			break
+	
+	# Clear the source slot visually
+	if hammer_source_container:
+		hammer_source_container.clear_slot()
+	
+	# Update the item display in this slot to show the tempered stats
+	place_item_in_slot(target_item_in_array)
+	
+	# Notify all bag views to redraw
+	if UIManager.instance:
+		UIManager.instance.refresh_bags()
+		# Refresh stats if the target item is equipped (slots 0-8)
+		if slot_id <= 8:
+			UIManager.instance.refresh_stats()
 	print("Gem socketing complete")
 
 func is_valid_item_for_slot(item_type: String) -> bool:
@@ -343,7 +419,7 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 		"Ingredient":
 			return item_type == "Ingredient"
 		"Blacksmith":
-			return item_type != "Ingredient" and item_type != "Consumable" and item_type != "Gem"
+			return item_type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]
 		"Enchanter":
 			return item_type != "Ingredient" and item_type != "Consumable" and item_type != "Elixir" and item_type != "Potion" and item_type != "Gem"
 		"Bag":
