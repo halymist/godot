@@ -46,22 +46,12 @@ func update_button_appearance():
 		modulate = Color(0.4, 0.4, 0.4, 1.0)  # Dark grey
 
 func _on_button_pressed():
-	print("Talent button pressed: ", talentName)
-	
 	# Check if this is a perk slot talent (to select a perk)
 	if perk_slot > 0 and points >= maxPoints:
-		print("  -> Showing perk screen for slot ", perk_slot)
-		if UIManager.instance and UIManager.instance.perk_screen:
-			UIManager.instance.perk_screen.load_active_perks_for_slot(perk_slot)
-			UIManager.instance.perk_screen.z_index = 300
-			UIManager.instance.perk_screen.mouse_filter = Control.MOUSE_FILTER_STOP
-			UIManager.instance.perk_screen.visible = true
-		else:
-			print("  -> ERROR: perk_screen is NULL!")
+		UIManager.instance.perk_screen.load_active_perks_for_slot(perk_slot)
+		UIManager.instance.perk_screen.visible = true
 	else:
 		# Show upgrade screen for all other cases (unlock perk slot or upgrade regular talent)
-		print("  -> Showing upgrade screen")
-		
 		var eligible_for_upgrade = can_upgrade()
 		var description = ""
 		
@@ -80,13 +70,7 @@ func _on_button_pressed():
 				else:
 					description += " " + str(int(current_bonus)) + "% --> " + str(int(next_bonus)) + "%"
 		
-		if UIManager.instance and UIManager.instance.upgrade_talent:
-			UIManager.instance.upgrade_talent.z_index = 300
-			UIManager.instance.upgrade_talent.mouse_filter = Control.MOUSE_FILTER_STOP
-			UIManager.instance.upgrade_talent.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
-			print("  -> Upgrade visible: ", UIManager.instance.upgrade_talent.visible)
-		else:
-			print("  -> ERROR: upgrade_talent is NULL!")
+		UIManager.instance.upgrade_talent.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
 
 func can_upgrade() -> bool:
 	# Check if talent is already maxed out
@@ -129,9 +113,6 @@ func upgrade_talent():
 			new_talent.talent_id = talentID
 			new_talent.points = points
 			GameInfo.current_player.talents.append(new_talent)
-			print("Created new talent entry for ID ", talentID, " with ", points, " points")
-		else:
-			print("Updated existing talent ID ", talentID, " to ", points, " points")
 		
 		# Update UI
 		pointsLabel.text = "%d/%d" % [points, maxPoints]
@@ -140,7 +121,3 @@ func upgrade_talent():
 		# Refresh stats to recalculate effects
 		if UIManager.instance:
 			UIManager.instance.refresh_stats()
-		
-		print("Upgraded talent ", talentName, " to ", points, " points")
-	else:
-		print("Cannot upgrade: either maxed out or no talent points available")
