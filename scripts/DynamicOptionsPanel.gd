@@ -284,9 +284,8 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		return null
 	
 	var option_scene = load("res://Scenes/quest_option.tscn")
-	var option_instance = option_scene.instantiate()
+	var option_button = option_scene.instantiate()  # This is now a TextureButton
 	
-	var label = option_instance.get_node("HBoxContainer/Label")
 	var label_text = text
 	var meets_requirement = true
 	var scaled_requirement = 0
@@ -340,52 +339,52 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 			label_text = "(" + str(scaled_requirement) + ") " + label_text
 	
 	# Set icon based on requirement type and option type
-	var icon = option_instance.get_node("HBoxContainer/Icon")
-	if icon:
-		var is_combat = option_data and option_data.enemy_id > 0
-		var is_end = option_data and option_data.slide_target < 0
+	var icon_texture = dialogue_icon  # Default icon
+	if option_data:
+		var is_combat = option_data.enemy_id > 0
+		var is_end = option_data.slide_target < 0
 		
-		if option_data and option_data.required_type != QuestOption.RequirementType.NONE:
+		if option_data.required_type != QuestOption.RequirementType.NONE:
 			match option_data.required_type:
 				QuestOption.RequirementType.SILVER:
-					icon.texture = currency_check_icon
+					icon_texture = currency_check_icon
 				QuestOption.RequirementType.ORDER:
-					icon.texture = order_icon
+					icon_texture = order_icon
 				QuestOption.RequirementType.GUILD:
-					icon.texture = guild_icon
+					icon_texture = guild_icon
 				QuestOption.RequirementType.COMPANIONS:
-					icon.texture = companions_icon
+					icon_texture = companions_icon
 				QuestOption.RequirementType.STRENGTH:
-					icon.texture = strength_icon
+					icon_texture = strength_icon
 				QuestOption.RequirementType.STAMINA:
-					icon.texture = stamina_icon
+					icon_texture = stamina_icon
 				QuestOption.RequirementType.AGILITY:
-					icon.texture = agility_icon
+					icon_texture = agility_icon
 				QuestOption.RequirementType.LUCK:
-					icon.texture = luck_icon
+					icon_texture = luck_icon
 				QuestOption.RequirementType.ARMOR:
-					icon.texture = armor_icon
+					icon_texture = armor_icon
 		elif is_combat:
-			icon.texture = combat_icon
+			icon_texture = combat_icon
 		elif is_end:
-			icon.texture = end_icon
-		else:
-			icon.texture = dialogue_icon
+			icon_texture = end_icon
 	
-	# Set label text
+	# Set button properties (TextureButton with children)
+	var label = option_button.get_node("Label")
+	var icon = option_button.get_node("Icon")
+	
 	if label:
 		label.text = label_text
+	if icon:
+		icon.texture = icon_texture
 	
-	# Connect button and handle disabled state
-	var button = option_instance.get_node("Button")
-	if button:
-		button.disabled = not meets_requirement
-		if not meets_requirement:
-			option_instance.modulate = Color(0.5, 0.5, 0.5, 0.7)
-		button.pressed.connect(callback)
+	option_button.disabled = not meets_requirement
+	if not meets_requirement:
+		option_button.modulate = Color(0.5, 0.5, 0.5, 0.7)
+	option_button.pressed.connect(callback)
 	
-	options_container.add_child(option_instance)
-	return option_instance
+	options_container.add_child(option_button)
+	return option_button
 
 func clear_options():
 	"""Remove all option buttons"""

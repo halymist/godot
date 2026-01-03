@@ -1,59 +1,35 @@
-[gd_scene load_steps=7 format=3 uid="uid://ddgp4njhef2ac"]
+[gd_scene load_steps=3 format=3 uid="uid://ddgp4njhef2ac"]
 
-[ext_resource type="Script" uid="uid://dk7i8aj2wob6h" path="res://scripts/QuestOption.gd" id="1_vfk2w"]
-[ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="2_tpdcj"]
 [ext_resource type="Texture2D" uid="uid://b6ncqnw4w7uw1" path="res://assets/images/ui/options.png" id="2_vq2r0"]
+[ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="3_icon"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
-bg_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
-bg_color = Color(1, 1, 1, 0.15)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
-bg_color = Color(1, 1, 1, 0.25)
-
-[node name="QuestOption" type="MarginContainer"]
+[node name="QuestOption" type="TextureButton"]
 custom_minimum_size = Vector2(350, 50)
 offset_right = 350.0
 offset_bottom = 50.0
 size_flags_horizontal = 4
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 2
-script = ExtResource("1_vfk2w")
+texture_normal = ExtResource("2_vq2r0")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 2
-texture = ExtResource("2_vq2r0")
-expand_mode = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Icon" type="TextureRect" parent="HBoxContainer"]
+[node name="Icon" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("2_tpdcj")
+offset_left = 23.0
+offset_top = 3.0
+offset_right = 55.0
+offset_bottom = 43.0
+texture = ExtResource("3_icon")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
+[node name="Label" type="Label" parent="."]
 layout_mode = 2
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 327.0
+offset_bottom = 35.0
 size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "Go"
+text = "Option Text"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="Button" type="Button" parent="."]
-layout_mode = 2
-theme_override_styles/disabled = SubResource("StyleBoxFlat_button_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
-theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
