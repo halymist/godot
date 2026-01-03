@@ -356,7 +356,9 @@ var mock_chat_messages = [
 # Mock combat data for development/testing
 var mock_combat_logs = [
 	{
+		"player1name": "TestPlayer",
 		"player1health": 100,
+		"player1_avatar": [1, 10, 20, 30, 40],
 		"player2name": "Dark Knight",
 		"player2health": 120,
 		"player2_avatar": [1, 11, 20, 30, 40],
@@ -378,10 +380,11 @@ var mock_combat_logs = [
 		]
 	},
 	{
+		"player1name": "TestPlayer",
 		"player1health": 85,
-		"player2name": "Goblin Warrior",
+		"player1_avatar": [1, 10, 20, 30, 40],
+		"enemyid": 1,
 		"player2health": 60,
-		"player2_avatar": [1, 11, 20, 30, 40],
 		"logs": [
 			{"player": 1, "action": "attack", "factor": 0},
 			{"player": 2, "action": "hit", "factor": 12},
@@ -400,10 +403,11 @@ var mock_combat_logs = [
 		]
 	},
 	{
+		"player1name": "TestPlayer",
 		"player1health": 80,
-		"player2name": "Fire Demon",
+		"player1_avatar": [1, 10, 20, 30, 40],
+		"enemyid": 3,
 		"player2health": 150,
-		"player2_avatar": [1, 11, 20, 30, 40],
 		"logs": [
 			{"player": 1, "action": "cast spell", "factor": 0},
 			{"player": 2, "action": "hit", "factor": 30},

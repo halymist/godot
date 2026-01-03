@@ -6,6 +6,8 @@ extends Panel
 @onready var player_health_bar = $CharacterArea/CharacterContainer/PlayerSection/PlayerHealthBar
 @onready var player_label = $CharacterArea/CharacterContainer/PlayerSection/PlayerLabel
 @onready var enemy_icon = $CharacterArea/CharacterContainer/EnemySection/EnemyIcon
+@onready var enemy_avatar = $CharacterArea/CharacterContainer/EnemySection/EnemyAvatar  # Avatar for player opponents
+@onready var enemy_texture = $CharacterArea/CharacterContainer/EnemySection/EnemyTexture  # Texture for NPC opponents
 @onready var enemy_health_bar = $CharacterArea/CharacterContainer/EnemySection/EnemyHealthBar
 @onready var enemy_label = $CharacterArea/CharacterContainer/EnemySection/EnemyLabel
 @onready var combat_log_container = $CombatLogArea/UnifiedLogScroll/CombatLogContainer
@@ -44,7 +46,34 @@ func display_combat_log():
 	
 	# Set up character info
 	player_label.text = combat.player1_name
-	enemy_label.text = combat.player2_name
+	
+	# Setup player1 avatar
+	if player_icon and player_icon.has_method("load_cosmetics"):
+		player_icon.load_cosmetics(combat.player1_avatar)
+	
+	# Check if enemy is NPC or player
+	if combat.enemyid > 0:
+		# Enemy is NPC - use enemies database
+		var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(combat.enemyid)
+		if enemy_resource:
+			enemy_label.text = enemy_resource.name
+			# Show enemy texture, hide avatar
+			if enemy_texture:
+				enemy_texture.texture = enemy_resource.texture
+				enemy_texture.visible = true
+			if enemy_avatar:
+				enemy_avatar.visible = false
+		else:
+			enemy_label.text = "Unknown Enemy"
+	else:
+		# Enemy is player - use player2 data
+		enemy_label.text = combat.player2_name
+		# Show avatar, hide texture
+		if enemy_avatar and enemy_avatar.has_method("load_cosmetics"):
+			enemy_avatar.load_cosmetics(combat.player2_avatar)
+			enemy_avatar.visible = true
+		if enemy_texture:
+			enemy_texture.visible = false
 	
 	# Set initial health bars and store starting values
 	player_health_bar.max_value = combat.player1_health
@@ -99,9 +128,9 @@ func organize_combat_by_turns(combat: GameInfo.CombatResponse):
 			"player2_actions": []
 		}
 		
-		# Separate actions by player
+		# Separate actions by player (1 = player1, 2 = player2/enemy)
 		for entry in turn_entries:
-			if entry.player == combat.player1_name:
+			if entry.player == 1:
 				turn_data.player1_actions.append(entry)
 			else:
 				turn_data.player2_actions.append(entry)
@@ -204,45 +233,52 @@ func apply_turn_health_changes(turn_data: Dictionary):
 			animate_health_increase(enemy_health_bar, action.factor)
 
 func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
+	var combat = GameInfo.current_combat_log
+	if not combat:
+		return ""
+	
+	# Get the player name based on player number (1 or 2)
+	var player_name = combat.player1_name if entry.player == 1 else (combat.player2_name if combat.enemyid == 0 else GameInfo.enemies_db.get_enemy_by_id(combat.enemyid).name)
+	
 	var text = ""
 	
 	match entry.action:
 		"attack":
-			text += entry.player + " attacks!"
+			text += player_name + " attacks!"
 		"dodge":
-			text += entry.player + " dodges!"
+			text += player_name + " dodges!"
 		"hit":
 			if entry.factor > 0:
-				text += entry.player + " takes " + str(entry.factor) + " damage!"
+				text += player_name + " takes " + str(entry.factor) + " damage!"
 			else:
-				text += entry.player + " is hit!"
+				text += player_name + " is hit!"
 		"miss":
-			text += entry.player + " misses!"
+			text += player_name + " misses!"
 		"burn damage":
-			text += entry.player + " suffers " + str(entry.factor) + " burn damage!"
+			text += player_name + " suffers " + str(entry.factor) + " burn damage!"
 		"fire damage":
-			text += entry.player + " takes " + str(entry.factor) + " fire damage!"
+			text += player_name + " takes " + str(entry.factor) + " fire damage!"
 		"poison damage":
-			text += entry.player + " takes " + str(entry.factor) + " poison damage!"
+			text += player_name + " takes " + str(entry.factor) + " poison damage!"
 		"heal":
 			if entry.factor > 0:
-				text += entry.player + " heals for " + str(entry.factor) + " HP!"
+				text += player_name + " heals for " + str(entry.factor) + " HP!"
 			else:
-				text += entry.player + " heals!"
+				text += player_name + " heals!"
 		"cast spell":
-			text += entry.player + " casts a spell!"
+			text += player_name + " casts a spell!"
 		"shield":
-			text += entry.player + " raises a shield!"
+			text += player_name + " raises a shield!"
 		"rage":
-			text += entry.player + " enters a rage!"
+			text += player_name + " enters a rage!"
 		"fire breath":
-			text += entry.player + " breathes fire!"
+			text += player_name + " breathes fire!"
 		"intimidate":
-			text += entry.player + " intimidates!"
+			text += player_name + " intimidates!"
 		"claw strike":
-			text += entry.player + " strikes with claws!"
+			text += player_name + " strikes with claws!"
 		_:
-			text += entry.player + " " + entry.action
+			text += player_name + " " + entry.action
 			if entry.factor > 0:
 				text += " (" + str(entry.factor) + ")"
 	

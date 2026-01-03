@@ -1836,6 +1836,17 @@ expand_mode = 1
 [node name="EnemyAvatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer/EnemyIcon" instance=ExtResource("22_avatar")]
 layout_mode = 1
 
+[node name="EnemyTexture" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer/EnemyIcon"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="EnemyHealthBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Combat/EnemyContainer" instance=ExtResource("22_healthbar")]
 layout_mode = 0
 offset_top = 135.0
@@ -2100,15 +2111,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
-
-[node name="CombatPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false

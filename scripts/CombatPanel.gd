@@ -8,6 +8,7 @@ extends Panel
 @onready var player_health_label = $PlayerContainer/PlayerHealthBar/HealthLabel
 @onready var player_label = $PlayerContainer/PlayerLabel
 @onready var enemy_avatar = $EnemyContainer/EnemyIcon/EnemyAvatar
+@onready var enemy_texture = $EnemyContainer/EnemyIcon/EnemyTexture
 @onready var enemy_health_bar = $EnemyContainer/EnemyHealthBar
 @onready var enemy_health_label = $EnemyContainer/EnemyHealthBar/HealthLabel
 @onready var enemy_label = $EnemyContainer/EnemyLabel
@@ -66,31 +67,48 @@ func display_combat_log():
 	# Set combat background based on location
 	set_combat_background()
 	
-	# Set up character info - player is always "You", use GameInfo for name
-	player_label.text = "You" if GameInfo.current_player else "Player"
-	enemy_label.text = combat.player2_name
+	# Set up character info using player1_name from combat log
+	player_label.text = combat.player1_name
 	
-	# Update avatar cosmetics
-	if GameInfo.current_player:
+	# Update player avatar cosmetics from combat data
+	if combat.player1_avatar.size() >= 5:
 		player_avatar.refresh_avatar(
-			GameInfo.current_player.avatar_face,
-			GameInfo.current_player.avatar_hair,
-			GameInfo.current_player.avatar_eyes,
-			GameInfo.current_player.avatar_nose,
-			GameInfo.current_player.avatar_mouth
+			combat.player1_avatar[0],
+			combat.player1_avatar[1],
+			combat.player1_avatar[2],
+			combat.player1_avatar[3],
+			combat.player1_avatar[4]
 		)
 	
-	# Use enemy avatar from combat data
-	if combat.player2_avatar.size() >= 5:
-		enemy_avatar.refresh_avatar(
-			combat.player2_avatar[0],
-			combat.player2_avatar[1],
-			combat.player2_avatar[2],
-			combat.player2_avatar[3],
-			combat.player2_avatar[4]
-		)
+	# Check if enemy is NPC or player
+	if combat.enemyid > 0:
+		# Enemy is NPC - use enemies database
+		var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(combat.enemyid)
+		if enemy_resource:
+			enemy_label.text = enemy_resource.name
+			# Show enemy texture, hide avatar
+			enemy_texture.texture = enemy_resource.texture
+			enemy_texture.visible = true
+			enemy_avatar.visible = false
+		else:
+			enemy_label.text = "Unknown Enemy"
 	else:
-		enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)  # Fallback to defaults
+		# Enemy is player - use player2 data
+		enemy_label.text = combat.player2_name
+		# Show avatar, hide texture
+		enemy_avatar.visible = true
+		enemy_texture.visible = false
+		# Use enemy avatar from combat data
+		if combat.player2_avatar.size() >= 5:
+			enemy_avatar.refresh_avatar(
+				combat.player2_avatar[0],
+				combat.player2_avatar[1],
+				combat.player2_avatar[2],
+				combat.player2_avatar[3],
+				combat.player2_avatar[4]
+			)
+		else:
+			enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)  # Fallback to defaults
 	
 	# Set initial health bars and labels
 	player_health_bar.max_value = combat.player1_health
@@ -213,7 +231,20 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	var text = ""
 	var combat = GameInfo.current_combat_log
-	var player_name = "You" if int(entry.player) == 1 else (combat.player2_name if combat else "Enemy")
+	if not combat:
+		return ""
+	
+	# Get the player name based on player number (1 or 2)
+	var player_name = ""
+	if int(entry.player) == 1:
+		player_name = combat.player1_name
+	else:
+		# Player 2 - check if NPC or player
+		if combat.enemyid > 0:
+			var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(combat.enemyid)
+			player_name = enemy_resource.name if enemy_resource else "Enemy"
+		else:
+			player_name = combat.player2_name
 	
 	match entry.action:
 		"attack":

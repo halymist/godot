@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EnemyDatabase" load_steps=9 format=3 uid="uid://ccrgwa4tqjjiv"]
+
+[ext_resource type="Script" uid="uid://b3xyipy0xv2py" path="res://scripts/resources/EnemyDatabase.gd" id="1_database"]
+[ext_resource type="Script" uid="uid://c8e84ghhdmfqf" path="res://scripts/resources/EnemyResource.gd" id="2_resource"]
+[ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="3_placeholder1"]
+[ext_resource type="Texture2D" uid="uid://b6ncqnw4w7uw1" path="res://assets/images/ui/options.png" id="4_placeholder2"]
+[ext_resource type="Texture2D" uid="uid://cofyu182fjv37" path="res://data/npcs_textures/npc_portrait1.png" id="5_placeholder3"]
+
+[sub_resource type="Resource" id="Resource_enemy1"]
+script = ExtResource("2_resource")
+id = 1
+name = "Bandit"
+texture = ExtResource("3_placeholder1")
+
+[sub_resource type="Resource" id="Resource_enemy2"]
+script = ExtResource("2_resource")
+id = 2
+name = "Bandit Leader"
+texture = ExtResource("4_placeholder2")
+
+[sub_resource type="Resource" id="Resource_enemy3"]
+script = ExtResource("2_resource")
+id = 3
+name = "Cave Monster"
+texture = ExtResource("5_placeholder3")
+
+[resource]
+script = ExtResource("1_database")
+enemies = Array[ExtResource("2_resource")]([SubResource("Resource_enemy1"), SubResource("Resource_enemy2"), SubResource("Resource_enemy3")])

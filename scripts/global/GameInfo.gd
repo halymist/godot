@@ -11,6 +11,7 @@ var npcs_db: NpcDatabase = null
 var cosmetics_db: CosmeticDatabase = null
 var settlements_db: SettlementsDatabase = null
 var quests_db: QuestsDatabase = null
+var enemies_db: EnemyDatabase = null
 
 # Runtime talent registry (populated by Talent.gd nodes on _ready)
 var talent_registry: Dictionary = {}  # {talent_id: {effect_id, factor, max_points, perk_slot}}
@@ -430,17 +431,23 @@ class CombatLogEntry:
 class CombatResponse:
 	extends MessagePackObject
 	
+	var player1_name: String = ""
 	var player1_health: int = 0
+	var player1_avatar: Array = [1, 10, 20, 30, 40]  # [face, hair, eyes, nose, mouth]
 	var player2_name: String = ""
 	var player2_health: int = 0
 	var player2_avatar: Array = [1, 11, 21, 31, 41]  # [face, hair, eyes, nose, mouth]
+	var enemyid: int = 0  # If > 0, enemy is NPC (lookup in enemies_db), otherwise player vs player
 	var combat_log: Array[CombatLogEntry] = []
 	
 	const MSGPACK_MAP = {
+		"player1name": "player1_name",
 		"player1health": "player1_health",
+		"player1_avatar": "player1_avatar",
 		"player2name": "player2_name", 
 		"player2health": "player2_health",
 		"player2_avatar": "player2_avatar",
+		"enemyid": "enemyid",
 		"logs": "combat_log"
 	}
 	
@@ -882,6 +889,7 @@ func _ready():
 	cosmetics_db = load("res://data/cosmetics.tres")
 	quests_db = load("res://scripts/resources/quests.tres")
 	settlements_db = load("res://scripts/resources/settlements.tres")
+	enemies_db = load("res://data/enemies.tres")
 	
 	load_player_data(Websocket.mock_character_data)
 	load_enemy_players_data(Websocket.mock_rankings)  # Load all enemy players from rankings data
