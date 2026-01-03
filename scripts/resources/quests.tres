@@ -30,11 +30,11 @@ metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 [sub_resource type="Resource" id="Resource_67rkd"]
 script = ExtResource("3_d2n6j")
 option_index = 3
-text = "Pay to go to the right"
+text = "Are you strong enoough"
 slide_target = 3
 on_lose_slide = -1
-required_type = 6
-required_amount = 20
+required_type = 2
+required_amount = 10
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
 [sub_resource type="Resource" id="Resource_d2n6j"]

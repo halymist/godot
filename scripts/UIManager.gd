@@ -80,9 +80,9 @@ func refresh_stats():
 	stats_panel.stats_changed(GameInfo.get_player_stats())
 	
 	# Refresh quest options if currently on a quest
-	var active_ui = portrait_ui if portrait_ui and portrait_ui.visible else wide_ui
-	if active_ui and active_ui.quest_panel and active_ui.quest_panel.visible:
-		active_ui.quest_panel.refresh_quest_options_internal()
+	if GameInfo.current_player and GameInfo.current_player.traveling_destination:
+		print("UIManager.refresh_stats refreshing quest options")
+		portrait_ui.quest.refresh_quest_options_internal()
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs)"""

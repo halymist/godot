@@ -396,14 +396,19 @@ func clear_options():
 
 func refresh_quest_options_internal():
 	"""Refresh quest options when stats/requirements change"""
+	print("refresh_quest_options_internal called. current_quest_id: ", current_quest_id)
 	if current_quest_id == 0:
+		print("No quest loaded, returning")
 		return
 	
 	# Get current slide and rebuild options (same as display_quest_slide)
 	var quest_slide = GameInfo.get_quest_slide(current_quest_id, current_slide_number)
+	print("Got quest slide: ", quest_slide)
 	if quest_slide:
+		print("Clearing options...")
 		clear_options()
 		if quest_slide.options:
+			print("Rebuilding ", quest_slide.options.size(), " options")
 			for option in quest_slide.options:
 				if option:
 					add_option(option.text, _on_quest_option_pressed.bind(option), option)
