@@ -64,38 +64,46 @@ func update_stats_display():
 	
 	if item_in_slot:
 		# Display stats showing what they will be after one more tempering
-		# Current stats already include existing tempering from database
+		# Get the item resource for base stats
+		var res = item_in_slot.get_resource()
+		if not res:
+			improved_stats_label.text = "Error: No item resource"
+			return
+		
 		var stats_text = ""
-		if item_in_slot.get("strength") and item_in_slot.strength > 0:
-			var current = item_in_slot.strength
-			var bonus = ceil(current * 0.1)
-			var improved = current + bonus
+		var current_tempered = item_in_slot.tempered if item_in_slot.get("tempered") else 0
+		var day = item_in_slot.day if item_in_slot.get("day") else 0
+		
+		if res.strength > 0:
+			var current = item_in_slot.calculate_scaled_stat(res.strength, day, current_tempered)
+			var improved = item_in_slot.calculate_scaled_stat(res.strength, day, current_tempered + 1)
+			var bonus = improved - current
 			stats_text += "Strength: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
-		if item_in_slot.get("stamina") and item_in_slot.stamina > 0:
-			var current = item_in_slot.stamina
-			var bonus = ceil(current * 0.1)
-			var improved = current + bonus
+		if res.stamina > 0:
+			var current = item_in_slot.calculate_scaled_stat(res.stamina, day, current_tempered)
+			var improved = item_in_slot.calculate_scaled_stat(res.stamina, day, current_tempered + 1)
+			var bonus = improved - current
 			stats_text += "Stamina: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
-		if item_in_slot.get("agility") and item_in_slot.agility > 0:
-			var current = item_in_slot.agility
-			var bonus = ceil(current * 0.1)
-			var improved = current + bonus
+		if res.agility > 0:
+			var current = item_in_slot.calculate_scaled_stat(res.agility, day, current_tempered)
+			var improved = item_in_slot.calculate_scaled_stat(res.agility, day, current_tempered + 1)
+			var bonus = improved - current
 			stats_text += "Agility: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
-		if item_in_slot.get("luck") and item_in_slot.luck > 0:
-			var current = item_in_slot.luck
-			var bonus = ceil(current * 0.1)
-			var improved = current + bonus
+		if res.luck > 0:
+			var current = item_in_slot.calculate_scaled_stat(res.luck, day, current_tempered)
+			var improved = item_in_slot.calculate_scaled_stat(res.luck, day, current_tempered + 1)
+			var bonus = improved - current
 			stats_text += "Luck: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
-		if item_in_slot.get("armor") and item_in_slot.armor > 0:
-			var current = item_in_slot.armor
-			var bonus = ceil(current * 0.1)
-			var improved = current + bonus
+		if res.armor > 0:
+			var current = item_in_slot.calculate_scaled_stat(res.armor, day, current_tempered)
+			var improved = item_in_slot.calculate_scaled_stat(res.armor, day, current_tempered + 1)
+			var bonus = improved - current
 			stats_text += "Armor: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		
 		improved_stats_label.text = stats_text if stats_text != "" else "No stat improvements"
 	else:
 		# No item in slot
-		improved_stats_label.text = "+10% to all stats"
+		improved_stats_label.text = "+5 days growth"
 	
 	update_temper_button_state()
 

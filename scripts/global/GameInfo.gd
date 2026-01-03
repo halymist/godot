@@ -173,6 +173,22 @@ class Item:
 			var res = get_resource()
 			return res.has_socket if res else false
 	
+	# Centralized stat calculation function - used by Item properties, previews, and displays
+	# Each tempering level adds 5 days to the effective age for compound growth
+	func calculate_scaled_stat(base_value: int, day_value: int, tempered_value: int) -> int:
+		if base_value == 0:
+			return 0
+		
+		var result = float(base_value)
+		
+		# Apply day scaling with tempering bonus (2% per day, compounding)
+		# Each tempering level adds 5 days to the effective age
+		var effective_days = day_value + (tempered_value * 5)
+		if effective_days > 0:
+			result = result * pow(1.02, effective_days)
+		
+		return int(round(result))
+	
 	# Base stats from ItemResource (before modifications)
 	func _get_base_stat(stat_name: String) -> int:
 		var res = get_resource()
@@ -182,15 +198,7 @@ class Item:
 		if base == null:
 			return 0
 		
-		# Apply tempering (10% per level, compounding)
-		if tempered > 0:
-			base = ceil(base * pow(1.1, tempered))
-		
-		# Apply day scaling (2% per day, compounding)
-		if day > 0:
-			base = ceil(base * pow(1.02, day))
-		
-		return int(base)
+		return calculate_scaled_stat(base, day, tempered)
 	
 	# Stat properties with scaling applied
 	var strength: int:
