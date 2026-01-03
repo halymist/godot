@@ -362,6 +362,7 @@ var mock_combat_logs = [
 		"player2name": "Dark Knight",
 		"player2health": 120,
 		"player2_avatar": [1, 11, 20, 30, 40],
+		"haswon": false,
 		"logs": [
 			{"player": 1, "action": "attack", "factor": 0},
 			{"player": 2, "action": "hit", "factor": 15},
@@ -385,6 +386,7 @@ var mock_combat_logs = [
 		"player1_avatar": [1, 10, 20, 30, 40],
 		"enemyid": 1,
 		"player2health": 60,
+		"haswon": true,
 		"logs": [
 			{"player": 1, "action": "attack", "factor": 0},
 			{"player": 2, "action": "hit", "factor": 12},
@@ -408,6 +410,7 @@ var mock_combat_logs = [
 		"player1_avatar": [1, 10, 20, 30, 40],
 		"enemyid": 3,
 		"player2health": 150,
+		"haswon": true,
 		"logs": [
 			{"player": 1, "action": "cast spell", "factor": 0},
 			{"player": 2, "action": "hit", "factor": 30},

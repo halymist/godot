@@ -439,6 +439,36 @@ func _start_combat():
 	
 	print("Starting combat with log index: ", random_index)
 	
+	# Get combat result from log
+	var combat_log = GameInfo.current_combat_log
+	var player_won = combat_log.haswon
+	
+	print("Combat outcome: Player won = ", player_won)
+	
+	# Navigate to result slide IMMEDIATELY (before showing combat)
+	if player_won:
+		# Win: use slide_target
+		if pending_combat_option.slide_target > 0:
+			load_quest(current_quest_id, pending_combat_option.slide_target)
+			pending_combat_option = null
+		elif pending_combat_option.slide_target < 0:
+			# End quest (slide_target = -1)
+			GameInfo.end_quest(current_quest_id)
+			if portrait:
+				portrait.navigate_to("map")
+			pending_combat_option = null
+	else:
+		# Loss: use on_lose_slide
+		if pending_combat_option.on_lose_slide > 0:
+			load_quest(current_quest_id, pending_combat_option.on_lose_slide)
+			pending_combat_option = null
+		elif pending_combat_option.on_lose_slide < 0:
+			# End quest on loss (on_lose_slide = -1)
+			GameInfo.end_quest(current_quest_id)
+			if portrait:
+				portrait.navigate_to("map")
+			pending_combat_option = null
+	
 	# Get combat panel and toggle UI through UIManager
 	if not UIManager.instance:
 		print("ERROR: UIManager not available!")
@@ -451,7 +481,7 @@ func _start_combat():
 		print("ERROR: Could not find Combat panel!")
 		return
 	
-	# Connect to combat panel's completion signal if not already connected
+	# Connect to combat panel's completion signal if not already connected (just for closing panel)
 	if not combat_panel.is_connected("combat_finished", _on_combat_finished):
 		combat_panel.combat_finished.connect(_on_combat_finished)
 	
@@ -460,36 +490,14 @@ func _start_combat():
 	GameInfo.set_current_panel(combat_panel)
 
 func _on_combat_finished(player_won: bool):
-	"""Called when combat ends - navigate to appropriate quest slide"""
-	print("Combat finished. Player won: ", player_won)
-	
-	if not pending_combat_option:
-		print("ERROR: No pending combat option!")
-		return
+	"""Called when combat ends - just return to quest panel (navigation already done)"""
+	print("Combat animation finished. Returning to quest panel.")
 	
 	# Show quest panel via UIManager's show_panel
 	if UIManager.instance:
 		var active_ui = UIManager.instance.portrait_ui if UIManager.instance.portrait_ui.visible else UIManager.instance.wide_ui
 		active_ui.show_panel(self)
 		GameInfo.set_current_panel(self)
-	# Navigate based on result
-	if player_won:
-		# Win: use slide_target
-		if pending_combat_option.slide_target > 0:
-			load_quest(current_quest_id, pending_combat_option.slide_target)
-		elif pending_combat_option.slide_target < 0:
-			# Combat win leads to quest end
-			_finish_quest()
-		else:
-			print("WARNING: COMBAT option missing slide_target for win")
-	else:
-		# Lose: use on_lose_slide
-		if pending_combat_option.on_lose_slide > 0:
-			load_quest(current_quest_id, pending_combat_option.on_lose_slide)
-		else:
-			print("WARNING: COMBAT option missing on_lose_slide for loss")
-	
-	pending_combat_option = null
 
 func _finish_quest():
 	"""End quest and return home"""

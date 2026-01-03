@@ -438,6 +438,7 @@ class CombatResponse:
 	var player2_health: int = 0
 	var player2_avatar: Array = [1, 11, 21, 31, 41]  # [face, hair, eyes, nose, mouth]
 	var enemyid: int = 0  # If > 0, enemy is NPC (lookup in enemies_db), otherwise player vs player
+	var haswon: bool = false  # True if player1 won, false if player1 lost
 	var combat_log: Array[CombatLogEntry] = []
 	
 	const MSGPACK_MAP = {
@@ -448,6 +449,7 @@ class CombatResponse:
 		"player2health": "player2_health",
 		"player2_avatar": "player2_avatar",
 		"enemyid": "enemyid",
+		"haswon": "haswon",
 		"logs": "combat_log"
 	}
 	
