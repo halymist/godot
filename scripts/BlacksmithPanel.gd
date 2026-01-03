@@ -99,6 +99,16 @@ func update_stats_display():
 			var improved = item_in_slot.calculate_scaled_stat(res.armor, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Armor: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
+		if res.damage_min > 0:
+			var current = item_in_slot.calculate_scaled_stat(res.damage_min, day, current_tempered)
+			var improved = item_in_slot.calculate_scaled_stat(res.damage_min, day, current_tempered + 1)
+			var bonus = improved - current
+			stats_text += "Damage Min: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
+		if res.damage_max > 0:
+			var current = item_in_slot.calculate_scaled_stat(res.damage_max, day, current_tempered)
+			var improved = item_in_slot.calculate_scaled_stat(res.damage_max, day, current_tempered + 1)
+			var bonus = improved - current
+			stats_text += "Damage Max: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		
 		improved_stats_label.text = stats_text if stats_text != "" else "No stat improvements"
 	else:
