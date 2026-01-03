@@ -38,35 +38,46 @@ func _on_accept_pressed():
 		print("Quest name: ", quest_definition.quest_name)
 		print("Travel text: ", quest_definition.travel_text)
 		
-		var travel_time = 20.0  # Always 20 seconds
-		var current_time = Time.get_unix_time_from_system()
-		var travel_end_time: float = current_time + travel_time
+		# Check if player is VIP
+		var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
+		print("Player VIP status: ", is_vip)
 		
-		# Update GameInfo with travel data (traveling is a timestamp)
-		GameInfo.current_player.traveling = travel_end_time
+		# Always set the quest destination first
 		GameInfo.accept_quest(quest_id)  # This sets traveling_destination
 		
-		print("Travel started - Duration: ", travel_time, " seconds, End time: ", travel_end_time)
+		if is_vip:
+			# VIP: No timer, map will show Go Quest button immediately
+			GameInfo.current_player.traveling = 0  # No timer for VIP
+			print("VIP player - no timer")
+		else:
+			# Non-VIP: Start 20 second timer
+			var travel_time = 20.0  # Always 20 seconds
+			var current_time = Time.get_unix_time_from_system()
+			var travel_end_time: float = current_time + travel_time
+			
+			# Update GameInfo with travel data (traveling is a timestamp)
+			GameInfo.current_player.traveling = travel_end_time
+			
+			print("Travel started - Duration: ", travel_time, " seconds, End time: ", travel_end_time)
 		
-		# Immediately update MapPanel if it exists
-		if map and map.has_method("update_travel_display"):
-			map.update_travel_display()
+		# Pass travel info to MapPanel
+		if map and map.has_method("start_travel"):
+			map.start_travel(quest_definition.travel_text, 20 if not is_vip else 0, quest_id)
+		
+		# Hide this panel and switch to map
+		hide_panel()
+		if map:
+			GameInfo.set_current_panel(map)
+			map.visible = true
+			print("Switched to map panel")
 	else:
 		print("ERROR: Quest definition not found for quest_id: ", quest_id)
 		print("quests_db exists: ", GameInfo.quests_db != null)
 		if GameInfo.quests_db:
 			print("Number of quests in database: ", GameInfo.quests_db.quests.size())
-	
-	hide_panel()
-	print("Quest accepted: ", current_quest_data.get("questname", "Unknown Quest"))
-	
-	# Switch to map panel directly through GameInfo
-	if map:
-		GameInfo.set_current_panel(map)
-		map.visible = true
-		print("Switched to map panel")
-	else:
-		print("Map panel reference not set")
+		
+		# If error, still hide panel
+		hide_panel()
 
 func show_quest(quest_data: Dictionary):
 	print("QuestPanel.show_quest called with data: ", quest_data)

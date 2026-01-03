@@ -671,6 +671,9 @@ class GameCurrentPlayer:
 	var avatar_nose: int = 30  # Nose cosmetic ID from database
 	var avatar_mouth: int = 40  # Mouth cosmetic ID from database
 	
+	# VIP status
+	var vip: bool = false
+	
 	# Silver (no automatic emission - use UIManager.update_display())
 	var silver: int = 0
 	
@@ -716,7 +719,8 @@ class GameCurrentPlayer:
 		"avatar_hair": "avatar_hair",
 		"avatar_eyes": "avatar_eyes",
 		"avatar_nose": "avatar_nose",
-		"avatar_mouth": "avatar_mouth"
+		"avatar_mouth": "avatar_mouth",
+		"vip": "vip"
 	}
 	
 	func load_from_msgpack(data: Dictionary):

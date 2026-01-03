@@ -79,6 +79,7 @@ var mock_character_data = {
 	],
 	"silver": 1000,
 	"mushrooms": 150,
+	"vip": false,
 	"traveling": null,
 	"traveling_destination": null,
 	"location": 1,
