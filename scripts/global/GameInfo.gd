@@ -673,6 +673,7 @@ class GameCurrentPlayer:
 	
 	# VIP status
 	var vip: bool = false
+	var autoskip: bool = false  # VIP only - skip travel screen and go directly to quest
 	
 	# Silver (no automatic emission - use UIManager.update_display())
 	var silver: int = 0
@@ -720,7 +721,8 @@ class GameCurrentPlayer:
 		"avatar_eyes": "avatar_eyes",
 		"avatar_nose": "avatar_nose",
 		"avatar_mouth": "avatar_mouth",
-		"vip": "vip"
+		"vip": "vip",
+		"autoskip": "autoskip"
 	}
 	
 	func load_from_msgpack(data: Dictionary):
@@ -873,51 +875,13 @@ var player_mushrooms: int:
 func _ready():
 	print("GameInfo ready!")
 	# Load effects database first (items and perks reference these)
-	if ResourceLoader.exists("res://data/effects.tres"):
-		effects_db = load("res://data/effects.tres")
-		print("Effects database loaded: ", effects_db.effects.size(), " effects")
-	else:
-		print("Warning: effects.tres not found")
-	
-	# Load static databases
-	if ResourceLoader.exists("res://data/items.tres"):
-		items_db = load("res://data/items.tres")
-		print("Items database loaded: ", items_db.items.size(), " items")
-	else:
-		print("Warning: items.tres not found, items will use fallback textures")
-	
-	if ResourceLoader.exists("res://data/perks.tres"):
-		perks_db = load("res://data/perks.tres")
-		print("Perks database loaded: ", perks_db.perks.size(), " perks")
-	else:
-		print("Warning: perks.tres not found, perks will have no data")
-	
-	if ResourceLoader.exists("res://data/npcs.tres"):
-		npcs_db = load("res://data/npcs.tres")
-		print("NPCs database loaded: ", npcs_db.npcs.size(), " NPCs")
-	else:
-		print("Warning: npcs.tres not found, NPCs will not spawn")
-	
-	if ResourceLoader.exists("res://data/cosmetics.tres"):
-		cosmetics_db = load("res://data/cosmetics.tres")
-		print("Cosmetics database loaded: ", cosmetics_db.cosmetics.size(), " cosmetics")
-	else:
-		print("Warning: cosmetics.tres not found, avatar customization will not work")
-	
-	if ResourceLoader.exists("res://scripts/resources/quests.tres"):
-		quests_db = load("res://scripts/resources/quests.tres")
-		print("Quests database loaded: ", quests_db.quests.size(), " quests")
-	else:
-		print("Warning: quests.tres not found, quests will not be available")
-	
-	print("Checking for settlements.tres...")
-	print("ResourceLoader.exists('res://scripts/resources/settlements.tres'): ", ResourceLoader.exists("res://scripts/resources/settlements.tres"))
-	if ResourceLoader.exists("res://scripts/resources/settlements.tres"):
-		settlements_db = load("res://scripts/resources/settlements.tres")
-		if not settlements_db:
-			print("ERROR: settlements.tres loaded but is null!")
-	else:
-		print("Warning: settlements.tres not found at res://scripts/resources/settlements.tres")
+	effects_db = load("res://data/effects.tres")
+	items_db = load("res://data/items.tres")
+	perks_db = load("res://data/perks.tres")
+	npcs_db = load("res://data/npcs.tres")
+	cosmetics_db = load("res://data/cosmetics.tres")
+	quests_db = load("res://scripts/resources/quests.tres")
+	settlements_db = load("res://scripts/resources/settlements.tres")
 	
 	load_player_data(Websocket.mock_character_data)
 	load_enemy_players_data(Websocket.mock_rankings)  # Load all enemy players from rankings data

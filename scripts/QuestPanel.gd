@@ -60,16 +60,38 @@ func _on_accept_pressed():
 			
 			print("Travel started - Duration: ", travel_time, " seconds, End time: ", travel_end_time)
 		
-		# Pass travel info to MapPanel
-		if map and map.has_method("start_travel"):
-			map.start_travel(quest_definition.travel_text, 20 if not is_vip else 0, quest_id)
+		# Check if player has autoskip enabled (VIP only)
+		var autoskip = GameInfo.current_player.autoskip if "autoskip" in GameInfo.current_player else false
 		
-		# Hide this panel and switch to map
-		hide_panel()
-		if map:
-			GameInfo.set_current_panel(map)
-			map.visible = true
-			print("Switched to map panel")
+		if autoskip and is_vip:
+			# Autoskip: Go directly to quest, bypass map panel
+			print("Autoskip enabled - going directly to quest")
+			hide_panel()
+			
+			# Find current slide from quest log
+			var start_slide = 1
+			for quest_log_entry in GameInfo.current_player.quest_log:
+				if quest_log_entry.quest_id == quest_id:
+					if quest_log_entry.slides.size() > 0:
+						start_slide = quest_log_entry.slides[-1]
+					break
+			
+			# Load quest directly
+			if map and map.quest:
+				map.quest.load_quest(quest_id, start_slide)
+				map.quest.visible = true
+				GameInfo.set_current_panel(map.quest)
+		else:
+			# Normal flow: Go to map panel
+			if map and map.has_method("start_travel"):
+				map.start_travel(quest_definition.travel_text, 20 if not is_vip else 0, quest_id)
+			
+			# Hide this panel and switch to map
+			hide_panel()
+			if map:
+				GameInfo.set_current_panel(map)
+				map.visible = true
+				print("Switched to map panel")
 	else:
 		print("ERROR: Quest definition not found for quest_id: ", quest_id)
 		print("quests_db exists: ", GameInfo.quests_db != null)

@@ -6094,6 +6094,17 @@ text = "Auto-Skip Dialogues"
 [node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/AutoSkip"]
 layout_mode = 2
 
+[node name="QuestAutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/QuestAutoSkip"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Quest Auto-Skip (VIP)"
+
+[node name="CheckBox" type="CheckBox" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/QuestAutoSkip"]
+layout_mode = 2
+
 [node name="Language" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
 layout_mode = 2
 

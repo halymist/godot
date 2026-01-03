@@ -201,6 +201,9 @@ func _on_enter_dungeon_pressed():
 		if quest:
 			quest.load_quest(quest_id, start_slide)
 			quest.visible = true
+			# Update current panel to quest and hide map
+			GameInfo.set_current_panel(quest)
+			visible = false
 		
 		# Clear traveling state
 		GameInfo.current_player.traveling = 0
