@@ -1,4 +1,4 @@
-[gd_scene load_steps=123 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=124 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -49,9 +49,9 @@
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="26_ewwwr"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
+[ext_resource type="Texture2D" uid="uid://crrq3yx1yy7mx" path="res://assets/images/ui/slot2.png" id="27_w4j8i"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
-[ext_resource type="Texture2D" uid="uid://b46irn0coridq" path="res://assets/images/villages/druid_monastery.png" id="29_ewwwr"]
 [ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
@@ -127,6 +127,9 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wr3wg"]
 bg_color = Color(0.649928, 0.613808, 0.210934, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_umggo"]
+texture = ExtResource("23_6l37k")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fykvq"]
 texture = ExtResource("23_6l37k")
@@ -1024,7 +1027,7 @@ size_flags_horizontal = 3
 text = "Increases critical chance"
 vertical_alignment = 1
 
-[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "blessings_container", "bless_button")]
+[node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1034,28 +1037,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("29_k5jl5")
-background = NodePath("../../../../../Background")
-background_rect = NodePath("UtilityBackground/Background")
-description_label = NodePath("UtilityPanel/Content/Description")
-blessings_container = NodePath("UtilityPanel/Content/ScrollContainer/BlessingsContainer")
-bless_button = NodePath("UtilityPanel/Content/BlessButton")
+utility_background_container = NodePath("Control")
+blessing_slot_1 = NodePath("UtilityPanel/BlessingSlot1")
+blessing_slot_2 = NodePath("UtilityPanel/BlessingSlot2")
+blessing_slot_3 = NodePath("UtilityPanel/BlessingSlot3")
+effect_description_label = NodePath("UtilityPanel/EffectDescription")
+bless_button = NodePath("UtilityPanel/BlessButton")
 
-[node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
-custom_minimum_size = Vector2(544, 306)
+[node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -270.0
+offset_right = 270.0
+offset_bottom = 360.0
 grow_horizontal = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityBackground"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("29_ewwwr")
-expand_mode = 1
 
 [node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
 layout_mode = 1
@@ -1063,40 +1060,98 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -318.0
+offset_top = -265.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxTexture_umggo")
 
-[node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+[node name="BlessingSlot1" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -135.0
+offset_top = -95.0
+offset_right = -55.0
+offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("27_w4j8i")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content"]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
-size_flags_vertical = 0
-text = "Hi there, ready to make a donation to a good cause?"
+[node name="BlessingSlot2" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -95.0
+offset_right = 40.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("27_w4j8i")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BlessingSlot3" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 55.0
+offset_top = -95.0
+offset_right = 135.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("27_w4j8i")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EffectDescription" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -5.0
+offset_right = 200.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Select a blessing above"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 2
+autowrap_mode = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="BlessingsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 8
-
-[node name="BlessButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content"]
+[node name="BlessButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
 custom_minimum_size = Vector2(150, 50)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -202.5
+offset_top = -50.0
+offset_right = 202.5
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
@@ -1106,7 +1161,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content/BlessButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1115,24 +1170,24 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content/BlessButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Receive Blessing ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content/BlessButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content/BlessButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/Content/BlessButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"

@@ -24,8 +24,7 @@ extends Resource
 @export var trainer_background: Texture
 @export var trainer_greetings: Array[String] = []
 
-@export var church_background: Texture
-@export var church_greetings: Array[String] = []
+@export var church_utility_scene: PackedScene
 
 @export var arena_background: Texture
 
@@ -45,7 +44,7 @@ func has_trainer() -> bool:
 	return trainer_background != null
 
 func has_church() -> bool:
-	return church_background != null
+	return church_utility_scene != null
 
 func get_random_vendor_greeting() -> String:
 	if vendor_greetings.is_empty():
@@ -56,8 +55,3 @@ func get_random_trainer_greeting() -> String:
 	if trainer_greetings.is_empty():
 		return "Ready to train?"
 	return trainer_greetings[randi() % trainer_greetings.size()]
-
-func get_random_church_greeting() -> String:
-	if church_greetings.is_empty():
-		return "May the gods bless you."
-	return church_greetings[randi() % church_greetings.size()]
