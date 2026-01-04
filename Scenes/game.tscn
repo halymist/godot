@@ -725,6 +725,7 @@ offset_left = -22.728
 offset_top = -112.46
 offset_right = 147.272
 offset_bottom = -38.46
+padding = Vector2(12, 26)
 
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1

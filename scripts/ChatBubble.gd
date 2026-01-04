@@ -3,7 +3,7 @@ class_name ChatBubble
 
 @export var dialogue_label: Label
 @export var max_width: float = 170.0
-@export var padding: Vector2 = Vector2(12, 10)
+@export var padding: Vector2 = Vector2(12, 14)  # Extra vertical padding to prevent overflow
 
 func _ready():
 	if not dialogue_label:
