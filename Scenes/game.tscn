@@ -56,7 +56,6 @@
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
 [ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="32_ccfo7"]
-[ext_resource type="Texture2D" uid="uid://dj7mr2ev3k7p7" path="res://assets/images/villages/witch.png" id="32_ewwwr"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
 [ext_resource type="Texture2D" uid="uid://o3x5685ybv3i" path="res://assets/images/villages/enchanting.png" id="36_ewwwr"]
@@ -129,6 +128,9 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wr3wg"]
 bg_color = Color(0.649928, 0.613808, 0.210934, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fykvq"]
+texture = ExtResource("23_6l37k")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
 
@@ -323,7 +325,7 @@ avatar_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
 avatar_button = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character/ChangeAvatar")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue")]
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
-bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
+bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
 stats_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats")
 active_effects = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground/ActivePerks")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
@@ -1133,7 +1135,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "utility_background_container", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1144,73 +1146,48 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
 background = NodePath("../../../../../Background")
-background_rect = NodePath("UtilityBackground/Background")
-description_label = NodePath("VBoxContainer/UtilityPanel/Description")
-bag = NodePath("VBoxContainer/Bag")
-result_preview = NodePath("VBoxContainer/UtilityPanel/ResultPreview")
-brew_button = NodePath("VBoxContainer/UtilityPanel/BottomRow/BrewButton")
-ingredient_slot1 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot1")
-ingredient_slot2 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot2")
-ingredient_slot3 = NodePath("VBoxContainer/UtilityPanel/BottomRow/IngredientsRow/Slot3")
+utility_background_container = NodePath("Background")
+bag = NodePath("UtilityPanel/Bag")
+result_preview = NodePath("UtilityPanel/ResultPreview")
+brew_button = NodePath("UtilityPanel/BrewButton")
+ingredient_slot1 = NodePath("UtilityPanel/IngredientsRow/Slot1")
+ingredient_slot2 = NodePath("UtilityPanel/IngredientsRow/Slot2")
+ingredient_slot3 = NodePath("UtilityPanel/IngredientsRow/Slot3")
 
-[node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
-custom_minimum_size = Vector2(544, 306)
+[node name="Background" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -270.0
+offset_right = 270.0
+offset_bottom = 360.0
 grow_horizontal = 2
 
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityBackground"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("32_ewwwr")
-expand_mode = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
+[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -314.0
+offset_top = -266.0
 grow_horizontal = 2
 grow_vertical = 0
-
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer"]
-layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_fykvq")
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel"]
+[node name="ResultPreview" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -240.0
-offset_bottom = -180.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 0
-text = "Jesse, we need to cook"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="ResultPreview" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel"]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -177.0
-offset_bottom = -80.0
+offset_left = -1.0
+offset_top = -273.0
+offset_right = -1.0
+offset_bottom = -174.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_vertical = 3
@@ -1219,63 +1196,62 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="BottomRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -70.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow"]
+[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel"]
 layout_mode = 2
+anchor_left = 0.353
+anchor_top = 0.5
+anchor_right = 0.353
+anchor_bottom = 0.5
+offset_left = -125.965
+offset_top = -34.0
+offset_right = 140.035
+offset_bottom = 36.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Slot1" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot1" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 17
 
-[node name="Plus1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow"]
+[node name="Plus1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot2" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot2" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 18
 
-[node name="Plus2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow"]
+[node name="Plus2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot3" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot3" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 19
 
-[node name="BrewButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow"]
+[node name="BrewButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel"]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
+offset_left = 286.0
+offset_top = 101.0
+offset_right = 398.0
+offset_bottom = 164.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
@@ -1287,7 +1263,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1296,31 +1272,32 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Brew ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/UtilityPanel/BottomRow/BrewButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
-layout_mode = 2
+layout_mode = 1
+offset_top = -75.0
 
 [node name="EnchanterPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "enchanter_slot", "enchant_button", "effect_list")]
 visible = false
@@ -1487,7 +1464,6 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
 [node name="Home" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("quest_panel", "quest_slide_panel", "map_panel")]
-visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

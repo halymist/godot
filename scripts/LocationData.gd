@@ -17,8 +17,7 @@ extends Resource
 @export var vendor_background: Texture
 @export var vendor_greetings: Array[String] = []
 
-@export var alchemist_background: Texture
-@export var alchemist_greetings: Array[String] = []
+@export var alchemist_utility_scene: PackedScene
 
 @export var enchanter_background: Texture
 @export var enchanter_greetings: Array[String] = []
@@ -38,7 +37,7 @@ func has_vendor() -> bool:
 	return vendor_background != null
 
 func has_alchemist() -> bool:
-	return alchemist_background != null
+	return alchemist_utility_scene != null
 
 func has_enchanter() -> bool:
 	return enchanter_background != null
@@ -53,11 +52,6 @@ func get_random_vendor_greeting() -> String:
 	if vendor_greetings.is_empty():
 		return "What can I get you?"
 	return vendor_greetings[randi() % vendor_greetings.size()]
-
-func get_random_alchemist_greeting() -> String:
-	if alchemist_greetings.is_empty():
-		return "Need a potion?"
-	return alchemist_greetings[randi() % alchemist_greetings.size()]
 
 func get_random_enchanter_greeting() -> String:
 	if enchanter_greetings.is_empty():

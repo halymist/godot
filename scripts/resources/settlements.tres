@@ -2,15 +2,15 @@
 
 [ext_resource type="Script" uid="uid://dougakb8mecrw" path="res://scripts/resources/SettlementsDatabase.gd" id="1_4vit6"]
 [ext_resource type="Script" uid="uid://pwd267vyc7jv" path="res://scripts/LocationData.gd" id="2_ot23h"]
-[ext_resource type="Texture2D" uid="uid://dj7mr2ev3k7p7" path="res://assets/images/villages/witch.png" id="3_mli3h"]
+[ext_resource type="PackedScene" uid="uid://pp4hw1iwtfun" path="res://assets/images/villages/settlements/krasna/alchemist1.tscn" id="3_n5k1k"]
 [ext_resource type="Texture2D" uid="uid://d7skxybllre3" path="res://assets/images/ui/arena_full.png" id="4_7jouw"]
 [ext_resource type="Texture2D" uid="uid://b46irn0coridq" path="res://assets/images/villages/druid_monastery.png" id="5_7jouw"]
-[ext_resource type="PackedScene" uid="uid://dpsns7v35wk8l" path="res://Scenes/blacksmith1.tscn" id="5_n5k1k"]
+[ext_resource type="PackedScene" uid="uid://dpsns7v35wk8l" path="res://assets/images/villages/settlements/krasna/blacksmith1.tscn" id="5_n5k1k"]
 [ext_resource type="Texture2D" uid="uid://o3x5685ybv3i" path="res://assets/images/villages/enchanting.png" id="6_n5k1k"]
 [ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="7_tvlym"]
 [ext_resource type="Texture2D" uid="uid://csx0hgbm4hen4" path="res://assets/images/villages/20260102_2125_Nature Reclaims Ruins_remix_01ke0659d7e4gabfb7fs579m14.png" id="8_n5k1k"]
 [ext_resource type="Texture2D" uid="uid://x083py6ybw37" path="res://assets/images/villages/vendor_last.png" id="8_yeplg"]
-[ext_resource type="PackedScene" uid="uid://ca5h3ut3o1kbo" path="res://assets/images/villages/settlements/krasna.tscn" id="9_c0hw1"]
+[ext_resource type="PackedScene" uid="uid://ca5h3ut3o1kbo" path="res://assets/images/villages/settlements/krasna/krasna.tscn" id="9_c0hw1"]
 
 [sub_resource type="Resource" id="Resource_48ku7"]
 script = ExtResource("2_ot23h")
@@ -22,8 +22,7 @@ expedition_text = "well this is kinda cool no?"
 blacksmith_utility_scene = ExtResource("5_n5k1k")
 vendor_background = ExtResource("8_yeplg")
 vendor_greetings = Array[String](["Hello"])
-alchemist_background = ExtResource("3_mli3h")
-alchemist_greetings = Array[String](["Sup SUp"])
+alchemist_utility_scene = ExtResource("3_n5k1k")
 enchanter_background = ExtResource("6_n5k1k")
 enchanter_greetings = Array[String](["Hmmm"])
 trainer_background = ExtResource("7_tvlym")

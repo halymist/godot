@@ -13,8 +13,7 @@ const BAG_MAX = 14
 @export var background: Node
 
 # Node references
-@export var background_rect: TextureRect
-@export var description_label: Label
+@export var utility_background_container: Control
 @export var bag: Control
 @export var result_preview: Label
 @export var brew_button: Button
@@ -44,8 +43,23 @@ func _on_visibility_changed():
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	background_rect.texture = location_data.alchemist_background
-	description_label.text = location_data.get_random_alchemist_greeting()
+	
+	# Clear existing children from container
+	for child in utility_background_container.get_children():
+		child.queue_free()
+	
+	# Instantiate and add the utility scene
+	if location_data.alchemist_utility_scene:
+		var utility_instance = location_data.alchemist_utility_scene.instantiate()
+		utility_background_container.add_child(utility_instance)
+		
+		# Set to full rect (anchors 0,0 to 1,1 with zero offsets)
+		if utility_instance is Control:
+			utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
+			utility_instance.offset_left = 0
+			utility_instance.offset_top = 0
+			utility_instance.offset_right = 0
+			utility_instance.offset_bottom = 0
 
 func return_ingredients_to_bag():
 	# Return items from ingredient slots to bag
