@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dvbxbyno5d7yg" path="res://assets/images/ui/bubble2.png" id="1_p5v4p"]
 
 [node name="ChatBubble" type="NinePatchRect" node_paths=PackedStringArray("dialogue_label")]
-offset_right = 170.0
+offset_right = 55.0
 offset_bottom = 60.0
 texture = ExtResource("1_p5v4p")
 script = ExtResource("1_chatbubble")
@@ -21,7 +21,7 @@ offset_right = -12.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Welcome to my forge!asadadasd"
+text = "hi"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3

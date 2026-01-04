@@ -715,7 +715,6 @@ texture = ExtResource("22_kwfbt")
 expand_mode = 1
 
 [node name="ChatBubble" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/UtilityBackground" instance=ExtResource("23_x4io4")]
-custom_minimum_size = Vector2(170, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.562
@@ -724,7 +723,7 @@ anchor_right = 0.562
 anchor_bottom = 0.41
 offset_left = -22.728
 offset_top = -112.46
-offset_right = 155.272
+offset_right = 147.272
 offset_bottom = -38.46
 
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]

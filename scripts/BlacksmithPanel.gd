@@ -51,7 +51,8 @@ func _load_location_content():
 	if background_rect and location_data.blacksmith_background:
 		background_rect.texture = location_data.blacksmith_background
 	if chat_bubble:
-		chat_bubble.show_dialogue(location_data.get_random_blacksmith_greeting(), 4.0)
+		var greeting = location_data.get_random_blacksmith_greeting()
+		chat_bubble.show_with_text(greeting, 4.0)
 
 
 func update_stats_display():
