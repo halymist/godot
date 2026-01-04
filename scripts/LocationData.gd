@@ -12,8 +12,7 @@ extends Resource
 @export var expedition_text: String = ""
 
 # Utility backgrounds (null = not available at this location)
-@export var blacksmith_background: Texture
-@export var blacksmith_greetings: Array[String] = []
+@export var blacksmith_utility_scene: PackedScene
 
 @export var vendor_background: Texture
 @export var vendor_greetings: Array[String] = []
@@ -33,7 +32,7 @@ extends Resource
 @export var arena_background: Texture
 
 func has_blacksmith() -> bool:
-	return blacksmith_background != null
+	return blacksmith_utility_scene != null
 
 func has_vendor() -> bool:
 	return vendor_background != null
@@ -49,11 +48,6 @@ func has_trainer() -> bool:
 
 func has_church() -> bool:
 	return church_background != null
-
-func get_random_blacksmith_greeting() -> String:
-	if blacksmith_greetings.is_empty():
-		return "Welcome to the forge."
-	return blacksmith_greetings[randi() % blacksmith_greetings.size()]
 
 func get_random_vendor_greeting() -> String:
 	if vendor_greetings.is_empty():

@@ -7,12 +7,27 @@ const BLACKSMITH_SLOT = 16
 const BAG_MIN = 10
 const BAG_MAX = 14
 
-@export var background_rect: TextureRect
-@export var chat_bubble: ChatBubble
+@export var utility_background_container: Control  # Container to load utility background scene into
 @export var bag: Control
 @export var blacksmith_slot: Control
 @export var improved_stats_label: Label
 @export var temper_button: Button
+
+@export var on_entered_greetings: Array[String] = [
+	"Welcome to my forge!",
+	"Looking to temper your gear?",
+	"I can make that weapon even stronger!",
+	"Need some metalwork done?"
+]
+
+@export var on_action_greetings: Array[String] = [
+	"Ah, let me take a look at that...",
+	"Nice piece of equipment!",
+	"I can definitely work with this.",
+	"Good choice bringing this to me!"
+]
+
+var chat_bubble: ChatBubble  # Found from loaded utility scene
 
 const TEMPER_COST = 10
 
@@ -38,6 +53,15 @@ func _on_utility_slot_changed(slot_id: int):
 	if slot_id == BLACKSMITH_SLOT:
 		update_stats_display()
 		update_temper_button_state()
+		# Show action greeting when item is placed
+		var item_in_slot = null
+		for item in GameInfo.current_player.bag_slots:
+			if item.bag_slot_id == BLACKSMITH_SLOT:
+				item_in_slot = item
+				break
+		if item_in_slot and chat_bubble and not on_action_greetings.is_empty():
+			var greeting = on_action_greetings[randi() % on_action_greetings.size()]
+			chat_bubble.show_with_text(greeting, 4.0)
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from blacksmith slot to bag
@@ -45,14 +69,29 @@ func _on_visibility_changed():
 		return_blacksmith_item_to_bag()
 	else:
 		update_stats_display()
+		# Show entered greeting when panel becomes visible
+		if chat_bubble and not on_entered_greetings.is_empty():
+			var greeting = on_entered_greetings[randi() % on_entered_greetings.size()]
+			chat_bubble.show_with_text(greeting, 4.0)
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if background_rect and location_data.blacksmith_background:
-		background_rect.texture = location_data.blacksmith_background
-	if chat_bubble:
-		var greeting = location_data.get_random_blacksmith_greeting()
-		chat_bubble.show_with_text(greeting, 4.0)
+	
+	# Clear existing utility background
+	if utility_background_container:
+		for child in utility_background_container.get_children():
+			child.queue_free()
+	
+	# Load and instance the utility background scene for this location
+	if location_data.get("blacksmith_utility_scene"):
+		var utility_scene = location_data.blacksmith_utility_scene
+		if utility_scene:
+			var instance = utility_scene.instantiate()
+			utility_background_container.add_child(instance)
+			# Find chat bubble in the loaded scene
+			chat_bubble = instance.get_node_or_null("ChatBubble")
+			if not chat_bubble:
+				chat_bubble = instance.find_child("ChatBubble", true, false)
 
 
 func update_stats_display():

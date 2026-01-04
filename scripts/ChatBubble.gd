@@ -20,8 +20,14 @@ func show_with_text(text: String, duration: float = 4.0):
 	# Calculate and resize
 	_resize_to_fit()
 	
-	# Show
+	# Pop-up animation
+	scale = Vector2(0.5, 0.5)
 	visible = true
+	
+	var tween = create_tween()
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_BACK)
+	tween.tween_property(self, "scale", Vector2.ONE, 0.3)
 	
 	# Auto-hide after duration
 	if duration > 0:

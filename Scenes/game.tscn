@@ -1,4 +1,4 @@
-[gd_scene load_steps=126 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=124 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -44,10 +44,8 @@
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
-[ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="22_kwfbt"]
 [ext_resource type="Texture2D" uid="uid://6wg11fjkxk0f" path="res://assets/images/ui/texturere.png" id="23_6l37k"]
 [ext_resource type="Texture2D" uid="uid://coehmowcbbl5r" path="res://assets/images/ui/preview_back.png" id="23_ewwwr"]
-[ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="23_x4io4"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="26_ewwwr"]
@@ -681,7 +679,7 @@ slot_id = 28
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "chat_bubble", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -690,42 +688,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
-background_rect = NodePath("UtilityBackground/Background")
-chat_bubble = NodePath("UtilityBackground/ChatBubble")
+utility_background_container = NodePath("Control")
 bag = NodePath("Bag")
 blacksmith_slot = NodePath("ItemArea/ItemSlot")
 improved_stats_label = NodePath("ItemArea/StatsContainer/ImprovedStats")
 temper_button = NodePath("TemperButton")
 
-[node name="UtilityBackground" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
-custom_minimum_size = Vector2(544, 306)
+[node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -341.5
+offset_right = 337.5
+offset_bottom = 305.0
 grow_horizontal = 2
-
-[node name="Background" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/UtilityBackground"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("22_kwfbt")
-expand_mode = 1
-
-[node name="ChatBubble" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/UtilityBackground" instance=ExtResource("23_x4io4")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.562
-anchor_top = 0.41
-anchor_right = 0.562
-anchor_bottom = 0.41
-offset_left = -22.728
-offset_top = -112.46
-offset_right = 147.272
-offset_bottom = -38.46
-padding = Vector2(12, 26)
 
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1
