@@ -1,16 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://dpsns7v35wk8l"]
+[gd_scene load_steps=4 format=3 uid="uid://dpsns7v35wk8l"]
 
+[ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_4s4ef"]
 [ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="1_opsdf"]
 [ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="2_4s4ef"]
 
-[node name="UtilityBackground" type="Control"]
-custom_minimum_size = Vector2(544, 306)
+[node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_4s4ef")
+chat_bubble = NodePath("ChatBubble")
+on_entered_greetings = Array[String](["a", "Looking to temper your gear?", "I can make that weapon even stronger!", "Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?"])
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -29,8 +32,8 @@ anchor_left = 0.562
 anchor_top = 0.41
 anchor_right = 0.562
 anchor_bottom = 0.41
-offset_left = -22.728
-offset_top = -112.46
-offset_right = 147.272
-offset_bottom = -38.46
-padding = Vector2(12, 26)
+offset_left = -22.61
+offset_top = -112.0
+offset_right = 147.39
+offset_bottom = -74.0
+padding = Vector2(12, 20)

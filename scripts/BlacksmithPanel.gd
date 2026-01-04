@@ -13,21 +13,7 @@ const BAG_MAX = 14
 @export var improved_stats_label: Label
 @export var temper_button: Button
 
-@export var on_entered_greetings: Array[String] = [
-	"Welcome to my forge!",
-	"Looking to temper your gear?",
-	"I can make that weapon even stronger!",
-	"Need some metalwork done?"
-]
-
-@export var on_action_greetings: Array[String] = [
-	"Ah, let me take a look at that...",
-	"Nice piece of equipment!",
-	"I can definitely work with this.",
-	"Good choice bringing this to me!"
-]
-
-var chat_bubble: ChatBubble  # Found from loaded utility scene
+var utility_background: UtilityBackground  # Found from loaded utility scene
 
 const TEMPER_COST = 10
 
@@ -59,9 +45,8 @@ func _on_utility_slot_changed(slot_id: int):
 			if item.bag_slot_id == BLACKSMITH_SLOT:
 				item_in_slot = item
 				break
-		if item_in_slot and chat_bubble and not on_action_greetings.is_empty():
-			var greeting = on_action_greetings[randi() % on_action_greetings.size()]
-			chat_bubble.show_with_text(greeting, 4.0)
+		if item_in_slot and utility_background:
+			utility_background.show_action_greeting()
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from blacksmith slot to bag
@@ -70,9 +55,8 @@ func _on_visibility_changed():
 	else:
 		update_stats_display()
 		# Show entered greeting when panel becomes visible
-		if chat_bubble and not on_entered_greetings.is_empty():
-			var greeting = on_entered_greetings[randi() % on_entered_greetings.size()]
-			chat_bubble.show_with_text(greeting, 4.0)
+		if utility_background:
+			utility_background.show_entered_greeting()
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
@@ -88,10 +72,11 @@ func _load_location_content():
 		if utility_scene:
 			var instance = utility_scene.instantiate()
 			utility_background_container.add_child(instance)
-			# Find chat bubble in the loaded scene
-			chat_bubble = instance.get_node_or_null("ChatBubble")
-			if not chat_bubble:
-				chat_bubble = instance.find_child("ChatBubble", true, false)
+			# Get reference to the utility background script
+			if instance is UtilityBackground:
+				utility_background = instance
+			else:
+				utility_background = null
 
 
 func update_stats_display():
