@@ -259,7 +259,7 @@ friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
 
-[node name="Game" type="Control" node_paths=PackedStringArray("phone_ui_root", "desktop_ui_root", "game_scene", "portrait_game_parent", "wide_game_parent", "wide_left", "wide_right", "wide_full", "character_panel", "talents_panel", "avatar_panel", "rankings_panel", "enemy_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel")]
+[node name="Game" type="Control" node_paths=PackedStringArray("phone_ui_root", "desktop_ui_root")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -271,24 +271,7 @@ size_flags_vertical = 3
 script = ExtResource("1_1phco")
 phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
-game_scene = NodePath("Portrait/GameSceneParent/Wrapper")
-portrait_game_parent = NodePath("Portrait/GameSceneParent")
-wide_game_parent = NodePath("Wide/GameSceneParent")
 base_theme = ExtResource("2_nb51f")
-wide_left = NodePath("Wide/GameSceneParent/Left")
-wide_right = NodePath("Wide/GameSceneParent/Right")
-wide_full = NodePath("Wide/GameSceneParent/Full")
-character_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/Character")
-talents_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel")
-avatar_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
-rankings_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/Rankings")
-enemy_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/Enemy")
-vendor_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
-blacksmith_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
-trainer_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
-church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
-alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
-enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
 [node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager")]
 z_index = -1
