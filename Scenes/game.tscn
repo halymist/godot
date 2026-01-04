@@ -47,7 +47,7 @@
 [ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="22_kwfbt"]
 [ext_resource type="Texture2D" uid="uid://6wg11fjkxk0f" path="res://assets/images/ui/texturere.png" id="23_6l37k"]
 [ext_resource type="Texture2D" uid="uid://coehmowcbbl5r" path="res://assets/images/ui/preview_back.png" id="23_ewwwr"]
-[ext_resource type="Texture2D" uid="uid://bi1my5c1ceytg" path="res://assets/images/ui/greetbox.png" id="23_rekvy"]
+[ext_resource type="Texture2D" uid="uid://dvbxbyno5d7yg" path="res://assets/images/ui/bubble2.png" id="24_6l37k"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="Texture2D" uid="uid://bq7wr1yhcn863" path="res://assets/images/villages/training_grounds.png" id="26_ewwwr"]
@@ -682,7 +682,6 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
-visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -739,13 +738,17 @@ offset_top = -72.0
 offset_right = 157.5
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("23_rekvy")
+texture = ExtResource("24_6l37k")
 
 [node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/GreetingArea"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.033
+anchor_right = 0.951
+anchor_bottom = 0.875
+offset_left = -0.131
+offset_top = 5.0
+offset_right = 0.0429993
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
@@ -1554,6 +1557,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
 [node name="Home" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("quest_panel", "quest_slide_panel", "map_panel")]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
