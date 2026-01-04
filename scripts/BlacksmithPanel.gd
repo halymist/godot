@@ -46,7 +46,7 @@ func _on_utility_slot_changed(slot_id: int):
 				item_in_slot = item
 				break
 		if item_in_slot and utility_background:
-			utility_background.show_action_greeting()
+			utility_background.show_item_placed_greeting()
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from blacksmith slot to bag
@@ -75,6 +75,10 @@ func _load_location_content():
 			# Set to fill container
 			if instance is Control:
 				instance.set_anchors_preset(Control.PRESET_FULL_RECT)
+				instance.offset_left = 0
+				instance.offset_top = 0
+				instance.offset_right = 0
+				instance.offset_bottom = 0
 			# Get reference to the utility background script
 			if instance is UtilityBackground:
 				utility_background = instance
@@ -200,6 +204,10 @@ func _on_temper_pressed():
 	# Deduct silver
 	UIManager.instance.update_silver(-TEMPER_COST)
 	update_temper_button_state()
+	
+	# Show action greeting
+	if utility_background:
+		utility_background.show_action_greeting()
 	
 	# Improve item stats by 10% (rounded up)
 	if item_in_slot.get("strength") and item_in_slot.strength > 0:
