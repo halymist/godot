@@ -361,12 +361,15 @@ func _on_visibility_changed():
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
-		# Navigate using toggle panel functionality
-		if UIManager.instance and UIManager.instance.portrait_ui:
-			var toggle_panel = UIManager.instance.portrait_ui
-			
-			# Check if on quest (destination not null means active quest)
-			toggle_panel.handle_home_button()
+		# Navigate using UIManager
+		var on_quest = GameInfo.current_player.traveling_destination != null
+		
+		if on_quest:
+			# Show quest panel
+			UIManager.instance.show_panel(UIManager.instance.quest)
+		else:
+			# Toggle to home panel
+			UIManager.instance.handle_home_button()
 	else:
 		# Skip to the end
 		action_timer.stop()

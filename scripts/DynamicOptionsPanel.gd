@@ -493,15 +493,14 @@ func _start_combat():
 		print("ERROR: UIManager not available!")
 		return
 	
-	var active_ui = UIManager.instance.portrait_ui if UIManager.instance.portrait_ui.visible else UIManager.instance.wide_ui
-	var combat_panel = active_ui.combat_panel
+	var combat_panel = UIManager.instance.combat_panel
 	
 	if not combat_panel:
 		print("ERROR: Could not find Combat panel!")
 		return
 	
-	# Show combat panel using TogglePanel's show_panel method
-	active_ui.show_panel(combat_panel)
+	# Show combat panel using UIManager's show_panel method
+	UIManager.instance.show_panel(combat_panel)
 	GameInfo.set_current_panel(combat_panel)
 
 func _finish_quest():
@@ -515,17 +514,7 @@ func _finish_quest():
 	current_quest_id = 0
 	current_slide_number = 1
 	
-	# Call handle_quest_completed on active toggle panel through UIManager
+	# Call handle_quest_completed on UIManager
 	# This will hide the panel and navigate home
 	print("UIManager exists: ", UIManager.instance != null)
-	if UIManager.instance:
-		print("Portrait visible: ", UIManager.instance.portrait_ui.visible)
-		print("Wide visible: ", UIManager.instance.wide_ui.visible)
-		if UIManager.instance.portrait_ui.visible:
-			print("Calling handle_quest_completed on portrait_ui")
-			UIManager.instance.portrait_ui.handle_quest_completed()
-		elif UIManager.instance.wide_ui.visible:
-			print("Calling handle_quest_completed on wide_ui")
-			UIManager.instance.wide_ui.handle_quest_completed()
-		else:
-			print("WARNING: Neither portrait nor wide UI is visible!")
+	UIManager.instance.handle_quest_completed()

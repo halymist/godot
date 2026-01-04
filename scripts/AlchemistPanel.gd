@@ -27,15 +27,8 @@ func _ready():
 
 	visibility_changed.connect(_on_visibility_changed)
 	brew_button.pressed.connect(_on_brew_button_pressed)
-	# Connect to utility slot changes - defer to ensure UIManager is ready
-	if UIManager.instance:
-		UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
-	else:
-		call_deferred("_connect_to_ui_manager")
-
-func _connect_to_ui_manager():
-	if UIManager.instance:
-		UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
+	# Connect to utility slot changes
+	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 
 func _on_utility_slot_changed(slot_id: int):
 	if slot_id >= SLOT_1 and slot_id <= SLOT_3:

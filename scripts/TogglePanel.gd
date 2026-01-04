@@ -60,10 +60,11 @@ signal utility_slot_changed(slot_id: int)
 # Track UI state
 var chat_overlay_active: bool = false
 
-func _ready():
-	# Set singleton instance
+func _enter_tree():
+	# Set singleton instance immediately when entering tree, before any _ready() calls
 	instance = self
-	
+
+func _ready():
 	# Initial currency display update
 	update_display()
 	

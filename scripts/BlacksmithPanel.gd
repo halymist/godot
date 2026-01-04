@@ -21,18 +21,11 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to slot changes for blacksmith slot (16) - defer to ensure UIManager is ready
-	if UIManager.instance:
-		UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
-	else:
-		call_deferred("_connect_to_ui_manager")
-	if temper_button:
-		temper_button.pressed.connect(_on_temper_pressed)
-	update_temper_button_state()
 
-func _connect_to_ui_manager():
-	if UIManager.instance:
-		UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
+	# Connect to slot changes for blacksmith slot (16)
+	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
+	temper_button.pressed.connect(_on_temper_pressed)
+	update_temper_button_state()
 
 func _on_utility_slot_changed(slot_id: int):
 	if slot_id == BLACKSMITH_SLOT:

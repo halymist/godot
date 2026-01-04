@@ -78,8 +78,7 @@ func handle_quest_completed():
 func handle_quest_arrived():
 	"""Called when travel is completed - delegate to portrait"""
 	# In wide mode, quest is handled by portrait UI
-	if UIManager.instance and UIManager.instance.portrait_ui:
-		UIManager.instance.portrait_ui.handle_quest_arrived()
+	UIManager.instance.handle_quest_arrived()
 
 func handle_character_button():
 	"""Character (left) + Talents (right)"""

@@ -20,28 +20,17 @@ var target: Panel
 signal utility_clicked(utility: Utility)
 
 func _ready():
-	# Get target panel based on type - defer if UIManager not ready yet
-	if UIManager.instance:
-		target = _get_panel_for_type(panel_type)
-	else:
-		call_deferred("_setup_target")
+	# Get target panel based on type
+	target = _get_panel_for_type(panel_type)
 	
-	if target and not target:
+	if not target:
 		print("[Utility] Warning: Could not find panel for type: ", PanelType.keys()[panel_type])
 	
 	click_button.button_up.connect(_on_button_pressed)
 	click_button.mouse_entered.connect(_on_mouse_entered)
 	click_button.mouse_exited.connect(_on_mouse_exited)
 
-func _setup_target():
-	target = _get_panel_for_type(panel_type)
-	if not target:
-		print("[Utility] Warning: Could not find panel for type: ", PanelType.keys()[panel_type])
-
 func _get_panel_for_type(type: PanelType) -> Panel:
-	if not UIManager.instance:
-		return null
-	
 	match type:
 		PanelType.BLACKSMITH:
 			return UIManager.instance.blacksmith_panel
