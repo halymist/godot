@@ -23,18 +23,19 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to slot changes for enchanter slot (15)
-	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
+	# Connect to slot changes for enchanter slot (15) - defer to ensure UIManager is ready
+	if UIManager.instance:
+		UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
+	else:
+		call_deferred("_connect_to_ui_manager")
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
 	update_enchant_button_state()
 	populate_effect_list()
-	# Connect to layout mode changes
-	UIManager.instance.resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 
-func _on_layout_mode_changed(is_wide: bool):
-	if bag:
-		bag.visible = not is_wide
+func _connect_to_ui_manager():
+	if UIManager.instance:
+		UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 
 func _on_utility_slot_changed(slot_id: int):
 	if slot_id == ENCHANTER_SLOT:

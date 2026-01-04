@@ -1,8 +1,7 @@
-[gd_scene load_steps=124 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=123 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
-[ext_resource type="Script" uid="uid://cjjfqcbtuil72" path="res://scripts/UIManager.gd" id="3_aujhx"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Script" uid="uid://dfyxboavsidpe" path="res://scripts/CurrencyDisplay.gd" id="4_2cns2"]
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
@@ -291,7 +290,7 @@ church_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"
 alchemist_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("portrait_ui", "wide_ui", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager", "blacksmith", "alchemist", "enchanter", "vendor", "trainer", "church", "perk_screen", "upgrade_talent", "combat")]
+[node name="Background" type="ColorRect" parent="."]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -300,27 +299,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.1, 0.15, 1)
-script = ExtResource("3_aujhx")
-portrait_ui = NodePath("../Portrait")
-wide_ui = NodePath("../Wide")
-silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue"), NodePath("../Wide/Sidebar/CurrencySection/SilverContainer/SilverValue")]
-mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue"), NodePath("../Wide/Sidebar/CurrencySection/MushroomContainer/MushroomValue")]
-bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/Bag")]
-stats_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats")
-active_effects = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground/ActivePerks")
-avatars = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character/Avatar"), NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Wide/Sidebar/Character/Avatar"), null]
-resolution_manager = NodePath("..")
-blacksmith = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel")
-alchemist = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
-enchanter = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
-vendor = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel")
-trainer = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel")
-church = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel")
-perk_screen = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/PerkScreen")
-upgrade_talent = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/Upgrade")
-combat = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat")
 
-[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button")]
+[node name="Portrait" type="Control" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_button", "talents_panel", "details_panel", "details_button", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "avatar_button", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars")]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -369,6 +349,12 @@ payment = NodePath("GameSceneParent/Wrapper/GameScene/Payment")
 payment_button = NodePath("TopUI/VBoxContainer/MushroomContainer/PaymentButton")
 avatar_panel = NodePath("GameSceneParent/Wrapper/GameScene/Avatar")
 avatar_button = NodePath("GameSceneParent/Wrapper/GameScene/Character/Equip/Character/ChangeAvatar")
+silver_labels = [NodePath("TopUI/VBoxContainer/SilverContainer/SilverValue"), NodePath("../Wide/Sidebar/CurrencySection/SilverContainer/SilverValue")]
+mushrooms_labels = [NodePath("TopUI/VBoxContainer/MushroomContainer/MushroomValue"), NodePath("../Wide/Sidebar/CurrencySection/MushroomContainer/MushroomValue")]
+bag_views = [NodePath("GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Bag"), NodePath("GameSceneParent/Wrapper/GameScene/VendorPanel/VBoxContainer/Bag"), NodePath("GameSceneParent/Wrapper/GameScene/AlchemistPanel/VBoxContainer/Bag"), NodePath("GameSceneParent/Wrapper/GameScene/EnchanterPanel/VBoxContainer/Bag"), NodePath("GameSceneParent/Wrapper/GameScene/Character/Bag")]
+stats_panel = NodePath("GameSceneParent/Wrapper/GameScene/Character/Stats")
+active_effects = NodePath("GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground/ActivePerks")
+avatars = [NodePath("TopUI/Character/Avatar"), NodePath("GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("GameSceneParent/Wrapper/GameScene/Character/Equip/Character/Avatar"), NodePath("GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar"), NodePath("../Wide/Sidebar/Character/Avatar")]
 
 [node name="TopUI" type="Panel" parent="Portrait" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
 layout_mode = 1

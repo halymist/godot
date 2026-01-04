@@ -11,7 +11,6 @@ const VENDOR_MAX = 28
 @onready var vendor_slots: Array[Control] = []
 
 func _ready():
-	UIManager.instance.resolution_manager.layout_mode_changed.connect(_on_layout_mode_changed)
 	_load_location_content()
 	# Get vendor slot references (slots 21-28 for 8 items)
 	if vendor_grid:
@@ -21,10 +20,6 @@ func _ready():
 				vendor_slots.append(vendor_slot)
 	
 	populate_vendor_slots()
-
-func _on_layout_mode_changed(is_wide: bool):
-	if bag:
-		bag.visible = not is_wide
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
