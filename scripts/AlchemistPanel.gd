@@ -9,9 +9,6 @@ const SLOT_3 = 19
 const BAG_MIN = 10
 const BAG_MAX = 14
 
-# Reference to Background node with SilverManager
-@export var background: Node
-
 # Node references
 @export var utility_background_container: Control
 @export var bag: Control
@@ -20,6 +17,8 @@ const BAG_MAX = 14
 @export var ingredient_slot1: Control
 @export var ingredient_slot2: Control
 @export var ingredient_slot3: Control
+
+var utility_background: UtilityBackground  # Found from loaded utility scene
 
 func _ready():
 	_load_location_content()
@@ -33,6 +32,9 @@ func _on_utility_slot_changed(slot_id: int):
 	if slot_id >= SLOT_1 and slot_id <= SLOT_3:
 		update_result_preview()
 		update_brew_button_state()
+		# Show item placed greeting when ingredient is added
+		if utility_background:
+			utility_background.show_item_placed_greeting()
 
 func _on_visibility_changed():
 	# When panel is hidden, return items from ingredient slots to bag
@@ -40,13 +42,17 @@ func _on_visibility_changed():
 		return_ingredients_to_bag()
 	else:
 		update_result_preview()
+		# Show entered greeting when panel becomes visible
+		if utility_background:
+			utility_background.show_entered_greeting()
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	
 	# Clear existing children from container
-	for child in utility_background_container.get_children():
-		child.queue_free()
+	if utility_background_container:
+		for child in utility_background_container.get_children():
+			child.queue_free()
 	
 	# Instantiate and add the utility scene
 	if location_data.alchemist_utility_scene:
@@ -60,6 +66,12 @@ func _load_location_content():
 			utility_instance.offset_top = 0
 			utility_instance.offset_right = 0
 			utility_instance.offset_bottom = 0
+		
+		# Get reference to the utility background script
+		if utility_instance is UtilityBackground:
+			utility_background = utility_instance
+		else:
+			utility_background = null
 
 func return_ingredients_to_bag():
 	# Return items from ingredient slots to bag
@@ -207,6 +219,10 @@ func _on_brew_button_pressed():
 	# Clear the visual slots
 	clear_ingredient_slots()
 	
+	# Show action greeting after brewing
+	if utility_background:
+		utility_background.show_action_greeting()
+	
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
 
@@ -230,11 +246,3 @@ func find_empty_bag_slot() -> int:
 			return i
 	
 	return BAG_MIN  # Fallback to first bag slot if all full
-
-func _update_silver():
-	"""Update silver display via SilverManager"""
-	if background:
-		var ui_manager = background.get_node_or_null("UIManager")
-		if ui_manager and ui_manager.has_method("update_display"):
-			ui_manager.update_display()
-	update_brew_button_state()

@@ -1135,7 +1135,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "utility_background_container", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1145,7 +1145,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
-background = NodePath("../../../../../Background")
 utility_background_container = NodePath("Background")
 bag = NodePath("UtilityPanel/Bag")
 result_preview = NodePath("UtilityPanel/ResultPreview")
