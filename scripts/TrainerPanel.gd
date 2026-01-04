@@ -4,12 +4,7 @@ extends Panel
 const TALENT_POINT_COST = 100
 const STAT_COST = 5
 
-# Reference to Background node with SilverManager
-@export var background: Node
-
-# Stat labels
-@export var background_rect: TextureRect
-@export var description_label: Label
+@export var utility_background_container: Control
 @export var talent_points_label: Label
 @export var strength_label : Label
 @export var stamina_label: Label
@@ -21,6 +16,8 @@ const STAT_COST = 5
 @export var stamina_button: Button
 @export var agility_button: Button
 @export var luck_button: Button
+
+var utility_background: UtilityBackground  # Found from loaded utility scene
 
 func _ready():
 	_load_location_content()
@@ -37,21 +34,36 @@ func _on_visibility_changed():
 	if visible:
 		update_stats_display()
 		update_button_states()
+		# Show entered greeting when panel becomes visible
+		if utility_background:
+			utility_background.show_entered_greeting()
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if background_rect and location_data.trainer_background:
-		background_rect.texture = location_data.trainer_background
-	if description_label:
-		description_label.text = location_data.get_random_trainer_greeting()
-
-func _update_silver():
-	"""Update silver display via UIManager"""
-	if background:
-		var ui_manager = background.get_node_or_null("UIManager")
-		if ui_manager and ui_manager.has_method("update_display"):
-			ui_manager.update_display()
-		update_button_states()
+	
+	# Clear existing children from container
+	if utility_background_container:
+		for child in utility_background_container.get_children():
+			child.queue_free()
+	
+	# Instantiate and add the utility scene
+	if location_data.trainer_utility_scene:
+		var utility_instance = location_data.trainer_utility_scene.instantiate()
+		utility_background_container.add_child(utility_instance)
+		
+		# Set to full rect (anchors 0,0 to 1,1 with zero offsets)
+		if utility_instance is Control:
+			utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
+			utility_instance.offset_left = 0
+			utility_instance.offset_top = 0
+			utility_instance.offset_right = 0
+			utility_instance.offset_bottom = 0
+		
+		# Get reference to the utility background script
+		if utility_instance is UtilityBackground:
+			utility_background = utility_instance
+		else:
+			utility_background = null
 
 func update_stats_display():
 	if not GameInfo.current_player:
@@ -84,6 +96,9 @@ func _on_talent_points_plus_pressed():
 		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Talent Points - cost: ", TALENT_POINT_COST, " gold")
+		# Show action greeting after training
+		if utility_background:
+			utility_background.show_action_greeting()
 
 func _on_strength_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
@@ -92,6 +107,9 @@ func _on_strength_plus_pressed():
 		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Strength - cost: ", STAT_COST, " gold")
+		# Show action greeting after training
+		if utility_background:
+			utility_background.show_action_greeting()
 
 func _on_stamina_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
@@ -100,6 +118,9 @@ func _on_stamina_plus_pressed():
 		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Stamina - cost: ", STAT_COST, " gold")
+		# Show action greeting after training
+		if utility_background:
+			utility_background.show_action_greeting()
 
 func _on_agility_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
@@ -108,6 +129,9 @@ func _on_agility_plus_pressed():
 		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Agility - cost: ", STAT_COST, " gold")
+		# Show action greeting after training
+		if utility_background:
+			utility_background.show_action_greeting()
 
 func _on_luck_plus_pressed():
 	if GameInfo.current_player.silver >= STAT_COST:
@@ -116,3 +140,6 @@ func _on_luck_plus_pressed():
 		UIManager.instance.refresh_stats()
 		update_stats_display()
 		print("Trained Luck - cost: ", STAT_COST, " gold")
+		# Show action greeting after training
+		if utility_background:
+			utility_background.show_action_greeting()

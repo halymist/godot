@@ -21,8 +21,7 @@ extends Resource
 
 @export var enchanter_utility_scene: PackedScene
 
-@export var trainer_background: Texture
-@export var trainer_greetings: Array[String] = []
+@export var trainer_utility_scene: PackedScene
 
 @export var church_utility_scene: PackedScene
 
@@ -41,7 +40,7 @@ func has_enchanter() -> bool:
 	return enchanter_utility_scene != null
 
 func has_trainer() -> bool:
-	return trainer_background != null
+	return trainer_utility_scene != null
 
 func has_church() -> bool:
 	return church_utility_scene != null
@@ -51,7 +50,4 @@ func get_random_vendor_greeting() -> String:
 		return "What can I get you?"
 	return vendor_greetings[randi() % vendor_greetings.size()]
 
-func get_random_trainer_greeting() -> String:
-	if trainer_greetings.is_empty():
-		return "Ready to train?"
-	return trainer_greetings[randi() % trainer_greetings.size()]
+

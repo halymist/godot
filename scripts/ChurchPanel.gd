@@ -30,6 +30,12 @@ func _ready():
 func _on_visibility_changed():
 	if visible:
 		load_blessings()
+		# Pre-select current active blessing if exists
+		if GameInfo.current_player and GameInfo.current_player.blessing != 0:
+			for i in range(blessing_data.size()):
+				if blessing_data[i].id == GameInfo.current_player.blessing:
+					_on_blessing_selected(i, blessing_data[i])
+					break
 		update_bless_button_state()
 		# Show entered greeting when panel becomes visible
 		if utility_background:
@@ -80,8 +86,17 @@ func load_blessings():
 		var slot = blessing_slots[i]
 		
 		if slot and perk:
-			# Set the blessing icon texture
-			slot.texture = perk.icon
+			# Clear previous children
+			for child in slot.get_children():
+				child.queue_free()
+			
+			# Create blessing icon as child of slot
+			var icon_rect = TextureRect.new()
+			icon_rect.texture = perk.icon
+			icon_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+			slot.add_child(icon_rect)
 			
 			# Make slot clickable
 			if not slot.gui_input.is_connected(_on_blessing_slot_clicked):
@@ -114,13 +129,16 @@ func _on_blessing_selected(slot_index: int, perk: PerkResource):
 	# Update selected blessing
 	selected_blessing_id = perk.id
 	
-	# Update description label with effect description
+	# Update description label with perk name and description with factor
 	if effect_description_label and GameInfo.effects_db:
 		var effect_text = ""
 		if perk.effect1_id > 0:
 			var effect = GameInfo.effects_db.get_effect_by_id(perk.effect1_id)
 			if effect:
-				effect_text = effect.description
+				var description_with_factor = effect.description
+				if perk.factor1 != 0:
+					description_with_factor += " " + str(perk.factor1) + "%"
+				effect_text = perk.perk_name + "\n" + description_with_factor
 		effect_description_label.text = effect_text
 	
 	print("Selected blessing: ", perk.perk_name, " (ID: ", perk.id, ")")
@@ -133,8 +151,9 @@ func update_bless_button_state():
 	
 	var has_selection = selected_blessing_id != -1
 	var has_silver = GameInfo.current_player.silver >= BLESSING_COST
+	var is_same_blessing = selected_blessing_id == GameInfo.current_player.blessing
 	
-	bless_button.disabled = not has_selection or not has_silver
+	bless_button.disabled = not has_selection or not has_silver or is_same_blessing
 
 func _on_bless_button_pressed():
 	if selected_blessing_id == -1 or not GameInfo.current_player:
