@@ -1,4 +1,4 @@
-[gd_scene load_steps=126 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=128 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -47,6 +47,7 @@
 [ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="22_kwfbt"]
 [ext_resource type="Texture2D" uid="uid://6wg11fjkxk0f" path="res://assets/images/ui/texturere.png" id="23_6l37k"]
 [ext_resource type="Texture2D" uid="uid://coehmowcbbl5r" path="res://assets/images/ui/preview_back.png" id="23_ewwwr"]
+[ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="23_x4io4"]
 [ext_resource type="Texture2D" uid="uid://dvbxbyno5d7yg" path="res://assets/images/ui/bubble2.png" id="24_6l37k"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
@@ -116,6 +117,9 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k4b06"]
+texture = ExtResource("24_6l37k")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
 bg_color = Color(0.08, 0.05, 0.15, 0.85)
@@ -681,7 +685,7 @@ slot_id = 28
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
-[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "description_label", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background_rect", "chat_bubble", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -691,7 +695,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
 background_rect = NodePath("UtilityBackground/Background")
-description_label = NodePath("GreetingArea/Description")
+chat_bubble = NodePath("UtilityBackground/ChatBubble")
 bag = NodePath("Bag")
 blacksmith_slot = NodePath("ItemArea/ItemSlot")
 improved_stats_label = NodePath("ItemArea/StatsContainer/ImprovedStats")
@@ -714,6 +718,19 @@ grow_vertical = 2
 texture = ExtResource("22_kwfbt")
 expand_mode = 1
 
+[node name="ChatBubble" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/UtilityBackground" instance=ExtResource("23_x4io4")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.562
+anchor_top = 0.41
+anchor_right = 0.562
+anchor_bottom = 0.41
+offset_left = -100.228
+offset_top = 129.54
+offset_right = 99.772
+offset_bottom = 189.54
+theme_override_styles/panel = SubResource("StyleBoxTexture_k4b06")
+
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1
 anchors_preset = 12
@@ -725,38 +742,6 @@ grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("23_6l37k")
 expand_mode = 1
-
-[node name="GreetingArea" type="NinePatchRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -149.5
-offset_top = -72.0
-offset_right = 157.5
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("24_6l37k")
-
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/GreetingArea"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.033
-anchor_right = 0.951
-anchor_bottom = 0.875
-offset_left = -0.131
-offset_top = 5.0
-offset_right = 0.0429993
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.3
-text = "The blacksmith is offering you his services for a fee."
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
 
 [node name="ItemArea" type="NinePatchRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1

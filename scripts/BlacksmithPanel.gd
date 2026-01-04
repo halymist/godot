@@ -8,7 +8,7 @@ const BAG_MIN = 10
 const BAG_MAX = 14
 
 @export var background_rect: TextureRect
-@export var description_label: Label
+@export var chat_bubble: ChatBubble
 @export var bag: Control
 @export var blacksmith_slot: Control
 @export var improved_stats_label: Label
@@ -50,8 +50,8 @@ func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	if background_rect and location_data.blacksmith_background:
 		background_rect.texture = location_data.blacksmith_background
-	if description_label:
-		description_label.text = location_data.get_random_blacksmith_greeting()
+	if chat_bubble:
+		chat_bubble.show_dialogue(location_data.get_random_blacksmith_greeting(), 4.0)
 
 
 func update_stats_display():
