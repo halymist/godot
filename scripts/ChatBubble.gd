@@ -38,6 +38,12 @@ func show_with_text(text: String, duration: float = 4.0):
 		var hide_timer = get_tree().create_timer(duration)
 		set_meta("_hide_timer", hide_timer)
 		await hide_timer.timeout
+		# Animate disappearing
+		var hide_tween = create_tween()
+		hide_tween.set_ease(Tween.EASE_IN)
+		hide_tween.set_trans(Tween.TRANS_BACK)
+		hide_tween.tween_property(self, "scale", Vector2.ZERO, 0.2)
+		await hide_tween.finished
 		visible = false
 
 func _resize_to_fit():

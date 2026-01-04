@@ -36,10 +36,6 @@ func _ready():
 	# Connect quest panel signals
 	quest_panel.quest_accepted.connect(_on_quest_accepted)
 	
-	# Connect global NPC click signal
-	GameInfo.npc_clicked.connect(_on_npc_clicked)
-	print("Connected to global NPC click signal")
-	
 	# Connect quest completed signal to redraw NPCs
 	GameInfo.quest_completed.connect(_on_quest_completed)
 	print("Connected to quest completed signal")
@@ -177,8 +173,9 @@ func get_appropriate_dialogue(npc_resource: NpcResource, quest_log: Array) -> Di
 		return npc_resource.dialogues[0]
 	return null
 
-func _on_npc_clicked(npc):
-	print("=== VillageManager._on_npc_clicked() CALLED ===")
+func handle_npc_clicked(npc):
+	"""Called directly from NPC/NpcSpot when clicked"""
+	print("=== VillageManager.handle_npc_clicked() CALLED ===")
 	print("Clicked NPC: ", npc.npc_data.get("name", "Unknown"))
 	print("Is in interior: ", is_in_interior)
 	print("Current building: ", current_building)

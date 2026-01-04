@@ -79,7 +79,6 @@ func get_profession_icon(profession_id: int) -> String:
 signal on_player_data_loaded
 signal current_panel_changed(new_panel)
 signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
-signal npc_clicked(npc) # Global NPC click signal
 signal quest_completed(quest_id) # Emitted when a quest is marked as completed
 signal rankings_loaded # Emitted when rankings data is loaded
 

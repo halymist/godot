@@ -181,8 +181,10 @@ func _on_bless_button_pressed():
 	# Reload blessings to update highlighting
 	load_blessings()
 	
-	# Clear selection
-	selected_blessing_id = -1
-	if effect_description_label:
-		effect_description_label.text = ""
+	# Show the active blessing's description after blessing
+	for i in range(blessing_data.size()):
+		if blessing_data[i].id == GameInfo.current_player.blessing:
+			_on_blessing_selected(i, blessing_data[i])
+			break
+	
 	update_bless_button_state()

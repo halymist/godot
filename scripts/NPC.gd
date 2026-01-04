@@ -28,9 +28,16 @@ func _on_button_pressed():
 	print("NPC button pressed: ", npc_name)
 	print("NPC data during click: ", npc_data)
 
-	# Emit global signal through GameInfo
-	GameInfo.emit_signal("npc_clicked", self)
-	print("Emitted npc_clicked signals for: ", npc_name)
+	var quest_id = npc_data.get("questid", null)
+	if quest_id != null and UIManager.instance:
+		# NPC has a quest - show quest panel directly
+		print("Showing quest panel for quest ID: ", quest_id)
+		var quest_panel = UIManager.instance.quest_panel
+		if quest_panel and quest_panel.has_method("show_quest"):
+			quest_panel.show_quest(npc_data)
+			GameInfo.set_current_panel_overlay(quest_panel)
+	else:
+		print("NPC has no quest - dialogue shown via chat bubble")
 
 func _on_mouse_entered():
 	var quest_id = npc_data.get("questid", null)
