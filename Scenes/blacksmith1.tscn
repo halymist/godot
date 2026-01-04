@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dpsns7v35wk8l"]
 
 [ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_4s4ef"]
-[ext_resource type="Texture2D" uid="uid://hsexclco5a8o" path="res://assets/images/villages/blacksmith_last.png" id="1_opsdf"]
+[ext_resource type="Texture2D" uid="uid://f7qonxl7pn6" path="res://assets/images/villages/blbl3.png" id="2_04d7i"]
 [ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="2_4s4ef"]
 
 [node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
@@ -9,37 +9,35 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 275.0
-offset_bottom = -595.0
+offset_left = -68.0
+offset_right = 68.0
+offset_bottom = -540.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4s4ef")
 chat_bubble = NodePath("ChatBubble")
-on_entered_greetings = Array[String](["a", "Looking to temper your gear?", "I can make that weapon even stronger!", "Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?Looking to temper your gear?"])
+on_entered_greetings = Array[String](["Welcome customer", "Looking to temper your gear?", "I can make that weapon even stronger!", "Looking to temper your gear?"])
 cooldown_between_messages = 6.0
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = -0.172
-anchor_right = 0.828
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -0.0399933
-offset_right = -0.0400391
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_opsdf")
+texture = ExtResource("2_04d7i")
 expand_mode = 1
 
 [node name="ChatBubble" parent="." instance=ExtResource("2_4s4ef")]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.371
-anchor_top = 0.161
-anchor_right = 0.371
-anchor_bottom = 0.161
-offset_left = -0.280014
-offset_top = -38.105
-offset_right = 113.72
-offset_bottom = -0.105003
+anchor_left = 0.457
+anchor_top = 0.183
+anchor_right = 0.457
+anchor_bottom = 0.183
+offset_left = -115.237
+offset_top = -37.88
+offset_right = -0.237015
+offset_bottom = 0.119995
 padding = Vector2(12, 20)
