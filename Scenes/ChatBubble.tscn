@@ -1,47 +1,27 @@
-[gd_scene load_steps=4 format=3 uid="uid://b4ywslru7t5jb"]
+[gd_scene load_steps=3 format=3 uid="uid://b4ywslru7t5jb"]
 
 [ext_resource type="Script" uid="uid://5ocyjrbwuv5v" path="res://scripts/ChatBubble.gd" id="1_chatbubble"]
+[ext_resource type="Texture2D" uid="uid://dvbxbyno5d7yg" path="res://assets/images/ui/bubble2.png" id="1_p5v4p"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chatbubble"]
-bg_color = Color(0.1, 0.1, 0.1, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.8)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="LabelSettings" id="LabelSettings_chatbubble"]
-font_size = 14
-font_color = Color(0.9, 0.9, 0.9, 1)
-
-[node name="ChatBubble" type="Panel" node_paths=PackedStringArray("dialogue_label", "timer")]
-offset_right = 200.0
+[node name="ChatBubble" type="NinePatchRect" node_paths=PackedStringArray("dialogue_label")]
+offset_right = 170.0
 offset_bottom = 60.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_chatbubble")
+texture = ExtResource("1_p5v4p")
 script = ExtResource("1_chatbubble")
 dialogue_label = NodePath("DialogueLabel")
-timer = NodePath("Timer")
 
 [node name="DialogueLabel" type="Label" parent="."]
-custom_minimum_size = Vector2(100, 30)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
+offset_left = 12.0
 offset_top = 10.0
-offset_right = -10.0
+offset_right = -12.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-label_settings = SubResource("LabelSettings_chatbubble")
+text = "Welcome to my forge!asadadasd"
+horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-
-[node name="Timer" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
