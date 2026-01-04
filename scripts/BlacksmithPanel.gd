@@ -22,12 +22,11 @@ func _ready():
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 
-	# Connect to slot changes for blacksmith slot (16)
-	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 	temper_button.pressed.connect(_on_temper_pressed)
 	update_temper_button_state()
 
-func _on_utility_slot_changed(slot_id: int):
+func on_slot_changed(slot_id: int):
+	"""Called by UIManager when a utility slot changes"""
 	if slot_id == BLACKSMITH_SLOT:
 		update_stats_display()
 		update_temper_button_state()

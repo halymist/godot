@@ -25,10 +25,9 @@ func _ready():
 
 	visibility_changed.connect(_on_visibility_changed)
 	brew_button.pressed.connect(_on_brew_button_pressed)
-	# Connect to utility slot changes
-	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 
-func _on_utility_slot_changed(slot_id: int):
+func on_slot_changed(slot_id: int):
+	"""Called by UIManager when a utility slot changes"""
 	if slot_id >= SLOT_1 and slot_id <= SLOT_3:
 		update_result_preview()
 		update_brew_button_state()

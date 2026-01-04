@@ -23,14 +23,13 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to slot changes for enchanter slot (15)
-	UIManager.instance.utility_slot_changed.connect(_on_utility_slot_changed)
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
 	update_enchant_button_state()
 	populate_effect_list()
 
-func _on_utility_slot_changed(slot_id: int):
+func on_slot_changed(slot_id: int):
+	"""Called by UIManager when a utility slot changes"""
 	if slot_id == ENCHANTER_SLOT:
 		update_enchant_button_state()
 		populate_effect_list()

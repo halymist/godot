@@ -54,9 +54,6 @@ static var instance: UIManager
 @export var avatars: Array[Node] = []
 @export var resolution_manager: Node
 
-# Signal for utility slot changes (100-104)
-signal utility_slot_changed(slot_id: int)
-
 # Track UI state
 var chat_overlay_active: bool = false
 
@@ -498,5 +495,15 @@ func refresh_avatars():
 		)
 
 func notify_slot_changed(slot_id: int):
-	"""Notify panels when a utility slot (100-104) changes"""
-	utility_slot_changed.emit(slot_id)
+	"""Notify panels when a utility slot changes by calling their update methods directly"""
+	var current_panel = GameInfo.get_current_panel()
+	if not current_panel:
+		return
+	
+	# Call the appropriate panel's update method
+	if current_panel.name == "BlacksmithPanel" and current_panel.has_method("on_slot_changed"):
+		current_panel.on_slot_changed(slot_id)
+	elif current_panel.name == "AlchemistPanel" and current_panel.has_method("on_slot_changed"):
+		current_panel.on_slot_changed(slot_id)
+	elif current_panel.name == "EnchanterPanel" and current_panel.has_method("on_slot_changed"):
+		current_panel.on_slot_changed(slot_id)
