@@ -7,8 +7,7 @@ const ENCHANTER_SLOT = 15
 const BAG_MIN = 10
 const BAG_MAX = 14
 
-@export var background_rect: TextureRect
-@export var description_label: Label
+@export var utility_background_container: Control
 @export var bag: Control
 @export var enchanter_slot: Control
 @export var enchant_button: Button
@@ -16,6 +15,7 @@ const BAG_MAX = 14
 
 const ENCHANT_COST = 10
 
+var utility_background: UtilityBackground  # Found from loaded utility scene
 var selected_effect_id: int = 0
 var selected_effect_factor: float = 0.0
 
@@ -34,6 +34,14 @@ func _on_utility_slot_changed(slot_id: int):
 	if slot_id == ENCHANTER_SLOT:
 		update_enchant_button_state()
 		populate_effect_list()
+		# Show item placed greeting when item is added
+		var item_in_slot = null
+		for item in GameInfo.current_player.bag_slots:
+			if item.bag_slot_id == ENCHANTER_SLOT:
+				item_in_slot = item
+				break
+		if item_in_slot and utility_background:
+			utility_background.show_item_placed_greeting()
 
 func _on_visibility_changed():
 	# When panel is hidden, return item from enchanter slot to bag
@@ -42,11 +50,36 @@ func _on_visibility_changed():
 	else:
 		update_enchant_button_state()
 		populate_effect_list()
+		# Show entered greeting when panel becomes visible
+		if utility_background:
+			utility_background.show_entered_greeting()
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	background_rect.texture = location_data.enchanter_background
-	description_label.text = location_data.get_random_enchanter_greeting()
+	
+	# Clear existing children from container
+	if utility_background_container:
+		for child in utility_background_container.get_children():
+			child.queue_free()
+	
+	# Instantiate and add the utility scene
+	if location_data.enchanter_utility_scene:
+		var utility_instance = location_data.enchanter_utility_scene.instantiate()
+		utility_background_container.add_child(utility_instance)
+		
+		# Set to full rect (anchors 0,0 to 1,1 with zero offsets)
+		if utility_instance is Control:
+			utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
+			utility_instance.offset_left = 0
+			utility_instance.offset_top = 0
+			utility_instance.offset_right = 0
+			utility_instance.offset_bottom = 0
+		
+		# Get reference to the utility background script
+		if utility_instance is UtilityBackground:
+			utility_background = utility_instance
+		else:
+			utility_background = null
 
 
 func return_enchanter_item_to_bag():
@@ -212,6 +245,10 @@ func _on_enchant_pressed():
 	# Apply enchantment overdrive (always use effect_overdrive for user enchants)
 	item_in_slot.effect_overdrive = selected_effect_id
 	print("Applied enchantment overdrive: ", selected_effect_id)
+	
+	# Show action greeting after enchanting
+	if utility_background:
+		utility_background.show_action_greeting()
 	
 	# Move item back to bag (like tempering)
 	return_enchanter_item_to_bag()
