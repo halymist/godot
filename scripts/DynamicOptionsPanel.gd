@@ -500,21 +500,9 @@ func _start_combat():
 		print("ERROR: Could not find Combat panel!")
 		return
 	
-	# Connect to combat panel's completion signal if not already connected (just for closing panel)
-	if not combat_panel.is_connected("combat_finished", _on_combat_finished):
-		combat_panel.combat_finished.connect(_on_combat_finished)
-	
 	# Show combat panel using TogglePanel's show_panel method
 	active_ui.show_panel(combat_panel)
 	GameInfo.set_current_panel(combat_panel)
-
-func _on_combat_finished():
-	"""Called when combat ends - just return to quest panel (navigation already done)"""
-	print("Combat animation finished. Returning to quest panel.")
-	
-	var active_ui = UIManager.instance.portrait_ui if UIManager.instance.portrait_ui.visible else UIManager.instance.wide_ui
-	active_ui.show_panel(self)
-	GameInfo.set_current_panel(self)
 
 func _finish_quest():
 	"""End quest and return home"""

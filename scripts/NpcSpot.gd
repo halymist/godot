@@ -9,7 +9,7 @@ var texture_rect: TextureRect
 var spot_visual: Panel
 var click_button: Button
 
-var chat_bubble: Panel = null
+var chat_bubble: ChatBubble = null
 var chat_bubble_scene = preload("res://Scenes/ChatBubble.tscn")
 
 signal npc_hovered(npc: NpcSpot)

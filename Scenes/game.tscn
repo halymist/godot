@@ -680,6 +680,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -692,7 +693,7 @@ utility_background_container = NodePath("Control")
 bag = NodePath("Bag")
 blacksmith_slot = NodePath("ItemArea/ItemSlot")
 improved_stats_label = NodePath("ItemArea/StatsContainer/ImprovedStats")
-temper_button = NodePath("TemperButton")
+temper_button = NodePath("ItemArea/TemperButton")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1
@@ -701,7 +702,7 @@ anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -341.5
 offset_right = 337.5
-offset_bottom = 305.0
+offset_bottom = 360.0
 grow_horizontal = 2
 
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
@@ -710,7 +711,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -324.0
+offset_top = -271.0
 grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("23_6l37k")
@@ -724,9 +725,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -178.5
-offset_top = 30.0
+offset_top = 65.0
 offset_right = 177.5
-offset_bottom = 186.0
+offset_bottom = 217.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("23_ewwwr")
@@ -738,13 +739,60 @@ anchor_left = 0.19
 anchor_top = 0.5
 anchor_right = 0.19
 anchor_bottom = 0.5
-offset_left = -37.64
-offset_top = -40.0
-offset_right = 37.36
-offset_bottom = 35.0
+offset_left = -36.64
+offset_top = -53.0
+offset_right = 38.36
+offset_bottom = 22.0
 outline_texture = ExtResource("9_sword")
 slot_type = "Blacksmith"
 slot_id = 16
+
+[node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -162.0
+offset_top = -47.0
+offset_right = -46.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Temper:"
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "10"
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea"]
 layout_mode = 1
@@ -774,54 +822,8 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.803
 anchor_bottom = 0.924
-offset_top = 1.11002
-offset_bottom = -0.119995
-
-[node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -72.5
-offset_top = -41.0
-offset_right = 54.5
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
-
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/TemperButton"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/TemperButton/Content"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Temper:"
-
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/TemperButton/Content"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "10"
-
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/TemperButton/Content"]
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-texture = ExtResource("32_ccfo7")
-expand_mode = 1
-stretch_mode = 5
+offset_top = 37.11
+offset_bottom = 45.88
 
 [node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "background_rect", "description_label", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
 visible = false

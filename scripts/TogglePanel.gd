@@ -185,9 +185,10 @@ func handle_home_button():
 	"""Navigate to home panel - with custom home panel behavior"""
 	# Block navigation if player is on an active quest
 	if is_on_active_quest():
-		print("Cannot go home - player is on an active quest")
+		print(" player is on an active quest")
+		show_panel(quest)
 		return
-	
+		
 	# Custom home panel behavior: exit interior and center view
 	home_panel.handle_back_navigation()
 	home_panel.center_village_view()
