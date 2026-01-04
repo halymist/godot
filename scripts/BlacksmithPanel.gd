@@ -72,6 +72,9 @@ func _load_location_content():
 		if utility_scene:
 			var instance = utility_scene.instantiate()
 			utility_background_container.add_child(instance)
+			# Set to fill container
+			if instance is Control:
+				instance.set_anchors_preset(Control.PRESET_FULL_RECT)
 			# Get reference to the utility background script
 			if instance is UtilityBackground:
 				utility_background = instance

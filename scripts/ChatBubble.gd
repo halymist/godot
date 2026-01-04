@@ -14,6 +14,10 @@ func show_with_text(text: String, duration: float = 4.0):
 	if not dialogue_label:
 		return
 	
+	# Reset size before calculating new one
+	custom_minimum_size = Vector2.ZERO
+	size = Vector2.ZERO
+	
 	# Set the text
 	dialogue_label.text = text
 	
@@ -29,9 +33,17 @@ func show_with_text(text: String, duration: float = 4.0):
 	tween.set_trans(Tween.TRANS_BACK)
 	tween.tween_property(self, "scale", Vector2.ONE, 0.3)
 	
+	# Stop existing timer if running
+	var existing_timer = get_tree().create_timer(0)
+	if has_meta("_hide_timer"):
+		var old_timer = get_meta("_hide_timer")
+		# Timer is one-shot so we just start a new one
+	
 	# Auto-hide after duration
 	if duration > 0:
-		await get_tree().create_timer(duration).timeout
+		var hide_timer = get_tree().create_timer(duration)
+		set_meta("_hide_timer", hide_timer)
+		await hide_timer.timeout
 		visible = false
 
 func _resize_to_fit():
