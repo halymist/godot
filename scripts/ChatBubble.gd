@@ -54,29 +54,49 @@ func _resize_to_fit():
 	var font = dialogue_label.get_theme_default_font()
 	var font_size = dialogue_label.get_theme_default_font_size()
 	
+	# Check if we have a parent container that should constrain our size
+	var container_max_width = max_width
+	var container_max_height = 0.0  # 0 = no height constraint
+	
+	if get_parent() is Control:
+		var parent_container = get_parent() as Control
+		# Use parent's actual rendered size as constraints
+		var parent_size = parent_container.get_rect().size
+		if parent_size.x > 10:  # Has meaningful width
+			container_max_width = min(parent_size.x, max_width)
+		if parent_size.y > 10:  # Has meaningful height
+			container_max_height = parent_size.y
+	
 	# Calculate text width without wrapping
 	var text_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 	
-	# If natural width fits within max_width, use it
-	if text_size.x <= (max_width - padding.x * 2):
+	# Calculate max allowed dimensions (accounting for padding)
+	var max_bubble_width = container_max_width
+	var max_bubble_height = container_max_height if container_max_height > 0 else 999999.0
+	
+	# If natural width fits within constraints, use it
+	if text_size.x + (padding.x * 2) <= max_bubble_width:
 		dialogue_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 		dialogue_label.custom_minimum_size = Vector2.ZERO
 		
-		var bubble_width = text_size.x + (padding.x * 2)
-		var bubble_height = text_size.y + (padding.y * 2)
+		var bubble_width = min(text_size.x + (padding.x * 2), max_bubble_width)
+		var bubble_height = min(text_size.y + (padding.y * 2), max_bubble_height)
+		
 		size = Vector2(bubble_width, bubble_height)
 		custom_minimum_size = Vector2(bubble_width, bubble_height)
 	else:
 		# Text is too long, enable wrapping at max_width
 		dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD
-		var wrap_width = max_width - (padding.x * 2)
+		var wrap_width = max_bubble_width - (padding.x * 2)
 		dialogue_label.custom_minimum_size.x = wrap_width
 		
 		# Calculate wrapped text height
 		var wrapped_size = font.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, wrap_width, font_size)
 		
-		size = Vector2(max_width, wrapped_size.y + padding.y * 2)
-		custom_minimum_size = Vector2(max_width, wrapped_size.y + padding.y * 2)
+		var bubble_height = min(wrapped_size.y + padding.y * 2, max_bubble_height)
+		
+		size = Vector2(max_bubble_width, bubble_height)
+		custom_minimum_size = Vector2(max_bubble_width, bubble_height)
 
 func show_dialogue(text: String, duration: float = 4.0):
 	# Kept for compatibility
