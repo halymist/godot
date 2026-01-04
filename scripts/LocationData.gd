@@ -14,8 +14,7 @@ extends Resource
 # Utility backgrounds (null = not available at this location)
 @export var blacksmith_utility_scene: PackedScene
 
-@export var vendor_background: Texture
-@export var vendor_greetings: Array[String] = []
+@export var vendor_utility_scene: PackedScene
 
 @export var alchemist_utility_scene: PackedScene
 
@@ -31,7 +30,7 @@ func has_blacksmith() -> bool:
 	return blacksmith_utility_scene != null
 
 func has_vendor() -> bool:
-	return vendor_background != null
+	return vendor_utility_scene != null
 
 func has_alchemist() -> bool:
 	return alchemist_utility_scene != null
@@ -45,9 +44,6 @@ func has_trainer() -> bool:
 func has_church() -> bool:
 	return church_utility_scene != null
 
-func get_random_vendor_greeting() -> String:
-	if vendor_greetings.is_empty():
-		return "What can I get you?"
-	return vendor_greetings[randi() % vendor_greetings.size()]
+
 
 

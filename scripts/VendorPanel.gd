@@ -4,11 +4,12 @@ extends Panel
 const VENDOR_MIN = 21
 const VENDOR_MAX = 28
 
-@export var background_rect: TextureRect
-@export var description_label: Label
+@export var utility_background_container: Control
 @export var bag: Control
 @export var vendor_grid: GridContainer
 @onready var vendor_slots: Array[Control] = []
+
+var utility_background: UtilityBackground  # Found from loaded utility scene
 
 func _ready():
 	_load_location_content()
@@ -20,14 +21,59 @@ func _ready():
 				vendor_slots.append(vendor_slot)
 	
 	populate_vendor_slots()
+	
+	# Connect visibility signal for chat greeting
+	visibility_changed.connect(_on_visibility_changed)
+	
+	# Connect to UIManager signals for buy/sell actions
+	if UIManager.instance:
+		if not UIManager.instance.is_connected("vendor_item_purchased", _on_vendor_item_purchased):
+			UIManager.instance.connect("vendor_item_purchased", _on_vendor_item_purchased)
+		if not UIManager.instance.is_connected("vendor_item_sold", _on_vendor_item_sold):
+			UIManager.instance.connect("vendor_item_sold", _on_vendor_item_sold)
+
+func _on_vendor_item_purchased():
+	# Show action greeting when item is purchased
+	if visible and utility_background:
+		utility_background.show_action_greeting()
+
+func _on_vendor_item_sold():
+	# Show item placed greeting when item is sold
+	if visible and utility_background:
+		utility_background.show_item_placed_greeting()
+
+func _on_visibility_changed():
+	if visible:
+		# Show entered greeting when panel becomes visible
+		if utility_background:
+			utility_background.show_entered_greeting()
 
 func _load_location_content():
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
-	if background_rect and location_data.vendor_background:
-		background_rect.texture = location_data.vendor_background
-	if description_label:
-		description_label.text = location_data.get_random_vendor_greeting()
-		background_rect.texture = location_data.vendor_background
+	
+	# Clear existing children from container
+	if utility_background_container:
+		for child in utility_background_container.get_children():
+			child.queue_free()
+	
+	# Instantiate and add the utility scene
+	if location_data.vendor_utility_scene:
+		var utility_instance = location_data.vendor_utility_scene.instantiate()
+		utility_background_container.add_child(utility_instance)
+		
+		# Set to full rect (anchors 0,0 to 1,1 with zero offsets)
+		if utility_instance is Control:
+			utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
+			utility_instance.offset_left = 0
+			utility_instance.offset_top = 0
+			utility_instance.offset_right = 0
+			utility_instance.offset_bottom = 0
+		
+		# Get reference to the utility background script
+		if utility_instance is UtilityBackground:
+			utility_background = utility_instance
+		else:
+			utility_background = null
 
 func _on_bag_slots_changed():
 	# Refresh vendor slots when bag changes (items bought/sold)

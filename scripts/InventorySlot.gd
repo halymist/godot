@@ -299,6 +299,8 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	# Notify all bag views to redraw
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
+		# Signal vendor purchase for chat greeting
+		UIManager.instance.emit_signal("vendor_item_purchased")
 	print("Item purchased and added to slot ", slot_id)
 
 func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_container):
@@ -332,6 +334,8 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 	# Notify all bag views to redraw
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
+		# Signal vendor sell for chat greeting
+		UIManager.instance.emit_signal("vendor_item_sold")
 	print("Item sold and removed from inventory")
 
 func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, gem_source_slot_id: int, gem_source_container):
