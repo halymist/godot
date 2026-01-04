@@ -65,8 +65,15 @@ func _can_drop_data(_pos, data):
 		# If slot is empty or item doesn't have a socket, reject
 		return false
 	
+	# Allow gems to be dropped on vendor sell slot for selling
+	if item_type == "Gem" and slot_id == VENDOR_SELL_SLOT:
+		return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
+	
 	# Special case: Allow hammers to be dropped on any slot with a temperable item OR empty bag slots
 	if item_type == "Hammer":
+		# Allow selling hammers to vendor
+		if slot_id == VENDOR_SELL_SLOT:
+			return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
 		# Allow movement to empty bag slots (10-14)
 		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
 			return true
@@ -80,6 +87,9 @@ func _can_drop_data(_pos, data):
 	
 	# Special case: Allow scrolls to be dropped on any slot with an enchantable item OR empty bag slots
 	if item_type == "Scroll":
+		# Allow selling scrolls to vendor
+		if slot_id == VENDOR_SELL_SLOT:
+			return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
 		# Allow movement to empty bag slots (10-14)
 		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
 			return true
@@ -299,8 +309,10 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	# Notify all bag views to redraw
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
-		# Signal vendor purchase for chat greeting
-		UIManager.instance.emit_signal("vendor_item_purchased")
+		# Trigger chat greeting if on vendor panel
+		var current_panel = GameInfo.get_current_panel()
+		if current_panel and current_panel.name == "VendorPanel" and current_panel.has_method("trigger_purchase_greeting"):
+			current_panel.trigger_purchase_greeting()
 	print("Item purchased and added to slot ", slot_id)
 
 func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_container):
@@ -334,8 +346,10 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 	# Notify all bag views to redraw
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
-		# Signal vendor sell for chat greeting
-		UIManager.instance.emit_signal("vendor_item_sold")
+		# Trigger chat greeting if on vendor panel
+		var current_panel = GameInfo.get_current_panel()
+		if current_panel and current_panel.name == "VendorPanel" and current_panel.has_method("trigger_sell_greeting"):
+			current_panel.trigger_sell_greeting()
 	print("Item sold and removed from inventory")
 
 func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, gem_source_slot_id: int, gem_source_container):

@@ -24,26 +24,10 @@ func _ready():
 	
 	# Connect visibility signal for chat greeting
 	visibility_changed.connect(_on_visibility_changed)
-	
-	# Connect to UIManager signals for buy/sell actions
-	if UIManager.instance:
-		if not UIManager.instance.is_connected("vendor_item_purchased", _on_vendor_item_purchased):
-			UIManager.instance.connect("vendor_item_purchased", _on_vendor_item_purchased)
-		if not UIManager.instance.is_connected("vendor_item_sold", _on_vendor_item_sold):
-			UIManager.instance.connect("vendor_item_sold", _on_vendor_item_sold)
-
-func _on_vendor_item_purchased():
-	# Show action greeting when item is purchased
-	if visible and utility_background:
-		utility_background.show_action_greeting()
-
-func _on_vendor_item_sold():
-	# Show item placed greeting when item is sold
-	if visible and utility_background:
-		utility_background.show_item_placed_greeting()
 
 func _on_visibility_changed():
 	if visible:
+		populate_vendor_slots()
 		# Show entered greeting when panel becomes visible
 		if utility_background:
 			utility_background.show_entered_greeting()
@@ -74,6 +58,16 @@ func _load_location_content():
 			utility_background = utility_instance
 		else:
 			utility_background = null
+
+func trigger_purchase_greeting():
+	"""Called by InventorySlot when player purchases from vendor"""
+	if utility_background:
+		utility_background.show_action_greeting()
+
+func trigger_sell_greeting():
+	"""Called by InventorySlot when player sells to vendor"""
+	if utility_background:
+		utility_background.show_item_placed_greeting()
 
 func _on_bag_slots_changed():
 	# Refresh vendor slots when bag changes (items bought/sold)

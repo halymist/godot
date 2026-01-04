@@ -157,6 +157,8 @@ func populate_effect_list():
 		var button = Button.new()
 		button.text = "%s %s%%" % [effect.description, str(effect.factor)]
 		button.custom_minimum_size = Vector2(0, 30)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.clip_text = true
 		button.theme_type_variation = "FlatButton"
 		
 		# Style the button

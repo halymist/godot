@@ -56,9 +56,6 @@ static var instance: UIManager
 
 # Signal for utility slot changes (100-104)
 signal utility_slot_changed(slot_id: int)
-# Signals for vendor actions
-signal vendor_item_purchased
-signal vendor_item_sold
 
 # Track UI state
 var chat_overlay_active: bool = false
