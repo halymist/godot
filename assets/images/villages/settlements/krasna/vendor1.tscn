@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://r4cxy7qkjy51"]
+
+[ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_2osqm"]
+[ext_resource type="Texture2D" uid="uid://b7deu2ddlu4yp" path="res://assets/images/villages/vendor_full.png" id="2_2osqm"]
+[ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="3_u0bjm"]
+
+[node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 15.0
+offset_bottom = -269.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2osqm")
+chat_bubble = NodePath("BubbleContainer/ChatBubble")
+on_entered_greetings = Array[String](["Welcome customer", "Looking to temper your gear?", "I can make that weapon even stronger!", "Looking to temper your gear?"])
+cooldown_between_messages = 6.0
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_2osqm")
+expand_mode = 1
+
+[node name="BubbleContainer" type="Control" parent="."]
+clip_contents = true
+layout_mode = 1
+anchor_left = 0.036
+anchor_top = 0.005
+anchor_right = 0.405
+anchor_bottom = 0.33
+offset_left = -0.120001
+offset_top = -0.155
+offset_right = -0.100006
+offset_bottom = -0.230011
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ChatBubble" parent="BubbleContainer" instance=ExtResource("3_u0bjm")]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+padding = Vector2(12, 20)

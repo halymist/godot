@@ -1,4 +1,4 @@
-[gd_scene load_steps=119 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -42,7 +42,6 @@
 [ext_resource type="PackedScene" uid="uid://bmj5lho3avnou" path="res://Scenes/perk.tscn" id="22_81klo"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
-[ext_resource type="Texture2D" uid="uid://6wg11fjkxk0f" path="res://assets/images/ui/texturere.png" id="23_6l37k"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
@@ -108,9 +107,6 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ccfo7"]
-texture = ExtResource("23_6l37k")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
 bg_color = Color(0.08, 0.05, 0.15, 0.85)
@@ -321,7 +317,7 @@ avatar_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
 avatar_button = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character/ChangeAvatar")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue")]
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
-bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
+bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
 stats_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats")
 active_effects = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground/ActivePerks")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
@@ -540,37 +536,32 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("40_vendor")
 utility_background_container = NodePath("Control")
-bag = NodePath("Bag")
-vendor_grid = NodePath("UtilityPanel/VendorSlots")
+bag = NodePath("Overlay/Bag")
+vendor_grid = NodePath("Overlay/VendorSlots")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -270.0
-offset_right = 270.0
-offset_bottom = 360.0
+anchor_bottom = 1.0
+offset_left = -202.5
+offset_right = 217.5
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
+[node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -271.0
+offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 3
-size_flags_stretch_ratio = 4.0
-theme_override_styles/panel = SubResource("StyleBoxTexture_ccfo7")
-script = ExtResource("8_85qyi")
-item_scene = ExtResource("11_ewbju")
-slot_type = "Sell"
-slot_id = 20
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
 
-[node name="VendorSlots" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel"]
+[node name="VendorSlots" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -578,55 +569,55 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -155.5
-offset_top = -104.5
+offset_top = -119.0
 offset_right = 156.5
-offset_bottom = 49.5
+offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 columns = 4
 
-[node name="Vendor1" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor1" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 21
 
-[node name="Vendor2" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor2" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 22
 
-[node name="Vendor3" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor3" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 23
 
-[node name="Vendor4" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor4" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 24
 
-[node name="Vendor5" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor5" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 25
 
-[node name="Vendor6" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor6" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 26
 
-[node name="Vendor7" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor7" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 27
 
-[node name="Vendor8" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/UtilityPanel/VendorSlots" instance=ExtResource("6_itemslot")]
+[node name="Vendor8" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
 slot_id = 28
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 2
 anchors_preset = 0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_top = 555.0
+offset_top = 167.0
 offset_right = 405.0
-offset_bottom = 630.0
+offset_bottom = 242.0
 
 [node name="BlacksmithPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
@@ -819,16 +810,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("28_sjh24")
 utility_background_container = NodePath("Control")
-talent_points_label = NodePath("Overlay/StatsContainer/TalentPointsRow/TalentsRow/Label")
-strength_label = NodePath("Overlay/StatsContainer/StrengthRow/StatInfo/Label")
-stamina_label = NodePath("Overlay/StatsContainer/StaminaRow/StatInfo/Label")
-agility_label = NodePath("Overlay/StatsContainer/AgilityRow/StatInfo/Label")
-luck_label = NodePath("Overlay/StatsContainer/LuckRow/StatInfo/Label")
-talent_points_button = NodePath("Overlay/StatsContainer/TalentPointsRow/TalentsRow/PlusButton")
-strength_button = NodePath("Overlay/StatsContainer/StrengthRow/StatInfo/PlusButton")
-stamina_button = NodePath("Overlay/StatsContainer/StaminaRow/StatInfo/PlusButton")
-agility_button = NodePath("Overlay/StatsContainer/AgilityRow/StatInfo/PlusButton")
-luck_button = NodePath("Overlay/StatsContainer/LuckRow/StatInfo/PlusButton")
+talent_points_label = NodePath("Overlay/TalentsRow/Label")
+strength_label = NodePath("Overlay/Strength/Label")
+stamina_label = NodePath("Overlay/Stamina/Label")
+agility_label = NodePath("Overlay/Agility/Label")
+luck_label = NodePath("Overlay/Luck/Label")
+talent_points_button = NodePath("Overlay/TalentsRow/PlusButton")
+strength_button = NodePath("Overlay/Strength/PlusButton")
+stamina_button = NodePath("Overlay/Stamina/PlusButton")
+agility_button = NodePath("Overlay/Agility/PlusButton")
+luck_button = NodePath("Overlay/Luck/PlusButton")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel"]
 layout_mode = 1
@@ -846,163 +837,151 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 388.0
+offset_top = 449.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay"]
+[node name="Luck" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -179.5
+offset_top = -18.0
+offset_right = -12.5
+offset_bottom = 18.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 alignment = 1
 
-[node name="TalentPointsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 4
-alignment = 1
-
-[node name="TalentsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow/TalentsRow"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Talents: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow/TalentsRow"]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Unlock more talents"
-vertical_alignment = 1
-
-[node name="StrengthRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 4
-
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow/StatInfo"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Strength: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow/StatInfo"]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Increases damage dealt"
-vertical_alignment = 1
-
-[node name="StaminaRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 4
-
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow/StatInfo"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Stamina: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow/StatInfo"]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Increases max health"
-vertical_alignment = 1
-
-[node name="AgilityRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 4
-
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow/StatInfo"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Agility: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow/StatInfo"]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Increases dodge chance"
-vertical_alignment = 1
-
-[node name="LuckRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 4
-
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow/StatInfo"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Luck"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Luck: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow/StatInfo"]
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Luck"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow"]
+[node name="Agility" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 29.5
+offset_top = -18.0
+offset_right = 192.5
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Agility"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Increases critical chance"
+text = "Agility: 0"
 vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Agility"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="Stamina" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -181.5
+offset_top = 33.0
+offset_right = -18.5
+offset_bottom = 77.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Stamina"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Stamina: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Stamina"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="Strength" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 20.5
+offset_top = 32.0
+offset_right = 191.5
+offset_bottom = 78.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Strength"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Strength: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/Strength"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="TalentsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -81.5
+offset_top = -93.0
+offset_right = 81.5
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/TalentsRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Talents: 0"
+vertical_alignment = 1
+
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/TalentsRow"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
 
 [node name="ChurchPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
 visible = false

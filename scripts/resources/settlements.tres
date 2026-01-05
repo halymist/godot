@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SettlementsDatabase" load_steps=12 format=3 uid="uid://d1ggibhqe2sqs"]
+[gd_resource type="Resource" script_class="SettlementsDatabase" load_steps=13 format=3 uid="uid://d1ggibhqe2sqs"]
 
 [ext_resource type="Script" uid="uid://dougakb8mecrw" path="res://scripts/resources/SettlementsDatabase.gd" id="1_4vit6"]
 [ext_resource type="Script" uid="uid://pwd267vyc7jv" path="res://scripts/LocationData.gd" id="2_ot23h"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://csx0hgbm4hen4" path="res://assets/images/villages/20260102_2125_Nature Reclaims Ruins_remix_01ke0659d7e4gabfb7fs579m14.png" id="8_n5k1k"]
 [ext_resource type="PackedScene" uid="uid://mph5cgf7f1ou" path="res://assets/images/villages/settlements/krasna/trainer1.tscn" id="9_7jouw"]
 [ext_resource type="PackedScene" uid="uid://ca5h3ut3o1kbo" path="res://assets/images/villages/settlements/krasna/krasna.tscn" id="9_c0hw1"]
+[ext_resource type="PackedScene" uid="uid://r4cxy7qkjy51" path="res://assets/images/villages/settlements/krasna/vendor1.tscn" id="10_n5k1k"]
 
 [sub_resource type="Resource" id="Resource_48ku7"]
 script = ExtResource("2_ot23h")
@@ -19,7 +20,7 @@ village_scene = ExtResource("9_c0hw1")
 expedition_texture = ExtResource("8_n5k1k")
 expedition_text = "well this is kinda cool no?"
 blacksmith_utility_scene = ExtResource("5_n5k1k")
-vendor_utility_scene = ExtResource("3_n5k1k")
+vendor_utility_scene = ExtResource("10_n5k1k")
 alchemist_utility_scene = ExtResource("3_n5k1k")
 enchanter_utility_scene = ExtResource("6_mli3h")
 trainer_utility_scene = ExtResource("9_7jouw")
