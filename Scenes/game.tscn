@@ -1,4 +1,4 @@
-[gd_scene load_steps=124 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=119 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -43,7 +43,6 @@
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
 [ext_resource type="Texture2D" uid="uid://6wg11fjkxk0f" path="res://assets/images/ui/texturere.png" id="23_6l37k"]
-[ext_resource type="Texture2D" uid="uid://coehmowcbbl5r" path="res://assets/images/ui/preview_back.png" id="23_ewwwr"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="24_active_perks"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
@@ -128,18 +127,6 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wr3wg"]
 bg_color = Color(0.649928, 0.613808, 0.210934, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ewwwr"]
-texture = ExtResource("23_6l37k")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_umggo"]
-texture = ExtResource("23_6l37k")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fykvq"]
-texture = ExtResource("23_6l37k")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w4j8i"]
-texture = ExtResource("23_6l37k")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
 
@@ -334,7 +321,7 @@ avatar_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
 avatar_button = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Equip/Character/ChangeAvatar")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue")]
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
-bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
+bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
 stats_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats")
 active_effects = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/ActivePerksBackground/ActivePerks")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
@@ -652,34 +639,69 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_blacksmith")
 utility_background_container = NodePath("Control")
-bag = NodePath("Bag")
-blacksmith_slot = NodePath("ItemArea/ItemSlot")
-improved_stats_label = NodePath("ItemArea/StatsContainer/ImprovedStats")
-temper_button = NodePath("ItemArea/TemperButton")
+bag = NodePath("Overlay/Bag")
+blacksmith_slot = NodePath("Overlay/ItemArea/ItemSlot")
+improved_stats_label = NodePath("Overlay/ItemArea/StatsContainer/ImprovedStats")
+temper_button = NodePath("Overlay/ItemArea/TemperButton")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -270.0
-offset_right = 270.0
-offset_bottom = 360.0
+anchor_bottom = 1.0
+offset_left = -202.5
+offset_right = 217.5
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
+[node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 388.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
+
+[node name="TextContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 50.0
+offset_right = -10.0
+offset_bottom = -241.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BottomContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -271.0
+offset_left = 19.0
+offset_top = -231.0
+offset_right = -14.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
-texture = ExtResource("23_6l37k")
-expand_mode = 1
+alignment = 2
 
-[node name="ItemArea" type="NinePatchRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
+[node name="Reward" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/BottomContainer"]
+layout_mode = 2
+theme_override_constants/line_spacing = 10
+
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/BottomContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 2
+
+[node name="ItemArea" type="NinePatchRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -687,14 +709,13 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -178.5
-offset_top = 65.0
+offset_top = -111.0
 offset_right = 177.5
-offset_bottom = 217.0
+offset_bottom = 36.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("23_ewwwr")
 
-[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea" instance=ExtResource("6_itemslot")]
+[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea" instance=ExtResource("6_itemslot")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.19
@@ -709,7 +730,7 @@ outline_texture = ExtResource("9_sword")
 slot_type = "Blacksmith"
 slot_id = 16
 
-[node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea"]
+[node name="TemperButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -730,7 +751,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -739,24 +760,24 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Temper:"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/TemperButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea"]
+[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea"]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -770,22 +791,22 @@ grow_horizontal = 0
 grow_vertical = 2
 size_flags_horizontal = 3
 
-[node name="StatsTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/StatsContainer"]
+[node name="StatsTitle" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea/StatsContainer"]
 layout_mode = 2
 text = "Tempering Improvement:"
 
-[node name="ImprovedStats" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/ItemArea/StatsContainer"]
+[node name="ImprovedStats" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/ItemArea/StatsContainer"]
 layout_mode = 2
 text = "+10% to all stats"
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.803
 anchor_bottom = 0.924
-offset_top = 37.11
-offset_bottom = 45.88
+offset_top = -29.326
+offset_bottom = 16.392
 
 [node name="TrainerPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
 visible = false
@@ -798,39 +819,40 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("28_sjh24")
 utility_background_container = NodePath("Control")
-talent_points_label = NodePath("UtilityPanel/StatsContainer/TalentPointsRow/TalentsRow/Label")
-strength_label = NodePath("UtilityPanel/StatsContainer/StrengthRow/StatInfo/Label")
-stamina_label = NodePath("UtilityPanel/StatsContainer/StaminaRow/StatInfo/Label")
-agility_label = NodePath("UtilityPanel/StatsContainer/AgilityRow/StatInfo/Label")
-luck_label = NodePath("UtilityPanel/StatsContainer/LuckRow/StatInfo/Label")
-talent_points_button = NodePath("UtilityPanel/StatsContainer/TalentPointsRow/TalentsRow/PlusButton")
-strength_button = NodePath("UtilityPanel/StatsContainer/StrengthRow/StatInfo/PlusButton")
-stamina_button = NodePath("UtilityPanel/StatsContainer/StaminaRow/StatInfo/PlusButton")
-agility_button = NodePath("UtilityPanel/StatsContainer/AgilityRow/StatInfo/PlusButton")
-luck_button = NodePath("UtilityPanel/StatsContainer/LuckRow/StatInfo/PlusButton")
+talent_points_label = NodePath("Overlay/StatsContainer/TalentPointsRow/TalentsRow/Label")
+strength_label = NodePath("Overlay/StatsContainer/StrengthRow/StatInfo/Label")
+stamina_label = NodePath("Overlay/StatsContainer/StaminaRow/StatInfo/Label")
+agility_label = NodePath("Overlay/StatsContainer/AgilityRow/StatInfo/Label")
+luck_label = NodePath("Overlay/StatsContainer/LuckRow/StatInfo/Label")
+talent_points_button = NodePath("Overlay/StatsContainer/TalentPointsRow/TalentsRow/PlusButton")
+strength_button = NodePath("Overlay/StatsContainer/StrengthRow/StatInfo/PlusButton")
+stamina_button = NodePath("Overlay/StatsContainer/StaminaRow/StatInfo/PlusButton")
+agility_button = NodePath("Overlay/StatsContainer/AgilityRow/StatInfo/PlusButton")
+luck_button = NodePath("Overlay/StatsContainer/LuckRow/StatInfo/PlusButton")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -270.0
-offset_right = 270.0
-offset_bottom = 360.0
+anchor_bottom = 1.0
+offset_left = -202.5
+offset_right = 217.5
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel"]
+[node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel"]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -270.0
+offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxTexture_ewwwr")
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
 
-[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel"]
+[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -841,142 +863,142 @@ size_flags_vertical = 3
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="TalentPointsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer"]
+[node name="TalentPointsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 alignment = 1
 
-[node name="TalentsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/TalentPointsRow"]
+[node name="TalentsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/TalentPointsRow/TalentsRow"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow/TalentsRow"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Talents: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/TalentPointsRow/TalentsRow"]
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow/TalentsRow"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/TalentPointsRow"]
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/TalentPointsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Unlock more talents"
 vertical_alignment = 1
 
-[node name="StrengthRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer"]
+[node name="StrengthRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StrengthRow"]
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StrengthRow/StatInfo"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Strength: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StrengthRow/StatInfo"]
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow/StatInfo"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StrengthRow"]
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StrengthRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases damage dealt"
 vertical_alignment = 1
 
-[node name="StaminaRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer"]
+[node name="StaminaRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StaminaRow"]
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StaminaRow/StatInfo"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Stamina: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StaminaRow/StatInfo"]
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow/StatInfo"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/StaminaRow"]
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/StaminaRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases max health"
 vertical_alignment = 1
 
-[node name="AgilityRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer"]
+[node name="AgilityRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/AgilityRow"]
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/AgilityRow/StatInfo"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Agility: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/AgilityRow/StatInfo"]
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow/StatInfo"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/AgilityRow"]
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/AgilityRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases dodge chance"
 vertical_alignment = 1
 
-[node name="LuckRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer"]
+[node name="LuckRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 
-[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/LuckRow"]
+[node name="StatInfo" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/LuckRow/StatInfo"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow/StatInfo"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Luck: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/LuckRow/StatInfo"]
+[node name="PlusButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow/StatInfo"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/UtilityPanel/StatsContainer/LuckRow"]
+[node name="Description" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TrainerPanel/Overlay/StatsContainer/LuckRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Increases critical chance"
@@ -993,34 +1015,34 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("29_k5jl5")
 utility_background_container = NodePath("Control")
-blessing_slot_1 = NodePath("UtilityPanel/BlessingSlot1")
-blessing_slot_2 = NodePath("UtilityPanel/BlessingSlot2")
-blessing_slot_3 = NodePath("UtilityPanel/BlessingSlot3")
-effect_description_label = NodePath("UtilityPanel/EffectDescription")
-bless_button = NodePath("UtilityPanel/BlessButton")
+blessing_slot_1 = NodePath("Overlay/BlessingSlot1")
+blessing_slot_2 = NodePath("Overlay/BlessingSlot2")
+blessing_slot_3 = NodePath("Overlay/BlessingSlot3")
+effect_description_label = NodePath("Overlay/EffectDescription")
+bless_button = NodePath("Overlay/BlessButton")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -270.0
-offset_right = 270.0
-offset_bottom = 360.0
+anchor_bottom = 1.0
+offset_left = -202.5
+offset_right = 217.5
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
+[node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -265.0
+offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxTexture_umggo")
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
 
-[node name="BlessingSlot1" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+[node name="BlessingSlot1" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 1
 anchors_preset = 8
@@ -1029,16 +1051,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -134.5
-offset_top = -15.5
+offset_top = -27.0
 offset_right = -54.5
-offset_bottom = 64.5
+offset_bottom = 53.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("27_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BlessingSlot2" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+[node name="BlessingSlot2" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 1
 anchors_preset = 8
@@ -1047,16 +1069,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -39.5
-offset_top = -16.5
+offset_top = -28.0
 offset_right = 40.5
-offset_bottom = 63.5
+offset_bottom = 52.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("27_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BlessingSlot3" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+[node name="BlessingSlot3" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 1
 anchors_preset = 8
@@ -1065,16 +1087,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = 55.5
-offset_top = -16.5
+offset_top = -28.0
 offset_right = 135.5
-offset_bottom = 63.5
+offset_bottom = 52.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("27_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="EffectDescription" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+[node name="EffectDescription" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay"]
 custom_minimum_size = Vector2(400, 60)
 layout_mode = 1
 anchors_preset = 8
@@ -1083,9 +1105,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -199.5
-offset_top = -114.5
+offset_top = -126.0
 offset_right = 200.5
-offset_bottom = -54.5
+offset_bottom = -66.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -1094,7 +1116,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="BlessButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel"]
+[node name="BlessButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 1
 anchors_preset = 7
@@ -1116,7 +1138,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay/BlessButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1125,24 +1147,24 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Receive Blessing ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/UtilityPanel/BlessButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
@@ -1158,37 +1180,36 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("30_nqk4g")
 utility_background_container = NodePath("Background")
-bag = NodePath("UtilityPanel/Bag")
-result_preview = NodePath("UtilityPanel/ResultPreview")
-brew_button = NodePath("UtilityPanel/BrewButton")
-ingredient_slot1 = NodePath("UtilityPanel/IngredientsRow/Slot1")
-ingredient_slot2 = NodePath("UtilityPanel/IngredientsRow/Slot2")
-ingredient_slot3 = NodePath("UtilityPanel/IngredientsRow/Slot3")
+bag = NodePath("Overlay/Bag")
+result_preview = NodePath("Overlay/ResultPreview")
+brew_button = NodePath("Overlay/BrewButton")
+ingredient_slot1 = NodePath("Overlay/IngredientsRow/Slot1")
+ingredient_slot2 = NodePath("Overlay/IngredientsRow/Slot2")
+ingredient_slot3 = NodePath("Overlay/IngredientsRow/Slot3")
 
 [node name="Background" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -270.0
-offset_right = 270.0
-offset_bottom = 360.0
+anchor_bottom = 1.0
+offset_left = -280.5
+offset_right = 274.5
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
+[node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -266.0
+offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 3
-size_flags_stretch_ratio = 4.0
-theme_override_styles/panel = SubResource("StyleBoxTexture_fykvq")
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
 
-[node name="ResultPreview" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel"]
+[node name="ResultPreview" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 1
 anchors_preset = 12
@@ -1207,62 +1228,62 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel"]
+[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay"]
 layout_mode = 2
 anchor_left = 0.353
 anchor_top = 0.5
 anchor_right = 0.353
 anchor_bottom = 0.5
 offset_left = -125.965
-offset_top = -34.0
+offset_top = -46.0
 offset_right = 140.035
-offset_bottom = 36.0
+offset_bottom = 24.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Slot1" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot1" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 17
 
-[node name="Plus1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow"]
+[node name="Plus1" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot2" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot2" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 18
 
-[node name="Plus2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow"]
+[node name="Plus2" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 24
 text = "+"
 vertical_alignment = 1
 
-[node name="Slot3" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/IngredientsRow" instance=ExtResource("6_itemslot")]
+[node name="Slot3" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 19
 
-[node name="BrewButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel"]
+[node name="BrewButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay"]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 offset_left = 286.0
-offset_top = 101.0
+offset_top = 77.0
 offset_right = 398.0
-offset_bottom = 164.0
+offset_bottom = 140.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
@@ -1274,7 +1295,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/BrewButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1283,29 +1304,29 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Brew ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel/BrewButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/UtilityPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 offset_top = -75.0
@@ -1321,35 +1342,34 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("31_enchanter")
 utility_background_container = NodePath("Control")
-bag = NodePath("UtilityPanel/Bag")
-enchanter_slot = NodePath("UtilityPanel/ItemSlot")
-enchant_button = NodePath("UtilityPanel/EnchantButton")
-effect_list = NodePath("UtilityPanel/EffectsSection/EffectScrollContainer/EffectList")
+bag = NodePath("Overlay/Bag")
+enchanter_slot = NodePath("Overlay/ItemSlot")
+enchant_button = NodePath("Overlay/EnchantButton")
+effect_list = NodePath("Overlay/EffectsSection/EffectScrollContainer/EffectList")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -270.0
-offset_right = 270.0
-offset_bottom = 360.0
+anchor_bottom = 1.0
+offset_left = -202.5
+offset_right = 217.5
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="UtilityPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
+[node name="Overlay" type="ColorRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -274.0
+offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 3
-size_flags_stretch_ratio = 4.0
-theme_override_styles/panel = SubResource("StyleBoxTexture_w4j8i")
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
 
-[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel" instance=ExtResource("6_itemslot")]
+[node name="ItemSlot" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay" instance=ExtResource("6_itemslot")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1357,16 +1377,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -159.5
-offset_top = -85.0
+offset_top = -101.0
 offset_right = -84.5
-offset_bottom = -10.0
+offset_bottom = -26.0
 grow_horizontal = 2
 grow_vertical = 2
 outline_texture = ExtResource("9_sword")
 slot_type = "Enchanter"
 slot_id = 15
 
-[node name="EnchantButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel"]
+[node name="EnchantButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay"]
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 1
 anchors_preset = 8
@@ -1375,9 +1395,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -181.5
-offset_top = 4.0
+offset_top = -12.0
 offset_right = -46.5
-offset_bottom = 46.0
+offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
@@ -1388,7 +1408,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
 theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EnchantButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EnchantButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1397,29 +1417,29 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EnchantButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Enchant ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EnchantButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EnchantButton/Content"]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EnchantButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel"]
+[node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1427,30 +1447,30 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -26.5
-offset_top = -99.0
+offset_top = -115.0
 offset_right = 189.5
-offset_bottom = 58.0
+offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.6
 
-[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EffectsSection"]
+[node name="EffectLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EffectsSection"]
 layout_mode = 2
 text = "Available Enchantments"
 horizontal_alignment = 1
 
-[node name="EffectScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EffectsSection"]
+[node name="EffectScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EffectsSection"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="EffectList" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel/EffectsSection/EffectScrollContainer"]
+[node name="EffectList" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/EffectsSection/EffectScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/UtilityPanel" instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 offset_top = -75.0
@@ -6582,7 +6602,7 @@ wide_payment_button = NodePath("Sidebar/CurrencySection/MushroomContainer/Paymen
 wide_chat_button = NodePath("Sidebar/ButtonsSection/ChatButtonContainer/ChatButton")
 wide_back_button = NodePath("Sidebar/BackButton")
 
-[node name="Sidebar" type="Panel" parent="Wide" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
+[node name="Sidebar" type="Panel" parent="Wide" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.2
@@ -6596,7 +6616,6 @@ sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
 weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
 location_info_panel = NodePath("../../Portrait/GameSceneParent/Wrapper/GameScene/LocationInfoPanel")
-location_hover_area = NodePath("LocationPanel")
 
 [node name="Character" type="TextureRect" parent="Wide/Sidebar"]
 layout_mode = 0

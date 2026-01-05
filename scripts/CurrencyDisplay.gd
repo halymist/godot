@@ -10,7 +10,9 @@ extends Control
 @export var rainy_icon: Texture2D
 @export var weather_icon_texture: TextureRect
 @export var location_info_panel: PanelContainer
-@export var location_hover_area: Control  # The panel/control that should detect mouse hover
+@export var location_hover_area: Control  # Optional control to detect hover on
+
+var update_timer: Timer
 
 func _ready():
 	
@@ -22,11 +24,13 @@ func _ready():
 	if location_hover_area:
 		location_hover_area.mouse_entered.connect(_on_mouse_entered)
 		location_hover_area.mouse_exited.connect(_on_mouse_exited)
-		location_hover_area.gui_input.connect(_on_location_gui_input)
-	else:
-		# Fallback: use self
-		mouse_entered.connect(_on_mouse_entered)
-		mouse_exited.connect(_on_mouse_exited)
+
+	# Create timer to update time display every second
+	update_timer = Timer.new()
+	update_timer.wait_time = 1.0
+	update_timer.timeout.connect(_on_update_timer_timeout)
+	add_child(update_timer)
+	update_timer.start()
 	
 	# Initial update
 	update_display()
@@ -35,15 +39,19 @@ func _on_mushrooms_changed(new_mushrooms: int):
 	if currency_label:
 		currency_label.text = str(new_mushrooms)
 
+func _on_update_timer_timeout():
+	"""Called every second to update the time display"""
+	if location_label:
+		var location_id = GameInfo.current_player.location if GameInfo.current_player else 1
+		var village_name = GameInfo.get_village_name(location_id)
+		var server_time = _get_server_time_string()
+		location_label.text = "%s - %s" % [village_name, server_time]
+
 func _on_location_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if location_info_panel:
 				location_info_panel.visible = not location_info_panel.visible
-
-func _gui_input(event: InputEvent):
-	# Fallback if location_hover_area is not set
-	_on_location_gui_input(event)
 
 func _on_mouse_entered():
 	if location_info_panel:

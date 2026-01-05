@@ -1,20 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://dpsns7v35wk8l"]
+[gd_scene load_steps=4 format=3 uid="uid://c5ba3xmwim0c7"]
 
-[ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_4s4ef"]
-[ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="2_4s4ef"]
-[ext_resource type="Texture2D" uid="uid://ckt13yo64v7r8" path="res://assets/images/blackmsith_full.png" id="2_rfuyk"]
+[ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_prdmf"]
+[ext_resource type="Texture2D" uid="uid://r4pljp0t56r4" path="res://assets/images/villages/church_full.png" id="2_prdmf"]
+[ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="3_7hnyr"]
 
 [node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -68.0
-offset_right = 68.0
+offset_right = 15.0
 offset_bottom = -269.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_4s4ef")
+script = ExtResource("1_prdmf")
 chat_bubble = NodePath("BubbleContainer/ChatBubble")
 on_entered_greetings = Array[String](["Welcome customer", "Looking to temper your gear?", "I can make that weapon even stronger!", "Looking to temper your gear?"])
 cooldown_between_messages = 6.0
@@ -26,25 +25,25 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_rfuyk")
+texture = ExtResource("2_prdmf")
 expand_mode = 1
 
 [node name="BubbleContainer" type="Control" parent="."]
 clip_contents = true
 layout_mode = 1
-anchor_left = 0.177
-anchor_top = 0.033
-anchor_right = 0.477
-anchor_bottom = 0.384
-offset_left = 0.242996
-offset_top = 0.177
-offset_right = -0.0570068
-offset_bottom = -0.304001
+anchor_left = 0.036
+anchor_top = 0.005
+anchor_right = 0.457
+anchor_bottom = 0.366
+offset_left = -0.120001
+offset_top = -0.155
+offset_right = 0.0599976
+offset_bottom = 0.0539856
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="ChatBubble" parent="BubbleContainer" instance=ExtResource("2_4s4ef")]
+[node name="ChatBubble" parent="BubbleContainer" instance=ExtResource("3_7hnyr")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
