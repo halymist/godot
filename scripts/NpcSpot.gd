@@ -96,12 +96,12 @@ func show_chat_bubble():
 	var dialogue = npc_data.get("dialogue", "...")
 	chat_bubble = chat_bubble_scene.instantiate()
 	
-	# Add to GameScene instead of scene root so coordinate spaces match
-	var game_scene = get_tree().current_scene.find_child("GameScene", true, false)
-	if not game_scene:
+	# Add to parent (VillageContent) so it scrolls with the NPCs
+	var parent = get_parent()
+	if not parent:
 		return
 	
-	game_scene.add_child(chat_bubble)
+	parent.add_child(chat_bubble)
 	
 	# First show the dialogue to get the correct bubble size
 	chat_bubble.show_dialogue(dialogue, 3.0)
@@ -109,21 +109,20 @@ func show_chat_bubble():
 	# Wait one frame for size to be calculated
 	await get_tree().process_frame
 	
-	# Get position relative to GameScene
-	var npc_pos_in_game_scene = global_position - game_scene.global_position
+	# Get NPC position relative to parent container
 	var bubble_size = chat_bubble.size
-	var game_scene_size = game_scene.size
+	var parent_size = parent.size
 	
 	# Position above and slightly to the right of the NPC
-	var bubble_x = npc_pos_in_game_scene.x + 20  # 20px to the right
-	var bubble_y = npc_pos_in_game_scene.y - bubble_size.y - 5  # 5px padding above NPC
+	var bubble_x = position.x + 20  # 20px to the right
+	var bubble_y = position.y - bubble_size.y - 5  # 5px padding above NPC
 	
-	# Constrain to stay within GameScene bounds
+	# Constrain to stay within parent bounds
 	var margin = 5.0
 	
 	# Check right edge - if bubble goes off screen, move it left
-	if bubble_x + bubble_size.x > game_scene_size.x:
-		bubble_x = game_scene_size.x - bubble_size.x - margin
+	if bubble_x + bubble_size.x > parent_size.x:
+		bubble_x = parent_size.x - bubble_size.x - margin
 	
 	# Check left edge
 	if bubble_x < 0:
@@ -131,11 +130,11 @@ func show_chat_bubble():
 	
 	# Check top edge - if bubble goes above, position it below NPC instead
 	if bubble_y < 0:
-		bubble_y = npc_pos_in_game_scene.y + size.y + 5  # Below NPC
+		bubble_y = position.y + size.y + 5  # Below NPC
 	
 	# Check bottom edge
-	if bubble_y + bubble_size.y > game_scene_size.y:
-		bubble_y = game_scene_size.y - bubble_size.y - margin
+	if bubble_y + bubble_size.y > parent_size.y:
+		bubble_y = parent_size.y - bubble_size.y - margin
 	
 	chat_bubble.position = Vector2(bubble_x, bubble_y)
 

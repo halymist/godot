@@ -9,18 +9,19 @@ offset_bottom = 60.0
 texture = ExtResource("1_p5v4p")
 script = ExtResource("1_chatbubble")
 dialogue_label = NodePath("DialogueLabel")
+max_width = 220.0
 
 [node name="DialogueLabel" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
+offset_left = 10.0
 offset_top = 10.0
-offset_right = -12.0
+offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "hi"
+text = "hissss"
 horizontal_alignment = 1
 autowrap_mode = 3
