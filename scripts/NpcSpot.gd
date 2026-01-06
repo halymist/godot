@@ -11,6 +11,7 @@ var click_button: Button
 
 var chat_bubble: ChatBubble = null
 var chat_bubble_scene = preload("res://Scenes/ChatBubble.tscn")
+var linger_timer: Timer = null
 
 signal npc_hovered(npc: NpcSpot)
 signal npc_hover_exited(npc: NpcSpot)
@@ -66,28 +67,41 @@ func _on_mouse_entered():
 		npc_hovered.emit(self)
 
 func _on_mouse_exited():
-	hide_chat_bubble()
+	# Start linger timer - bubble will hide after 3 seconds
+	if chat_bubble and is_instance_valid(chat_bubble):
+		if linger_timer:
+			linger_timer.queue_free()
+		
+		linger_timer = Timer.new()
+		linger_timer.wait_time = 3.0
+		linger_timer.one_shot = true
+		linger_timer.timeout.connect(_on_linger_timeout)
+		add_child(linger_timer)
+		linger_timer.start()
+	
 	npc_hover_exited.emit(self)
 
+func _on_linger_timeout():
+	hide_chat_bubble()
+
 func show_chat_bubble():
+	# Cancel any pending linger timer
+	if linger_timer and is_instance_valid(linger_timer):
+		linger_timer.queue_free()
+		linger_timer = null
+	
 	if chat_bubble:
 		hide_chat_bubble()
 	
 	var dialogue = npc_data.get("dialogue", "...")
 	chat_bubble = chat_bubble_scene.instantiate()
 	
-	# Add to scene root
-	var scene_root = get_tree().current_scene
-	scene_root.add_child(chat_bubble)
+	# Add to GameScene instead of scene root so coordinate spaces match
+	var game_scene = get_tree().current_scene.find_child("GameScene", true, false)
+	if not game_scene:
+		return
 	
-	# Get global position and convert to screen coordinates
-	var npc_global_pos = global_position
-	var scroll_container = get_parent().get_parent()  # VillageContent -> ScrollContainer
-	
-	# Adjust for scroll position
-	var scroll_offset = Vector2.ZERO
-	if scroll_container is ScrollContainer:
-		scroll_offset = Vector2(scroll_container.scroll_horizontal, scroll_container.scroll_vertical)
+	game_scene.add_child(chat_bubble)
 	
 	# First show the dialogue to get the correct bubble size
 	chat_bubble.show_dialogue(dialogue, 3.0)
@@ -95,35 +109,35 @@ func show_chat_bubble():
 	# Wait one frame for size to be calculated
 	await get_tree().process_frame
 	
-	# Now position bubble directly above NPC with minimal padding
+	# Get position relative to GameScene
+	var npc_pos_in_game_scene = global_position - game_scene.global_position
 	var bubble_size = chat_bubble.size
-	var initial_bubble_pos = Vector2(
-		npc_global_pos.x - scroll_offset.x - (bubble_size.x / 2) + (size.x / 2),  # Center bubble over NPC
-		npc_global_pos.y - scroll_offset.y - bubble_size.y - 5   # Position directly above NPC with 5px padding
-	)
+	var game_scene_size = game_scene.size
 	
-	# Get game scene bounds for constraint
-	var game_scene = get_tree().current_scene.find_child("GameScene", true, false)
-	var bounds_rect = Rect2(Vector2.ZERO, Vector2(1080, 1920))  # Default bounds
-	if game_scene:
-		bounds_rect = Rect2(game_scene.global_position, game_scene.size)
+	# Position above and slightly to the right of the NPC
+	var bubble_x = npc_pos_in_game_scene.x + 20  # 20px to the right
+	var bubble_y = npc_pos_in_game_scene.y - bubble_size.y - 5  # 5px padding above NPC
 	
-	# Constrain bubble position to stay within bounds
-	var constrained_pos = initial_bubble_pos
+	# Constrain to stay within GameScene bounds
+	var margin = 5.0
 	
-	# Check horizontal bounds
-	if constrained_pos.x < bounds_rect.position.x:
-		constrained_pos.x = bounds_rect.position.x + 5  # Add small margin
-	elif constrained_pos.x + bubble_size.x > bounds_rect.position.x + bounds_rect.size.x:
-		constrained_pos.x = bounds_rect.position.x + bounds_rect.size.x - bubble_size.x - 5
+	# Check right edge - if bubble goes off screen, move it left
+	if bubble_x + bubble_size.x > game_scene_size.x:
+		bubble_x = game_scene_size.x - bubble_size.x - margin
 	
-	# Check vertical bounds - if bubble would go above screen, position it below NPC instead
-	if constrained_pos.y < bounds_rect.position.y:
-		constrained_pos.y = npc_global_pos.y - scroll_offset.y + size.y + 5  # Position below NPC
-	elif constrained_pos.y + bubble_size.y > bounds_rect.position.y + bounds_rect.size.y:
-		constrained_pos.y = bounds_rect.position.y + bounds_rect.size.y - bubble_size.y - 5
+	# Check left edge
+	if bubble_x < 0:
+		bubble_x = margin
 	
-	chat_bubble.position = constrained_pos
+	# Check top edge - if bubble goes above, position it below NPC instead
+	if bubble_y < 0:
+		bubble_y = npc_pos_in_game_scene.y + size.y + 5  # Below NPC
+	
+	# Check bottom edge
+	if bubble_y + bubble_size.y > game_scene_size.y:
+		bubble_y = game_scene_size.y - bubble_size.y - margin
+	
+	chat_bubble.position = Vector2(bubble_x, bubble_y)
 
 func hide_chat_bubble():
 	if chat_bubble and is_instance_valid(chat_bubble):
