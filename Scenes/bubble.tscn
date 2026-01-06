@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bpi7dfk0k0566"]
+
+[node name="Bubble" type="MarginContainer"]
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "hkjjkhkhkhkjhkjh"
