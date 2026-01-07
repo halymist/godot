@@ -116,32 +116,46 @@ func show_chat_bubble():
 	await get_tree().process_frame
 	await get_tree().process_frame
 	
-	# Get NPC position relative to parent container
+	# Get bubble and NPC sizes
 	var bubble_size = chat_bubble.size
-	var parent_size = parent.size
+	var npc_size = size
 	
-	# Position above and slightly to the right of the NPC
-	var bubble_x = position.x + 20  # 20px to the right
+	# Find the ScrollContainer to get viewport info
+	var scroll_container = parent.get_parent()
+	var viewport_rect = Rect2(Vector2.ZERO, parent.size)
+	
+	if scroll_container is ScrollContainer:
+		var scroll_offset = Vector2(scroll_container.scroll_horizontal, scroll_container.scroll_vertical)
+		viewport_rect = Rect2(scroll_offset, scroll_container.size)
+	
+	# Default: centered above NPC
+	var bubble_x = position.x + (npc_size.x - bubble_size.x) / 2.0
 	var bubble_y = position.y - bubble_size.y - 5  # 5px padding above NPC
 	
-	# Constrain to stay within parent bounds
 	var margin = 5.0
 	
-	# Check right edge - if bubble goes off screen, move it left
-	if bubble_x + bubble_size.x > parent_size.x:
-		bubble_x = parent_size.x - bubble_size.x - margin
+	# Adjust horizontally if bubble goes outside viewport
+	var bubble_left = bubble_x
+	var bubble_right = bubble_x + bubble_size.x
+	var viewport_left = viewport_rect.position.x
+	var viewport_right = viewport_rect.position.x + viewport_rect.size.x
 	
-	# Check left edge
-	if bubble_x < 0:
-		bubble_x = margin
+	if bubble_right > viewport_right:
+		# Goes off right edge - shift left
+		bubble_x = viewport_right - bubble_size.x - margin
 	
-	# Check top edge - if bubble goes above, position it below NPC instead
-	if bubble_y < 0:
-		bubble_y = position.y + size.y + 5  # Below NPC
+	if bubble_left < viewport_left:
+		# Goes off left edge - shift right
+		bubble_x = viewport_left + margin
 	
-	# Check bottom edge
-	if bubble_y + bubble_size.y > parent_size.y:
-		bubble_y = parent_size.y - bubble_size.y - margin
+	# Check vertical bounds
+	if bubble_y < viewport_rect.position.y:
+		# Goes above viewport - position below NPC instead
+		bubble_y = position.y + npc_size.y + 5
+	
+	if bubble_y + bubble_size.y > viewport_rect.position.y + viewport_rect.size.y:
+		# Goes below viewport - clamp
+		bubble_y = viewport_rect.position.y + viewport_rect.size.y - bubble_size.y - margin
 	
 	chat_bubble.position = Vector2(bubble_x, bubble_y)
 
