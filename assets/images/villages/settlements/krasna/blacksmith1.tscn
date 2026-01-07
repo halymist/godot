@@ -32,11 +32,11 @@ expand_mode = 1
 [node name="BubbleContainer" type="Control" parent="."]
 clip_contents = true
 layout_mode = 1
-anchor_left = 0.177
+anchor_left = 0.139
 anchor_top = 0.033
 anchor_right = 0.477
 anchor_bottom = 0.384
-offset_left = 0.242996
+offset_left = -0.199005
 offset_top = 0.177
 offset_right = -0.0570068
 offset_bottom = -0.304001
@@ -46,7 +46,11 @@ mouse_filter = 2
 
 [node name="ChatBubble" parent="BubbleContainer" instance=ExtResource("2_4s4ef")]
 layout_mode = 1
-offset_left = -0.5
-offset_right = 0.5
-offset_bottom = 23.0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_right = 0.0
+offset_left = 0.0
+offset_right = 25.0
+offset_bottom = 39.0
+grow_horizontal = 1
 vertical_alignment = 1
