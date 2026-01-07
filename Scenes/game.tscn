@@ -545,8 +545,8 @@ anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -202.5
-offset_right = 217.5
+offset_left = -302.5
+offset_right = 327.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -637,14 +637,11 @@ temper_button = NodePath("Overlay/ItemArea/TemperButton")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel"]
 layout_mode = 1
-anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -280.5
-offset_top = 5.0
 offset_right = 260.5
-offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -6271,7 +6268,7 @@ anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 50.0
 offset_right = -10.0
-offset_bottom = -241.0
+offset_bottom = -286.0
 grow_horizontal = 2
 grow_vertical = 2
 
