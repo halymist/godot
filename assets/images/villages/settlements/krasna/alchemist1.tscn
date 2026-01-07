@@ -39,17 +39,11 @@ offset_left = 0.22699
 offset_top = -0.0800009
 offset_right = 0.107986
 offset_bottom = 0.209991
-grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
 
 [node name="ChatBubble" parent="BubbleContainer" instance=ExtResource("3_y3f4n")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 0.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 2
-padding = Vector2(12, 20)
+offset_left = -0.5
+offset_right = 0.5
+offset_bottom = 23.0
+vertical_alignment = 1

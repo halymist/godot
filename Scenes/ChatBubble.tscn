@@ -1,27 +1,17 @@
 [gd_scene load_steps=3 format=3 uid="uid://b4ywslru7t5jb"]
 
 [ext_resource type="Script" uid="uid://5ocyjrbwuv5v" path="res://scripts/ChatBubble.gd" id="1_chatbubble"]
-[ext_resource type="Texture2D" uid="uid://dvbxbyno5d7yg" path="res://assets/images/ui/bubble2.png" id="1_p5v4p"]
 
-[node name="ChatBubble" type="NinePatchRect" node_paths=PackedStringArray("dialogue_label")]
-offset_right = 55.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46vr1"]
+
+[node name="ChatBubble" type="Label"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -27.5
+offset_right = 27.5
 offset_bottom = 60.0
-texture = ExtResource("1_p5v4p")
-script = ExtResource("1_chatbubble")
-dialogue_label = NodePath("DialogueLabel")
-max_width = 220.0
-
-[node name="DialogueLabel" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
 grow_horizontal = 2
-grow_vertical = 2
-text = "hissss"
+theme_override_styles/normal = SubResource("StyleBoxFlat_46vr1")
 horizontal_alignment = 1
-autowrap_mode = 3
+script = ExtResource("1_chatbubble")
