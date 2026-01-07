@@ -1,10 +1,15 @@
-[gd_scene format=3 uid="uid://bpi7dfk0k0566"]
+[gd_scene load_steps=3 format=3 uid="uid://bpi7dfk0k0566"]
 
-[node name="Bubble" type="MarginContainer"]
+[ext_resource type="Script" uid="uid://clakwn43jgoou" path="res://scripts/bubble.gd" id="1_bubble"]
 
-[node name="Panel" type="Panel" parent="."]
-layout_mode = 2
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fu76k"]
 
-[node name="Label" type="Label" parent="."]
-layout_mode = 2
-text = "hkjjkhkhkhkjhkjh"
+[node name="Bubble" type="Label"]
+custom_minimum_size = Vector2(20, 0)
+offset_right = 21.0
+offset_bottom = 23.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_fu76k")
+text = "hi"
+horizontal_alignment = 1
+autowrap_mode = 3
+script = ExtResource("1_bubble")

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bk6a75wnuawv"]
+[gd_scene load_steps=4 format=3 uid="uid://bk6a75wnuawv"]
 
 [ext_resource type="Script" uid="uid://dday8iog7qdy2" path="res://scripts/NpcSpot.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bpi7dfk0k0566" path="res://Scenes/bubble.tscn" id="2_2u0ql"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spot"]
 bg_color = Color(0, 1, 0, 0.3)
@@ -24,6 +25,7 @@ offset_bottom = 75.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+chat_bubble_scene = ExtResource("2_2u0ql")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
 layout_mode = 1

@@ -9,8 +9,8 @@ var texture_rect: TextureRect
 var spot_visual: Panel
 var click_button: Button
 
-var chat_bubble: ChatBubble = null
-var chat_bubble_scene = preload("res://Scenes/ChatBubble.tscn")
+var chat_bubble = null
+@export var chat_bubble_scene: PackedScene
 var linger_timer: Timer = null
 
 signal npc_hovered(npc: NpcSpot)
@@ -90,10 +90,16 @@ func show_chat_bubble():
 		linger_timer.queue_free()
 		linger_timer = null
 	
+	var dialogue = npc_data.get("dialogue", "...")
+	
+	# If bubble already exists and visible, just refresh it
+	if chat_bubble and is_instance_valid(chat_bubble) and chat_bubble.visible:
+		chat_bubble.show_dialogue(dialogue, 3.0, true)
+		return
+	
 	if chat_bubble:
 		hide_chat_bubble()
 	
-	var dialogue = npc_data.get("dialogue", "...")
 	chat_bubble = chat_bubble_scene.instantiate()
 	
 	# Add to parent (VillageContent) so it scrolls with the NPCs
@@ -103,10 +109,11 @@ func show_chat_bubble():
 	
 	parent.add_child(chat_bubble)
 	
-	# First show the dialogue to get the correct bubble size
+	# Show the dialogue and wait for it to finish sizing
 	chat_bubble.show_dialogue(dialogue, 3.0)
 	
-	# Wait one frame for size to be calculated
+	# Wait two frames to ensure size is fully calculated
+	await get_tree().process_frame
 	await get_tree().process_frame
 	
 	# Get NPC position relative to parent container
