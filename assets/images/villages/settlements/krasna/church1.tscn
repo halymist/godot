@@ -1,16 +1,17 @@
 [gd_scene load_steps=4 format=3 uid="uid://c5ba3xmwim0c7"]
 
 [ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_prdmf"]
-[ext_resource type="Texture2D" uid="uid://r4pljp0t56r4" path="res://assets/images/villages/church_full.png" id="2_prdmf"]
+[ext_resource type="Texture2D" uid="uid://o5yurb3cuiht" path="res://assets/images/villages/monastery2.png" id="2_prdmf"]
 [ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="3_7hnyr"]
 
 [node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_right = 15.0
-offset_bottom = -269.0
+offset_left = -315.0
+offset_right = 315.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_prdmf")
@@ -31,14 +32,14 @@ expand_mode = 1
 [node name="BubbleContainer" type="Control" parent="."]
 clip_contents = true
 layout_mode = 1
-anchor_left = 0.036
-anchor_top = 0.005
-anchor_right = 0.457
+anchor_left = 0.227
+anchor_top = 0.072
+anchor_right = 0.571
 anchor_bottom = 0.366
-offset_left = -0.120001
-offset_top = -0.155
-offset_right = 0.0599976
-offset_bottom = 0.0539856
+offset_left = 0.98999
+offset_top = 0.199997
+offset_right = 1.26999
+offset_bottom = -0.400024
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -52,4 +53,3 @@ offset_left = -0.5
 offset_right = 0.5
 offset_bottom = 23.0
 grow_horizontal = 2
-vertical_alignment = 1

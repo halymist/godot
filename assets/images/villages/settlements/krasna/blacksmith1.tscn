@@ -2,16 +2,16 @@
 
 [ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_4s4ef"]
 [ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="2_4s4ef"]
-[ext_resource type="Texture2D" uid="uid://ckt13yo64v7r8" path="res://assets/images/blackmsith_full.png" id="2_rfuyk"]
+[ext_resource type="Texture2D" uid="uid://cijiaf40ufiav" path="res://assets/images/villages/blacksmith_new.png" id="2_rfuyk"]
 
 [node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -68.0
-offset_right = 68.0
-offset_bottom = -269.0
+offset_left = -315.0
+offset_right = 315.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4s4ef")
@@ -32,14 +32,14 @@ expand_mode = 1
 [node name="BubbleContainer" type="Control" parent="."]
 clip_contents = true
 layout_mode = 1
-anchor_left = 0.157
-anchor_top = 0.033
-anchor_right = 0.477
-anchor_bottom = 0.385
-offset_left = 0.0629959
-offset_top = 0.177
-offset_right = -0.0570068
-offset_bottom = 0.0649872
+anchor_left = 0.233
+anchor_top = 0.059
+anchor_right = 0.557
+anchor_bottom = 0.367
+offset_left = 0.209991
+offset_top = -0.100002
+offset_right = 0.0899658
+offset_bottom = -0.300018
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2

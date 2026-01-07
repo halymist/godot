@@ -1,16 +1,17 @@
 [gd_scene load_steps=4 format=3 uid="uid://c58pbq5253r3q"]
 
 [ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_r3w04"]
-[ext_resource type="Texture2D" uid="uid://b3wx7uh5a7wws" path="res://assets/images/villages/enchanter_full.png" id="2_r3w04"]
+[ext_resource type="Texture2D" uid="uid://dwy2d55v27cra" path="res://assets/images/villages/encha.png" id="2_r3w04"]
 [ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="3_t7kb6"]
 
 [node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_right = 15.0
-offset_bottom = -269.0
+offset_left = -315.0
+offset_right = 315.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_r3w04")
@@ -31,21 +32,24 @@ expand_mode = 1
 [node name="BubbleContainer" type="Control" parent="."]
 clip_contents = true
 layout_mode = 1
-anchor_left = 0.036
-anchor_top = 0.005
-anchor_right = 0.39
-anchor_bottom = 0.368
-offset_left = -0.120001
-offset_top = -0.155
-offset_right = 0.200012
-offset_bottom = -0.208023
+anchor_left = 0.221
+anchor_top = 0.106
+anchor_right = 0.63
+anchor_bottom = 0.373
+offset_left = -0.230011
+offset_top = -0.400009
+offset_right = 0.0999756
+offset_bottom = 0.299988
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
 [node name="ChatBubble" parent="BubbleContainer" instance=ExtResource("3_t7kb6")]
 layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
 offset_left = -13.75
 offset_right = 13.75
-offset_bottom = 23.0
-vertical_alignment = 1
+offset_bottom = 39.0
+grow_horizontal = 2
