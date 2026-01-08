@@ -1,12 +1,16 @@
 extends Control
 class_name CharacterDisplay
 
-# Button references
+enum DisplayMode { PLAYER, ENEMY }
+
+@export var display_mode: DisplayMode = DisplayMode.PLAYER
+
+# Button references (only used in PLAYER mode)
 @export var talents_button: Button
 @export var details_button: Button
 @export var avatar_button: Button
 
-# Stats display references (from LabelUpdate.gd)
+# Stats display references
 @export var player_name_label: Label
 @export var rank_label: Label
 @export var faction_label: Label
@@ -22,22 +26,79 @@ class_name CharacterDisplay
 @export var active_perks_display: HBoxContainer
 @export var perk_mini_scene: PackedScene
 
-func _ready():
-	# Connect button signals
-	talents_button.pressed.connect(_on_talents_pressed)
-	details_button.pressed.connect(_on_details_pressed)
-	avatar_button.pressed.connect(_on_avatar_pressed)
-	
-	# Initial display
-	refresh_active_effects()  # This will also call stats_changed internally
+# Currently displayed character (either player or enemy)
+var displayed_character: GameInfo.GamePlayer = null
 
-# Called when GameInfo current player is updated
-func stats_changed(_stats: Dictionary):
-	var total_stats = GameInfo.get_total_stats()
+func _ready():
+	if display_mode == DisplayMode.PLAYER:
+		# Connect button signals for player mode
+		if talents_button:
+			talents_button.pressed.connect(_on_talents_pressed)
+		if details_button:
+			details_button.pressed.connect(_on_details_pressed)
+		if avatar_button:
+			avatar_button.pressed.connect(_on_avatar_pressed)
+		
+		# Display current player
+		display_player()
+
+func display_player():
+	"""Display the current player"""
+	displayed_character = GameInfo.current_player
+	refresh_display()
+
+func display_enemy(enemy_name: String):
+	"""Display an enemy by name from GameInfo.enemy_players"""
+	print("CharacterDisplay: display_enemy called with name: ", enemy_name)
+	print("CharacterDisplay: enemy_players array size: ", GameInfo.enemy_players.size())
 	
+	displayed_character = null
+	
+	# Find enemy in enemy_players array
+	for enemy in GameInfo.enemy_players:
+		if enemy.name == enemy_name:
+			displayed_character = enemy
+			print("CharacterDisplay: Found enemy: ", enemy.name)
+			break
+	
+	if displayed_character == null:
+		print("ERROR: CharacterDisplay: Enemy not found: ", enemy_name)
+		return
+	
+	print("CharacterDisplay: Calling refresh_display for enemy: ", displayed_character.name)
+	refresh_display()
+
+func refresh_display():
+	"""Refresh all stats and effects for the displayed character"""
+	print("CharacterDisplay: refresh_display called")
+	if displayed_character == null:
+		print("ERROR: CharacterDisplay: displayed_character is null in refresh_display")
+		return
+	
+	print("CharacterDisplay: Updating stats for: ", displayed_character.name)
+	update_stats()
+	print("CharacterDisplay: Updating active effects for: ", displayed_character.name)
+	refresh_active_effects()
+
+# Called when GameInfo current player is updated (for PLAYER mode only, called by UIManager)
+func stats_changed(_stats: Dictionary):
+	display_player()
+
+func update_stats():
+	"""Update stat labels for the displayed character"""
+	if displayed_character == null:
+		print("ERROR: CharacterDisplay: displayed_character is null in update_stats")
+		return
+	
+	print("CharacterDisplay: update_stats - getting total stats for: ", displayed_character.name)
+	var total_stats = displayed_character.get_total_stats()
+	
+	print("CharacterDisplay: update_stats - setting labels")
 	player_name_label.text = str(total_stats.name)
-	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"
-	faction_label.text = GameInfo.current_player.get_faction_name()
+	rank_label.text = displayed_character.get_rank_name() + " (" + str(displayed_character.rank) + ")"
+	faction_label.text = displayed_character.get_faction_name()
+	
+	print("CharacterDisplay: Stats - Str:", total_stats.strength, " Sta:", total_stats.stamina, " Agi:", total_stats.agility)
 
 	
 	# Display already-calculated stats from GameInfo
@@ -60,7 +121,7 @@ func stats_changed(_stats: Dictionary):
 	if damage_spread_label:
 		var weapon_item = null
 		# Find equipped weapon in slots 0-8
-		for item in GameInfo.current_player.bag_slots:
+		for item in displayed_character.bag_slots:
 			if item != null and item.bag_slot_id >= 0 and item.bag_slot_id <= 8:
 				if item.type == "Weapon":
 					weapon_item = item
@@ -75,6 +136,8 @@ func stats_changed(_stats: Dictionary):
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs, perks)"""
+	if displayed_character == null:
+		return
 		
 	print("CharacterDisplay: Updating active perks and effects...")
 	
@@ -83,20 +146,20 @@ func refresh_active_effects():
 		child.queue_free()
 	
 	# Add equipped elixir first if any
-	if GameInfo.current_player.elixir > 0:
+	if displayed_character.elixir > 0:
 		var elixir_icon_texture = GameInfo.items_db.get_item_by_id(1000)  # Use elixir base icon
 		if elixir_icon_texture and elixir_icon_texture.icon:
-			create_consumable_display(elixir_icon_texture.icon, "Elixir", GameInfo.current_player.elixir)
+			create_consumable_display(elixir_icon_texture.icon, "Elixir", displayed_character.elixir)
 	
 	# Add equipped potion second if any
-	if GameInfo.current_player.potion > 0:
-		var potion_item = GameInfo.items_db.get_item_by_id(GameInfo.current_player.potion)
+	if displayed_character.potion > 0:
+		var potion_item = GameInfo.items_db.get_item_by_id(displayed_character.potion)
 		if potion_item and potion_item.icon:
-			create_consumable_display(potion_item.icon, "Potion", GameInfo.current_player.potion)
+			create_consumable_display(potion_item.icon, "Potion", displayed_character.potion)
 	
 	# Add active blessing effect third if any
-	if GameInfo.current_player.blessing > 0:
-		var blessing_perk = GameInfo.perks_db.get_perk_by_id(GameInfo.current_player.blessing) if GameInfo.perks_db else null
+	if displayed_character.blessing > 0:
+		var blessing_perk = GameInfo.perks_db.get_perk_by_id(displayed_character.blessing) if GameInfo.perks_db else null
 		if blessing_perk:
 			# Get the effect referenced by the blessing perk
 			var blessing_effect = GameInfo.effects_db.get_effect_by_id(blessing_perk.effect1_id) if GameInfo.effects_db else null
@@ -104,7 +167,7 @@ func refresh_active_effects():
 				create_blessing_display(blessing_perk, blessing_effect)
 	
 	# Get active perks from GameInfo
-	var active_perks = GameInfo.current_player.get_active_perks()
+	var active_perks = displayed_character.get_active_perks()
 	print("CharacterDisplay: Found ", active_perks.size(), " active perks")
 	
 	# Create icon for each active perk
@@ -130,8 +193,9 @@ func refresh_active_effects():
 		active_perks_display.add_child(perk_icon)
 		print("CharacterDisplay: Added perk icon to HBox")
 	
-	# Refresh stats after updating effects
-	stats_changed(GameInfo.get_player_stats())
+	# Refresh stats after updating effects (only for player mode)
+	if display_mode == DisplayMode.PLAYER:
+		update_stats()
 
 func create_consumable_display(icon_texture: Texture2D, consumable_type: String, item_id: int):
 	"""Create a display for an equipped consumable (potion or elixir)"""

@@ -47,6 +47,7 @@ static var instance: UIManager
 @export var mushrooms_labels: Array[Label] = []
 @export var bag_views: Array[Node] = []
 @export var character_display: CharacterDisplay
+@export var enemy_character_display: CharacterDisplay
 @export var active_effects: Node
 @export var avatars: Array[Node] = []
 @export var resolution_manager: Node
@@ -109,9 +110,7 @@ func _ready():
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
 	
-	# Connect enemy buttons to show enemy panel overlay
-	for button in enemy:
-		button.pressed.connect(show_overlay.bind(enemy_panel))
+	# Enemy button connections removed - now handled by RankingsPanel calling show_enemy_panel()
 	
 	# Connect cancel quest dialog buttons
 	var yes_button = cancel_quest.get_node("DialogPanel/VBoxContainer/HBoxContainer/YesButton")
@@ -132,8 +131,26 @@ func is_on_active_quest() -> bool:
 	# Player is on active quest if: destination exists AND not currently traveling
 	return destination != null and traveling == 0
 
+func show_enemy_panel(enemy_name: String):
+	"""Show enemy panel with the specified enemy's data"""
+	print("UIManager: Showing enemy panel for: ", enemy_name)
+	print("UIManager: enemy_character_display = ", enemy_character_display)
+	print("UIManager: enemy_panel = ", enemy_panel)
+	
+	if enemy_character_display:
+		enemy_character_display.display_enemy(enemy_name)
+		if enemy_panel:
+			print("UIManager: Calling show_overlay for enemy_panel")
+			show_overlay(enemy_panel)
+		else:
+			print("ERROR: enemy_panel not assigned in UIManager")
+	else:
+		print("ERROR: enemy_character_display not assigned in UIManager")
+
 func show_overlay(overlay: Control):
 	"""Show overlay on top of current panel"""
+	print("UIManager: show_overlay called for: ", overlay.name if overlay else "null")
+	
 	# Chat special handling
 	if overlay == chat_panel:
 		if chat_overlay_active:
@@ -153,10 +170,12 @@ func show_overlay(overlay: Control):
 		return
 	
 	# Show new overlay
+	print("UIManager: Setting overlay visible: ", overlay.name)
 	GameInfo.set_current_panel_overlay(overlay)
 	overlay.z_index = 200
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.visible = true
+	print("UIManager: Overlay visibility set to: ", overlay.visible)
 	
 func hide_overlay(overlay: Control):
 	"""Hide overlay"""

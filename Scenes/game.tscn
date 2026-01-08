@@ -259,7 +259,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "avatars", "resolution_manager")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -308,6 +308,7 @@ silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/Silve
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
 character_display = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay")
+enemy_character_display = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy/CharacterDisplay")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
 resolution_manager = NodePath("..")
 
@@ -5496,11 +5497,12 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_ff75x")
 
 [node name="CharacterDisplay" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy" instance=ExtResource("39_bchkn")]
 layout_mode = 1
+display_mode = 1
 perk_mini_scene = ExtResource("14_mucmn")
 
-[node name="PlayerActions" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy"]
+[node name="PlayerActions" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0

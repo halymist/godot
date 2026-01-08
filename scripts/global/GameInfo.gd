@@ -673,6 +673,25 @@ class GamePlayer:
 			if not perk.active:
 				inactive_perks.append(perk)
 		return inactive_perks
+	
+	func get_faction_name() -> String:
+		match faction:
+			1: return "Order"
+			2: return "Guild"
+			3: return "Companions"
+			_: return "None"
+	
+	func get_rank_name() -> String:
+		# For now always return Novice, later we can add logic based on rank value
+		return "Novice"
+	
+	func get_profession_name() -> String:
+		match profession:
+			1: return "Herbalist"
+			2: return "Blacksmith"
+			3: return "Enchanter"
+			4: return "Warrior"
+			_: return "None"
 
 class GameCurrentPlayer:
 	extends GamePlayer
@@ -763,26 +782,6 @@ class GameCurrentPlayer:
 		stats["mushrooms"] = mushrooms
 		stats["talent_points"] = talent_points
 		return stats
-	
-	# Helper functions to convert IDs to display names
-	func get_faction_name() -> String:
-		match faction:
-			1: return "Order"
-			2: return "Guild"
-			3: return "Companions"
-			_: return "None"
-	
-	func get_rank_name() -> String:
-		# For now always return Novice, later we can add logic based on rank value
-		return "Novice"
-	
-	func get_profession_name() -> String:
-		match profession:
-			1: return "Herbalist"
-			2: return "Blacksmith"
-			3: return "Enchanter"
-			4: return "Warrior"
-			_: return "None"
 
 # GameInfo main class properties
 var current_player: GameCurrentPlayer

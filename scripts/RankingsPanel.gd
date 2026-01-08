@@ -148,6 +148,8 @@ func _on_search_changed(new_text: String):
 	print("Search: ", new_text)
 
 func _on_character_button_pressed():
-	# Enemy panel is now managed by TogglePanel overlay system
-	# This function can be removed or used for other purposes
-	pass
+	if selected_player:
+		print("RankingsPanel: Opening enemy panel for: ", selected_player.name)
+		UIManager.instance.show_enemy_panel(selected_player.name)
+	else:
+		print("RankingsPanel: No player selected")
