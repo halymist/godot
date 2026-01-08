@@ -163,7 +163,7 @@ var mock_character_data = {
 }
 
 # Mock arena opponents - now just references to enemy_players by name
-var mock_arena_opponents = ["Player5", "Player12", "Player25"]  # These will be looked up in enemy_players array
+var mock_arena_opponents: Array[String] = ["Player5", "Player12", "Player25"]  # These will be looked up in enemy_players array
 
 # NPCs are now client-side resources - server only sends daily_quests array in character data
 

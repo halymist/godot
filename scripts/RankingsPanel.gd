@@ -20,7 +20,7 @@ extends Panel
 @onready var avatar_instance: Node
 
 var selected_row = null
-var selected_player: GameInfo.GameArenaOpponent = null
+var selected_player: GameInfo.GamePlayer = null
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -72,7 +72,7 @@ func populate_rankings():
 			if row:
 				table_content.add_child(row)
 
-func create_ranking_row(player: GameInfo.GameArenaOpponent):
+func create_ranking_row(player: GameInfo.GamePlayer):
 	if not ranking_row_scene:
 		print("Warning: ranking_row_scene not set in RankingsPanel")
 		return null

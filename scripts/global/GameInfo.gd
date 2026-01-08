@@ -393,7 +393,7 @@ class Talent:
 	}
 
 # Ranking Entry for lightweight rankings display
-# RankingEntry class removed - now using full GameArenaOpponent data in enemy_players array
+# RankingEntry class removed - now using full GamePlayer data in enemy_players array
 # Rankings panel will reference enemy_players[rankings_indices[i]]
 
 class ChatMessage:
@@ -466,13 +466,25 @@ class GamePlayer:
 	# Events/Signals reference (for emitting from CurrentPlayer)
 	var game_info_ref: GameInfo
 	
-	# Base properties shared by CurrentPlayer and ArenaOpponent
+	# Base properties shared by all players
 	var name: String = ""
+	var rank: int = 0
+	var faction: int = 0
+	var profession: int = 0
+	var honor: int = 0
 	var strength: int = 0
 	var stamina: int = 0
 	var agility: int = 0
 	var luck: int = 0
 	var armor: int = 0
+	var avatar_face: int = 1
+	var avatar_hair: int = 10
+	var avatar_eyes: int = 20
+	var avatar_nose: int = 30
+	var avatar_mouth: int = 40
+	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
+	var potion: int = 0  # Equipped potion item ID (0 = no potion)
+	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var bag_slots: Array[Item] = []
 	var perks: Array[Perk] = []
 	var talents: Array[Talent] = []
@@ -480,11 +492,23 @@ class GamePlayer:
 	# Base MessagePack fields shared by all players
 	const MSGPACK_MAP = {
 		"name": "name",
+		"rank": "rank",
+		"faction": "faction",
+		"profession": "profession",
+		"honor": "honor",
 		"strength": "strength",
 		"stamina": "stamina",
 		"agility": "agility",
 		"luck": "luck",
-		"armor": "armor"
+		"armor": "armor",
+		"avatar_face": "avatar_face",
+		"avatar_hair": "avatar_hair",
+		"avatar_eyes": "avatar_eyes",
+		"avatar_nose": "avatar_nose",
+		"avatar_mouth": "avatar_mouth",
+		"blessing": "blessing",
+		"potion": "potion",
+		"elixir": "elixir"
 	}
 	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):
@@ -662,22 +686,11 @@ class GameCurrentPlayer:
 	var slide: Variant = null
 	var slides: Array = []
 	var talent_points: int = 0
-	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
-	var potion: int = 0  # Equipped potion item ID (0 = no potion)
-	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
-	var faction: int = 0  # Faction ID (1=Order, 2=Guild, 3=Companions)
-	var rank: int = 0  # Rank value (determines rank tier like Novice, Veteran, etc.)
-	var profession: int = 0  # Profession ID (1=Herbalist, 2=Blacksmith, etc.)
 	var daily_quests: Array = []  # Array of quest IDs available today
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
 	var server_day: int = 1  # Current day on the server (starts at 1)
 	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
-	var avatar_face: int = 1  # Face cosmetic ID from database
-	var avatar_hair: int = 10  # Hair cosmetic ID from database
-	var avatar_eyes: int = 20  # Eyes cosmetic ID from database
-	var avatar_nose: int = 30  # Nose cosmetic ID from database
-	var avatar_mouth: int = 40  # Mouth cosmetic ID from database
 	
 	# VIP status
 	var vip: bool = false
@@ -695,46 +708,34 @@ class GameCurrentPlayer:
 	
 	# Extended MessagePack mapping (includes base + current player fields)
 	const CURRENT_PLAYER_MSGPACK_MAP = {
-		# Base fields
-		"name": "name",
-		"strength": "strength",
-		"stamina": "stamina",
-		"agility": "agility",
-		"luck": "luck",
-		"armor": "armor",
-		# Current player specific fields
+		# Current player specific fields (base fields handled by parent class)
 		"location": "location",
 		"traveling": "traveling",
 		"traveling_destination": "traveling_destination",
 		"silver": "silver",
 		"mushrooms": "_mushrooms",  # Use private field to avoid triggering setter
 		"talent_points": "talent_points",
-		"blessing": "blessing",
-		"potion": "potion",
-		"elixir": "elixir",
 		"dungeon": "dungeon",
 		"destination": "destination",
 		"slide": "slide",
 		"slides": "slides",
 		"quest_log": "quest_log",
-		"faction": "faction",
-		"rank": "rank",
-		"profession": "profession",
 		"daily_quests": "daily_quests",
 		"server_timezone": "server_timezone",
 		"server_day": "server_day",
 		"weather": "weather",
-		"avatar_face": "avatar_face",
-		"avatar_hair": "avatar_hair",
-		"avatar_eyes": "avatar_eyes",
-		"avatar_nose": "avatar_nose",
-		"avatar_mouth": "avatar_mouth",
 		"vip": "vip",
 		"autoskip": "autoskip"
 	}
 	
 	func load_from_msgpack(data: Dictionary):
-		# Load using extended mapping
+		# Load base fields first (from GamePlayer.MSGPACK_MAP)
+		for msgpack_key in GamePlayer.MSGPACK_MAP:
+			if data.has(msgpack_key):
+				var local_key = GamePlayer.MSGPACK_MAP[msgpack_key]
+				set(local_key, data[msgpack_key])
+		
+		# Load current player specific fields
 		var msgpack_map = CURRENT_PLAYER_MSGPACK_MAP
 		for msgpack_key in msgpack_map:
 			if data.has(msgpack_key):
@@ -783,69 +784,11 @@ class GameCurrentPlayer:
 			4: return "Warrior"
 			_: return "None"
 
-class GameArenaOpponent:
-	extends GamePlayer
-	
-	var rank: int = 0  # Rank value for arena opponents
-	var faction: int = 0  # Faction affiliation
-	var profession: int = 0  # Profession type
-	var honor: int = 0  # Honor points
-	var avatar_face: int = 1  # Avatar face cosmetic ID
-	var avatar_hair: int = 10  # Avatar hair cosmetic ID
-	var avatar_eyes: int = 20  # Avatar eyes cosmetic ID
-	var avatar_nose: int = 30  # Avatar nose cosmetic ID
-	var avatar_mouth: int = 40  # Avatar mouth cosmetic ID
-	var blessing: int = 0  # Active blessing effect ID
-	var potion: int = 0  # Equipped potion item ID
-	var elixir: int = 0  # Equipped elixir item ID
-	
-	const ARENA_OPPONENT_MSGPACK_MAP = {
-		# Base fields
-		"name": "name",
-		"strength": "strength",
-		"stamina": "stamina",
-		"agility": "agility",
-		"luck": "luck",
-		"armor": "armor",
-		# Arena opponent specific
-		"rank": "rank",
-		"faction": "faction",
-		"profession": "profession",
-		"honor": "honor",
-		"avatar_face": "avatar_face",
-		"avatar_hair": "avatar_hair",
-		"avatar_eyes": "avatar_eyes",
-		"avatar_nose": "avatar_nose",
-		"avatar_mouth": "avatar_mouth",
-		"blessing": "blessing",
-		"potion": "potion",
-		"elixir": "elixir"
-	}
-	
-	func _init(data: Dictionary = {}, game_info: GameInfo = null):
-		super._init(data, game_info)
-	
-	func load_from_msgpack(data: Dictionary):
-		# Load using arena opponent mapping
-		var msgpack_map = ARENA_OPPONENT_MSGPACK_MAP
-		for msgpack_key in msgpack_map:
-			if data.has(msgpack_key):
-				var local_key = msgpack_map[msgpack_key]
-				set(local_key, data[msgpack_key])
-		
-		# Load arrays
-		load_bag_slots(data)
-		load_perks(data)
-		load_talents(data)
-	
-	func get_rank_name() -> String:
-		# Same logic as current player for now
-		return "Novice"
-
 # GameInfo main class properties
 var current_player: GameCurrentPlayer
-var enemy_players: Array[GameArenaOpponent] = []  # Unified array for all enemy player data
-var current_arena_opponent: GameArenaOpponent = null  # Current opponent in arena
+var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data
+var current_arena_opponent: String = ""  # Name of current opponent (references enemy_players by name)
+var arena_opponents: Array[String] = []  # Array of player names for arena selection
 var chat_messages: Array[ChatMessage] = []
 var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
@@ -952,10 +895,20 @@ func get_total_stats() -> Dictionary:
 func get_total_effects() -> Dictionary:
 	return current_player.get_total_effects() if current_player else {}
 
-# Function to load arena opponent from MessagePack format
-func load_arena_opponent_msgpack(msgpack_data: Dictionary):
-	current_arena_opponent = GameArenaOpponent.new(msgpack_data, self)
-	print("Arena opponent loaded from MessagePack: ", current_arena_opponent.name)
+# Function to set current arena opponent by name
+func set_arena_opponent(opponent_name: String):
+	current_arena_opponent = opponent_name
+	print("Arena opponent set to: ", opponent_name)
+
+# Function to get current arena opponent data
+func get_arena_opponent() -> GamePlayer:
+	if current_arena_opponent.is_empty():
+		return null
+	for player in enemy_players:
+		if player.name == current_arena_opponent:
+			return player
+	print("Warning: Current arena opponent '", current_arena_opponent, "' not found in enemy_players")
+	return null
 
 # Function to load all arena opponents from mock data
 func load_enemy_players_data(players_data: Array):
@@ -964,16 +917,17 @@ func load_enemy_players_data(players_data: Array):
 	rankings_indices.clear()
 	for i in range(players_data.size()):
 		var player_data = players_data[i]
-		var player = GameArenaOpponent.new(player_data, self)
+		var player = GamePlayer.new(player_data, self)
 		enemy_players.append(player)
 		rankings_indices.append(i)  # Rankings ordered by array index
 		print("Loaded enemy player: ", player.name, " (Rank ", player.rank, ")")
 	print("Total enemy players loaded: ", enemy_players.size())
 	rankings_loaded.emit()
 
-func load_arena_opponent_names(opponent_names: Array):
-	# Find arena opponents by name in enemy_players array
-	print("Setting arena opponents from names: ", opponent_names)
+func load_arena_opponent_names(opponent_names: Array[String]):
+	# Store arena opponent names for selection
+	arena_opponents = opponent_names
+	print("Setting arena opponents from names: ", arena_opponents)
 	# Arena panel will look up players from enemy_players by name when needed
 
 # Function to load chat messages from mock data
