@@ -1,6 +1,6 @@
 [gd_scene load_steps=26 format=3 uid="uid://dtcmv6gcik5pa"]
 
-[ext_resource type="Script" path="res://scripts/CharacterDisplay.gd" id="1_1svyq"]
+[ext_resource type="Script" uid="uid://c1uh5eg86eies" path="res://scripts/CharacterDisplay.gd" id="1_1svyq"]
 [ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="1_foq72"]
 [ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="2_knt7d"]
 [ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="3_fr2hw"]
@@ -26,7 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="21_7574k"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_srvda"]
 
-[node name="CharacterDisplay" type="Control" node_paths=PackedStringArray("stats_panel", "active_effects", "equipment_grid")]
+[node name="CharacterDisplay" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,9 +35,6 @@ offset_bottom = -75.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1svyq")
-stats_panel = NodePath("Stats")
-active_effects = NodePath("ActivePerksBackground/ActivePerks")
-equipment_grid = NodePath("Equip")
 
 [node name="Stats" type="Control" parent="." node_paths=PackedStringArray("player_name_label", "rank_label", "faction_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label", "health_bar", "damage_spread_label")]
 layout_mode = 1

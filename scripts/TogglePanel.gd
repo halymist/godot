@@ -10,10 +10,8 @@ static var instance: UIManager
 @export var arena_button: Button
 @export var character_button: Button
 @export var character_panel: Control
-@export var talents_button: Button
 @export var talents_panel: Control
 @export var details_panel: Control
-@export var details_button: Button
 @export var map_button: Button
 @export var map_panel: Control
 @export var back_button: Button
@@ -43,7 +41,6 @@ static var instance: UIManager
 @export var payment: Control
 @export var payment_button: Button
 @export var avatar_panel: Control
-@export var avatar_button: Button
 
 # Additional UI references (from old UIManager)
 @export var silver_labels: Array[Label] = []
@@ -105,15 +102,12 @@ func _ready():
 	character_button.pressed.connect(handle_character_button)
 	map_button.pressed.connect(handle_map_button)
 	rankings_button.pressed.connect(handle_rankings_button)
-	talents_button.pressed.connect(toggle_talents_bookmark)
-	details_button.pressed.connect(toggle_details_bookmark)
 	settings_button.pressed.connect(show_overlay.bind(settings_panel))
 	payment_button.pressed.connect(show_overlay.bind(payment))
 	chat_button.pressed.connect(show_overlay.bind(chat_panel))
 	chat_panel.pressed.connect(hide_overlay.bind(chat_panel))  # Close chat when clicking background
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
-	avatar_button.pressed.connect(show_overlay.bind(avatar_panel))
 	
 	# Connect enemy buttons to show enemy panel overlay
 	for button in enemy:
