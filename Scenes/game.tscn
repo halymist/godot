@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=119 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -22,7 +22,6 @@
 [ext_resource type="Texture2D" uid="uid://b0w36ybd8s4jl" path="res://assets/images/ui/shoes_outline.png" id="9_shoes"]
 [ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="9_sword"]
 [ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="9_w4j8i"]
-[ext_resource type="Script" uid="uid://bieowl7lbd21i" path="res://scripts/LabelUpdate.gd" id="10_mg4q0"]
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="11_ewbju"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="11_vm72l"]
 [ext_resource type="Texture2D" uid="uid://dslllm3eu8erj" path="res://assets/images/ui/map.png" id="12_22asu"]
@@ -272,7 +271,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "silver_labels", "mushrooms_labels", "bag_views", "stats_panel", "active_effects", "avatars", "resolution_manager")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "active_effects", "avatars", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -320,7 +319,7 @@ avatar_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue")]
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
-stats_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats")
+character_display = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay")
 active_effects = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/ActivePerksBackground/ActivePerks")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
 resolution_manager = NodePath("..")
@@ -2040,8 +2039,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_b1mpw")
 
-[node name="CharacterDisplay" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button")]
+[node name="CharacterDisplay" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label")]
 layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_bottom = -75.0
@@ -2051,8 +2051,18 @@ script = ExtResource("39_ccfo7")
 talents_button = NodePath("TalentsButton/Button")
 details_button = NodePath("DetailsButton/Button")
 avatar_button = NodePath("Equip/Character/ChangeAvatar")
+player_name_label = NodePath("Stats/PlayerName")
+rank_label = NodePath("Stats/CharacterDetails/RankContainer/RankLabel")
+faction_label = NodePath("Stats/CharacterDetails/GuildContainer/GuildLabel")
+strength_label = NodePath("Stats/StatsContainer/StrengthContainer/StrengthValue")
+stamina_label = NodePath("Stats/StatsContainer/StaminaContainer/StamValue")
+agility_label = NodePath("Stats/StatsContainer/AgilityContainer/AgilityValue")
+luck_label = NodePath("Stats/StatsContainer/LuckContainer/LuckValue")
+armor_label = NodePath("Stats/StatsContainer/ArmorContainer/ArmorValue")
+health_bar = NodePath("HealthBar")
+damage_spread_label = NodePath("Equip/DamageSpreadLabel")
 
-[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay" node_paths=PackedStringArray("player_name_label", "rank_label", "faction_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label", "talents_label", "health_bar", "damage_spread_label")]
+[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay"]
 layout_mode = 1
 anchor_left = 0.037
 anchor_right = 0.958
@@ -2061,23 +2071,6 @@ offset_left = 5.015
 offset_right = 1.00998
 offset_bottom = -1.16
 grow_horizontal = 2
-script = ExtResource("10_mg4q0")
-player_name_label = NodePath("PlayerName")
-rank_label = NodePath("CharacterDetails/RankContainer/RankLabel")
-faction_label = NodePath("CharacterDetails/GuildContainer/GuildLabel")
-profession_label = NodePath("CharacterDetails/ProfessionContainer/ProfessionLabel")
-strength_label = NodePath("StatsContainer/StrengthContainer/StrengthValue")
-strength_aprox = NodePath("StatsContainer/StrengthContainer/StrAprox")
-stamina_label = NodePath("StatsContainer/StaminaContainer/StamValue")
-stamina_aprox = NodePath("StatsContainer/StaminaContainer/StamAprox")
-agility_label = NodePath("StatsContainer/AgilityContainer/AgilityValue")
-agility_aprox = NodePath("StatsContainer/AgilityContainer/AgilityAprox")
-luck_label = NodePath("StatsContainer/LuckContainer/LuckValue")
-luck_aprox = NodePath("StatsContainer/LuckContainer/LuckAprox")
-armor_label = NodePath("StatsContainer/ArmorContainer/ArmorValue")
-talents_label = NodePath("../../../TalentsPanel/Title/Label")
-health_bar = NodePath("../HealthBar")
-damage_spread_label = NodePath("../Equip/DamageSpreadLabel")
 
 [node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats"]
 layout_mode = 0
@@ -2102,14 +2095,6 @@ layout_mode = 2
 [node name="GuildLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/CharacterDetails/GuildContainer"]
 layout_mode = 2
 text = "Mercantile"
-vertical_alignment = 1
-
-[node name="ProfessionContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/CharacterDetails"]
-layout_mode = 2
-
-[node name="ProfessionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/CharacterDetails/ProfessionContainer"]
-layout_mode = 2
-text = "Herbalist"
 vertical_alignment = 1
 
 [node name="RankContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/CharacterDetails"]
@@ -2144,11 +2129,6 @@ layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="StrAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer/StrengthContainer"]
-layout_mode = 2
-text = "(10)"
-vertical_alignment = 1
-
 [node name="StaminaContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer"]
 layout_mode = 1
 anchors_preset = -1
@@ -2164,11 +2144,6 @@ vertical_alignment = 1
 [node name="StamValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer/StaminaContainer"]
 layout_mode = 2
 text = "10"
-vertical_alignment = 1
-
-[node name="StamAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer/StaminaContainer"]
-layout_mode = 2
-text = "(10)"
 vertical_alignment = 1
 
 [node name="AgilityContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer"]
@@ -2187,11 +2162,6 @@ layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="AgilityAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer/AgilityContainer"]
-layout_mode = 2
-text = "(10)"
-vertical_alignment = 1
-
 [node name="LuckContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer"]
 layout_mode = 1
 anchors_preset = -1
@@ -2208,11 +2178,6 @@ vertical_alignment = 1
 [node name="LuckValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer/LuckContainer"]
 layout_mode = 2
 text = "10"
-vertical_alignment = 1
-
-[node name="LuckAprox" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer/LuckContainer"]
-layout_mode = 2
-text = "(10)"
 vertical_alignment = 1
 
 [node name="ArmorContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay/Stats/StatsContainer"]

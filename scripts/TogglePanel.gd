@@ -46,7 +46,7 @@ static var instance: UIManager
 @export var silver_labels: Array[Label] = []
 @export var mushrooms_labels: Array[Label] = []
 @export var bag_views: Array[Node] = []
-@export var stats_panel: Control
+@export var character_display: CharacterDisplay
 @export var active_effects: Node
 @export var avatars: Array[Node] = []
 @export var resolution_manager: Node
@@ -456,7 +456,7 @@ func refresh_bags():
 
 func refresh_stats():
 	"""Recalculate and display stats for current player"""
-	stats_panel.stats_changed(GameInfo.get_player_stats())
+	character_display.stats_changed(GameInfo.get_player_stats())
 	details_panel.display_effects(GameInfo.current_player)
 	
 	# Refresh quest options if currently on a quest
