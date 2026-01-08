@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://c1uh5eg86eies" path="res://scripts/CharacterDisplay.gd" id="1_foq72"]
 [ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="2_knt7d"]
+[ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="4_1svyq"]
 [ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="5_ur2r5"]
-[ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_54e3s"]
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="7_jhf1m"]
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="8_p188g"]
 [ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="9_c1b6y"]
@@ -21,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="21_7574k"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_srvda"]
 
-[node name="CharacterDisplay" type="Control" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display")]
+[node name="CharacterDisplay" type="Control" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display", "equipment_slots")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,6 +44,9 @@ armor_label = NodePath("Stats/StatsContainer/ArmorContainer/ArmorValue")
 health_bar = NodePath("HealthBar")
 damage_spread_label = NodePath("Equip/DamageSpreadLabel")
 active_perks_display = NodePath("ActivePerksBackground/ActivePerks")
+perk_mini_scene = ExtResource("4_1svyq")
+equipment_slots = [NodePath("Equip/VBoxContainer/HeadSlot"), NodePath("Equip/VBoxContainer/ChestSlot"), NodePath("Equip/VBoxContainer/HandSlot"), NodePath("Equip/VBoxContainer/ShoeSlot"), NodePath("Equip/VBoxContainer2/BeltSlot"), NodePath("Equip/VBoxContainer2/LegSlot"), NodePath("Equip/VBoxContainer2/RingSlot"), NodePath("Equip/VBoxContainer2/AmuletSlot"), NodePath("Equip/Weapon1Slot")]
+item_prefab = ExtResource("7_jhf1m")
 
 [node name="Stats" type="Control" parent="."]
 layout_mode = 1
@@ -257,7 +260,7 @@ text = "TALENTS"
 flat = true
 expand_icon = true
 
-[node name="Equip" type="Control" parent="." node_paths=PackedStringArray("inventory_slots")]
+[node name="Equip" type="Control" parent="."]
 layout_mode = 1
 anchor_top = 0.386
 anchor_right = 1.0
@@ -265,9 +268,6 @@ anchor_bottom = 0.996
 offset_top = -0.230011
 offset_bottom = 0.219971
 grow_horizontal = 2
-script = ExtResource("6_54e3s")
-inventory_slots = [NodePath("VBoxContainer/HeadSlot"), NodePath("VBoxContainer/ChestSlot"), NodePath("VBoxContainer/HandSlot"), NodePath("VBoxContainer/ShoeSlot"), NodePath("VBoxContainer2/BeltSlot"), NodePath("VBoxContainer2/LegSlot"), NodePath("VBoxContainer2/RingSlot"), NodePath("VBoxContainer2/AmuletSlot"), NodePath("Weapon1Slot")]
-item_prefab = ExtResource("7_jhf1m")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Equip"]
 layout_mode = 1

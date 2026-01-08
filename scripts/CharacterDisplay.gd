@@ -26,6 +26,10 @@ enum DisplayMode { PLAYER, ENEMY }
 @export var active_perks_display: HBoxContainer
 @export var perk_mini_scene: PackedScene
 
+# Equipment display
+@export var equipment_slots: Array[Control]  # The 9 equipment InventorySlot nodes (0-8)
+@export var item_prefab: PackedScene
+
 # Currently displayed character (either player or enemy)
 var displayed_character: GameInfo.GamePlayer = null
 
@@ -87,6 +91,8 @@ func refresh_display():
 	update_stats()
 	print("CharacterDisplay: Updating active effects for: ", displayed_character.name)
 	refresh_active_effects()
+	print("CharacterDisplay: Updating equipment for: ", displayed_character.name)
+	update_equipment()
 
 # Called when GameInfo current player is updated (for PLAYER mode only, called by UIManager)
 func stats_changed(_stats: Dictionary):
@@ -354,3 +360,43 @@ func _on_details_pressed():
 
 func _on_avatar_pressed():
 	UIManager.instance.toggle_avatar_overlay()
+
+func update_equipment():
+	"""Update equipment slots from displayed character's bag_slots (equipment: 0-8)"""
+	if displayed_character == null:
+		print("CharacterDisplay: update_equipment - no displayed_character")
+		return
+	
+	if equipment_slots.size() == 0:
+		print("CharacterDisplay: update_equipment - no equipment_slots configured")
+		return
+	
+	print("CharacterDisplay: Updating equipment for: ", displayed_character.name)
+	
+	# Clear all equipment slots
+	for slot in equipment_slots:
+		if slot.has_method("clear_slot"):
+			slot.clear_slot()
+	
+	# Display items from bag_slots (0-8 are equipment)
+	for item in displayed_character.bag_slots:
+		var bag_slot_id = item.bag_slot_id
+		
+		# Only equipment slots (0-8)
+		if bag_slot_id >= 0 and bag_slot_id <= 8 and bag_slot_id < equipment_slots.size():
+			var icon = item_prefab.instantiate()
+			icon.set_item_data(item)
+			
+			# Disable dragging for enemy mode
+			if display_mode == DisplayMode.ENEMY:
+				if icon.has_method("disable_dragging"):
+					icon.disable_dragging()
+					print("CharacterDisplay: Disabled dragging for enemy equipment item in slot ", bag_slot_id)
+			
+			equipment_slots[bag_slot_id].add_child(icon)
+			print("CharacterDisplay: Added item to equipment slot ", bag_slot_id)
+	
+	# Update slot appearances
+	for slot in equipment_slots:
+		if slot.has_method("update_slot_appearance"):
+			slot.update_slot_appearance()

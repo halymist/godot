@@ -6,6 +6,9 @@ var item_data: GameInfo.Item = null
 var last_click_time: float = 0.0
 const DOUBLE_CLICK_TIME: float = 0.3  # 300ms window for double-click
 
+# Dragging control
+var dragging_enabled: bool = true
+
 func _ready():
 	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
 	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
@@ -47,7 +50,15 @@ func set_item_data(data: GameInfo.Item):
 	if data:
 		texture = data.texture
 
+func disable_dragging():
+	"""Disable dragging for this item (e.g., for enemy equipment)"""
+	dragging_enabled = false
+
 func _get_drag_data(_at_position):
+	# If dragging is disabled, return null (no drag operation)
+	if not dragging_enabled:
+		return null
+	
 	if not item_data:
 		return null
 			
