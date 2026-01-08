@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -74,6 +74,7 @@
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="49_ifeo7"]
 [ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="52_aujhx"]
+[ext_resource type="Script" uid="uid://b4irhuh3hgeh0" path="res://scripts/DetailsPanel.gd" id="52_bchkn"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://dgc2cv8slfwg3" path="res://assets/images/ui/talents_back.png" id="56_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
@@ -2236,7 +2237,7 @@ grow_vertical = 2
 script = ExtResource("24_active_perks")
 perk_mini_scene = ExtResource("14_mucmn")
 
-[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "faction_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label", "talents_label", "health_bar", "damage_spread_label", "effect_strength_value", "effect_stamina_value", "effect_agility_value", "effect_luck_value", "effect_damage_value", "effect_health_value", "effect_crit_chance_value", "effect_dodge_value", "effect_damage_reduction_value", "effect_initiative_value", "effect_stun_value", "effect_counter_attack_value", "effect_attack_twice_value", "effect_bleed_value", "effect_lifesteal_value", "effect_heal_value", "effect_survive_value", "effect_healing_boost_value", "effect_crit_damage_value", "effect_counter_damage_value")]
+[node name="Stats" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" node_paths=PackedStringArray("player_name_label", "rank_label", "faction_label", "profession_label", "strength_label", "strength_aprox", "stamina_label", "stamina_aprox", "agility_label", "agility_aprox", "luck_label", "luck_aprox", "armor_label", "talents_label", "health_bar", "damage_spread_label")]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -2261,26 +2262,6 @@ armor_label = NodePath("StatsContainer/ArmorContainer/ArmorValue")
 talents_label = NodePath("../../TalentsPanel/Title/Label")
 health_bar = NodePath("../HealthBar")
 damage_spread_label = NodePath("../Equip/DamageSpreadLabel")
-effect_strength_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect1/OnSelfValue")
-effect_stamina_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect2/OnSelfValue")
-effect_agility_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect3/OnSelfValue")
-effect_luck_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect4/OnSelfValue")
-effect_damage_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect5/OnSelfValue")
-effect_health_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect6/OnSelfValue")
-effect_crit_chance_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect7/OnSelfValue")
-effect_dodge_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect8/OnSelfValue")
-effect_damage_reduction_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect9/OnSelfValue")
-effect_initiative_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect10/OnSelfValue")
-effect_stun_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect11/OnSelfValue")
-effect_counter_attack_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect12/OnSelfValue")
-effect_attack_twice_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect13/OnSelfValue")
-effect_bleed_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect14/OnSelfValue")
-effect_lifesteal_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect15/OnSelfValue")
-effect_heal_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect16/OnSelfValue")
-effect_survive_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect17/OnSelfValue")
-effect_healing_boost_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect18/OnSelfValue")
-effect_crit_damage_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect19/OnSelfValue")
-effect_counter_damage_value = NodePath("../../DetailsPanel/ScrollContainer/EffectsContainer/Effect20/OnSelfValue")
 
 [node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character/Stats"]
 layout_mode = 0
@@ -5077,7 +5058,7 @@ theme_override_font_sizes/font_size = 16
 disabled = true
 text = "BIND PERK"
 
-[node name="DetailsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="DetailsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("effect_strength_value", "effect_stamina_value", "effect_agility_value", "effect_luck_value", "effect_damage_value", "effect_health_value", "effect_crit_chance_value", "effect_dodge_value", "effect_damage_reduction_value", "effect_initiative_value", "effect_stun_value", "effect_counter_attack_value", "effect_attack_twice_value", "effect_bleed_value", "effect_lifesteal_value", "effect_heal_value", "effect_survive_value", "effect_healing_boost_value", "effect_crit_damage_value", "effect_counter_damage_value")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5085,6 +5066,27 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("52_bchkn")
+effect_strength_value = NodePath("ScrollContainer/EffectsContainer/Effect1/OnSelfValue")
+effect_stamina_value = NodePath("ScrollContainer/EffectsContainer/Effect2/OnSelfValue")
+effect_agility_value = NodePath("ScrollContainer/EffectsContainer/Effect3/OnSelfValue")
+effect_luck_value = NodePath("ScrollContainer/EffectsContainer/Effect4/OnSelfValue")
+effect_damage_value = NodePath("ScrollContainer/EffectsContainer/Effect5/OnSelfValue")
+effect_health_value = NodePath("ScrollContainer/EffectsContainer/Effect6/OnSelfValue")
+effect_crit_chance_value = NodePath("ScrollContainer/EffectsContainer/Effect7/OnSelfValue")
+effect_dodge_value = NodePath("ScrollContainer/EffectsContainer/Effect8/OnSelfValue")
+effect_damage_reduction_value = NodePath("ScrollContainer/EffectsContainer/Effect9/OnSelfValue")
+effect_initiative_value = NodePath("ScrollContainer/EffectsContainer/Effect10/OnSelfValue")
+effect_stun_value = NodePath("ScrollContainer/EffectsContainer/Effect11/OnSelfValue")
+effect_counter_attack_value = NodePath("ScrollContainer/EffectsContainer/Effect12/OnSelfValue")
+effect_attack_twice_value = NodePath("ScrollContainer/EffectsContainer/Effect13/OnSelfValue")
+effect_bleed_value = NodePath("ScrollContainer/EffectsContainer/Effect14/OnSelfValue")
+effect_lifesteal_value = NodePath("ScrollContainer/EffectsContainer/Effect15/OnSelfValue")
+effect_heal_value = NodePath("ScrollContainer/EffectsContainer/Effect16/OnSelfValue")
+effect_survive_value = NodePath("ScrollContainer/EffectsContainer/Effect17/OnSelfValue")
+effect_healing_boost_value = NodePath("ScrollContainer/EffectsContainer/Effect18/OnSelfValue")
+effect_crit_damage_value = NodePath("ScrollContainer/EffectsContainer/Effect19/OnSelfValue")
+effect_counter_damage_value = NodePath("ScrollContainer/EffectsContainer/Effect20/OnSelfValue")
 
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
 layout_mode = 1

@@ -461,8 +461,9 @@ func refresh_bags():
 		view.update_equip_slots()
 
 func refresh_stats():
-	"""Ask all registered stats panels to recalculate stats"""
+	"""Recalculate and display stats for current player"""
 	stats_panel.stats_changed(GameInfo.get_player_stats())
+	details_panel.display_effects(GameInfo.current_player)
 	
 	# Refresh quest options if currently on a quest
 	if GameInfo.current_player and GameInfo.current_player.traveling_destination:
@@ -472,7 +473,7 @@ func refresh_stats():
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs)"""
 	active_effects.refresh_effects()
-	refresh_stats()  # Blessings may affect stats
+	refresh_stats()  # Blessings may affect stats (also updates details panel)
 
 func refresh_perks():
 	"""Refresh perks grid when new perks are added"""
