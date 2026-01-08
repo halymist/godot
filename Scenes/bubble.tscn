@@ -3,20 +3,20 @@
 [ext_resource type="Script" uid="uid://clakwn43jgoou" path="res://scripts/bubble.gd" id="1_bubble"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fu76k"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
 bg_color = Color(0.1, 0.1, 0.1, 0.85)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-content_margin_left = 12.0
-content_margin_top = 8.0
-content_margin_right = 12.0
-content_margin_bottom = 8.0
 
 [node name="Bubble" type="Label"]
 custom_minimum_size = Vector2(20, 0)
-offset_right = 21.0
-offset_bottom = 23.0
+offset_right = 43.0
+offset_bottom = 39.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_fu76k")
 text = "hi"
 horizontal_alignment = 1

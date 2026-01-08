@@ -1,14 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://mph5cgf7f1ou"]
 
 [ext_resource type="Script" uid="uid://cxffbvcqcprdk" path="res://scripts/UtilityBackground.gd" id="1_2kiqi"]
-[ext_resource type="Texture2D" uid="uid://0ebv5gqbvfjk" path="res://assets/images/villages/training_full.png" id="2_2kiqi"]
+[ext_resource type="Texture2D" uid="uid://bhhje207cqr62" path="res://assets/images/villages/trainer_full.png" id="2_2kiqi"]
 [ext_resource type="PackedScene" uid="uid://b4ywslru7t5jb" path="res://Scenes/ChatBubble.tscn" id="3_a88w7"]
 
 [node name="UtilityBackground" type="Control" node_paths=PackedStringArray("chat_bubble")]
 layout_mode = 3
-anchors_preset = 8
+anchors_preset = 13
 anchor_left = 0.5
-anchor_top = 0.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -315.0
@@ -33,14 +32,14 @@ expand_mode = 1
 [node name="BubbleContainer" type="Control" parent="."]
 clip_contents = true
 layout_mode = 1
-anchor_left = 0.036
-anchor_top = 0.005
-anchor_right = 0.436
-anchor_bottom = 0.345
-offset_left = -0.120001
-offset_top = -0.155
-offset_right = -0.12001
-offset_bottom = 0.304977
+anchor_left = 0.213
+anchor_top = 0.087
+anchor_right = 0.663
+anchor_bottom = 0.5
+offset_left = -0.190002
+offset_top = -0.300003
+offset_right = 0.309967
+offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -50,4 +49,3 @@ layout_mode = 1
 offset_left = -13.75
 offset_right = 13.75
 offset_bottom = 23.0
-vertical_alignment = 1

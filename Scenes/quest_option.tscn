@@ -1,15 +1,16 @@
 [gd_scene load_steps=4 format=3 uid="uid://ddgp4njhef2ac"]
 
 [ext_resource type="Script" uid="uid://dk7i8aj2wob6h" path="res://scripts/QuestOption.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://b6ncqnw4w7uw1" path="res://assets/images/ui/options.png" id="2_vq2r0"]
+[ext_resource type="Texture2D" uid="uid://cmm16dxkb53sy" path="res://assets/images/ui/option_tetxu.png" id="1_vq2r0"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="3_icon"]
 
 [node name="QuestOption" type="TextureButton"]
+modulate = Color(1, 1, 1, 0.784314)
 custom_minimum_size = Vector2(350, 50)
 offset_right = 350.0
 offset_bottom = 50.0
 size_flags_horizontal = 4
-texture_normal = ExtResource("2_vq2r0")
+texture_normal = ExtResource("1_vq2r0")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("1_script")
@@ -27,11 +28,10 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
-offset_left = 16.0
+offset_left = 64.0
 offset_top = 12.0
 offset_right = 327.0
 offset_bottom = 35.0
 size_flags_horizontal = 3
 text = "Option Text"
-horizontal_alignment = 1
 vertical_alignment = 1
