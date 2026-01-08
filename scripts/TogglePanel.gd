@@ -54,7 +54,9 @@ static var instance: UIManager
 
 # Track UI state
 var chat_overlay_active: bool = false
-var overlay_stack: Array[Control] = []  # Track nested overlays for z-index management
+var overlay_stack: Array[Control] = []  # Stack of nested overlays
+const BASE_Z_INDEX: int = 200
+const Z_INDEX_INCREMENT: int = 10
 
 func _enter_tree():
 	# Set singleton instance immediately when entering tree, before any _ready() calls
@@ -153,61 +155,96 @@ func show_details_panel(character: GameInfo.GamePlayer):
 	print("UIManager: Showing details for: ", character.name)
 	if details_panel:
 		details_panel.display_effects(character)
-		show_overlay(details_panel)
+		show_overlay(details_panel)  # Push onto stack
 	else:
 		print("ERROR: details_panel not assigned in UIManager")
 
 func show_overlay(overlay: Control):
-	"""Show overlay on top of current panel"""
-	print("UIManager: show_overlay called for: ", overlay.name if overlay else "null")
-	
-	# Chat special handling
-	if overlay == chat_panel:
-		if chat_overlay_active:
-			hide_overlay(chat_panel)
-			return
-		else:
-			chat_overlay_active = true
-	
-	# Hide current overlay if different
-	var current = GameInfo.get_current_panel_overlay()
-	if current != null and current != overlay:
-		hide_overlay(current)
-	
-	# Toggle off if same overlay
-	if current == overlay:
-		hide_overlay(overlay)
+	"""Push an overlay onto the stack"""
+	if overlay == null:
+		print("ERROR: Attempted to show null overlay")
 		return
 	
-	# Show new overlay
-	print("UIManager: Setting overlay visible: ", overlay.name)
-	GameInfo.set_current_panel_overlay(overlay)
+	print("UIManager: Pushing overlay onto stack: ", overlay.name)
 	
-	# Calculate z-index based on stack depth (base 200, increment by 10 for each level)
-	var z_index = 200 + (overlay_stack.size() * 10)
+	# Special handling for chat
+	if overlay == chat_panel:
+		chat_overlay_active = true
+	
+	# Hide current top overlay (if any) but keep it in stack
+	if overlay_stack.size() > 0:
+		var current_top = overlay_stack[-1]
+		current_top.visible = false
+		print("UIManager: Hiding previous overlay: ", current_top.name)
+	
+	# Add new overlay to stack
+	overlay_stack.push_back(overlay)
+	
+	# Set z-index based on stack depth
+	var z_index = BASE_Z_INDEX + (overlay_stack.size() - 1) * Z_INDEX_INCREMENT
 	overlay.z_index = z_index
-	overlay_stack.append(overlay)
-	print("UIManager: Set z-index to ", z_index, " (stack size: ", overlay_stack.size(), ")")
-	
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.visible = true
-	print("UIManager: Overlay visibility set to: ", overlay.visible)
 	
-func hide_overlay(overlay: Control):
-	"""Hide overlay"""
-	if overlay == chat_panel:
+	print("UIManager: Overlay stack depth: ", overlay_stack.size(), " z-index: ", z_index)
+	
+	# Update GameInfo tracking (use top of stack)
+	GameInfo.set_current_panel_overlay(overlay)
+	
+func hide_current_overlay():
+	"""Pop the top overlay from the stack"""
+	if overlay_stack.size() == 0:
+		print("UIManager: No overlay to hide")
+		return
+	
+	# Remove and hide top overlay
+	var top_overlay = overlay_stack.pop_back()
+	top_overlay.visible = false
+	print("UIManager: Popped overlay: ", top_overlay.name)
+	
+	# Special handling for chat
+	if top_overlay == chat_panel:
 		chat_overlay_active = false
 	
-	if GameInfo.get_current_panel_overlay() == overlay:
+	# Show the previous overlay (if any)
+	if overlay_stack.size() > 0:
+		var previous_overlay = overlay_stack[-1]
+		previous_overlay.visible = true
+		print("UIManager: Showing previous overlay: ", previous_overlay.name)
+		GameInfo.set_current_panel_overlay(previous_overlay)
+	else:
+		print("UIManager: Returned to base panel")
 		GameInfo.set_current_panel_overlay(null)
 	
-	# Remove from stack
-	var index = overlay_stack.find(overlay)
-	if index >= 0:
-		overlay_stack.remove_at(index)
-		print("UIManager: Removed from overlay stack (new size: ", overlay_stack.size(), ")")
+	print("UIManager: Overlay stack depth: ", overlay_stack.size())
+
+func hide_overlay(overlay: Control):
+	"""Legacy function - now just calls hide_current_overlay"""
+	hide_current_overlay()
+
+func toggle_overlay(overlay: Control):
+	"""Toggle an overlay - if it's on the stack, pop back to it; otherwise push it"""
+	if overlay == null:
+		print("ERROR: Attempted to toggle null overlay")
+		return
 	
-	overlay.visible = false
+	# Check if this overlay is already in the stack
+	var index = overlay_stack.find(overlay)
+	
+	if index >= 0:
+		print("UIManager: Overlay already in stack at index ", index, ", popping back to it")
+		# Overlay is in stack - pop everything above it
+		while overlay_stack.size() > index + 1:
+			var top = overlay_stack.pop_back()
+			top.visible = false
+			print("UIManager: Popped overlay while navigating back: ", top.name)
+		
+		# Now hide this overlay too
+		hide_current_overlay()
+	else:
+		print("UIManager: Overlay not in stack, pushing it")
+		# Overlay not in stack - push it
+		show_overlay(overlay)
 
 func show_panel(panel: Control):
 	"""Show main panel - hides all overlays and current panel"""	
@@ -310,37 +347,25 @@ func handle_rankings_button():
 		show_panel(rankings_panel)
 
 func toggle_talents_bookmark():
-	if talents_panel.visible:
-		hide_overlay(talents_panel)
-	else:
-		show_overlay(talents_panel)
+	"""Toggle talents panel overlay"""
+	toggle_overlay(talents_panel)
 
 func toggle_details_bookmark():
-	if details_panel.visible:
-		hide_overlay(details_panel)
-	else:
-		show_overlay(details_panel)
+	"""Toggle details panel overlay"""
+	toggle_overlay(details_panel)
 
 
 func go_back():
-	"""Back button - priority: chat > overlay > panel custom behavior > home"""
+	"""Back button - priority: chat > overlay stack > panel custom behavior > home"""
 	var current = GameInfo.get_current_panel()
-	var current_overlay = GameInfo.get_current_panel_overlay()
 	
 	print("=== BACK BUTTON DEBUG ===")
 	print("Current panel: ", current.name if current else "null")
-	print("Current overlay: ", current_overlay.name if current_overlay else "null")
-	print("Current overlay visible: ", current_overlay.visible if current_overlay else "N/A")
+	print("Overlay stack depth: ", overlay_stack.size())
 	print("Chat overlay active: ", chat_overlay_active)
 	print("========================")
 	
-	# Priority 1: Hide chat overlay
-	if chat_overlay_active and chat_panel.visible:
-		print("-> Hiding chat overlay")
-		hide_overlay(chat_panel)
-		return
-	
-	# Priority 2: Hide sub-overlays (upgrade/perkscreen on talents)
+	# Priority 1: Hide sub-overlays (upgrade/perkscreen on talents)
 	if upgrade_talent and upgrade_talent.visible:
 		print("-> Hiding upgrade sub-overlay")
 		upgrade_talent.visible = false
@@ -351,10 +376,10 @@ func go_back():
 		perk_screen.visible = false
 		return
 	
-	# Priority 3: Hide current overlay
-	if current_overlay and current_overlay.visible:
-		print("-> Hiding current overlay: ", current_overlay.name)
-		hide_overlay(current_overlay)
+	# Priority 2: Pop from overlay stack
+	if overlay_stack.size() > 0:
+		print("-> Popping overlay from stack")
+		hide_current_overlay()
 		return
 	
 	# Priority 3: Panel-specific custom back behavior
