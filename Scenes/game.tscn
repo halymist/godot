@@ -130,6 +130,21 @@ bg_color = Color(0.64014, 0.614233, 0.287706, 1)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b1mpw"]
 texture = ExtResource("38_aujhx")
 
+[sub_resource type="Resource" id="Resource_b1mpw"]
+script = ExtResource("68_2cns2")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="Resource" id="Resource_ccfo7"]
+script = ExtResource("68_2cns2")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ff75x"]
+texture = ExtResource("38_aujhx")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character_panel"]
 bg_color = Color(0.600872, 0.630424, 0.268774, 1)
 border_width_left = 2
@@ -194,21 +209,6 @@ script = ExtResource("68_2cns2")
 friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
-
-[sub_resource type="Resource" id="Resource_b1mpw"]
-script = ExtResource("68_2cns2")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
-
-[sub_resource type="Resource" id="Resource_ccfo7"]
-script = ExtResource("68_2cns2")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ff75x"]
-texture = ExtResource("38_aujhx")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cns2"]
 bg_color = Color(0.6, 0.6, 0.756863, 1)
@@ -2178,6 +2178,289 @@ stretch_mode = 5
 visible = false
 layout_mode = 2
 text = ")"
+
+[node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
+layout_mode = 0
+offset_right = 285.0
+offset_bottom = 120.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
+[node name="InfoLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/LocationInfoPanel"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+text = "Location Bonuses:
++10% Gold from quests
++5% Experience gain
+Weather: Rainy (-10% Travel Speed)"
+
+[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel", "strength", "stamina", "agility", "luck", "armor")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fnkle")
+script = ExtResource("36_rankings_panel")
+rankings_table = NodePath("MainContainer/TableScroll")
+player_card = NodePath("MainContainer/PlayerCard")
+search_input = NodePath("MainContainer/SearchBar/SearchInput")
+ranking_row_scene = ExtResource("36_ranking_row")
+enemy_panel = NodePath("../Enemy")
+strength = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength/StrengthValue")
+stamina = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina/StaminaValue")
+agility = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility/AgilityValue")
+luck = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck/LuckValue")
+armor = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor/ArmorValue")
+
+[node name="MainContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="TableHeader" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="HeaderContent" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 3.0
+offset_right = -10.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="RankHeader" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Rank"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameHeader" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+vertical_alignment = 1
+
+[node name="HonorHeader" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Honor"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TableScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+script = ExtResource("67_e6ols")
+wheel_scroll_damper = SubResource("Resource_b1mpw")
+dragging_scroll_damper = SubResource("Resource_ccfo7")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PlayerCard" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 8
+size_flags_stretch_ratio = 0.4
+
+[node name="CardContent" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Character" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+texture = ExtResource("54_b1mpw")
+expand_mode = 1
+
+[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character" instance=ExtResource("22_avatar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+
+[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+
+[node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
+layout_mode = 2
+text = "Player Name"
+
+[node name="StatsGrid" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 5
+columns = 3
+
+[node name="Strength" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("44_k8ojv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StrengthValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Stamina" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("46_gsm33")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StaminaValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Agility" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("66_7sqp1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AgilityValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Luck" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("47_lrctp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LuckValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="Armor" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("86_w4j8i")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ArmorValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "100"
+vertical_alignment = 1
+
+[node name="FightButtonContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+ratio = 1.33333
+
+[node name="FightButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/FightButtonContainer"]
+layout_mode = 2
+text = "Fight"
+
+[node name="SearchBar" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SearchInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/SearchBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter name or rank..."
+
+[node name="SearchButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/SearchBar"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+text = "🔍"
+
+[node name="Enemy" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ff75x")
+
+[node name="CharacterDisplay" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy" instance=ExtResource("39_bchkn")]
+layout_mode = 1
+display_mode = 1
+perk_mini_scene = ExtResource("14_mucmn")
+
+[node name="PlayerActions" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -75.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="TalentsPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
@@ -5226,289 +5509,6 @@ layout_mode = 2
 mouse_filter = 1
 text = "-"
 horizontal_alignment = 2
-
-[node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
-layout_mode = 0
-offset_right = 285.0
-offset_bottom = 120.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-
-[node name="InfoLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/LocationInfoPanel"]
-layout_mode = 2
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-text = "Location Bonuses:
-+10% Gold from quests
-+5% Experience gain
-Weather: Rainy (-10% Travel Speed)"
-
-[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel", "strength", "stamina", "agility", "luck", "armor")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fnkle")
-script = ExtResource("36_rankings_panel")
-rankings_table = NodePath("MainContainer/TableScroll")
-player_card = NodePath("MainContainer/PlayerCard")
-search_input = NodePath("MainContainer/SearchBar/SearchInput")
-ranking_row_scene = ExtResource("36_ranking_row")
-enemy_panel = NodePath("../Enemy")
-strength = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength/StrengthValue")
-stamina = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina/StaminaValue")
-agility = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility/AgilityValue")
-luck = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck/LuckValue")
-armor = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor/ArmorValue")
-
-[node name="MainContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 10
-
-[node name="TableHeader" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="HeaderContent" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 3.0
-offset_right = -10.0
-offset_bottom = -3.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 15
-
-[node name="RankHeader" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-text = "Rank"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="NameHeader" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Name"
-vertical_alignment = 1
-
-[node name="HonorHeader" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableHeader/HeaderContent"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "Honor"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="TableScroll" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-follow_focus = true
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
-script = ExtResource("67_e6ols")
-wheel_scroll_damper = SubResource("Resource_b1mpw")
-dragging_scroll_damper = SubResource("Resource_ccfo7")
-metadata/_custom_type_script = "uid://bgqglerkcylxx"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="PlayerCard" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 8
-size_flags_stretch_ratio = 0.4
-
-[node name="CardContent" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-
-[node name="Character" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
-custom_minimum_size = Vector2(100, 80)
-layout_mode = 2
-texture = ExtResource("54_b1mpw")
-expand_mode = 1
-
-[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character" instance=ExtResource("22_avatar")]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.15
-
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-
-[node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 5
-
-[node name="PlayerName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
-layout_mode = 2
-text = "Player Name"
-
-[node name="StatsGrid" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo"]
-layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 5
-columns = 3
-
-[node name="Strength" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("44_k8ojv")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="StrengthValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "100"
-vertical_alignment = 1
-
-[node name="Stamina" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("46_gsm33")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="StaminaValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "100"
-vertical_alignment = 1
-
-[node name="Agility" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("66_7sqp1")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="AgilityValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "100"
-vertical_alignment = 1
-
-[node name="Luck" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("47_lrctp")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="LuckValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Luck"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "100"
-vertical_alignment = 1
-
-[node name="Armor" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("86_w4j8i")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="ArmorValue" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Armor"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "100"
-vertical_alignment = 1
-
-[node name="FightButtonContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-ratio = 1.33333
-
-[node name="FightButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/FightButtonContainer"]
-layout_mode = 2
-text = "Fight"
-
-[node name="SearchBar" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="SearchInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/SearchBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Enter name or rank..."
-
-[node name="SearchButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/SearchBar"]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-text = "🔍"
-
-[node name="Enemy" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_ff75x")
-
-[node name="CharacterDisplay" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy" instance=ExtResource("39_bchkn")]
-layout_mode = 1
-display_mode = 1
-perk_mini_scene = ExtResource("14_mucmn")
-
-[node name="PlayerActions" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -75.0
-grow_horizontal = 2
-grow_vertical = 0
 
 [node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
