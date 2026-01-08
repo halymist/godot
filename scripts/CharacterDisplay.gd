@@ -30,17 +30,25 @@ enum DisplayMode { PLAYER, ENEMY }
 var displayed_character: GameInfo.GamePlayer = null
 
 func _ready():
+	# Connect details button for both player and enemy modes
+	if details_button:
+		details_button.pressed.connect(_on_details_pressed)
+	
 	if display_mode == DisplayMode.PLAYER:
-		# Connect button signals for player mode
+		# Connect button signals for player mode only
 		if talents_button:
 			talents_button.pressed.connect(_on_talents_pressed)
-		if details_button:
-			details_button.pressed.connect(_on_details_pressed)
 		if avatar_button:
 			avatar_button.pressed.connect(_on_avatar_pressed)
 		
 		# Display current player
 		display_player()
+	else:
+		# Hide player-only buttons in enemy mode
+		if talents_button:
+			talents_button.visible = false
+		if avatar_button:
+			avatar_button.visible = false
 
 func display_player():
 	"""Display the current player"""
@@ -336,7 +344,13 @@ func _on_talents_pressed():
 	UIManager.instance.toggle_talents_bookmark()
 
 func _on_details_pressed():
-	UIManager.instance.toggle_details_bookmark()
+	if display_mode == DisplayMode.PLAYER:
+		# Show details for current player
+		UIManager.instance.show_details_panel(GameInfo.current_player)
+	else:  # ENEMY mode
+		# Show details for displayed enemy
+		if displayed_character:
+			UIManager.instance.show_details_panel(displayed_character)
 
 func _on_avatar_pressed():
 	UIManager.instance.toggle_avatar_overlay()

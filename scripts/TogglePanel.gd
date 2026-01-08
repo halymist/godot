@@ -54,6 +54,7 @@ static var instance: UIManager
 
 # Track UI state
 var chat_overlay_active: bool = false
+var overlay_stack: Array[Control] = []  # Track nested overlays for z-index management
 
 func _enter_tree():
 	# Set singleton instance immediately when entering tree, before any _ready() calls
@@ -147,6 +148,15 @@ func show_enemy_panel(enemy_name: String):
 	else:
 		print("ERROR: enemy_character_display not assigned in UIManager")
 
+func show_details_panel(character: GameInfo.GamePlayer):
+	"""Show details panel for any character (player or enemy)"""
+	print("UIManager: Showing details for: ", character.name)
+	if details_panel:
+		details_panel.display_effects(character)
+		show_overlay(details_panel)
+	else:
+		print("ERROR: details_panel not assigned in UIManager")
+
 func show_overlay(overlay: Control):
 	"""Show overlay on top of current panel"""
 	print("UIManager: show_overlay called for: ", overlay.name if overlay else "null")
@@ -172,7 +182,13 @@ func show_overlay(overlay: Control):
 	# Show new overlay
 	print("UIManager: Setting overlay visible: ", overlay.name)
 	GameInfo.set_current_panel_overlay(overlay)
-	overlay.z_index = 200
+	
+	# Calculate z-index based on stack depth (base 200, increment by 10 for each level)
+	var z_index = 200 + (overlay_stack.size() * 10)
+	overlay.z_index = z_index
+	overlay_stack.append(overlay)
+	print("UIManager: Set z-index to ", z_index, " (stack size: ", overlay_stack.size(), ")")
+	
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.visible = true
 	print("UIManager: Overlay visibility set to: ", overlay.visible)
@@ -184,6 +200,12 @@ func hide_overlay(overlay: Control):
 	
 	if GameInfo.get_current_panel_overlay() == overlay:
 		GameInfo.set_current_panel_overlay(null)
+	
+	# Remove from stack
+	var index = overlay_stack.find(overlay)
+	if index >= 0:
+		overlay_stack.remove_at(index)
+		print("UIManager: Removed from overlay stack (new size: ", overlay_stack.size(), ")")
 	
 	overlay.visible = false
 
