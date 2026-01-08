@@ -1,9 +1,7 @@
-[gd_scene load_steps=23 format=3 uid="uid://dtcmv6gcik5pa"]
+[gd_scene load_steps=21 format=3 uid="uid://dtcmv6gcik5pa"]
 
 [ext_resource type="Script" uid="uid://c1uh5eg86eies" path="res://scripts/CharacterDisplay.gd" id="1_foq72"]
 [ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="2_knt7d"]
-[ext_resource type="Script" uid="uid://07i46u1uv8s1" path="res://scripts/ActivePerksDisplay.gd" id="3_fr2hw"]
-[ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="4_1svyq"]
 [ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="5_ur2r5"]
 [ext_resource type="Script" uid="uid://b7v2vkdqxq2mt" path="res://scripts/Equip.gd" id="6_54e3s"]
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="7_jhf1m"]
@@ -23,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="21_7574k"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_srvda"]
 
-[node name="CharacterDisplay" type="Control" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label")]
+[node name="CharacterDisplay" type="Control" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,6 +43,7 @@ luck_label = NodePath("Stats/StatsContainer/LuckContainer/LuckValue")
 armor_label = NodePath("Stats/StatsContainer/ArmorContainer/ArmorValue")
 health_bar = NodePath("HealthBar")
 damage_spread_label = NodePath("Equip/DamageSpreadLabel")
+active_perks_display = NodePath("ActivePerksBackground/ActivePerks")
 
 [node name="Stats" type="Control" parent="."]
 layout_mode = 1
@@ -203,8 +202,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("3_fr2hw")
-perk_mini_scene = ExtResource("4_1svyq")
 
 [node name="DetailsButton" type="TextureRect" parent="."]
 layout_mode = 1

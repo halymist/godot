@@ -466,8 +466,8 @@ func refresh_stats():
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs)"""
-	active_effects.refresh_effects()
-	refresh_stats()  # Blessings may affect stats (also updates details panel)
+	if character_display:
+		character_display.refresh_active_effects()
 
 func refresh_perks():
 	"""Refresh perks grid when new perks are added"""

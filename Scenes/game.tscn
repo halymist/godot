@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -17,6 +17,7 @@
 [ext_resource type="Theme" uid="uid://bvy63ncd844sa" path="res://assets/talent_slot.tres" id="14_7nbq1"]
 [ext_resource type="Script" uid="uid://ltahebix3ehj" path="res://scripts/Talent.gd" id="14_7t8sx"]
 [ext_resource type="Texture2D" uid="uid://do7kcopjw84ob" path="res://assets/images/ui/home.png" id="14_81klo"]
+[ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="14_mucmn"]
 [ext_resource type="Script" uid="uid://df5c7at0y6dnh" path="res://scripts/SetTalents.gd" id="14_vm72l"]
 [ext_resource type="Texture2D" uid="uid://drrca05nqixdx" path="res://assets/images/ui/talents/survive.png" id="15_7nbq1"]
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
@@ -255,7 +256,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "active_effects", "avatars", "resolution_manager")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "avatars", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -304,7 +305,6 @@ silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/Silve
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
 character_display = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay")
-active_effects = NodePath("")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
 resolution_manager = NodePath("..")
 
@@ -2025,6 +2025,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_b1mpw")
 
 [node name="CharacterDisplay" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" instance=ExtResource("39_bchkn")]
 layout_mode = 1
+perk_mini_scene = ExtResource("14_mucmn")
 
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
