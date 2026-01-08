@@ -83,19 +83,19 @@ func refresh_active_effects():
 		child.queue_free()
 	
 	# Add equipped elixir first if any
-	if GameInfo.current_player and GameInfo.current_player.elixir > 0:
+	if GameInfo.current_player.elixir > 0:
 		var elixir_icon_texture = GameInfo.items_db.get_item_by_id(1000)  # Use elixir base icon
 		if elixir_icon_texture and elixir_icon_texture.icon:
 			create_consumable_display(elixir_icon_texture.icon, "Elixir", GameInfo.current_player.elixir)
 	
 	# Add equipped potion second if any
-	if GameInfo.current_player and GameInfo.current_player.potion > 0:
+	if GameInfo.current_player.potion > 0:
 		var potion_item = GameInfo.items_db.get_item_by_id(GameInfo.current_player.potion)
 		if potion_item and potion_item.icon:
 			create_consumable_display(potion_item.icon, "Potion", GameInfo.current_player.potion)
 	
 	# Add active blessing effect third if any
-	if GameInfo.current_player and GameInfo.current_player.blessing > 0:
+	if GameInfo.current_player.blessing > 0:
 		var blessing_perk = GameInfo.perks_db.get_perk_by_id(GameInfo.current_player.blessing) if GameInfo.perks_db else null
 		if blessing_perk:
 			# Get the effect referenced by the blessing perk
@@ -104,83 +104,78 @@ func refresh_active_effects():
 				create_blessing_display(blessing_perk, blessing_effect)
 	
 	# Get active perks from GameInfo
-	var active_perks = GameInfo.current_player.get_active_perks() if GameInfo.current_player else []
+	var active_perks = GameInfo.current_player.get_active_perks()
 	print("CharacterDisplay: Found ", active_perks.size(), " active perks")
 	
 	# Create icon for each active perk
 	for perk in active_perks:
 		print("CharacterDisplay: Creating icon for: ", perk.perk_name)
 		
-		if perk_mini_scene:
-			var perk_icon = perk_mini_scene.instantiate()
-			# Store perk data in the icon for hover functionality
-			perk_icon.set_meta("perk_data", perk)
-			
-			# Set the perk texture if available
-			var texture_rect = perk_icon.get_node("TextureRect")
-			if texture_rect and perk.texture:
-				texture_rect.texture = perk.texture
-			
-			# Enable mouse detection for hover
-			perk_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-			
-			# Connect hover signals
-			perk_icon.mouse_entered.connect(_on_perk_hover_start.bind(perk_icon))
-			perk_icon.mouse_exited.connect(_on_perk_hover_end)
-			
-			active_perks_display.add_child(perk_icon)
-			print("CharacterDisplay: Added perk icon to HBox")
-		else:
-			print("ERROR: perk_mini_scene is null!")
+		var perk_icon = perk_mini_scene.instantiate()
+		# Store perk data in the icon for hover functionality
+		perk_icon.set_meta("perk_data", perk)
+		
+		# Set the perk texture if available
+		var texture_rect = perk_icon.get_node("TextureRect")
+		if texture_rect and perk.texture:
+			texture_rect.texture = perk.texture
+		
+		# Enable mouse detection for hover
+		perk_icon.mouse_filter = Control.MOUSE_FILTER_PASS
+		
+		# Connect hover signals
+		perk_icon.mouse_entered.connect(_on_perk_hover_start.bind(perk_icon))
+		perk_icon.mouse_exited.connect(_on_perk_hover_end)
+		
+		active_perks_display.add_child(perk_icon)
+		print("CharacterDisplay: Added perk icon to HBox")
 	
 	# Refresh stats after updating effects
 	stats_changed(GameInfo.get_player_stats())
 
 func create_consumable_display(icon_texture: Texture2D, consumable_type: String, item_id: int):
 	"""Create a display for an equipped consumable (potion or elixir)"""
-	if perk_mini_scene and active_perks_display:
-		var consumable_icon = perk_mini_scene.instantiate()
-		# Store consumable type and item ID for hover functionality
-		consumable_icon.set_meta("consumable_type", consumable_type)
-		consumable_icon.set_meta("item_id", item_id)
-		
-		# Set the consumable texture
-		var texture_rect = consumable_icon.get_node("TextureRect")
-		if texture_rect:
-			texture_rect.texture = icon_texture
-		
-		# Enable mouse detection for hover
-		consumable_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-		
-		# Connect hover signals for consumable
-		consumable_icon.mouse_entered.connect(_on_consumable_hover_start.bind(consumable_icon))
-		consumable_icon.mouse_exited.connect(_on_perk_hover_end)
-		
-		active_perks_display.add_child(consumable_icon)
-		print("CharacterDisplay: Added consumable icon to HBox")
+	var consumable_icon = perk_mini_scene.instantiate()
+	# Store consumable type and item ID for hover functionality
+	consumable_icon.set_meta("consumable_type", consumable_type)
+	consumable_icon.set_meta("item_id", item_id)
+	
+	# Set the consumable texture
+	var texture_rect = consumable_icon.get_node("TextureRect")
+	if texture_rect:
+		texture_rect.texture = icon_texture
+	
+	# Enable mouse detection for hover
+	consumable_icon.mouse_filter = Control.MOUSE_FILTER_PASS
+	
+	# Connect hover signals for consumable
+	consumable_icon.mouse_entered.connect(_on_consumable_hover_start.bind(consumable_icon))
+	consumable_icon.mouse_exited.connect(_on_perk_hover_end)
+	
+	active_perks_display.add_child(consumable_icon)
+	print("CharacterDisplay: Added consumable icon to HBox")
 
 func create_blessing_display(perk: PerkResource, effect: EffectResource):
 	"""Create a display for an active blessing (from perks.tres)"""
-	if perk_mini_scene and active_perks_display:
-		var blessing_icon = perk_mini_scene.instantiate()
-		# Store perk and effect data for hover functionality
-		blessing_icon.set_meta("blessing_perk", perk)
-		blessing_icon.set_meta("blessing_effect", effect)
-		
-		# Use the icon from the perk (not the effect)
-		var texture_rect = blessing_icon.get_node("TextureRect")
-		if texture_rect and perk.icon:
-			texture_rect.texture = perk.icon
-		
-		# Enable mouse detection for hover
-		blessing_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-		
-		# Connect hover signals for blessing
-		blessing_icon.mouse_entered.connect(_on_blessing_hover_start.bind(blessing_icon))
-		blessing_icon.mouse_exited.connect(_on_perk_hover_end)
-		
-		active_perks_display.add_child(blessing_icon)
-		print("CharacterDisplay: Added blessing icon to HBox")
+	var blessing_icon = perk_mini_scene.instantiate()
+	# Store perk and effect data for hover functionality
+	blessing_icon.set_meta("blessing_perk", perk)
+	blessing_icon.set_meta("blessing_effect", effect)
+	
+	# Use the icon from the perk (not the effect)
+	var texture_rect = blessing_icon.get_node("TextureRect")
+	if texture_rect and perk.icon:
+		texture_rect.texture = perk.icon
+	
+	# Enable mouse detection for hover
+	blessing_icon.mouse_filter = Control.MOUSE_FILTER_PASS
+	
+	# Connect hover signals for blessing
+	blessing_icon.mouse_entered.connect(_on_blessing_hover_start.bind(blessing_icon))
+	blessing_icon.mouse_exited.connect(_on_perk_hover_end)
+	
+	active_perks_display.add_child(blessing_icon)
+	print("CharacterDisplay: Added blessing icon to HBox")
 
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
