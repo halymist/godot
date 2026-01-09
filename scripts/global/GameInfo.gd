@@ -795,9 +795,6 @@ var npcs: Array[Dictionary] = []
 var vendor_items: Array[Item] = []
 var rankings_indices: Array[int] = []  # Indices into enemy_players array (ordered by rank)
 
-# Quest system
-var quest_slides: Dictionary = {}  # questID -> Array[QuestState]
-
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null:
 	set(value):
@@ -984,41 +981,6 @@ func is_quest_completed(quest_id: int) -> bool:
 			return true
 	return false
 
-# Function to check if a specific quest slide has been visited
-func has_visited_quest_slide(quest_id: int, slide_number: int) -> bool:
-	if not current_player:
-		return false
-	for entry in current_player.quest_log:
-		if entry.get("quest_id") == quest_id:
-			var slides = entry.get("slides", [])
-			return slide_number in slides
-	return false
-
-# Function to add a slide to quest log (tracks progress through quest)
-func log_quest_slide(quest_id: int, slide_number: int):
-	if not current_player:
-		return
-	
-	# Find existing quest log entry
-	for entry in current_player.quest_log:
-		if entry.get("quest_id") == quest_id:
-			# Add slide to slides array if not already there
-			if not entry.has("slides"):
-				entry["slides"] = []
-			if slide_number not in entry["slides"]:
-				entry["slides"].append(slide_number)
-				print("Quest ", quest_id, " - logged slide ", slide_number)
-			return
-	
-	# Create new entry if quest not in log yet
-	var new_entry = {
-		"quest_id": quest_id,
-		"slides": [slide_number],
-		"finished": false
-	}
-	current_player.quest_log.append(new_entry)
-	print("Quest ", quest_id, " - created log with slide ", slide_number)
-
 # Function to mark a quest as completed
 func complete_quest(quest_id: int):
 	if not current_player:
@@ -1032,21 +994,13 @@ func complete_quest(quest_id: int):
 			quest_completed.emit(quest_id)
 			return
 	
-	# Add new entry if not found (quest abandoned before any slides were logged)
+	# Add new entry if not found
 	current_player.quest_log.append({
 		"quest_id": quest_id,
-		"slides": [],
 		"finished": true
 	})
 	print("Quest ", quest_id, " added to quest log as finished")
 	quest_completed.emit(quest_id)
-
-# Function to get quest slide by quest ID and slide number
-func get_quest_slide(quest_id: int, slide_number: int) -> QuestState:
-	if quests_db:
-		return quests_db.get_slide_by_id(quest_id, slide_number)
-	print("Quest slide not found: quest_id=", quest_id, " slide=", slide_number)
-	return null
 
 func get_quest_data(quest_id: int) -> QuestData:
 	"""Get quest data from quests.tres database"""

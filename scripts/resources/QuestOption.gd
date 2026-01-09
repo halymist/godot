@@ -33,11 +33,10 @@ enum RequirementType {
 # Visibility control - which options to show/hide after clicking this
 @export var shows_option_ids: Array[int] = []  # Show these options after clicking
 @export var hides_option_ids: Array[int] = []  # Hide these options after clicking
-@export var is_blocking: bool = false  # If true, hides all other options when clicked
 
-# Navigation (0 = stay on current state, >0 = go to state, -1 = end quest)
-@export var navigates_to_slide: int = 0  # Which state to navigate to after clicking
-@export var on_lose_slide: int = -1  # Failure state (for combat/checks)
+# Quest completion
+@export var ends_quest: bool = false  # If true, quest completes after this option
+@export var on_lose_ends_quest: bool = false  # For combat: end quest if you lose
 
 # Unified requirement system
 @export var required_type: RequirementType = RequirementType.NONE

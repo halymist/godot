@@ -188,18 +188,10 @@ func _on_enter_dungeon_pressed():
 		# Go Quest functionality
 		print("Go Quest button pressed - loading quest")
 		var quest_id = GameInfo.current_player.traveling_destination
-		var start_slide = 1
-		
-		# Find current slide from quest log
-		for quest_log_entry in GameInfo.current_player.quest_log:
-			if quest_log_entry.quest_id == quest_id:
-				if quest_log_entry.slides.size() > 0:
-					start_slide = quest_log_entry.slides[-1]
-				break
 		
 		# Load quest directly
 		if quest:
-			quest.load_quest(quest_id, start_slide)
+			quest.load_quest(quest_id)
 			quest.visible = true
 			# Update current panel to quest and hide map
 			GameInfo.set_current_panel(quest)

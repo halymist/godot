@@ -27,8 +27,7 @@ extends Panel
 
 # Quest state
 var current_quest_id: int = 0
-var current_slide_number: int = 1
-var current_state: QuestState = null
+var current_quest: QuestData = null
 var visible_option_ids: Array[int] = []  # Currently visible option IDs
 var pending_combat_option: QuestOption = null  # Store option for after combat
 
@@ -47,24 +46,15 @@ func _on_visibility_changed():
 	var destination = GameInfo.current_player.traveling_destination
 	# Only load if there's a destination and it's not already loaded
 	if destination != null and current_quest_id != destination:
-		# Find the current slide from quest log, default to 1 if not found
-		var start_slide = 1
-		for quest_log_entry in GameInfo.current_player.quest_log:
-			if quest_log_entry.quest_id == destination:
-				# Get the last slide from the slides array (most recent progress)
-				if quest_log_entry.slides.size() > 0:
-					start_slide = quest_log_entry.slides[-1]
-				break
-		
-		print("Quest panel became visible, loading quest ", destination, " at slide ", start_slide)
-		load_quest(destination, start_slide)
+		print("Quest panel became visible, loading quest ", destination)
+		load_quest(destination)
 
-func load_quest(quest_id: int, slide_number: int = 1):
-	"""Load a quest and display first slide"""
-	print("Loading quest ", quest_id, " slide ", slide_number)
+func load_quest(quest_id: int):
+	"""Load a quest and display initial state"""
+	print("Loading quest ", quest_id)
 	
 	if current_quest_id != quest_id:
-		# Set quest title
+		# Set quest title and background
 		var quest_data = GameInfo.get_quest_data(quest_id)
 		if quest_data:
 			var title_label = get_node_or_null("QuestTitle")
@@ -73,34 +63,30 @@ func load_quest(quest_id: int, slide_number: int = 1):
 			
 			# Apply background texture
 			background.texture = quest_data.background_texture
+			
+			current_quest = quest_data
 	
 	current_quest_id = quest_id
-	current_slide_number = slide_number
-	
-	# Log this slide in the quest log
-	GameInfo.log_quest_slide(quest_id, slide_number)
-	
-	current_state = GameInfo.get_quest_slide(quest_id, slide_number)
 	
 	# Initialize visible_option_ids from initially_visible_options
-	if current_state.initially_visible_options.size() > 0:
-		visible_option_ids = current_state.initially_visible_options.duplicate()
+	if current_quest.initially_visible_options.size() > 0:
+		visible_option_ids = current_quest.initially_visible_options.duplicate()
 	else:
 		# Default to all options visible if not specified
 		visible_option_ids = []
-		for i in range(current_state.options.size()):
-			visible_option_ids.append(current_state.options[i].option_index)
+		for i in range(current_quest.options.size()):
+			visible_option_ids.append(current_quest.options[i].option_index)
 	
-	display_quest_slide(current_state)
+	display_quest(current_quest)
 
-func display_quest_slide(quest_slide: QuestState):
-	"""Create new quest entry"""
+func display_quest(quest_data: QuestData):
+	"""Display quest text and options"""
 	# Clear previous entry from the text container
 	for child in text_container.get_children():
 		child.queue_free()
 	
 	# Create and add new entry to text container
-	var entry = create_quest_entry(quest_slide.text)
+	var entry = create_quest_entry(quest_data.initial_text)
 	text_container.add_child(entry)
 	
 	# Animate entry sliding up from below
@@ -112,19 +98,19 @@ func display_quest_slide(quest_slide: QuestState):
 	entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	
 	# Display rewards if present
-	display_rewards(quest_slide)
+	display_rewards(quest_data)
 	
 	# Apply rewards to player
-	apply_rewards(quest_slide)
+	apply_rewards(quest_data)
 	
 	# Update options based on visible_option_ids
 	clear_options()
-	if quest_slide.options:
-		for option in quest_slide.options:
+	if quest_data.options:
+		for option in quest_data.options:
 			if option and visible_option_ids.has(option.option_index):
 				add_option(option.text, _on_quest_option_pressed.bind(option), option)
 	else:
-		print("WARNING: quest_slide.options is null or empty")
+		print("WARNING: quest_data.options is null or empty")
 
 func create_quest_entry(text: String) -> Control:
 	"""Create a quest entry label"""
@@ -138,14 +124,14 @@ func create_quest_entry(text: String) -> Control:
 	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return label
 
-func display_rewards(quest_slide: QuestState):
+func display_rewards(quest_data: QuestData):
 	"""Display rewards in the reward label"""
-	if not reward_label or not quest_slide or not quest_slide.reward:
+	if not reward_label or not quest_data or not quest_data.initial_reward:
 		if reward_label:
 			reward_label.text = ""
 		return
 	
-	var reward = quest_slide.reward
+	var reward = quest_data.initial_reward
 	var reward_parts = []
 	
 	# Check each reward type
@@ -194,12 +180,12 @@ func display_rewards(quest_slide: QuestState):
 	else:
 		reward_label.text = ""
 
-func apply_rewards(quest_slide: QuestState):
+func apply_rewards(quest_data: QuestData):
 	"""Apply rewards to the player"""
-	if not quest_slide or not quest_slide.reward:
+	if not quest_data or not quest_data.initial_reward:
 		return
 	
-	var reward = quest_slide.reward
+	var reward = quest_data.initial_reward
 	
 	# Silver reward
 	if reward.silver > 0:
@@ -352,7 +338,7 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	# Set icon based on requirement type and option type
 	var icon_texture = dialogue_icon  # Default icon
 	if option_data:
-		var is_end = option_data.navigates_to_slide < 0
+		var is_end = option_data.ends_quest
 		
 		if option_data.required_type == QuestOption.RequirementType.COMBAT:
 			icon_texture = combat_icon
@@ -411,17 +397,14 @@ func refresh_quest_options_internal():
 		print("No quest loaded, returning")
 		return
 	
-	# Get current slide and rebuild options (same as display_quest_slide)
-	var quest_slide = GameInfo.get_quest_slide(current_quest_id, current_slide_number)
-	print("Got quest slide: ", quest_slide)
-	if quest_slide:
-		print("Clearing options...")
-		clear_options()
-		if quest_slide.options:
-			print("Rebuilding ", quest_slide.options.size(), " options")
-			for option in quest_slide.options:
-				if option:
-					add_option(option.text, _on_quest_option_pressed.bind(option), option)
+	# Rebuild options with current visible_option_ids
+	print("Clearing options...")
+	clear_options()
+	if current_quest and current_quest.options:
+		print("Rebuilding ", current_quest.options.size(), " options")
+		for option in current_quest.options:
+			if option and visible_option_ids.has(option.option_index):
+				add_option(option.text, _on_quest_option_pressed.bind(option), option)
 
 func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click with persistent options system"""
@@ -470,24 +453,15 @@ func _on_quest_option_pressed(option: QuestOption):
 	for hide_id in option.hides_option_ids:
 		visible_option_ids.erase(hide_id)
 	
-	# 7. If is_blocking, hide ALL other options
-	if option.is_blocking:
-		visible_option_ids.clear()
-	
-	# 8. Handle navigation
-	if option.navigates_to_slide > 0:
-		# Navigate to new state
-		load_quest(current_quest_id, option.navigates_to_slide)
-		return
-	elif option.navigates_to_slide < 0:
-		# End quest
+	# 7. Check if quest ends
+	if option.ends_quest:
 		_finish_quest()
 		return
 	
-	# 9. If staying on current state (navigates_to_slide == 0), refresh options
+	# 8. If staying in quest, refresh options
 	clear_options()
-	if current_state.options:
-		for quest_option in current_state.options:
+	if current_quest.options:
+		for quest_option in current_quest.options:
 			if quest_option and visible_option_ids.has(quest_option.option_index):
 				add_option(quest_option.text, _on_quest_option_pressed.bind(quest_option), quest_option)
 
@@ -505,25 +479,17 @@ func _start_combat():
 	
 	print("Combat outcome: Player won = ", player_won)
 	
-	# Navigate to result slide IMMEDIATELY (before showing combat)
+	# Check if quest should end based on combat result
 	if player_won:
-		# Win: use navigates_to_slide
-		if pending_combat_option.navigates_to_slide > 0:
-			load_quest(current_quest_id, pending_combat_option.navigates_to_slide)
-			pending_combat_option = null
-		elif pending_combat_option.navigates_to_slide < 0:
-			# End quest (navigates_to_slide = -1)
+		# Win: check if option ends quest
+		if pending_combat_option.ends_quest:
 			GameInfo.end_quest(current_quest_id)
 			if portrait:
 				portrait.navigate_to("map")
 			pending_combat_option = null
 	else:
-		# Loss: use on_lose_slide
-		if pending_combat_option.on_lose_slide > 0:
-			load_quest(current_quest_id, pending_combat_option.on_lose_slide)
-			pending_combat_option = null
-		elif pending_combat_option.on_lose_slide < 0:
-			# End quest on loss (on_lose_slide = -1)
+		# Loss: check if quest ends on lose
+		if pending_combat_option.on_lose_ends_quest:
 			GameInfo.end_quest(current_quest_id)
 			if portrait:
 				portrait.navigate_to("map")
@@ -553,7 +519,7 @@ func _finish_quest():
 	GameInfo.current_player.traveling_destination = null
 	GameInfo.current_player.traveling = 0
 	current_quest_id = 0
-	current_slide_number = 1
+	current_quest = null
 	
 	# Call handle_quest_completed on UIManager
 	# This will hide the panel and navigate home
