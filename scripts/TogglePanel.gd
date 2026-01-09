@@ -108,8 +108,8 @@ func _ready():
 	rankings_button.pressed.connect(handle_rankings_button)
 	settings_button.pressed.connect(toggle_overlay.bind(settings_panel))
 	payment_button.pressed.connect(toggle_overlay.bind(payment))
-	chat_button.pressed.connect(toggle_overlay.bind(chat_panel))
-	chat_panel.pressed.connect(hide_current_overlay)  # Close chat when clicking background
+	chat_button.pressed.connect(toggle_chat)
+	chat_panel.pressed.connect(toggle_chat)  # Close chat when clicking background
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
 	
@@ -175,6 +175,20 @@ func show_talents_panel(character: GameInfo.GamePlayer, read_only: bool = false)
 	else:
 		print("ERROR: talents_panel not assigned in UIManager")
 
+func toggle_chat():
+	"""Toggle chat overlay - independent of overlay stack"""
+	if chat_overlay_active:
+		# Hide chat
+		chat_overlay_active = false
+		chat_panel.visible = false
+		print("UIManager: Chat hidden")
+	else:
+		# Show chat above everything
+		chat_overlay_active = true
+		chat_panel.z_index = 500  # Always above overlay stack (BASE_Z_INDEX=200)
+		chat_panel.visible = true
+		print("UIManager: Chat shown with z-index 500")
+
 func show_overlay(overlay: Control):
 	"""Push an overlay onto the stack"""
 	if overlay == null:
@@ -182,10 +196,6 @@ func show_overlay(overlay: Control):
 		return
 	
 	print("UIManager: Pushing overlay onto stack: ", overlay.name)
-	
-	# Special handling for chat
-	if overlay == chat_panel:
-		chat_overlay_active = true
 	
 	# Hide current top overlay (if any) but keep it in stack
 	if overlay_stack.size() > 0:
@@ -217,10 +227,6 @@ func hide_current_overlay():
 	var top_overlay = overlay_stack.pop_back()
 	top_overlay.visible = false
 	print("UIManager: Popped overlay: ", top_overlay.name)
-	
-	# Special handling for chat
-	if top_overlay == chat_panel:
-		chat_overlay_active = false
 	
 	# Show the previous overlay (if any)
 	if overlay_stack.size() > 0:
@@ -280,11 +286,6 @@ func show_panel(panel: Control):
 		overlay.visible = false
 	
 	print("UIManager: Cleared overlay stack when switching to panel: ", panel.name)
-	
-	# Hide chat overlay
-	if chat_overlay_active:
-		chat_overlay_active = false
-		chat_panel.visible = false
 	
 	# Show new panel
 	panel.visible = true
