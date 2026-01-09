@@ -14,8 +14,10 @@ func show_dialogue(dialogue_text: String, duration: float = 3.0, skip_animation:
 	
 	# Only constrain width if text is actually too wide
 	if natural_width > max_width:
+		autowrap_mode = TextServer.AUTOWRAP_WORD
 		custom_minimum_size.x = max_width
 	else:
+		autowrap_mode = TextServer.AUTOWRAP_OFF
 		custom_minimum_size.x = 0
 	
 	# Wait for layout to recalculate size
