@@ -443,15 +443,18 @@ func _on_quest_option_pressed(option: QuestOption):
 	
 	# 4. Always hide clicked option (exhausted)
 	visible_option_ids.erase(option.option_index)
+	print("After hiding clicked option ", option.option_index, ", visible_option_ids: ", visible_option_ids)
 	
 	# 5. Show new options
 	for show_id in option.shows_option_ids:
 		if not visible_option_ids.has(show_id):
 			visible_option_ids.append(show_id)
+	print("After showing options ", option.shows_option_ids, ", visible_option_ids: ", visible_option_ids)
 	
 	# 6. Hide other options
 	for hide_id in option.hides_option_ids:
 		visible_option_ids.erase(hide_id)
+	print("After hiding options ", option.hides_option_ids, ", visible_option_ids: ", visible_option_ids)
 	
 	# 7. Check if quest ends
 	if option.ends_quest:
@@ -459,9 +462,11 @@ func _on_quest_option_pressed(option: QuestOption):
 		return
 	
 	# 8. If staying in quest, refresh options
+	print("Refreshing options, current_quest.options.size(): ", current_quest.options.size())
 	clear_options()
 	if current_quest.options:
 		for quest_option in current_quest.options:
+			print("Checking option ", quest_option.option_index, " - visible: ", visible_option_ids.has(quest_option.option_index))
 			if quest_option and visible_option_ids.has(quest_option.option_index):
 				add_option(quest_option.text, _on_quest_option_pressed.bind(quest_option), quest_option)
 

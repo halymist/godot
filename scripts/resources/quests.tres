@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=10 format=3 uid="uid://qpxy3xo35sm8"]
+[gd_resource type="Resource" script_class="QuestsDatabase" load_steps=11 format=3 uid="uid://qpxy3xo35sm8"]
 
 [ext_resource type="Script" uid="uid://dyylwqohml0nt" path="res://scripts/resources/QuestData.gd" id="1_76t0t"]
 [ext_resource type="Texture2D" uid="uid://iq6mf8isihcy" path="res://assets/images/villages/quest_artstyle.png" id="2_d2n6j"]
@@ -24,7 +24,7 @@ script = ExtResource("3_d2n6j")
 option_index = 0
 text = "Go left"
 response_text = "You just went left o.O"
-shows_option_ids = Array[int]([0])
+shows_option_ids = Array[int]([1])
 hides_option_ids = Array[int]([0])
 ends_quest = false
 on_lose_ends_quest = false
@@ -37,9 +37,22 @@ script = ExtResource("3_d2n6j")
 option_index = 1
 text = "After left you go more left"
 response_text = "Wau ur doing it"
+shows_option_ids = Array[int]([2])
+hides_option_ids = Array[int]([1])
+ends_quest = false
+on_lose_ends_quest = false
+required_type = 0
+required_amount = 0
+metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
+
+[sub_resource type="Resource" id="Resource_jgsu5"]
+script = ExtResource("3_d2n6j")
+option_index = 2
+text = "Go home"
+response_text = "Ur ready to go home"
 shows_option_ids = Array[int]([])
 hides_option_ids = Array[int]([])
-ends_quest = false
+ends_quest = true
 on_lose_ends_quest = false
 required_type = 0
 required_amount = 0
@@ -53,7 +66,7 @@ background_texture = ExtResource("2_d2n6j")
 travel_text = "Hi im testing stuff right now"
 initial_text = "This is the start of the quest"
 initial_reward = SubResource("Resource_67rkd")
-options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_d2n6j"), SubResource("Resource_gr8oa")])
+options = Array[ExtResource("3_d2n6j")]([SubResource("Resource_d2n6j"), SubResource("Resource_gr8oa"), SubResource("Resource_jgsu5")])
 initially_visible_options = Array[int]([0])
 metadata/_custom_type_script = "uid://dyylwqohml0nt"
 
