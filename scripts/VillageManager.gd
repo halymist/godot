@@ -185,7 +185,7 @@ func handle_npc_clicked(npc):
 		# NPC has a quest - show quest panel
 		print("Showing quest panel for quest ID: ", quest_id)
 		quest_panel.show_quest(npc.npc_data)
-		GameInfo.set_current_panel_overlay(quest_panel)
+		UIManager.instance.show_overlay(quest_panel)
 	else:
 		# NPC has no quest - just show dialogue in chat bubble (handled by NPC itself on hover)
 		print("No quest for this NPC - dialogue shown via chat bubble")
