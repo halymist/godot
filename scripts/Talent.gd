@@ -58,9 +58,7 @@ func update_from_character(character: GameInfo.GamePlayer, read_only: bool):
 	
 	pointsLabel.text = "%d/%d" % [points, maxPoints]
 	
-	# Disable button interaction in read-only mode
-	if button:
-		button.disabled = read_only
+	# Keep buttons clickable even in read-only mode (for viewing details)
 	
 	update_button_appearance()
 
@@ -76,11 +74,47 @@ func update_button_appearance():
 		modulate = Color(0.4, 0.4, 0.4, 1.0)  # Dark grey
 
 func _on_button_pressed():
-	# Disable button interaction in read-only mode
+	# In read-only mode, show info but don't allow perk selection or upgrades
 	if is_read_only:
-		print("Talent: Cannot interact in read-only mode")
+		# For perk slot talents in read-only mode, show assigned perk description
+		if perk_slot > 0 and points >= maxPoints:
+			# Find the assigned perk for this slot
+			var assigned_perk = null
+			for perk in displayed_character.perks:
+				if perk.slot_id == perk_slot:
+					assigned_perk = perk
+					break
+			
+			var description = ""
+			if assigned_perk:
+				# Get perk details from perks database
+				var perk_data = GameInfo.perks_db.get_perk_by_id(assigned_perk.perk_id)
+				if perk_data:
+					description = perk_data.perk_name + "\n" + perk_data.description
+				else:
+					description = "Perk Slot " + str(perk_slot) + " - Perk ID: " + str(assigned_perk.perk_id)
+			else:
+				description = "Perk Slot " + str(perk_slot) + " (No perk assigned)"
+			
+			UIManager.instance.upgrade_talent.set_talent_data(talentName, description, 0, points, maxPoints, false, self)
+			return
+		
+		# For regular talents in read-only mode, show description without upgrade option
+		var description = ""
+		if perk_slot > 0:
+			description = "Unlocks an additional perk slot"
+		elif effect_id > 0:
+			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
+			if effect_data:
+				description = effect_data.description
+				var current_bonus = points * factor
+				if points > 0:
+					description += " " + str(int(current_bonus)) + "%"
+		
+		UIManager.instance.upgrade_talent.set_talent_data(talentName, description, factor, points, maxPoints, false, self)
 		return
 	
+	# Player mode logic
 	# Check if this is a perk slot talent (to select a perk)
 	if perk_slot > 0 and points >= maxPoints:
 		UIManager.instance.perk_screen.load_active_perks_for_slot(perk_slot)
