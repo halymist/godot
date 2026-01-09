@@ -42,6 +42,13 @@ func _on_visibility_changed():
 	"""Load quest when panel becomes visible"""
 	if not visible:
 		return
+	
+	# Check if we're returning from combat
+	if pending_combat_option != null:
+		print("Returning from combat, handling result")
+		handle_combat_result()
+		return
+	
 	print("Quest panel is now visible")
 	var destination = GameInfo.current_player.traveling_destination
 	# Only load if there's a destination and it's not already loaded
@@ -478,28 +485,6 @@ func _start_combat():
 	
 	print("Starting combat with log index: ", random_index)
 	
-	# Get combat result from log
-	var combat_log = GameInfo.current_combat_log
-	var player_won = combat_log.haswon
-	
-	print("Combat outcome: Player won = ", player_won)
-	
-	# Check if quest should end based on combat result
-	if player_won:
-		# Win: check if option ends quest
-		if pending_combat_option.ends_quest:
-			GameInfo.end_quest(current_quest_id)
-			if portrait:
-				portrait.navigate_to("map")
-			pending_combat_option = null
-	else:
-		# Loss: check if quest ends on lose
-		if pending_combat_option.on_lose_ends_quest:
-			GameInfo.end_quest(current_quest_id)
-			if portrait:
-				portrait.navigate_to("map")
-			pending_combat_option = null
-	
 	# Get combat panel and toggle UI through UIManager
 	if not UIManager.instance:
 		print("ERROR: UIManager not available!")
@@ -514,6 +499,87 @@ func _start_combat():
 	# Show combat panel using UIManager's show_panel method
 	UIManager.instance.show_panel(combat_panel)
 	GameInfo.set_current_panel(combat_panel)
+
+func handle_combat_result():
+	"""Called after combat panel closes to handle quest continuation"""
+	if not pending_combat_option:
+		return
+	
+	# Get combat result
+	var combat_log = GameInfo.current_combat_log
+	var player_won = combat_log.haswon
+	
+	print("Handling combat result: Player won = ", player_won)
+	
+	var option = pending_combat_option
+	pending_combat_option = null
+	
+	if player_won:
+		# Win: use regular response_text and shows/hides
+		if option.response_text != "":
+			# Replace text with win response
+			for child in text_container.get_children():
+				child.queue_free()
+			
+			var entry = create_quest_entry(option.response_text)
+			text_container.add_child(entry)
+			
+			# Animate entry
+			entry.modulate.a = 0
+			entry.position.y = 20
+			var entry_tween = create_tween()
+			entry_tween.set_parallel(true)
+			entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+			entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+		
+		# Always hide clicked option
+		visible_option_ids.erase(option.option_index)
+		
+		# Show/hide options
+		for show_id in option.shows_option_ids:
+			if not visible_option_ids.has(show_id):
+				visible_option_ids.append(show_id)
+		for hide_id in option.hides_option_ids:
+			visible_option_ids.erase(hide_id)
+		
+		# Check if quest ends
+		if option.ends_quest:
+			_finish_quest()
+			return
+	else:
+		# Loss: use on_lose_response_text
+		if option.on_lose_response_text != "":
+			# Replace text with lose response
+			for child in text_container.get_children():
+				child.queue_free()
+			
+			var entry = create_quest_entry(option.on_lose_response_text)
+			text_container.add_child(entry)
+			
+			# Animate entry
+			entry.modulate.a = 0
+			entry.position.y = 20
+			var entry_tween = create_tween()
+			entry_tween.set_parallel(true)
+			entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+			entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+		
+		# Always hide clicked option
+		visible_option_ids.erase(option.option_index)
+		
+		# Show/hide options for lose scenario
+		for show_id in option.on_lose_shows_option_ids:
+			if not visible_option_ids.has(show_id):
+				visible_option_ids.append(show_id)
+		for hide_id in option.on_lose_hides_option_ids:
+			visible_option_ids.erase(hide_id)
+	
+	# Refresh options
+	clear_options()
+	if current_quest.options:
+		for quest_option in current_quest.options:
+			if quest_option and visible_option_ids.has(quest_option.option_index):
+				add_option(quest_option.text, _on_quest_option_pressed.bind(quest_option), quest_option)
 
 func _finish_quest():
 	"""End quest and return home"""

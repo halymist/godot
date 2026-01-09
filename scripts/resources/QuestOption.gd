@@ -29,14 +29,16 @@ enum RequirementType {
 
 # Response text shown when option is clicked
 @export_multiline var response_text: String = ""  # Text shown when clicked (replaces current text)
+@export_multiline var on_lose_response_text: String = ""  # Text shown when combat is lost
 
 # Visibility control - which options to show/hide after clicking this
-@export var shows_option_ids: Array[int] = []  # Show these options after clicking
-@export var hides_option_ids: Array[int] = []  # Hide these options after clicking
+@export var shows_option_ids: Array[int] = []  # Show these options after clicking (win)
+@export var hides_option_ids: Array[int] = []  # Hide these options after clicking (win)
+@export var on_lose_shows_option_ids: Array[int] = []  # Show these options on combat loss
+@export var on_lose_hides_option_ids: Array[int] = []  # Hide these options on combat loss
 
 # Quest completion
 @export var ends_quest: bool = false  # If true, quest completes after this option
-@export var on_lose_ends_quest: bool = false  # For combat: end quest if you lose
 
 # Unified requirement system
 @export var required_type: RequirementType = RequirementType.NONE
