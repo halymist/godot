@@ -9,7 +9,7 @@ func get_quest_by_id(quest_id: int) -> QuestData:
 			return quest
 	return null
 
-func get_slide_by_id(quest_id: int, slide_id: int) -> QuestSlide:
+func get_slide_by_id(quest_id: int, slide_id: int) -> QuestState:
 	var quest = get_quest_by_id(quest_id)
 	if quest:
 		for slide in quest.slides:

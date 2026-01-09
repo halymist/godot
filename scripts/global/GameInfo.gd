@@ -796,7 +796,7 @@ var vendor_items: Array[Item] = []
 var rankings_indices: Array[int] = []  # Indices into enemy_players array (ordered by rank)
 
 # Quest system
-var quest_slides: Dictionary = {}  # questID -> Array[QuestSlide]
+var quest_slides: Dictionary = {}  # questID -> Array[QuestState]
 
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null:
@@ -1042,7 +1042,7 @@ func complete_quest(quest_id: int):
 	quest_completed.emit(quest_id)
 
 # Function to get quest slide by quest ID and slide number
-func get_quest_slide(quest_id: int, slide_number: int) -> QuestSlide:
+func get_quest_slide(quest_id: int, slide_number: int) -> QuestState:
 	if quests_db:
 		return quests_db.get_slide_by_id(quest_id, slide_number)
 	print("Quest slide not found: quest_id=", quest_id, " slide=", slide_number)

@@ -27,9 +27,17 @@ enum RequirementType {
 @export var option_index: int
 @export var text: String = ""
 
-# Slide navigation (slide_target for normal/win, on_lose_slide for failure)
-@export var slide_target: int = -1  # Default/win slide
-@export var on_lose_slide: int = -1  # Failure slide (for combat/checks)
+# Response text shown when option is clicked
+@export_multiline var response_text: String = ""  # Text shown when clicked (replaces current text)
+
+# Visibility control - which options to show/hide after clicking this
+@export var shows_option_ids: Array[int] = []  # Show these options after clicking
+@export var hides_option_ids: Array[int] = []  # Hide these options after clicking
+@export var is_blocking: bool = false  # If true, hides all other options when clicked
+
+# Navigation (0 = stay on current state, >0 = go to state, -1 = end quest)
+@export var navigates_to_slide: int = 0  # Which state to navigate to after clicking
+@export var on_lose_slide: int = -1  # Failure state (for combat/checks)
 
 # Unified requirement system
 @export var required_type: RequirementType = RequirementType.NONE
