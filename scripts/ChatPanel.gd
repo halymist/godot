@@ -14,6 +14,9 @@ func _ready():
 	global_button.pressed.connect(_on_global_button_pressed)
 	local_button.pressed.connect(_on_local_button_pressed)
 	
+	# Set initial button visual states
+	_update_button_visuals()
+	
 	display_chat_messages()
 
 func _on_visibility_changed():
@@ -50,11 +53,24 @@ func _should_show_message(chat_message: GameInfo.ChatMessage) -> bool:
 
 func _on_global_button_pressed():
 	current_filter = "global"
+	_update_button_visuals()
 	display_chat_messages()
 
 func _on_local_button_pressed():
 	current_filter = "local"
+	_update_button_visuals()
 	display_chat_messages()
+
+func _update_button_visuals():
+	"""Update button appearance based on current filter"""
+	if current_filter == "global":
+		# Global active, local inactive
+		global_button.modulate = Color.WHITE  # Full brightness
+		local_button.modulate = Color(0.5, 0.5, 0.5, 1.0)  # Dimmed
+	else:  # local
+		# Local active, global inactive
+		global_button.modulate = Color(0.5, 0.5, 0.5, 1.0)  # Dimmed
+		local_button.modulate = Color.WHITE  # Full brightness
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
 	# Add timestamp separator if more than 10 minutes passed
