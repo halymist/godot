@@ -159,6 +159,22 @@ func show_details_panel(character: GameInfo.GamePlayer):
 	else:
 		print("ERROR: details_panel not assigned in UIManager")
 
+func show_talents_panel(character: GameInfo.GamePlayer, read_only: bool = false):
+	"""Show talents panel for any character (player or enemy)"""
+	print("UIManager: Showing talents for: ", character.name, " read_only=", read_only)
+	if talents_panel:
+		var set_talents = talents_panel.get_node("GridContainer")
+		if set_talents and set_talents.has_method("display_character"):
+			if read_only:
+				set_talents.display_character(character, true)
+			else:
+				set_talents.display_player()
+			show_overlay(talents_panel)  # Push onto stack
+		else:
+			print("ERROR: GridContainer node not found or missing methods in talents_panel")
+	else:
+		print("ERROR: talents_panel not assigned in UIManager")
+
 func show_overlay(overlay: Control):
 	"""Push an overlay onto the stack"""
 	if overlay == null:
@@ -347,8 +363,16 @@ func handle_rankings_button():
 		show_panel(rankings_panel)
 
 func toggle_talents_bookmark():
-	"""Toggle talents panel overlay"""
-	toggle_overlay(talents_panel)
+	"""Toggle talents panel overlay (for current player)"""
+	var index = overlay_stack.find(talents_panel)
+	if index >= 0:
+		# Pop back to this overlay (inclusive)
+		while overlay_stack.size() > index + 1:
+			overlay_stack.pop_back().visible = false
+		hide_current_overlay()
+	else:
+		# Show player talents
+		show_talents_panel(GameInfo.current_player, false)
 
 func toggle_details_bookmark():
 	"""Toggle details panel overlay"""

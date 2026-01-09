@@ -34,23 +34,23 @@ enum DisplayMode { PLAYER, ENEMY }
 var displayed_character: GameInfo.GamePlayer = null
 
 func _ready():
-	# Connect details button for both player and enemy modes
+	# Connect buttons that work for both player and enemy modes
 	if details_button:
 		details_button.pressed.connect(_on_details_pressed)
+	if talents_button:
+		talents_button.pressed.connect(_on_talents_pressed)
 	
 	if display_mode == DisplayMode.PLAYER:
 		# Connect button signals for player mode only
-		if talents_button:
-			talents_button.pressed.connect(_on_talents_pressed)
 		if avatar_button:
 			avatar_button.pressed.connect(_on_avatar_pressed)
 		
 		# Display current player
 		display_player()
 	else:
-		# Hide player-only buttons in enemy mode
+		# In enemy mode, hide only avatar button (talents can be viewed)
 		if talents_button:
-			talents_button.visible = false
+			talents_button.visible = true  # Allow viewing enemy talents
 		if avatar_button:
 			avatar_button.visible = false
 
@@ -347,7 +347,13 @@ func _on_perk_hover_end():
 	TooltipManager.hide_perk_tooltip()
 
 func _on_talents_pressed():
-	UIManager.instance.toggle_talents_bookmark()
+	if display_mode == DisplayMode.PLAYER:
+		# Show player talents (editable)
+		UIManager.instance.show_talents_panel(GameInfo.current_player, false)
+	else:  # ENEMY mode
+		# Show enemy talents (read-only)
+		if displayed_character:
+			UIManager.instance.show_talents_panel(displayed_character, true)
 
 func _on_details_pressed():
 	if display_mode == DisplayMode.PLAYER:

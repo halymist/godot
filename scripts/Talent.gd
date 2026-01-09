@@ -15,14 +15,21 @@ extends AspectRatioContainer
 @export var pointsLabel: Label
 @export var neighbor_talents: Array[AspectRatioContainer] = []
 
+var displayed_character: GameInfo.GamePlayer = null
+var is_read_only: bool = false
+
 
 func _ready():
 	# Register this talent's metadata globally
 	GameInfo.register_talent(talentID, effect_id, factor, maxPoints, perk_slot)
 	
+	# Default to current player
+	displayed_character = GameInfo.current_player
+	is_read_only = false
+	
 	# Find the matching talent in GameInfo
 	var found = false
-	for talent in GameInfo.current_player.talents:
+	for talent in displayed_character.talents:
 		if talent.talent_id == talentID:
 			points = talent.points
 			found = true
@@ -32,6 +39,29 @@ func _ready():
 
 	pointsLabel.text = "%d/%d" % [points, maxPoints]
 	button.pressed.connect(_on_button_pressed)
+	update_button_appearance()
+
+func update_from_character(character: GameInfo.GamePlayer, read_only: bool):
+	"""Update this talent to display data from a specific character"""
+	displayed_character = character
+	is_read_only = read_only
+	
+	# Find matching talent in character's talents
+	var found = false
+	for talent in displayed_character.talents:
+		if talent.talent_id == talentID:
+			points = talent.points
+			found = true
+			break
+	if not found:
+		points = 0
+	
+	pointsLabel.text = "%d/%d" % [points, maxPoints]
+	
+	# Disable button interaction in read-only mode
+	if button:
+		button.disabled = read_only
+	
 	update_button_appearance()
 
 func update_button_appearance():
@@ -46,6 +76,11 @@ func update_button_appearance():
 		modulate = Color(0.4, 0.4, 0.4, 1.0)  # Dark grey
 
 func _on_button_pressed():
+	# Disable button interaction in read-only mode
+	if is_read_only:
+		print("Talent: Cannot interact in read-only mode")
+		return
+	
 	# Check if this is a perk slot talent (to select a perk)
 	if perk_slot > 0 and points >= maxPoints:
 		UIManager.instance.perk_screen.load_active_perks_for_slot(perk_slot)
@@ -73,13 +108,17 @@ func _on_button_pressed():
 		UIManager.instance.upgrade_talent.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
 
 func can_upgrade() -> bool:
+	# Can't upgrade in read-only mode
+	if is_read_only:
+		return false
+	
 	# Check if talent is already maxed out
 	if points >= maxPoints:
 		return false
 	
 	# Check if player has talent points available
 	var spent_points = 0
-	for talent in GameInfo.current_player.talents:
+	for talent in displayed_character.talents:
 		spent_points += talent.points
 	if spent_points >= GameInfo.current_player.talent_points:
 		return false
