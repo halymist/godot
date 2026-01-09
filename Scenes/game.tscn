@@ -1,4 +1,4 @@
-[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=105 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -47,6 +47,7 @@
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Texture2D" uid="uid://frdxqif0cyou" path="res://assets/images/ui/background_char.png" id="38_aujhx"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
+[ext_resource type="Texture2D" uid="uid://cagmx7314xoes" path="res://assets/images/ui/shared_char_bg.png" id="38_ff75x"]
 [ext_resource type="PackedScene" uid="uid://dtcmv6gcik5pa" path="res://Scenes/character_display.tscn" id="39_bchkn"]
 [ext_resource type="Texture2D" uid="uid://sxpgeuuomsc1" path="res://assets/images/ui/button_texture.png" id="39_umggo"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
@@ -60,7 +61,6 @@
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Script" uid="uid://b4irhuh3hgeh0" path="res://scripts/DetailsPanel.gd" id="52_bchkn"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
-[ext_resource type="Texture2D" uid="uid://dgc2cv8slfwg3" path="res://assets/images/ui/talents_back.png" id="56_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="67_e6ols"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
@@ -127,7 +127,7 @@ corner_radius_bottom_left = 8
 bg_color = Color(0.64014, 0.614233, 0.287706, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b1mpw"]
-texture = ExtResource("38_aujhx")
+texture = ExtResource("38_ff75x")
 
 [sub_resource type="Resource" id="Resource_b1mpw"]
 script = ExtResource("68_2cns2")
@@ -144,17 +144,8 @@ rebound_strength = 7.0
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ff75x"]
 texture = ExtResource("38_aujhx")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character_panel"]
-bg_color = Color(0.600872, 0.630424, 0.268774, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.8)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a2m5q"]
+texture = ExtResource("38_ff75x")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exi56"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -196,6 +187,9 @@ corner_radius_bottom_left = 12
 shadow_color = Color(0, 0, 0, 0.4)
 shadow_size = 5
 shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bchkn"]
+texture = ExtResource("38_ff75x")
 
 [sub_resource type="Resource" id="Resource_e6ols"]
 script = ExtResource("68_2cns2")
@@ -2031,7 +2025,11 @@ layout_mode = 1
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/Character" instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
-offset_top = -75.0
+anchors_preset = -1
+anchor_top = 0.885
+anchor_right = 0.994
+offset_top = -2.55005
+offset_right = 2.42999
 
 [node name="Avatar" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
@@ -2466,17 +2464,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_character_panel")
-
-[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("56_qj5kr")
-expand_mode = 1
+theme_override_styles/panel = SubResource("StyleBoxTexture_a2m5q")
 
 [node name="Title" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel"]
 layout_mode = 1
@@ -2489,15 +2477,17 @@ offset_right = 0.059967
 
 [node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel/Title"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_left = 0.009
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.967
+offset_left = -3.22272
 offset_top = 1.0
-offset_right = 1.92001
-offset_bottom = 5.06999
+offset_right = 1.92004
+offset_bottom = -0.0183144
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 25
 text = "Talent points: "
 vertical_alignment = 1
 
@@ -2514,13 +2504,13 @@ layout_mode = 2
 [node name="GridContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/TalentsPanel" node_paths=PackedStringArray("talents", "reset_button", "title_label")]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.081
-anchor_top = 0.175
-anchor_right = 0.931
+anchor_left = 0.042
+anchor_top = 0.127
+anchor_right = 0.958
 anchor_bottom = 0.975
-offset_left = 0.195
-offset_top = -0.250008
-offset_right = -0.0550232
+offset_left = -0.0100021
+offset_top = -5.01
+offset_right = 0.00997925
 offset_bottom = -0.25
 grow_horizontal = 2
 grow_vertical = 2
@@ -4745,6 +4735,7 @@ offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
@@ -4898,6 +4889,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_bchkn")
 script = ExtResource("52_bchkn")
 effect_strength_value = NodePath("ScrollContainer/EffectsContainer/Effect1/OnSelfValue")
 effect_stamina_value = NodePath("ScrollContainer/EffectsContainer/Effect2/OnSelfValue")
@@ -4920,16 +4912,6 @@ effect_healing_boost_value = NodePath("ScrollContainer/EffectsContainer/Effect18
 effect_crit_damage_value = NodePath("ScrollContainer/EffectsContainer/Effect19/OnSelfValue")
 effect_counter_damage_value = NodePath("ScrollContainer/EffectsContainer/Effect20/OnSelfValue")
 
-[node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("56_qj5kr")
-expand_mode = 1
-
 [node name="HeaderRow" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/DetailsPanel"]
 layout_mode = 1
 anchors_preset = -1
@@ -4937,7 +4919,7 @@ anchor_right = 1.0
 offset_left = 25.0
 offset_top = 16.0
 offset_right = -21.0
-offset_bottom = 76.0
+offset_bottom = 63.0
 grow_horizontal = 2
 theme_override_constants/separation = 10
 
@@ -4968,7 +4950,7 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 25.0
-offset_top = -524.0
+offset_top = -567.0
 offset_right = -25.0
 offset_bottom = -19.0
 grow_horizontal = 2
