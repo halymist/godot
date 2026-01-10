@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Button
 
 # Player card for character selection in lobby
 
@@ -9,10 +9,11 @@ var character_data: Dictionary = {}
 
 @onready var name_label = $HBox/Info/NameLabel
 @onready var server_label = $HBox/Info/ServerLabel
+@onready var avatar = $HBox/AvatarContainer/Avatar
 
 func _ready():
-	# Make the entire card clickable
-	mouse_filter = Control.MOUSE_FILTER_STOP
+	# Connect button pressed signal
+	pressed.connect(_on_pressed)
 
 func setup(character: Dictionary):
 	"""Setup the player card with character data"""
@@ -26,11 +27,21 @@ func setup(character: Dictionary):
 	if server_label:
 		var server_name = character.server_timezone.split("/")[1]  # Extract city from timezone
 		server_label.text = "Server: " + server_name + " (Day " + str(character.server_day) + ")"
+	
+	# Setup avatar with character's cosmetic IDs
+	if avatar and character.has("avatar"):
+		var avatar_data = character.avatar  # [face, hair, eyes, nose, mouth]
+		if avatar_data.size() >= 5:
+			avatar.refresh_avatar(
+				avatar_data[0],  # face
+				avatar_data[1],  # hair
+				avatar_data[2],  # eyes
+				avatar_data[3],  # nose
+				avatar_data[4]   # mouth
+			)
 
-func _gui_input(event: InputEvent):
-	"""Handle mouse clicks on the card"""
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			print("Selected character ID: ", character_id)
-			character_selected.emit(character_id)
-			# TODO: Load character world data
+func _on_pressed():
+	"""Handle button press"""
+	print("Selected character ID: ", character_id)
+	character_selected.emit(character_id)
+	# TODO: Load character world data

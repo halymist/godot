@@ -1,22 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctp213pojlgnh"]
+[gd_scene load_steps=3 format=3 uid="uid://ctp213pojlgnh"]
 
 [ext_resource type="Script" uid="uid://bitphbbygf6gl" path="res://scripts/PlayerCard.gd" id="1_playercard"]
+[ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="2_avatar"]
 
-[node name="PlayerCard" type="PanelContainer"]
-custom_minimum_size = Vector2(0, 70)
+[node name="PlayerCard" type="Button"]
+custom_minimum_size = Vector2(0, 60)
+offset_right = 299.0
+offset_bottom = 60.0
 script = ExtResource("1_playercard")
 
 [node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
 
-[node name="Icon" type="ColorRect" parent="HBox"]
+[node name="AvatarContainer" type="AspectRatioContainer" parent="HBox"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
-color = Color(0.3, 0.3, 0.4, 1)
+mouse_filter = 2
+
+[node name="Avatar" parent="HBox/AvatarContainer" instance=ExtResource("2_avatar")]
+layout_mode = 2
+mouse_filter = 2
 
 [node name="Info" type="VBoxContainer" parent="HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 
 [node name="NameLabel" type="Label" parent="HBox/Info"]
 layout_mode = 2
