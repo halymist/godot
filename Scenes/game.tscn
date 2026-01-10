@@ -5803,7 +5803,7 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="TextContainer" type="CenterContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest/Overlay"]
+[node name="TextContainer" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest/Overlay"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
