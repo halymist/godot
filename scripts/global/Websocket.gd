@@ -331,10 +331,84 @@ var mock_characters = [
 				"type": "local"
 			}
 		]
+	},
+	{
+	# Server info (same server as character 1)
+	"server_timezone": "Europe/Stockholm",
+	"server_day": 50,
+	"weather": 2,  # 1=sunny, 2=rainy
+	"location": 1,
+	
+	# Character info
+	"character_id": 2,
+	"name": "Warrior2",
+	"faction": 2,
+	"rank": 8523,
+	"avatar": [1, 10, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
+	"stats": [15, 10, 8, 12, 8],  # [strength, stamina, agility, luck, armor]
+	"silver": 2500,
+	"mushrooms": 75,
+	"talent_points": 5,
+	"blessing": 50,
+	"potion": 0,
+	"elixir": 0,
+	
+	# Flags and state
+	"vip": false,
+	"autoskip": false,
+	"traveling": null,
+	"traveling_destination": null,
+	"dungeon": false,
+	"daily_quests": [4, 5],
+	"quest_log": [],
+	"bag_slots": [
+		{
+			"id": 3,
+			"bag_slot_id": 0,
+			"day": 30
+		},
+		{
+			"id": 4,
+			"bag_slot_id": 5,
+			"day": 30
+		}
+	],
+	"perks": [
+		{
+			"id": 2,
+			"active": true,
+			"slot": 1
+		}
+	],
+	"talents": [
+		{
+			"talent_id": 3,
+			"points": 2
+		}
+	],
+	"arena_opponents": ["Player8", "Player15", "Player30"],
+	"vendor_items": [2, 2, 3, 3, 4, 4, 1, 1],
+	"enchanter_effects": [5, 6, 7, 8],
+	"rankings": [],  # Will be populated in _ready()
+	"chat_messages": [
+		{
+			"sender": "Town Crier",
+			"timestamp": "2025-08-08T11:00:00Z",
+			"status": "peasant",
+			"message": "New bounties posted at the guild hall!",
+			"type": "local"
+		},
+		{
+			"sender": "Guard",
+			"timestamp": "2025-08-08T11:05:00Z",
+			"status": "lord",
+			"message": "Stay alert, travelers have reported bandits on the road.",
+			"type": "global"
+		}
+	]
 	}
 ]
 
-# NPCs are now client-side resources - server only sends daily_quests array in character data
 
 # Mock combat data for development/testing (separate from character data)
 var mock_combat_logs = [
