@@ -1,4 +1,4 @@
-[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=105 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -49,6 +49,7 @@
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cagmx7314xoes" path="res://assets/images/ui/shared_char_bg.png" id="38_ff75x"]
 [ext_resource type="PackedScene" uid="uid://dtcmv6gcik5pa" path="res://Scenes/character_display.tscn" id="39_bchkn"]
+[ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="39_lobby"]
 [ext_resource type="Texture2D" uid="uid://sxpgeuuomsc1" path="res://assets/images/ui/button_texture.png" id="39_umggo"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
@@ -6366,14 +6367,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Lobby" type="Panel" parent="."]
-visible = false
+[node name="Lobby" type="Panel" parent="." node_paths=PackedStringArray("characters_container")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("39_lobby")
+characters_container = NodePath("ScrollContainer/CharactersContainer")
 
 [node name="GameTitle" type="Label" parent="Lobby"]
 layout_mode = 1
@@ -6549,38 +6551,6 @@ grow_vertical = 2
 [node name="CharactersContainer" type="VBoxContainer" parent="Lobby/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="Character1" type="PanelContainer" parent="Lobby/ScrollContainer/CharactersContainer"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-
-[node name="HBox" type="HBoxContainer" parent="Lobby/ScrollContainer/CharactersContainer/Character1"]
-layout_mode = 2
-
-[node name="Icon" type="ColorRect" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-color = Color(0.3, 0.3, 0.4, 1)
-
-[node name="Info" type="VBoxContainer" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Name" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
-layout_mode = 2
-text = "Character 1"
-
-[node name="Server" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
-layout_mode = 2
-text = "Server: Europe 1"
-
-[node name="Age" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
-layout_mode = 2
-text = "Age: 15 days"
-
-[node name="SelectButton" type="Button" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox"]
-layout_mode = 2
-text = "Select"
 
 [node name="CreateNew" type="PanelContainer" parent="Lobby/ScrollContainer/CharactersContainer"]
 custom_minimum_size = Vector2(0, 80)
