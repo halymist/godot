@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dougakb8mecrw" path="res://scripts/resources/SettlementsDatabase.gd" id="1_4vit6"]
 [ext_resource type="Script" uid="uid://pwd267vyc7jv" path="res://scripts/LocationData.gd" id="2_ot23h"]
 [ext_resource type="PackedScene" uid="uid://pp4hw1iwtfun" path="res://assets/images/villages/settlements/krasna/alchemist1.tscn" id="3_n5k1k"]
-[ext_resource type="Texture2D" uid="uid://d7skxybllre3" path="res://assets/images/ui/arena_full.png" id="4_7jouw"]
+[ext_resource type="Texture2D" uid="uid://fr8nymx46pmy" path="res://assets/images/villages/arena_full1.png" id="4_n5k1k"]
 [ext_resource type="PackedScene" uid="uid://dpsns7v35wk8l" path="res://assets/images/villages/settlements/krasna/blacksmith1.tscn" id="5_n5k1k"]
 [ext_resource type="PackedScene" uid="uid://c5ba3xmwim0c7" path="res://assets/images/villages/settlements/krasna/church1.tscn" id="6_c0hw1"]
 [ext_resource type="PackedScene" uid="uid://c58pbq5253r3q" path="res://assets/images/villages/settlements/krasna/enchanter1.tscn" id="6_mli3h"]
@@ -25,7 +25,7 @@ alchemist_utility_scene = ExtResource("3_n5k1k")
 enchanter_utility_scene = ExtResource("6_mli3h")
 trainer_utility_scene = ExtResource("9_7jouw")
 church_utility_scene = ExtResource("6_c0hw1")
-arena_background = ExtResource("4_7jouw")
+arena_background = ExtResource("4_n5k1k")
 metadata/_custom_type_script = "uid://pwd267vyc7jv"
 
 [resource]
