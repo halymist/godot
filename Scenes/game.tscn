@@ -1,4 +1,4 @@
-[gd_scene load_steps=105 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=106 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -31,6 +31,7 @@
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/ArenaSlideshow.gd" id="26_arena_slideshow"]
 [ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Texture2D" uid="uid://crrq3yx1yy7mx" path="res://assets/images/ui/slot2.png" id="27_w4j8i"]
+[ext_resource type="Script" uid="uid://b4m0pxusl8lna" path="res://scripts/LogoutPanel.gd" id="28_a2m5q"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
 [ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
@@ -109,6 +110,17 @@ bg_color = Color(0.372919, 0.641864, 0.750955, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wr3wg"]
 bg_color = Color(0.649928, 0.613808, 0.210934, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
+bg_color = Color(0.2, 0.2, 0.2, 0.9)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
 
@@ -194,17 +206,6 @@ rebound_strength = 7.0
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
-bg_color = Color(0.2, 0.2, 0.2, 0.9)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sc4i"]
 bg_color = Color(0.08, 0.12, 0.2, 0.95)
 border_width_right = 2
@@ -238,7 +239,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "logout_panel", "lobby_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -283,6 +284,8 @@ enemy = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainCo
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
 payment_button = NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/PaymentButton")
 avatar_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
+logout_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/LogoutPanel")
+lobby_panel = NodePath("../Lobby")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue")]
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
@@ -1559,6 +1562,76 @@ theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 16
 text = "You are already on a quest."
 horizontal_alignment = 1
+
+[node name="LogoutPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home" node_paths=PackedStringArray("yes_button", "no_button", "background_button")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
+script = ExtResource("28_a2m5q")
+yes_button = NodePath("DialogPanel/YesButton")
+no_button = NodePath("DialogPanel/NoButton")
+background_button = NodePath("BackgroundButton")
+
+[node name="BackgroundButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/LogoutPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="DialogPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/LogoutPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dialog_panel")
+
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/LogoutPanel/DialogPanel"]
+clip_contents = true
+layout_mode = 2
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 375.0
+offset_bottom = 131.0
+size_flags_vertical = 3
+text = "Do you wish to go back to the lobby?"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="YesButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/LogoutPanel/DialogPanel"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+offset_left = 25.0
+offset_top = 135.0
+offset_right = 105.0
+offset_bottom = 175.0
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Home/LogoutPanel/DialogPanel"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+offset_left = 133.0
+offset_top = 135.0
+offset_right = 375.0
+offset_bottom = 175.0
+size_flags_horizontal = 3
+text = "No"
 
 [node name="Arena" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false

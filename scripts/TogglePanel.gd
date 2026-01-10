@@ -41,6 +41,8 @@ static var instance: UIManager
 @export var payment: Control
 @export var payment_button: Button
 @export var avatar_panel: Control
+@export var logout_panel: Control
+@export var lobby_panel: Control
 
 # Additional UI references (from old UIManager)
 @export var silver_labels: Array[Label] = []
@@ -501,7 +503,12 @@ func go_back():
 			print("   -> Handled interior navigation")
 			return
 		else:
-			print("   -> Already in exterior, do nothing")
+			print("   -> Already in exterior, showing logout panel")
+			if logout_panel:
+				print("   -> logout_panel is valid, showing it")
+				show_overlay(logout_panel)
+			else:
+				print("   -> ERROR: logout_panel is null - not found in scene tree")
 			return
 	
 	# Talents/Details bookmarks - handled by overlay system now
@@ -565,6 +572,24 @@ func _on_cancel_quest_yes():
 func _on_cancel_quest_no():
 	# Just hide the dialog using unified overlay system, continue with quest
 	hide_overlay(cancel_quest)
+
+func handle_logout():
+	"""Handle logout UI transition - called by LogoutPanel"""
+	# Hide logout panel
+	hide_overlay(logout_panel)
+	
+	# Hide all panels
+	home_panel.visible = false
+	
+	# Clear overlay stack
+	while overlay_stack.size() > 0:
+		var overlay = overlay_stack.pop_back()
+		overlay.visible = false
+	
+	# Show lobby
+	lobby_panel.visible = true
+	GameInfo.set_current_panel(lobby_panel)
+	print("Returned to lobby")
 
 func _load_quest_on_startup(quest_id: int):
 	"""Helper to load quest on startup after panel is visible"""

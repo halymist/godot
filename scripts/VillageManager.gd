@@ -63,7 +63,7 @@ func set_active_village(location_id: int):
 	
 	# Clear any existing village nodes
 	for child in get_children():
-		if child != quest_panel and child != quest_slide_panel and child != map_panel:
+		if child != quest_panel and child != quest_slide_panel and child != map_panel and child.name != "LogoutPanel":
 			print("  Removing old child: ", child.name)
 			child.queue_free()
 	

@@ -1,7 +1,6 @@
 extends Panel
 
 # Lobby panel for character selection and account management
-
 @export var characters_container: VBoxContainer
 
 # Preload the player card scene
@@ -32,7 +31,7 @@ func _on_character_selected(character_id: int):
 	
 	# Select this character in GameInfo (this will emit character_changed signal)
 	GameInfo.select_character(character_id)
-	
+	UIManager.instance.show_panel(UIManager.instance.home_panel)
 	# Hide lobby
 	visible = false
 	

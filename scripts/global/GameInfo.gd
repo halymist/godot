@@ -844,6 +844,20 @@ func select_character(character_id: int):
 	else:
 		print("ERROR: Character ID ", character_id, " not found!")
 
+func save_current_character():
+	"""Save current_player state back to all_characters array"""
+	if not current_player or current_character_id < 0:
+		print("ERROR: Cannot save - no current player")
+		return
+	
+	# The current_player IS the reference in all_characters array, so it's already saved
+	# Just log for confirmation
+	print("Character state saved (reference already in all_characters): ", current_player.name)
+	
+	# Note: In a real implementation, this would serialize to backend/database
+	# For now, the mock data in memory is automatically updated since current_player
+	# is a reference to an object in the all_characters array
+
 func _load_character_world_data():
 	"""Load rankings, chat, arena opponents, vendor items for current character"""
 	# Find character data in Websocket.mock_characters
