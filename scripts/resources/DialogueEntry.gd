@@ -1,7 +1,6 @@
 extends Resource
-class_name DialogueEntry
+class_name QuestDialogueEntry
 
-@export var questID: int
-@export var stage: int  # 0 = quest to be accepted, else ending slide
-@export var isQuest: bool  # true = offering a quest
-@export var dialogue: String
+@export var quest_id: int
+@export var name: String  # Quest name
+@export_multiline var text: String  # Quest description/dialogue

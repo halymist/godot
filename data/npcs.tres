@@ -3,38 +3,29 @@
 [ext_resource type="Script" uid="uid://b5vwu8i301q8y" path="res://scripts/resources/NpcResource.gd" id="1_hmuq0"]
 [ext_resource type="Texture2D" uid="uid://tcr12hayb453" path="res://data/npcs_textures/npc1.png" id="2_utwwl"]
 [ext_resource type="Script" uid="uid://c0t6tigepmv1e" path="res://scripts/resources/NpcDatabase.gd" id="2_yyyw5"]
+[ext_resource type="Script" uid="uid://lb16cw3s40je" path="res://scripts/resources/NormalDialogueEntry.gd" id="3_4pi4t"]
 [ext_resource type="Script" uid="uid://bb5buly8hw1wp" path="res://scripts/resources/DialogueEntry.gd" id="3_gyykm"]
 [ext_resource type="Texture2D" uid="uid://cofyu182fjv37" path="res://data/npcs_textures/npc_portrait1.png" id="4_4pi4t"]
 
+[sub_resource type="Resource" id="Resource_gyykm"]
+script = ExtResource("3_4pi4t")
+required_options = Array[int]([])
+text = "yeee he helped"
+metadata/_custom_type_script = "uid://lb16cw3s40je"
+
 [sub_resource type="Resource" id="Resource_eq6f6"]
 script = ExtResource("3_gyykm")
-questID = 1
-stage = 0
-isQuest = true
-dialogue = "Hiii how is going"
-metadata/_custom_type_script = "uid://bb5buly8hw1wp"
-
-[sub_resource type="Resource" id="Resource_ru7c0"]
-script = ExtResource("3_gyykm")
-questID = 1
-stage = 2
-isQuest = false
-dialogue = "Thanks for the help"
-metadata/_custom_type_script = "uid://bb5buly8hw1wp"
-
-[sub_resource type="Resource" id="Resource_utwwl"]
-script = ExtResource("3_gyykm")
-questID = 1
-stage = 3
-isQuest = false
-dialogue = "asdasd aas so short text is good how about long text again not sure what to type but lets see what we can cook up"
+quest_id = 1
+name = "quest 1"
+text = "Pls help"
 metadata/_custom_type_script = "uid://bb5buly8hw1wp"
 
 [sub_resource type="Resource" id="Resource_ll3tu"]
 script = ExtResource("1_hmuq0")
 id = 1
 name = "Bob"
-dialogues = Array[ExtResource("3_gyykm")]([SubResource("Resource_eq6f6"), SubResource("Resource_ru7c0"), SubResource("Resource_utwwl")])
+quest_dialogues = Array[ExtResource("3_gyykm")]([SubResource("Resource_eq6f6")])
+normal_dialogues = Array[ExtResource("3_4pi4t")]([SubResource("Resource_gyykm")])
 asset = ExtResource("2_utwwl")
 portrait = ExtResource("4_4pi4t")
 spot = 1

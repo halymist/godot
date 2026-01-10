@@ -1,11 +1,12 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://b1vu62hiyioch"]
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://b1vu62hiyioch"]
 
 [ext_resource type="FontFile" uid="uid://bapt2viuub0ha" path="res://assets/Spectral-Regular.ttf" id="1_wh4w3"]
+[ext_resource type="Texture2D" uid="uid://cagmx7314xoes" path="res://assets/images/ui/shared_char_bg.png" id="2_r6k5m"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wh4w3"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gg1h0"]
-bg_color = Color(0.293606, 0.69262, 0.451234, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_64dlu"]
+texture = ExtResource("2_r6k5m")
 
 [resource]
 Button/font_sizes/font_size = 16
@@ -24,5 +25,5 @@ Label/fonts/font = ExtResource("1_wh4w3")
 Label/styles/normal = SubResource("StyleBoxEmpty_wh4w3")
 LineEdit/font_sizes/font_size = 16
 OptionButton/font_sizes/font_size = 16
-Panel/styles/panel = SubResource("StyleBoxFlat_gg1h0")
+Panel/styles/panel = SubResource("StyleBoxTexture_64dlu")
 TextEdit/font_sizes/font_size = 16

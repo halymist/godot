@@ -130,48 +130,52 @@ func spawn_npcs(building_id: int = 0):
 			print("Warning: Spot node '", spot_name, "' is not an NpcSpot")
 			continue
 		
-		# Find appropriate dialogue based on quest state
-		var dialogue_entry = get_appropriate_dialogue(npc_resource, quest_log)
+		# Check if this NPC has a quest dialogue for any daily quest
+		var quest_dialogue: QuestDialogueEntry = null
+		var quest_finished = false
+		var clicked_options: Array[int] = []
 		
-		# Get quest name if this is a quest dialogue
-		var quest_name = ""
-		if dialogue_entry and dialogue_entry.isQuest:
-			var quest_data = GameInfo.get_quest_data(dialogue_entry.questID)
-			if quest_data:
-				quest_name = quest_data.quest_name
+		for quest_id in daily_quests:
+			quest_dialogue = npc_resource.get_quest_dialogue(quest_id)
+			if quest_dialogue:
+				# Check if quest is finished in quest_log
+				for quest_entry in quest_log:
+					if quest_entry.get("quest_id", 0) == quest_id:
+						quest_finished = quest_entry.get("finished", false)
+						clicked_options = quest_entry.get("clicked_options", [])
+						break
+				break
 		
-		var npc_data = {
-			"name": npc_resource.name,
-			"asset": npc_resource.asset.resource_path if npc_resource.asset else "",
-			"portrait": npc_resource.portrait,  # Pass the Texture2D directly
-			"dialogue": dialogue_entry.dialogue if dialogue_entry else "...",
-			"questid": dialogue_entry.questID if dialogue_entry and dialogue_entry.isQuest else null,
-			"questname": quest_name,
-			"building": npc_resource.building_id
-		}
+		var npc_data = {}
+		
+		if quest_dialogue and not quest_finished:
+			# Quest not finished - show quest dialogue
+			npc_data = {
+				"name": npc_resource.name,
+				"asset": npc_resource.asset.resource_path if npc_resource.asset else "",
+				"portrait": npc_resource.portrait,
+				"dialogue": quest_dialogue.text,
+				"questid": quest_dialogue.quest_id,
+				"questname": quest_dialogue.name,
+				"building": npc_resource.building_id
+			}
+		else:
+			# Quest finished or no quest - show normal dialogue
+			var normal_dialogue = npc_resource.get_normal_dialogue_for_options(clicked_options)
+			npc_data = {
+				"name": npc_resource.name,
+				"asset": npc_resource.asset.resource_path if npc_resource.asset else "",
+				"portrait": npc_resource.portrait,
+				"dialogue": normal_dialogue.text if normal_dialogue else "...",
+				"questid": null,
+				"questname": "",
+				"building": npc_resource.building_id
+			}
 		
 		# Set the NPC data on the spot
 		spot_node.set_npc_data(npc_data)
 		
 		print("Spawned NPC: ", npc_resource.name, " at spot ", npc_resource.spot, " in building ", building_id)
-
-func get_appropriate_dialogue(npc_resource: NpcResource, quest_log: Array) -> DialogueEntry:
-	"""Find the appropriate dialogue for the NPC based on quest state"""
-	for dialogue in npc_resource.dialogues:
-		var quest_id = dialogue.questID
-		var stage = dialogue.stage
-		
-		# Check if player is at this quest stage
-		for quest_entry in quest_log:
-			if quest_entry.get("quest_id", 0) == quest_id:
-				var slides = quest_entry.get("slides", [])
-				if stage in slides or (stage == 0 and slides.is_empty()):
-					return dialogue
-	
-	# Return first dialogue as default if no match
-	if npc_resource.dialogues.size() > 0:
-		return npc_resource.dialogues[0]
-	return null
 
 func handle_npc_clicked(npc):
 	"""Called directly from NPC/NpcSpot when clicked"""

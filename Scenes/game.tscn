@@ -1,4 +1,4 @@
-[gd_scene load_steps=105 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -202,9 +202,6 @@ script = ExtResource("68_2cns2")
 friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cns2"]
-bg_color = Color(0.6, 0.6, 0.756863, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
@@ -2190,7 +2187,7 @@ text = "Location Bonuses:
 +5% Experience gain
 Weather: Rainy (-10% Travel Speed)"
 
-[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "enemy_panel", "strength", "stamina", "agility", "luck", "armor")]
+[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "search_input", "enemy_panel", "strength", "stamina", "agility", "luck", "armor")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -2198,10 +2195,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fnkle")
 script = ExtResource("36_rankings_panel")
 rankings_table = NodePath("MainContainer/TableScroll")
-player_card = NodePath("MainContainer/PlayerCard")
 search_input = NodePath("MainContainer/SearchBar/SearchInput")
 ranking_row_scene = ExtResource("36_ranking_row")
 enemy_panel = NodePath("../Enemy")
@@ -2220,7 +2215,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="TableHeader" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
+[node name="TableHeader" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
@@ -2273,7 +2268,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PlayerCard" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
+[node name="PlayerCard" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 8
@@ -5496,7 +5491,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wr3wg")
 script = ExtResource("37_settings")
 
 [node name="SettingsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
@@ -5667,7 +5661,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2cns2")
 script = ExtResource("67_payment")
 
 [node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
