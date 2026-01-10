@@ -982,7 +982,7 @@ func is_quest_completed(quest_id: int) -> bool:
 	return false
 
 # Function to mark a quest as completed
-func complete_quest(quest_id: int):
+func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	if not current_player:
 		return
 	
@@ -990,17 +990,37 @@ func complete_quest(quest_id: int):
 	for entry in current_player.quest_log:
 		if entry.get("quest_id") == quest_id:
 			entry["finished"] = true
-			print("Quest ", quest_id, " marked as finished")
+			entry["clicked_options"] = clicked_options
+			print("Quest ", quest_id, " marked as finished with clicked options: ", clicked_options)
 			quest_completed.emit(quest_id)
 			return
 	
 	# Add new entry if not found
 	current_player.quest_log.append({
 		"quest_id": quest_id,
+		"clicked_options": clicked_options,
 		"finished": true
 	})
-	print("Quest ", quest_id, " added to quest log as finished")
+	print("Quest ", quest_id, " added to quest log as finished with clicked options: ", clicked_options)
 	quest_completed.emit(quest_id)
+
+func has_clicked_quest_option(quest_id: int, option_index: int) -> bool:
+	"""Check if player clicked a specific option in a quest"""
+	if not current_player:
+		return false
+	for entry in current_player.quest_log:
+		if entry.get("quest_id") == quest_id and entry.has("clicked_options"):
+			return entry["clicked_options"].has(option_index)
+	return false
+
+func get_clicked_options(quest_id: int) -> Array[int]:
+	"""Get all clicked options for a quest"""
+	if not current_player:
+		return []
+	for entry in current_player.quest_log:
+		if entry.get("quest_id") == quest_id and entry.has("clicked_options"):
+			return entry["clicked_options"]
+	return []
 
 func get_quest_data(quest_id: int) -> QuestData:
 	"""Get quest data from quests.tres database"""

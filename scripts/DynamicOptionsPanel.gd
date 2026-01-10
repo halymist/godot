@@ -29,6 +29,7 @@ extends Panel
 var current_quest_id: int = 0
 var current_quest: QuestData = null
 var visible_option_ids: Array[int] = []  # Currently visible option IDs
+var clicked_option_ids: Array[int] = []  # Track which options were clicked during quest
 var pending_combat_option: QuestOption = null  # Store option for after combat
 
 # Reference to portrait for navigation
@@ -83,6 +84,9 @@ func load_quest(quest_id: int):
 		visible_option_ids = []
 		for i in range(current_quest.options.size()):
 			visible_option_ids.append(current_quest.options[i].option_index)
+	
+	# Reset clicked options tracking for new quest
+	clicked_option_ids.clear()
 	
 	display_quest(current_quest)
 
@@ -415,6 +419,11 @@ func refresh_quest_options_internal():
 
 func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click with persistent options system"""
+	# Track this clicked option
+	if not clicked_option_ids.has(option.option_index):
+		clicked_option_ids.append(option.option_index)
+		print("Tracked clicked option: ", option.option_index, " Total clicked: ", clicked_option_ids)
+	
 	# 1. Handle currency cost (silver requirement)
 	if option.required_type == QuestOption.RequirementType.SILVER and option.required_amount > 0:
 		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_amount:
@@ -585,12 +594,14 @@ func _finish_quest():
 	"""End quest and return home"""
 	# Mark quest as completed in quest log
 	print("Finishing quest ID: ", current_quest_id)
+	print("Clicked options during quest: ", clicked_option_ids)
 
-	GameInfo.complete_quest(current_quest_id)
+	GameInfo.complete_quest(current_quest_id, clicked_option_ids)
 	GameInfo.current_player.traveling_destination = null
 	GameInfo.current_player.traveling = 0
 	current_quest_id = 0
 	current_quest = null
+	clicked_option_ids.clear()
 	
 	# Call handle_quest_completed on UIManager
 	# This will hide the panel and navigate home

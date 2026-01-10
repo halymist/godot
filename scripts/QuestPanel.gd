@@ -45,6 +45,9 @@ func _on_accept_pressed():
 		# Always set the quest destination first
 		GameInfo.accept_quest(quest_id)  # This sets traveling_destination
 		
+		# Clear overlay stack so cancel button doesn't target quest_panel
+		UIManager.instance.hide_current_overlay()
+		
 		if is_vip:
 			# VIP: No timer, map will show Go Quest button immediately
 			GameInfo.current_player.traveling = 0  # No timer for VIP
@@ -68,17 +71,9 @@ func _on_accept_pressed():
 			print("Autoskip enabled - going directly to quest")
 			hide_panel()
 			
-			# Find current slide from quest log
-			var start_slide = 1
-			for quest_log_entry in GameInfo.current_player.quest_log:
-				if quest_log_entry.quest_id == quest_id:
-					if quest_log_entry.slides.size() > 0:
-						start_slide = quest_log_entry.slides[-1]
-					break
-			
 			# Load quest directly
 			if map and map.quest:
-				map.quest.load_quest(quest_id, start_slide)
+				map.quest.load_quest(quest_id)
 				map.quest.visible = true
 				GameInfo.set_current_panel(map.quest)
 		else:
