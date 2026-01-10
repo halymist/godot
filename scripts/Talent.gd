@@ -85,18 +85,18 @@ func _on_button_pressed():
 					assigned_perk = perk
 					break
 			
-			var description = ""
+			var perk_description = ""
 			if assigned_perk:
 				# Get perk details from perks database
 				var perk_data = GameInfo.perks_db.get_perk_by_id(assigned_perk.perk_id)
 				if perk_data:
-					description = perk_data.perk_name + "\n" + perk_data.description
+					perk_description = perk_data.perk_name + "\n" + perk_data.description
 				else:
-					description = "Perk Slot " + str(perk_slot) + " - Perk ID: " + str(assigned_perk.perk_id)
+					perk_description = "Perk Slot " + str(perk_slot) + " - Perk ID: " + str(assigned_perk.perk_id)
 			else:
-				description = "Perk Slot " + str(perk_slot) + " (No perk assigned)"
+				perk_description = "Perk Slot " + str(perk_slot) + " (No perk assigned)"
 			
-			UIManager.instance.upgrade_talent.set_talent_data(talentName, description, 0, points, maxPoints, false, self)
+			UIManager.instance.upgrade_talent.set_talent_data(talentName, perk_description, 0, points, maxPoints, false, self)
 			return
 		
 		# For regular talents in read-only mode, show description without upgrade option

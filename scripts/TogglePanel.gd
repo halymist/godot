@@ -207,12 +207,12 @@ func show_overlay(overlay: Control):
 	overlay_stack.push_back(overlay)
 	
 	# Set z-index based on stack depth
-	var z_index = BASE_Z_INDEX + (overlay_stack.size() - 1) * Z_INDEX_INCREMENT
-	overlay.z_index = z_index
+	var overlay_z_index = BASE_Z_INDEX + (overlay_stack.size() - 1) * Z_INDEX_INCREMENT
+	overlay.z_index = overlay_z_index
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.visible = true
 	
-	print("UIManager: Overlay stack depth: ", overlay_stack.size(), " z-index: ", z_index)
+	print("UIManager: Overlay stack depth: ", overlay_stack.size(), " z-index: ", overlay_z_index)
 	
 	# Update GameInfo tracking (use top of stack)
 	GameInfo.set_current_panel_overlay(overlay)
@@ -240,7 +240,7 @@ func hide_current_overlay():
 	
 	print("UIManager: Overlay stack depth: ", overlay_stack.size())
 
-func hide_overlay(overlay: Control):
+func hide_overlay(_overlay: Control):
 	"""Legacy function - now just calls hide_current_overlay"""
 	hide_current_overlay()
 
@@ -443,6 +443,12 @@ func go_back():
 	print("Overlay stack depth: ", overlay_stack.size())
 	print("Chat overlay active: ", chat_overlay_active)
 	print("========================")
+	
+	# Priority 0: Close chat overlay if active (highest priority)
+	if chat_overlay_active:
+		print("-> Closing chat overlay")
+		toggle_chat()
+		return
 	
 	# Priority 1: Hide sub-overlays (upgrade/perkscreen on talents)
 	if upgrade_talent and upgrade_talent.visible:

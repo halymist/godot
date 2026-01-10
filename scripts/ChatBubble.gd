@@ -6,8 +6,8 @@ var timer_id: int = 0
 func _ready():
 	visible = false
 
-func show_with_text(text: String, duration: float = 4.0):
-	show_dialogue(text, duration)
+func show_with_text(bubble_text: String, duration: float = 4.0):
+	show_dialogue(bubble_text, duration)
 
 func show_dialogue(dialogue_text: String, duration: float = 4.0, skip_animation: bool = false):
 	text = dialogue_text
