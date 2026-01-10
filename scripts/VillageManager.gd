@@ -133,7 +133,7 @@ func spawn_npcs(building_id: int = 0):
 		# Check if this NPC has a quest dialogue for any daily quest
 		var quest_dialogue: QuestDialogueEntry = null
 		var quest_finished = false
-		var clicked_options: Array[int] = []
+		var clicked_options = []
 		
 		for quest_id in daily_quests:
 			quest_dialogue = npc_resource.get_quest_dialogue(quest_id)

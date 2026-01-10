@@ -706,7 +706,7 @@ class GameCurrentPlayer:
 	var slides: Array = []
 	var talent_points: int = 0
 	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
-	var daily_quests: Array = []  # Array of quest IDs available today
+	var daily_quests: Array[int] = []  # Array of quest IDs available today
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
 	var server_day: int = 1  # Current day on the server (starts at 1)
 	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
@@ -767,7 +767,14 @@ class GameCurrentPlayer:
 				
 				set(local_key, value)
 		
-		# Load arrays
+		# Load arrays with type conversion
+		if data.has("daily_quests"):
+			var raw_quests = data["daily_quests"]
+			daily_quests.clear()
+			for quest_id in raw_quests:
+				daily_quests.append(quest_id as int)
+		
+		# Load other arrays
 		load_bag_slots(data)
 		load_perks(data)
 		load_talents(data)
@@ -969,7 +976,21 @@ func load_vendor_items_data(vendor_data: Array):
 # Function to load quest log
 func load_quest_log_data(quest_log_data: Array):
 	if current_player:
-		current_player.quest_log = quest_log_data.duplicate()
+		# Deep copy with proper type conversion for clicked_options
+		current_player.quest_log.clear()
+		for entry in quest_log_data:
+			var typed_entry = {
+				"quest_id": entry.get("quest_id", 0) as int,
+				"finished": entry.get("finished", false) as bool,
+				"clicked_options": []
+			}
+			# Convert clicked_options to properly typed array
+			var raw_options = entry.get("clicked_options", [])
+			var typed_options: Array[int] = []
+			for opt in raw_options:
+				typed_options.append(opt as int)
+			typed_entry["clicked_options"] = typed_options
+			current_player.quest_log.append(typed_entry)
 		print("Quest log loaded: ", current_player.quest_log.size(), " entries")
 
 # Function to check if a quest is completed

@@ -562,27 +562,6 @@ func _on_cancel_quest_no():
 func _load_quest_on_startup(quest_id: int):
 	"""Helper to load quest on startup after panel is visible"""
 	quest.load_quest(quest_id)
-	
-	# Restore clicked options from quest_log if they exist
-	for quest_log_entry in GameInfo.current_player.quest_log:
-		if quest_log_entry.quest_id == quest_id:
-			var clicked_options = quest_log_entry.get("clicked_options", [])
-			if clicked_options.size() > 0:
-				print("Restoring quest state with clicked_options: ", clicked_options)
-				# Replay the clicked options to restore state
-				for option_id in clicked_options:
-					quest.clicked_option_ids.append(option_id)
-					# Hide this option
-					if option_id in quest.visible_option_ids:
-						quest.visible_option_ids.erase(option_id)
-					# Show options that were unlocked by this choice
-					for option in quest.current_quest.options:
-						if option.option_index == option_id:
-							for unlocked_id in option.unlocks_options:
-								if not unlocked_id in quest.visible_option_ids:
-									quest.visible_option_ids.append(unlocked_id)
-				quest.display_quest(quest.current_quest)
-			break
 
 # ============================================================================
 # UIManager Functions - Currency, Stats, Effects, Bags, Avatars

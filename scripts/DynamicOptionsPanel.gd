@@ -88,6 +88,32 @@ func load_quest(quest_id: int):
 	# Reset clicked options tracking for new quest
 	clicked_option_ids.clear()
 	
+	# Restore quest state from quest_log if exists
+	if GameInfo.current_player:
+		for quest_log_entry in GameInfo.current_player.quest_log:
+			if quest_log_entry.get("quest_id", 0) == quest_id:
+				var clicked_options = quest_log_entry.get("clicked_options", [])
+				if clicked_options.size() > 0:
+					print("Restoring quest state with clicked_options: ", clicked_options)
+					# Replay clicked options to restore state
+					for option_id in clicked_options:
+						clicked_option_ids.append(option_id)
+						# Hide the clicked option
+						if option_id in visible_option_ids:
+							visible_option_ids.erase(option_id)
+						# Show options that were revealed by this choice
+						for option in current_quest.options:
+							if option.option_index == option_id:
+								# Show options revealed by this choice
+								for show_id in option.shows_option_ids:
+									if not show_id in visible_option_ids:
+										visible_option_ids.append(show_id)
+								# Hide options hidden by this choice
+								for hide_id in option.hides_option_ids:
+									if hide_id in visible_option_ids:
+										visible_option_ids.erase(hide_id)
+				break
+	
 	display_quest(current_quest)
 
 func display_quest(quest_data: QuestData):
