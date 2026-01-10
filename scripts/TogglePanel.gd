@@ -63,6 +63,9 @@ func _enter_tree():
 	instance = self
 
 func _ready():
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Initial currency display update
 	update_display()
 	
@@ -599,6 +602,11 @@ func update_display():
 	var mushrooms_text = str(GameInfo.current_player.mushrooms)
 	for m_label in mushrooms_labels:
 		m_label.text = mushrooms_text
+
+func _on_character_changed():
+	"""Called when character switches - refresh all displays"""
+	update_display()
+	refresh_bags()
 
 func refresh_bags():
 	"""Ask all registered bag views to refresh from GameInfo state"""

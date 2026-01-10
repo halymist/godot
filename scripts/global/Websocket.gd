@@ -64,7 +64,7 @@ var mock_characters = [
 	"rank": 15486,
 	"avatar": [1, 10, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
 	"stats": [10, 12, 18, 10, 5],  # [strength, stamina, agility, luck, armor]
-	"silver": 1000,
+	"silver": 700,
 	"mushrooms": 150,
 	"talent_points": 10,
 	"blessing": 100,
@@ -133,7 +133,7 @@ var mock_characters = [
 			"slot": 3
 		}
 	],
-		"talents": [
+	"talents": [
 			{
 				"talent_id": 1,
 				"points": 1
@@ -142,12 +142,12 @@ var mock_characters = [
 				"talent_id": 2,
 				"points": 1
 			}
-		],
-		"arena_opponents": ["Player5", "Player12", "Player25"],  # References to enemy_players by name
-		"vendor_items": [1, 1, 1, 1, 1, 1, 1, 1],  # Items available for purchase
-		"enchanter_effects": [4, 5, 6, 7],  # Effect IDs available for enchanting
-		"rankings": [],  # Will be populated in _ready()
-		"chat_messages": [
+	],
+	"arena_opponents": ["Player5", "Player12", "Player25"],  # References to enemy_players by name
+	"vendor_items": [1, 1, 1, 1, 1, 1, 1, 1],  # Items available for purchase
+	"enchanter_effects": [4, 5, 6, 7],  # Effect IDs available for enchanting
+	"rankings": [],  # Will be populated in _ready()
+	"chat_messages": [
 			{
 				"sender": "Herald",
 				"timestamp": "2025-08-08T10:30:00Z",
@@ -363,9 +363,10 @@ var mock_characters = [
 	"quest_log": [],
 	"bag_slots": [
 		{
-			"id": 3,
+			"id": 1,
+			"effect_overdrive": 4,
 			"bag_slot_id": 0,
-			"day": 30
+			"day": 40
 		},
 		{
 			"id": 4,

@@ -782,10 +782,8 @@ class GameCurrentPlayer:
 			for quest_id in raw_quests:
 				daily_quests.append(quest_id as int)
 		
-		# Load other arrays
-		load_bag_slots(data)
-		load_perks(data)
-		load_talents(data)
+		# Note: bag_slots, perks, and talents are already loaded by parent GamePlayer.load_from_msgpack()
+		# No need to call them again here
 		
 		# Trigger property setter for mushrooms to emit signal
 		mushrooms = _mushrooms
