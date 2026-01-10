@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://character_card_001"]
+[gd_scene load_steps=2 format=3 uid="uid://ctp213pojlgnh"]
 
-[ext_resource type="Script" path="res://scripts/PlayerCard.gd" id="1_playercard"]
+[ext_resource type="Script" uid="uid://bitphbbygf6gl" path="res://scripts/PlayerCard.gd" id="1_playercard"]
 
 [node name="PlayerCard" type="PanelContainer"]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 70)
 script = ExtResource("1_playercard")
 
 [node name="HBox" type="HBoxContainer" parent="."]
@@ -20,20 +20,8 @@ size_flags_horizontal = 3
 
 [node name="NameLabel" type="Label" parent="HBox/Info"]
 layout_mode = 2
-text = "Character Name"
+text = "Character Name (#15486)"
 
 [node name="ServerLabel" type="Label" parent="HBox/Info"]
 layout_mode = 2
 text = "Server: Stockholm (Day 50)"
-
-[node name="RankLabel" type="Label" parent="HBox/Info"]
-layout_mode = 2
-text = "Rank: #15486"
-
-[node name="StatsLabel" type="Label" parent="HBox/Info"]
-layout_mode = 2
-text = "Silver: 1000 | Level: 40"
-
-[node name="SelectButton" type="Button" parent="HBox"]
-layout_mode = 2
-text = "Select"

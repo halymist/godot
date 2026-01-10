@@ -2,18 +2,17 @@ extends PanelContainer
 
 # Player card for character selection in lobby
 
+signal character_selected(character_id: int)
+
 var character_id: int = 0
 var character_data: Dictionary = {}
 
 @onready var name_label = $HBox/Info/NameLabel
 @onready var server_label = $HBox/Info/ServerLabel
-@onready var rank_label = $HBox/Info/RankLabel
-@onready var stats_label = $HBox/Info/StatsLabel
-@onready var select_button = $HBox/SelectButton
 
 func _ready():
-	if select_button:
-		select_button.pressed.connect(_on_select_pressed)
+	# Make the entire card clickable
+	mouse_filter = Control.MOUSE_FILTER_STOP
 
 func setup(character: Dictionary):
 	"""Setup the player card with character data"""
@@ -22,21 +21,16 @@ func setup(character: Dictionary):
 	
 	# Set labels
 	if name_label:
-		name_label.text = character.name
+		name_label.text = character.name + " (#" + str(character.rank) + ")"
 	
 	if server_label:
 		var server_name = character.server_timezone.split("/")[1]  # Extract city from timezone
 		server_label.text = "Server: " + server_name + " (Day " + str(character.server_day) + ")"
-	
-	if rank_label:
-		rank_label.text = "Rank: #" + str(character.rank)
-	
-	if stats_label:
-		var stats = character.stats
-		var level = stats[0] + stats[1] + stats[2]  # Sum of strength, stamina, agility
-		stats_label.text = "Silver: " + str(character.silver) + " | Level: " + str(level)
 
-func _on_select_pressed():
-	"""Handle select button press"""
-	print("Selected character ID: ", character_id)
-	# TODO: Signal to parent or directly load character world
+func _gui_input(event: InputEvent):
+	"""Handle mouse clicks on the card"""
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			print("Selected character ID: ", character_id)
+			character_selected.emit(character_id)
+			# TODO: Load character world data

@@ -344,7 +344,7 @@ var mock_characters = [
 	"name": "Warrior2",
 	"faction": 2,
 	"rank": 8523,
-	"avatar": [1, 10, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
+	"avatar": [1, 11, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
 	"stats": [15, 10, 8, 12, 8],  # [strength, stamina, agility, luck, armor]
 	"silver": 2500,
 	"mushrooms": 75,
