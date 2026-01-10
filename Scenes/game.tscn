@@ -1,4 +1,4 @@
-[gd_scene load_steps=106 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=109 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -61,6 +61,9 @@
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
+[ext_resource type="Texture2D" uid="uid://dy83nwpi2ssx8" path="res://assets/images/ui/discord.png" id="49_2l0qy"]
+[ext_resource type="Texture2D" uid="uid://cu0dq450kmeqa" path="res://assets/images/ui/instagram.png" id="50_j8a3v"]
+[ext_resource type="Texture2D" uid="uid://cxg2iu8vi2jlc" path="res://assets/images/ui/twitter.png" id="51_hbk2m"]
 [ext_resource type="Script" uid="uid://b4irhuh3hgeh0" path="res://scripts/DetailsPanel.gd" id="52_bchkn"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
@@ -6425,7 +6428,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Lobby" type="Panel" parent="." node_paths=PackedStringArray("characters_container")]
+[node name="Lobby" type="Panel" parent="." node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -6434,6 +6437,9 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("39_lobby")
 characters_container = NodePath("ScrollContainer/CharactersContainer")
+discord_button = NodePath("SocialLinks/DiscordButton")
+instagram_button = NodePath("SocialLinks/InstagramButton")
+twitter_button = NodePath("SocialLinks/TwitterButton")
 
 [node name="GameTitle" type="Label" parent="Lobby"]
 layout_mode = 1
@@ -6498,10 +6504,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -150.0
-offset_top = 250.0
-offset_right = 150.0
-offset_bottom = 279.0
+offset_left = -148.5
+offset_top = 260.0
+offset_right = 151.5
+offset_bottom = 289.0
 grow_horizontal = 2
 text = "Connected Login Methods"
 horizontal_alignment = 1
@@ -6511,9 +6517,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -150.0
-offset_top = 285.0
-offset_right = 150.0
+offset_left = -149.5
+offset_top = 300.0
+offset_right = 150.5
 offset_bottom = 365.0
 grow_horizontal = 2
 alignment = 1
@@ -6528,70 +6534,50 @@ custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 text = "+"
 
-[node name="SocialLabel" type="Label" parent="Lobby"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -100.0
-offset_top = 380.0
-offset_right = 100.0
-offset_bottom = 405.0
-grow_horizontal = 2
-text = "Follow Us"
-horizontal_alignment = 1
-
 [node name="SocialLinks" type="HBoxContainer" parent="Lobby"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -120.0
-offset_top = 415.0
-offset_right = 120.0
-offset_bottom = 475.0
+offset_left = 75.5
+offset_top = 212.0
+offset_right = 200.5
+offset_bottom = 242.0
 grow_horizontal = 2
 alignment = 1
 
-[node name="DiscordButton" type="Button" parent="Lobby/SocialLinks"]
-custom_minimum_size = Vector2(60, 60)
+[node name="DiscordButton" type="TextureButton" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = "D"
+texture_normal = ExtResource("49_2l0qy")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="InstagramButton" type="Button" parent="Lobby/SocialLinks"]
-custom_minimum_size = Vector2(60, 60)
+[node name="InstagramButton" type="TextureButton" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = "I"
+texture_normal = ExtResource("50_j8a3v")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="TwitterButton" type="Button" parent="Lobby/SocialLinks"]
-custom_minimum_size = Vector2(60, 60)
+[node name="TwitterButton" type="TextureButton" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = "X"
+texture_normal = ExtResource("51_hbk2m")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="NewStartsLabel" type="Label" parent="Lobby"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -100.0
-offset_top = 490.0
-offset_right = 100.0
-offset_bottom = 515.0
+offset_left = -90.5
+offset_top = 420.0
+offset_right = 109.5
+offset_bottom = 449.0
 grow_horizontal = 2
 text = "New start in: 2d 15h 23m"
-horizontal_alignment = 1
-
-[node name="CharactersLabel" type="Label" parent="Lobby"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -100.0
-offset_top = 530.0
-offset_right = 100.0
-offset_bottom = 555.0
-grow_horizontal = 2
-text = "Your Characters"
 horizontal_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Lobby"]
@@ -6600,7 +6586,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = 570.0
+offset_top = 456.0
 offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
