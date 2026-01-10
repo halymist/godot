@@ -13,8 +13,10 @@ var village_scroll_initialized: bool = false  # Track if village scroll has been
 func _ready():
 	print("=== VillageManager _ready START ===")
 	
-	# Connect to character changed signal
+	# Connect signals FIRST - these work regardless of character selection
 	GameInfo.character_changed.connect(_on_character_changed)
+	GameInfo.quest_completed.connect(_on_quest_completed)
+	print("Connected to quest completed signal")
 	
 	# Don't initialize village until character is selected
 	if not GameInfo.current_player:
@@ -44,10 +46,6 @@ func _ready():
 	
 	# Connect quest panel signals
 	quest_panel.quest_accepted.connect(_on_quest_accepted)
-	
-	# Connect quest completed signal to redraw NPCs
-	GameInfo.quest_completed.connect(_on_quest_completed)
-	print("Connected to quest completed signal")
 	print("=== VillageManager _ready END ===")
 
 func _on_character_changed():
