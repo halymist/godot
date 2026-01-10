@@ -17,6 +17,7 @@ func get_quest_dialogue(quest_id: int) -> QuestDialogueEntry:
 	return null
 
 func get_normal_dialogue_for_options(clicked_options: Array[int]) -> NormalDialogueEntry:
+	# First, try to find a dialogue that matches the clicked options
 	for dialogue in normal_dialogues:
 		if dialogue.required_options.size() == 0:
 			continue
@@ -27,4 +28,10 @@ func get_normal_dialogue_for_options(clicked_options: Array[int]) -> NormalDialo
 				break
 		if all_present:
 			return dialogue
+	
+	# If no match found, return default dialogue (one with no required_options)
+	for dialogue in normal_dialogues:
+		if dialogue.required_options.size() == 0:
+			return dialogue
+	
 	return null

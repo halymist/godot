@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="NpcDatabase" load_steps=10 format=3 uid="uid://be1d4svv6fxmq"]
+[gd_resource type="Resource" script_class="NpcDatabase" load_steps=11 format=3 uid="uid://be1d4svv6fxmq"]
 
 [ext_resource type="Script" uid="uid://b5vwu8i301q8y" path="res://scripts/resources/NpcResource.gd" id="1_hmuq0"]
 [ext_resource type="Texture2D" uid="uid://tcr12hayb453" path="res://data/npcs_textures/npc1.png" id="2_utwwl"]
@@ -13,6 +13,12 @@ required_options = Array[int]([])
 text = "yeee he helped"
 metadata/_custom_type_script = "uid://lb16cw3s40je"
 
+[sub_resource type="Resource" id="Resource_4pi4t"]
+script = ExtResource("3_4pi4t")
+required_options = Array[int]([1])
+text = "Wau that was great thanks"
+metadata/_custom_type_script = "uid://lb16cw3s40je"
+
 [sub_resource type="Resource" id="Resource_eq6f6"]
 script = ExtResource("3_gyykm")
 quest_id = 1
@@ -25,7 +31,7 @@ script = ExtResource("1_hmuq0")
 id = 1
 name = "Bob"
 quest_dialogues = Array[ExtResource("3_gyykm")]([SubResource("Resource_eq6f6")])
-normal_dialogues = Array[ExtResource("3_4pi4t")]([SubResource("Resource_gyykm")])
+normal_dialogues = Array[ExtResource("3_4pi4t")]([SubResource("Resource_gyykm"), SubResource("Resource_4pi4t")])
 asset = ExtResource("2_utwwl")
 portrait = ExtResource("4_4pi4t")
 spot = 1
