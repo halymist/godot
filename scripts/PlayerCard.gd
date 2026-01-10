@@ -42,6 +42,5 @@ func setup(character: Dictionary):
 
 func _on_pressed():
 	"""Handle button press"""
-	print("Selected character ID: ", character_id)
+	print("Player card pressed for character ID: ", character_id)
 	character_selected.emit(character_id)
-	# TODO: Load character world data

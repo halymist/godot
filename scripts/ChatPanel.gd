@@ -14,9 +14,15 @@ func _ready():
 	global_button.pressed.connect(_on_global_button_pressed)
 	local_button.pressed.connect(_on_local_button_pressed)
 	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Set initial button visual states
 	_update_button_visuals()
 	
+	display_chat_messages()
+
+func _on_character_changed():
 	display_chat_messages()
 
 func _on_visibility_changed():

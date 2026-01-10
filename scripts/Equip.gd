@@ -6,6 +6,11 @@ extends Control
 func _ready():
 	update_equip_slots()
 	# Connect to bag slots changed signal to update when items move
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+
+func _on_character_changed():
+	update_equip_slots()
 
 
 func update_equip_slots():

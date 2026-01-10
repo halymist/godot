@@ -23,8 +23,14 @@ func _ready():
 	_load_location_content()
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
+	update_enchant_button_state()
+	populate_effect_list()
+
+func _on_character_changed():
 	update_enchant_button_state()
 	populate_effect_list()
 

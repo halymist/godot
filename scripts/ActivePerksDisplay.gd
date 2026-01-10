@@ -3,6 +3,11 @@ extends HBoxContainer
 @export var perk_mini_scene: PackedScene
 
 func _ready():
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	refresh_effects()
+
+func _on_character_changed():
 	refresh_effects()
 
 func refresh_effects():

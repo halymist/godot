@@ -20,10 +20,16 @@ func _ready():
 			if vendor_slot:
 				vendor_slots.append(vendor_slot)
 	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	populate_vendor_slots()
 	
 	# Connect visibility signal for chat greeting
 	visibility_changed.connect(_on_visibility_changed)
+
+func _on_character_changed():
+	populate_vendor_slots()
 
 func _on_visibility_changed():
 	if visible:

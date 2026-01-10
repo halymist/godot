@@ -11,6 +11,9 @@ func _ready():
 	if reset_button:
 		reset_button.pressed.connect(_on_reset_button_pressed)
 	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Default to player mode
 	display_player()
 	
@@ -19,6 +22,9 @@ func _ready():
 	await get_tree().process_frame
 	if not is_read_only:
 		UIManager.instance.refresh_stats()
+
+func _on_character_changed():
+	display_player()
 
 func _on_stats_changed(_stats: Dictionary):
 	update_title_label()

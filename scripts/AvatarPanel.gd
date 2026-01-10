@@ -46,6 +46,10 @@ func _ready():
 	# Connect change button
 	change_button.pressed.connect(_on_change_pressed)
 	
+	# Connect to character changed signal
+	if GameInfo.has_signal("character_changed"):
+		GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Initialize with current player avatar
 	if GameInfo.current_player:
 		preview_face_id = GameInfo.current_player.avatar_face
@@ -70,6 +74,27 @@ func _ready():
 	
 	# Show face cosmetics by default
 	_on_category_selected("Face")
+
+func _on_character_changed():
+	if GameInfo.current_player:
+		preview_face_id = GameInfo.current_player.avatar_face
+		preview_hair_id = GameInfo.current_player.avatar_hair
+		preview_eyes_id = GameInfo.current_player.avatar_eyes
+		preview_nose_id = GameInfo.current_player.avatar_nose
+		preview_mouth_id = GameInfo.current_player.avatar_mouth
+		
+		original_face_id = GameInfo.current_player.avatar_face
+		original_hair_id = GameInfo.current_player.avatar_hair
+		original_eyes_id = GameInfo.current_player.avatar_eyes
+		original_nose_id = GameInfo.current_player.avatar_nose
+		original_mouth_id = GameInfo.current_player.avatar_mouth
+		
+		# Update avatar preview
+		if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
+			avatar_instance.set_avatar_from_ids(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
+		
+		_update_change_button()
+		_populate_selection_grid()
 
 func _on_category_selected(category: String):
 	current_category = category

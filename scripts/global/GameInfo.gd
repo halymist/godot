@@ -706,6 +706,7 @@ class GameCurrentPlayer:
 	extends GamePlayer
 	
 	# Current player specific properties with automatic events
+	var character_id: int = 0  # Unique character ID
 	var location: int = 1
 	var traveling: float = 0.0  # Unix timestamp when travel ends, 0 if not traveling
 	var traveling_destination: Variant = null
@@ -737,6 +738,7 @@ class GameCurrentPlayer:
 	# Extended MessagePack mapping (includes base + current player fields)
 	const CURRENT_PLAYER_MSGPACK_MAP = {
 		# Current player specific fields (base fields handled by parent class)
+		"character_id": "character_id",
 		"location": "location",
 		"traveling": "traveling",
 		"traveling_destination": "traveling_destination",
@@ -757,11 +759,8 @@ class GameCurrentPlayer:
 	}
 	
 	func load_from_msgpack(data: Dictionary):
-		# Load base fields first (from GamePlayer.MSGPACK_MAP)
-		for msgpack_key in GamePlayer.MSGPACK_MAP:
-			if data.has(msgpack_key):
-				var local_key = GamePlayer.MSGPACK_MAP[msgpack_key]
-				set(local_key, data[msgpack_key])
+		# Call parent to load avatar, stats, and base GamePlayer fields
+		super.load_from_msgpack(data)
 		
 		# Load current player specific fields
 		var msgpack_map = CURRENT_PLAYER_MSGPACK_MAP
@@ -800,7 +799,76 @@ class GameCurrentPlayer:
 		return stats
 
 # GameInfo main class properties
-var current_player: GameCurrentPlayer
+# Character management
+var all_characters: Array[GameCurrentPlayer] = []  # All loaded characters
+var current_character_id: int = 0  # Currently selected character ID
+
+# Signal emitted when character is changed
+signal character_changed()
+
+var current_player: GameCurrentPlayer:
+	get:
+		return _get_current_player()
+	
+func _get_current_player() -> GameCurrentPlayer:
+	"""Get the currently selected character from all_characters"""
+	for character in all_characters:
+		if character.character_id == current_character_id:
+			return character
+	return null
+
+func load_all_characters(characters_data: Array):
+	"""Load all characters from server/mock data on app start"""
+	all_characters.clear()
+	for char_data in characters_data:
+		var player = GameCurrentPlayer.new(char_data, self)
+		all_characters.append(player)
+	print("Loaded ", all_characters.size(), " characters into GameInfo")
+	
+	# Select first character by default if none selected
+	if all_characters.size() > 0 and current_character_id == 0:
+		current_character_id = all_characters[0].character_id
+
+func select_character(character_id: int):
+	"""Switch to a different character and load their world data"""
+	print("Selecting character ID: ", character_id)
+	current_character_id = character_id
+	
+	if current_player:
+		print("Selected character: ", current_player.name)
+		# Load character-specific world data
+		_load_character_world_data()
+		# Emit signal so UI can refresh
+		character_changed.emit()
+	else:
+		print("ERROR: Character ID ", character_id, " not found!")
+
+func _load_character_world_data():
+	"""Load rankings, chat, arena opponents, vendor items for current character"""
+	# Find character data in Websocket.mock_characters
+	var char_data: Dictionary = {}
+	for character in Websocket.mock_characters:
+		if character.character_id == current_character_id:
+			char_data = character
+			break
+	
+	if char_data.is_empty():
+		print("ERROR: Could not find character data for ID ", current_character_id)
+		return
+	
+	# Load character-specific world data
+	load_enemy_players_data(char_data.rankings)
+	load_chat_messages_data(char_data.chat_messages)
+	
+	# Convert arena_opponents to typed Array[String]
+	var arena_opponents_typed: Array[String] = []
+	arena_opponents_typed.assign(char_data.arena_opponents)
+	load_arena_opponent_names(arena_opponents_typed)
+	
+	load_vendor_items_data(char_data.vendor_items)
+	
+	print("Loaded world data for character: ", current_player.name)
+
 var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data
 var current_arena_opponent: String = ""  # Name of current opponent (references enemy_players by name)
 var arena_opponents: Array[String] = []  # Array of player names for arena selection
@@ -847,21 +915,11 @@ func _ready():
 	settlements_db = load("res://scripts/resources/settlements.tres")
 	enemies_db = load("res://data/enemies.tres")
 	
-	# Load data from first character (index 0) for now
-	var character = Websocket.mock_characters[0]
-	load_player_data(character)
-	load_enemy_players_data(character.rankings)  # Load all enemy players from rankings data
-	load_chat_messages_data(character.chat_messages)
+	# Load all characters from Websocket mock data
+	load_all_characters(Websocket.mock_characters)
 	
-	# Convert arena_opponents to typed Array[String]
-	var arena_opponents: Array[String] = []
-	arena_opponents.assign(character.arena_opponents)
-	load_arena_opponent_names(arena_opponents)  # Set arena opponents by name
-	
+	# Load combat logs (shared across all characters)
 	load_combat_logs_data(Websocket.mock_combat_logs)
-	load_vendor_items_data(character.vendor_items)
-	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
-	# Quest loading removed - will use quests.tres database instead
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 	print_arena_opponents_info()
 

@@ -32,7 +32,13 @@ func _ready():
 	add_child(update_timer)
 	update_timer.start()
 	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Initial update
+	update_display()
+
+func _on_character_changed():
 	update_display()
 
 func _on_mushrooms_changed(new_mushrooms: int):

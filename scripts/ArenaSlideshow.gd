@@ -27,6 +27,9 @@ func _ready():
 		$CardContainer/ArenaOpponent3
 	]
 	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Set up enemy data from GameInfo
 	_load_opponent_data()
 	
@@ -39,6 +42,11 @@ func _ready():
 	_style_buttons()
 	
 	# Show first card
+	_update_display()
+
+func _on_character_changed():
+	current_index = 0
+	_load_opponent_data()
 	_update_display()
 
 func _load_opponent_data():

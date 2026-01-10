@@ -18,7 +18,12 @@ func _ready():
 		bind_button.pressed.connect(_on_bind_pressed)
 		bind_button.disabled = true
 	visible = false
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
 	# Load perks on ready
+	refresh_perks()
+
+func _on_character_changed():
 	refresh_perks()
 
 func refresh_perks():

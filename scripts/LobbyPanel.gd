@@ -23,5 +23,19 @@ func add_character_list():
 		var card = PlayerCard.instantiate()
 		characters_container.add_child(card)
 		card.setup(character)
+		# Connect to card's signal
+		card.character_selected.connect(_on_character_selected)
+
+func _on_character_selected(character_id: int):
+	"""Handle character selection from player card"""
+	print("Character selected in lobby: ", character_id)
+	
+	# Select this character in GameInfo (this will emit character_changed signal)
+	GameInfo.select_character(character_id)
+	
+	# Hide lobby
+	visible = false
+	
+	print("Loaded character: ", GameInfo.current_player.name)
 	
 

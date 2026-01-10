@@ -12,6 +12,10 @@ var village_scroll_initialized: bool = false  # Track if village scroll has been
 
 func _ready():
 	print("=== VillageManager _ready START ===")
+	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	var location_id = GameInfo.current_player.location
 	print("Location ID from current_player: ", location_id)
 	
@@ -40,6 +44,14 @@ func _ready():
 	GameInfo.quest_completed.connect(_on_quest_completed)
 	print("Connected to quest completed signal")
 	print("=== VillageManager _ready END ===")
+
+func _on_character_changed():
+	print("VillageManager: Character changed, refreshing village")
+	var location_id = GameInfo.current_player.location
+	set_active_village(location_id)
+	show_village()
+	connect_existing_buildings()
+	spawn_npcs()
 
 func set_active_village(location_id: int):
 	"""Set the active village based on location integer (1, 2, 3, etc.)"""

@@ -18,6 +18,11 @@ extends Control
 @export var damage_spread_label: Label
 
 func _ready():
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	stats_changed(GameInfo.get_player_stats())
+
+func _on_character_changed():
 	stats_changed(GameInfo.get_player_stats())
 
 # Called when GameInfo current player is updated
