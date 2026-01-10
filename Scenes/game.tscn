@@ -1,4 +1,4 @@
-[gd_scene load_steps=105 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -49,7 +49,6 @@
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cagmx7314xoes" path="res://assets/images/ui/shared_char_bg.png" id="38_ff75x"]
 [ext_resource type="PackedScene" uid="uid://dtcmv6gcik5pa" path="res://Scenes/character_display.tscn" id="39_bchkn"]
-[ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="39_lobby"]
 [ext_resource type="Texture2D" uid="uid://sxpgeuuomsc1" path="res://assets/images/ui/button_texture.png" id="39_umggo"]
 [ext_resource type="Script" uid="uid://db8ukn3epicxf" path="res://scripts/VendorPanel.gd" id="40_vendor"]
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
@@ -6367,134 +6366,235 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Lobby" type="Panel" parent="." node_paths=PackedStringArray("game_title_label", "account_info_container", "login_methods_container", "characters_container")]
+[node name="Lobby" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("39_lobby")
-game_title_label = NodePath("MainContainer/GameTitle")
-account_info_container = NodePath("MainContainer/AccountInfo")
-login_methods_container = NodePath("MainContainer/LoginMethods")
-characters_container = NodePath("MainContainer/ScrollContainer/CharactersContainer")
 
-[node name="MainContainer" type="VBoxContainer" parent="Lobby"]
+[node name="GameTitle" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 48
+text = "Wilds"
+horizontal_alignment = 1
+
+[node name="AccountInfo" type="VBoxContainer" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -149.5
+offset_top = -334.0
+offset_right = 150.5
+offset_bottom = -194.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CreatedLabel" type="Label" parent="Lobby/AccountInfo"]
+layout_mode = 2
+text = "Account Created: January 1, 2026"
+
+[node name="EmailLabel" type="Label" parent="Lobby/AccountInfo"]
+layout_mode = 2
+text = "Email: player@example.com"
+
+[node name="MushroomContainer" type="HBoxContainer" parent="Lobby/AccountInfo"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="MushroomIcon" type="TextureRect" parent="Lobby/AccountInfo/MushroomContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_w4j8i")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MushroomValue" type="Label" parent="Lobby/AccountInfo/MushroomContainer"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "0"
+
+[node name="PaymentButton" type="Button" parent="Lobby/AccountInfo/MushroomContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="LoginMethodsLabel" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 250.0
+offset_right = 150.0
+offset_bottom = 279.0
+grow_horizontal = 2
+text = "Connected Login Methods"
+horizontal_alignment = 1
+
+[node name="LoginMethods" type="HBoxContainer" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 285.0
+offset_right = 150.0
+offset_bottom = 365.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="GoogleButton" type="Button" parent="Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "G"
+
+[node name="AddNewButton" type="Button" parent="Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "+"
+
+[node name="SocialLabel" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 380.0
+offset_right = 100.0
+offset_bottom = 405.0
+grow_horizontal = 2
+text = "Follow Us"
+horizontal_alignment = 1
+
+[node name="SocialLinks" type="HBoxContainer" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 415.0
+offset_right = 120.0
+offset_bottom = 475.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="DiscordButton" type="Button" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "D"
+
+[node name="InstagramButton" type="Button" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "I"
+
+[node name="TwitterButton" type="Button" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "X"
+
+[node name="NewStartsLabel" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 490.0
+offset_right = 100.0
+offset_bottom = 515.0
+grow_horizontal = 2
+text = "New start in: 2d 15h 23m"
+horizontal_alignment = 1
+
+[node name="CharactersLabel" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 530.0
+offset_right = 100.0
+offset_bottom = 555.0
+grow_horizontal = 2
+text = "Your Characters"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Lobby"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = 20.0
+offset_top = 570.0
 offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GameTitle" type="Label" parent="Lobby/MainContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "Wilds"
-horizontal_alignment = 1
-
-[node name="AccountInfo" type="VBoxContainer" parent="Lobby/MainContainer"]
-layout_mode = 2
-
-[node name="CreatedLabel" type="Label" parent="Lobby/MainContainer/AccountInfo"]
-layout_mode = 2
-text = "Account Created: January 1, 2026"
-horizontal_alignment = 1
-
-[node name="EmailLabel" type="Label" parent="Lobby/MainContainer/AccountInfo"]
-layout_mode = 2
-text = "Email: player@example.com"
-horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="Lobby/MainContainer"]
-layout_mode = 2
-
-[node name="LoginMethodsLabel" type="Label" parent="Lobby/MainContainer"]
-layout_mode = 2
-text = "Connected Login Methods"
-horizontal_alignment = 1
-
-[node name="LoginMethods" type="HBoxContainer" parent="Lobby/MainContainer"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 80)
-alignment = 1
-
-[node name="GoogleButton" type="Button" parent="Lobby/MainContainer/LoginMethods"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-text = "G"
-
-[node name="AddNewButton" type="Button" parent="Lobby/MainContainer/LoginMethods"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-text = "+"
-
-[node name="HSeparator3" type="HSeparator" parent="Lobby/MainContainer"]
-layout_mode = 2
-
-[node name="CharactersLabel" type="Label" parent="Lobby/MainContainer"]
-layout_mode = 2
-text = "Your Characters"
-horizontal_alignment = 1
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Lobby/MainContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="CharactersContainer" type="VBoxContainer" parent="Lobby/MainContainer/ScrollContainer"]
+[node name="CharactersContainer" type="VBoxContainer" parent="Lobby/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Character1" type="PanelContainer" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer"]
+[node name="Character1" type="PanelContainer" parent="Lobby/ScrollContainer/CharactersContainer"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/Character1"]
+[node name="HBox" type="HBoxContainer" parent="Lobby/ScrollContainer/CharactersContainer/Character1"]
 layout_mode = 2
 
-[node name="Icon" type="ColorRect" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/Character1/HBox"]
+[node name="Icon" type="ColorRect" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 color = Color(0.3, 0.3, 0.4, 1)
 
-[node name="Info" type="VBoxContainer" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/Character1/HBox"]
+[node name="Info" type="VBoxContainer" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Name" type="Label" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
+[node name="Name" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
 layout_mode = 2
 text = "Character 1"
 
-[node name="Server" type="Label" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
+[node name="Server" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
 layout_mode = 2
 text = "Server: Europe 1"
 
-[node name="Age" type="Label" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
+[node name="Age" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox/Info"]
 layout_mode = 2
 text = "Age: 15 days"
 
-[node name="SelectButton" type="Button" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/Character1/HBox"]
+[node name="SelectButton" type="Button" parent="Lobby/ScrollContainer/CharactersContainer/Character1/HBox"]
 layout_mode = 2
 text = "Select"
 
-[node name="CreateNew" type="PanelContainer" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer"]
+[node name="CreateNew" type="PanelContainer" parent="Lobby/ScrollContainer/CharactersContainer"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/CreateNew"]
+[node name="HBox" type="HBoxContainer" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew"]
 layout_mode = 2
 
-[node name="Icon" type="ColorRect" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/CreateNew/HBox"]
+[node name="Icon" type="ColorRect" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew/HBox"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
-color = Color(0.2, 0.6, 0.3, 1)
+color = Color(0.2, 0.6, 0.2, 1)
 
-[node name="Label" type="Label" parent="Lobby/MainContainer/ScrollContainer/CharactersContainer/CreateNew/HBox"]
+[node name="Label" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Create New Character"

@@ -838,12 +838,19 @@ func _ready():
 	settlements_db = load("res://scripts/resources/settlements.tres")
 	enemies_db = load("res://data/enemies.tres")
 	
-	load_player_data(Websocket.mock_character_data)
-	load_enemy_players_data(Websocket.mock_rankings)  # Load all enemy players from rankings data
-	load_chat_messages_data(Websocket.mock_chat_messages)
-	load_arena_opponent_names(Websocket.mock_arena_opponents)  # Set arena opponents by name
+	# Load data from first character (index 0) for now
+	var character = Websocket.mock_characters[0]
+	load_player_data(character)
+	load_enemy_players_data(character.rankings)  # Load all enemy players from rankings data
+	load_chat_messages_data(character.chat_messages)
+	
+	# Convert arena_opponents to typed Array[String]
+	var arena_opponents: Array[String] = []
+	arena_opponents.assign(character.arena_opponents)
+	load_arena_opponent_names(arena_opponents)  # Set arena opponents by name
+	
 	load_combat_logs_data(Websocket.mock_combat_logs)
-	load_vendor_items_data(Websocket.mock_vendor_items)
+	load_vendor_items_data(character.vendor_items)
 	# NPCs are now client-side resources - loaded from npcs.tres based on daily_quests
 	# Quest loading removed - will use quests.tres database instead
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
