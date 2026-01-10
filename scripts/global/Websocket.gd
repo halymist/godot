@@ -1,7 +1,7 @@
 extends Node
 
 # Helper function to generate full player data
-func generate_mock_player_data(player_name: String, rank: int, faction: int, profession: int, honor: int) -> Dictionary:
+func generate_mock_player_data(player_name: String, rank: int, faction: int, honor: int) -> Dictionary:
 	# Generate varied stats based on rank (better players have higher stats)
 	var stat_bonus = max(0, (100 - rank) / 10)  # Top 10 get +9, rank 100 gets 0
 	
@@ -9,18 +9,15 @@ func generate_mock_player_data(player_name: String, rank: int, faction: int, pro
 		"name": player_name,
 		"rank": rank,
 		"faction": faction,
-		"profession": profession,
 		"honor": honor,
-		"avatar_face": 1,  # Cosmetic ID from database
-		"avatar_hair": 10 if (rank % 2) == 0 else 11,  # Alternate between hair styles (IDs 10 and 11)
-		"avatar_eyes": 20,  # Cosmetic ID from database
-		"avatar_nose": 30,  # Cosmetic ID from database
-		"avatar_mouth": 40,  # Cosmetic ID from database
-		"strength": 10 + stat_bonus + (rank % 5),
-		"stamina": 10 + stat_bonus + (rank % 4),
-		"agility": 10 + stat_bonus + (rank % 6),
-		"luck": 8 + (rank % 8),
-		"armor": 5 + (stat_bonus / 2),
+		"avatar": [1, 10 if (rank % 2) == 0 else 11, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
+		"stats": [
+			10 + stat_bonus + (rank % 5),  # strength
+			10 + stat_bonus + (rank % 4),  # stamina
+			10 + stat_bonus + (rank % 6),  # agility
+			8 + (rank % 8),  # luck
+			5 + (stat_bonus / 2)  # armor
+		],
 		"blessing": 50 + (rank % 100),
 		"potion": 400,
 		"elixir": 0,
@@ -47,7 +44,6 @@ func _ready():
 				"Player" + str(i),
 				i,  # rank
 				(i % 3) + 1,  # faction
-				(i % 3) + 1,  # profession
 				10000 - (i * 50)  # honor
 			))
 
@@ -55,40 +51,34 @@ func _ready():
 # Mock characters array - each character has their own world/data
 var mock_characters = [
 	{
-	"name": "TestPlayer",
-	"faction": 1,
-	"rank": 15486,
-	"profession": 1,
+	# Server info
 	"server_timezone": "Europe/Stockholm",
 	"server_day": 50,
 	"weather": 2,  # 1=sunny, 2=rainy
-	"daily_quests": [1, 2, 3],
-	"avatar_face": 1,  # Cosmetic ID from database
-	"avatar_hair": 10,  # Cosmetic ID from database
-	"avatar_eyes": 20,  # Cosmetic ID from database
-	"avatar_nose": 30,  # Cosmetic ID from database
-	"avatar_mouth": 40,  # Cosmetic ID from database
-	"quest_log": [		
-	],
+	"location": 1,
+	
+	# Character info
+	"character_id": 1,
+	"name": "TestPlayer",
+	"faction": 1,
+	"rank": 15486,
+	"avatar": [1, 10, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
+	"stats": [10, 12, 18, 10, 5],  # [strength, stamina, agility, luck, armor]
 	"silver": 1000,
 	"mushrooms": 150,
-	"vip": false,
-	"autoskip": false,
-	"traveling": null,
-	"traveling_destination": null,
-	"location": 1,
-	"strength": 10,
-	"stamina": 12,
-	"agility": 18,
-	"luck": 10,
-	"armor": 5,
 	"talent_points": 10,
 	"blessing": 100,
 	"potion": 0,
 	"elixir": 0,
+	
+	# Flags and state
+	"vip": false,
+	"autoskip": false,
+	"traveling": null,
+	"traveling_destination": null,
 	"dungeon": false,
-	"slide": 1,
-	"slides": null,
+	"daily_quests": [1, 2, 3],
+	"quest_log": [],
 	"bag_slots": [
 		{
 			"id": 1,

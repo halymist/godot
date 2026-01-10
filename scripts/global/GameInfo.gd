@@ -494,18 +494,7 @@ class GamePlayer:
 		"name": "name",
 		"rank": "rank",
 		"faction": "faction",
-		"profession": "profession",
 		"honor": "honor",
-		"strength": "strength",
-		"stamina": "stamina",
-		"agility": "agility",
-		"luck": "luck",
-		"armor": "armor",
-		"avatar_face": "avatar_face",
-		"avatar_hair": "avatar_hair",
-		"avatar_eyes": "avatar_eyes",
-		"avatar_nose": "avatar_nose",
-		"avatar_mouth": "avatar_mouth",
 		"blessing": "blessing",
 		"potion": "potion",
 		"elixir": "elixir"
@@ -518,6 +507,26 @@ class GamePlayer:
 	func load_from_msgpack(data: Dictionary):
 		# Load base stats using parent functionality
 		super.load_from_msgpack(data)
+		
+		# Load avatar array [face, hair, eyes, nose, mouth]
+		if data.has("avatar"):
+			var avatar_array = data.avatar
+			if avatar_array.size() >= 5:
+				avatar_face = avatar_array[0]
+				avatar_hair = avatar_array[1]
+				avatar_eyes = avatar_array[2]
+				avatar_nose = avatar_array[3]
+				avatar_mouth = avatar_array[4]
+		
+		# Load stats array [strength, stamina, agility, luck, armor]
+		if data.has("stats"):
+			var stats_array = data.stats
+			if stats_array.size() >= 5:
+				strength = stats_array[0]
+				stamina = stats_array[1]
+				agility = stats_array[2]
+				luck = stats_array[3]
+				armor = stats_array[4]
 		
 		# Load arrays
 		load_bag_slots(data)
