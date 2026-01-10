@@ -12,7 +12,7 @@ const VENDOR_MAX = 28
 var utility_background: UtilityBackground  # Found from loaded utility scene
 
 func _ready():
-	_load_location_content()
+	# Don't load location content yet - wait for character selection
 	# Get vendor slot references (slots 21-28 for 8 items)
 	if vendor_grid:
 		for i in range(1, 9):  # Vendor1 through Vendor8
@@ -23,12 +23,11 @@ func _ready():
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
 	
-	populate_vendor_slots()
-	
 	# Connect visibility signal for chat greeting
 	visibility_changed.connect(_on_visibility_changed)
 
 func _on_character_changed():
+	_load_location_content()
 	populate_vendor_slots()
 
 func _on_visibility_changed():
@@ -39,6 +38,9 @@ func _on_visibility_changed():
 			utility_background.show_entered_greeting()
 
 func _load_location_content():
+	if not GameInfo.current_player:
+		return
+		
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	
 	# Clear existing children from container

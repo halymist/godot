@@ -369,9 +369,9 @@ var mock_characters = [
 			"day": 40
 		},
 		{
-			"id": 4,
+			"id": 2,
 			"bag_slot_id": 5,
-			"day": 30
+			"day": 10
 		}
 	],
 	"perks": [

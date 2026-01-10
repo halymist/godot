@@ -821,11 +821,11 @@ func load_all_characters(characters_data: Array):
 	for char_data in characters_data:
 		var player = GameCurrentPlayer.new(char_data, self)
 		all_characters.append(player)
+		print("Loaded character: ", player.name, " (ID: ", player.character_id, ") with ", player.bag_slots.size(), " items")
+		for item in player.bag_slots:
+			print("  - Item ID: ", item.id, " in slot: ", item.bag_slot_id)
 	print("Loaded ", all_characters.size(), " characters into GameInfo")
-	
-	# Select first character by default if none selected
-	if all_characters.size() > 0 and current_character_id == 0:
-		current_character_id = all_characters[0].character_id
+	# Don't auto-select - wait for user to pick from lobby
 
 func select_character(character_id: int):
 	"""Switch to a different character and load their world data"""
@@ -834,6 +834,9 @@ func select_character(character_id: int):
 	
 	if current_player:
 		print("Selected character: ", current_player.name)
+		print("Character bag_slots count: ", current_player.bag_slots.size())
+		for item in current_player.bag_slots:
+			print("  - Item ID: ", item.id, " in slot: ", item.bag_slot_id, " (", item.item_name, ")")
 		# Load character-specific world data
 		_load_character_world_data()
 		# Emit signal so UI can refresh

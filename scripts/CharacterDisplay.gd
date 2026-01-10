@@ -45,8 +45,12 @@ func _ready():
 		if avatar_button:
 			avatar_button.pressed.connect(_on_avatar_pressed)
 		
-		# Display current player
-		display_player()
+		# Connect to character changed signal and display when character is selected
+		GameInfo.character_changed.connect(_on_character_changed)
+		
+		# Display current player only if already selected
+		if GameInfo.current_player != null:
+			display_player()
 	else:
 		# In enemy mode, hide only avatar button (talents can be viewed)
 		if talents_button:
@@ -93,6 +97,11 @@ func refresh_display():
 	refresh_active_effects()
 	print("CharacterDisplay: Updating equipment for: ", displayed_character.name)
 	update_equipment()
+
+# Called when character is selected or changed
+func _on_character_changed():
+	if display_mode == DisplayMode.PLAYER:
+		display_player()
 
 # Called when GameInfo current player is updated (for PLAYER mode only, called by UIManager)
 func stats_changed(_stats: Dictionary):

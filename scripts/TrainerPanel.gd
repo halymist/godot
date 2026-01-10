@@ -20,15 +20,24 @@ const STAT_COST = 5
 var utility_background: UtilityBackground  # Found from loaded utility scene
 
 func _ready():
-	_load_location_content()
+	# Don't load location content yet - wait for character selection
 	# Connect button signals
 	talent_points_button.pressed.connect(_on_talent_points_plus_pressed)
 	strength_button.pressed.connect(_on_strength_plus_pressed)
 	stamina_button.pressed.connect(_on_stamina_plus_pressed)
 	agility_button.pressed.connect(_on_agility_plus_pressed)
 	luck_button.pressed.connect(_on_luck_plus_pressed)
+	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Update stats display when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
+
+func _on_character_changed():
+	_load_location_content()
+	update_stats_display()
+	update_button_states()
 
 func _on_visibility_changed():
 	if visible:
@@ -39,6 +48,9 @@ func _on_visibility_changed():
 			utility_background.show_entered_greeting()
 
 func _load_location_content():
+	if not GameInfo.current_player:
+		return
+		
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	
 	# Clear existing children from container

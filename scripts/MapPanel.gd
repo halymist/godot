@@ -20,6 +20,7 @@ var travel_text: String = "Traveling..."
 var travel_duration: float = 300.0  # Default 5 minutes
 
 func _ready():
+	# Don't initialize yet - wait for character selection
 	
 	# Connect skip button
 	if skip_button:
@@ -34,10 +35,26 @@ func _ready():
 	update_timer.wait_time = 0.016  # Update at ~60 FPS for smooth animation
 	update_timer.timeout.connect(update_travel_display)
 	add_child(update_timer)
-	update_timer.start()
 	
-	# Initial update
-	update_travel_display()
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
+	# Connect to visibility to start timer only when visible
+	visibility_changed.connect(_on_visibility_changed)
+
+func _on_character_changed():
+	# Start timer and do initial update when character is selected
+	if visible:
+		update_timer.start()
+		update_travel_display()
+
+func _on_visibility_changed():
+	if visible:
+		if GameInfo.current_player != null:
+			update_timer.start()
+			update_travel_display()
+	else:
+		update_timer.stop()
 
 func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: int = 0):
 	"""Start traveling with the given text and duration (0 for VIP = instant)"""
@@ -62,6 +79,10 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 
 func update_travel_display():
 	var current_player = GameInfo.current_player
+	
+	# Don't update if no character selected yet
+	if current_player == null:
+		return
 	
 	# Check if player has a quest destination (VIP instant travel or timer-based)
 	if current_player.traveling_destination != null and current_player.traveling == 0:

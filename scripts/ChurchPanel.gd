@@ -15,8 +15,7 @@ var blessing_slots: Array[TextureRect] = []
 var blessing_data: Array = []  # Stores the 3 blessing PerkResources
 
 func _ready():
-	_load_location_content()
-	
+	# Don't load location content yet - wait for character selection
 	# Setup blessing slots array
 	blessing_slots = [blessing_slot_1, blessing_slot_2, blessing_slot_3]
 	
@@ -24,8 +23,15 @@ func _ready():
 	if bless_button:
 		bless_button.pressed.connect(_on_bless_button_pressed)
 	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	# Load blessings when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
+
+func _on_character_changed():
+	_load_location_content()
+	load_blessings()
 
 func _on_visibility_changed():
 	if visible:
@@ -42,6 +48,9 @@ func _on_visibility_changed():
 			utility_background.show_entered_greeting()
 
 func _load_location_content():
+	if not GameInfo.current_player:
+		return
+		
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	
 	# Clear existing children from container

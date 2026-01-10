@@ -32,6 +32,9 @@ func display_effects(character: GameInfo.GamePlayer):
 
 # Update all effect labels based on the displayed character
 func update_effect_values():
+	if not displayed_character:
+		return
+	
 	var total_effects = displayed_character.get_total_effects()
 	
 	# Update each effect label (without % suffix)

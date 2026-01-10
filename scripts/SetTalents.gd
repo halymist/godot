@@ -14,17 +14,22 @@ func _ready():
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
 	
-	# Default to player mode
-	display_player()
-	
-	# Wait for all talents to register, then refresh stats
-	await get_tree().process_frame
-	await get_tree().process_frame
-	if not is_read_only:
-		UIManager.instance.refresh_stats()
+	# Wait for character selection before initializing
+	if GameInfo.current_player != null:
+		display_player()
+		# Wait for all talents to register, then refresh stats
+		await get_tree().process_frame
+		await get_tree().process_frame
+		if not is_read_only:
+			UIManager.instance.refresh_stats()
 
 func _on_character_changed():
 	display_player()
+	# Wait for talents to register, then refresh stats
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if not is_read_only and UIManager.instance:
+		UIManager.instance.refresh_stats()
 
 func _on_stats_changed(_stats: Dictionary):
 	update_title_label()
@@ -36,6 +41,9 @@ func refresh_all_talents():
 func display_player():
 	"""Display current player's talents (editable)"""
 	print("SetTalents: display_player called")
+	if not GameInfo.current_player:
+		print("SetTalents: No character selected yet")
+		return
 	displayed_character = GameInfo.current_player
 	is_read_only = false
 	if reset_button:
@@ -78,7 +86,8 @@ func update_title_label():
 			title_label.text = "%s's Talents: %d points" % [displayed_character.name, spent_points]
 		else:
 			# Player mode - show available/total
-			title_label.text = "Talent points: %d/%d" % [spent_points, GameInfo.current_player.talent_points]
+			if GameInfo.current_player:
+				title_label.text = "Talent points: %d/%d" % [spent_points, GameInfo.current_player.talent_points]
 
 func _on_reset_button_pressed():
 	# Only allow reset for player in non-read-only mode

@@ -20,8 +20,7 @@ func _ready():
 	visible = false
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
-	# Load perks on ready
-	refresh_perks()
+	# Don't load perks yet - wait for character selection
 
 func _on_character_changed():
 	refresh_perks()
@@ -29,6 +28,10 @@ func _on_character_changed():
 func refresh_perks():
 	"""Refresh the perks grid from GameInfo - call this when perks change"""
 	print("Refreshing perks grid...")
+	
+	# Don't refresh if no character selected
+	if not GameInfo.current_player:
+		return
 	
 	if not inactive_perks_grid:
 		print("Error: inactive_perks_grid is null")

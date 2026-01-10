@@ -23,9 +23,23 @@ func _ready():
 	# Register this talent's metadata globally
 	GameInfo.register_talent(talentID, effect_id, factor, maxPoints, perk_slot)
 	
-	# Default to current player
+	# Don't initialize yet - wait for character or parent to update
+	button.pressed.connect(_on_button_pressed)
+	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
+	# Initial update if character already selected
+	if GameInfo.current_player != null:
+		_on_character_changed()
+
+func _on_character_changed():
+	# Default to current player when character changes
 	displayed_character = GameInfo.current_player
 	is_read_only = false
+	
+	if displayed_character == null:
+		return
 	
 	# Find the matching talent in GameInfo
 	var found = false
@@ -38,7 +52,6 @@ func _ready():
 		points = 0  # No points spent if not found
 
 	pointsLabel.text = "%d/%d" % [points, maxPoints]
-	button.pressed.connect(_on_button_pressed)
 	update_button_appearance()
 
 func update_from_character(character: GameInfo.GamePlayer, read_only: bool):

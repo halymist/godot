@@ -13,6 +13,10 @@ func _on_character_changed():
 func refresh_effects():
 	print("ActivePerksDisplay: Updating active perks and effects...")
 	
+	if not GameInfo.current_player:
+		print("ActivePerksDisplay: No character selected yet")
+		return
+	
 	# Clear existing icons
 	for child in get_children():
 		child.queue_free()

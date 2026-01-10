@@ -16,6 +16,11 @@ func _ready():
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
 	
+	# Don't initialize village until character is selected
+	if not GameInfo.current_player:
+		print("No character selected yet - waiting for selection")
+		return
+	
 	var location_id = GameInfo.current_player.location
 	print("Location ID from current_player: ", location_id)
 	

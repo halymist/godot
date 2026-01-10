@@ -18,15 +18,18 @@ extends Control
 @export var damage_spread_label: Label
 
 func _ready():
+	# Don't update stats yet - wait for character selection
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
-	stats_changed(GameInfo.get_player_stats())
 
 func _on_character_changed():
 	stats_changed(GameInfo.get_player_stats())
 
 # Called when GameInfo current player is updated
 func stats_changed(_stats: Dictionary):
+	if not GameInfo.current_player:
+		return
+		
 	var total_stats = GameInfo.get_total_stats()
 	
 	player_name_label.text = str(total_stats.name)

@@ -20,17 +20,16 @@ var selected_effect_id: int = 0
 var selected_effect_factor: float = 0.0
 
 func _ready():
-	_load_location_content()
+	# Don't load location content yet - wait for character selection
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
-	update_enchant_button_state()
-	populate_effect_list()
 
 func _on_character_changed():
+	_load_location_content()
 	update_enchant_button_state()
 	populate_effect_list()
 
@@ -60,6 +59,9 @@ func _on_visibility_changed():
 			utility_background.show_entered_greeting()
 
 func _load_location_content():
+	if not GameInfo.current_player:
+		return
+		
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	
 	# Clear existing children from container

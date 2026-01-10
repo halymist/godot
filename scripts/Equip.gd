@@ -4,8 +4,7 @@ extends Control
 @export var is_bag: bool = false
 
 func _ready():
-	update_equip_slots()
-	# Connect to bag slots changed signal to update when items move
+	# Don't update equip slots yet - wait for character selection
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
 
@@ -14,6 +13,9 @@ func _on_character_changed():
 
 
 func update_equip_slots():
+	if not GameInfo.current_player:
+		return
+		
 	# Clear only the ItemContainer, preserve backgrounds and outlines
 	for slot in inventory_slots:
 		if slot.has_method("clear_slot"):

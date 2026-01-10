@@ -66,6 +66,33 @@ func _ready():
 	# Connect to character changed signal
 	GameInfo.character_changed.connect(_on_character_changed)
 	
+	# Connect button signals FIRST - these work regardless of character selection
+	home_button.pressed.connect(handle_home_button)
+	arena_button.pressed.connect(handle_arena_button)
+	character_button.pressed.connect(handle_character_button)
+	map_button.pressed.connect(handle_map_button)
+	rankings_button.pressed.connect(handle_rankings_button)
+	settings_button.pressed.connect(toggle_overlay.bind(settings_panel))
+	payment_button.pressed.connect(toggle_overlay.bind(payment))
+	chat_button.pressed.connect(toggle_chat)
+	chat_panel.pressed.connect(toggle_chat)  # Close chat when clicking background
+	back_button.pressed.connect(go_back)
+	fight_button.pressed.connect(show_combat)
+	
+	# Connect cancel quest dialog buttons
+	var yes_button = cancel_quest.get_node("DialogPanel/VBoxContainer/HBoxContainer/YesButton")
+	var no_button = cancel_quest.get_node("DialogPanel/VBoxContainer/HBoxContainer/NoButton")
+	var background_button = cancel_quest.get_node("BackgroundButton")
+	yes_button.pressed.connect(_on_cancel_quest_yes)
+	no_button.pressed.connect(_on_cancel_quest_no)
+	background_button.pressed.connect(_on_cancel_quest_no)
+	
+	# Don't try to access current_player or update UI until a character is selected
+	# The lobby panel will be shown first, and after character selection, UI will update
+	if GameInfo.current_player == null:
+		print("No character selected yet - waiting for lobby selection")
+		return
+	
 	# Initial currency display update
 	update_display()
 	
@@ -96,29 +123,6 @@ func _ready():
 	# Start with appropriate panel visible
 	GameInfo.set_current_panel(start_panel)
 	start_panel.visible = true
-	
-	# Connect button signals
-	home_button.pressed.connect(handle_home_button)
-	arena_button.pressed.connect(handle_arena_button)
-	character_button.pressed.connect(handle_character_button)
-	map_button.pressed.connect(handle_map_button)
-	rankings_button.pressed.connect(handle_rankings_button)
-	settings_button.pressed.connect(toggle_overlay.bind(settings_panel))
-	payment_button.pressed.connect(toggle_overlay.bind(payment))
-	chat_button.pressed.connect(toggle_chat)
-	chat_panel.pressed.connect(toggle_chat)  # Close chat when clicking background
-	back_button.pressed.connect(go_back)
-	fight_button.pressed.connect(show_combat)
-	
-	# Enemy button connections removed - now handled by RankingsPanel calling show_enemy_panel()
-	
-	# Connect cancel quest dialog buttons
-	var yes_button = cancel_quest.get_node("DialogPanel/VBoxContainer/HBoxContainer/YesButton")
-	var no_button = cancel_quest.get_node("DialogPanel/VBoxContainer/HBoxContainer/NoButton")
-	var background_button = cancel_quest.get_node("BackgroundButton")
-	yes_button.pressed.connect(_on_cancel_quest_yes)
-	no_button.pressed.connect(_on_cancel_quest_no)
-	background_button.pressed.connect(_on_cancel_quest_no)
 
 func is_on_active_quest() -> bool:
 	"""Check if player is on an active quest (arrived at destination, not traveling)"""
@@ -616,6 +620,9 @@ func refresh_bags():
 
 func refresh_stats():
 	"""Recalculate and display stats for current player"""
+	if not GameInfo.current_player:
+		return
+	
 	character_display.stats_changed(GameInfo.get_player_stats())
 	details_panel.display_effects(GameInfo.current_player)
 	

@@ -21,10 +21,19 @@ const BAG_MAX = 14
 var utility_background: UtilityBackground  # Found from loaded utility scene
 
 func _ready():
-	_load_location_content()
-
+	# Don't load location content yet - wait for character selection
+	# Connect brew button
+	if brew_button:
+		brew_button.pressed.connect(_on_brew_button_pressed)
+	
+	# Connect to character changed signal
+	GameInfo.character_changed.connect(_on_character_changed)
+	
 	visibility_changed.connect(_on_visibility_changed)
-	brew_button.pressed.connect(_on_brew_button_pressed)
+
+func _on_character_changed():
+	_load_location_content()
+	update_brew_button_state()
 
 func on_slot_changed(slot_id: int):
 	"""Called by UIManager when a utility slot changes"""
@@ -46,6 +55,9 @@ func _on_visibility_changed():
 			utility_background.show_entered_greeting()
 
 func _load_location_content():
+	if not GameInfo.current_player:
+		return
+		
 	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
 	
 	# Clear existing children from container
