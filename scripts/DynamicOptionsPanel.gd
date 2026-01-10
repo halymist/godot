@@ -89,6 +89,7 @@ func load_quest(quest_id: int):
 	clicked_option_ids.clear()
 	
 	# Restore quest state from quest_log if exists
+	var last_response_text: String = ""
 	if GameInfo.current_player:
 		for quest_log_entry in GameInfo.current_player.quest_log:
 			if quest_log_entry.get("quest_id", 0) == quest_id:
@@ -104,6 +105,8 @@ func load_quest(quest_id: int):
 						# Show options that were revealed by this choice
 						for option in current_quest.options:
 							if option.option_index == option_id:
+								# Store the response text from the last clicked option
+								last_response_text = option.response_text
 								# Show options revealed by this choice
 								for show_id in option.shows_option_ids:
 									if not show_id in visible_option_ids:
@@ -114,16 +117,25 @@ func load_quest(quest_id: int):
 										visible_option_ids.erase(hide_id)
 				break
 	
-	display_quest(current_quest)
+	# Display quest with the correct text
+	if last_response_text != "":
+		# Show the last clicked option's response text instead of initial text
+		display_quest_with_text(last_response_text)
+	else:
+		display_quest(current_quest)
 
 func display_quest(quest_data: QuestData):
 	"""Display quest text and options"""
+	display_quest_with_text(quest_data.initial_text)
+
+func display_quest_with_text(text: String):
+	"""Display quest with custom text and current visible options"""
 	# Clear previous entry from the text container
 	for child in text_container.get_children():
 		child.queue_free()
 	
 	# Create and add new entry to text container
-	var entry = create_quest_entry(quest_data.initial_text)
+	var entry = create_quest_entry(text)
 	text_container.add_child(entry)
 	
 	# Animate entry sliding up from below
@@ -135,19 +147,19 @@ func display_quest(quest_data: QuestData):
 	entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	
 	# Display rewards if present
-	display_rewards(quest_data)
+	display_rewards(current_quest)
 	
 	# Apply rewards to player
-	apply_rewards(quest_data)
+	apply_rewards(current_quest)
 	
 	# Update options based on visible_option_ids
 	clear_options()
-	if quest_data.options:
-		for option in quest_data.options:
+	if current_quest.options:
+		for option in current_quest.options:
 			if option and visible_option_ids.has(option.option_index):
 				add_option(option.text, _on_quest_option_pressed.bind(option), option)
 	else:
-		print("WARNING: quest_data.options is null or empty")
+		print("WARNING: current_quest.options is null or empty")
 
 func create_quest_entry(text: String) -> Control:
 	"""Create a quest entry label"""
