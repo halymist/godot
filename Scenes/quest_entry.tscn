@@ -16,7 +16,8 @@ corner_radius_bottom_left = 4
 custom_minimum_size = Vector2(300, 0)
 offset_right = 300.0
 offset_bottom = 50.0
-size_flags_horizontal = 4
+size_flags_horizontal = 6
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_entry")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

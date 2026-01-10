@@ -5805,13 +5805,15 @@ script = ExtResource("42_umggo")
 
 [node name="TextContainer" type="MarginContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest/Overlay"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_left = 0.03
+anchor_top = 0.079
+anchor_right = 0.968
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 50.0
-offset_right = -10.0
-offset_bottom = -286.0
+offset_left = -2.15
+offset_top = 0.23
+offset_right = 2.95999
+offset_bottom = -329.0
 grow_horizontal = 2
 grow_vertical = 2
 

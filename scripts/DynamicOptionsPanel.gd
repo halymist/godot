@@ -1,7 +1,7 @@
 extends Panel
 
 # Eldrum-style scrolling quest display
-@export var text_container: MarginContainer# Center container for quest text
+@export var text_container: Node  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
 @export var background: TextureRect
@@ -138,13 +138,13 @@ func display_quest_with_text(text: String):
 	var entry = create_quest_entry(text)
 	text_container.add_child(entry)
 	
-	# Animate entry sliding up from below using Control properties that work with VBoxContainer
+	# Animate entry sliding up from below
 	entry.modulate.a = 0
-	entry.scale.y = 0.8
+	entry.position.y = 20
 	var entry_tween = create_tween()
 	entry_tween.set_parallel(true)
 	entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-	entry_tween.tween_property(entry, "scale:y", 1.0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	
 	# Display rewards if present
 	display_rewards(current_quest)
@@ -170,7 +170,7 @@ func create_quest_entry(text: String) -> Control:
 	label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	label.custom_minimum_size = Vector2(350, 0)
 	label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	return label
 
 func display_rewards(quest_data: QuestData):
