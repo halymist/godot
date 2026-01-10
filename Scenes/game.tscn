@@ -244,6 +244,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("2_nb51f")
 script = ExtResource("1_1phco")
 phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
@@ -311,7 +312,6 @@ anchor_bottom = 1.0
 offset_top = -900.0
 grow_horizontal = 2
 grow_vertical = 0
-theme = ExtResource("2_nb51f")
 
 [node name="TopUI" type="Panel" parent="Portrait" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
 layout_mode = 1
@@ -1434,6 +1434,7 @@ layout_mode = 1
 offset_top = -75.0
 
 [node name="Home" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("quest_panel", "quest_slide_panel", "map_panel")]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -6360,6 +6361,15 @@ grow_vertical = 2
 [node name="Right" type="Control" parent="Wide/GameSceneParent"]
 layout_mode = 1
 anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
