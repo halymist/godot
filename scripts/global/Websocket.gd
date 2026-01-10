@@ -82,7 +82,7 @@ var mock_character_data = {
 	"vip": false,
 	"autoskip": false,
 	"traveling": null,
-	"traveling_destination": null,
+	"traveling_destination": 1,
 	"location": 1,
 	"strength": 10,
 	"stamina": 12,
