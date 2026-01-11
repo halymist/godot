@@ -1,5 +1,4 @@
 extends Panel
-class_name MapPanel
 
 @export var quest_name_label: Label
 @export var travel_text_label: Label
@@ -7,54 +6,35 @@ class_name MapPanel
 @export var travel_time_label: Label
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
-@export var quest: Control 
 @export var background: TextureRect
+@export var update_timer: Timer
 
-var update_timer: Timer
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
 var original_travel_end: float = 0.0
 
 # Travel info set when quest is accepted
-var travel_text: String = "Traveling..."
-var travel_duration: float = 300.0  # Default 5 minutes
+var travel_text: String
+var travel_duration: float
 
 func _ready():
-	# Don't initialize yet - wait for character selection
-	
-	# Connect skip button
-	if skip_button:
-		skip_button.pressed.connect(_on_skip_button_pressed)
-	
-	# Connect enter dungeon button
-	if enter_dungeon_button:
-		enter_dungeon_button.pressed.connect(_on_enter_dungeon_pressed)
-	
-	# Create and setup timer for updating travel progress
-	update_timer = Timer.new()
-	update_timer.wait_time = 0.016  # Update at ~60 FPS for smooth animation
-	update_timer.timeout.connect(update_travel_display)
-	add_child(update_timer)
-	
-	# Connect to character changed signal
+	skip_button.pressed.connect(_on_skip_button_pressed)
+	enter_dungeon_button.pressed.connect(_on_enter_dungeon_pressed)
 	GameInfo.character_changed.connect(_on_character_changed)
-	
-	# Connect to visibility to start timer only when visible
+	update_timer.timeout.connect(_on_timer_tick)
 	visibility_changed.connect(_on_visibility_changed)
+	
 
 func _on_character_changed():
-	# Start timer and do initial update when character is selected
-	if visible:
-		update_timer.start()
-		update_travel_display()
+	# Update UI state when character changes
+	refresh_travel_state()
 
 func _on_visibility_changed():
+	# Refresh state when panel becomes visible
 	if visible:
-		if GameInfo.current_player != null:
-			update_timer.start()
-			update_travel_display()
-	else:
-		update_timer.stop()
+		refresh_travel_state()
+
+
 
 func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: int = 0):
 	"""Start traveling with the given text and duration (0 for VIP = instant)"""
@@ -62,27 +42,22 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	travel_duration = float(duration_seconds)  # Duration is already in seconds (0 for VIP)
 	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds (VIP=instant)" if duration_seconds == 0 else " seconds")
 	print("Travel duration in seconds: ", travel_duration)
+	update_timer.start()
 	
 	# Apply quest background texture and set quest name
-	if quest_id > 0 and background:
-		var quest_data = GameInfo.get_quest_data(quest_id)
-		if quest_data:
-			if quest_data.background_texture:
-				background.texture = quest_data.background_texture
-				print("Applied quest background texture")
-			if quest_name_label:
-				quest_name_label.text = quest_data.quest_name
+	var quest_data = GameInfo.get_quest_data(quest_id)
+	if quest_data:
+		if quest_data.background_texture:
+			background.texture = quest_data.background_texture
+			print("Applied quest background texture")
+		quest_name_label.text = quest_data.quest_name
 	
-	# Force immediate UI update to show travel info
-	call_deferred("update_travel_display")
+	refresh_travel_state()
 	print("Travel UI update triggered")
 
-func update_travel_display():
+func refresh_travel_state():
+	"""Update UI state based on current travel status - call this when state changes"""
 	var current_player = GameInfo.current_player
-	
-	# Don't update if no character selected yet
-	if current_player == null:
-		return
 	
 	# Check if player has a quest destination (VIP instant travel or timer-based)
 	if current_player.traveling_destination != null and current_player.traveling == 0:
@@ -90,33 +65,44 @@ func update_travel_display():
 		travel_text_label.text = travel_text
 		travel_progress.value = travel_progress.max_value
 		travel_time_label.text = ""
-		if skip_button:
-			skip_button.visible = false
-		if enter_dungeon_button:
-			enter_dungeon_button.visible = true
-			enter_dungeon_button.text = "Go Quest"
+		skip_button.visible = false
+		enter_dungeon_button.visible = true
+		enter_dungeon_button.text = "Go Quest"
 		return
 	
-	if current_player.traveling == 0:
+	if current_player.traveling == 0 and current_player.traveling_destination == null:
+		print("No active travel detected")
 		# No active travel - show location expedition info
 		var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
 		if location_data:
-			if quest_name_label:
-				quest_name_label.text = "Expedition"
-			if location_data.expedition_texture and background:
-				background.texture = location_data.expedition_texture
+			quest_name_label.text = "Expedition"
+			background.texture = location_data.expedition_texture
 			travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
 		else:
 			travel_text_label.text = "No active travel"
 		
-		travel_progress.value = 0
-		travel_time_label.text = ""
+		travel_progress.visible = false
 		is_skipping = false
-		if skip_button:
-			skip_button.visible = false
-		if enter_dungeon_button:
-			enter_dungeon_button.visible = true
-			enter_dungeon_button.text = "Enter Dungeon"
+		skip_button.visible = false
+		enter_dungeon_button.visible = true
+		enter_dungeon_button.text = "Enter Dungeon"
+
+		return
+	
+	# Currently traveling - show skip button, hide enter dungeon button
+	travel_progress.visible = true
+	skip_button.visible = true
+	skip_button.disabled = false
+	skip_button.text = "Skip"
+	enter_dungeon_button.visible = false
+	travel_text_label.text = travel_text
+
+func _on_timer_tick():
+	"""Called by timer - only update frequently-changing UI elements"""
+	var current_player = GameInfo.current_player
+	
+	# Only tick if actively traveling
+	if current_player.traveling == 0:
 		return
 	
 	var current_time = Time.get_unix_time_from_system()
@@ -142,42 +128,21 @@ func update_travel_display():
 	
 	# Check if travel is completed (naturally or via skip)
 	if time_remaining <= 0:
-		# Travel completed
-		if is_skipping:
-			# Skip animation finished - load quest immediately
-			print("Skip animation complete - loading quest")
-			current_player.traveling = 0
-			is_skipping = false
-			if skip_button:
-				skip_button.disabled = false
-			# Load the quest directly
-			_on_enter_dungeon_pressed()
-			return
-		else:
-			# Natural timer completion - show Go Quest button
-			travel_text_label.text = "Travel completed!"
-			travel_progress.value = travel_progress.max_value
-			travel_time_label.text = "00:00"
-			if skip_button:
-				skip_button.visible = false
-			if enter_dungeon_button:
-				enter_dungeon_button.visible = true
-				enter_dungeon_button.text = "Go Quest"
-			
-			# Clear travel timer but keep destination for Go Quest button
-			is_skipping = false
-			current_player.traveling = 0
-			return
+		update_timer.stop()
+		print("Travel completed - loading quest")
+		
+		# Reset state
+		current_player.traveling = 0
+		is_skipping = false
+		refresh_travel_state()
+		
+		# Load the quest directly
+		_on_enter_dungeon_pressed()
+		return
 	
-	# Currently traveling - show skip button, hide enter dungeon button
-	if skip_button:
-		skip_button.visible = true
-		skip_button.text = "Skip" if not is_skipping else "Skipping..."
-	if enter_dungeon_button:
-		enter_dungeon_button.visible = false
-	
-	# Use stored travel text instead of looking it up
-	travel_text_label.text = travel_text
+	# Update skip button text
+	if is_skipping:
+		skip_button.text = "Skipping..."
 	
 	# Calculate progress using stored duration
 	if travel_duration > 0:
@@ -200,8 +165,7 @@ func _on_skip_button_pressed():
 		print("Travel skip started - accelerating countdown...")
 		
 		# Disable the skip button during animation
-		if skip_button:
-			skip_button.disabled = true
+		skip_button.disabled = true
 
 func _on_enter_dungeon_pressed():
 	# Check if this is a quest (not dungeon)
@@ -211,15 +175,8 @@ func _on_enter_dungeon_pressed():
 		var quest_id = GameInfo.current_player.traveling_destination
 		
 		# Load quest directly
-		if quest:
-			quest.load_quest(quest_id)
-			quest.visible = true
-			# Update current panel to quest and hide map
-			GameInfo.set_current_panel(quest)
-			visible = false
+		UIManager.instance.quest.load_quest(quest_id)
 		
-		# Clear traveling state
-		GameInfo.current_player.traveling = 0
 	else:
 		# Dungeon functionality (future)
 		print("Enter dungeon button pressed - functionality not implemented yet")

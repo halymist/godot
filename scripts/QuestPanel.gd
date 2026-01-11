@@ -67,8 +67,7 @@ func _on_accept_pressed():
 		# Autoskip: Go directly to quest, bypass map panel
 		print("Autoskip enabled - going directly to quest")
 		UIManager.instance.hide_current_overlay()
-		map.quest.load_quest(quest_id)
-		UIManager.instance.show_panel(map.quest)
+		UIManager.instance.quest.load_quest(quest_id)
 	else:
 		# Normal flow: Go to map panel
 		map.start_travel(quest_definition.travel_text, 20 if not is_vip else 0, quest_id)

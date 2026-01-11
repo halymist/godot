@@ -1892,7 +1892,7 @@ text = "Skip"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Map" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("quest_name_label", "travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button", "quest", "background")]
+[node name="Map" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("quest_name_label", "travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button", "background", "update_timer")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1908,8 +1908,8 @@ travel_progress = NodePath("Overlay/TravelBarContainer/TravelProgress")
 travel_time_label = NodePath("Overlay/TravelBarContainer/TravelProgress/TravelTimeLabel")
 skip_button = NodePath("Overlay/SkipButton")
 enter_dungeon_button = NodePath("Overlay/TravelBarContainer/EnterDungeonButton")
-quest = NodePath("../Quest")
 background = NodePath("TextureRect")
+update_timer = NodePath("UpdateTimer")
 
 [node name="TextureRect" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
 layout_mode = 1
@@ -2069,6 +2069,9 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_215e1")
 theme_override_styles/normal = SubResource("StyleBoxFlat_215e1")
 text = "Skip"
+
+[node name="UpdateTimer" type="Timer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Map"]
+wait_time = 0.016
 
 [node name="Character" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false

@@ -354,12 +354,12 @@ var mock_characters = [
 	"elixir": 0,
 	
 	# Flags and state
-	"vip": false,
-	"autoskip": false,
+	"vip": true,
+	"autoskip": true,
 	"traveling": null,
 	"traveling_destination": null,
 	"dungeon": false,
-	"daily_quests": [4, 5],
+	"daily_quests": [1, 5],
 	"quest_log": [],
 	"bag_slots": [
 		{

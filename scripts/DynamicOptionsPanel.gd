@@ -60,6 +60,7 @@ func _on_visibility_changed():
 func load_quest(quest_id: int):
 	"""Load a quest and display initial state"""
 	print("Loading quest ", quest_id)
+	UIManager.instance.show_panel(self)
 	
 	if current_quest_id != quest_id:
 		# Set quest title and background
