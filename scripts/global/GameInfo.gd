@@ -714,6 +714,3 @@ func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	})
 	quest_completed.emit(quest_id)
 
-# ============================================
-# INNER CLASSES
-# ============================================
