@@ -666,10 +666,6 @@ func save_current_character():
 	# Just log for confirmation
 	print("Character state saved (reference already in all_characters): ", current_player.name)
 	
-	# Note: In a real implementation, this would serialize to backend/database
-	# For now, the mock data in memory is automatically updated since current_player
-	# is a reference to an object in the all_characters array
-
 func _load_character_world_data():
 	"""Load rankings, chat, arena opponents, vendor items for current character"""
 	# Find character data in Websocket.mock_characters
@@ -693,8 +689,6 @@ func _load_character_world_data():
 			arena_opponents.assign(char_data.arena_opponents)
 			print("Loaded arena opponents: ", arena_opponents)
 	
-	load_vendor_items_data(char_data.vendor_items)
-	
 	print("Loaded world data for character: ", current_player.name)
 
 var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data (paginated from server)
@@ -702,7 +696,6 @@ var arena_opponents: Array[int] = []  # Array of character IDs for arena selecti
 var chat_messages: Array[ChatMessage] = []
 var combat_logs: Array[CombatResponse] = []  # Mock combat logs (will come from server later)
 var current_combat_log: CombatResponse = null
-var vendor_items: Array[Item] = []
 
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null
@@ -726,7 +719,6 @@ func _ready():
 	# Load combat logs (shared across all characters)
 	load_combat_logs_data(Websocket.mock_combat_logs)
 	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
-	print_arena_opponents_info()
 
 # Helper function to get player stats for UI
 func get_player_stats() -> Dictionary:
@@ -812,23 +804,6 @@ func load_combat_logs_data(combat_data: Array):
 		var combat_response = CombatResponse.new(combat_data_item)
 		combat_logs.append(combat_response)
 
-
-# Function to load vendor items from mock data
-func load_vendor_items_data(vendor_data: Array):
-	vendor_items.clear()
-	print("Loading vendor_items: ", vendor_data.size(), " items found")
-	for item_id in vendor_data:
-		var item = Item.new({
-			"id": item_id,
-			"day": current_player.server_day if current_player else 1  # Use current day for scaling
-		})
-		print("  Loaded vendor item: ", item.item_name, " (day ", item.day, ")")
-		vendor_items.append(item)
-
-
-
-
-
 # Function to mark a quest as completed
 func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	if not current_player:
@@ -867,35 +842,3 @@ func get_combat_logs_for_player(player_name: String) -> Array[CombatResponse]:
 		if combat.player2_name == player_name:
 			player_combats.append(combat)
 	return player_combats
-
-# Helper function to get active perks for any GamePlayer (player or opponent)
-func get_active_perks_for_character(character: GamePlayer) -> Array:
-	var active_perks = []
-	if character and character.perks:
-		for perk in character.perks:
-			if perk.active:
-				active_perks.append(perk)
-	return active_perks
-
-# Helper function to get inactive perks for any GamePlayer
-func get_inactive_perks_for_character(character: GamePlayer) -> Array:
-	var inactive_perks = []
-	if character and character.perks:
-		for perk in character.perks:
-			if not perk.active:
-				inactive_perks.append(perk)
-	return inactive_perks
-
-# Debug function to print arena opponents info
-func print_arena_opponents_info():
-	print("\n=== Enemy Players Info (First 5) ===")
-	for i in range(min(5, enemy_players.size())):
-		var opponent = enemy_players[i]
-		print("Player ", i + 1, ":")
-		print("  Name: ", opponent.name, " (Rank: ", opponent.rank, ")")
-		print("  Stats: STR=", opponent.strength, " STA=", opponent.stamina, " AGI=", opponent.agility, " LCK=", opponent.luck, " ARM=", opponent.armor)
-		print("  Active Perks: ", opponent.get_active_perks().size())
-		print("  Inactive Perks: ", opponent.get_inactive_perks().size())
-		print("  Items: ", opponent.bag_slots.size())
-		print("  Talents: ", opponent.talents.size())
-	print("=== End Enemy Players Info ===")

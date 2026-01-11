@@ -297,10 +297,11 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	# Add to player's bag_slots
 	GameInfo.current_player.bag_slots.append(purchased_item)
 	
-	# Remove item from vendor_items (don't replenish)
+	# Remove item from vendor panel's local inventory (don't replenish)
 	var vendor_slot_index = _vendor_slot_id - VENDOR_MIN  # Convert slot_id to index
-	if vendor_slot_index >= 0 and vendor_slot_index < GameInfo.vendor_items.size():
-		GameInfo.vendor_items.remove_at(vendor_slot_index)
+	var vendor_panel = UIManager.instance.vendor_panel if UIManager.instance else null
+	if vendor_panel and vendor_slot_index >= 0 and vendor_slot_index < vendor_panel.vendor_items.size():
+		vendor_panel.vendor_items.remove_at(vendor_slot_index)
 		print("Removed item from vendor inventory at index ", vendor_slot_index)
 	
 	# Place in visual slot

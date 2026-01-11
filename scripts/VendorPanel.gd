@@ -10,6 +10,7 @@ const VENDOR_MAX = 28
 @onready var vendor_slots: Array[Control] = []
 
 var utility_background: UtilityBackground  # Found from loaded utility scene
+var vendor_items: Array[GameInfo.Item] = []  # Local vendor inventory
 
 func _ready():
 	# Don't load location content yet - wait for character selection
@@ -40,6 +41,9 @@ func _on_visibility_changed():
 func _load_location_content():
 	if not GameInfo.current_player:
 		return
+	
+	# Load vendor items from mock data
+	_load_vendor_items()
 		
 	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
 	
@@ -67,6 +71,29 @@ func _load_location_content():
 		else:
 			utility_background = null
 
+func _load_vendor_items():
+	"""Load vendor items from character data"""
+	vendor_items.clear()
+	
+	# Find character data in Websocket.mock_characters
+	var char_data: Dictionary = {}
+	for character in Websocket.mock_characters:
+		if character.character_id == GameInfo.current_character_id:
+			char_data = character
+			break
+	
+	if char_data.is_empty() or not char_data.has("vendor_items"):
+		return
+	
+	for item_id in char_data.vendor_items:
+		var item = GameInfo.Item.new({
+			"id": item_id,
+			"day": GameInfo.current_player.server_day if GameInfo.current_player else 1
+		})
+		vendor_items.append(item)
+	
+	print("Loaded ", vendor_items.size(), " vendor items")
+
 func trigger_purchase_greeting():
 	"""Called by InventorySlot when player purchases from vendor"""
 	if utility_background:
@@ -88,9 +115,9 @@ func populate_vendor_slots():
 		if slot.has_method("clear_slot"):
 			slot.clear_slot()
 	
-	# Populate vendor slots with vendor_items from GameInfo (order doesn't matter)
-	for i in range(min(GameInfo.vendor_items.size(), vendor_slots.size())):
-		var item = GameInfo.vendor_items[i]
+	# Populate vendor slots with local vendor_items (order doesn't matter)
+	for i in range(min(vendor_items.size(), vendor_slots.size())):
+		var item = vendor_items[i]
 		var slot = vendor_slots[i]
 		# Set bag_slot_id to vendor slot ID (21-28) for pricing
 		item.bag_slot_id = VENDOR_MIN + i
