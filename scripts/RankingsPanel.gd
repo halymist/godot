@@ -71,13 +71,11 @@ func populate_rankings():
 	for child in table_content.get_children():
 		child.queue_free()
 	
-	# Populate with rankings from GameInfo (using indices into enemy_players)
-	for index in GameInfo.rankings_indices:
-		if index < GameInfo.enemy_players.size():
-			var player = GameInfo.enemy_players[index]
-			var row = create_ranking_row(player)
-			if row:
-				table_content.add_child(row)
+	# Populate with rankings from GameInfo (directly iterate enemy_players)
+	for player in GameInfo.enemy_players:
+		var row = create_ranking_row(player)
+		if row:
+			table_content.add_child(row)
 
 func create_ranking_row(player: GameInfo.GamePlayer):
 	if not ranking_row_scene:

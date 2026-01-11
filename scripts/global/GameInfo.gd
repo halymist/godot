@@ -248,7 +248,6 @@ class Talent:
 
 # Ranking Entry for lightweight rankings display
 # RankingEntry class removed - now using full GamePlayer data in enemy_players array
-# Rankings panel will reference enemy_players[rankings_indices[i]]
 
 class ChatMessage:
 	extends RefCounted
@@ -698,14 +697,12 @@ func _load_character_world_data():
 	
 	print("Loaded world data for character: ", current_player.name)
 
-var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data
+var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data (paginated from server)
 var arena_opponents: Array[int] = []  # Array of character IDs for arena selection
 var chat_messages: Array[ChatMessage] = []
-var combat_logs: Array[CombatResponse] = []
+var combat_logs: Array[CombatResponse] = []  # Mock combat logs (will come from server later)
 var current_combat_log: CombatResponse = null
-var npcs: Array[Dictionary] = []
 var vendor_items: Array[Item] = []
-var rankings_indices: Array[int] = []  # Indices into enemy_players array (ordered by rank)
 
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null
@@ -782,16 +779,13 @@ func get_total_effects() -> Dictionary:
 
 # Function to load all arena opponents from mock data
 func load_enemy_players_data(players_data: Array):
-	# Load all enemy player data into unified array
-	enemy_players.clear()
-	rankings_indices.clear()
+	# Append enemy player data (server sends paginated data as user scrolls)
 	for i in range(players_data.size()):
 		var player_data = players_data[i]
 		var player = GamePlayer.new(player_data, self)
 		enemy_players.append(player)
-		rankings_indices.append(i)  # Rankings ordered by array index
 		print("Loaded enemy player: ", player.name, " (Rank ", player.rank, ")")
-	print("Total enemy players loaded: ", enemy_players.size())
+	print("Total enemy players in memory: ", enemy_players.size())
 
 func load_arena_opponent_names(opponent_names: Array[String]):
 	# Convert opponent names to character IDs
@@ -811,7 +805,6 @@ func load_chat_messages_data(messages_data: Array):
 		chat_messages.append(chat_message)
 	print("Total chat messages loaded: ", chat_messages.size())
 
-# Function to load NPCs from mock data
 # Function to load combat logs from mock data
 func load_combat_logs_data(combat_data: Array):
 	combat_logs.clear()
@@ -819,7 +812,7 @@ func load_combat_logs_data(combat_data: Array):
 		var combat_response = CombatResponse.new(combat_data_item)
 		combat_logs.append(combat_response)
 
-# Function to load vendor items from mock data
+
 # Function to load vendor items from mock data
 func load_vendor_items_data(vendor_data: Array):
 	vendor_items.clear()
@@ -831,11 +824,6 @@ func load_vendor_items_data(vendor_data: Array):
 		})
 		print("  Loaded vendor item: ", item.item_name, " (day ", item.day, ")")
 		vendor_items.append(item)
-
-# load_rankings_data removed - rankings now loaded via load_enemy_players_data
-
-# Quest loading functions removed - will use quests.tres Resource database
-# Old MessagePack quest loading (load_quest_slides_data, load_all_quests_data) removed
 
 # Function to load quest log
 func load_quest_log_data(quest_log_data: Array):
