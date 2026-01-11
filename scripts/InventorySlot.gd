@@ -311,7 +311,7 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
 		# Trigger chat greeting if on vendor panel
-		var current_panel = GameInfo.get_current_panel()
+		var current_panel = UIManager.instance.current_panel
 		if current_panel and current_panel.name == "VendorPanel" and current_panel.has_method("trigger_purchase_greeting"):
 			current_panel.trigger_purchase_greeting()
 	print("Item purchased and added to slot ", slot_id)
@@ -348,7 +348,7 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
 		# Trigger chat greeting if on vendor panel
-		var current_panel = GameInfo.get_current_panel()
+		var current_panel = UIManager.instance.current_panel
 		if current_panel and current_panel.name == "VendorPanel" and current_panel.has_method("trigger_sell_greeting"):
 			current_panel.trigger_sell_greeting()
 	print("Item sold and removed from inventory")
@@ -621,7 +621,7 @@ func get_item_data() -> GameInfo.Item:
 
 func handle_double_click(item: GameInfo.Item):
 	"""Handle double-click on item - unified with drag-and-drop visual updates"""
-	var current_utility = GameInfo.get_current_panel()
+	var current_utility = UIManager.instance.current_panel
 	
 	print("\n=== DOUBLE CLICK DEBUG ===")
 	print("Item: ", item.item_name, " (Type: ", item.type, ", Slot: ", item.bag_slot_id, ")")
@@ -711,8 +711,8 @@ func handle_double_click(item: GameInfo.Item):
 		return
 	
 	# Character panel equip/unequip (fallback - only if no utility panel is active)
-	var current_panel = GameInfo.get_current_panel()
-	var current_overlay = GameInfo.get_current_panel_overlay()
+	var current_panel = UIManager.instance.current_panel
+	var current_overlay = UIManager.instance.current_panel_overlay
 	var on_character_panel = (current_panel and current_panel.name == "Character") or (current_overlay and current_overlay.name == "Character")
 	
 	if on_character_panel:

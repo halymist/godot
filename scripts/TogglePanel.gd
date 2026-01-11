@@ -55,6 +55,8 @@ static var instance: UIManager
 @export var resolution_manager: Node
 
 # Track UI state
+var current_panel: Control = null  # Currently active main panel
+var current_panel_overlay: Control = null  # Currently active overlay
 var chat_overlay_active: bool = false
 var overlay_stack: Array[Control] = []  # Stack of nested overlays
 const BASE_Z_INDEX: int = 200
@@ -123,7 +125,7 @@ func _ready():
 		print("-> No quest active, showing home panel")
 	
 	# Start with appropriate panel visible
-	GameInfo.set_current_panel(start_panel)
+	current_panel = start_panel
 	start_panel.visible = true
 
 func is_on_active_quest() -> bool:
@@ -218,7 +220,7 @@ func show_overlay(overlay: Control):
 	print("UIManager: Overlay stack depth: ", overlay_stack.size(), " z-index: ", overlay_z_index)
 	
 	# Update GameInfo tracking (use top of stack)
-	GameInfo.set_current_panel_overlay(overlay)
+	current_panel_overlay = overlay
 	
 func hide_current_overlay():
 	"""Pop the top overlay from the stack"""
@@ -236,10 +238,10 @@ func hide_current_overlay():
 		var previous_overlay = overlay_stack[-1]
 		previous_overlay.visible = true
 		print("UIManager: Showing previous overlay: ", previous_overlay.name)
-		GameInfo.set_current_panel_overlay(previous_overlay)
+		current_panel_overlay = previous_overlay
 	else:
 		print("UIManager: Returned to base panel")
-		GameInfo.set_current_panel_overlay(null)
+		current_panel_overlay = null
 	
 	print("UIManager: Overlay stack depth: ", overlay_stack.size())
 
@@ -274,12 +276,12 @@ func toggle_overlay(overlay: Control):
 func show_panel(panel: Control):
 	"""Show main panel - hides all overlays and current panel"""	
 	# Hide current panel
-	var current_panel = GameInfo.get_current_panel()
-	if current_panel:
-		current_panel.visible = false
+	var old_panel = current_panel
+	if old_panel:
+		old_panel.visible = false
 		
 		# Reset home panel to default view when leaving it
-		if current_panel == home_panel:
+		if old_panel == home_panel:
 			home_panel.handle_back_navigation()
 			home_panel.center_village_view()
 	
@@ -292,8 +294,8 @@ func show_panel(panel: Control):
 	
 	# Show new panel
 	panel.visible = true
-	GameInfo.set_current_panel(panel)
-	GameInfo.set_current_panel_overlay(null)
+	current_panel = panel
+	current_panel_overlay = null
 	
 
 func handle_home_button():
@@ -320,7 +322,7 @@ func handle_map_button():
 	
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
-	var current = GameInfo.get_current_panel()
+	var current = current_panel
 	
 	# Toggle off if already on map
 	if current == map_panel:
@@ -342,14 +344,14 @@ func handle_arena_button():
 		print("Cannot go to arena - player is on an active quest")
 		return
 	
-	if GameInfo.get_current_panel() == arena_panel:
+	if current_panel == arena_panel:
 		show_panel(home_panel)
 	else:
 		show_panel(arena_panel)
 
 func handle_character_button():
 	"""Toggle character panel"""
-	if GameInfo.get_current_panel() == character_panel:
+	if current_panel == character_panel:
 		# When toggling off, return to quest if on active quest, otherwise home
 		if is_on_active_quest():
 			show_panel(quest)
@@ -380,16 +382,16 @@ func handle_rankings_button():
 				overlay.visible = false
 			
 			# Set base panel to home or quest
-			var current_panel = GameInfo.get_current_panel()
+			var old_panel = current_panel
 			var target_panel = home_panel
 			if is_on_active_quest():
 				target_panel = quest
 			
-			if current_panel != target_panel:
-				if current_panel:
-					current_panel.visible = false
+			if old_panel != target_panel:
+				if old_panel:
+					old_panel.visible = false
 				target_panel.visible = true
-				GameInfo.set_current_panel(target_panel)
+				current_panel = target_panel
 			
 			# Show rankings as fresh overlay
 			show_overlay(rankings_panel)
@@ -406,16 +408,16 @@ func handle_rankings_button():
 				overlay.visible = false
 			
 			# Set base panel to home or quest
-			var current_panel = GameInfo.get_current_panel()
+			var old_panel = current_panel
 			var target_panel = home_panel
 			if is_on_active_quest():
 				target_panel = quest
 			
-			if current_panel != target_panel:
-				if current_panel:
-					current_panel.visible = false
+			if old_panel != target_panel:
+				if old_panel:
+					old_panel.visible = false
 				target_panel.visible = true
-				GameInfo.set_current_panel(target_panel)
+				current_panel = target_panel
 		
 		# Now show rankings as overlay
 		show_overlay(rankings_panel)
@@ -439,7 +441,7 @@ func toggle_details_bookmark():
 
 func go_back():
 	"""Back button - priority: chat > overlay stack > panel custom behavior > home"""
-	var current = GameInfo.get_current_panel()
+	var current = current_panel
 	
 	print("=== BACK BUTTON DEBUG ===")
 	print("Current panel: ", current.name if current else "null")
@@ -534,11 +536,11 @@ func go_back():
 
 func show_combat():
 	"""Show combat panel"""
-	var current_panel = GameInfo.get_current_panel()
-	if current_panel:
-		current_panel.visible = false
+	var old_panel = current_panel
+	if old_panel:
+		old_panel.visible = false
 	combat_panel.visible = true
-	GameInfo.set_current_panel(combat_panel)
+	current_panel = combat_panel
 
 func handle_quest_completed():
 	"""Called when quest is finished - return to home"""
@@ -588,7 +590,7 @@ func handle_logout():
 	
 	# Show lobby
 	lobby_panel.visible = true
-	GameInfo.set_current_panel(lobby_panel)
+	current_panel = lobby_panel
 	print("Returned to lobby")
 
 func _load_quest_on_startup(quest_id: int):
@@ -683,14 +685,14 @@ func refresh_avatars():
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot changes by calling their update methods directly"""
-	var current_panel = GameInfo.get_current_panel()
-	if not current_panel:
+	var panel = current_panel
+	if not panel:
 		return
 	
 	# Call the appropriate panel's update method
-	if current_panel.name == "BlacksmithPanel" and current_panel.has_method("on_slot_changed"):
-		current_panel.on_slot_changed(slot_id)
-	elif current_panel.name == "AlchemistPanel" and current_panel.has_method("on_slot_changed"):
-		current_panel.on_slot_changed(slot_id)
-	elif current_panel.name == "EnchanterPanel" and current_panel.has_method("on_slot_changed"):
-		current_panel.on_slot_changed(slot_id)
+	if panel.name == "BlacksmithPanel" and panel.has_method("on_slot_changed"):
+		panel.on_slot_changed(slot_id)
+	elif panel.name == "AlchemistPanel" and panel.has_method("on_slot_changed"):
+		panel.on_slot_changed(slot_id)
+	elif panel.name == "EnchanterPanel" and panel.has_method("on_slot_changed"):
+		panel.on_slot_changed(slot_id)

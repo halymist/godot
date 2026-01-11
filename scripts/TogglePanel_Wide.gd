@@ -82,19 +82,19 @@ func handle_quest_arrived():
 
 func handle_character_button():
 	"""Character (left) + Talents (right)"""
-	if GameInfo.get_current_panel() == character_panel:
+	if UIManager.instance.current_panel == character_panel:
 		show_panel(home_panel)
 	else:
 		show_panel(character_panel)
 
 func handle_arena_button():
-	if GameInfo.get_current_panel() == arena_panel:
+	if UIManager.instance.current_panel == arena_panel:
 		show_panel(home_panel)
 	else:
 		show_panel(arena_panel)
 
 func handle_map_button():
-	if GameInfo.get_current_panel() == map_panel:
+	if UIManager.instance.current_panel == map_panel:
 		show_panel(home_panel)
 	else:
 		show_panel(map_panel)
@@ -109,7 +109,7 @@ func show_panel(panel: Control):
 	current_utility_panel = null
 	chat_overlay_active = false
 	
-	var current_overlay = GameInfo.get_current_panel_overlay()
+	var current_overlay = UIManager.instance.current_panel_overlay
 	if current_overlay:
 		hide_overlay(current_overlay)
 	
@@ -127,7 +127,7 @@ func show_panel(panel: Control):
 		panel.visible = true
 		print("Wide: Showing ", panel.name, " (full)")
 	
-	GameInfo.set_current_panel(panel)
+	UIManager.instance.current_panel = panel
 
 func show_overlay(overlay: Control):
 	"""Show overlay panel, with companion if applicable"""
@@ -146,7 +146,7 @@ func show_overlay(overlay: Control):
 			return
 	
 	# For other overlays, hide current and show new
-	var current = GameInfo.get_current_panel_overlay()
+	var current = UIManager.instance.current_panel_overlay
 	if current != null and current != overlay:
 		hide_overlay(current)
 	
@@ -155,7 +155,7 @@ func show_overlay(overlay: Control):
 		hide_overlay(overlay)
 		return
 	
-	GameInfo.set_current_panel_overlay(overlay)
+	UIManager.instance.current_panel_overlay = overlay
 	
 	# Show overlay with companion if applicable
 	if overlay == rankings_panel:
@@ -177,8 +177,8 @@ func hide_overlay(overlay: Control):
 	if overlay == chat_panel:
 		chat_overlay_active = false
 	
-	if GameInfo.get_current_panel_overlay() == overlay:
-		GameInfo.set_current_panel_overlay(null)
+	if UIManager.instance.current_panel_overlay == overlay:
+		UIManager.instance.current_panel_overlay = null
 	
 	overlay.visible = false
 	
@@ -191,21 +191,21 @@ func hide_overlay(overlay: Control):
 func show_utility_panel(panel: Control):
 	"""Show utility panel (blacksmith, vendor, etc.)"""
 	if panel:
-		var current_overlay = GameInfo.get_current_panel_overlay()
+		var current_overlay = UIManager.instance.current_panel_overlay
 		if current_overlay != null and current_overlay != panel:
 			hide_overlay(current_overlay)
 		
 		current_utility_panel = panel
 		panel.visible = true
-		GameInfo.set_current_panel_overlay(panel)
+		UIManager.instance.current_panel_overlay = panel
 
 func hide_utility_panel(panel: Control):
 	"""Hide utility panel"""
 	if panel:
 		current_utility_panel = null
 		panel.visible = false
-		if GameInfo.get_current_panel_overlay() == panel:
-			GameInfo.set_current_panel_overlay(null)
+		if UIManager.instance.current_panel_overlay == panel:
+			UIManager.instance.current_panel_overlay = null
 
 func hide_all_panels():
 	"""Hide all main panels and companions"""
@@ -254,7 +254,7 @@ func go_back():
 		return
 	
 	# Priority 2: Other overlays
-	var current_overlay = GameInfo.get_current_panel_overlay()
+	var current_overlay = UIManager.instance.current_panel_overlay
 	if current_overlay != null and current_overlay.visible:
 		hide_overlay(current_overlay)
 		return

@@ -537,13 +537,6 @@ class GamePlayer:
 		# For now always return Novice, later we can add logic based on rank value
 		return "Novice"
 	
-	func get_profession_name() -> String:
-		match profession:
-			1: return "Herbalist"
-			2: return "Blacksmith"
-			3: return "Enchanter"
-			4: return "Warrior"
-			_: return "None"
 
 class GameCurrentPlayer:
 	extends GamePlayer
@@ -696,10 +689,6 @@ var arena_opponents: Array[int] = []  # Array of character IDs for arena selecti
 var chat_messages: Array[ChatMessage] = []
 var current_combat_log: CombatResponse = null  # Temporary holder for current combat being displayed
 
-# Panel tracking for navigation (where the client currently is)
-var current_panel: Control = null
-var current_panel_overlay: Control = null
-
 func _ready():
 	print("GameInfo ready!")
 	# Load effects database first (items and perks reference these)
@@ -718,19 +707,6 @@ func _ready():
 # Helper function to get player stats for UI
 func get_player_stats() -> Dictionary:
 	return current_player.get_player_stats() if current_player else {}
-
-# UI Panel management functions
-func set_current_panel(panel: Control):
-	current_panel = panel
-
-func get_current_panel() -> Control:
-	return current_panel
-
-func set_current_panel_overlay(panel: Control):
-	current_panel_overlay = panel
-
-func get_current_panel_overlay() -> Control:
-	return current_panel_overlay
 
 # Load player data into current_player
 func load_player_data(character_data: Dictionary):

@@ -547,7 +547,7 @@ func _start_combat():
 	
 	# Show combat panel using UIManager's show_panel method
 	UIManager.instance.show_panel(combat_panel)
-	GameInfo.set_current_panel(combat_panel)
+	UIManager.instance.current_panel = combat_panel
 
 func handle_combat_result():
 	"""Called after combat panel closes to handle quest continuation"""

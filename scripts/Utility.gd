@@ -57,7 +57,7 @@ func _on_button_pressed():
 		print("[Utility] Button pressed for: ", target.name)
 		
 		# Hide current panel if it's not the target
-		var current_panel = GameInfo.get_current_panel()
+		var current_panel = UIManager.instance.current_panel
 		if current_panel and current_panel != target:
 			current_panel.visible = false
 		
@@ -67,7 +67,7 @@ func _on_button_pressed():
 		
 		# Show the target panel and register it as current panel in GameInfo
 		target.visible = true
-		GameInfo.set_current_panel(target)
+		UIManager.instance.current_panel = target
 		
 		# In wide mode, also show character panel on the left
 		var resolution_manager = get_node_or_null("/root/Game")

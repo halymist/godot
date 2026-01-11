@@ -227,7 +227,7 @@ func _on_quest_accepted(quest_data: Dictionary):
 		# Pass travel info to MapPanel
 		map_panel.start_travel(travel_text, travel_seconds, quest_id)
 	
-	GameInfo.set_current_panel(map_panel)
+	UIManager.instance.current_panel = map_panel
 
 func _on_quest_completed(quest_id: int):
 	"""Handle quest completion by redrawing NPCs"""
