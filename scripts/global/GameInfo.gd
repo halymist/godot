@@ -18,7 +18,11 @@ var talent_registry: Dictionary = {}  # {talent_id: {effect_id, factor, max_poin
 
 func get_village_name(location_id: int) -> String:
 	"""Get the village name for a given location ID"""
-	return VILLAGE_NAMES.get(location_id, "Unknown Village")
+	if settlements_db:
+		var location = settlements_db.get_location_by_id(location_id)
+		if location:
+			return location.location_name
+	return "Unknown Village"
 
 func get_location_data(location_id: int) -> LocationResource:
 	"""Get the location data for a given location ID"""
@@ -36,35 +40,6 @@ func register_talent(id: int, effect_id: int, factor: float, max_points: int, pe
 	}
 	print("Registered talent %d: effect=%d, factor=%.1f, max_points=%d, perk_slot=%d" % [id, effect_id, factor, max_points, perk_slot])
 
-# Faction names mapping
-const FACTION_DATA = {
-	1: {"name": "Order"},
-	2: {"name": "Guild"},
-	3: {"name": "Companions"}
-}
-
-func get_faction_name(faction_id: int) -> String:
-	"""Get the faction name for a given faction ID"""
-	var data = FACTION_DATA.get(faction_id, {})
-	return data.get("name", "None")
-
-# Profession names and icons mapping
-const PROFESSION_DATA = {
-	1: {"name": "Herbalist", "icon": "res://assets/images/ui/merchant.png"},
-	2: {"name": "Blacksmith", "icon": "res://assets/images/ui/merchant.png"},
-	3: {"name": "Enchanter", "icon": "res://assets/images/ui/merchant.png"},
-	4: {"name": "Warrior", "icon": "res://assets/images/ui/merchant.png"}
-}
-
-func get_profession_name(profession_id: int) -> String:
-	"""Get the profession name for a given profession ID"""
-	var data = PROFESSION_DATA.get(profession_id, {})
-	return data.get("name", "None")
-
-func get_profession_icon(profession_id: int) -> String:
-	"""Get the profession icon path for a given profession ID"""
-	var data = PROFESSION_DATA.get(profession_id, {})
-	return data.get("icon", "")
 
 # Signals for UI updates
 signal on_player_data_loaded
@@ -896,19 +871,6 @@ var current_panel_overlay: Control = null:
 		current_panel_overlay = value
 		current_panel_overlay_changed.emit(value)
 
-# Legacy properties for backward compatibility
-var player_silver: int:
-	get: return current_player.silver if current_player else 0
-	set(value): 
-		if current_player:
-			current_player.silver = value
-
-var player_mushrooms: int:
-	get: return current_player.mushrooms if current_player else 0
-	set(value):
-		if current_player:
-			current_player.mushrooms = value
-
 func _ready():
 	print("GameInfo ready!")
 	# Load effects database first (items and perks reference these)
@@ -1022,12 +984,6 @@ func load_chat_messages_data(messages_data: Array):
 	print("Total chat messages loaded: ", chat_messages.size())
 
 # Function to load NPCs from mock data
-func load_npcs_data(npcs_data: Array):
-	npcs.clear()
-	for npc_data in npcs_data:
-		npcs.append(npc_data)
-	print("Total NPCs loaded: ", npcs.size())
-
 # Function to load combat logs from mock data
 func load_combat_logs_data(combat_data: Array):
 	combat_logs.clear()

@@ -6599,16 +6599,9 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew"]
-layout_mode = 2
-
-[node name="Icon" type="ColorRect" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew/HBox"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-color = Color(0.2, 0.6, 0.2, 1)
-
-[node name="Label" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew/HBox"]
+[node name="Label" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Create New Character"
+horizontal_alignment = 1
 vertical_alignment = 1

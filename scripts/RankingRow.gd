@@ -39,11 +39,7 @@ func update_display():
 		rank_label.text = str(rank)
 	if name_label:
 		name_label.text = player_name
-	# Faction icon removed - no longer needed
-	if profession_icon:
-		var icon_path = GameInfo.get_profession_icon(profession)
-		if icon_path and ResourceLoader.exists(icon_path):
-			profession_icon.texture = load(icon_path)
+	# Profession removed - no longer used
 	if honor_label:
 		honor_label.text = str(honor)
 
