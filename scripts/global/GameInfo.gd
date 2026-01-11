@@ -1,9 +1,11 @@
 extends Node
-@export var fallback_folder: String = "res://assets/images/fallback"
+
 # Persistent game data manager - AutoLoad
 # This holds all player data permanently, separate from UI
 
-# Static game data
+# ============================================
+# DATABASE REFERENCES
+# ============================================
 var effects_db: EffectDatabase = null
 var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
@@ -13,24 +15,70 @@ var settlements_db: SettlementsDatabase = null
 var quests_db: QuestsDatabase = null
 var enemies_db: EnemyDatabase = null
 
-# Runtime talent registry (populated by Talent.gd nodes on _ready)
-var talent_registry: Dictionary = {}  # {talent_id: {effect_id, factor, max_points, perk_slot}}
+# ============================================
+# RUNTIME DATA
+# ============================================
+# Character management
+var all_characters: Array[GameCurrentPlayer] = []
+var current_character_id: int = 0
 
+# World data (populated per character)
+var enemy_players: Array[GamePlayer] = []
+var arena_opponents: Array[int] = []
+var chat_messages: Array[ChatMessage] = []
+var current_combat_log: CombatResponse = null
+
+# Talent registry (populated by Talent.gd nodes on _ready)
+var talent_registry: Dictionary = {}
+
+# ============================================
+# SIGNALS
+# ============================================
+signal character_changed()
+signal quest_completed(quest_id)
+
+# ============================================
+# COMPUTED PROPERTIES
+# ============================================
+var current_player: GameCurrentPlayer:
+	get:
+		for character in all_characters:
+			if character.character_id == current_character_id:
+				return character
+		return null
+
+# ============================================
+# INITIALIZATION
+# ============================================
+func _ready():
+	print("GameInfo initializing...")
+	_load_databases()
+	load_all_characters(Websocket.mock_characters)
+
+func _load_databases():
+	effects_db = load("res://data/effects.tres")
+	items_db = load("res://data/items.tres")
+	perks_db = load("res://data/perks.tres")
+	npcs_db = load("res://data/npcs.tres")
+	cosmetics_db = load("res://data/cosmetics.tres")
+	quests_db = load("res://scripts/resources/quests.tres")
+	settlements_db = load("res://scripts/resources/settlements.tres")
+	enemies_db = load("res://data/enemies.tres")
+
+# ============================================
+# TALENT REGISTRATION
+# ============================================
 func register_talent(id: int, effect_id: int, factor: float, max_points: int, perk_slot: int = 0):
-	"""Called by Talent.gd nodes on _ready() to register their metadata"""
 	talent_registry[id] = {
 		"effect_id": effect_id,
 		"factor": factor,
 		"max_points": max_points,
 		"perk_slot": perk_slot
 	}
-	print("Registered talent %d: effect=%d, factor=%.1f, max_points=%d, perk_slot=%d" % [id, effect_id, factor, max_points, perk_slot])
 
-
-# Signals for UI updates
-signal quest_completed(quest_id) # Emitted when a quest is marked as completed
-
-# Inner Classes - Single source of truth
+# ============================================
+# CHARACTER MANAGEMENT
+# ============================================
 
 class Item:
 	extends RefCounted
@@ -246,9 +294,6 @@ class Talent:
 			if key in self:
 				set(key, data[key])
 
-# Ranking Entry for lightweight rankings display
-# RankingEntry class removed - now using full GamePlayer data in enemy_players array
-
 class ChatMessage:
 	extends RefCounted
 	
@@ -376,11 +421,8 @@ class GamePlayer:
 	func load_bag_slots(data: Dictionary):
 		bag_slots.clear()
 		var items_data = data.get("bag_slots", [])
-		print("Loading bag_slots: ", items_data.size(), " items found")
 		for item_data in items_data:
-			var item = Item.new(item_data)
-			print("  Loaded item: ", item.item_name, " at slot ", item.bag_slot_id)
-			bag_slots.append(item)
+			bag_slots.append(Item.new(item_data))
 	
 	func load_perks(data: Dictionary):
 		perks.clear()
@@ -601,58 +643,24 @@ class GameCurrentPlayer:
 		stats["talent_points"] = talent_points
 		return stats
 
-# GameInfo main class properties
-# Character management
-var all_characters: Array[GameCurrentPlayer] = []  # All loaded characters
-var current_character_id: int = 0  # Currently selected character ID
-
-# Signal emitted when character is changed
-signal character_changed()
-
-var current_player: GameCurrentPlayer:
-	get:
-		return _get_current_player()
-	
-func _get_current_player() -> GameCurrentPlayer:
-	"""Get the currently selected character from all_characters"""
-	for character in all_characters:
-		if character.character_id == current_character_id:
-			return character
-	return null
-
 func load_all_characters(characters_data: Array):
-	"""Load all characters from server/mock data on app start"""
 	all_characters.clear()
 	for char_data in characters_data:
 		var player = GameCurrentPlayer.new(char_data, self)
 		all_characters.append(player)
-		print("Loaded character: ", player.name, " (ID: ", player.character_id, ") with ", player.bag_slots.size(), " items")
-		for item in player.bag_slots:
-			print("  - Item ID: ", item.id, " in slot: ", item.bag_slot_id)
-	print("Loaded ", all_characters.size(), " characters into GameInfo")
-	# Don't auto-select - wait for user to pick from lobby
+	print("Loaded ", all_characters.size(), " characters")
 
 func select_character(character_id: int):
-	"""Switch to a different character and load their world data"""
-	print("Selecting character ID: ", character_id)
 	current_character_id = character_id
 	
 	if current_player:
-		print("Selected character: ", current_player.name)
-		print("Character bag_slots count: ", current_player.bag_slots.size())
-		for item in current_player.bag_slots:
-			print("  - Item ID: ", item.id, " in slot: ", item.bag_slot_id, " (", item.item_name, ")")
-		# Load character-specific world data
+		print("Selected character: ", current_player.name, " (ID: ", character_id, ")")
 		_load_character_world_data()
-		# Emit signal so UI can refresh
 		character_changed.emit()
 	else:
 		print("ERROR: Character ID ", character_id, " not found!")
 
-
 func _load_character_world_data():
-	"""Load rankings, chat, arena opponents, vendor items for current character"""
-	# Find character data in Websocket.mock_characters
 	var char_data: Dictionary = {}
 	for character in Websocket.mock_characters:
 		if character.character_id == current_character_id:
@@ -663,75 +671,49 @@ func _load_character_world_data():
 		print("ERROR: Could not find character data for ID ", current_character_id)
 		return
 	
-	# Load character-specific world data
 	load_enemy_players_data(char_data.rankings)
 	load_chat_messages_data(char_data.chat_messages)
 	
-	# Load arena opponents (character IDs)
-	if char_data.has("arena_opponents"):
-		if char_data.arena_opponents is Array:
-			arena_opponents.assign(char_data.arena_opponents)
-			print("Loaded arena opponents: ", arena_opponents)
-	
-	print("Loaded world data for character: ", current_player.name)
+	if char_data.has("arena_opponents") and char_data.arena_opponents is Array:
+		arena_opponents.assign(char_data.arena_opponents)
+		print("Loaded ", arena_opponents.size(), " arena opponents")
 
-var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data (paginated from server)
-var arena_opponents: Array[int] = []  # Array of character IDs for arena selection
-var chat_messages: Array[ChatMessage] = []
-var current_combat_log: CombatResponse = null  # Temporary holder for current combat being displayed
-
-func _ready():
-	print("GameInfo ready!")
-	# Load effects database first (items and perks reference these)
-	effects_db = load("res://data/effects.tres")
-	items_db = load("res://data/items.tres")
-	perks_db = load("res://data/perks.tres")
-	npcs_db = load("res://data/npcs.tres")
-	cosmetics_db = load("res://data/cosmetics.tres")
-	quests_db = load("res://scripts/resources/quests.tres")
-	settlements_db = load("res://scripts/resources/settlements.tres")
-	enemies_db = load("res://data/enemies.tres")
-	
-	# Load all characters from Websocket mock data
-	load_all_characters(Websocket.mock_characters)
-
-# Function to load all arena opponents from mock data
+# ============================================
+# WORLD DATA LOADING
+# ============================================
 func load_enemy_players_data(players_data: Array):
-	# Append enemy player data (server sends paginated data as user scrolls)
-	for i in range(players_data.size()):
-		var player_data = players_data[i]
+	for player_data in players_data:
 		var player = GamePlayer.new(player_data, self)
 		enemy_players.append(player)
-		print("Loaded enemy player: ", player.name, " (Rank ", player.rank, ")")
-	print("Total enemy players in memory: ", enemy_players.size())
+	print("Loaded ", enemy_players.size(), " enemy players")
 
-# Function to load chat messages from mock data
 func load_chat_messages_data(messages_data: Array):
 	chat_messages.clear()
 	for message_data in messages_data:
-		var chat_message = ChatMessage.new(message_data)
-		chat_messages.append(chat_message)
-	print("Total chat messages loaded: ", chat_messages.size())
+		chat_messages.append(ChatMessage.new(message_data))
+	print("Loaded ", chat_messages.size(), " chat messages")
 
-# Function to mark a quest as completed
+# ============================================
+# QUEST MANAGEMENT
+# ============================================
 func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	if not current_player:
 		return
 	
-	# Check if already in log
 	for entry in current_player.quest_log:
 		if entry.get("quest_id") == quest_id:
 			entry["finished"] = true
 			entry["clicked_options"] = clicked_options
-			print("Quest ", quest_id, " marked as finished with clicked options: ", clicked_options)
 			quest_completed.emit(quest_id)
 			return
 	
-	# Add new entry if not found
 	current_player.quest_log.append({
 		"quest_id": quest_id,
 		"clicked_options": clicked_options,
 		"finished": true
 	})
-	print("Quest ", quest_id, " added to quest log as finished with clicked options: ", clicked_options)
 	quest_completed.emit(quest_id)
+
+# ============================================
+# INNER CLASSES
+# ============================================
