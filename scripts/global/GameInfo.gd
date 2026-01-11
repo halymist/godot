@@ -694,8 +694,7 @@ func _load_character_world_data():
 var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data (paginated from server)
 var arena_opponents: Array[int] = []  # Array of character IDs for arena selection
 var chat_messages: Array[ChatMessage] = []
-var combat_logs: Array[CombatResponse] = []  # Mock combat logs (will come from server later)
-var current_combat_log: CombatResponse = null
+var current_combat_log: CombatResponse = null  # Temporary holder for current combat being displayed
 
 # Panel tracking for navigation (where the client currently is)
 var current_panel: Control = null
@@ -715,10 +714,6 @@ func _ready():
 	
 	# Load all characters from Websocket mock data
 	load_all_characters(Websocket.mock_characters)
-	
-	# Load combat logs (shared across all characters)
-	load_combat_logs_data(Websocket.mock_combat_logs)
-	set_current_combat_log(2)  # Set to wizard vs fire demon combat to show multi-action synchronization
 
 # Helper function to get player stats for UI
 func get_player_stats() -> Dictionary:
@@ -744,7 +739,7 @@ func set_current_panel_overlay(panel: Control):
 func get_current_panel_overlay() -> Control:
 	return current_panel_overlay
 
-# Load player data into current_player with automatic event emission
+# Load player data into current_player
 func load_player_data(character_data: Dictionary):
 	print("Loading player data into GameInfo...")
 	print("Raw character_data keys: ", character_data.keys())
@@ -767,8 +762,6 @@ func get_total_stats() -> Dictionary:
 func get_total_effects() -> Dictionary:
 	return current_player.get_total_effects() if current_player else {}
 
-# Arena opponent selection removed - send character_id directly to server when fighting
-
 # Function to load all arena opponents from mock data
 func load_enemy_players_data(players_data: Array):
 	# Append enemy player data (server sends paginated data as user scrolls)
@@ -779,16 +772,6 @@ func load_enemy_players_data(players_data: Array):
 		print("Loaded enemy player: ", player.name, " (Rank ", player.rank, ")")
 	print("Total enemy players in memory: ", enemy_players.size())
 
-func load_arena_opponent_names(opponent_names: Array[String]):
-	# Convert opponent names to character IDs
-	arena_opponents.clear()
-	for name in opponent_names:
-		for player in enemy_players:
-			if player.name == name:
-				arena_opponents.append(player.character_id)
-				break
-	print("Setting arena opponents (converted to IDs): ", arena_opponents)
-
 # Function to load chat messages from mock data
 func load_chat_messages_data(messages_data: Array):
 	chat_messages.clear()
@@ -796,13 +779,6 @@ func load_chat_messages_data(messages_data: Array):
 		var chat_message = ChatMessage.new(message_data)
 		chat_messages.append(chat_message)
 	print("Total chat messages loaded: ", chat_messages.size())
-
-# Function to load combat logs from mock data
-func load_combat_logs_data(combat_data: Array):
-	combat_logs.clear()
-	for combat_data_item in combat_data:
-		var combat_response = CombatResponse.new(combat_data_item)
-		combat_logs.append(combat_response)
 
 # Function to mark a quest as completed
 func complete_quest(quest_id: int, clicked_options: Array[int] = []):
@@ -826,19 +802,3 @@ func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	})
 	print("Quest ", quest_id, " added to quest log as finished with clicked options: ", clicked_options)
 	quest_completed.emit(quest_id)
-
-# Function to set current combat for display
-func set_current_combat_log(combat_index: int = 0):
-	if combat_index >= 0 and combat_index < combat_logs.size():
-		current_combat_log = combat_logs[combat_index]
-		print("Set current combat log: You vs ", current_combat_log.player2_name)
-	else:
-		print("Invalid combat log index: ", combat_index)
-
-# Function to get combat logs for a specific player (as opponent)
-func get_combat_logs_for_player(player_name: String) -> Array[CombatResponse]:
-	var player_combats: Array[CombatResponse] = []
-	for combat in combat_logs:
-		if combat.player2_name == player_name:
-			player_combats.append(combat)
-	return player_combats

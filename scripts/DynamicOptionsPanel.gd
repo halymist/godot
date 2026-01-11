@@ -527,9 +527,10 @@ func _on_quest_option_pressed(option: QuestOption):
 
 func _start_combat():
 	"""Initialize combat by loading a random mock combat log and showing combat panel"""
-	# Pick a random combat log from mock data
-	var random_index = randi() % GameInfo.combat_logs.size()
-	GameInfo.set_current_combat_log(random_index)
+	# Pick a random combat log from Websocket mock data
+	var random_index = randi() % Websocket.mock_combat_logs.size()
+	var combat_data = Websocket.mock_combat_logs[random_index]
+	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
 	
 	print("Starting combat with log index: ", random_index)
 	
