@@ -64,7 +64,7 @@ func load_quest(quest_id: int):
 	
 	if current_quest_id != quest_id:
 		# Set quest title and background
-		var quest_data = GameInfo.get_quest_data(quest_id)
+		var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 		if quest_data:
 			var title_label = get_node_or_null("QuestTitle")
 			if title_label:

@@ -852,19 +852,6 @@ func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	print("Quest ", quest_id, " added to quest log as finished with clicked options: ", clicked_options)
 	quest_completed.emit(quest_id)
 
-
-func get_quest_data(quest_id: int) -> QuestData:
-	"""Get quest data from quests.tres database"""
-	if quests_db:
-		return quests_db.get_quest_by_id(quest_id)
-	return null
-
-# Function to set player traveling destination to quest
-func accept_quest(quest_id: int):
-	if current_player:
-		current_player.traveling_destination = quest_id
-		print("Player accepted quest ", quest_id, " and is now traveling to it")
-
 # Function to set current combat for display
 func set_current_combat_log(combat_index: int = 0):
 	if combat_index >= 0 and combat_index < combat_logs.size():

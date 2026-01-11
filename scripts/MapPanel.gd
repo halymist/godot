@@ -44,7 +44,7 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	set_process(true)  # Enable frame-by-frame updates for smooth progress
 	
 	# Apply quest background texture and set quest name
-	var quest_data = GameInfo.get_quest_data(quest_id)
+	var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 	if quest_data:
 		if quest_data.background_texture:
 			background.texture = quest_data.background_texture

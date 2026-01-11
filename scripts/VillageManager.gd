@@ -216,8 +216,8 @@ func _on_quest_accepted(quest_data: Dictionary):
 	# Get quest ID from NPC data
 	var quest_id = quest_data.get("questid", 0)
 	
-	# Get quest definition from GameInfo to access travel data
-	var quest_definition = GameInfo.get_quest_data(quest_id)
+	# Get quest definition from database to access travel data
+	var quest_definition = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 	if quest_definition:
 		var travel_text = quest_definition.travel_text if quest_definition.travel_text else "Traveling to quest..."
 		var travel_seconds = 20  # Always 20 seconds

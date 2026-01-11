@@ -23,8 +23,8 @@ func _on_accept_pressed():
 	print("=== Quest Accept Debug ===")
 	print("Quest ID: ", quest_id)
 	
-	# Get quest definition from GameInfo to access travel data
-	var quest_definition = GameInfo.get_quest_data(quest_id)
+	# Get quest definition from database to access travel data
+	var quest_definition = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 	print("Quest definition found: ", quest_definition != null)
 	
 	if not quest_definition:
@@ -40,7 +40,7 @@ func _on_accept_pressed():
 	print("Player VIP status: ", is_vip)
 	
 	# Always set the quest destination first
-	GameInfo.accept_quest(quest_id)  # This sets traveling_destination
+	accept_quest(quest_id)  # This sets traveling_destination
 	
 	# Clear overlay stack so cancel button doesn't target quest_panel
 	UIManager.instance.hide_current_overlay()
@@ -114,3 +114,8 @@ func show_quest(quest_data: Dictionary):
 	# Show this panel as an overlay
 	UIManager.instance.show_overlay(self)
 	print("Quest panel shown as overlay with z_index: ", z_index)
+
+func accept_quest(quest_id: int):
+	if GameInfo.current_player:
+		GameInfo.current_player.traveling_destination = quest_id
+		print("Player accepted quest ", quest_id, " and is now traveling to it")
