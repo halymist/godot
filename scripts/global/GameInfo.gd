@@ -719,13 +719,6 @@ func _ready():
 func get_player_stats() -> Dictionary:
 	return current_player.get_player_stats() if current_player else {}
 
-# Helper to get a texture for an asset_id from fallback folder
-func get_fallback_texture(asset_id: int) -> Texture2D:
-	var path = "%s/%d.png" % [fallback_folder, asset_id]
-	if ResourceLoader.exists(path):
-		return load(path)
-	return null
-
 # UI Panel management functions
 func set_current_panel(panel: Control):
 	current_panel = panel
