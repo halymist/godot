@@ -7,7 +7,6 @@ extends Panel
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
 @export var background: TextureRect
-@export var update_timer: Timer
 
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
@@ -21,8 +20,8 @@ func _ready():
 	skip_button.pressed.connect(_on_skip_button_pressed)
 	enter_dungeon_button.pressed.connect(_on_enter_dungeon_pressed)
 	GameInfo.character_changed.connect(_on_character_changed)
-	update_timer.timeout.connect(_on_timer_tick)
 	visibility_changed.connect(_on_visibility_changed)
+	set_process(false)  # Only process when traveling
 	
 
 func _on_character_changed():
@@ -42,7 +41,7 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	travel_duration = float(duration_seconds)  # Duration is already in seconds (0 for VIP)
 	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds (VIP=instant)" if duration_seconds == 0 else " seconds")
 	print("Travel duration in seconds: ", travel_duration)
-	update_timer.start()
+	set_process(true)  # Enable frame-by-frame updates for smooth progress
 	
 	# Apply quest background texture and set quest name
 	var quest_data = GameInfo.get_quest_data(quest_id)
@@ -97,11 +96,12 @@ func refresh_travel_state():
 	enter_dungeon_button.visible = false
 	travel_text_label.text = travel_text
 
-func _on_timer_tick():
-	"""Called by timer - only update frequently-changing UI elements"""
+func _process(_delta):
+	"""Update progress bar every frame for smooth 60fps animation"""
+	print("QuestPanel._process called for travel update")
 	var current_player = GameInfo.current_player
 	
-	# Only tick if actively traveling
+	# Only update if actively traveling
 	if current_player.traveling == 0:
 		return
 	
@@ -128,7 +128,7 @@ func _on_timer_tick():
 	
 	# Check if travel is completed (naturally or via skip)
 	if time_remaining <= 0:
-		update_timer.stop()
+		set_process(false)  # Stop frame updates
 		print("Travel completed - loading quest")
 		
 		# Reset state
