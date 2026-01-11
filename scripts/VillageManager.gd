@@ -69,7 +69,7 @@ func set_active_village(location_id: int):
 	
 	# Load village scene from settlements database
 	print("  Getting location data from settlements_db...")
-	var location_data = GameInfo.get_location_data(location_id)
+	var location_data = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
 	if not location_data:
 		print("  ERROR: No location data found for location_id: ", location_id)
 		print("  settlements_db exists: ", GameInfo.settlements_db != null)

@@ -62,7 +62,7 @@ func _load_location_content():
 	if not GameInfo.current_player:
 		return
 		
-	var location_data = GameInfo.get_location_data(GameInfo.current_player.location)
+	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
 	
 	# Clear existing children from container
 	if utility_background_container:

@@ -49,7 +49,8 @@ func _on_update_timer_timeout():
 	"""Called every second to update the time display"""
 	if location_label:
 		var location_id = GameInfo.current_player.location if GameInfo.current_player else 1
-		var village_name = GameInfo.get_village_name(location_id)
+		var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
+		var village_name = location.location_name if location else "Unknown Village"
 		var server_time = _get_server_time_string()
 		location_label.text = "%s - %s" % [village_name, server_time]
 
@@ -78,7 +79,8 @@ func update_display():
 	# Update location if label exists
 	if location_label:
 		var location_id = GameInfo.current_player.location
-		var village_name = GameInfo.get_village_name(location_id)
+		var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
+		var village_name = location.location_name if location else "Unknown Village"
 		var server_time = _get_server_time_string()
 		
 		# Format: "Krasna Ves - 14:35"

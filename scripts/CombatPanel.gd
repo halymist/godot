@@ -351,7 +351,7 @@ func set_combat_background():
 	var location = GameInfo.current_player.location if GameInfo.current_player else 1
 	
 	# Get location data from settlements database
-	var location_data = GameInfo.get_location_data(location)
+	var location_data = GameInfo.settlements_db.get_location_by_id(location) if GameInfo.settlements_db else null
 	if location_data and location_data.arena_background:
 		combat_background.texture = location_data.arena_background
 

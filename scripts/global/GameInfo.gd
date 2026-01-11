@@ -16,20 +16,6 @@ var enemies_db: EnemyDatabase = null
 # Runtime talent registry (populated by Talent.gd nodes on _ready)
 var talent_registry: Dictionary = {}  # {talent_id: {effect_id, factor, max_points, perk_slot}}
 
-func get_village_name(location_id: int) -> String:
-	"""Get the village name for a given location ID"""
-	if settlements_db:
-		var location = settlements_db.get_location_by_id(location_id)
-		if location:
-			return location.location_name
-	return "Unknown Village"
-
-func get_location_data(location_id: int) -> LocationResource:
-	"""Get the location data for a given location ID"""
-	if settlements_db:
-		return settlements_db.get_location_by_id(location_id)
-	return null
-
 func register_talent(id: int, effect_id: int, factor: float, max_points: int, perk_slot: int = 0):
 	"""Called by Talent.gd nodes on _ready() to register their metadata"""
 	talent_registry[id] = {
@@ -42,11 +28,7 @@ func register_talent(id: int, effect_id: int, factor: float, max_points: int, pe
 
 
 # Signals for UI updates
-signal on_player_data_loaded
-signal current_panel_changed(new_panel)
-signal current_panel_overlay_changed(new_overlay) # panels that partially cover the screen
 signal quest_completed(quest_id) # Emitted when a quest is marked as completed
-signal rankings_loaded # Emitted when rankings data is loaded
 
 # Inner Classes - Single source of truth
 
@@ -768,15 +750,8 @@ var vendor_items: Array[Item] = []
 var rankings_indices: Array[int] = []  # Indices into enemy_players array (ordered by rank)
 
 # Panel tracking for navigation (where the client currently is)
-var current_panel: Control = null:
-	set(value):
-		current_panel = value
-		current_panel_changed.emit(value)
-
-var current_panel_overlay: Control = null:
-	set(value):
-		current_panel_overlay = value
-		current_panel_overlay_changed.emit(value)
+var current_panel: Control = null
+var current_panel_overlay: Control = null
 
 func _ready():
 	print("GameInfo ready!")
@@ -839,8 +814,6 @@ func load_player_data(character_data: Dictionary):
 	print("Perks: ", current_player.perks.size())
 	print("Talents: ", current_player.talents.size())
 
-	on_player_data_loaded.emit()
-
 func get_total_stats() -> Dictionary:
 	return current_player.get_total_stats() if current_player else {}
 
@@ -874,7 +847,6 @@ func load_enemy_players_data(players_data: Array):
 		rankings_indices.append(i)  # Rankings ordered by array index
 		print("Loaded enemy player: ", player.name, " (Rank ", player.rank, ")")
 	print("Total enemy players loaded: ", enemy_players.size())
-	rankings_loaded.emit()
 
 func load_arena_opponent_names(opponent_names: Array[String]):
 	# Store arena opponent names for selection
