@@ -825,34 +825,9 @@ func load_vendor_items_data(vendor_data: Array):
 		print("  Loaded vendor item: ", item.item_name, " (day ", item.day, ")")
 		vendor_items.append(item)
 
-# Function to load quest log
-func load_quest_log_data(quest_log_data: Array):
-	if current_player:
-		# Deep copy with proper type conversion for clicked_options
-		current_player.quest_log.clear()
-		for entry in quest_log_data:
-			var typed_entry = {
-				"quest_id": entry.get("quest_id", 0) as int,
-				"finished": entry.get("finished", false) as bool,
-				"clicked_options": []
-			}
-			# Convert clicked_options to properly typed array
-			var raw_options = entry.get("clicked_options", [])
-			var typed_options: Array[int] = []
-			for opt in raw_options:
-				typed_options.append(opt as int)
-			typed_entry["clicked_options"] = typed_options
-			current_player.quest_log.append(typed_entry)
-		print("Quest log loaded: ", current_player.quest_log.size(), " entries")
 
-# Function to check if a quest is completed
-func is_quest_completed(quest_id: int) -> bool:
-	if not current_player:
-		return false
-	for entry in current_player.quest_log:
-		if entry.get("quest_id") == quest_id and entry.get("finished") == true:
-			return true
-	return false
+
+
 
 # Function to mark a quest as completed
 func complete_quest(quest_id: int, clicked_options: Array[int] = []):
@@ -877,23 +852,6 @@ func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	print("Quest ", quest_id, " added to quest log as finished with clicked options: ", clicked_options)
 	quest_completed.emit(quest_id)
 
-func has_clicked_quest_option(quest_id: int, option_index: int) -> bool:
-	"""Check if player clicked a specific option in a quest"""
-	if not current_player:
-		return false
-	for entry in current_player.quest_log:
-		if entry.get("quest_id") == quest_id and entry.has("clicked_options"):
-			return entry["clicked_options"].has(option_index)
-	return false
-
-func get_clicked_options(quest_id: int) -> Array[int]:
-	"""Get all clicked options for a quest"""
-	if not current_player:
-		return []
-	for entry in current_player.quest_log:
-		if entry.get("quest_id") == quest_id and entry.has("clicked_options"):
-			return entry["clicked_options"]
-	return []
 
 func get_quest_data(quest_id: int) -> QuestData:
 	"""Get quest data from quests.tres database"""
