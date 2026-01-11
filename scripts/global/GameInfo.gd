@@ -87,57 +87,59 @@ class Item:
 			var res = get_resource()
 			return res.has_socket if res else false
 	
-	# Centralized stat calculation function - used by Item properties, previews, and displays
-	# Tempering is a separate 10% multiplicative bonus on top of day scaling
-	func calculate_scaled_stat(base_value: int, day_value: int, tempered_value: int) -> int:
-		if base_value == 0:
+	# Centralized stat calculation - apply day scaling (2% per day) and tempering (10% per level)
+	static func calculate_scaled_value(base: int, day_value: int, tempered_value: int) -> int:
+		"""Apply day scaling and tempering to any stat value"""
+		if base == 0:
 			return 0
 		
 		# First, apply day scaling and round
-		var result = float(base_value)
+		var result = float(base)
 		if day_value > 0:
 			result = result * pow(1.02, day_value)
 		result = round(result)
 		
 		# Then apply tempering bonus iteratively (10% per level with rounding at each step)
-		# This ensures each tempering level applies 10% to the current rounded value
 		for i in range(tempered_value):
 			result = round(result * 1.1)
 		
 		return int(result)
 	
-	# Base stats from ItemResource (before modifications)
-	func _get_base_stat(stat_name: String) -> int:
-		var res = get_resource()
-		if not res:
-			return 0
-		var base = res.get(stat_name)
-		if base == null:
-			return 0
-		
-		return calculate_scaled_stat(base, day, tempered)
-	
-	# Stat properties with scaling applied
+	# Stat properties - directly calculate scaled values from resource
 	var strength: int:
-		get: return _get_base_stat("strength")
+		get:
+			var res = get_resource()
+			return calculate_scaled_value(res.strength if res else 0, day, tempered)
 	
 	var stamina: int:
-		get: return _get_base_stat("stamina")
+		get:
+			var res = get_resource()
+			return calculate_scaled_value(res.stamina if res else 0, day, tempered)
 	
 	var agility: int:
-		get: return _get_base_stat("agility")
+		get:
+			var res = get_resource()
+			return calculate_scaled_value(res.agility if res else 0, day, tempered)
 	
 	var luck: int:
-		get: return _get_base_stat("luck")
+		get:
+			var res = get_resource()
+			return calculate_scaled_value(res.luck if res else 0, day, tempered)
 	
 	var armor: int:
-		get: return _get_base_stat("armor")
+		get:
+			var res = get_resource()
+			return calculate_scaled_value(res.armor if res else 0, day, tempered)
 	
 	var damage_min: int:
-		get: return _get_base_stat("damage_min")
+		get:
+			var res = get_resource()
+			return calculate_scaled_value(res.damage_min if res else 0, day, tempered)
 	
 	var damage_max: int:
-		get: return _get_base_stat("damage_max")
+		get:
+			var res = get_resource()
+			return calculate_scaled_value(res.damage_max if res else 0, day, tempered)
 	
 	# Effect properties
 	var effect_id: int:
@@ -169,61 +171,14 @@ class Item:
 				return effect.description if effect else ""
 			return ""
 	
-	func get_socketed_gem() -> ItemResource:
-		"""Get the socketed gem's ItemResource if one exists"""
-		if socket_id > 0 and GameInfo and GameInfo.items_db:
-			return GameInfo.items_db.get_item_by_id(socket_id)
+	func get_socketed_gem() -> Item:
+		"""Get the socketed gem as an Item (gems are just items with scaling)"""
+		if socket_id > 0 and GameInfo:
+			return Item.new({
+				"id": socket_id,
+				"day": socket_day
+			})
 		return null
-	
-	func get_base_stats_without_gem() -> Dictionary:
-		"""Get item stats excluding socketed gem bonuses"""
-		return {
-			"strength": strength,
-			"stamina": stamina,
-			"agility": agility,
-			"luck": luck,
-			"armor": armor
-		}
-	
-	func get_gem_stats() -> Dictionary:
-		"""Get stats from socketed gem with day scaling applied"""
-		var gem = get_socketed_gem()
-		if gem:
-			# Apply day-based scaling to gem stats (2% improvement per day)
-			var gem_strength = gem.strength
-			var gem_stamina = gem.stamina
-			var gem_agility = gem.agility
-			var gem_luck = gem.luck
-			var gem_armor = gem.armor
-			
-			if socket_day > 0:
-				var day_multiplier = pow(1.02, socket_day)
-				gem_strength = int(ceil(gem_strength * day_multiplier))
-				gem_stamina = int(ceil(gem_stamina * day_multiplier))
-				gem_agility = int(ceil(gem_agility * day_multiplier))
-				gem_luck = int(ceil(gem_luck * day_multiplier))
-				gem_armor = int(ceil(gem_armor * day_multiplier))
-			else:
-				gem_strength = int(gem_strength)
-				gem_stamina = int(gem_stamina)
-				gem_agility = int(gem_agility)
-				gem_luck = int(gem_luck)
-				gem_armor = int(gem_armor)
-			
-			return {
-				"strength": gem_strength,
-				"stamina": gem_stamina,
-				"agility": gem_agility,
-				"luck": gem_luck,
-				"armor": gem_armor
-			}
-		return {
-			"strength": 0,
-			"stamina": 0,
-			"agility": 0,
-			"luck": 0,
-			"armor": 0
-		}
 
 class Perk:
 	extends RefCounted
@@ -450,24 +405,27 @@ class GamePlayer:
 		}
 	
 	func get_total_stats() -> Dictionary:
+		"""Calculate total stats: base + equipped items (including gems) + effect bonuses"""
 		var total_stats = get_base_stats()
 		
 		# Add stats from equipped items (slots 0-9)
 		for item in bag_slots:
 			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
+				# Item stats (already scaled by day/tempered)
 				total_stats.strength += item.strength
 				total_stats.stamina += item.stamina
 				total_stats.agility += item.agility
 				total_stats.luck += item.luck
 				total_stats.armor += item.armor
 				
-				# Add stats from socketed gems
-				var gem_stats = item.get_gem_stats()
-				total_stats.strength += gem_stats.strength
-				total_stats.stamina += gem_stats.stamina
-				total_stats.agility += gem_stats.agility
-				total_stats.luck += gem_stats.luck
-				total_stats.armor += gem_stats.armor
+				# Add socketed gem stats (gem is just another item!)
+				var gem = item.get_socketed_gem()
+				if gem:
+					total_stats.strength += gem.strength
+					total_stats.stamina += gem.stamina
+					total_stats.agility += gem.agility
+					total_stats.luck += gem.luck
+					total_stats.armor += gem.armor
 		
 		# Apply effect bonuses to stats (effects 1-4 boost stats by percentage)
 		var total_effects = get_total_effects()

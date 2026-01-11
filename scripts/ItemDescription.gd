@@ -98,13 +98,13 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				effect.visible = false
 		else:
 			# Regular item - show stats normally
-			# Get gem stats if item has a socketed gem
-			var gem_stats = item_data.get_gem_stats()
+			# Get socketed gem if exists
+			var gem = item_data.get_socketed_gem()
 			
 			# Handle strength stat - hide if 0
-			if item_data.strength != 0 or gem_stats.strength != 0:
-				if gem_stats.strength > 0:
-					strength.text = str(item_data.strength) + " + " + str(gem_stats.strength)
+			if item_data.strength != 0 or (gem and gem.strength != 0):
+				if gem and gem.strength > 0:
+					strength.text = str(item_data.strength) + " + " + str(gem.strength)
 				else:
 					strength.text = str(item_data.strength)
 				strength_container.visible = true
@@ -112,9 +112,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				strength_container.visible = false
 			
 			# Handle stamina stat - hide if 0
-			if item_data.stamina != 0 or gem_stats.stamina != 0:
-				if gem_stats.stamina > 0:
-					stamina.text = str(item_data.stamina) + " + " + str(gem_stats.stamina)
+			if item_data.stamina != 0 or (gem and gem.stamina != 0):
+				if gem and gem.stamina > 0:
+					stamina.text = str(item_data.stamina) + " + " + str(gem.stamina)
 				else:
 					stamina.text = str(item_data.stamina)
 				stamina_container.visible = true
@@ -122,9 +122,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				stamina_container.visible = false
 			
 			# Handle agility stat - hide if 0
-			if item_data.agility != 0 or gem_stats.agility != 0:
-				if gem_stats.agility > 0:
-					agility.text = str(item_data.agility) + " + " + str(gem_stats.agility)
+			if item_data.agility != 0 or (gem and gem.agility != 0):
+				if gem and gem.agility > 0:
+					agility.text = str(item_data.agility) + " + " + str(gem.agility)
 				else:
 					agility.text = str(item_data.agility)
 				agility_container.visible = true
@@ -132,9 +132,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				agility_container.visible = false
 			
 			# Handle luck stat - hide if 0
-			if item_data.luck != 0 or gem_stats.luck != 0:
-				if gem_stats.luck > 0:
-					luck.text = str(item_data.luck) + " + " + str(gem_stats.luck)
+			if item_data.luck != 0 or (gem and gem.luck != 0):
+				if gem and gem.luck > 0:
+					luck.text = str(item_data.luck) + " + " + str(gem.luck)
 				else:
 					luck.text = str(item_data.luck)
 				luck_container.visible = true
@@ -142,9 +142,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				luck_container.visible = false
 			
 			# Handle armor stat - hide if 0
-			if item_data.armor != 0 or gem_stats.armor != 0:
-				if gem_stats.armor > 0:
-					armor.text = str(item_data.armor) + " + " + str(gem_stats.armor)
+			if item_data.armor != 0 or (gem and gem.armor != 0):
+				if gem and gem.armor > 0:
+					armor.text = str(item_data.armor) + " + " + str(gem.armor)
 				else:
 					armor.text = str(item_data.armor)
 				armor_container.visible = true
