@@ -50,35 +50,8 @@ signal rankings_loaded # Emitted when rankings data is loaded
 
 # Inner Classes - Single source of truth
 
-# Base class with shared MessagePack functionality
-class MessagePackObject:
-	extends RefCounted
-	
-	# Generic MessagePack loader - override MSGPACK_MAP in child classes
-	func _init(data: Dictionary = {}):
-		if not data.is_empty():
-			load_from_msgpack(data)
-	
-	func load_from_msgpack(data: Dictionary):
-		var msgpack_map = get("MSGPACK_MAP")
-		if msgpack_map:
-			for msgpack_key in msgpack_map:
-				var local_key = msgpack_map[msgpack_key]
-				if data.has(msgpack_key):
-					set(local_key, data[msgpack_key])
-				# Silently skip missing keys - they're optional fields
-	
-	func to_msgpack() -> Dictionary:
-		var result = {}
-		var msgpack_map = get("MSGPACK_MAP")
-		if msgpack_map:
-			for msgpack_key in msgpack_map:
-				var local_key = msgpack_map[msgpack_key]
-				result[msgpack_key] = get(local_key)
-		return result
-
 class Item:
-	extends MessagePackObject
+	extends RefCounted
 	
 	# Server data (user-specific modifications)
 	var id: int = 0
@@ -93,19 +66,12 @@ class Item:
 	var texture: Texture2D = null
 	var _resource_cache: ItemResource = null
 	
-	# MessagePack field mapping
-	const MSGPACK_MAP = {
-		"id": "id",
-		"bag_slot_id": "bag_slot_id",
-		"day": "day",
-		"effect_overdrive": "effect_overdrive",
-		"tempered": "tempered",
-		"socket_id": "socket_id",
-		"socket_day": "socket_day"
-	}
-	
 	func _init(data: Dictionary = {}):
-		super._init(data)
+		# Simple direct assignment
+		for key in data:
+			if key in self:
+				set(key, data[key])
+		
 		# Cache texture for performance
 		if GameInfo and GameInfo.items_db:
 			var res = get_resource()
@@ -291,9 +257,9 @@ class Item:
 		}
 
 class Perk:
-	extends MessagePackObject
+	extends RefCounted
 	
-	# MessagePack properties (only dynamic data from server)
+	# JSON properties (only dynamic data from server)
 	var id: int = 0
 	var active: bool = false
 	var slot: int = 0
@@ -312,15 +278,12 @@ class Perk:
 	# Client-side only
 	var texture: Texture2D = null
 	
-	# MessagePack field mapping - id, active, and slot from server
-	const MSGPACK_MAP = {
-		"id": "id",
-		"active": "active",
-		"slot": "slot"
-	}
-	
 	func _init(data: Dictionary = {}):
-		super._init(data)
+		# Simple direct assignment
+		for key in data:
+			if key in self:
+				set(key, data[key])
+		
 		# Get perk data from perks_db if available
 		if GameInfo and GameInfo.perks_db:
 			var perk_resource = GameInfo.perks_db.get_perk_by_id(id)
@@ -347,23 +310,24 @@ class Perk:
 							effect2_description = effect2_res.description
 
 class Talent:
-	extends MessagePackObject
+	extends RefCounted
 	
-	# MessagePack properties matching C# Talent class
+	# JSON properties matching C# Talent class
 	var talent_id: int = 0
 	var points: int = 0
 	
-	const MSGPACK_MAP = {
-		"talent_id": "talent_id",
-		"points": "points"
-	}
+	func _init(data: Dictionary = {}):
+		# Simple direct assignment
+		for key in data:
+			if key in self:
+				set(key, data[key])
 
 # Ranking Entry for lightweight rankings display
 # RankingEntry class removed - now using full GamePlayer data in enemy_players array
 # Rankings panel will reference enemy_players[rankings_indices[i]]
 
 class ChatMessage:
-	extends MessagePackObject
+	extends RefCounted
 	
 	# Chat message properties
 	var sender: String = ""
@@ -372,29 +336,27 @@ class ChatMessage:
 	var message: String = ""
 	var type: String = "global"  # "global" or "local"
 	
-	const MSGPACK_MAP = {
-		"sender": "sender",
-		"timestamp": "timestamp", 
-		"status": "status",
-		"message": "message",
-		"type": "type"
-	}
+	func _init(data: Dictionary = {}):
+		# Simple direct assignment
+		for key in data:
+			if key in self:
+				set(key, data[key])
 
 class CombatLogEntry:
-	extends MessagePackObject
+	extends RefCounted
 	
 	var player: int = 1  # 1 = player, 2 = enemy
 	var action: String = ""
 	var factor: int = 0  # Optional damage/heal amount
 	
-	const MSGPACK_MAP = {
-		"player": "player",
-		"action": "action",
-		"factor": "factor"
-	}
+	func _init(data: Dictionary = {}):
+		# Simple direct assignment
+		for key in data:
+			if key in self:
+				set(key, data[key])
 
 class CombatResponse:
-	extends MessagePackObject
+	extends RefCounted
 	
 	var player1_name: String = ""
 	var player1_health: int = 0
@@ -406,28 +368,31 @@ class CombatResponse:
 	var haswon: bool = false  # True if player1 won, false if player1 lost
 	var combat_log: Array[CombatLogEntry] = []
 	
-	const MSGPACK_MAP = {
-		"player1name": "player1_name",
-		"player1health": "player1_health",
-		"player1_avatar": "player1_avatar",
-		"player2name": "player2_name", 
-		"player2health": "player2_health",
-		"player2_avatar": "player2_avatar",
-		"enemyid": "enemyid",
-		"haswon": "haswon",
-		"logs": "combat_log"
-	}
-	
 	func _init(data: Dictionary = {}):
-		super._init(data)
-		# Handle the combat log array specially
-		if data.has("logs"):
+		# Load simple properties (excluding combat_log)
+		for key in data:
+			if key in self and key not in ["logs", "combat_log"]:
+				set(key, data[key])
+		
+		# Handle combat_log/logs array specially
+		var logs_data = data.get("logs", data.get("combat_log", []))
+		if logs_data:
 			combat_log.clear()
-			for log_data in data["logs"]:
+			for log_data in logs_data:
 				combat_log.append(CombatLogEntry.new(log_data))
+		
+		# Handle alternate field names from server
+		if data.has("player1name"):
+			player1_name = data["player1name"]
+		if data.has("player1health"):
+			player1_health = data["player1health"]
+		if data.has("player2name"):
+			player2_name = data["player2name"]
+		if data.has("player2health"):
+			player2_health = data["player2health"]
 
 class GamePlayer:
-	extends MessagePackObject
+	extends RefCounted
 	
 	# Events/Signals reference (for emitting from CurrentPlayer)
 	var game_info_ref: GameInfo
@@ -455,44 +420,29 @@ class GamePlayer:
 	var perks: Array[Perk] = []
 	var talents: Array[Talent] = []
 	
-	# Base MessagePack fields shared by all players
-	const MSGPACK_MAP = {
-		"name": "name",
-		"rank": "rank",
-		"faction": "faction",
-		"honor": "honor",
-		"blessing": "blessing",
-		"potion": "potion",
-		"elixir": "elixir"
-	}
-	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):
 		game_info_ref = game_info
-		super._init(data)
-	
-	func load_from_msgpack(data: Dictionary):
-		# Load base stats using parent functionality
-		super.load_from_msgpack(data)
 		
-		# Load avatar array [face, hair, eyes, nose, mouth]
-		if data.has("avatar"):
-			var avatar_array = data.avatar
-			if avatar_array.size() >= 5:
-				avatar_face = avatar_array[0]
-				avatar_hair = avatar_array[1]
-				avatar_eyes = avatar_array[2]
-				avatar_nose = avatar_array[3]
-				avatar_mouth = avatar_array[4]
+		# Load simple properties (excluding arrays and special cases)
+		for key in data:
+			if key in self and key not in ["avatar", "stats", "bag_slots", "perks", "talents"]:
+				set(key, data[key])
 		
-		# Load stats array [strength, stamina, agility, luck, armor]
-		if data.has("stats"):
-			var stats_array = data.stats
-			if stats_array.size() >= 5:
-				strength = stats_array[0]
-				stamina = stats_array[1]
-				agility = stats_array[2]
-				luck = stats_array[3]
-				armor = stats_array[4]
+		# Handle avatar array [face, hair, eyes, nose, mouth]
+		if data.has("avatar") and data.avatar.size() >= 5:
+			avatar_face = data.avatar[0]
+			avatar_hair = data.avatar[1]
+			avatar_eyes = data.avatar[2]
+			avatar_nose = data.avatar[3]
+			avatar_mouth = data.avatar[4]
+		
+		# Handle stats array [strength, stamina, agility, luck, armor]
+		if data.has("stats") and data.stats.size() >= 5:
+			strength = data.stats[0]
+			stamina = data.stats[1]
+			agility = data.stats[2]
+			luck = data.stats[3]
+			armor = data.stats[4]
 		
 		# Load arrays
 		load_bag_slots(data)
@@ -701,58 +651,28 @@ class GameCurrentPlayer:
 		set(value):
 			_mushrooms = value
 	
-	# Extended MessagePack mapping (includes base + current player fields)
-	const CURRENT_PLAYER_MSGPACK_MAP = {
-		# Current player specific fields (base fields handled by parent class)
-		"character_id": "character_id",
-		"location": "location",
-		"traveling": "traveling",
-		"traveling_destination": "traveling_destination",
-		"silver": "silver",
-		"mushrooms": "_mushrooms",  # Use private field to avoid triggering setter
-		"talent_points": "talent_points",
-		"dungeon": "dungeon",
-		"destination": "destination",
-		"slide": "slide",
-		"slides": "slides",
-		"quest_log": "quest_log",
-		"daily_quests": "daily_quests",
-		"server_timezone": "server_timezone",
-		"server_day": "server_day",
-		"weather": "weather",
-		"vip": "vip",
-		"autoskip": "autoskip"
-	}
-	
-	func load_from_msgpack(data: Dictionary):
-		# Call parent to load avatar, stats, and base GamePlayer fields
-		super.load_from_msgpack(data)
+	func _init(data: Dictionary = {}, game_info: GameInfo = null):
+		# Call parent constructor with data
+		super._init(data, game_info)
 		
-		# Load current player specific fields
-		var msgpack_map = CURRENT_PLAYER_MSGPACK_MAP
-		for msgpack_key in msgpack_map:
-			if data.has(msgpack_key):
-				var local_key = msgpack_map[msgpack_key]
-				var value = data[msgpack_key]
-				
-				# Special handling for traveling: convert null to 0
-				if msgpack_key == "traveling" and value == null:
-					value = 0
-				
-				set(local_key, value)
+		# Load current player specific fields (excluding special cases)
+		for key in data:
+			if key in self and key not in ["daily_quests", "mushrooms", "avatar", "stats", "bag_slots", "perks", "talents"]:
+				set(key, data[key])
 		
-		# Load arrays with type conversion
+		# Handle daily_quests array with type conversion
 		if data.has("daily_quests"):
-			var raw_quests = data["daily_quests"]
 			daily_quests.clear()
-			for quest_id in raw_quests:
+			for quest_id in data.daily_quests:
 				daily_quests.append(quest_id as int)
 		
-		# Note: bag_slots, perks, and talents are already loaded by parent GamePlayer.load_from_msgpack()
-		# No need to call them again here
+		# Handle mushrooms to trigger setter
+		if data.has("mushrooms"):
+			mushrooms = data.mushrooms
 		
-		# Trigger property setter for mushrooms to emit signal
-		mushrooms = _mushrooms
+		# Convert null traveling to 0
+		if traveling == null:
+			traveling = 0
 		
 	
 	func get_player_stats() -> Dictionary:

@@ -16,7 +16,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_prdmf")
 chat_bubble = NodePath("BubbleContainer/ChatBubble")
-on_entered_greetings = Array[String](["Welcome customer", "Looking to temper your gear?", "I can make that weapon even stronger!", "Looking to temper your gear?"])
+on_entered_greetings = Array[String](["Welcome customer", "Looking to temper your gear? plus soem more text to test", "Looking to temper your gear? plus soem more text to test", "Looking to temper your gear? plus soem more text to test"])
 cooldown_between_messages = 6.0
 
 [node name="Background" type="TextureRect" parent="."]
@@ -38,8 +38,8 @@ anchor_right = 0.571
 anchor_bottom = 0.366
 offset_left = 0.98999
 offset_top = 0.199997
-offset_right = 1.26999
-offset_bottom = -0.400024
+offset_right = 1.27002
+offset_bottom = -0.399994
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
