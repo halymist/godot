@@ -187,19 +187,6 @@ class Item:
 				return effect.description if effect else ""
 			return ""
 	
-	# Legacy aliases for renamed fields
-	var enchant_overdrive: int:
-		get: return effect_overdrive
-		set(value): effect_overdrive = value
-	
-	var socketed_gem_id: int:
-		get: return socket_id
-		set(value): socket_id = value
-	
-	var socketed_gem_day: int:
-		get: return socket_day
-		set(value): socket_day = value
-	
 	func get_socketed_gem() -> ItemResource:
 		"""Get the socketed gem's ItemResource if one exists"""
 		if socket_id > 0 and GameInfo and GameInfo.items_db:
@@ -227,8 +214,8 @@ class Item:
 			var gem_luck = gem.luck
 			var gem_armor = gem.armor
 			
-			if socketed_gem_day > 0:
-				var day_multiplier = pow(1.02, socketed_gem_day)
+			if socket_day > 0:
+				var day_multiplier = pow(1.02, socket_day)
 				gem_strength = int(ceil(gem_strength * day_multiplier))
 				gem_stamina = int(ceil(gem_stamina * day_multiplier))
 				gem_agility = int(ceil(gem_agility * day_multiplier))

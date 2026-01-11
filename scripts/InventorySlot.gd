@@ -59,7 +59,7 @@ func _can_drop_data(_pos, data):
 	if item_type == "Gem" and slot_id >= 0 and slot_id <= 8:
 		if not is_slot_empty():
 			var target_item = get_item_data()
-			if target_item and target_item.has_socket and target_item.socketed_gem_id == -1:
+			if target_item and target_item.has_socket and target_item.socket_id == -1:
 				# Item has an empty socket, allow the drop
 				return true
 		# If slot is empty or item doesn't have a socket, reject
@@ -195,7 +195,7 @@ func _drop_data(_pos, data):
 	# Special case: Socketing a gem into an item
 	if dragged_item.type == "Gem" and not is_slot_empty():
 		var target_item = get_item_data()
-		if target_item and target_item.has_socket and target_item.socketed_gem_id == -1:
+		if target_item and target_item.has_socket and target_item.socket_id == -1:
 			# Socket the gem into the item
 			handle_gem_socketing(dragged_item, target_item, source_slot_id, source_container)
 			return
@@ -368,8 +368,8 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 		return
 	
 	# Socket the gem (store gem's item ID and day value)
-	target_item_in_array.socketed_gem_id = gem_item.id
-	target_item_in_array.socketed_gem_day = gem_item.day
+	target_item_in_array.socket_id = gem_item.id
+	target_item_in_array.socket_day = gem_item.day
 	print("Socketed gem ID ", gem_item.id, " with day ", gem_item.day, " into item")
 	
 	# Remove the gem from the player's inventory

@@ -159,15 +159,15 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				else:
 					damage_container.visible = false
 			
-			# Handle effect description - show enchant_overdrive if present, otherwise show regular effect
+			# Handle effect description - show effect_overdrive if present, otherwise show regular effect
 			var display_effect_id = item_data.effect_id
 			var display_effect_factor = item_data.effect_factor
 			
-			# If item has enchant_overdrive, use that instead
-			if item_data.enchant_overdrive > 0:
-				var overdrive_effect = GameInfo.effects_db.get_effect_by_id(item_data.enchant_overdrive)
+			# If item has effect_overdrive, use that instead
+			if item_data.effect_overdrive > 0:
+				var overdrive_effect = GameInfo.effects_db.get_effect_by_id(item_data.effect_overdrive)
 				if overdrive_effect:
-					display_effect_id = item_data.enchant_overdrive
+					display_effect_id = item_data.effect_overdrive
 					display_effect_factor = overdrive_effect.factor
 			
 			# Display effect from database with factor
@@ -189,9 +189,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 		# Handle socket display
 		if socket_label and socket_container:
 			if item_data.has_socket:
-				if item_data.socketed_gem_id > 0:
+				if item_data.socket_id > 0:
 					# Socket has a gem - show socket icon + gem icon + gem name
-					var gem_item = GameInfo.items_db.get_item_by_id(item_data.socketed_gem_id)
+					var gem_item = GameInfo.items_db.get_item_by_id(item_data.socket_id)
 					if gem_item:
 						socket_label.text = gem_item.item_name
 						socket_label.modulate = Color(0.5, 1.0, 0.5)  # Green for socketed
