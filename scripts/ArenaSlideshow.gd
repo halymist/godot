@@ -50,16 +50,16 @@ func _on_character_changed():
 	_update_display()
 
 func _load_opponent_data():
-	# Look up arena opponents by name from mock data
+	# Look up arena opponents by character_id
 	if GameInfo.arena_opponents.size() > 0 and GameInfo.enemy_players.size() > 0:
 		for i in range(min(cards.size(), GameInfo.arena_opponents.size())):
 			var card = cards[i]
-			var opponent_name = GameInfo.arena_opponents[i]
+			var opponent_id = GameInfo.arena_opponents[i]
 			
-			# Find opponent by name in enemy_players
+			# Find opponent by character_id in enemy_players
 			var opponent = null
 			for player in GameInfo.enemy_players:
-				if player.name == opponent_name:
+				if player.character_id == opponent_id:
 					opponent = player
 					break
 			
@@ -73,7 +73,7 @@ func _load_opponent_data():
 				# Pass the full opponent data for perks display
 				card.set_opponent_data(opponent)
 			else:
-				print("Warning: Could not find opponent '", opponent_name, "' in enemy_players")
+				print("Warning: Could not find opponent with character_id '", opponent_id, "' in enemy_players")
 	else:
 		print("Warning: No arena opponents data available")
 
@@ -117,10 +117,9 @@ func _style_buttons():
 
 func _on_fight_pressed():
 	if GameInfo.arena_opponents.size() > current_index:
-		var opponent_name = GameInfo.arena_opponents[current_index]
-		GameInfo.set_arena_opponent(opponent_name)
-		print("Fighting enemy: ", opponent_name)
-		# TODO: Implement fight logic
+		var opponent_id = GameInfo.arena_opponents[current_index]
+		print("Fighting opponent with character_id: ", opponent_id)
+		# TODO: Send opponent_id to server and wait for combat_log response
 	else:
 		print("No opponent data available")
 

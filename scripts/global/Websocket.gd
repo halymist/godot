@@ -1,11 +1,12 @@
 extends Node
 
 # Helper function to generate full player data
-func generate_mock_player_data(player_name: String, rank: int, faction: int, honor: int) -> Dictionary:
+func generate_mock_player_data(player_name: String, rank: int, faction: int, honor: int, char_id: int = 0) -> Dictionary:
 	# Generate varied stats based on rank (better players have higher stats)
 	var stat_bonus = max(0, (100 - rank) / 10)  # Top 10 get +9, rank 100 gets 0
 	
 	return {
+		"character_id": char_id if char_id > 0 else 10000 + rank,
 		"name": player_name,
 		"rank": rank,
 		"faction": faction,
@@ -143,7 +144,7 @@ var mock_characters = [
 				"points": 1
 			}
 	],
-	"arena_opponents": ["Player5", "Player12", "Player25"],  # References to enemy_players by name
+	"arena_opponents": [10005, 10012, 10025],  # Character IDs (10000 + rank)
 	"vendor_items": [1, 1, 1, 1, 1, 1, 1, 1],  # Items available for purchase
 	"enchanter_effects": [4, 5, 6, 7],  # Effect IDs available for enchanting
 	"rankings": [],  # Will be populated in _ready()
@@ -387,7 +388,7 @@ var mock_characters = [
 			"points": 2
 		}
 	],
-	"arena_opponents": ["Player8", "Player15", "Player30"],
+	"arena_opponents": [10008, 10015, 10030],  # Character IDs (10000 + rank)
 	"vendor_items": [2, 2, 3, 3, 4, 4, 1, 1],
 	"enchanter_effects": [5, 6, 7, 8],
 	"rankings": [],  # Will be populated in _ready()

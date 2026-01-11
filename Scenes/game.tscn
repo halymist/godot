@@ -5994,8 +5994,8 @@ local_button = NodePath("ChatPanel/HeaderContainer/LocalButton")
 
 [node name="ChatPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.75
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2

@@ -322,6 +322,7 @@ class GamePlayer:
 	var game_info_ref: GameInfo
 	
 	# Base properties shared by all players
+	var character_id: int = 0
 	var name: String = ""
 	var rank: int = 0
 	var faction: int = 0
@@ -549,7 +550,6 @@ class GameCurrentPlayer:
 	extends GamePlayer
 	
 	# Current player specific properties with automatic events
-	var character_id: int = 0  # Unique character ID
 	var location: int = 1
 	var traveling: float = 0.0  # Unix timestamp when travel ends, 0 if not traveling
 	var traveling_destination: Variant = null
@@ -688,18 +688,18 @@ func _load_character_world_data():
 	load_enemy_players_data(char_data.rankings)
 	load_chat_messages_data(char_data.chat_messages)
 	
-	# Convert arena_opponents to typed Array[String]
-	var arena_opponents_typed: Array[String] = []
-	arena_opponents_typed.assign(char_data.arena_opponents)
-	load_arena_opponent_names(arena_opponents_typed)
+	# Load arena opponents (character IDs)
+	if char_data.has("arena_opponents"):
+		if char_data.arena_opponents is Array:
+			arena_opponents.assign(char_data.arena_opponents)
+			print("Loaded arena opponents: ", arena_opponents)
 	
 	load_vendor_items_data(char_data.vendor_items)
 	
 	print("Loaded world data for character: ", current_player.name)
 
 var enemy_players: Array[GamePlayer] = []  # Unified array for all enemy player data
-var current_arena_opponent: String = ""  # Name of current opponent (references enemy_players by name)
-var arena_opponents: Array[String] = []  # Array of player names for arena selection
+var arena_opponents: Array[int] = []  # Array of character IDs for arena selection
 var chat_messages: Array[ChatMessage] = []
 var combat_logs: Array[CombatResponse] = []
 var current_combat_log: CombatResponse = null
@@ -778,20 +778,7 @@ func get_total_stats() -> Dictionary:
 func get_total_effects() -> Dictionary:
 	return current_player.get_total_effects() if current_player else {}
 
-# Function to set current arena opponent by name
-func set_arena_opponent(opponent_name: String):
-	current_arena_opponent = opponent_name
-	print("Arena opponent set to: ", opponent_name)
-
-# Function to get current arena opponent data
-func get_arena_opponent() -> GamePlayer:
-	if current_arena_opponent.is_empty():
-		return null
-	for player in enemy_players:
-		if player.name == current_arena_opponent:
-			return player
-	print("Warning: Current arena opponent '", current_arena_opponent, "' not found in enemy_players")
-	return null
+# Arena opponent selection removed - send character_id directly to server when fighting
 
 # Function to load all arena opponents from mock data
 func load_enemy_players_data(players_data: Array):
@@ -807,10 +794,14 @@ func load_enemy_players_data(players_data: Array):
 	print("Total enemy players loaded: ", enemy_players.size())
 
 func load_arena_opponent_names(opponent_names: Array[String]):
-	# Store arena opponent names for selection
-	arena_opponents = opponent_names
-	print("Setting arena opponents from names: ", arena_opponents)
-	# Arena panel will look up players from enemy_players by name when needed
+	# Convert opponent names to character IDs
+	arena_opponents.clear()
+	for name in opponent_names:
+		for player in enemy_players:
+			if player.name == name:
+				arena_opponents.append(player.character_id)
+				break
+	print("Setting arena opponents (converted to IDs): ", arena_opponents)
 
 # Function to load chat messages from mock data
 func load_chat_messages_data(messages_data: Array):
