@@ -12,18 +12,11 @@ class_name QuestPanel
 
 var current_quest_data: Dictionary = {}
 
-signal quest_accepted(quest_data: Dictionary)
-
 func _ready():
-	background_button.pressed.connect(_on_background_pressed)
+	background_button.pressed.connect(UIManager.instance.hide_current_overlay)
 	accept_button.pressed.connect(_on_accept_pressed)
 
-func _on_background_pressed():
-	hide_panel()
-
-func _on_accept_pressed():
-	quest_accepted.emit(current_quest_data)
-	
+func _on_accept_pressed():	
 	# Get quest ID from NPC data
 	var quest_id = current_quest_data.get("questid", 0)
 	
@@ -34,126 +27,91 @@ func _on_accept_pressed():
 	var quest_definition = GameInfo.get_quest_data(quest_id)
 	print("Quest definition found: ", quest_definition != null)
 	
-	if quest_definition:
-		print("Quest name: ", quest_definition.quest_name)
-		print("Travel text: ", quest_definition.travel_text)
-		
-		# Check if player is VIP
-		var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
-		print("Player VIP status: ", is_vip)
-		
-		# Always set the quest destination first
-		GameInfo.accept_quest(quest_id)  # This sets traveling_destination
-		
-		# Clear overlay stack so cancel button doesn't target quest_panel
-		UIManager.instance.hide_current_overlay()
-		
-		if is_vip:
-			# VIP: No timer, map will show Go Quest button immediately
-			GameInfo.current_player.traveling = 0  # No timer for VIP
-			print("VIP player - no timer")
-		else:
-			# Non-VIP: Start 20 second timer
-			var travel_time = 20.0  # Always 20 seconds
-			var current_time = Time.get_unix_time_from_system()
-			var travel_end_time: float = current_time + travel_time
-			
-			# Update GameInfo with travel data (traveling is a timestamp)
-			GameInfo.current_player.traveling = travel_end_time
-			
-			print("Travel started - Duration: ", travel_time, " seconds, End time: ", travel_end_time)
-		
-		# Check if player has autoskip enabled (VIP only)
-		var autoskip = GameInfo.current_player.autoskip if "autoskip" in GameInfo.current_player else false
-		
-		if autoskip and is_vip:
-			# Autoskip: Go directly to quest, bypass map panel
-			print("Autoskip enabled - going directly to quest")
-			hide_panel()
-			
-			# Load quest directly
-			if map and map.quest:
-				map.quest.load_quest(quest_id)
-				map.quest.visible = true
-				GameInfo.set_current_panel(map.quest)
-		else:
-			# Normal flow: Go to map panel
-			if map and map.has_method("start_travel"):
-				map.start_travel(quest_definition.travel_text, 20 if not is_vip else 0, quest_id)
-			
-			# Hide this panel and switch to map
-			hide_panel()
-			if map:
-				GameInfo.set_current_panel(map)
-				map.visible = true
-				print("Switched to map panel")
-	else:
+	if not quest_definition:
 		print("ERROR: Quest definition not found for quest_id: ", quest_id)
-		print("quests_db exists: ", GameInfo.quests_db != null)
-		if GameInfo.quests_db:
-			print("Number of quests in database: ", GameInfo.quests_db.quests.size())
+		UIManager.instance.hide_current_overlay()
+		return
+	
+	print("Quest name: ", quest_definition.quest_name)
+	print("Travel text: ", quest_definition.travel_text)
+	
+	# Check if player is VIP
+	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
+	print("Player VIP status: ", is_vip)
+	
+	# Always set the quest destination first
+	GameInfo.accept_quest(quest_id)  # This sets traveling_destination
+	
+	# Clear overlay stack so cancel button doesn't target quest_panel
+	UIManager.instance.hide_current_overlay()
+	
+	if is_vip:
+		# VIP: No timer, map will show Go Quest button immediately
+		GameInfo.current_player.traveling = 0  # No timer for VIP
+		print("VIP player - no timer")
+	else:
+		# Non-VIP: Start 20 second timer
+		var travel_time = 20.0  # Always 20 seconds
+		var current_time = Time.get_unix_time_from_system()
+		var travel_end_time: float = current_time + travel_time
 		
-		# If error, still hide panel
-		hide_panel()
+		# Update GameInfo with travel data (traveling is a timestamp)
+		GameInfo.current_player.traveling = travel_end_time
+		
+		print("Travel started - Duration: ", travel_time, " seconds, End time: ", travel_end_time)
+	
+	# Check if player has autoskip enabled (VIP only)
+	var autoskip = GameInfo.current_player.autoskip if "autoskip" in GameInfo.current_player else false
+	
+	if autoskip and is_vip:
+		# Autoskip: Go directly to quest, bypass map panel
+		print("Autoskip enabled - going directly to quest")
+		UIManager.instance.hide_current_overlay()
+		map.quest.load_quest(quest_id)
+		UIManager.instance.show_panel(map.quest)
+	else:
+		# Normal flow: Go to map panel
+		map.start_travel(quest_definition.travel_text, 20 if not is_vip else 0, quest_id)
+		UIManager.instance.hide_current_overlay()
+		UIManager.instance.show_panel(map)
+		print("Switched to map panel")
 
 func show_quest(quest_data: Dictionary):
 	print("QuestPanel.show_quest called with data: ", quest_data)
 	current_quest_data = quest_data
 	
 	# Display NPC name
-	if npc_name_label:
-		npc_name_label.text = quest_data.get("name", "Unknown NPC")
-		print("Set NPC name: ", npc_name_label.text)
-	else:
-		print("npc_name_label is null")
+	npc_name_label.text = quest_data.get("name", "Unknown NPC")
+	print("Set NPC name: ", npc_name_label.text)
 	
-	if quest_name_label:
-		quest_name_label.text = quest_data.get("questname", "Unknown Quest")
-		print("Set quest name: ", quest_name_label.text)
-	else:
-		print("quest_name_label is null")
+	quest_name_label.text = quest_data.get("questname", "Unknown Quest")
+	print("Set quest name: ", quest_name_label.text)
 	
-	if quest_dialogue_label:
-		quest_dialogue_label.text = quest_data.get("dialogue", "No dialogue available.")
-		print("Set quest dialogue: ", quest_dialogue_label.text)
-	else:
-		print("quest_dialogue_label is null")
+	quest_dialogue_label.text = quest_data.get("dialogue", "No dialogue available.")
+	print("Set quest dialogue: ", quest_dialogue_label.text)
 	
 	# Load portrait texture
-	if portrait_texture:
-		var portrait = quest_data.get("portrait", null)
-		if portrait is Texture2D:
-			portrait_texture.texture = portrait
-			print("Set portrait texture from resource")
-		else:
-			print("Portrait is not a valid Texture2D")
+	var portrait = quest_data.get("portrait", null)
+	if portrait is Texture2D:
+		portrait_texture.texture = portrait
+		print("Set portrait texture from resource")
 	else:
-		print("portrait_texture is null")
+		print("Portrait is not a valid Texture2D")
 	
 	# Check if player is already traveling/has active quest
 	var is_already_traveling = false
-	if GameInfo.current_player:
-		var has_active_travel = GameInfo.current_player.traveling > 0
-		var has_destination = GameInfo.current_player.traveling_destination != null
-		is_already_traveling = has_active_travel or has_destination
-		print("Player travel state - traveling: ", has_active_travel, ", destination: ", has_destination, ", already traveling: ", is_already_traveling)
+	var has_active_travel = GameInfo.current_player.traveling > 0
+	var has_destination = GameInfo.current_player.traveling_destination != null
+	is_already_traveling = has_active_travel or has_destination
+	print("Player travel state - traveling: ", has_active_travel, ", destination: ", has_destination, ", already traveling: ", is_already_traveling)
 	
 	# Show/hide accept button and already traveling label based on travel state
-	if accept_button:
-		accept_button.visible = not is_already_traveling
-		print("Accept button visible: ", accept_button.visible)
+	accept_button.visible = not is_already_traveling
+	print("Accept button visible: ", accept_button.visible)
 	
-	if alreadyTraveling:
-		alreadyTraveling.visible = is_already_traveling
-		print("Already traveling label visible: ", alreadyTraveling.visible)
+	alreadyTraveling.visible = is_already_traveling
+	print("Already traveling label visible: ", alreadyTraveling.visible)
 	
-	# Ensure quest panel is on top and visible
-	z_index = 1000  # Very high z-index to appear above everything
-	visible = true
-	
-	print("Quest panel set to visible: ", visible, " with z_index: ", z_index)
-
-func hide_panel():
-	visible = false
-	GameInfo.set_current_panel(null)
-	print("Quest panel hidden")
+	# Show this panel as an overlay
+	UIManager.instance.show_overlay(self)
+	print("Quest panel shown as overlay with z_index: ", z_index)

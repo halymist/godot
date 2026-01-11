@@ -52,7 +52,6 @@ func _on_button_pressed():
 			var quest_panel = UIManager.instance.quest_panel
 			if quest_panel and quest_panel.has_method("show_quest"):
 				quest_panel.show_quest(npc_data)
-				UIManager.instance.show_overlay(quest_panel)
 		else:
 			print("NPC has no quest - dialogue shown via chat bubble")
 

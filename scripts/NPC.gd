@@ -29,13 +29,10 @@ func _on_button_pressed():
 	print("NPC data during click: ", npc_data)
 
 	var quest_id = npc_data.get("questid", null)
-	if quest_id != null and UIManager.instance:
+	if quest_id != null:
 		# NPC has a quest - show quest panel through overlay system
 		print("Showing quest panel for quest ID: ", quest_id)
-		var quest_panel = UIManager.instance.quest_panel
-		if quest_panel and quest_panel.has_method("show_quest"):
-			quest_panel.show_quest(npc_data)
-			UIManager.instance.show_overlay(quest_panel)
+		UIManager.instance.quest_panel.show_quest(npc_data)
 	else:
 		print("NPC has no quest - dialogue shown via chat bubble")
 
@@ -69,8 +66,7 @@ func show_chat_bubble():
 	
 	# Adjust for scroll position
 	var scroll_offset = Vector2.ZERO
-	if scroll_container is ScrollContainer:
-		scroll_offset = Vector2(scroll_container.scroll_horizontal, scroll_container.scroll_vertical)
+	scroll_offset = Vector2(scroll_container.scroll_horizontal, scroll_container.scroll_vertical)
 	
 	# First show the dialogue to get the correct bubble size
 	chat_bubble.show_dialogue(dialogue, 3.0)
@@ -88,8 +84,7 @@ func show_chat_bubble():
 	# Get game scene bounds for constraint
 	var game_scene = get_tree().current_scene.find_child("GameScene", true, false)
 	var bounds_rect = Rect2(Vector2.ZERO, Vector2(1080, 1920))  # Default bounds
-	if game_scene:
-		bounds_rect = Rect2(game_scene.global_position, game_scene.size)
+	bounds_rect = Rect2(game_scene.global_position, game_scene.size)
 	
 	# Constrain bubble position to stay within bounds
 	var constrained_pos = initial_bubble_pos
