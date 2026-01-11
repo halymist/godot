@@ -22,10 +22,9 @@ func _on_yes_pressed():
 	"""Handle logout confirmation - save player and return to lobby"""
 	print("Logging out - saving player and returning to lobby")
 	
-	# Save current player data back to all_characters array
+	# Character data is automatically saved (current_player is a reference in all_characters)
 	if GameInfo.current_player and GameInfo.current_character_id >= 0:
-		GameInfo.save_current_character()
-		print("Saved character ID: ", GameInfo.current_character_id)
+		print("Logged out character ID: ", GameInfo.current_character_id)
 	
 	# Clear current player
 	GameInfo.current_player = null

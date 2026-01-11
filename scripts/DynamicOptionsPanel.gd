@@ -364,7 +364,7 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 			QuestOption.RequirementType.STRENGTH, QuestOption.RequirementType.STAMINA, \
 			QuestOption.RequirementType.AGILITY, QuestOption.RequirementType.LUCK, \
 			QuestOption.RequirementType.ARMOR:
-				var total_stats = GameInfo.get_total_stats()
+				var total_stats = GameInfo.current_player.get_total_stats()
 				var player_value = 0
 				match req_type:
 					QuestOption.RequirementType.STRENGTH: player_value = total_stats.strength
@@ -377,7 +377,7 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 				# Effect requirements (EFFECT_1 through EFFECT_20)
 				if req_type >= QuestOption.RequirementType.EFFECT_1 and req_type <= QuestOption.RequirementType.EFFECT_20:
 					var effect_id = req_type - QuestOption.RequirementType.EFFECT_1 + 1
-					var total_effects = GameInfo.get_total_effects()
+					var total_effects = GameInfo.current_player.get_total_effects()
 					var player_effect = total_effects.get(effect_id, 0.0)
 					meets_requirement = player_effect >= scaled_requirement
 		

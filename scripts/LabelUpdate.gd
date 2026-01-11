@@ -23,14 +23,14 @@ func _ready():
 	GameInfo.character_changed.connect(_on_character_changed)
 
 func _on_character_changed():
-	stats_changed(GameInfo.get_player_stats())
+	stats_changed(GameInfo.current_player.get_player_stats())
 
 # Called when GameInfo current player is updated
 func stats_changed(_stats: Dictionary):
 	if not GameInfo.current_player:
 		return
 		
-	var total_stats = GameInfo.get_total_stats()
+	var total_stats = GameInfo.current_player.get_total_stats()
 	
 	player_name_label.text = str(total_stats.name)
 	rank_label.text = GameInfo.current_player.get_rank_name() + " (" + str(GameInfo.current_player.rank) + ")"

@@ -650,7 +650,7 @@ func refresh_stats():
 	if not GameInfo.current_player:
 		return
 	
-	character_display.stats_changed(GameInfo.get_player_stats())
+	character_display.stats_changed(GameInfo.current_player.get_player_stats())
 	details_panel.display_effects(GameInfo.current_player)
 	
 	# Refresh quest options if currently on a quest

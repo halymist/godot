@@ -62,7 +62,7 @@ class Item:
 	
 	# Helper to get ItemResource (cached)
 	func get_resource() -> ItemResource:
-		if not _resource_cache and GameInfo and GameInfo.items_db:
+		if _resource_cache == null:
 			_resource_cache = GameInfo.items_db.get_item_by_id(id)
 		return _resource_cache
 	
@@ -649,16 +649,7 @@ func select_character(character_id: int):
 	else:
 		print("ERROR: Character ID ", character_id, " not found!")
 
-func save_current_character():
-	"""Save current_player state back to all_characters array"""
-	if not current_player or current_character_id < 0:
-		print("ERROR: Cannot save - no current player")
-		return
-	
-	# The current_player IS the reference in all_characters array, so it's already saved
-	# Just log for confirmation
-	print("Character state saved (reference already in all_characters): ", current_player.name)
-	
+
 func _load_character_world_data():
 	"""Load rankings, chat, arena opponents, vendor items for current character"""
 	# Find character data in Websocket.mock_characters
@@ -703,33 +694,6 @@ func _ready():
 	
 	# Load all characters from Websocket mock data
 	load_all_characters(Websocket.mock_characters)
-
-# Helper function to get player stats for UI
-func get_player_stats() -> Dictionary:
-	return current_player.get_player_stats() if current_player else {}
-
-# Load player data into current_player
-func load_player_data(character_data: Dictionary):
-	print("Loading player data into GameInfo...")
-	print("Raw character_data keys: ", character_data.keys())
-	print("bag_slots in character_data: ", character_data.has("bag_slots"))
-	if character_data.has("bag_slots"):
-		print("bag_slots data: ", character_data["bag_slots"])
-	
-	current_player = GameCurrentPlayer.new(character_data, self)
-
-	print("Player data loaded successfully!")
-	print("Player: ", current_player.name)
-	print("Silver: ", current_player.silver)
-	print("Items: ", current_player.bag_slots.size())
-	print("Perks: ", current_player.perks.size())
-	print("Talents: ", current_player.talents.size())
-
-func get_total_stats() -> Dictionary:
-	return current_player.get_total_stats() if current_player else {}
-
-func get_total_effects() -> Dictionary:
-	return current_player.get_total_effects() if current_player else {}
 
 # Function to load all arena opponents from mock data
 func load_enemy_players_data(players_data: Array):
