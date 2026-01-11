@@ -136,8 +136,9 @@ func _process(_delta):
 		is_skipping = false
 		refresh_travel_state()
 		
-		# Load the quest directly
-		_on_enter_dungeon_pressed()
+		# Only auto-load quest if map panel is visible
+		if visible:
+			_on_enter_dungeon_pressed()
 		return
 	
 	# Update skip button text
