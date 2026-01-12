@@ -1,4 +1,4 @@
-[gd_scene load_steps=109 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=108 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -208,12 +208,6 @@ rebound_strength = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sc4i"]
-bg_color = Color(0.08, 0.12, 0.2, 0.95)
-border_width_right = 2
-border_color = Color(0.7, 0.5, 0.3, 0.6)
-shadow_offset = Vector2(3, 3)
 
 [sub_resource type="Resource" id="Resource_umggo"]
 script = ExtResource("68_2cns2")
@@ -5999,7 +5993,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7sc4i")
 
 [node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay/ChatPanel"]
 layout_mode = 1

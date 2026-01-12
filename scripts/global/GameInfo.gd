@@ -713,4 +713,3 @@ func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 		"finished": true
 	})
 	quest_completed.emit(quest_id)
-
