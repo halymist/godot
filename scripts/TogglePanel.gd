@@ -42,7 +42,6 @@ static var instance: UIManager
 @export var payment_button: Button
 @export var avatar_panel: Control
 @export var logout_panel: Control
-@export var lobby_panel: Control
 
 # Additional UI references (from old UIManager)
 @export var silver_labels: Array[Label] = []
@@ -67,9 +66,6 @@ func _enter_tree():
 	instance = self
 
 func _ready():
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-	
 	# Connect button signals FIRST - these work regardless of character selection
 	home_button.pressed.connect(handle_home_button)
 	arena_button.pressed.connect(handle_arena_button)
@@ -577,21 +573,14 @@ func _on_cancel_quest_no():
 
 func handle_logout():
 	"""Handle logout UI transition - called by LogoutPanel"""
-	# Hide logout panel
-	hide_overlay(logout_panel)
+	print("Logging out and returning to login scene...")
 	
-	# Hide all panels
-	home_panel.visible = false
+	# Clear current player data
+	GameInfo.current_player = null
+	GameInfo.current_character_id = 0
 	
-	# Clear overlay stack
-	while overlay_stack.size() > 0:
-		var overlay = overlay_stack.pop_back()
-		overlay.visible = false
-	
-	# Show lobby
-	lobby_panel.visible = true
-	current_panel = lobby_panel
-	print("Returned to lobby")
+	# Transition to login scene
+	get_tree().change_scene_to_file("res://Scenes/login.tscn")
 
 func _load_quest_on_startup(quest_id: int):
 	"""Helper to load quest on startup after panel is visible"""
@@ -633,11 +622,6 @@ func update_display():
 	var mushrooms_text = str(GameInfo.current_player.mushrooms)
 	for m_label in mushrooms_labels:
 		m_label.text = mushrooms_text
-
-func _on_character_changed():
-	"""Called when character switches - refresh all displays"""
-	update_display()
-	refresh_bags()
 
 func refresh_bags():
 	"""Ask all registered bag views to refresh from GameInfo state"""

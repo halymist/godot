@@ -14,9 +14,20 @@ const TWITTER_URL = "https://twitter.com/your-username"
 # Preload the player card scene
 const PlayerCard = preload("res://Scenes/playercard.tscn")
 
+var databases_loaded = false
+
 func _ready():
+	# Start loading databases in background
+	_load_databases_async()
 	setup_ui()
 	connect_social_buttons()
+
+func _load_databases_async():
+	"""Load databases in background while user looks at character list"""
+	print("Loading databases in background...")
+	GameInfo.load_databases()
+	databases_loaded = true
+	print("Databases ready!")
 
 func connect_social_buttons():
 	"""Connect social media button signals"""
@@ -47,13 +58,21 @@ func _on_character_selected(character_id: int):
 	"""Handle character selection from player card"""
 	print("Character selected in lobby: ", character_id)
 	
-	# Select this character in GameInfo (this will emit character_changed signal)
-	GameInfo.select_character(character_id)
-	UIManager.instance.show_panel(UIManager.instance.home_panel)
-	# Hide lobby
-	visible = false
+	# Wait for databases if they're still loading
+	if not databases_loaded:
+		print("Waiting for databases to finish loading...")
+		while not databases_loaded:
+			await get_tree().process_frame
 	
-	print("Loaded character: ", GameInfo.current_player.name)
+	# Load all character data
+	GameInfo.load_all_characters(Websocket.mock_characters)
+	
+	# Select this character
+	GameInfo.select_character(character_id)
+	
+	print("Switching to game scene...")
+	# Switch to game scene
+	get_tree().change_scene_to_file("res://Scenes/game.tscn")
 
 func _on_discord_pressed():
 	"""Open Discord link"""

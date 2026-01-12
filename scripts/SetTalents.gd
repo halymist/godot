@@ -11,10 +11,7 @@ func _ready():
 	if reset_button:
 		reset_button.pressed.connect(_on_reset_button_pressed)
 	
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-	
-	# Wait for character selection before initializing
+	# Initialize if character is already selected
 	if GameInfo.current_player != null:
 		display_player()
 		# Wait for all talents to register, then refresh stats
@@ -22,12 +19,6 @@ func _ready():
 		await get_tree().process_frame
 		if not is_read_only:
 			UIManager.instance.refresh_stats()
-
-func _on_character_changed():
-	display_player()
-	# Wait for talents to register, then refresh stats
-	await get_tree().process_frame
-	await get_tree().process_frame
 	if not is_read_only and UIManager.instance:
 		UIManager.instance.refresh_stats()
 

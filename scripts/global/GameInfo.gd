@@ -34,7 +34,6 @@ var talent_registry: Dictionary = {}
 # ============================================
 # SIGNALS
 # ============================================
-signal character_changed()
 signal quest_completed(quest_id)
 
 # ============================================
@@ -50,12 +49,17 @@ var current_player: GameCurrentPlayer:
 # ============================================
 # INITIALIZATION
 # ============================================
-func _ready():
-	print("GameInfo initializing...")
-	_load_databases()
-	load_all_characters(Websocket.mock_characters)
+var databases_loaded: bool = false
 
-func _load_databases():
+func _ready():
+	print("GameInfo initialized (databases not loaded yet)")
+
+func load_databases():
+	"""Call this from lobby scene to load all game databases"""
+	if databases_loaded:
+		return  # Already loaded
+	
+	print("Loading databases...")
 	effects_db = load("res://data/effects.tres")
 	items_db = load("res://data/items.tres")
 	perks_db = load("res://data/perks.tres")
@@ -64,6 +68,9 @@ func _load_databases():
 	quests_db = load("res://scripts/resources/quests.tres")
 	settlements_db = load("res://scripts/resources/settlements.tres")
 	enemies_db = load("res://data/enemies.tres")
+	
+	databases_loaded = true
+	print("Databases loaded")
 
 # ============================================
 # TALENT REGISTRATION
@@ -656,7 +663,6 @@ func select_character(character_id: int):
 	if current_player:
 		print("Selected character: ", current_player.name, " (ID: ", character_id, ")")
 		_load_character_world_data()
-		character_changed.emit()
 	else:
 		print("ERROR: Character ID ", character_id, " not found!")
 

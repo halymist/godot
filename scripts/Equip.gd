@@ -4,12 +4,9 @@ extends Control
 @export var is_bag: bool = false
 
 func _ready():
-	# Don't update equip slots yet - wait for character selection
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-
-func _on_character_changed():
-	update_equip_slots()
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		update_equip_slots()
 
 
 func update_equip_slots():

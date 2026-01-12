@@ -18,12 +18,9 @@ func _ready():
 		bind_button.pressed.connect(_on_bind_pressed)
 		bind_button.disabled = true
 	visible = false
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-	# Don't load perks yet - wait for character selection
-
-func _on_character_changed():
-	refresh_perks()
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		refresh_perks()
 
 func refresh_perks():
 	"""Refresh the perks grid from GameInfo - call this when perks change"""

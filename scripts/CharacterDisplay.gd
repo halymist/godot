@@ -45,10 +45,7 @@ func _ready():
 		if avatar_button:
 			avatar_button.pressed.connect(_on_avatar_pressed)
 		
-		# Connect to character changed signal and display when character is selected
-		GameInfo.character_changed.connect(_on_character_changed)
-		
-		# Display current player only if already selected
+		# Display current player if already selected
 		if GameInfo.current_player != null:
 			display_player()
 	else:

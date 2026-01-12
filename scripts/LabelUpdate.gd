@@ -18,12 +18,9 @@ extends Control
 @export var damage_spread_label: Label
 
 func _ready():
-	# Don't update stats yet - wait for character selection
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-
-func _on_character_changed():
-	stats_changed(GameInfo.current_player.get_player_stats())
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		stats_changed(GameInfo.current_player.get_player_stats())
 
 # Called when GameInfo current player is updated
 func stats_changed(_stats: Dictionary):

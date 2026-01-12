@@ -21,15 +21,12 @@ func _ready():
 	# Don't load location content yet - wait for character selection
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-
 	temper_button.pressed.connect(_on_temper_pressed)
-
-func _on_character_changed():
-	_load_location_content()
-	update_temper_button_state()
+	
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		_load_location_content()
+		update_temper_button_state()
 
 func on_slot_changed(slot_id: int):
 	"""Called by UIManager when a utility slot changes"""

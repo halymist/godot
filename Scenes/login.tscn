@@ -1,0 +1,196 @@
+[gd_scene load_steps=7 format=3 uid="uid://dtfwauux0ahsv"]
+
+[ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="1_lobby"]
+[ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="2_shroom"]
+[ext_resource type="Texture2D" uid="uid://dy83nwpi2ssx8" path="res://assets/images/ui/discord.png" id="3_discord"]
+[ext_resource type="Texture2D" uid="uid://cu0dq450kmeqa" path="res://assets/images/ui/instagram.png" id="4_instagram"]
+[ext_resource type="Texture2D" uid="uid://cxg2iu8vi2jlc" path="res://assets/images/ui/twitter.png" id="5_twitter"]
+[ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="6_theme"]
+
+[node name="Login" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("6_theme")
+
+[node name="Lobby" type="Panel" parent="." node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lobby")
+characters_container = NodePath("ScrollContainer/CharactersContainer")
+discord_button = NodePath("SocialLinks/DiscordButton")
+instagram_button = NodePath("SocialLinks/InstagramButton")
+twitter_button = NodePath("SocialLinks/TwitterButton")
+
+[node name="GameTitle" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 48
+text = "Wilds"
+horizontal_alignment = 1
+
+[node name="AccountInfo" type="VBoxContainer" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -149.5
+offset_top = -334.0
+offset_right = 150.5
+offset_bottom = -194.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CreatedLabel" type="Label" parent="Lobby/AccountInfo"]
+layout_mode = 2
+text = "Account Created: January 1, 2026"
+
+[node name="EmailLabel" type="Label" parent="Lobby/AccountInfo"]
+layout_mode = 2
+text = "Email: player@example.com"
+
+[node name="MushroomContainer" type="HBoxContainer" parent="Lobby/AccountInfo"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="MushroomIcon" type="TextureRect" parent="Lobby/AccountInfo/MushroomContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("2_shroom")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MushroomValue" type="Label" parent="Lobby/AccountInfo/MushroomContainer"]
+layout_mode = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "0"
+
+[node name="PaymentButton" type="Button" parent="Lobby/AccountInfo/MushroomContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="LoginMethodsLabel" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -148.5
+offset_top = 260.0
+offset_right = 151.5
+offset_bottom = 289.0
+grow_horizontal = 2
+text = "Connected Login Methods"
+horizontal_alignment = 1
+
+[node name="LoginMethods" type="HBoxContainer" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -149.5
+offset_top = 300.0
+offset_right = 150.5
+offset_bottom = 365.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="GoogleButton" type="Button" parent="Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "G"
+
+[node name="AddNewButton" type="Button" parent="Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "+"
+
+[node name="SocialLinks" type="HBoxContainer" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 75.5
+offset_top = 212.0
+offset_right = 200.5
+offset_bottom = 242.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="DiscordButton" type="TextureButton" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_normal = ExtResource("3_discord")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="InstagramButton" type="TextureButton" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_normal = ExtResource("4_instagram")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TwitterButton" type="TextureButton" parent="Lobby/SocialLinks"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_normal = ExtResource("5_twitter")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="NewStartsLabel" type="Label" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -90.5
+offset_top = 420.0
+offset_right = 109.5
+offset_bottom = 449.0
+grow_horizontal = 2
+text = "New start in: 2d 15h 23m"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Lobby"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 456.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CharactersContainer" type="VBoxContainer" parent="Lobby/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CreateNew" type="PanelContainer" parent="Lobby/ScrollContainer/CharactersContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Lobby/ScrollContainer/CharactersContainer/CreateNew"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create New Character"
+horizontal_alignment = 1
+vertical_alignment = 1

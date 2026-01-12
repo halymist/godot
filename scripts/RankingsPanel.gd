@@ -49,15 +49,12 @@ func _ready():
 	if search_input:
 		search_input.text_changed.connect(_on_search_changed)
 	
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
+	# Initialize if character is already selected and visible
+	if GameInfo.current_player and visible:
+		populate_rankings()
 	
 	# Adjust layout when visible
 	visibility_changed.connect(_on_visibility_changed)
-
-func _on_character_changed():
-	if visible:
-		populate_rankings()
 
 func _on_visibility_changed():
 	if visible:

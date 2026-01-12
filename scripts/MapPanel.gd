@@ -19,14 +19,12 @@ var travel_duration: float
 func _ready():
 	skip_button.pressed.connect(_on_skip_button_pressed)
 	enter_dungeon_button.pressed.connect(_on_enter_dungeon_pressed)
-	GameInfo.character_changed.connect(_on_character_changed)
 	visibility_changed.connect(_on_visibility_changed)
 	set_process(false)  # Only process when traveling
 	
-
-func _on_character_changed():
-	# Update UI state when character changes
-	refresh_travel_state()
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		refresh_travel_state()
 
 func _on_visibility_changed():
 	# Refresh state when panel becomes visible

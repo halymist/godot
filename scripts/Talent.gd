@@ -23,20 +23,11 @@ func _ready():
 	# Register this talent's metadata globally
 	GameInfo.register_talent(talentID, effect_id, factor, maxPoints, perk_slot)
 	
-	# Don't initialize yet - wait for character or parent to update
+	# Initialize with current player if available
 	button.pressed.connect(_on_button_pressed)
 	
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-	
-	# Initial update if character already selected
 	if GameInfo.current_player != null:
-		_on_character_changed()
-
-func _on_character_changed():
-	# Default to current player when character changes
-	displayed_character = GameInfo.current_player
-	is_read_only = false
+		update_from_character(GameInfo.current_player, false)
 	
 	if displayed_character == null:
 		return

@@ -3,12 +3,9 @@ extends HBoxContainer
 @export var perk_mini_scene: PackedScene
 
 func _ready():
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
-	refresh_effects()
-
-func _on_character_changed():
-	refresh_effects()
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		refresh_effects()
 
 func refresh_effects():
 	print("ActivePerksDisplay: Updating active perks and effects...")

@@ -46,10 +46,6 @@ func _ready():
 	# Connect change button
 	change_button.pressed.connect(_on_change_pressed)
 	
-	# Connect to character changed signal
-	if GameInfo.has_signal("character_changed"):
-		GameInfo.character_changed.connect(_on_character_changed)
-	
 	# Initialize with current player avatar
 	if GameInfo.current_player:
 		preview_face_id = GameInfo.current_player.avatar_face
@@ -63,11 +59,6 @@ func _ready():
 		original_eyes_id = GameInfo.current_player.avatar_eyes
 		original_nose_id = GameInfo.current_player.avatar_nose
 		original_mouth_id = GameInfo.current_player.avatar_mouth
-		preview_hair_id = GameInfo.current_player.avatar_hair
-		preview_eyes_id = GameInfo.current_player.avatar_eyes
-		original_face_id = preview_face_id
-		original_hair_id = preview_hair_id
-		original_eyes_id = preview_eyes_id
 	
 	# Update change button
 	_update_change_button()

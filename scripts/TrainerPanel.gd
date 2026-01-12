@@ -28,16 +28,14 @@ func _ready():
 	agility_button.pressed.connect(_on_agility_plus_pressed)
 	luck_button.pressed.connect(_on_luck_plus_pressed)
 	
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		_load_location_content()
+		update_stats_display()
+		update_button_states()
 	
 	# Update stats display when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
-
-func _on_character_changed():
-	_load_location_content()
-	update_stats_display()
-	update_button_states()
 
 func _on_visibility_changed():
 	if visible:

@@ -23,15 +23,14 @@ func _ready():
 	# Don't load location content yet - wait for character selection
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
-	# Connect to character changed signal
-	GameInfo.character_changed.connect(_on_character_changed)
 	if enchant_button:
 		enchant_button.pressed.connect(_on_enchant_pressed)
-
-func _on_character_changed():
-	_load_location_content()
-	update_enchant_button_state()
-	populate_effect_list()
+	
+	# Initialize if character is already selected
+	if GameInfo.current_player:
+		_load_location_content()
+		update_enchant_button_state()
+		populate_effect_list()
 
 func on_slot_changed(slot_id: int):
 	"""Called by UIManager when a utility slot changes"""
