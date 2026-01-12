@@ -15,10 +15,13 @@ const TWITTER_URL = "https://twitter.com/your-username"
 const PlayerCard = preload("res://Scenes/playercard.tscn")
 
 var databases_loaded = false
+var game_scene_loaded = false
+var game_scene: PackedScene = null
 
 func _ready():
-	# Start loading databases in background
+	# Start loading databases and game scene in background
 	_load_databases_async()
+	_load_game_scene_async()
 	setup_ui()
 	connect_social_buttons()
 
@@ -28,6 +31,26 @@ func _load_databases_async():
 	GameInfo.load_databases()
 	databases_loaded = true
 	print("Databases ready!")
+
+func _load_game_scene_async():
+	"""Load game scene in background while user looks at character list"""
+	print("Loading game scene in background...")
+	
+	# Start loading game scene in background thread
+	ResourceLoader.load_threaded_request("res://Scenes/game.tscn")
+	
+	# Poll until loaded (non-blocking)
+	while true:
+		var status = ResourceLoader.load_threaded_get_status("res://Scenes/game.tscn")
+		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			game_scene = ResourceLoader.load_threaded_get("res://Scenes/game.tscn")
+			game_scene_loaded = true
+			print("Game scene preloaded!")
+			break
+		elif status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE or status == ResourceLoader.THREAD_LOAD_FAILED:
+			print("ERROR: Failed to load game scene!")
+			break
+		await get_tree().process_frame
 
 func connect_social_buttons():
 	"""Connect social media button signals"""
@@ -58,11 +81,13 @@ func _on_character_selected(character_id: int):
 	"""Handle character selection from player card"""
 	print("Character selected in lobby: ", character_id)
 	
-	# Wait for databases if they're still loading
-	if not databases_loaded:
-		print("Waiting for databases to finish loading...")
-		while not databases_loaded:
-			await get_tree().process_frame
+	# Wait for both databases and game scene if they're still loading
+	while not databases_loaded or not game_scene_loaded:
+		if not databases_loaded:
+			print("Waiting for databases to finish loading...")
+		if not game_scene_loaded:
+			print("Waiting for game scene to finish loading...")
+		await get_tree().process_frame
 	
 	# Load all character data
 	GameInfo.load_all_characters(Websocket.mock_characters)
@@ -71,8 +96,8 @@ func _on_character_selected(character_id: int):
 	GameInfo.select_character(character_id)
 	
 	print("Switching to game scene...")
-	# Switch to game scene
-	get_tree().change_scene_to_file("res://Scenes/game.tscn")
+	# Switch to preloaded game scene (instant!)
+	get_tree().change_scene_to_packed(game_scene)
 
 func _on_discord_pressed():
 	"""Open Discord link"""
