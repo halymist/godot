@@ -2239,7 +2239,7 @@ text = "Location Bonuses:
 +5% Experience gain
 Weather: Rainy (-10% Travel Speed)"
 
-[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "strength", "stamina", "agility", "luck", "armor")]
+[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "table_content", "player_card", "search_input", "player_name_label", "avatar_instance", "character_button", "fight_button", "strength", "stamina", "agility", "luck", "armor")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -2249,9 +2249,14 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("36_rankings_panel")
 rankings_table = NodePath("MainContainer/TableScroll")
+table_content = NodePath("MainContainer/TableScroll/VBoxContainer")
 player_card = NodePath("MainContainer/PlayerCard")
 search_input = NodePath("MainContainer/SearchBar/SearchInput")
 ranking_row_scene = ExtResource("36_ranking_row")
+player_name_label = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/PlayerName")
+avatar_instance = NodePath("MainContainer/PlayerCard/CardContent/Character/Avatar")
+character_button = NodePath("MainContainer/PlayerCard/CardContent/Character/Button")
+fight_button = NodePath("MainContainer/PlayerCard/CardContent/FightButtonContainer/FightButton")
 strength = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength/StrengthValue")
 stamina = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina/StaminaValue")
 agility = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility/AgilityValue")

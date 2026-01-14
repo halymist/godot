@@ -1,78 +1,48 @@
 extends Panel
 
+# Direct exports for all required nodes
 @export var rankings_table: ScrollContainer
+@export var table_content: VBoxContainer
 @export var player_card: Control
 @export var search_input: LineEdit
 @export var ranking_row_scene: PackedScene
 
-# Stat nodes from player card
+# Player card components
+@export var player_name_label: Label
+@export var avatar_instance: Node
+@export var character_button: Button
+@export var fight_button: Button
+
+# Player card stat labels
 @export var strength: Label
 @export var stamina: Label
 @export var agility: Label
 @export var luck: Label
 @export var armor: Label
 
-@onready var table_content: VBoxContainer
-@onready var player_name_label: Label
-@onready var fight_button: Button
-@onready var character_button: Button
-@onready var avatar_instance: Node
-
 var selected_row = null
 var selected_player: GameInfo.GamePlayer = null
 
 func _ready():
-	table_content = rankings_table.get_node("VBoxContainer")
+	character_button.pressed.connect(_on_character_button_pressed)
+	fight_button.pressed.connect(_on_fight_pressed)
+	search_input.text_changed.connect(_on_search_changed)
 	
-	if player_card:
-		var card_content = player_card.get_node("CardContent")
-		var player_info = card_content.get_node("PlayerInfo")
-		player_name_label = player_info.get_node("PlayerName")
-		
-		# Get character button and avatar instance
-		var character_container = card_content.get_node("Character")
-		if character_container:
-			avatar_instance = character_container.get_node("Avatar")
-			character_button = character_container.get_node("Button")
-			if character_button:
-				character_button.pressed.connect(_on_character_button_pressed)
-		
-		var actions = card_content.get_node("FightButtonContainer")
-		fight_button = actions.get_node("FightButton")
-		if fight_button:
-			fight_button.pressed.connect(_on_fight_pressed)
-	
-	if search_input:
-		search_input.text_changed.connect(_on_search_changed)
-	
-	# Initialize if character is already selected and visible
 	populate_rankings()
 	
 
 
 func populate_rankings():
-	if not table_content:
-		return
-	
 	# Clear existing rows
 	for child in table_content.get_children():
 		child.queue_free()
 	
-	# Populate with rankings from GameInfo (directly iterate enemy_players)
+	# Populate with rankings from GameInfo
 	for player in GameInfo.enemy_players:
-		var row = create_ranking_row(player)
-		if row:
-			table_content.add_child(row)
-
-func create_ranking_row(player: GameInfo.GamePlayer):
-	if not ranking_row_scene:
-		print("Warning: ranking_row_scene not set in RankingsPanel")
-		return null
-	
-	var row = ranking_row_scene.instantiate()
-	row.set_data(player.rank, player.name, player.faction, player.profession, player.honor)
-	row.row_clicked.connect(_on_row_clicked)
-	return row
+		var row = ranking_row_scene.instantiate()
+		row.set_data(player.rank, player.name, player.faction, player.profession, player.honor)
+		row.row_clicked.connect(_on_row_clicked)
+		table_content.add_child(row)
 
 func _on_row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int):
 	print("Clicked on player: ", player_name, " Rank: ", rank, " Faction: ", faction, " Profession: ", profession, " Honor: ", honor)
@@ -100,36 +70,24 @@ func _on_row_clicked(rank: int, player_name: String, faction: int, profession: i
 		update_player_card()
 
 func update_player_card():
-	if not selected_player:
-		return
+	player_name_label.text = selected_player.name
 	
-	if player_name_label:
-		player_name_label.text = selected_player.name
+	# Update avatar
+	avatar_instance.refresh_avatar(
+		selected_player.avatar_face,
+		selected_player.avatar_hair,
+		selected_player.avatar_eyes,
+		selected_player.avatar_nose,
+		selected_player.avatar_mouth
+	)
 	
-	# Update avatar with player's face, hair, eyes, nose, and mouth
-	if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
-		avatar_instance.set_avatar_from_ids(
-			selected_player.avatar_face,
-			selected_player.avatar_hair,
-			selected_player.avatar_eyes,
-			selected_player.avatar_nose,
-			selected_player.avatar_mouth
-		)
-	
-	# Get total stats (base + equipment + perks)
+	# Get total stats and update labels
 	var total_stats = selected_player.get_total_stats()
-	
-	# Update stat values directly on Label exports
-	if strength:
-		strength.text = str(total_stats.strength)
-	if stamina:
-		stamina.text = str(total_stats.stamina)
-	if agility:
-		agility.text = str(total_stats.agility)
-	if luck:
-		luck.text = str(total_stats.luck)
-	if armor:
-		armor.text = str(total_stats.armor)
+	strength.text = str(total_stats.strength)
+	stamina.text = str(total_stats.stamina)
+	agility.text = str(total_stats.agility)
+	luck.text = str(total_stats.luck)
+	armor.text = str(total_stats.armor)
 
 func _on_fight_pressed():
 	print("Fight button pressed!")
@@ -140,8 +98,5 @@ func _on_search_changed(new_text: String):
 	print("Search: ", new_text)
 
 func _on_character_button_pressed():
-	if selected_player:
-		print("RankingsPanel: Opening enemy panel for: ", selected_player.name)
-		UIManager.instance.show_enemy_panel(selected_player.name)
-	else:
-		print("RankingsPanel: No player selected")
+	print("RankingsPanel: Opening enemy panel for: ", selected_player.name)
+	UIManager.instance.show_enemy_panel(selected_player.name)

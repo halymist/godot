@@ -81,8 +81,8 @@ func _on_character_changed():
 		original_mouth_id = GameInfo.current_player.avatar_mouth
 		
 		# Update avatar preview
-		if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
-			avatar_instance.set_avatar_from_ids(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
+		if avatar_instance and avatar_instance.has_method("refresh_avatar"):
+			avatar_instance.refresh_avatar(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
 		
 		_update_change_button()
 		_populate_selection_grid()
@@ -135,8 +135,8 @@ func _on_cosmetic_selected(cosmetic: CosmeticResource):
 			preview_mouth_id = cosmetic.id
 	
 	# Update avatar preview
-	if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
-		avatar_instance.set_avatar_from_ids(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
+	if avatar_instance and avatar_instance.has_method("refresh_avatar"):
+		avatar_instance.refresh_avatar(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
 	_update_change_button()
 
 func _calculate_total_cost() -> int:

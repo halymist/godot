@@ -54,8 +54,8 @@ func set_opponent_data(opponent):
 		set_enemy_data(enemy_id, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
 		
 		# Set avatar appearance from opponent data
-		if avatar_instance and avatar_instance.has_method("set_avatar_from_ids"):
-			avatar_instance.set_avatar_from_ids(
+		if avatar_instance and avatar_instance.has_method("refresh_avatar"):
+			avatar_instance.refresh_avatar(
 				opponent.avatar_face,
 				opponent.avatar_hair,
 				opponent.avatar_eyes,
