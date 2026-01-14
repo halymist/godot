@@ -49,6 +49,7 @@ func populate_rankings():
 		var row = ranking_row_scene.instantiate()
 		row.set_data(player.rank, player.name, player.faction, player.profession, player.honor)
 		row.row_clicked.connect(_on_row_clicked)
+		row.row_double_clicked.connect(_on_row_double_clicked)
 		table_content.add_child(row)
 
 func _on_row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int):
@@ -141,6 +142,22 @@ func _on_search_changed(new_text: String):
 	# TODO: Filter rankings based on search text
 	print("Search: ", new_text)
 
+func _on_row_double_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int):
+	"""Handle double-click on a row - same as clicking character button"""
+	# First select the row
+	_on_row_clicked(rank, player_name, faction, profession, honor)
+	# Then open the character panel
+	_on_character_button_pressed()
+
 func _on_character_button_pressed():
-	print("RankingsPanel: Opening enemy panel for: ", selected_player.name)
-	UIManager.instance.show_enemy_panel(selected_player.name)
+	if not selected_player:
+		return
+	
+	if selected_player == GameInfo.current_player:
+		# Show own character panel
+		print("RankingsPanel: Opening character panel for current player")
+		UIManager.instance.show_panel(UIManager.instance.character_panel)
+	else:
+		# Show enemy panel
+		print("RankingsPanel: Opening enemy panel for: ", selected_player.name)
+		UIManager.instance.show_enemy_panel(selected_player.name)

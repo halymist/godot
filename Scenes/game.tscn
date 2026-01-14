@@ -273,7 +273,7 @@ church_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/ChurchPan
 alchemist_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel")
 enemy_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy")
-enemy = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character/Button")]
+enemy = [null]
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
 payment_button = NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/PaymentButton")
 avatar_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
@@ -2255,7 +2255,7 @@ search_input = NodePath("MainContainer/SearchBar/SearchInput")
 ranking_row_scene = ExtResource("36_ranking_row")
 player_name_label = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/PlayerName")
 avatar_instance = NodePath("MainContainer/PlayerCard/CardContent/Character/Avatar")
-character_button = NodePath("MainContainer/PlayerCard/CardContent/Character/Button")
+character_button = NodePath("MainContainer/PlayerCard/CardContent/Character/CharButton")
 fight_button = NodePath("MainContainer/PlayerCard/CardContent/FightButtonContainer/FightButton")
 strength = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength/StrengthValue")
 stamina = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina/StaminaValue")
@@ -2316,6 +2316,7 @@ follow_focus = true
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
 script = ExtResource("67_e6ols")
+speed = 500.0
 wheel_scroll_damper = SubResource("Resource_b1mpw")
 dragging_scroll_damper = SubResource("Resource_ccfo7")
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
@@ -2351,14 +2352,14 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
 
-[node name="Button" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
+[node name="CharButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent/Character"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+flat = true
 
 [node name="PlayerInfo" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/PlayerCard/CardContent"]
 layout_mode = 2

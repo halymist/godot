@@ -6,6 +6,7 @@
 custom_minimum_size = Vector2(0, 40)
 offset_right = 400.0
 offset_bottom = 50.0
+mouse_filter = 2
 script = ExtResource("1_row")
 
 [node name="RowContent" type="HBoxContainer" parent="."]
@@ -33,17 +34,20 @@ vertical_alignment = 1
 [node name="NameContainer" type="HBoxContainer" parent="RowContent"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_constants/separation = 5
 
 [node name="GuildIcon" type="TextureRect" parent="RowContent/NameContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ProfessionIcon" type="TextureRect" parent="RowContent/NameContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
@@ -69,4 +73,5 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 flat = true

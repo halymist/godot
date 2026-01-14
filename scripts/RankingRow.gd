@@ -2,6 +2,7 @@
 extends Panel
 
 signal row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int)
+signal row_double_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int)
 
 var rank: int = 0
 var player_name: String = ""
@@ -9,6 +10,9 @@ var faction: int = 0
 var profession: int = 0
 var honor: int = 0
 var is_selected: bool = false
+
+var last_click_time: float = 0.0
+var double_click_threshold: float = 0.3  # 300ms for double-click
 
 @onready var rank_label: Label = $RowContent/Rank
 @onready var name_label: Label = $RowContent/NameContainer/PlayerName
@@ -51,4 +55,15 @@ func set_selected(selected: bool):
 		modulate = Color(1.0, 1.0, 1.0)  # Normal color
 
 func _on_clicked():
-	row_clicked.emit(rank, player_name, faction, profession, honor)
+	# Check for double-click
+	var current_time = Time.get_ticks_msec() / 1000.0
+	var time_since_last_click = current_time - last_click_time
+	
+	if time_since_last_click < double_click_threshold:
+		# Double-click detected
+		row_double_clicked.emit(rank, player_name, faction, profession, honor)
+		last_click_time = 0.0  # Reset to prevent triple-click
+	else:
+		# Single click
+		row_clicked.emit(rank, player_name, faction, profession, honor)
+		last_click_time = current_time
