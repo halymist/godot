@@ -41,7 +41,7 @@
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
-[ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/RankingsPanel.gd" id="36_rankings_panel"]
+[ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/Rankings.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
 [ext_resource type="Texture2D" uid="uid://d7skxybllre3" path="res://assets/images/ui/arena_full.png" id="37_b1mpw"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
@@ -2239,7 +2239,7 @@ text = "Location Bonuses:
 +5% Experience gain
 Weather: Rainy (-10% Travel Speed)"
 
-[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "search_input", "enemy_panel", "strength", "stamina", "agility", "luck", "armor")]
+[node name="Rankings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("rankings_table", "player_card", "search_input", "strength", "stamina", "agility", "luck", "armor")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -2249,9 +2249,9 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("36_rankings_panel")
 rankings_table = NodePath("MainContainer/TableScroll")
+player_card = NodePath("MainContainer/PlayerCard")
 search_input = NodePath("MainContainer/SearchBar/SearchInput")
 ranking_row_scene = ExtResource("36_ranking_row")
-enemy_panel = NodePath("../Enemy")
 strength = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Strength/StrengthValue")
 stamina = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Stamina/StaminaValue")
 agility = NodePath("MainContainer/PlayerCard/CardContent/PlayerInfo/StatsGrid/Agility/AgilityValue")

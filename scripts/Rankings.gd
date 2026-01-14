@@ -1,10 +1,9 @@
 extends Panel
 
 @export var rankings_table: ScrollContainer
-@export var player_card: Panel
+@export var player_card: Control
 @export var search_input: LineEdit
 @export var ranking_row_scene: PackedScene
-@export var enemy_panel: Control
 
 # Stat nodes from player card
 @export var strength: Label
@@ -23,10 +22,7 @@ var selected_row = null
 var selected_player: GameInfo.GamePlayer = null
 
 func _ready():
-	if Engine.is_editor_hint():
-		return
-	if rankings_table:
-		table_content = rankings_table.get_node("VBoxContainer")
+	table_content = rankings_table.get_node("VBoxContainer")
 	
 	if player_card:
 		var card_content = player_card.get_node("CardContent")
@@ -50,15 +46,9 @@ func _ready():
 		search_input.text_changed.connect(_on_search_changed)
 	
 	# Initialize if character is already selected and visible
-	if GameInfo.current_player and visible:
-		populate_rankings()
+	populate_rankings()
 	
-	# Adjust layout when visible
-	visibility_changed.connect(_on_visibility_changed)
 
-func _on_visibility_changed():
-	if visible:
-		populate_rankings()
 
 func populate_rankings():
 	if not table_content:
