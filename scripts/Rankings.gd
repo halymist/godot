@@ -27,8 +27,15 @@ func _ready():
 	character_button.pressed.connect(_on_character_button_pressed)
 	fight_button.pressed.connect(_on_fight_pressed)
 	search_input.text_changed.connect(_on_search_changed)
+	visibility_changed.connect(_on_visibility_changed)
 	
 	populate_rankings()
+
+func _on_visibility_changed():
+	if visible:
+		# Always reset to current player when panel opens
+		# Wait for layout to be ready
+		call_deferred("_select_current_player")
 	
 
 
@@ -88,6 +95,43 @@ func update_player_card():
 	agility.text = str(total_stats.agility)
 	luck.text = str(total_stats.luck)
 	armor.text = str(total_stats.armor)
+
+func _select_current_player():
+	"""Find and select the current player in the rankings"""
+	if not GameInfo.current_player:
+		return
+	
+	# Deselect previous row
+	if selected_row and is_instance_valid(selected_row):
+		selected_row.set_selected(false)
+	
+	# Wait for layout
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	for child in table_content.get_children():
+		if child.rank == GameInfo.current_player.rank:
+			# Select this row
+			child.set_selected(true)
+			selected_row = child
+			selected_player = GameInfo.current_player
+			update_player_card()
+			
+			# Scroll to center the row
+			_scroll_to_center(child)
+			break
+
+func _scroll_to_center(control: Control):
+	"""Scroll the rankings table to center the given control"""
+	var scroll_height = rankings_table.size.y
+	var control_pos = control.position.y
+	var control_height = control.size.y
+	
+	# Calculate scroll position to center the control
+	var target_scroll = control_pos - (scroll_height / 2) + (control_height / 2)
+	target_scroll = max(0, target_scroll)
+	
+	rankings_table.scroll_vertical = int(target_scroll)
 
 func _on_fight_pressed():
 	print("Fight button pressed!")

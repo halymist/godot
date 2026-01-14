@@ -59,7 +59,7 @@ var mock_characters = [
 	"location": 1,
 	
 	# Character info
-	"character_id": 1,
+	"character_id": 78,
 	"name": "TestPlayer",
 	"faction": 1,
 	"rank": 78,

@@ -703,7 +703,7 @@ func load_chat_messages_data(messages_data: Array):
 	print("Loaded ", chat_messages.size(), " chat messages")
 
 func update_rankings():
-	"""Build unified rankings list: enemy_players + current_player (replacing duplicate)"""
+	"""Build unified rankings list: enemy_players + current_player"""
 	rankings_players.clear()
 	
 	if not current_player:
@@ -712,13 +712,13 @@ func update_rankings():
 			rankings_players.append(player)
 		return
 	
-	# Build rankings list, replacing server's player entry with current_player
+	# Build rankings list from enemy_players (skip any with same character_id as current_player)
 	for player in enemy_players:
-		if player.character_id == current_player.character_id:
-			# Replace server entry with live current_player
-			rankings_players.append(current_player)
-		else:
+		if player.character_id != current_player.character_id:
 			rankings_players.append(player)
+	
+	# Always add current_player
+	rankings_players.append(current_player)
 	
 	# Sort by honor (highest to lowest)
 	rankings_players.sort_custom(func(a, b): return a.honor > b.honor)
