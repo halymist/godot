@@ -6,7 +6,7 @@ func generate_mock_player_data(player_name: String, rank: int, faction: int, hon
 	var stat_bonus = max(0, (100 - rank) / 10)  # Top 10 get +9, rank 100 gets 0
 	
 	return {
-		"character_id": char_id if char_id > 0 else 10000 + rank,
+		"character_id": char_id if char_id > 0 else rank,
 		"name": player_name,
 		"rank": rank,
 		"faction": faction,
@@ -62,7 +62,8 @@ var mock_characters = [
 	"character_id": 1,
 	"name": "TestPlayer",
 	"faction": 1,
-	"rank": 15486,
+	"rank": 78,
+	"honor": 6120,
 	"avatar": [1, 10, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
 	"stats": [10, 12, 18, 10, 5],  # [strength, stamina, agility, luck, armor]
 	"silver": 700,

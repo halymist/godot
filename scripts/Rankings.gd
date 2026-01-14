@@ -37,8 +37,8 @@ func populate_rankings():
 	for child in table_content.get_children():
 		child.queue_free()
 	
-	# Populate with rankings from GameInfo
-	for player in GameInfo.enemy_players:
+	# Populate with unified rankings list (includes current_player, no duplicates)
+	for player in GameInfo.rankings_players:
 		var row = ranking_row_scene.instantiate()
 		row.set_data(player.rank, player.name, player.faction, player.profession, player.honor)
 		row.row_clicked.connect(_on_row_clicked)
@@ -47,9 +47,9 @@ func populate_rankings():
 func _on_row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int):
 	print("Clicked on player: ", player_name, " Rank: ", rank, " Faction: ", faction, " Profession: ", profession, " Honor: ", honor)
 	
-	# Find the full player object from enemy_players
+	# Find the full player object from rankings
 	selected_player = null
-	for player in GameInfo.enemy_players:
+	for player in GameInfo.rankings_players:
 		if player.name == player_name:
 			selected_player = player
 			break

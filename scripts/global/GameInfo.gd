@@ -24,6 +24,7 @@ var current_character_id: int = 0
 
 # World data (populated per character)
 var enemy_players: Array[GamePlayer] = []
+var rankings_players: Array[GamePlayer] = []  # Unified list: enemy_players + current_player (no duplicates)
 var arena_opponents: Array[int] = []
 var chat_messages: Array[ChatMessage] = []
 var current_combat_log: CombatResponse = null
@@ -688,16 +689,41 @@ func _load_character_world_data():
 # WORLD DATA LOADING
 # ============================================
 func load_enemy_players_data(players_data: Array):
+	enemy_players.clear()
 	for player_data in players_data:
 		var player = GamePlayer.new(player_data, self)
 		enemy_players.append(player)
 	print("Loaded ", enemy_players.size(), " enemy players")
+	update_rankings()
 
 func load_chat_messages_data(messages_data: Array):
 	chat_messages.clear()
 	for message_data in messages_data:
 		chat_messages.append(ChatMessage.new(message_data))
 	print("Loaded ", chat_messages.size(), " chat messages")
+
+func update_rankings():
+	"""Build unified rankings list: enemy_players + current_player (replacing duplicate)"""
+	rankings_players.clear()
+	
+	if not current_player:
+		# No current player, just copy enemy_players
+		for player in enemy_players:
+			rankings_players.append(player)
+		return
+	
+	# Build rankings list, replacing server's player entry with current_player
+	for player in enemy_players:
+		if player.character_id == current_player.character_id:
+			# Replace server entry with live current_player
+			rankings_players.append(current_player)
+		else:
+			rankings_players.append(player)
+	
+	# Sort by honor (highest to lowest)
+	rankings_players.sort_custom(func(a, b): return a.honor > b.honor)
+	
+	print("Rankings updated: ", rankings_players.size(), " players (current player included)")
 
 # ============================================
 # QUEST MANAGEMENT
