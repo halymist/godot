@@ -1,4 +1,4 @@
-[gd_scene load_steps=104 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=105 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -59,6 +59,7 @@
 [ext_resource type="Texture2D" uid="uid://bt1vtlhlu7wgb" path="res://assets/images/ui/healthbar_fill.png" id="44_ewwwr"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://f86ieu6k1wmn" path="res://assets/images/ui/stam.png" id="46_gsm33"]
+[ext_resource type="Script" uid="uid://dvvc75dvopgcg" path="res://addons/SmoothScroll/scroll_damper/linear_scroll_damper.gd" id="46_lknxd"]
 [ext_resource type="Texture2D" uid="uid://dcj56lnrevubl" path="res://assets/images/ui/luck.png" id="47_lrctp"]
 [ext_resource type="Script" uid="uid://b4irhuh3hgeh0" path="res://scripts/DetailsPanel.gd" id="52_bchkn"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
@@ -141,17 +142,18 @@ bg_color = Color(0.64014, 0.614233, 0.287706, 1)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b1mpw"]
 texture = ExtResource("38_ff75x")
 
-[sub_resource type="Resource" id="Resource_b1mpw"]
-script = ExtResource("68_2cns2")
+[sub_resource type="Resource" id="Resource_q8b24"]
+script = ExtResource("46_lknxd")
 friction = 4.0
-minimum_velocity = 0.4
 rebound_strength = 7.0
+metadata/_custom_type_script = "uid://dvvc75dvopgcg"
 
-[sub_resource type="Resource" id="Resource_ccfo7"]
+[sub_resource type="Resource" id="Resource_a2m5q"]
 script = ExtResource("68_2cns2")
 friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
+metadata/_custom_type_script = "uid://b7h0k2h2qwlqv"
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ff75x"]
 texture = ExtResource("38_aujhx")
@@ -2317,8 +2319,8 @@ horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
 script = ExtResource("67_e6ols")
 speed = 500.0
-wheel_scroll_damper = SubResource("Resource_b1mpw")
-dragging_scroll_damper = SubResource("Resource_ccfo7")
+wheel_scroll_damper = SubResource("Resource_q8b24")
+dragging_scroll_damper = SubResource("Resource_a2m5q")
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Rankings/MainContainer/TableScroll"]
