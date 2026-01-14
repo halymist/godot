@@ -2,12 +2,17 @@
 
 [ext_resource type="Script" uid="uid://ojg3ty0v2k3n" path="res://scripts/RankingRow.gd" id="1_row"]
 
-[node name="RankingRow" type="Panel"]
+[node name="RankingRow" type="Panel" node_paths=PackedStringArray("rank_label", "name_label", "faction_icon", "honor_label", "click_button")]
 custom_minimum_size = Vector2(0, 40)
 offset_right = 400.0
 offset_bottom = 50.0
 mouse_filter = 2
 script = ExtResource("1_row")
+rank_label = NodePath("RowContent/Rank")
+name_label = NodePath("RowContent/NameContainer/PlayerName")
+faction_icon = NodePath("RowContent/NameContainer/GuildIcon")
+honor_label = NodePath("RowContent/Honor")
+click_button = NodePath("ClickButton")
 
 [node name="RowContent" type="HBoxContainer" parent="."]
 layout_mode = 1
