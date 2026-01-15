@@ -283,8 +283,32 @@ func apply_option_reward(option: QuestOption):
 			if UIManager.instance:
 				UIManager.instance.refresh_stats()
 		
-		QuestOption.RewardType.MIN_DAMAGE, QuestOption.RewardType.MAX_DAMAGE, \
-		QuestOption.RewardType.POTION, QuestOption.RewardType.BLESSING:
+		QuestOption.RewardType.MIN_DAMAGE:
+			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.damage_min += scaled_amount
+			reward_text = "You receive " + str(scaled_amount) + " minimum damage."
+			print("REWARD: Awarded ", scaled_amount, " Min Damage")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.MAX_DAMAGE:
+			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.damage_max += scaled_amount
+			reward_text = "You receive " + str(scaled_amount) + " maximum damage."
+			print("REWARD: Awarded ", scaled_amount, " Max Damage")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.POTION:
+			# Store potion item ID in player's potion slot
+			GameInfo.current_player.potion = option.reward_amount
+			var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
+			if item_resource:
+				reward_text = "You receive a potion: " + item_resource.item_name + "."
+			print("REWARD: Equipped Potion ID ", option.reward_amount)
+			UIManager.instance.refresh_active_effects()
+		
+		QuestOption.RewardType.BLESSING:
 			reward_text = "Reward type not yet implemented."
 			print("REWARD: Reward type not yet implemented: ", option.reward_type)
 	

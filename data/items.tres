@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDatabase" load_steps=27 format=3 uid="uid://vft5y80xsrjn"]
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=28 format=3 uid="uid://vft5y80xsrjn"]
 
 [ext_resource type="Script" uid="uid://5xjtibn1drlf" path="res://scripts/resources/ItemResource.gd" id="1_plm77"]
 [ext_resource type="Texture2D" uid="uid://3lxpfdl0cjp8" path="res://data/item_textures/scroll.png" id="2_gi1ch"]
@@ -261,7 +261,26 @@ has_socket = false
 icon = ExtResource("10_giyri")
 metadata/_custom_type_script = "uid://5xjtibn1drlf"
 
+[sub_resource type="Resource" id="Resource_jnehx"]
+script = ExtResource("1_plm77")
+id = 373
+item_name = "Potion of lala"
+type = 10
+armor = 0
+strength = 0
+stamina = 0
+agility = 0
+luck = 0
+damage_min = 0
+damage_max = 0
+effect_id = 6
+effect_factor = 12
+price = 30
+has_socket = false
+icon = ExtResource("7_v0hy1")
+metadata/_custom_type_script = "uid://5xjtibn1drlf"
+
 [resource]
 script = ExtResource("2_lxu8k")
-items = Array[ExtResource("1_plm77")]([SubResource("Resource_0ncmm"), SubResource("Resource_dlfjs"), SubResource("Resource_lxu8k"), SubResource("Resource_4egq1"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr"), SubResource("Resource_giyri"), SubResource("Resource_3m58g"), SubResource("Resource_gi1ch"), SubResource("Resource_kkqur")])
+items = Array[ExtResource("1_plm77")]([SubResource("Resource_0ncmm"), SubResource("Resource_dlfjs"), SubResource("Resource_lxu8k"), SubResource("Resource_4egq1"), SubResource("Resource_tpttd"), SubResource("Resource_ukfg0"), SubResource("Resource_xygrn"), SubResource("Resource_v0hy1"), SubResource("Resource_lpggr"), SubResource("Resource_giyri"), SubResource("Resource_3m58g"), SubResource("Resource_gi1ch"), SubResource("Resource_kkqur"), SubResource("Resource_jnehx")])
 metadata/_custom_type_script = "uid://0io63usdvbbp"
