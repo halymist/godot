@@ -17,12 +17,13 @@ const PlayerCard = preload("res://Scenes/playercard.tscn")
 var databases_loaded = false
 var game_scene_loaded = false
 var game_scene: PackedScene = null
+var loading_in_progress = false  # Prevent multiple character selections while loading
 
 func _ready():
 	# Start loading databases and game scene in background
 	_load_databases_async()
 	_load_game_scene_async()
-	setup_ui()
+	add_character_list()
 	connect_social_buttons()
 
 func _load_databases_async():
@@ -54,18 +55,10 @@ func _load_game_scene_async():
 
 func connect_social_buttons():
 	"""Connect social media button signals"""
-	if discord_button:
-		discord_button.pressed.connect(_on_discord_pressed)
-	if instagram_button:
-		instagram_button.pressed.connect(_on_instagram_pressed)
-	if twitter_button:
-		twitter_button.pressed.connect(_on_twitter_pressed)
+	discord_button.pressed.connect(_on_discord_pressed)
+	instagram_button.pressed.connect(_on_instagram_pressed)
+	twitter_button.pressed.connect(_on_twitter_pressed)
 
-func setup_ui():
-	"""Initialize the lobby UI with character cards"""
-	# Setup character list
-	if characters_container:
-		add_character_list()
 
 func add_character_list():
 	"""Add character panels from Websocket.mock_characters"""
@@ -79,6 +72,12 @@ func add_character_list():
 
 func _on_character_selected(character_id: int):
 	"""Handle character selection from player card"""
+	# Ignore if already loading a character
+	if loading_in_progress:
+		print("Character selection already in progress, ignoring click")
+		return
+	
+	loading_in_progress = true
 	print("Character selected in lobby: ", character_id)
 	
 	# Wait for both databases and game scene if they're still loading
