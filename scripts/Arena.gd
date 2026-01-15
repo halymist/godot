@@ -34,27 +34,14 @@ func _ready():
 
 func _load_opponent_data():
 	# Look up arena opponents by character_id
-	if GameInfo.arena_opponents.size() > 0 and GameInfo.enemy_players.size() > 0:
-		for i in range(min(cards.size(), GameInfo.arena_opponents.size())):
-			var card = cards[i]
-			var opponent_id = GameInfo.arena_opponents[i]
-			
-			# Find opponent by character_id in enemy_players
-			var opponent = null
-			for player in GameInfo.enemy_players:
-				if player.character_id == opponent_id:
-					opponent = player
-					break
-			
-			if opponent:
-				# Get total stats (base + equipment + perks)
-				var total_stats = opponent.get_total_stats()
-				card.set_enemy_data(i + 1, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
-				card.set_opponent_data(opponent)
-			else:
-				print("Warning: Could not find opponent with character_id '", opponent_id, "' in enemy_players")
-	else:
-		print("Warning: No arena opponents data available")
+	for i in range(min(cards.size(), GameInfo.arena_opponents.size())):
+		var opponent_id = GameInfo.arena_opponents[i]
+		
+		# Find opponent by character_id in enemy_players
+		for player in GameInfo.enemy_players:
+			if player.character_id == opponent_id:
+				cards[i].set_opponent_data(player)
+				break
 
 func _load_arena_background():
 	"""Load arena background texture from settlements database"""
