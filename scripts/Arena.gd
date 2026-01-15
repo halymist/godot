@@ -80,6 +80,9 @@ func _on_fight_pressed():
 			var combat_data = Websocket.mock_combat_logs[random_index]
 			GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
 			print("Combat log loaded: ", GameInfo.current_combat_log.player1_name, " vs ", GameInfo.current_combat_log.player2_name)
+			
+			# Show combat panel
+			UIManager.instance.show_panel(UIManager.instance.combat_panel)
 		else:
 			print("No combat logs available")
 		# TODO: Send opponent_id to server and wait for combat_log response
