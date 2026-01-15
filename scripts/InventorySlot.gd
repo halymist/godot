@@ -288,14 +288,18 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	UIManager.instance.update_silver(-purchase_price)
 	print("Purchased ", vendor_item.item_name, " for ", purchase_price, " silver. Remaining silver: ", GameInfo.current_player.silver)
 	
-	# Create a new item instance from vendor item (copy the data)
-	var purchased_item = GameInfo.Item.new({
-		"id": vendor_item.id,
-		"bag_slot_id": slot_id
-	})
+	# Add item to player's bag using helper (automatically assigns to empty slot with server day)
+	var added = GameInfo.current_player.add_item_to_bag(vendor_item.id)
+	if not added:
+		print("ERROR: Failed to add purchased item to bag (this shouldn't happen since we checked slot was empty)")
+		return
 	
-	# Add to player's bag_slots
-	GameInfo.current_player.bag_slots.append(purchased_item)
+	# Get the newly added item from bag_slots
+	var purchased_item: GameInfo.Item = null
+	for item in GameInfo.current_player.bag_slots:
+		if item.bag_slot_id == slot_id:
+			purchased_item = item
+			break
 	
 	# Remove item from vendor panel's local inventory (don't replenish)
 	var vendor_slot_index = _vendor_slot_id - VENDOR_MIN  # Convert slot_id to index

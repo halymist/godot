@@ -673,6 +673,50 @@ class GameCurrentPlayer:
 		stats["mushrooms"] = mushrooms
 		stats["talent_points"] = talent_points
 		return stats
+	
+	func add_perk_if_new(perk_id: int) -> bool:
+		"""Add a perk if player doesn't already have it. Returns true if added, false if already owned."""
+		# Check if perk already exists
+		for existing_perk in perks:
+			if existing_perk.id == perk_id:
+				print("Player already has perk ID: ", perk_id)
+				return false
+		
+		# Perk doesn't exist, add it
+		var new_perk = Perk.new({
+			"id": perk_id,
+			"active": false,
+			"slot": 0
+		})
+		perks.append(new_perk)
+		print("Added new perk ID: ", perk_id, " (", new_perk.perk_name, ")")
+		return true
+	
+	func add_item_to_bag(item_id: int) -> bool:
+		"""Add an item to the first available bag slot (10-14). Returns true if added, false if bag is full."""
+		# Find empty bag slot (10-14)
+		for slot_id in range(10, 15):
+			# Check if slot is occupied
+			var slot_occupied = false
+			for existing_item in bag_slots:
+				if existing_item.bag_slot_id == slot_id:
+					slot_occupied = true
+					break
+			
+			if not slot_occupied:
+				# Found empty slot, create new item with current server day
+				var new_item = Item.new({
+					"id": item_id,
+					"bag_slot_id": slot_id,
+					"day": server_day
+				})
+				bag_slots.append(new_item)
+				print("Added item ID ", item_id, " to bag slot ", slot_id, " with day ", server_day)
+				return true
+		
+		# No empty slots found
+		print("Bag is full, cannot add item ID ", item_id)
+		return false
 
 func load_all_characters(characters_data: Array):
 	all_characters.clear()

@@ -204,42 +204,37 @@ func apply_option_reward(option: QuestOption):
 			print("REWARD: Awarded ", option.reward_amount, " silver")
 		
 		QuestOption.RewardType.ITEM:
-			# Find empty bag slot (10-14)
-			var found_empty_slot = false
-			for slot_id in range(10, 15):
-				var existing_item = GameInfo.current_player.get_item_in_slot(slot_id)
-				if existing_item == null:
-					print("REWARD: Adding Item ID ", option.reward_amount, " to slot ", slot_id)
-					var new_item = GameInfo.InventoryItem.new({"item_id": option.reward_amount})
-					GameInfo.current_player.set_item_in_slot(slot_id, new_item)
-					found_empty_slot = true
-					var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
-					if item_resource:
-						reward_text = "You receive " + item_resource.item_name + "."
-					else:
-						reward_text = "You receive an item."
-					if UIManager.instance:
-						UIManager.instance.refresh_bags()
-					break
-			if not found_empty_slot:
+			var added = GameInfo.current_player.add_item_to_bag(option.reward_amount)
+			if added:
+				var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
+				if item_resource:
+					reward_text = "You receive " + item_resource.item_name + "."
+				else:
+					reward_text = "You receive an item."
+				print("REWARD: Added Item ID ", option.reward_amount, " to bag")
+				if UIManager.instance:
+					UIManager.instance.refresh_bags()
+			else:
 				reward_text = "Your bag is full!"
 				print("REWARD: No empty bag slot for item")
 		
 		QuestOption.RewardType.PERK:
-			var new_perk = GameInfo.Perk.new({
-				"id": option.reward_amount,
-				"active": false,
-				"slot": 0
-			})
-			GameInfo.current_player.perks.append(new_perk)
+			var added = GameInfo.current_player.add_perk_if_new(option.reward_amount)
 			var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
-			if perk_resource:
-				reward_text = "You receive the perk: " + perk_resource.perk_name + "."
+			if added:
+				if perk_resource:
+					reward_text = "You receive the perk: " + perk_resource.perk_name + "."
+				else:
+					reward_text = "You receive a perk."
+				print("REWARD: Perk added to inactive perks")
+				if UIManager.instance:
+					UIManager.instance.refresh_perks()
 			else:
-				reward_text = "You receive a perk."
-			print("REWARD: Perk ", new_perk.perk_name, " added to inactive perks")
-			if UIManager.instance:
-				UIManager.instance.refresh_perks()
+				if perk_resource:
+					reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
+				else:
+					reward_text = "You already have this perk."
+				print("REWARD: Perk already owned, skipping")
 		
 		QuestOption.RewardType.STRENGTH:
 			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
@@ -432,6 +427,9 @@ func refresh_quest_options_internal():
 
 func _on_quest_option_pressed(option: QuestOption):
 	"""Handle option click with persistent options system"""
+	# Clear previous reward display
+	reward_label.text = ""
+	
 	# Track this clicked option
 	if not clicked_option_ids.has(option.option_index):
 		clicked_option_ids.append(option.option_index)

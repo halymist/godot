@@ -18,7 +18,7 @@ on_lose_hides_option_ids = Array[int]([])
 ends_quest = false
 required_type = 0
 required_amount = 0
-reward_type = 3
+reward_type = 2
 reward_amount = 2
 metadata/_custom_type_script = "uid://cqtb7hjvuh4dy"
 
