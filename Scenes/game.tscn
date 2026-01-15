@@ -1660,6 +1660,7 @@ size_flags_horizontal = 3
 text = "No"
 
 [node name="Arena" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "card_container", "prev_button", "next_button", "fight_button", "arena_opponent1", "arena_opponent2", "arena_opponent3")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

@@ -385,6 +385,8 @@ class GamePlayer:
 	var agility: int = 0
 	var luck: int = 0
 	var armor: int = 0
+	var damage_min: int = 0
+	var damage_max: int = 0
 	var avatar_face: int = 1
 	var avatar_hair: int = 10
 	var avatar_eyes: int = 20
@@ -413,13 +415,16 @@ class GamePlayer:
 			avatar_nose = data.avatar[3]
 			avatar_mouth = data.avatar[4]
 		
-		# Handle stats array [strength, stamina, agility, luck, armor]
+		# Handle stats array [strength, stamina, agility, luck, armor, damage_min, damage_max]
 		if data.has("stats") and data.stats.size() >= 5:
 			strength = data.stats[0]
 			stamina = data.stats[1]
 			agility = data.stats[2]
 			luck = data.stats[3]
 			armor = data.stats[4]
+			if data.stats.size() >= 7:
+				damage_min = data.stats[5]
+				damage_max = data.stats[6]
 		
 		# Load arrays
 		load_bag_slots(data)
@@ -451,7 +456,9 @@ class GamePlayer:
 			"stamina": stamina,
 			"agility": agility,
 			"luck": luck,
-			"armor": armor
+			"armor": armor,
+			"damage_min": damage_min,
+			"damage_max": damage_max
 		}
 	
 	func get_total_stats() -> Dictionary:
@@ -467,6 +474,8 @@ class GamePlayer:
 				total_stats.agility += item.agility
 				total_stats.luck += item.luck
 				total_stats.armor += item.armor
+				total_stats.damage_min += item.damage_min
+				total_stats.damage_max += item.damage_max
 				
 				# Add socketed gem stats (gem is just another item!)
 				var gem = item.get_socketed_gem()
@@ -476,6 +485,8 @@ class GamePlayer:
 					total_stats.agility += gem.agility
 					total_stats.luck += gem.luck
 					total_stats.armor += gem.armor
+					total_stats.damage_min += gem.damage_min
+					total_stats.damage_max += gem.damage_max
 		
 		# Apply effect bonuses to stats (effects 1-4 boost stats by percentage)
 		var total_effects = get_total_effects()

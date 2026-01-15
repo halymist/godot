@@ -137,22 +137,11 @@ func update_stats():
 		if health_bar.has_node("HealthLabel"):
 			health_bar.get_node("HealthLabel").text = str(max_health)
 	
-	# Calculate and display damage spread (strength * weapon damage range)
+	# Calculate and display damage spread (total damage stats * strength)
 	if damage_spread_label:
-		var weapon_item = null
-		# Find equipped weapon in slots 0-8
-		for item in displayed_character.bag_slots:
-			if item != null and item.bag_slot_id >= 0 and item.bag_slot_id <= 8:
-				if item.type == "Weapon":
-					weapon_item = item
-					break
-		
-		if weapon_item != null:
-			var min_damage = total_stats.strength * weapon_item.damage_min
-			var max_damage = total_stats.strength * weapon_item.damage_max
-			damage_spread_label.text = str(min_damage) + " - " + str(max_damage)
-		else:
-			damage_spread_label.text = "0 - 0"
+		var min_damage = total_stats.damage_min * total_stats.strength
+		var max_damage = total_stats.damage_max * total_stats.strength
+		damage_spread_label.text = str(min_damage) + " - " + str(max_damage)
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs, perks)"""

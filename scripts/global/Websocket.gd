@@ -17,7 +17,9 @@ func generate_mock_player_data(player_name: String, rank: int, faction: int, hon
 			10 + stat_bonus + (rank % 4),  # stamina
 			10 + stat_bonus + (rank % 6),  # agility
 			8 + (rank % 8),  # luck
-			5 + (stat_bonus / 2)  # armor
+			5 + (stat_bonus / 2),  # armor
+			5 + (rank % 3),  # damage_min
+			10 + (rank % 5)  # damage_max
 		],
 		"blessing": 50 + (rank % 100),
 		"potion": 400,
@@ -65,7 +67,7 @@ var mock_characters = [
 	"rank": 78,
 	"honor": 6120,
 	"avatar": [1, 10, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
-	"stats": [10, 12, 18, 10, 5],  # [strength, stamina, agility, luck, armor]
+	"stats": [10, 12, 18, 10, 5, 5, 12],  # [strength, stamina, agility, luck, armor, damage_min, damage_max]
 	"silver": 700,
 	"mushrooms": 150,
 	"talent_points": 10,
@@ -347,7 +349,7 @@ var mock_characters = [
 	"faction": 2,
 	"rank": 8523,
 	"avatar": [1, 11, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
-	"stats": [15, 10, 8, 12, 8],  # [strength, stamina, agility, luck, armor]
+	"stats": [15, 10, 8, 12, 8, 8, 15],  # [strength, stamina, agility, luck, armor, damage_min, damage_max]
 	"silver": 2500,
 	"mushrooms": 75,
 	"talent_points": 5,
