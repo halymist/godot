@@ -1,4 +1,4 @@
-[gd_scene load_steps=111 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -29,15 +29,17 @@
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/Arena.gd" id="26_arena_slideshow"]
-[ext_resource type="PackedScene" uid="uid://2m8wt3l383fl" path="res://Scenes/arena_opponent.tscn" id="27_arena_opponent"]
 [ext_resource type="Texture2D" uid="uid://crrq3yx1yy7mx" path="res://assets/images/ui/slot2.png" id="27_w4j8i"]
 [ext_resource type="Script" uid="uid://b4m0pxusl8lna" path="res://scripts/LogoutPanel.gd" id="28_a2m5q"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
 [ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
+[ext_resource type="Script" uid="uid://d13rdbsc5arag" path="res://scripts/ArenaOpponent.gd" id="31_a2m5q"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
+[ext_resource type="Texture2D" uid="uid://fdesrxw8x4nm" path="res://assets/images/ui/abother_texture.png" id="31_lknxd"]
 [ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="32_ccfo7"]
+[ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="32_lknxd"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
@@ -122,6 +124,24 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc0e3"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lknxd"]
+texture = ExtResource("31_lknxd")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.15, 0.1, 0.2, 0.9)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.3, 0.3, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 8
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combat_bg"]
 bg_color = Color(0.08, 0.05, 0.15, 0.9)
@@ -1640,7 +1660,6 @@ size_flags_horizontal = 3
 text = "No"
 
 [node name="Arena" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "card_container", "prev_button", "next_button", "fight_button", "arena_opponent1", "arena_opponent2", "arena_opponent3")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1654,7 +1673,7 @@ card_container = NodePath("CardContainer")
 prev_button = NodePath("PrevButton")
 next_button = NodePath("NextButton")
 fight_button = NodePath("FightButton")
-arena_opponent1 = NodePath("CardContainer/ArenaOpponent1")
+arena_opponent1 = NodePath("CardContainer/ArenaOpponent")
 arena_opponent2 = NodePath("CardContainer/ArenaOpponent2")
 arena_opponent3 = NodePath("CardContainer/ArenaOpponent3")
 
@@ -1674,23 +1693,493 @@ stretch_mode = 5
 
 [node name="CardContainer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena"]
 layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -152.5
+offset_top = 78.0
+offset_right = 147.5
+offset_bottom = 470.0
+grow_horizontal = 2
+
+[node name="ArenaOpponent" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer" node_paths=PackedStringArray("avatar_instance", "name_label", "rank_label", "strength_label", "constitution_label", "dexterity_label", "luck_label", "armor_label", "active_effects_container")]
+custom_minimum_size = Vector2(300, 350)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_lknxd")
+script = ExtResource("31_a2m5q")
+perk_mini_scene = ExtResource("32_lknxd")
+avatar_instance = NodePath("ImagePanel/AvatarInstance")
+name_label = NodePath("EnemyName")
+rank_label = NodePath("RankLabel")
+strength_label = NodePath("StatsContainer/StrengthLabel")
+constitution_label = NodePath("StatsContainer/ConstitutionLabel")
+dexterity_label = NodePath("StatsContainer/DexterityLabel")
+luck_label = NodePath("StatsContainer/LuckLabel")
+armor_label = NodePath("StatsContainer/ArmorLabel")
+active_effects_container = NodePath("PerksContainer")
+
+[node name="EnemyName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
+layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.1
 anchor_top = 0.05
 anchor_right = 0.9
+anchor_bottom = 0.15
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 28
+text = "ENEMY 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RankLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.15
+anchor_right = 0.9
+anchor_bottom = 0.2
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Novice (8500)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ImagePanel" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
+layout_mode = 2
+offset_left = 19.0
+offset_top = 104.0
+offset_right = 145.0
+offset_bottom = 238.0
+texture = ExtResource("54_b1mpw")
+expand_mode = 1
+
+[node name="AvatarInstance" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent/ImagePanel" instance=ExtResource("22_avatar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+
+[node name="StatsContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.523
+anchor_top = 0.289
+anchor_right = 0.95
 anchor_bottom = 0.8
+offset_left = 0.100006
+offset_top = -0.150002
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 5
+
+[node name="StrengthLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Strenght: 15"
+
+[node name="ConstitutionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Stamina: 12"
+
+[node name="DexterityLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Agility: 18"
+
+[node name="LuckLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Luck: 10"
+
+[node name="ArmorLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Armor: 5"
+
+[node name="PerksContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.083
+anchor_top = 0.727
+anchor_right = 0.931
+anchor_bottom = 0.949
+offset_left = 0.0999985
+offset_top = 0.0159912
+offset_right = -0.299988
+offset_bottom = -0.00802612
+grow_horizontal = 2
+theme_override_constants/separation = 5
+
+[node name="HealthBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent" instance=ExtResource("22_healthbar")]
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.097
+anchor_top = 0.628
+anchor_right = 0.463
+anchor_bottom = 0.679
+offset_left = -0.1
+offset_top = -0.17601
+offset_right = 0.0999908
+offset_bottom = -0.167999
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ArenaOpponent1" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer" instance=ExtResource("27_arena_opponent")]
-layout_mode = 1
-
-[node name="ArenaOpponent2" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer" instance=ExtResource("27_arena_opponent")]
+[node name="ArenaOpponent2" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer" node_paths=PackedStringArray("avatar_instance", "name_label", "rank_label", "strength_label", "constitution_label", "dexterity_label", "luck_label", "armor_label", "active_effects_container")]
 visible = false
+custom_minimum_size = Vector2(300, 450)
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+script = ExtResource("31_a2m5q")
+perk_mini_scene = ExtResource("32_lknxd")
+avatar_instance = NodePath("AspectRatioContainer/ImagePanel/AvatarInstance")
+name_label = NodePath("EnemyName")
+rank_label = NodePath("RankLabel")
+strength_label = NodePath("StatsContainer/StrengthLabel")
+constitution_label = NodePath("StatsContainer/ConstitutionLabel")
+dexterity_label = NodePath("StatsContainer/DexterityLabel")
+luck_label = NodePath("StatsContainer/LuckLabel")
+armor_label = NodePath("StatsContainer/ArmorLabel")
+active_effects_container = NodePath("PerksContainer")
 
-[node name="ArenaOpponent3" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer" instance=ExtResource("27_arena_opponent")]
-visible = false
+[node name="EnemyName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2"]
 layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.05
+anchor_right = 0.9
+anchor_bottom = 0.15
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 28
+text = "ENEMY 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RankLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.15
+anchor_right = 0.9
+anchor_bottom = 0.2
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Novice (8500)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.2
+anchor_right = 0.7
+anchor_bottom = 0.6
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ImagePanel" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2/AspectRatioContainer"]
+layout_mode = 2
+texture = ExtResource("54_b1mpw")
+expand_mode = 1
+
+[node name="AvatarInstance" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2/AspectRatioContainer/ImagePanel" instance=ExtResource("22_avatar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+
+[node name="StatsContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.093
+anchor_top = 0.662
+anchor_right = 0.949
+anchor_bottom = 0.803
+offset_left = 0.149998
+offset_top = 0.199951
+offset_right = -0.0500183
+offset_bottom = 0.299988
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 5
+columns = 3
+
+[node name="StrengthLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "STR: 15"
+horizontal_alignment = 1
+
+[node name="ConstitutionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "CON: 12"
+horizontal_alignment = 1
+
+[node name="DexterityLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "DEX: 18"
+horizontal_alignment = 1
+
+[node name="LuckLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "LCK: 10"
+horizontal_alignment = 1
+
+[node name="ArmorLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "ARM: 5"
+horizontal_alignment = 1
+
+[node name="PerksContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.084
+anchor_top = 0.824
+anchor_right = 0.931
+anchor_bottom = 0.979
+offset_left = 0.199997
+offset_top = 0.399963
+offset_right = 0.0499878
+offset_bottom = -0.100037
+grow_horizontal = 2
+theme_override_constants/separation = 5
+
+[node name="ArenaOpponent3" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer" node_paths=PackedStringArray("avatar_instance", "name_label", "rank_label", "strength_label", "constitution_label", "dexterity_label", "luck_label", "armor_label", "active_effects_container")]
+visible = false
+custom_minimum_size = Vector2(300, 450)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+script = ExtResource("31_a2m5q")
+perk_mini_scene = ExtResource("32_lknxd")
+avatar_instance = NodePath("AspectRatioContainer/ImagePanel/AvatarInstance")
+name_label = NodePath("EnemyName")
+rank_label = NodePath("RankLabel")
+strength_label = NodePath("StatsContainer/StrengthLabel")
+constitution_label = NodePath("StatsContainer/ConstitutionLabel")
+dexterity_label = NodePath("StatsContainer/DexterityLabel")
+luck_label = NodePath("StatsContainer/LuckLabel")
+armor_label = NodePath("StatsContainer/ArmorLabel")
+active_effects_container = NodePath("PerksContainer")
+
+[node name="EnemyName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.05
+anchor_right = 0.9
+anchor_bottom = 0.15
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 28
+text = "ENEMY 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RankLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.15
+anchor_right = 0.9
+anchor_bottom = 0.2
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Novice (8500)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.2
+anchor_right = 0.7
+anchor_bottom = 0.6
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ImagePanel" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3/AspectRatioContainer"]
+layout_mode = 2
+texture = ExtResource("54_b1mpw")
+expand_mode = 1
+
+[node name="AvatarInstance" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3/AspectRatioContainer/ImagePanel" instance=ExtResource("22_avatar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+
+[node name="StatsContainer" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.093
+anchor_top = 0.662
+anchor_right = 0.949
+anchor_bottom = 0.803
+offset_left = 0.149998
+offset_top = 0.199951
+offset_right = -0.0500183
+offset_bottom = 0.299988
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 5
+columns = 3
+
+[node name="StrengthLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "STR: 15"
+horizontal_alignment = 1
+
+[node name="ConstitutionLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "CON: 12"
+horizontal_alignment = 1
+
+[node name="DexterityLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "DEX: 18"
+horizontal_alignment = 1
+
+[node name="LuckLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "LCK: 10"
+horizontal_alignment = 1
+
+[node name="ArmorLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "ARM: 5"
+horizontal_alignment = 1
+
+[node name="PerksContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.084
+anchor_top = 0.824
+anchor_right = 0.931
+anchor_bottom = 0.979
+offset_left = 0.199997
+offset_top = 0.399963
+offset_right = 0.0499878
+offset_bottom = -0.100037
+grow_horizontal = 2
+theme_override_constants/separation = 5
 
 [node name="PrevButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena"]
 layout_mode = 1
