@@ -5537,7 +5537,7 @@ mouse_filter = 1
 text = "-"
 horizontal_alignment = 2
 
-[node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("ui_size_dropdown", "autoskip_checkbox")]
+[node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("ui_size_dropdown", "autoskip_checkbox", "disable_adds")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5547,7 +5547,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("37_settings")
 ui_size_dropdown = NodePath("Video/UISize/OptionButton")
-autoskip_checkbox = NodePath("Gameplay/AutoSkip/AutoskipButton")
+autoskip_checkbox = NodePath("Gameplay/QuestAutoSkip/CheckBox")
+disable_adds = NodePath("Gameplay/DisableAds/CheckButton")
 
 [node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
 layout_mode = 1
@@ -5600,18 +5601,7 @@ text = "Disable Ads"
 [node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/DisableAds"]
 layout_mode = 2
 focus_mode = 0
-
-[node name="AutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/AutoSkip"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Auto-Skip Dialogues"
-
-[node name="AutoskipButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/AutoSkip"]
-layout_mode = 2
-focus_mode = 0
+toggle_mode = false
 
 [node name="QuestAutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
 layout_mode = 2
@@ -5621,7 +5611,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Quest Auto-Skip (VIP)"
 
-[node name="CheckBox" type="CheckBox" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/QuestAutoSkip"]
+[node name="CheckBox" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/QuestAutoSkip"]
 layout_mode = 2
 focus_mode = 0
 

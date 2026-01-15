@@ -2,6 +2,7 @@ extends Panel
 
 @export var ui_size_dropdown: OptionButton
 @export var autoskip_checkbox: CheckButton
+@export var disable_adds: CheckButton
 
 # Font size presets for small, medium, large
 const FONT_SIZES = {
