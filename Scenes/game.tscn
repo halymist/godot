@@ -48,7 +48,7 @@
 [ext_resource type="Texture2D" uid="uid://d7skxybllre3" path="res://assets/images/ui/arena_full.png" id="37_b1mpw"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
-[ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
+[ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/Quest.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cagmx7314xoes" path="res://assets/images/ui/shared_char_bg.png" id="38_ff75x"]
 [ext_resource type="PackedScene" uid="uid://dtcmv6gcik5pa" path="res://Scenes/character_display.tscn" id="39_bchkn"]
 [ext_resource type="Texture2D" uid="uid://sxpgeuuomsc1" path="res://assets/images/ui/button_texture.png" id="39_umggo"]

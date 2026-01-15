@@ -43,3 +43,24 @@ enum RequirementType {
 # Unified requirement system
 @export var required_type: RequirementType = RequirementType.NONE
 @export var required_amount: int = 0
+
+# Reward system
+enum RewardType {
+	NONE,
+	SILVER,
+	ITEM,
+	PERK,
+	STRENGTH,
+	STAMINA,
+	AGILITY,
+	LUCK,
+	ARMOR,
+	MIN_DAMAGE,
+	MAX_DAMAGE,
+	TALENT_POINT,
+	POTION,
+	BLESSING
+}
+
+@export var reward_type: RewardType = RewardType.NONE
+@export var reward_amount: int = 0

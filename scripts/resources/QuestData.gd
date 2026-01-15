@@ -8,6 +8,5 @@ extends Resource
 
 # Flat quest structure
 @export_multiline var initial_text: String = ""  # Starting text
-@export var initial_reward: QuestReward = null  # Reward given at start (if any)
 @export var options: Array[QuestOption] = []  # ALL options for this quest
 @export var initially_visible_options: Array[int] = []  # Which options show at start

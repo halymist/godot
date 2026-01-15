@@ -161,12 +161,6 @@ func display_quest_with_text(text: String):
 	entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
 	entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	
-	# Display rewards if present
-	display_rewards(current_quest)
-	
-	# Apply rewards to player
-	apply_rewards(current_quest)
-	
 	# Update options based on visible_option_ids
 	clear_options()
 	if current_quest.options:
@@ -188,157 +182,123 @@ func create_quest_entry(text: String) -> Control:
 	label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	return label
 
-func display_rewards(quest_data: QuestData):
-	"""Display rewards in the reward label"""
-	if not reward_label or not quest_data or not quest_data.initial_reward:
-		if reward_label:
-			reward_label.text = ""
-		return
-	
-	var reward = quest_data.initial_reward
-	var reward_parts = []
-	
-	# Check each reward type
-	if reward.silver > 0:
-		reward_parts.append(str(reward.silver) + " silver")
-	
-	if reward.item_id > 0:
-		var item_resource = GameInfo.items_db.get_item_by_id(reward.item_id)
-		if item_resource:
-			reward_parts.append(item_resource.item_name + " (item)")
-		else:
-			reward_parts.append("Item #" + str(reward.item_id) + " (item)")
-	
-	if reward.perk_id > 0:
-		var perk_resource = GameInfo.perks_db.get_perk_by_id(reward.perk_id) if GameInfo.perks_db else null
-		if perk_resource:
-			reward_parts.append(perk_resource.perk_name + " (perk)")
-		else:
-			reward_parts.append("Perk #" + str(reward.perk_id) + " (perk)")
-	
-	# Stat boosts (scaled by 2% per day)
-	var server_day = GameInfo.current_player.server_day if GameInfo.current_player else 1
-	if reward.strength_boost > 0:
-		var scaled = int(reward.strength_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " strength")
-	if reward.stamina_boost > 0:
-		var scaled = int(reward.stamina_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " stamina")
-	if reward.agility_boost > 0:
-		var scaled = int(reward.agility_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " agility")
-	if reward.luck_boost > 0:
-		var scaled = int(reward.luck_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " luck")
-	if reward.armor_boost > 0:
-		var scaled = int(reward.armor_boost * pow(1.02, server_day - 1))
-		reward_parts.append(str(scaled) + " armor")
-	
-	# Talent points (not scaled)
-	if reward.talent_points > 0:
-		reward_parts.append(str(reward.talent_points) + " talent point" + ("s" if reward.talent_points > 1 else ""))
-	
-	# Display rewards
-	if reward_parts.size() > 0:
-		reward_label.text = "You recieve " + ", ".join(reward_parts) + ".\n"
-	else:
+func apply_option_reward(option: QuestOption):
+	"""Apply reward from a quest option to the player"""
+	if option.reward_type == QuestOption.RewardType.NONE or option.reward_amount == 0:
 		reward_label.text = ""
-
-func apply_rewards(quest_data: QuestData):
-	"""Apply rewards to the player"""
-	if not quest_data or not quest_data.initial_reward:
 		return
 	
-	var reward = quest_data.initial_reward
+	if not GameInfo.current_player:
+		return
 	
-	# Silver reward
-	if reward.silver > 0:
-		print("REWARD: Awarding ", reward.silver, " silver")
-		if UIManager.instance:
-			UIManager.instance.update_silver(reward.silver)
-		if GameInfo.current_player:
-			GameInfo.current_player.silver += reward.silver
+	var server_day = GameInfo.current_player.server_day
+	var scaled_amount = option.reward_amount
+	var reward_text = ""
 	
-	# Stat boosts (scaled by 2% per day)
-	if GameInfo.current_player:
-		var server_day = GameInfo.current_player.server_day
-		if reward.strength_boost > 0:
-			var scaled = int(reward.strength_boost * pow(1.02, server_day - 1))
-			print("REWARD: Awarding ", scaled, " Strength (base: ", reward.strength_boost, ")")
-			GameInfo.current_player.strength += scaled
-		if reward.stamina_boost > 0:
-			var scaled = int(reward.stamina_boost * pow(1.02, server_day - 1))
-			print("REWARD: Awarding ", scaled, " Stamina (base: ", reward.stamina_boost, ")")
-			GameInfo.current_player.stamina += scaled
-		if reward.agility_boost > 0:
-			var scaled = int(reward.agility_boost * pow(1.02, server_day - 1))
-			print("REWARD: Awarding ", scaled, " Agility (base: ", reward.agility_boost, ")")
-			GameInfo.current_player.agility += scaled
-		if reward.luck_boost > 0:
-			var scaled = int(reward.luck_boost * pow(1.02, server_day - 1))
-			print("REWARD: Awarding ", scaled, " Luck (base: ", reward.luck_boost, ")")
-			GameInfo.current_player.luck += scaled
-		if reward.armor_boost > 0:
-			var scaled = int(reward.armor_boost * pow(1.02, server_day - 1))
-			print("REWARD: Awarding ", scaled, " Armor (base: ", reward.armor_boost, ")")
-			GameInfo.current_player.armor += scaled
-		
-		# Talent points (not scaled)
-		if reward.talent_points > 0:
-			print("REWARD: Awarding ", reward.talent_points, " Talent Points")
-			GameInfo.current_player.talent_points += reward.talent_points
-		
-		# Refresh stats display if any stat was boosted
-		if reward.strength_boost > 0 or reward.stamina_boost > 0 or reward.agility_boost > 0 or reward.luck_boost > 0 or reward.armor_boost > 0 or reward.talent_points > 0:
+	match option.reward_type:
+		QuestOption.RewardType.SILVER:
 			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-	
-	# Item reward
-	if reward.item_id > 0:
-		print("REWARD: Attempting to award Item ID: ", reward.item_id)
-		# Find empty bag slot (10-14)
-		var found_empty_slot = false
-		for bag_slot_id in range(10, 15):
-			var is_occupied = false
-			for existing_item in GameInfo.current_player.bag_slots:
-				if existing_item.bag_slot_id == bag_slot_id:
-					is_occupied = true
-					break
-			
-			if not is_occupied:
-				# Create simplified item (id, bag_slot_id, day)
-				var new_item = GameInfo.Item.new({
-					"id": reward.item_id,
-					"bag_slot_id": bag_slot_id,
-					"day": GameInfo.current_player.server_day if GameInfo.current_player else 1
-				})
-				
-				GameInfo.current_player.bag_slots.append(new_item)
-				print("REWARD: Item ", new_item.item_name, " added to bag slot ", bag_slot_id)
-				found_empty_slot = true
-				
-				# Refresh bag UI
-				if UIManager.instance:
-					UIManager.instance.refresh_bags()
-				break
+				UIManager.instance.update_silver(option.reward_amount)
+			GameInfo.current_player.silver += option.reward_amount
+			reward_text = "You receive " + str(option.reward_amount) + " silver."
+			print("REWARD: Awarded ", option.reward_amount, " silver")
 		
-		if not found_empty_slot:
-			print("REWARD: No empty bag slot available for item ", reward.item_id)
-	
-	# Perk reward
-	if reward.perk_id > 0:
-		print("REWARD: Attempting to award Perk ID: ", reward.perk_id)
-		if GameInfo.current_player:
-			# Create new perk and add to perks array as inactive
+		QuestOption.RewardType.ITEM:
+			# Find empty bag slot (10-14)
+			var found_empty_slot = false
+			for slot_id in range(10, 15):
+				var existing_item = GameInfo.current_player.get_item_in_slot(slot_id)
+				if existing_item == null:
+					print("REWARD: Adding Item ID ", option.reward_amount, " to slot ", slot_id)
+					var new_item = GameInfo.InventoryItem.new({"item_id": option.reward_amount})
+					GameInfo.current_player.set_item_in_slot(slot_id, new_item)
+					found_empty_slot = true
+					var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
+					if item_resource:
+						reward_text = "You receive " + item_resource.item_name + "."
+					else:
+						reward_text = "You receive an item."
+					if UIManager.instance:
+						UIManager.instance.refresh_bags()
+					break
+			if not found_empty_slot:
+				reward_text = "Your bag is full!"
+				print("REWARD: No empty bag slot for item")
+		
+		QuestOption.RewardType.PERK:
 			var new_perk = GameInfo.Perk.new({
-				"id": reward.perk_id,
+				"id": option.reward_amount,
 				"active": false,
 				"slot": 0
 			})
 			GameInfo.current_player.perks.append(new_perk)
-			print("REWARD: Perk ", new_perk.perk_name, " added to inactive perks")		# Refresh the perks grid if it's open
-		if UIManager.instance:
-			UIManager.instance.refresh_perks()
+			var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
+			if perk_resource:
+				reward_text = "You receive the perk: " + perk_resource.perk_name + "."
+			else:
+				reward_text = "You receive a perk."
+			print("REWARD: Perk ", new_perk.perk_name, " added to inactive perks")
+			if UIManager.instance:
+				UIManager.instance.refresh_perks()
+		
+		QuestOption.RewardType.STRENGTH:
+			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.strength += scaled_amount
+			reward_text = "You receive " + str(scaled_amount) + " strength."
+			print("REWARD: Awarded ", scaled_amount, " Strength")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.STAMINA:
+			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.stamina += scaled_amount
+			reward_text = "You receive " + str(scaled_amount) + " stamina."
+			print("REWARD: Awarded ", scaled_amount, " Stamina")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.AGILITY:
+			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.agility += scaled_amount
+			reward_text = "You receive " + str(scaled_amount) + " agility."
+			print("REWARD: Awarded ", scaled_amount, " Agility")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.LUCK:
+			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.luck += scaled_amount
+			reward_text = "You receive " + str(scaled_amount) + " luck."
+			print("REWARD: Awarded ", scaled_amount, " Luck")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.ARMOR:
+			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.armor += scaled_amount
+			reward_text = "You receive " + str(scaled_amount) + " armor."
+			print("REWARD: Awarded ", scaled_amount, " Armor")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.TALENT_POINT:
+			GameInfo.current_player.talent_points += option.reward_amount
+			reward_text = "You receive " + str(option.reward_amount) + " talent point" + ("s" if option.reward_amount > 1 else "") + "."
+			print("REWARD: Awarded ", option.reward_amount, " Talent Points")
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		
+		QuestOption.RewardType.MIN_DAMAGE, QuestOption.RewardType.MAX_DAMAGE, \
+		QuestOption.RewardType.POTION, QuestOption.RewardType.BLESSING:
+			reward_text = "Reward type not yet implemented."
+			print("REWARD: Reward type not yet implemented: ", option.reward_type)
+	
+	# Display reward text
+	if reward_text != "":
+		reward_label.text = reward_text
+	else:
+		reward_label.text = ""
+
 func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""
 	if not options_container:
@@ -509,6 +469,9 @@ func _on_quest_option_pressed(option: QuestOption):
 		entry_tween.set_parallel(true)
 		entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
 		entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	
+	# 3b. Apply and display reward for this option
+	apply_option_reward(option)
 	
 	# 4. Always hide clicked option (exhausted)
 	visible_option_ids.erase(option.option_index)
