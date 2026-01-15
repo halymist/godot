@@ -1721,7 +1721,7 @@ constitution_label = NodePath("StatsContainer/ConstitutionLabel")
 dexterity_label = NodePath("StatsContainer/DexterityLabel")
 luck_label = NodePath("StatsContainer/LuckLabel")
 armor_label = NodePath("StatsContainer/ArmorLabel")
-active_effects_container = NodePath("PerksContainer")
+active_effects_container = NodePath("Effects")
 
 [node name="EnemyName" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
 layout_mode = 1
@@ -1775,11 +1775,12 @@ anchor_top = 0.15
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.523
-anchor_top = 0.289
+anchor_top = 0.27
 anchor_right = 0.95
 anchor_bottom = 0.8
 offset_left = 0.100006
-offset_top = -0.150002
+offset_top = 0.159996
+offset_bottom = 0.399994
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/h_separation = 20
@@ -1830,7 +1831,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 18
 text = "Armor: 5"
 
-[node name="PerksContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
+[node name="Effects" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.083
@@ -1842,7 +1843,7 @@ offset_top = 0.0159912
 offset_right = -0.299988
 offset_bottom = -0.00802612
 grow_horizontal = 2
-theme_override_constants/separation = 5
+columns = 6
 
 [node name="HealthBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent" instance=ExtResource("22_healthbar")]
 custom_minimum_size = Vector2(100, 20)

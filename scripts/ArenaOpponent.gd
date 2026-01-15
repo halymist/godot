@@ -18,7 +18,7 @@ var enemy_armor: int = 0
 @export var dexterity_label: Label
 @export var luck_label: Label
 @export var armor_label: Label
-@export var active_effects_container: HBoxContainer
+@export var active_effects_container: GridContainer
 
 var opponent_data = null
 
