@@ -114,4 +114,3 @@ func _on_twitter_pressed():
 	OS.shell_open(TWITTER_URL)
 	print("Opening Twitter...")
 	
-

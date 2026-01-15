@@ -465,9 +465,13 @@ class GamePlayer:
 		"""Calculate total stats: base + equipped items (including gems) + effect bonuses"""
 		var total_stats = get_base_stats()
 		
+		print("  get_total_stats for ", name, " - Base strength: ", total_stats.strength, ", bag_slots.size: ", bag_slots.size())
+		
 		# Add stats from equipped items (slots 0-9)
 		for item in bag_slots:
+			print("    Checking item: id=", item.id, " bag_slot_id=", item.bag_slot_id, " day=", item.day)
 			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
+				print("      Item IS equipped - strength=", item.strength)
 				# Item stats (already scaled by day/tempered)
 				total_stats.strength += item.strength
 				total_stats.stamina += item.stamina

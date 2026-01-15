@@ -22,15 +22,19 @@ func _ready():
 	# Build cards array from exports
 	cards = [arena_opponent1, arena_opponent2, arena_opponent3]
 	
-	_load_opponent_data()
 	_load_arena_background()
 	
 	prev_button.pressed.connect(_on_prev_pressed)
 	next_button.pressed.connect(_on_next_pressed)
 	fight_button.pressed.connect(_on_fight_pressed)
+	visibility_changed.connect(_on_visibility_changed)
 	
 	# Show first card
 	_update_display()
+
+func _on_visibility_changed():
+	if visible:
+		_load_opponent_data()
 
 func _load_opponent_data():
 	# Look up arena opponents by character_id

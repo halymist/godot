@@ -25,8 +25,8 @@ func generate_mock_player_data(player_name: String, rank: int, faction: int, hon
 		"potion": 0,  # No potion by default
 		"elixir": 0,
 		"bag_slots": [
-			{"id": 1, "bag_slot_id": 0},  # Basic helmet
-			{"id": 2, "bag_slot_id": 2} if rank <= 50 else {}  # Better players have chest armor
+			{"id": 1, "bag_slot_id": 0, "day": 30 + stat_bonus},  # Basic helmet with day scaling
+			{"id": 2, "bag_slot_id": 2, "day": 25 + stat_bonus} if rank <= 50 else {}  
 		],
 		"perks": [
 			{"id": 1, "active": true, "slot": 1} if rank <= 70 else {"id": 2, "active": true, "slot": 1}
@@ -47,7 +47,8 @@ func _ready():
 				"Player" + str(i),
 				i,  # rank
 				(i % 3) + 1,  # faction
-				10000 - (i * 50)  # honor
+				10000 - (i * 50),  # honor
+				10000 + i  # character_id (10000 + rank)
 			))
 
 
@@ -61,7 +62,7 @@ var mock_characters = [
 	"location": 1,
 	
 	# Character info
-	"character_id": 78,
+	"character_id": 10078,
 	"name": "TestPlayer",
 	"faction": 1,
 	"rank": 78,
@@ -147,7 +148,7 @@ var mock_characters = [
 				"points": 1
 			}
 	],
-	"arena_opponents": [5, 12, 25],  # Character IDs (10000 + rank)
+	"arena_opponents": [10005, 10012, 10025],  # Character IDs (10000 + rank)
 	"vendor_items": [1, 1, 1, 1, 1, 1, 1, 1],  # Items available for purchase
 	"enchanter_effects": [4, 5, 6, 7],  # Effect IDs available for enchanting
 	"rankings": [],  # Will be populated in _ready()
