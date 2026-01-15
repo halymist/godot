@@ -5565,8 +5565,8 @@ script = ExtResource("37_settings")
 ui_size_dropdown = NodePath("Video/UISize/OptionButton")
 autoskip_checkbox = NodePath("Gameplay/QuestAutoSkip/CheckBox")
 disable_ads_checkbox = NodePath("Gameplay/DisableAds/CheckButton")
-master_volume_slider = NodePath("Audio/Volume/HSlider")
-music_volume_slider = NodePath("Audio/MusicVolume/HSlider")
+master_volume_slider = NodePath("Audio/Volume/Master")
+music_volume_slider = NodePath("Audio/MusicVolume/Music")
 language_dropdown = NodePath("Gameplay/Language/OptionButton")
 
 [node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
@@ -5694,7 +5694,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Master Volume"
 
-[node name="HSlider" type="HSlider" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/Volume"]
+[node name="Master" type="HSlider" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/Volume"]
 layout_mode = 2
 value = 100.0
 
@@ -5705,17 +5705,16 @@ layout_mode = 2
 layout_mode = 2
 text = "Music Volume"
 
-[node name="HSlider" type="HSlider" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/MusicVolume"]
+[node name="Music" type="HSlider" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/MusicVolume"]
 layout_mode = 2
 value = 100.0
-editable = true
 
 [node name="HSeparator3" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 20.0
-offset_top = 420.0
+offset_top = 450.0
 offset_right = -20.0
 offset_bottom = 478.0
 grow_horizontal = 2

@@ -87,12 +87,6 @@ func _ready():
 	no_button.pressed.connect(_on_cancel_quest_no)
 	background_button.pressed.connect(_on_cancel_quest_no)
 	
-	# Don't try to access current_player or update UI until a character is selected
-	# The lobby panel will be shown first, and after character selection, UI will update
-	if GameInfo.current_player == null:
-		print("No character selected yet - waiting for lobby selection")
-		return
-	
 	# Initial currency display update
 	update_display()
 	
