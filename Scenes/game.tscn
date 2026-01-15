@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=111 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -199,6 +199,22 @@ script = ExtResource("68_2cns2")
 friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_disabled"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_hover"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_pressed"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_normal"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_disabled"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_hover"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_pressed"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_normal"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
@@ -5537,7 +5553,7 @@ mouse_filter = 1
 text = "-"
 horizontal_alignment = 2
 
-[node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("ui_size_dropdown", "autoskip_checkbox", "disable_adds")]
+[node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("ui_size_dropdown", "autoskip_checkbox", "disable_ads_checkbox", "master_volume_slider", "music_volume_slider", "language_dropdown")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5548,7 +5564,10 @@ grow_vertical = 2
 script = ExtResource("37_settings")
 ui_size_dropdown = NodePath("Video/UISize/OptionButton")
 autoskip_checkbox = NodePath("Gameplay/QuestAutoSkip/CheckBox")
-disable_adds = NodePath("Gameplay/DisableAds/CheckButton")
+disable_ads_checkbox = NodePath("Gameplay/DisableAds/CheckButton")
+master_volume_slider = NodePath("Audio/Volume/HSlider")
+music_volume_slider = NodePath("Audio/MusicVolume/HSlider")
+language_dropdown = NodePath("Gameplay/Language/OptionButton")
 
 [node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
 layout_mode = 1
@@ -5601,6 +5620,10 @@ text = "Disable Ads"
 [node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/DisableAds"]
 layout_mode = 2
 focus_mode = 0
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_disable_ads_disabled")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_disable_ads_hover")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_disable_ads_pressed")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_disable_ads_normal")
 toggle_mode = false
 
 [node name="QuestAutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
@@ -5614,6 +5637,10 @@ text = "Quest Auto-Skip (VIP)"
 [node name="CheckBox" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/QuestAutoSkip"]
 layout_mode = 2
 focus_mode = 0
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_autoskip_disabled")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_autoskip_hover")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_autoskip_pressed")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_autoskip_normal")
 
 [node name="Language" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
 layout_mode = 2
@@ -5672,18 +5699,16 @@ text = "Master Volume"
 layout_mode = 2
 value = 100.0
 
-[node name="DialogueToggle" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio"]
+[node name="MusicVolume" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/DialogueToggle"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/MusicVolume"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Enable Dialogue Sounds"
+text = "Music Volume"
 
-[node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/DialogueToggle"]
+[node name="HSlider" type="HSlider" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/MusicVolume"]
 layout_mode = 2
-focus_mode = 0
-button_pressed = true
+value = 100.0
 
 [node name="HSeparator3" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
 layout_mode = 1
@@ -5692,7 +5717,7 @@ anchor_right = 1.0
 offset_left = 20.0
 offset_top = 420.0
 offset_right = -20.0
-offset_bottom = 424.0
+offset_bottom = 478.0
 grow_horizontal = 2
 
 [node name="Video" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
@@ -5700,9 +5725,9 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 20.0
-offset_top = 440.0
+offset_top = 482.0
 offset_right = -20.0
-offset_bottom = 530.0
+offset_bottom = 613.0
 grow_horizontal = 2
 
 [node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Video"]
