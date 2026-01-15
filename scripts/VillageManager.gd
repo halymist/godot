@@ -9,7 +9,6 @@ var current_village_node: Control = null  # Current active village instance
 var current_building: Building = null
 var is_in_interior: bool = false
 var village_scroll_initialized: bool = false  # Track if village scroll has been centered initially
-var setup_complete: bool = false
 
 func _ready():
 	# Always connect to quest completed signal
@@ -27,10 +26,6 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	if setup_complete:
-		return
-	setup_complete = true
-	
 	print("=== VillageManager _setup START ===")
 	
 	# Don't initialize village until character is selected

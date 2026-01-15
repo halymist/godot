@@ -32,7 +32,6 @@ enum DisplayMode { PLAYER, ENEMY }
 
 # Currently displayed character (either player or enemy)
 var displayed_character: GameInfo.GamePlayer = null
-var setup_complete: bool = false
 
 func _ready():
 	# Always connect buttons
@@ -58,9 +57,6 @@ func _ready():
 		avatar_button.visible = false
 
 func _setup():
-	if setup_complete:
-		return
-	setup_complete = true
 	if GameInfo.current_player:
 		display_player()
 	print("CharacterDisplay: Setup complete")

@@ -22,7 +22,6 @@ extends Panel
 
 var selected_row = null
 var selected_player: GameInfo.GamePlayer = null
-var setup_complete: bool = false
 
 func _ready():
 	# Always connect buttons and signals
@@ -40,9 +39,6 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	if setup_complete:
-		return
-	setup_complete = true
 	populate_rankings()
 	print("Rankings: Setup complete")
 

@@ -15,7 +15,6 @@ var original_travel_end: float = 0.0
 # Travel info set when quest is accepted
 var travel_text: String
 var travel_duration: float
-var setup_complete: bool = false
 
 func _ready():
 	# Always connect buttons and signals
@@ -36,10 +35,6 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	if setup_complete:
-		return
-	setup_complete = true
-	
 	# Initialize if character is already selected
 	if GameInfo.current_player:
 		refresh_travel_state()

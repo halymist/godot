@@ -31,7 +31,6 @@ var current_quest: QuestData = null
 var visible_option_ids: Array[int] = []  # Currently visible option IDs
 var clicked_option_ids: Array[int] = []  # Track which options were clicked during quest
 var pending_combat_option: QuestOption = null  # Store option for after combat
-var setup_complete: bool = false
 
 # Reference to portrait for navigation
 @export var portrait: Control
@@ -52,9 +51,6 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	if setup_complete:
-		return
-	setup_complete = true
 	print("DynamicOptionsPanel: Setup complete")
 
 func _on_visibility_changed():
