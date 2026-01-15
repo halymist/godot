@@ -1844,7 +1844,7 @@ offset_top = 0.0159912
 offset_right = -0.299988
 offset_bottom = -0.00802612
 grow_horizontal = 2
-columns = 6
+columns = 7
 
 [node name="HealthBar" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena/CardContainer/ArenaOpponent" instance=ExtResource("22_healthbar")]
 custom_minimum_size = Vector2(100, 20)

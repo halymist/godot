@@ -19,6 +19,7 @@ var enemy_armor: int = 0
 @export var luck_label: Label
 @export var armor_label: Label
 @export var active_effects_container: GridContainer
+@export var damage_spread_label: Label
 
 var opponent_data = null
 
@@ -28,11 +29,11 @@ func _ready():
 func _update_display():
 	name_label.text = enemy_name.to_upper()
 	rank_label.text = "Novice (" + str(enemy_rank) + ")"
-	strength_label.text = "STR: " + str(enemy_strength)
-	constitution_label.text = "STA: " + str(enemy_stamina)
-	dexterity_label.text = "AGI: " + str(enemy_agility)
-	luck_label.text = "LCK: " + str(enemy_luck)
-	armor_label.text = "ARM: " + str(enemy_armor)
+	strength_label.text = "Strength: " + str(enemy_strength)
+	constitution_label.text = "Stamina: " + str(enemy_stamina)
+	dexterity_label.text = "Agility: " + str(enemy_agility)
+	luck_label.text = "Luck: " + str(enemy_luck)
+	armor_label.text = "Armor: " + str(enemy_armor)
 	
 	_update_active_effects_display()
 

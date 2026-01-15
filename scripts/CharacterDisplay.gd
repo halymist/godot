@@ -34,26 +34,15 @@ enum DisplayMode { PLAYER, ENEMY }
 var displayed_character: GameInfo.GamePlayer = null
 
 func _ready():
-	# Connect buttons that work for both player and enemy modes
-	if details_button:
-		details_button.pressed.connect(_on_details_pressed)
-	if talents_button:
-		talents_button.pressed.connect(_on_talents_pressed)
+	details_button.pressed.connect(_on_details_pressed)
+	talents_button.pressed.connect(_on_talents_pressed)
 	
 	if display_mode == DisplayMode.PLAYER:
-		# Connect button signals for player mode only
-		if avatar_button:
-			avatar_button.pressed.connect(_on_avatar_pressed)
-		
-		# Display current player if already selected
-		if GameInfo.current_player != null:
+		avatar_button.pressed.connect(_on_avatar_pressed)
+		if GameInfo.current_player:
 			display_player()
 	else:
-		# In enemy mode, hide only avatar button (talents can be viewed)
-		if talents_button:
-			talents_button.visible = true  # Allow viewing enemy talents
-		if avatar_button:
-			avatar_button.visible = false
+		avatar_button.visible = false
 
 func display_player():
 	"""Display the current player"""
@@ -62,37 +51,16 @@ func display_player():
 
 func display_enemy(enemy_name: String):
 	"""Display an enemy by name from GameInfo.enemy_players"""
-	print("CharacterDisplay: display_enemy called with name: ", enemy_name)
-	print("CharacterDisplay: enemy_players array size: ", GameInfo.enemy_players.size())
-	
-	displayed_character = null
-	
-	# Find enemy in enemy_players array
 	for enemy in GameInfo.enemy_players:
 		if enemy.name == enemy_name:
 			displayed_character = enemy
-			print("CharacterDisplay: Found enemy: ", enemy.name)
-			break
-	
-	if displayed_character == null:
-		print("ERROR: CharacterDisplay: Enemy not found: ", enemy_name)
-		return
-	
-	print("CharacterDisplay: Calling refresh_display for enemy: ", displayed_character.name)
-	refresh_display()
+			refresh_display()
+			return
 
 func refresh_display():
 	"""Refresh all stats and effects for the displayed character"""
-	print("CharacterDisplay: refresh_display called")
-	if displayed_character == null:
-		print("ERROR: CharacterDisplay: displayed_character is null in refresh_display")
-		return
-	
-	print("CharacterDisplay: Updating stats for: ", displayed_character.name)
 	update_stats()
-	print("CharacterDisplay: Updating active effects for: ", displayed_character.name)
 	refresh_active_effects()
-	print("CharacterDisplay: Updating equipment for: ", displayed_character.name)
 	update_equipment()
 
 # Called when character is selected or changed
@@ -106,51 +74,30 @@ func stats_changed(_stats: Dictionary):
 
 func update_stats():
 	"""Update stat labels for the displayed character"""
-	if displayed_character == null:
-		print("ERROR: CharacterDisplay: displayed_character is null in update_stats")
-		return
-	
-	print("CharacterDisplay: update_stats - getting total stats for: ", displayed_character.name)
 	var total_stats = displayed_character.get_total_stats()
 	
-	print("CharacterDisplay: update_stats - setting labels")
-	player_name_label.text = str(total_stats.name)
+	player_name_label.text = total_stats.name
 	rank_label.text = displayed_character.get_rank_name() + " (" + str(displayed_character.rank) + ")"
 	faction_label.text = displayed_character.get_faction_name()
-	
-	print("CharacterDisplay: Stats - Str:", total_stats.strength, " Sta:", total_stats.stamina, " Agi:", total_stats.agility)
-
-	
-	# Display already-calculated stats from GameInfo
 	strength_label.text = str(total_stats.strength)
 	stamina_label.text = str(total_stats.stamina)
 	agility_label.text = str(total_stats.agility)
 	luck_label.text = str(total_stats.luck)
-	armor_label.text = str(total_stats.armor)	
-
+	armor_label.text = str(total_stats.armor)
 	
-	# Calculate and display health bar (stamina * 10)
-	if health_bar:
-		var max_health = total_stats.stamina * 10
-		health_bar.max_value = max_health
-		health_bar.value = max_health
-		if health_bar.has_node("HealthLabel"):
-			health_bar.get_node("HealthLabel").text = str(max_health)
+	# Health bar (stamina * 10)
+	var max_health = total_stats.stamina * 10
+	health_bar.max_value = max_health
+	health_bar.value = max_health
+	if health_bar.has_node("HealthLabel"):
+		health_bar.get_node("HealthLabel").text = str(max_health)
 	
-	# Calculate and display damage spread (total damage stats * strength)
-	if damage_spread_label:
-		var min_damage = total_stats.damage_min * total_stats.strength
-		var max_damage = total_stats.damage_max * total_stats.strength
-		damage_spread_label.text = str(min_damage) + " - " + str(max_damage)
+	# Damage spread (total damage * strength)
+	var damage = displayed_character.get_damage_range()
+	damage_spread_label.text = str(damage.min) + " - " + str(damage.max)
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs, perks)"""
-	if displayed_character == null:
-		return
-		
-	print("CharacterDisplay: Updating active perks and effects...")
-	
-	# Clear existing icons
 	for child in active_perks_display.get_children():
 		child.queue_free()
 	
@@ -177,30 +124,20 @@ func refresh_active_effects():
 	
 	# Get active perks from GameInfo
 	var active_perks = displayed_character.get_active_perks()
-	print("CharacterDisplay: Found ", active_perks.size(), " active perks")
 	
 	# Create icon for each active perk
 	for perk in active_perks:
-		print("CharacterDisplay: Creating icon for: ", perk.perk_name)
-		
 		var perk_icon = perk_mini_scene.instantiate()
-		# Store perk data in the icon for hover functionality
 		perk_icon.set_meta("perk_data", perk)
 		
-		# Set the perk texture if available
 		var texture_rect = perk_icon.get_node("TextureRect")
 		if texture_rect and perk.texture:
 			texture_rect.texture = perk.texture
 		
-		# Enable mouse detection for hover
 		perk_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-		
-		# Connect hover signals
 		perk_icon.mouse_entered.connect(_on_perk_hover_start.bind(perk_icon))
 		perk_icon.mouse_exited.connect(_on_perk_hover_end)
-		
 		active_perks_display.add_child(perk_icon)
-		print("CharacterDisplay: Added perk icon to HBox")
 	
 	# Refresh stats after updating effects (only for player mode)
 	if display_mode == DisplayMode.PLAYER:
@@ -226,29 +163,21 @@ func create_consumable_display(icon_texture: Texture2D, consumable_type: String,
 	consumable_icon.mouse_exited.connect(_on_perk_hover_end)
 	
 	active_perks_display.add_child(consumable_icon)
-	print("CharacterDisplay: Added consumable icon to HBox")
 
 func create_blessing_display(perk: PerkResource, effect: EffectResource):
 	"""Create a display for an active blessing (from perks.tres)"""
 	var blessing_icon = perk_mini_scene.instantiate()
-	# Store perk and effect data for hover functionality
 	blessing_icon.set_meta("blessing_perk", perk)
 	blessing_icon.set_meta("blessing_effect", effect)
 	
-	# Use the icon from the perk (not the effect)
 	var texture_rect = blessing_icon.get_node("TextureRect")
 	if texture_rect and perk.icon:
 		texture_rect.texture = perk.icon
 	
-	# Enable mouse detection for hover
 	blessing_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-	
-	# Connect hover signals for blessing
 	blessing_icon.mouse_entered.connect(_on_blessing_hover_start.bind(blessing_icon))
 	blessing_icon.mouse_exited.connect(_on_perk_hover_end)
-	
 	active_perks_display.add_child(blessing_icon)
-	print("CharacterDisplay: Added blessing icon to HBox")
 
 func _on_perk_hover_start(perk_icon):
 	var perk_data = perk_icon.get_meta("perk_data")
@@ -364,40 +293,22 @@ func _on_avatar_pressed():
 
 func update_equipment():
 	"""Update equipment slots from displayed character's bag_slots (equipment: 0-8)"""
-	if displayed_character == null:
-		print("CharacterDisplay: update_equipment - no displayed_character")
-		return
-	
-	if equipment_slots.size() == 0:
-		print("CharacterDisplay: update_equipment - no equipment_slots configured")
-		return
-	
-	print("CharacterDisplay: Updating equipment for: ", displayed_character.name)
-	
 	# Clear all equipment slots
 	for slot in equipment_slots:
-		if slot.has_method("clear_slot"):
-			slot.clear_slot()
+		slot.clear_slot()
 	
 	# Display items from bag_slots (0-8 are equipment)
 	for item in displayed_character.bag_slots:
 		var bag_slot_id = item.bag_slot_id
-		
-		# Only equipment slots (0-8)
 		if bag_slot_id >= 0 and bag_slot_id <= 8 and bag_slot_id < equipment_slots.size():
 			var icon = item_prefab.instantiate()
 			icon.set_item_data(item)
 			
-			# Disable dragging for enemy mode
 			if display_mode == DisplayMode.ENEMY:
-				if icon.has_method("disable_dragging"):
-					icon.disable_dragging()
-					print("CharacterDisplay: Disabled dragging for enemy equipment item in slot ", bag_slot_id)
+				icon.disable_dragging()
 			
 			equipment_slots[bag_slot_id].add_child(icon)
-			print("CharacterDisplay: Added item to equipment slot ", bag_slot_id)
 	
 	# Update slot appearances
 	for slot in equipment_slots:
-		if slot.has_method("update_slot_appearance"):
-			slot.update_slot_appearance()
+		slot.update_slot_appearance()

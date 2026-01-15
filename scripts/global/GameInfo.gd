@@ -497,6 +497,14 @@ class GamePlayer:
 		
 		return total_stats
 	
+	func get_damage_range() -> Dictionary:
+		"""Calculate final damage range (total damage stats * strength)"""
+		var total_stats = get_total_stats()
+		return {
+			"min": total_stats.damage_min * total_stats.strength,
+			"max": total_stats.damage_max * total_stats.strength
+		}
+	
 	func get_total_effects() -> Dictionary:
 		# Initialize effect totals for all 20 effects (IDs 1-20)
 		var total_effects = {}
