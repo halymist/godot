@@ -47,7 +47,7 @@ func populate_rankings():
 	# Populate with unified rankings list (includes current_player, no duplicates)
 	for player in GameInfo.rankings_players:
 		var row = ranking_row_scene.instantiate()
-		row.set_data(player.rank, player.name, player.faction, player.profession, player.honor)
+		row.set_data(player.rank, player.name, player.faction, player.honor)
 		row.row_clicked.connect(_on_row_clicked)
 		row.row_double_clicked.connect(_on_row_double_clicked)
 		table_content.add_child(row)

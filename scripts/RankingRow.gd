@@ -27,11 +27,10 @@ func _ready():
 	click_button.pressed.connect(_on_clicked)
 	update_display()
 
-func set_data(p_rank: int, p_player_name: String, p_faction: int, p_profession: int, p_honor: int):
+func set_data(p_rank: int, p_player_name: String, p_faction: int, p_honor: int):
 	rank = p_rank
 	player_name = p_player_name
 	faction = p_faction
-	profession = p_profession
 	honor = p_honor
 	update_display()
 
