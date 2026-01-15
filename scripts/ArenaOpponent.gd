@@ -35,6 +35,11 @@ func _update_display():
 	luck_label.text = "Luck: " + str(enemy_luck)
 	armor_label.text = "Armor: " + str(enemy_armor)
 	
+	# Update damage spread if opponent_data is available
+	if opponent_data and damage_spread_label:
+		var damage = opponent_data.get_damage_range()
+		damage_spread_label.text = str(damage.min) + " - " + str(damage.max)
+	
 	_update_active_effects_display()
 
 func set_enemy_data(id: int, enemy_name_text: String, strength: int, stamina: int, agility: int, luck: int, armor: int):
