@@ -16,18 +16,15 @@ var cards: Array[Control] = []
 
 # For slide animations
 var is_animating: bool = false
+var slide_tween: Tween  # Reusable tween for card animations
 
 func _ready():
 	# Build cards array from exports
 	cards = [arena_opponent1, arena_opponent2, arena_opponent3]
 	
-	# Set up enemy data from GameInfo
 	_load_opponent_data()
-	
-	# Load arena background
 	_load_arena_background()
 	
-	# Connect button signals
 	prev_button.pressed.connect(_on_prev_pressed)
 	next_button.pressed.connect(_on_next_pressed)
 	fight_button.pressed.connect(_on_fight_pressed)
@@ -129,23 +126,25 @@ func _slide_to_card(new_index: int, sliding_left: bool):
 	new_card.position.x = start_x
 	new_card.visible = true
 	
-	# Create tweens for smooth sliding
-	var tween = create_tween()
-	tween.set_parallel(true)
+	# Stop any existing tween and create new one
+	if slide_tween:
+		slide_tween.kill()
+	slide_tween = create_tween()
+	slide_tween.set_parallel(true)
 	
 	# Slide current card out
 	var end_x = -card_width * 1.2 if not sliding_left else card_width * 1.2
-	tween.tween_property(current_card, "position:x", end_x, slide_duration)
+	slide_tween.tween_property(current_card, "position:x", end_x, slide_duration)
 	
 	# Slide new card in from offscreen to center
-	tween.tween_property(new_card, "position:x", 0, slide_duration)
+	slide_tween.tween_property(new_card, "position:x", 0, slide_duration)
 	
 	# Set easing for smoother animation
-	tween.set_trans(Tween.TRANS_QUART)
-	tween.set_ease(Tween.EASE_OUT)
+	slide_tween.set_trans(Tween.TRANS_QUART)
+	slide_tween.set_ease(Tween.EASE_OUT)
 	
 	# When animation completes
-	await tween.finished
+	await slide_tween.finished
 	
 	# Hide the old card and reset its position
 	current_card.visible = false
