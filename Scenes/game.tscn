@@ -1639,7 +1639,7 @@ offset_bottom = 175.0
 size_flags_horizontal = 3
 text = "No"
 
-[node name="Arena" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="Arena" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("background", "card_container", "prev_button", "next_button", "fight_button", "arena_opponent1", "arena_opponent2", "arena_opponent3")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1649,6 +1649,28 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fc0e3")
 script = ExtResource("26_arena_slideshow")
+background = NodePath("Bakcground")
+card_container = NodePath("CardContainer")
+prev_button = NodePath("PrevButton")
+next_button = NodePath("NextButton")
+fight_button = NodePath("FightButton")
+arena_opponent1 = NodePath("CardContainer/ArenaOpponent1")
+arena_opponent2 = NodePath("CardContainer/ArenaOpponent2")
+arena_opponent3 = NodePath("CardContainer/ArenaOpponent3")
+
+[node name="Bakcground" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -315.0
+offset_right = 315.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("41_w4j8i")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="CardContainer" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/Arena"]
 layout_mode = 1

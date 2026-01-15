@@ -2,42 +2,35 @@ extends Panel
 
 # Arena slideshow for enemy cards
 @export var slide_duration: float = 0.3
+@export var background: TextureRect
+@export var card_container: Control
+@export var prev_button: Button
+@export var next_button: Button
+@export var fight_button: Button
+@export var arena_opponent1: Control
+@export var arena_opponent2: Control
+@export var arena_opponent3: Control
 
 var current_index: int = 0
 var cards: Array[Control] = []
-var card_container: Control
-var prev_button: Button
-var next_button: Button
-var fight_button: Button
 
 # For slide animations
 var is_animating: bool = false
 
 func _ready():
-	# Get references to scene nodes
-	card_container = $CardContainer
-	prev_button = $PrevButton
-	next_button = $NextButton
-	fight_button = $FightButton
-	
-	# Get the arena opponent cards from the scene
-	cards = [
-		$CardContainer/ArenaOpponent1,
-		$CardContainer/ArenaOpponent2,
-		$CardContainer/ArenaOpponent3
-	]
+	# Build cards array from exports
+	cards = [arena_opponent1, arena_opponent2, arena_opponent3]
 	
 	# Set up enemy data from GameInfo
-	if GameInfo.current_player:
-		_load_opponent_data()
+	_load_opponent_data()
+	
+	# Load arena background
+	_load_arena_background()
 	
 	# Connect button signals
 	prev_button.pressed.connect(_on_prev_pressed)
 	next_button.pressed.connect(_on_next_pressed)
 	fight_button.pressed.connect(_on_fight_pressed)
-	
-	# Style buttons
-	_style_buttons()
 	
 	# Show first card
 	_update_display()
@@ -70,43 +63,15 @@ func _load_opponent_data():
 	else:
 		print("Warning: No arena opponents data available")
 
-func _style_buttons():
-	var button_style = StyleBoxFlat.new()
-	button_style.bg_color = Color(0.2, 0.2, 0.3, 0.9)
-	button_style.border_color = Color(0.6, 0.6, 0.8, 1.0)
-	button_style.border_width_left = 3
-	button_style.border_width_right = 3
-	button_style.border_width_top = 3
-	button_style.border_width_bottom = 3
-	button_style.corner_radius_top_left = 10
-	button_style.corner_radius_top_right = 10
-	button_style.corner_radius_bottom_left = 10
-	button_style.corner_radius_bottom_right = 10
-	button_style.shadow_color = Color(0, 0, 0, 0.5)
-	button_style.shadow_size = 5
-	button_style.shadow_offset = Vector2(2, 2)
+func _load_arena_background():
+	"""Load arena background texture from settlements database"""
+	var settlement_id = GameInfo.current_player.location
+	var settlement = GameInfo.settlements_db.get_location_by_id(settlement_id)
 	
-	prev_button.add_theme_stylebox_override("normal", button_style)
-	next_button.add_theme_stylebox_override("normal", button_style)
-	
-	# Hover style
-	var hover_style = button_style.duplicate()
-	hover_style.bg_color = Color(0.3, 0.3, 0.4, 1.0)
-	hover_style.border_color = Color(0.8, 0.8, 1.0, 1.0)
-	
-	prev_button.add_theme_stylebox_override("hover", hover_style)
-	next_button.add_theme_stylebox_override("hover", hover_style)
-	
-	# Fight button gets a special red style
-	var fight_style = button_style.duplicate()
-	fight_style.bg_color = Color(0.6, 0.2, 0.2, 0.9)
-	fight_style.border_color = Color(1.0, 0.4, 0.4, 1.0)
-	fight_button.add_theme_stylebox_override("normal", fight_style)
-	
-	var fight_hover_style = fight_style.duplicate()
-	fight_hover_style.bg_color = Color(0.8, 0.3, 0.3, 1.0)
-	fight_hover_style.border_color = Color(1.0, 0.6, 0.6, 1.0)
-	fight_button.add_theme_stylebox_override("hover", fight_hover_style)
+	if settlement and settlement.arena_background:
+		background.texture = settlement.arena_background
+	else:
+		print("Warning: No arena background found for settlement ", settlement_id)
 
 func _on_fight_pressed():
 	if GameInfo.arena_opponents.size() > current_index:
