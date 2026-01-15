@@ -1,8 +1,8 @@
 @tool
 extends Panel
 
-signal row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int)
-signal row_double_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int)
+signal row_clicked(rank: int, player_name: String, faction: int, honor: int)
+signal row_double_clicked(rank: int, player_name: String, faction: int, honor: int)
 
 # Data
 var rank: int = 0
@@ -53,9 +53,9 @@ func _on_clicked():
 	
 	if time_since_last_click < double_click_threshold:
 		# Double-click detected
-		row_double_clicked.emit(rank, player_name, faction, profession, honor)
+		row_double_clicked.emit(rank, player_name, faction, honor)
 		last_click_time = 0.0  # Reset to prevent triple-click
 	else:
 		# Single click
-		row_clicked.emit(rank, player_name, faction, profession, honor)
+		row_clicked.emit(rank, player_name, faction, honor)
 		last_click_time = current_time

@@ -33,10 +33,8 @@ func _ready():
 
 func _on_visibility_changed():
 	if visible:
-		# Always reset to current player when panel opens
-		# Wait for layout to be ready
-		call_deferred("_select_current_player")
-	
+		# Reset to current player when panel closes
+		_select_current_player()
 
 
 func populate_rankings():
@@ -52,8 +50,8 @@ func populate_rankings():
 		row.row_double_clicked.connect(_on_row_double_clicked)
 		table_content.add_child(row)
 
-func _on_row_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int):
-	print("Clicked on player: ", player_name, " Rank: ", rank, " Faction: ", faction, " Profession: ", profession, " Honor: ", honor)
+func _on_row_clicked(rank: int, player_name: String, faction: int, honor: int):
+	print("Clicked on player: ", player_name, " Rank: ", rank, " Faction: ", faction, " Honor: ", honor)
 	
 	# Find the full player object from rankings
 	selected_player = null
@@ -99,9 +97,7 @@ func update_player_card():
 
 func _select_current_player():
 	"""Find and select the current player in the rankings"""
-	if not GameInfo.current_player:
-		return
-	
+	print("Selecting current player in rankings")
 	# Deselect previous row
 	if selected_row and is_instance_valid(selected_row):
 		selected_row.set_selected(false)
@@ -142,10 +138,10 @@ func _on_search_changed(new_text: String):
 	# TODO: Filter rankings based on search text
 	print("Search: ", new_text)
 
-func _on_row_double_clicked(rank: int, player_name: String, faction: int, profession: int, honor: int):
+func _on_row_double_clicked(rank: int, player_name: String, faction: int, honor: int):
 	"""Handle double-click on a row - same as clicking character button"""
 	# First select the row
-	_on_row_clicked(rank, player_name, faction, profession, honor)
+	_on_row_clicked(rank, player_name, faction, honor)
 	# Then open the character panel
 	_on_character_button_pressed()
 

@@ -141,15 +141,8 @@ func show_enemy_panel(enemy_name: String):
 	print("UIManager: enemy_character_display = ", enemy_character_display)
 	print("UIManager: enemy_panel = ", enemy_panel)
 	
-	if enemy_character_display:
-		enemy_character_display.display_enemy(enemy_name)
-		if enemy_panel:
-			print("UIManager: Calling show_overlay for enemy_panel")
-			show_overlay(enemy_panel)
-		else:
-			print("ERROR: enemy_panel not assigned in UIManager")
-	else:
-		print("ERROR: enemy_character_display not assigned in UIManager")
+	enemy_character_display.display_enemy(enemy_name)
+	show_overlay(enemy_panel)
 
 func show_details_panel(character: GameInfo.GamePlayer):
 	"""Show details panel for any character (player or enemy)"""
@@ -358,65 +351,15 @@ func handle_character_button():
 
 func handle_rankings_button():
 	"""Toggle rankings panel"""
-	# Check if rankings is already showing
-	var rankings_index = overlay_stack.find(rankings_panel)
-	
-	if rankings_index >= 0:
-		# Rankings is in the stack
-		# If rankings is the ONLY thing in stack (top level), toggle it off
-		if overlay_stack.size() == 1 and overlay_stack[0] == rankings_panel:
-			print("UIManager: Rankings is only overlay, toggling off")
-			hide_current_overlay()
-			# Stay on current panel
+	if current_panel == rankings_panel:
+		# Toggle off - return to home or quest
+		if is_on_active_quest():
+			show_panel(quest)
 		else:
-			# Rankings is in stack but there are nested overlays above it
-			# Clear everything and show rankings fresh at base level
-			print("UIManager: Rankings in stack with nested overlays, resetting to rankings")
-			# Clear all overlays
-			while overlay_stack.size() > 0:
-				var overlay = overlay_stack.pop_back()
-				overlay.visible = false
-			
-			# Set base panel to home or quest
-			var old_panel = current_panel
-			var target_panel = home_panel
-			if is_on_active_quest():
-				target_panel = quest
-			
-			if old_panel != target_panel:
-				if old_panel:
-					old_panel.visible = false
-				target_panel.visible = true
-				current_panel = target_panel
-			
-			# Show rankings as fresh overlay
-			show_overlay(rankings_panel)
+			show_panel(home_panel)
 	else:
-		# Rankings not in stack - show it
-		print("UIManager: Showing rankings overlay")
-		
-		# If there are nested overlays, clear them and ensure we're on home/quest base
-		if overlay_stack.size() > 0:
-			print("UIManager: Clearing nested overlays before showing rankings")
-			# Clear all overlays
-			while overlay_stack.size() > 0:
-				var overlay = overlay_stack.pop_back()
-				overlay.visible = false
-			
-			# Set base panel to home or quest
-			var old_panel = current_panel
-			var target_panel = home_panel
-			if is_on_active_quest():
-				target_panel = quest
-			
-			if old_panel != target_panel:
-				if old_panel:
-					old_panel.visible = false
-				target_panel.visible = true
-				current_panel = target_panel
-		
-		# Now show rankings as overlay
-		show_overlay(rankings_panel)
+		# Show rankings as main panel
+		show_panel(rankings_panel)
 
 func toggle_talents_bookmark():
 	"""Toggle talents panel overlay (for current player)"""
