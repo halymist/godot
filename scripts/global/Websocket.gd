@@ -21,8 +21,8 @@ func generate_mock_player_data(player_name: String, rank: int, faction: int, hon
 			5 + (rank % 3),  # damage_min
 			10 + (rank % 5)  # damage_max
 		],
-		"blessing": 50 + (rank % 100),
-		"potion": 400,
+		"blessing": 0,  # No blessing by default (only IDs 1-4 exist in perks.tres)
+		"potion": 0,  # No potion by default
 		"elixir": 0,
 		"bag_slots": [
 			{"id": 1, "bag_slot_id": 0},  # Basic helmet
