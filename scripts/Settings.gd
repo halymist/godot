@@ -1,7 +1,7 @@
 extends Panel
 
-@onready var ui_size_dropdown: OptionButton = $SettingsContainer/ScrollContainer/CategoriesContainer/Video/UISize/OptionButton
-@onready var autoskip_checkbox: CheckBox = $SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/QuestAutoSkip/CheckBox
+@export var ui_size_dropdown: OptionButton
+@export var autoskip_checkbox: CheckButton
 
 # Font size presets for small, medium, large
 const FONT_SIZES = {
@@ -23,21 +23,18 @@ const CONTROL_TYPES = [
 
 func _ready():	
 	# Setup autoskip checkbox
-	if autoskip_checkbox:
-		autoskip_checkbox.toggled.connect(_on_autoskip_toggled)
-		# Set initial state from player data
-		if GameInfo.current_player:
-			autoskip_checkbox.button_pressed = GameInfo.current_player.autoskip if "autoskip" in GameInfo.current_player else false
-			# Disable if not VIP
-			var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
-			autoskip_checkbox.disabled = not is_vip
-			if not is_vip:
-				autoskip_checkbox.tooltip_text = "VIP feature - upgrade to unlock"
+	autoskip_checkbox.toggled.connect(_on_autoskip_toggled)
+	# Set initial state from player data
+	autoskip_checkbox.button_pressed = GameInfo.current_player.autoskip if "autoskip" in GameInfo.current_player else false
+	# Disable if not VIP
+	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
+	autoskip_checkbox.disabled = not is_vip
+	if not is_vip:
+		autoskip_checkbox.tooltip_text = "VIP feature - upgrade to unlock"
 
 
 func _on_autoskip_toggled(enabled: bool):
 	"""Handle autoskip checkbox toggle"""
-	if GameInfo.current_player:
-		GameInfo.current_player.autoskip = enabled
-		print("Autoskip ", "enabled" if enabled else "disabled")
-		# TODO: Send to server to save setting
+	GameInfo.current_player.autoskip = enabled
+	print("Autoskip ", "enabled" if enabled else "disabled")
+	# TODO: Send to server to save setting

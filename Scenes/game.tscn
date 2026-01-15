@@ -5537,7 +5537,7 @@ mouse_filter = 1
 text = "-"
 horizontal_alignment = 2
 
-[node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="Settings" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("ui_size_dropdown", "autoskip_checkbox")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5546,89 +5546,94 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("37_settings")
+ui_size_dropdown = NodePath("Video/UISize/OptionButton")
+autoskip_checkbox = NodePath("Gameplay/AutoSkip/AutoskipButton")
 
-[node name="SettingsContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
+[node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
 offset_left = 20.0
 offset_top = 20.0
 offset_right = -20.0
-offset_bottom = -20.0
+offset_bottom = 72.0
 grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer"]
-layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.85, 1)
 theme_override_font_sizes/font_size = 32
 text = "Settings"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer"]
-layout_mode = 2
+[node name="HSeparator" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 80.0
+offset_right = -20.0
+offset_bottom = 84.0
+grow_horizontal = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="Gameplay" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = -20.0
+offset_bottom = 260.0
+grow_horizontal = 2
 
-[node name="CategoriesContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Gameplay" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
-layout_mode = 2
-
-[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
+[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 24
 text = "Gameplay"
 
-[node name="DisableAds" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
+[node name="DisableAds" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/DisableAds"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/DisableAds"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Disable Ads"
 
-[node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/DisableAds"]
+[node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/DisableAds"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="AutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
 layout_mode = 2
 
-[node name="AutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/AutoSkip"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/AutoSkip"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Auto-Skip Dialogues"
 
-[node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/AutoSkip"]
+[node name="AutoskipButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/AutoSkip"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="QuestAutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
 layout_mode = 2
 
-[node name="QuestAutoSkip" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/QuestAutoSkip"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/QuestAutoSkip"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Quest Auto-Skip (VIP)"
 
-[node name="CheckBox" type="CheckBox" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/QuestAutoSkip"]
+[node name="CheckBox" type="CheckBox" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/QuestAutoSkip"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="Language" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay"]
 layout_mode = 2
 
-[node name="Language" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/Language"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/Language"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Language"
 
-[node name="OptionButton" type="OptionButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Gameplay/Language"]
+[node name="OptionButton" type="OptionButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Gameplay/Language"]
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
@@ -5640,62 +5645,91 @@ popup/item_1/id = 1
 popup/item_2/text = "German"
 popup/item_2/id = 2
 
-[node name="HSeparator2" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
-layout_mode = 2
+[node name="HSeparator2" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 270.0
+offset_right = -20.0
+offset_bottom = 274.0
+grow_horizontal = 2
 
-[node name="Audio" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
-layout_mode = 2
+[node name="Audio" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 290.0
+offset_right = -20.0
+offset_bottom = 410.0
+grow_horizontal = 2
 
-[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio"]
+[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 24
 text = "Audio"
 
-[node name="Volume" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio"]
+[node name="Volume" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/Volume"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/Volume"]
 layout_mode = 2
 text = "Master Volume"
 
-[node name="HSlider" type="HSlider" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/Volume"]
+[node name="HSlider" type="HSlider" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/Volume"]
 layout_mode = 2
 value = 100.0
 
-[node name="DialogueToggle" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio"]
+[node name="DialogueToggle" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/DialogueToggle"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/DialogueToggle"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Enable Dialogue Sounds"
 
-[node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Audio/DialogueToggle"]
+[node name="CheckButton" type="CheckButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Audio/DialogueToggle"]
 layout_mode = 2
+focus_mode = 0
 button_pressed = true
 
-[node name="HSeparator3" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
-layout_mode = 2
+[node name="HSeparator3" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 420.0
+offset_right = -20.0
+offset_bottom = 424.0
+grow_horizontal = 2
 
-[node name="Video" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer"]
-layout_mode = 2
+[node name="Video" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 440.0
+offset_right = -20.0
+offset_bottom = 530.0
+grow_horizontal = 2
 
-[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video"]
+[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Video"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 24
 text = "Video"
 
-[node name="UISize" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video"]
+[node name="UISize" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Video"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video/UISize"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Video/UISize"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "UI Size"
 
-[node name="OptionButton" type="OptionButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/SettingsContainer/ScrollContainer/CategoriesContainer/Video/UISize"]
+[node name="OptionButton" type="OptionButton" parent="Portrait/GameSceneParent/Wrapper/GameScene/Settings/Video/UISize"]
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 1
