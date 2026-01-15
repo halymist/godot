@@ -52,11 +52,7 @@ func _load_opponent_data():
 			if opponent:
 				# Get total stats (base + equipment + perks)
 				var total_stats = opponent.get_total_stats()
-				
-				# Set the enemy data with calculated total stats
 				card.set_enemy_data(i + 1, opponent.name, total_stats.strength, total_stats.stamina, total_stats.agility, total_stats.luck, total_stats.armor)
-				
-				# Pass the full opponent data for perks display
 				card.set_opponent_data(opponent)
 			else:
 				print("Warning: Could not find opponent with character_id '", opponent_id, "' in enemy_players")
@@ -77,6 +73,15 @@ func _on_fight_pressed():
 	if GameInfo.arena_opponents.size() > current_index:
 		var opponent_id = GameInfo.arena_opponents[current_index]
 		print("Fighting opponent with character_id: ", opponent_id)
+		
+		# Pick a random combat log from Websocket mock data
+		if Websocket.mock_combat_logs.size() > 0:
+			var random_index = randi() % Websocket.mock_combat_logs.size()
+			var combat_data = Websocket.mock_combat_logs[random_index]
+			GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
+			print("Combat log loaded: ", GameInfo.current_combat_log.player1_name, " vs ", GameInfo.current_combat_log.player2_name)
+		else:
+			print("No combat logs available")
 		# TODO: Send opponent_id to server and wait for combat_log response
 	else:
 		print("No opponent data available")

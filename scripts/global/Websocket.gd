@@ -145,7 +145,7 @@ var mock_characters = [
 				"points": 1
 			}
 	],
-	"arena_opponents": [10005, 10012, 10025],  # Character IDs (10000 + rank)
+	"arena_opponents": [5, 12, 25],  # Character IDs (10000 + rank)
 	"vendor_items": [1, 1, 1, 1, 1, 1, 1, 1],  # Items available for purchase
 	"enchanter_effects": [4, 5, 6, 7],  # Effect IDs available for enchanting
 	"rankings": [],  # Will be populated in _ready()
