@@ -305,12 +305,23 @@ func apply_option_reward(option: QuestOption):
 			var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
 			if item_resource:
 				reward_text = "You receive a potion: " + item_resource.item_name + "."
+			else:
+				reward_text = "You receive a potion."
 			print("REWARD: Equipped Potion ID ", option.reward_amount)
-			UIManager.instance.refresh_active_effects()
+			if UIManager.instance:
+				UIManager.instance.refresh_active_effects()
 		
 		QuestOption.RewardType.BLESSING:
-			reward_text = "Reward type not yet implemented."
-			print("REWARD: Reward type not yet implemented: ", option.reward_type)
+			# Store blessing perk ID in player's blessing slot
+			GameInfo.current_player.blessing = option.reward_amount
+			var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
+			if perk_resource:
+				reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
+			else:
+				reward_text = "You receive a blessing."
+			print("REWARD: Equipped Blessing ID ", option.reward_amount)
+			if UIManager.instance:
+				UIManager.instance.refresh_active_effects()
 	
 	# Display reward text
 	if reward_text != "":

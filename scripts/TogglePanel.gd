@@ -577,8 +577,6 @@ func refresh_bags():
 
 func refresh_stats():
 	"""Recalculate and display stats for current player"""
-	if not GameInfo.current_player:
-		return
 	
 	character_display.stats_changed(GameInfo.current_player.get_player_stats())
 	details_panel.display_effects(GameInfo.current_player)
@@ -590,8 +588,8 @@ func refresh_stats():
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs)"""
-	if character_display:
-		character_display.refresh_active_effects()
+	character_display.refresh_active_effects()
+	refresh_stats()
 
 func refresh_perks():
 	"""Refresh perks grid when new perks are added"""
@@ -601,9 +599,7 @@ func refresh_perks():
 func refresh_avatars():
 	"""Update all avatar displays with current player data"""
 	print("UIManager.refresh_avatars avatars count: ", avatars.size())
-	if not GameInfo.current_player:
-		return
-	
+
 	for avatar in avatars:
 		avatar.refresh_avatar(
 			GameInfo.current_player.avatar_face,
