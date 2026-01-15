@@ -2,33 +2,25 @@ extends Panel
 
 # Payment panel with three sections: Coupon, Invite Friend, Purchase Currency
 
-@onready var coupon_input = $Content/CouponSection/CouponContainer/CouponInput
-@onready var redeem_button = $Content/CouponSection/CouponContainer/RedeemButton
-@onready var invite_link_input = $Content/InviteSection/InviteContainer/InviteLinkInput
-@onready var copy_link_button = $Content/InviteSection/InviteContainer/CopyLinkButton
-@onready var purchase_option1 = $Content/PurchaseSection/PurchaseOptions/Option1
-@onready var purchase_option2 = $Content/PurchaseSection/PurchaseOptions/Option2
-@onready var purchase_option3 = $Content/PurchaseSection/PurchaseOptions/Option3
+@export var coupon_input: LineEdit
+@export var redeem_button: Button
+@export var invite_link_input: LineEdit
+@export var copy_link_button: Button
+@export var purchase_option1: Button
+@export var purchase_option2: Button
+@export var purchase_option3: Button
 
 func _ready():
-	if redeem_button:
-		redeem_button.pressed.connect(_on_redeem_button_pressed)
-	if copy_link_button:
-		copy_link_button.pressed.connect(_on_copy_link_pressed)
-	if purchase_option1:
-		purchase_option1.pressed.connect(_on_purchase_option.bind(1, 100, 4.99))
-	if purchase_option2:
-		purchase_option2.pressed.connect(_on_purchase_option.bind(2, 500, 19.99))
-	if purchase_option3:
-		purchase_option3.pressed.connect(_on_purchase_option.bind(3, 1200, 39.99))
+	redeem_button.pressed.connect(_on_redeem_button_pressed)
+	copy_link_button.pressed.connect(_on_copy_link_pressed)
+	purchase_option1.pressed.connect(_on_purchase_option.bind(1, 100, 4.99))
+	purchase_option2.pressed.connect(_on_purchase_option.bind(2, 500, 19.99))
+	purchase_option3.pressed.connect(_on_purchase_option.bind(3, 1200, 39.99))
 	
 	# Generate and display invite link
 	_generate_invite_link()
 
 func _on_redeem_button_pressed():
-	if not coupon_input:
-		return
-	
 	var code = coupon_input.text.strip_edges()
 	if code.is_empty():
 		print("Please enter a coupon code")
@@ -44,13 +36,9 @@ func _generate_invite_link():
 	var player_id = "PLAYER123"  # Placeholder for now
 	var invite_link = "https://game.com/invite?ref=" + str(player_id)
 	
-	if invite_link_input:
-		invite_link_input.text = invite_link
+	invite_link_input.text = invite_link
 
 func _on_copy_link_pressed():
-	if not invite_link_input:
-		return
-	
 	var invite_link = invite_link_input.text
 	if invite_link.is_empty():
 		print("No invite link to copy")

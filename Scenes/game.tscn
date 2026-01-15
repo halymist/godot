@@ -1,4 +1,4 @@
-[gd_scene load_steps=105 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=103 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -46,7 +46,6 @@
 [ext_resource type="Texture2D" uid="uid://d7skxybllre3" path="res://assets/images/ui/arena_full.png" id="37_b1mpw"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
-[ext_resource type="Texture2D" uid="uid://frdxqif0cyou" path="res://assets/images/ui/background_char.png" id="38_aujhx"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/DynamicOptionsPanel.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cagmx7314xoes" path="res://assets/images/ui/shared_char_bg.png" id="38_ff75x"]
 [ext_resource type="PackedScene" uid="uid://dtcmv6gcik5pa" path="res://Scenes/character_display.tscn" id="39_bchkn"]
@@ -65,7 +64,7 @@
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="54_b1mpw"]
 [ext_resource type="Texture2D" uid="uid://ermb50ahs0eb" path="res://assets/images/ui/agi.png" id="66_7sqp1"]
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="67_e6ols"]
-[ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/PaymentPanel.gd" id="67_payment"]
+[ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/Payment.gd" id="67_payment"]
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="68_2cns2"]
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
 [ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="69_cosmetics"]
@@ -154,9 +153,6 @@ friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
 metadata/_custom_type_script = "uid://b7h0k2h2qwlqv"
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ff75x"]
-texture = ExtResource("38_aujhx")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a2m5q"]
 texture = ExtResource("38_ff75x")
@@ -2495,7 +2491,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_ff75x")
 
 [node name="CharacterDisplay" parent="Portrait/GameSceneParent/Wrapper/GameScene/Enemy" instance=ExtResource("39_bchkn")]
 layout_mode = 1
@@ -5712,7 +5707,7 @@ popup/item_1/id = 1
 popup/item_2/text = "Large"
 popup/item_2/id = 2
 
-[node name="Payment" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="Payment" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("coupon_input", "redeem_button", "invite_link_input", "copy_link_button", "purchase_option1", "purchase_option2", "purchase_option3")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5721,91 +5716,152 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("67_payment")
+coupon_input = NodePath("CouponSection/CouponContainer/CouponInput")
+redeem_button = NodePath("CouponSection/CouponContainer/RedeemButton")
+invite_link_input = NodePath("InviteSection/InviteContainer/InviteLinkInput")
+copy_link_button = NodePath("InviteSection/InviteContainer/CopyLinkButton")
+purchase_option1 = NodePath("PurchaseSection/PurchaseOptions/Option1")
+purchase_option2 = NodePath("PurchaseSection/PurchaseOptions/Option2")
+purchase_option3 = NodePath("PurchaseSection/PurchaseOptions/Option3")
 
-[node name="Content" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
+[node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 72.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 30
-
-[node name="Title" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 32
 text = "Payment & Rewards"
 horizontal_alignment = 1
 
-[node name="CouponSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content"]
-layout_mode = 2
-theme_override_constants/separation = 10
+[node name="HSeparator" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 80.0
+offset_right = -20.0
+offset_bottom = 84.0
+grow_horizontal = 2
 
-[node name="CouponLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/CouponSection"]
+[node name="CouponSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = -20.0
+offset_bottom = 190.0
+grow_horizontal = 2
+
+[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/CouponSection"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 24
 text = "Redeem Coupon Code"
 
-[node name="CouponContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/CouponSection"]
+[node name="CouponContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/CouponSection"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="CouponInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/CouponSection/CouponContainer"]
+[node name="CouponInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/CouponSection/CouponContainer"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Enter coupon code..."
 
-[node name="RedeemButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/CouponSection/CouponContainer"]
+[node name="RedeemButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/CouponSection/CouponContainer"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "Redeem"
 
-[node name="InviteSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content"]
-layout_mode = 2
-theme_override_constants/separation = 10
+[node name="HSeparator2" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 200.0
+offset_right = -20.0
+offset_bottom = 204.0
+grow_horizontal = 2
 
-[node name="InviteLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/InviteSection"]
+[node name="InviteSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 220.0
+offset_right = -20.0
+offset_bottom = 310.0
+grow_horizontal = 2
+
+[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/InviteSection"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 24
 text = "Invite a Friend"
 
-[node name="InviteContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/InviteSection"]
+[node name="InviteContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/InviteSection"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="InviteLinkInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/InviteSection/InviteContainer"]
+[node name="InviteLinkInput" type="LineEdit" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/InviteSection/InviteContainer"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Your invite link will appear here..."
 editable = false
 
-[node name="CopyLinkButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/InviteSection/InviteContainer"]
+[node name="CopyLinkButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/InviteSection/InviteContainer"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "Copy"
 
-[node name="PurchaseSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content"]
-layout_mode = 2
-theme_override_constants/separation = 10
+[node name="HSeparator3" type="HSeparator" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 320.0
+offset_right = -20.0
+offset_bottom = 324.0
+grow_horizontal = 2
 
-[node name="PurchaseLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/PurchaseSection"]
-layout_mode = 2
-text = "Purchase Gold"
+[node name="PurchaseSection" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 340.0
+offset_right = -20.0
+offset_bottom = 530.0
+grow_horizontal = 2
 
-[node name="PurchaseOptions" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/PurchaseSection"]
+[node name="CategoryLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/PurchaseSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Purchase Mushrooms"
+
+[node name="PurchaseOptions" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/PurchaseSection"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Option1" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/PurchaseSection/PurchaseOptions"]
+[node name="Option1" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/PurchaseSection/PurchaseOptions"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "100 Gold - $4.99"
 
-[node name="Option2" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/PurchaseSection/PurchaseOptions"]
+[node name="Option2" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/PurchaseSection/PurchaseOptions"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "500 Gold - $19.99 (Best Value!)"
 
-[node name="Option3" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/Content/PurchaseSection/PurchaseOptions"]
+[node name="Option3" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Payment/PurchaseSection/PurchaseOptions"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
