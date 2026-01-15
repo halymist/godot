@@ -32,17 +32,38 @@ enum DisplayMode { PLAYER, ENEMY }
 
 # Currently displayed character (either player or enemy)
 var displayed_character: GameInfo.GamePlayer = null
+var setup_complete: bool = false
 
 func _ready():
+	# Always connect buttons
 	details_button.pressed.connect(_on_details_pressed)
 	talents_button.pressed.connect(_on_talents_pressed)
 	
 	if display_mode == DisplayMode.PLAYER:
 		avatar_button.pressed.connect(_on_avatar_pressed)
-		if GameInfo.current_player:
-			display_player()
+		# Wait for game_ready before displaying player
+		print("CharacterDisplay: _ready() called")
+		if UIManager.instance:
+			# Check if game is already ready
+			if UIManager.instance.game_is_ready:
+				print("CharacterDisplay: Game already ready, calling setup immediately")
+				call_deferred("_setup")
+			else:
+				print("CharacterDisplay: Connecting to game_ready signal")
+				UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+		else:
+			print("CharacterDisplay: ERROR - UIManager.instance is null!")
+			call_deferred("_setup")
 	else:
 		avatar_button.visible = false
+
+func _setup():
+	if setup_complete:
+		return
+	setup_complete = true
+	if GameInfo.current_player:
+		display_player()
+	print("CharacterDisplay: Setup complete")
 
 func display_player():
 	"""Display the current player"""

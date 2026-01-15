@@ -22,14 +22,29 @@ extends Panel
 
 var selected_row = null
 var selected_player: GameInfo.GamePlayer = null
+var setup_complete: bool = false
 
 func _ready():
+	# Always connect buttons and signals
 	character_button.pressed.connect(_on_character_button_pressed)
 	fight_button.pressed.connect(_on_fight_pressed)
 	search_input.text_changed.connect(_on_search_changed)
 	visibility_changed.connect(_on_visibility_changed)
 	
+	# Check if game is already ready
+	if UIManager.instance.game_is_ready:
+		print("Rankings: Game already ready, calling setup immediately")
+		_setup()
+	else:
+		print("Rankings: Connecting to game_ready signal")
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	if setup_complete:
+		return
+	setup_complete = true
 	populate_rankings()
+	print("Rankings: Setup complete")
 
 func _on_visibility_changed():
 	if visible:

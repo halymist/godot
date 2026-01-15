@@ -31,13 +31,31 @@ var current_quest: QuestData = null
 var visible_option_ids: Array[int] = []  # Currently visible option IDs
 var clicked_option_ids: Array[int] = []  # Track which options were clicked during quest
 var pending_combat_option: QuestOption = null  # Store option for after combat
+var setup_complete: bool = false
 
 # Reference to portrait for navigation
 @export var portrait: Control
 
 func _ready():
-	# Connect to visibility changes to load quest when panel becomes visible
+	# Always connect to visibility changes
 	visibility_changed.connect(_on_visibility_changed)
+	
+	# Check if we're the starter panel
+	if UIManager.instance.starter_panel == self:
+		print("DynamicOptionsPanel: I am the starter panel")
+		_setup()
+		UIManager.instance.game_is_ready = true
+		UIManager.instance.game_ready.emit()
+		print("DynamicOptionsPanel: Emitted game_ready signal")
+	else:
+		print("DynamicOptionsPanel: Waiting for game_ready signal")
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	if setup_complete:
+		return
+	setup_complete = true
+	print("DynamicOptionsPanel: Setup complete")
 
 func _on_visibility_changed():
 	"""Load quest when panel becomes visible"""

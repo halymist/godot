@@ -3,6 +3,11 @@ class_name UIManager
 
 static var instance: UIManager
 
+# Starter panel tracking
+var starter_panel: Control = null
+var game_is_ready: bool = false  # Set to true when starter panel completes setup
+signal game_ready  # Emitted when starter panel finishes setup
+
 # Panel references (from TogglePanel)
 @export var home_panel: Control
 @export var home_button: Button
@@ -90,8 +95,16 @@ func _ready():
 	# Initial currency display update
 	update_display()
 	
-	# Check player's quest state at startup
-	var start_panel = home_panel
+	# Determine which panel should be the starter
+	var start_panel = _determine_starter_panel()
+	starter_panel = start_panel
+	
+	# Show the starter panel
+	current_panel = start_panel
+	start_panel.visible = true
+
+func _determine_starter_panel() -> Control:
+	"""Determine which panel is the starter based on player state"""
 	var destination = GameInfo.current_player.traveling_destination
 	var traveling = GameInfo.current_player.traveling
 	
@@ -103,20 +116,16 @@ func _ready():
 	if destination != null and traveling != null and traveling != 0:
 		# Player is currently traveling to a quest - show map panel
 		print("-> Traveling to quest, showing map panel")
-		start_panel = map_panel
+		return map_panel
 	elif destination != null:
 		# Player has arrived at quest - show quest panel and load it directly
 		print("-> Arrived at quest, showing quest panel")
-		start_panel = quest
-		# Load quest directly after panel is set up with clicked_options from quest_log
 		call_deferred("_load_quest_on_startup", destination)
+		return quest
 	else:
 		# No quest active - show home panel
 		print("-> No quest active, showing home panel")
-	
-	# Start with appropriate panel visible
-	current_panel = start_panel
-	start_panel.visible = true
+		return home_panel
 
 func is_on_active_quest() -> bool:
 	"""Check if player is on an active quest (arrived at destination, not traveling)"""

@@ -15,16 +15,35 @@ var original_travel_end: float = 0.0
 # Travel info set when quest is accepted
 var travel_text: String
 var travel_duration: float
+var setup_complete: bool = false
 
 func _ready():
+	# Always connect buttons and signals
 	skip_button.pressed.connect(_on_skip_button_pressed)
 	enter_dungeon_button.pressed.connect(_on_enter_dungeon_pressed)
 	visibility_changed.connect(_on_visibility_changed)
 	set_process(false)  # Only process when traveling
 	
+	# Check if we're the starter panel
+	if UIManager.instance.starter_panel == self:
+		print("MapPanel: I am the starter panel")
+		_setup()
+		UIManager.instance.game_is_ready = true
+		UIManager.instance.game_ready.emit()
+		print("MapPanel: Emitted game_ready signal")
+	else:
+		print("MapPanel: Waiting for game_ready signal")
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	if setup_complete:
+		return
+	setup_complete = true
+	
 	# Initialize if character is already selected
 	if GameInfo.current_player:
 		refresh_travel_state()
+	print("MapPanel: Setup complete")
 
 func _on_visibility_changed():
 	# Refresh state when panel becomes visible

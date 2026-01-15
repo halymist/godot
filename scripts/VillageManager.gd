@@ -9,13 +9,29 @@ var current_village_node: Control = null  # Current active village instance
 var current_building: Building = null
 var is_in_interior: bool = false
 var village_scroll_initialized: bool = false  # Track if village scroll has been centered initially
+var setup_complete: bool = false
 
 func _ready():
-	print("=== VillageManager _ready START ===")
-	
-	# Connect to quest completed signal
+	# Always connect to quest completed signal
 	GameInfo.quest_completed.connect(_on_quest_completed)
-	print("Connected to quest completed signal")
+	
+	# Check if we're the starter panel
+	if UIManager.instance.starter_panel == self:
+		print("VillageManager: I am the starter panel")
+		_setup()
+		UIManager.instance.game_is_ready = true
+		UIManager.instance.game_ready.emit()
+		print("VillageManager: Emitted game_ready signal")
+	else:
+		print("VillageManager: Waiting for game_ready signal")
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	if setup_complete:
+		return
+	setup_complete = true
+	
+	print("=== VillageManager _setup START ===")
 	
 	# Don't initialize village until character is selected
 	if not GameInfo.current_player:
@@ -32,18 +48,16 @@ func _ready():
 	connect_existing_buildings()
 	spawn_npcs()
 	
-	# Center scroll position only on first startup
-	if not village_scroll_initialized:
-		await get_tree().process_frame
-		if current_village_node:
-			var village_view = current_village_node.get_node("VillageView")
-			var village_content = village_view.get_node("VillageContent")
-			var content_width = village_content.size.x
-			var viewport_width = village_view.size.x
-			village_view.scroll_horizontal = int((content_width - viewport_width) / 2.0)
-			village_scroll_initialized = true
+	# Center scroll position
+	if not village_scroll_initialized and current_village_node:
+		var village_view = current_village_node.get_node("VillageView")
+		var village_content = village_view.get_node("VillageContent")
+		var content_width = village_content.size.x
+		var viewport_width = village_view.size.x
+		village_view.scroll_horizontal = int((content_width - viewport_width) / 2.0)
+		village_scroll_initialized = true
 	
-	print("=== VillageManager _ready END ===")
+	print("=== VillageManager _setup END ===")
 
 func set_active_village(location_id: int):
 	"""Set the active village based on location integer (1, 2, 3, etc.)"""
