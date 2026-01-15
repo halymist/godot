@@ -71,57 +71,5 @@ func _update_active_effects():
 
 func _create_icon(texture: Texture2D, meta: Dictionary):
 	var icon = perk_mini_scene.instantiate()
-	icon.get_node("TextureRect").texture = texture
-	icon.set_meta("data", meta)
-	icon.mouse_filter = Control.MOUSE_FILTER_PASS
-	icon.mouse_entered.connect(_on_icon_hover.bind(icon))
-	icon.mouse_exited.connect(TooltipManager.hide_perk_tooltip)
+	icon.setup(texture, meta)
 	active_effects_container.add_child(icon)
-
-func _on_icon_hover(icon: Control):
-	var data = icon.get_meta("data")
-	var content = ""
-	
-	match data.type:
-		"perk":
-			var perk = data.perk
-			content = perk.perk_name
-			if perk.effect1_description != "":
-				content += "\n" + perk.effect1_description
-				if perk.factor1 != 0.0:
-					content += " " + str(int(perk.factor1)) + "%"
-			if perk.effect2_description != "":
-				content += "\n" + perk.effect2_description
-				if perk.factor2 != 0.0:
-					content += " " + str(int(perk.factor2)) + "%"
-		
-		"blessing":
-			var perk = data.perk
-			var effect = GameInfo.effects_db.get_effect_by_id(perk.effect1_id)
-			content = perk.perk_name
-			if effect:
-				content += "\n" + effect.description + " " + str(int(perk.factor1)) + "%"
-		
-		"potion":
-			var item = GameInfo.items_db.get_item_by_id(data.id)
-			content = item.item_name
-			if item.effect_id > 0:
-				var effect = GameInfo.effects_db.get_effect_by_id(item.effect_id)
-				content += "\n" + effect.description + " " + str(int(item.effect_factor)) + "%"
-		
-		"elixir":
-			content = "Elixir"
-			var id_str = str(data.id)
-			var effect_map = {}
-			for i in [4, 7, 10]:
-				var ingredient_id = int(id_str.substr(i, 3))
-				if ingredient_id > 0:
-					var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
-					if ingredient and ingredient.effect_id > 0:
-						effect_map[ingredient.effect_id] = effect_map.get(ingredient.effect_id, 0.0) + ingredient.effect_factor
-			
-			for effect_id in effect_map:
-				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
-				content += "\n" + effect.description + " " + str(effect_map[effect_id]) + "%"
-	
-	TooltipManager.show_perk_tooltip(content, icon)
