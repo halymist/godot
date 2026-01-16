@@ -281,6 +281,8 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	UIManager.instance.update_silver(-purchase_price)
 	print("Purchased ", vendor_item.item_name, " for ", purchase_price, " silver. Remaining silver: ", GameInfo.current_player.silver)
 	
+	Websocket.buy_item(vendor_item.id, slot_id)
+	
 	# Add item to player's bag using helper (automatically assigns to empty slot with server day)
 	var added = GameInfo.current_player.add_item_to_bag(vendor_item.id)
 	if not added:
@@ -333,6 +335,8 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 	# Add silver for selling the item
 	UIManager.instance.update_silver(item_in_bag.price)
 	print("Sold ", item_in_bag.item_name, " for ", item_in_bag.price, " silver. Total silver: ", GameInfo.current_player.silver)
+	
+	Websocket.sell_item(source_slot_id)
 	
 	# Remove item from bag_slots
 	GameInfo.current_player.bag_slots.erase(item_in_bag)
@@ -667,6 +671,7 @@ func handle_double_click(item: GameInfo.Item):
 		# Selling: item in equipment (0-8) or bag (10-14)
 		if (item.bag_slot_id >= EQUIPMENT_MIN and item.bag_slot_id <= EQUIPMENT_MAX) or (item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX):
 			if item.price > 0:
+				Websocket.sell_item(item.bag_slot_id)
 				UIManager.instance.update_silver(item.price)
 				GameInfo.current_player.bag_slots.erase(item)
 				clear_slot()
@@ -682,6 +687,8 @@ func handle_double_click(item: GameInfo.Item):
 					if target_slot and target_slot.is_slot_empty():
 						UIManager.instance.update_silver(-buy_price)
 						print("VENDOR: Purchased item ID ", item.id, " for ", buy_price, " silver")
+						
+						Websocket.buy_item(item.id, bag_slot_id)
 						
 						# Create simplified item (only id, bag_slot_id, and day)
 						var new_item = GameInfo.Item.new({
