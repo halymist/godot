@@ -72,7 +72,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
+[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,6 +81,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lobby")
 characters_container = NodePath("ScrollContainer/CharactersContainer")
+create_new_button = NodePath("ScrollContainer/CharactersContainer/CreateNewButton")
 discord_button = NodePath("SocialLinks/DiscordButton")
 instagram_button = NodePath("SocialLinks/InstagramButton")
 twitter_button = NodePath("SocialLinks/TwitterButton")
@@ -239,16 +240,10 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CreateNew" type="PanelContainer" parent="ContentContainer/Lobby/ScrollContainer/CharactersContainer"]
+[node name="CreateNewButton" type="Button" parent="ContentContainer/Lobby/ScrollContainer/CharactersContainer"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-
-[node name="Label" type="Label" parent="ContentContainer/Lobby/ScrollContainer/CharactersContainer/CreateNew"]
-layout_mode = 2
-size_flags_horizontal = 3
 text = "Create New Character"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "strength_label", "stamina_label", "agility_label", "luck_label", "points_label", "strength_minus", "strength_plus", "stamina_minus", "stamina_plus", "agility_minus", "agility_plus", "luck_minus", "luck_plus", "faction_desc_label", "vip_desc_label")]
 visible = false

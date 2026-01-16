@@ -2,6 +2,7 @@ extends Control
 
 # Lobby panel for character selection and account management
 @export var characters_container: VBoxContainer
+@export var create_new_button: Button
 @export var discord_button: TextureButton
 @export var instagram_button: TextureButton
 @export var twitter_button: TextureButton
@@ -15,10 +16,12 @@ extends Control
 @export var new_server_countdown_label: Label
 @export var new_server_date_label: Label
 
-# Social media URLs
-const DISCORD_URL = "https://discord.gg/your-discord-invite"
-const INSTAGRAM_URL = "https://instagram.com/your-username"
-const TWITTER_URL = "https://twitter.com/your-username"
+# Social media URLs mapping
+const SOCIAL_URLS = {
+	"discord": "https://discord.gg/your-discord-invite",
+	"instagram": "https://instagram.com/your-username",
+	"twitter": "https://twitter.com/your-username"
+}
 
 # Preload the player card scene
 const PlayerCard = preload("res://Scenes/playercard.tscn")
@@ -29,71 +32,45 @@ var game_scene: PackedScene = null
 var loading_in_progress = false  # Prevent multiple character selections while loading
 
 func _ready():
-	# Start loading databases and game scene in background
 	_load_databases_async()
 	_load_game_scene_async()
 	GameInfo.load_lobby_data()
 	populate_account_info()
 	add_character_list()
-	connect_social_buttons()
 	setup_character_creation()
-	# Start countdown timer
 	start_new_server_countdown()
+	
+	# Connect buttons
+	create_new_button.pressed.connect(_on_create_new_character)
+	discord_button.pressed.connect(_on_social_pressed.bind("discord"))
+	instagram_button.pressed.connect(_on_social_pressed.bind("instagram"))
+	twitter_button.pressed.connect(_on_social_pressed.bind("twitter"))
 
 func _load_databases_async():
-	"""Load databases in background while user looks at character list"""
-	print("Loading databases in background...")
+	"""Load databases in background"""
 	GameInfo.load_databases()
 	databases_loaded = true
-	print("Databases ready!")
 
 func _load_game_scene_async():
-	"""Load game scene in background while user looks at character list"""
-	print("Loading game scene in background...")
-	
-	# Start loading game scene in background thread
+	"""Load game scene in background"""
 	ResourceLoader.load_threaded_request("res://Scenes/game.tscn")
-	
-	# Poll until loaded (non-blocking)
 	while true:
 		var status = ResourceLoader.load_threaded_get_status("res://Scenes/game.tscn")
 		if status == ResourceLoader.THREAD_LOAD_LOADED:
 			game_scene = ResourceLoader.load_threaded_get("res://Scenes/game.tscn")
 			game_scene_loaded = true
-			print("Game scene preloaded!")
 			break
 		elif status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE or status == ResourceLoader.THREAD_LOAD_FAILED:
-			print("ERROR: Failed to load game scene!")
 			break
 		await get_tree().process_frame
-
-func connect_social_buttons():
-	"""Connect social media button signals"""
-	discord_button.pressed.connect(_on_discord_pressed)
-	instagram_button.pressed.connect(_on_instagram_pressed)
-	twitter_button.pressed.connect(_on_twitter_pressed)
 
 func populate_account_info():
 	"""Populate account information from lobby data"""
 	var lobby_data = GameInfo.lobby_data
-	
-	# Account created date
-	if account_created_label:
-		var created_date = _parse_iso_date(lobby_data.account_created)
-		account_created_label.text = "Account Created: " + created_date
-	
-	# Email
-	if email_label:
-		email_label.text = "Email: " + lobby_data.email
-	
-	# Mushrooms (global currency)
-	if mushroom_value_label:
-		mushroom_value_label.text = str(lobby_data.mushrooms)
-	
-	# New server date
-	if new_server_date_label:
-		var server_date = _parse_iso_date(lobby_data.new_server_timestamp)
-		new_server_date_label.text = "(" + server_date + ")"
+	account_created_label.text = "Account Created: " + _parse_iso_date(lobby_data.account_created)
+	email_label.text = "Email: " + lobby_data.email
+	mushroom_value_label.text = str(lobby_data.mushrooms)
+	new_server_date_label.text = "(" + _parse_iso_date(lobby_data.new_server_timestamp) + ")"
 
 func _parse_iso_date(iso_string: String) -> String:
 	"""Parse ISO 8601 date to readable format"""
@@ -113,22 +90,16 @@ func _parse_iso_date(iso_string: String) -> String:
 
 func start_new_server_countdown():
 	"""Start countdown timer for new server"""
-	if new_server_countdown_label:
-		_update_new_server_countdown()
-		# Update every second
-		var timer = Timer.new()
-		timer.wait_time = 1.0
-		timer.timeout.connect(_update_new_server_countdown)
-		add_child(timer)
-		timer.start()
+	_update_new_server_countdown()
+	var timer = Timer.new()
+	timer.wait_time = 1.0
+	timer.timeout.connect(_update_new_server_countdown)
+	add_child(timer)
+	timer.start()
 
 func _update_new_server_countdown():
 	"""Update the countdown label"""
-	if not new_server_countdown_label:
-		return
-	
-	var target_time = GameInfo.lobby_data.new_server_timestamp
-	var seconds_remaining = _calculate_seconds_until(target_time)
+	var seconds_remaining = _calculate_seconds_until(GameInfo.lobby_data.new_server_timestamp)
 	
 	if seconds_remaining <= 0:
 		new_server_countdown_label.text = "New Server Available!"
@@ -136,10 +107,10 @@ func _update_new_server_countdown():
 	
 	var total: int = seconds_remaining
 	
-	var days: int = total / 86400
+	var days := total / 86400
 	total %= 86400
 	
-	var hours: int = total / 3600
+	var hours := total / 3600
 	
 	new_server_countdown_label.text = "New start in: " + str(days) + "d " + str(hours) + "h"
 
@@ -172,34 +143,16 @@ func _calculate_seconds_until(iso_timestamp: String) -> int:
 
 func setup_character_creation():
 	"""Setup character creation panels and signals"""
-	if character_info_panel:
-		character_info_panel.next_pressed.connect(_on_character_info_next)
-		character_info_panel.back_pressed.connect(_on_character_info_back)
-	
-	if avatar_creation_panel:
-		avatar_creation_panel.create_character_pressed.connect(_on_create_character_complete)
-		avatar_creation_panel.back_pressed.connect(_on_avatar_back)
-		avatar_creation_panel.set_creation_mode(true)
+	character_info_panel.next_pressed.connect(_on_character_info_next)
+	character_info_panel.back_pressed.connect(_on_character_info_back)
+	avatar_creation_panel.create_character_pressed.connect(_on_create_character_complete)
+	avatar_creation_panel.back_pressed.connect(_on_avatar_back)
+	avatar_creation_panel.set_creation_mode(true)
 
 
 
 func add_character_list():
 	"""Add character panels from GameInfo.lobby_data"""
-	# Add "Create New Character" button first
-	var create_new = characters_container.get_node("CreateNew")
-	if create_new:
-		var create_button = create_new.get_node("Label")
-		if create_button is Label:
-			# Make it clickable by converting parent to button
-			var button = Button.new()
-			button.custom_minimum_size = Vector2(0, 80)
-			button.text = "Create New Character"
-			button.pressed.connect(_on_create_new_character)
-			create_new.get_parent().add_child(button)
-			create_new.get_parent().move_child(button, 0)
-			create_new.queue_free()
-	
-	# Load characters from all servers in lobby data
 	for server in GameInfo.lobby_data.server_list:
 		for character_mini in server.characters_mini:
 			var card = PlayerCard.instantiate()
@@ -237,59 +190,34 @@ func _on_character_selected(character_id: int):
 	# Switch to preloaded game scene (instant!)
 	get_tree().change_scene_to_packed(game_scene)
 
-func _on_discord_pressed():
-	"""Open Discord link"""
-	OS.shell_open(DISCORD_URL)
-	print("Opening Discord...")
-
-func _on_instagram_pressed():
-	"""Open Instagram link"""
-	OS.shell_open(INSTAGRAM_URL)
-	print("Opening Instagram...")
-
-func _on_twitter_pressed():
-	"""Open Twitter link"""
-	OS.shell_open(TWITTER_URL)
-	print("Opening Twitter...")
+func _on_social_pressed(platform: String):
+	"""Open social media link"""
+	OS.shell_open(SOCIAL_URLS[platform])
 
 func _on_create_new_character():
 	"""Show character info panel to start creation flow"""
-	print("Create new character clicked")
 	visible = false
 	character_info_panel.visible = true
 
 func _on_character_info_next():
 	"""User completed character info, show avatar creation"""
-	print("Character info complete, showing avatar creation")
 	character_info_panel.visible = false
 	avatar_creation_panel.visible = true
 
 func _on_character_info_back():
 	"""Go back from character info to lobby"""
-	print("Going back to lobby from character info")
 	character_info_panel.visible = false
 	visible = true
 
 func _on_avatar_back():
 	"""Go back from avatar to character info"""
-	print("Going back to character info from avatar")
 	avatar_creation_panel.visible = false
 	character_info_panel.visible = true
 
 func _on_create_character_complete():
 	"""User completed avatar creation, create the character"""
-	var character_data = character_info_panel.get_character_data()
-	var avatar_data = avatar_creation_panel.get_avatar_data()
-	
-	print("Creating character:")
-	print("  Name: ", character_data.name)
-	print("  Faction: ", character_data.faction)
-	print("  VIP: ", character_data.vip)
-	print("  Stats: STR:", character_data.strength, " STA:", character_data.stamina, " AGI:", character_data.agility, " LCK:", character_data.luck)
-	print("  Avatar: ", avatar_data)
-	
+	var _character_data = character_info_panel.get_character_data()
+	var _avatar_data = avatar_creation_panel.get_avatar_data()
 	# TODO: Send to server to create character
-	# For now, just go back to lobby
 	avatar_creation_panel.visible = false
 	visible = true
-	print("Character created! (mock)")
