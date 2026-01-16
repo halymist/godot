@@ -36,6 +36,33 @@ var pending_combat_option: QuestOption = null  # Store option for after combat
 # Reference to portrait for navigation
 @export var portrait: Control
 
+# Stat maps for unified handling
+const STAT_REQUIREMENT_MAP = {
+	QuestOption.RequirementType.STRENGTH: "strength",
+	QuestOption.RequirementType.STAMINA: "stamina",
+	QuestOption.RequirementType.AGILITY: "agility",
+	QuestOption.RequirementType.LUCK: "luck",
+	QuestOption.RequirementType.ARMOR: "armor"
+}
+
+const STAT_REWARD_MAP = {
+	QuestOption.RewardType.STRENGTH: {"property": "strength", "name": "strength"},
+	QuestOption.RewardType.STAMINA: {"property": "stamina", "name": "stamina"},
+	QuestOption.RewardType.AGILITY: {"property": "agility", "name": "agility"},
+	QuestOption.RewardType.LUCK: {"property": "luck", "name": "luck"},
+	QuestOption.RewardType.ARMOR: {"property": "armor", "name": "armor"},
+	QuestOption.RewardType.MIN_DAMAGE: {"property": "damage_min", "name": "minimum damage"},
+	QuestOption.RewardType.MAX_DAMAGE: {"property": "damage_max", "name": "maximum damage"}
+}
+
+const STAT_ICON_MAP = {
+	QuestOption.RequirementType.STRENGTH: "strength_icon",
+	QuestOption.RequirementType.STAMINA: "stamina_icon",
+	QuestOption.RequirementType.AGILITY: "agility_icon",
+	QuestOption.RequirementType.LUCK: "luck_icon",
+	QuestOption.RequirementType.ARMOR: "armor_icon"
+}
+
 func _ready():
 	# Always connect to visibility changes
 	visibility_changed.connect(_on_visibility_changed)
@@ -78,16 +105,10 @@ func load_quest(quest_id: int):
 	UIManager.instance.show_panel(self)
 	
 	if current_quest_id != quest_id:
-		# Set quest title and background
+		# Set quest background
 		var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 		if quest_data:
-			var title_label = get_node_or_null("QuestTitle")
-			if title_label:
-				title_label.text = quest_data.quest_name
-			
-			# Apply background texture
 			background.texture = quest_data.background_texture
-			
 			current_quest = quest_data
 	
 	current_quest_id = quest_id
@@ -144,8 +165,8 @@ func display_quest(quest_data: QuestData):
 	"""Display quest text and options"""
 	display_quest_with_text(quest_data.initial_text)
 
-func display_quest_with_text(text: String):
-	"""Display quest with custom text and current visible options"""
+func animate_quest_text(text: String):
+	"""Animate quest text with fade and slide effect"""
 	quest_text.text = text
 	quest_text.modulate.a = 0
 	quest_text.position.y = 20
@@ -153,6 +174,10 @@ func display_quest_with_text(text: String):
 	tween.set_parallel(true)
 	tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
 	tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+
+func display_quest_with_text(text: String):
+	"""Display quest with custom text and current visible options"""
+	animate_quest_text(text)
 	
 	clear_options()
 	if current_quest.options:
@@ -177,8 +202,7 @@ func apply_option_reward(option: QuestOption):
 	
 	match option.reward_type:
 		QuestOption.RewardType.SILVER:
-			if UIManager.instance:
-				UIManager.instance.update_silver(option.reward_amount)
+			UIManager.instance.update_silver(option.reward_amount)
 			GameInfo.current_player.silver += option.reward_amount
 			reward_text = "You receive " + str(option.reward_amount) + " silver."
 			print("REWARD: Awarded ", option.reward_amount, " silver")
@@ -187,13 +211,9 @@ func apply_option_reward(option: QuestOption):
 			var added = GameInfo.current_player.add_item_to_bag(option.reward_amount)
 			if added:
 				var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
-				if item_resource:
-					reward_text = "You receive " + item_resource.item_name + "."
-				else:
-					reward_text = "You receive an item."
+				reward_text = "You receive " + item_resource.item_name + "."
 				print("REWARD: Added Item ID ", option.reward_amount, " to bag")
-				if UIManager.instance:
-					UIManager.instance.refresh_bags()
+				UIManager.instance.refresh_bags()
 			else:
 				reward_text = "Your bag is full!"
 				print("REWARD: No empty bag slot for item")
@@ -202,106 +222,42 @@ func apply_option_reward(option: QuestOption):
 			var added = GameInfo.current_player.add_perk_if_new(option.reward_amount)
 			var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
 			if added:
-				if perk_resource:
-					reward_text = "You receive the perk: " + perk_resource.perk_name + "."
-				else:
-					reward_text = "You receive a perk."
+				reward_text = "You receive the perk: " + perk_resource.perk_name + "."
 				print("REWARD: Perk added to inactive perks")
-				if UIManager.instance:
-					UIManager.instance.refresh_perks()
+				UIManager.instance.refresh_perks()
 			else:
-				if perk_resource:
-					reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
-				else:
-					reward_text = "You already have this perk."
+				reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
 				print("REWARD: Perk already owned, skipping")
-		
-		QuestOption.RewardType.STRENGTH:
-			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-			GameInfo.current_player.strength += scaled_amount
-			reward_text = "You receive " + str(scaled_amount) + " strength."
-			print("REWARD: Awarded ", scaled_amount, " Strength")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		
-		QuestOption.RewardType.STAMINA:
-			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-			GameInfo.current_player.stamina += scaled_amount
-			reward_text = "You receive " + str(scaled_amount) + " stamina."
-			print("REWARD: Awarded ", scaled_amount, " Stamina")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		
-		QuestOption.RewardType.AGILITY:
-			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-			GameInfo.current_player.agility += scaled_amount
-			reward_text = "You receive " + str(scaled_amount) + " agility."
-			print("REWARD: Awarded ", scaled_amount, " Agility")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		
-		QuestOption.RewardType.LUCK:
-			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-			GameInfo.current_player.luck += scaled_amount
-			reward_text = "You receive " + str(scaled_amount) + " luck."
-			print("REWARD: Awarded ", scaled_amount, " Luck")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		
-		QuestOption.RewardType.ARMOR:
-			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-			GameInfo.current_player.armor += scaled_amount
-			reward_text = "You receive " + str(scaled_amount) + " armor."
-			print("REWARD: Awarded ", scaled_amount, " Armor")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
 		
 		QuestOption.RewardType.TALENT_POINT:
 			GameInfo.current_player.talent_points += option.reward_amount
 			reward_text = "You receive " + str(option.reward_amount) + " talent point" + ("s" if option.reward_amount > 1 else "") + "."
 			print("REWARD: Awarded ", option.reward_amount, " Talent Points")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		
-		QuestOption.RewardType.MIN_DAMAGE:
-			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-			GameInfo.current_player.damage_min += scaled_amount
-			reward_text = "You receive " + str(scaled_amount) + " minimum damage."
-			print("REWARD: Awarded ", scaled_amount, " Min Damage")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		
-		QuestOption.RewardType.MAX_DAMAGE:
-			scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-			GameInfo.current_player.damage_max += scaled_amount
-			reward_text = "You receive " + str(scaled_amount) + " maximum damage."
-			print("REWARD: Awarded ", scaled_amount, " Max Damage")
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
+			UIManager.instance.refresh_stats()
 		
 		QuestOption.RewardType.POTION:
-			# Store potion item ID in player's potion slot
 			GameInfo.current_player.potion = option.reward_amount
 			var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
-			if item_resource:
-				reward_text = "You receive a potion: " + item_resource.item_name + "."
-			else:
-				reward_text = "You receive a potion."
+			reward_text = "You receive a potion: " + item_resource.item_name + "."
 			print("REWARD: Equipped Potion ID ", option.reward_amount)
-			if UIManager.instance:
-				UIManager.instance.refresh_active_effects()
+			UIManager.instance.refresh_active_effects()
 		
 		QuestOption.RewardType.BLESSING:
-			# Store blessing perk ID in player's blessing slot
 			GameInfo.current_player.blessing = option.reward_amount
 			var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
-			if perk_resource:
-				reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
-			else:
-				reward_text = "You receive a blessing."
+			reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
 			print("REWARD: Equipped Blessing ID ", option.reward_amount)
-			if UIManager.instance:
-				UIManager.instance.refresh_active_effects()
+			UIManager.instance.refresh_active_effects()
+		
+		_:
+			# Handle all stat rewards using the map
+			if option.reward_type in STAT_REWARD_MAP:
+				var stat_data = STAT_REWARD_MAP[option.reward_type]
+				scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+				GameInfo.current_player.set(stat_data.property, GameInfo.current_player.get(stat_data.property) + scaled_amount)
+				reward_text = "You receive " + str(scaled_amount) + " " + stat_data.name + "."
+				print("REWARD: Awarded ", scaled_amount, " ", stat_data.name)
+				UIManager.instance.refresh_stats()
 	
 	# Display reward text
 	if reward_text != "":
@@ -345,21 +301,15 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 				meets_requirement = GameInfo.current_player.faction == 2
 			QuestOption.RequirementType.COMPANIONS:
 				meets_requirement = GameInfo.current_player.faction == 3
-			QuestOption.RequirementType.STRENGTH, QuestOption.RequirementType.STAMINA, \
-			QuestOption.RequirementType.AGILITY, QuestOption.RequirementType.LUCK, \
-			QuestOption.RequirementType.ARMOR:
-				var total_stats = GameInfo.current_player.get_total_stats()
-				var player_value = 0
-				match req_type:
-					QuestOption.RequirementType.STRENGTH: player_value = total_stats.strength
-					QuestOption.RequirementType.STAMINA: player_value = total_stats.stamina
-					QuestOption.RequirementType.AGILITY: player_value = total_stats.agility
-					QuestOption.RequirementType.LUCK: player_value = total_stats.luck
-					QuestOption.RequirementType.ARMOR: player_value = total_stats.armor
-				meets_requirement = player_value >= scaled_requirement
 			_:
+				# Check if it's a stat requirement using the map
+				if req_type in STAT_REQUIREMENT_MAP:
+					var total_stats = GameInfo.current_player.get_total_stats()
+					var stat_name = STAT_REQUIREMENT_MAP[req_type]
+					var player_value = total_stats.get(stat_name)
+					meets_requirement = player_value >= scaled_requirement
 				# Effect requirements (EFFECT_1 through EFFECT_20)
-				if req_type >= QuestOption.RequirementType.EFFECT_1 and req_type <= QuestOption.RequirementType.EFFECT_20:
+				elif req_type >= QuestOption.RequirementType.EFFECT_1 and req_type <= QuestOption.RequirementType.EFFECT_20:
 					var effect_id = req_type - QuestOption.RequirementType.EFFECT_1 + 1
 					var total_effects = GameInfo.current_player.get_total_effects()
 					var player_effect = total_effects.get(effect_id, 0.0)
@@ -372,10 +322,10 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	# Set icon based on requirement type and option type
 	var icon_texture = dialogue_icon  # Default icon
 	if option_data:
-		var is_end = option_data.ends_quest
-		
 		if option_data.required_type == QuestOption.RequirementType.COMBAT:
 			icon_texture = combat_icon
+		elif option_data.required_type in STAT_ICON_MAP:
+			icon_texture = get(STAT_ICON_MAP[option_data.required_type])
 		elif option_data.required_type != QuestOption.RequirementType.NONE:
 			match option_data.required_type:
 				QuestOption.RequirementType.SILVER:
@@ -386,27 +336,15 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 					icon_texture = guild_icon
 				QuestOption.RequirementType.COMPANIONS:
 					icon_texture = companions_icon
-				QuestOption.RequirementType.STRENGTH:
-					icon_texture = strength_icon
-				QuestOption.RequirementType.STAMINA:
-					icon_texture = stamina_icon
-				QuestOption.RequirementType.AGILITY:
-					icon_texture = agility_icon
-				QuestOption.RequirementType.LUCK:
-					icon_texture = luck_icon
-				QuestOption.RequirementType.ARMOR:
-					icon_texture = armor_icon
-		elif is_end:
+		elif option_data.ends_quest:
 			icon_texture = end_icon
 	
 	# Set button properties (TextureButton with children)
 	var label = option_button.get_node("Label")
 	var icon = option_button.get_node("Icon")
 	
-	if label:
-		label.text = label_text
-	if icon:
-		icon.texture = icon_texture
+	label.text = label_text
+	icon.texture = icon_texture
 	
 	option_button.disabled = not meets_requirement
 	if not meets_requirement:
@@ -453,9 +391,8 @@ func _on_quest_option_pressed(option: QuestOption):
 	# 1. Handle currency cost (silver requirement)
 	if option.required_type == QuestOption.RequirementType.SILVER and option.required_amount > 0:
 		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_amount:
-			if UIManager.instance:
-				UIManager.instance.update_silver(-option.required_amount)
-				print("Deducted ", option.required_amount, " silver")
+			UIManager.instance.update_silver(-option.required_amount)
+			print("Deducted ", option.required_amount, " silver")
 		else:
 			print("Not enough silver for option: ", option.text)
 			return
@@ -468,13 +405,7 @@ func _on_quest_option_pressed(option: QuestOption):
 	
 	# 3. Replace text with response_text if provided
 	if option.response_text != "":
-		quest_text.text = option.response_text
-		quest_text.modulate.a = 0
-		quest_text.position.y = 20
-		var tween = create_tween()
-		tween.set_parallel(true)
-		tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-		tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+		animate_quest_text(option.response_text)
 	
 	# 3b. Apply and display reward for this option
 	apply_option_reward(option)
@@ -518,15 +449,7 @@ func _start_combat():
 	print("Starting combat with log index: ", random_index)
 	
 	# Get combat panel and toggle UI through UIManager
-	if not UIManager.instance:
-		print("ERROR: UIManager not available!")
-		return
-	
 	var combat_panel = UIManager.instance.combat_panel
-	
-	if not combat_panel:
-		print("ERROR: Could not find Combat panel!")
-		return
 	
 	# Show combat panel using UIManager's show_panel method
 	UIManager.instance.show_panel(combat_panel)
@@ -549,13 +472,7 @@ func handle_combat_result():
 	if player_won:
 		# Win: use regular response_text and shows/hides
 		if option.response_text != "":
-			quest_text.text = option.response_text
-			quest_text.modulate.a = 0
-			quest_text.position.y = 20
-			var tween = create_tween()
-			tween.set_parallel(true)
-			tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-			tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+			animate_quest_text(option.response_text)
 		
 		# Always hide clicked option
 		visible_option_ids.erase(option.option_index)
@@ -574,13 +491,7 @@ func handle_combat_result():
 	else:
 		# Loss: use on_lose_response_text
 		if option.on_lose_response_text != "":
-			quest_text.text = option.on_lose_response_text
-			quest_text.modulate.a = 0
-			quest_text.position.y = 20
-			var tween = create_tween()
-			tween.set_parallel(true)
-			tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-			tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+			animate_quest_text(option.on_lose_response_text)
 		
 		# Always hide clicked option
 		visible_option_ids.erase(option.option_index)
