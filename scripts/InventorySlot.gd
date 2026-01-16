@@ -690,11 +690,17 @@ func handle_double_click(item: GameInfo.Item):
 						
 						Websocket.buy_item(item.id, bag_slot_id)
 						
+						# Remove item from vendor panel's local inventory
+						var vendor_slot_index = item.bag_slot_id - VENDOR_MIN
+						var vendor_panel = UIManager.instance.vendor_panel if UIManager.instance else null
+						if vendor_panel and vendor_slot_index >= 0 and vendor_slot_index < vendor_panel.vendor_items.size():
+							vendor_panel.vendor_items.remove_at(vendor_slot_index)
+						
 						# Create simplified item (only id, bag_slot_id, and day)
 						var new_item = GameInfo.Item.new({
 							"id": item.id,
 							"bag_slot_id": bag_slot_id,
-							"day": GameInfo.current_player.server_day  # Current day for stat scaling
+							"day": GameInfo.current_player.server_day
 						})
 						
 						GameInfo.current_player.bag_slots.append(new_item)
@@ -702,6 +708,10 @@ func handle_double_click(item: GameInfo.Item):
 						print("VENDOR: Item added to bag slot ", bag_slot_id)
 						
 						UIManager.instance.refresh_bags()
+						
+						# Trigger purchase greeting and refresh vendor display
+						if vendor_panel and vendor_panel.has_method("trigger_purchase_greeting"):
+							vendor_panel.trigger_purchase_greeting()
 						break
 		return
 	
