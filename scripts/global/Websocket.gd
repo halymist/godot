@@ -1,5 +1,12 @@
 extends Node
 
+# ============================================
+# WEBSOCKET AUTOLOAD
+# ============================================
+# Handles all in-game WebSocket communication with the server
+# Currently stores mock data and prints actions
+# TODO: Implement actual WebSocket connection
+
 # Mock account/lobby data - what player receives when first connecting
 var mock_lobby_data = {
 	"account_created": "2023-01-15T10:30:00Z",
@@ -452,7 +459,6 @@ var mock_characters = [
 	}
 ]
 
-
 # Mock combat data for development/testing (separate from character data)
 var mock_combat_logs = [
 	{
@@ -527,3 +533,52 @@ var mock_combat_logs = [
 		]
 	}
 ]
+
+
+# ============================================
+# WEBSOCKET API - Game Actions
+# ============================================
+
+func send(action: String, payload: Dictionary):
+	"""Send a WebSocket action to the server (placeholder for now)"""
+	print("[WS] Action: ", action, " | Payload: ", payload)
+	# TODO: Implement actual WebSocket sending when connected to real server
+
+# ============================================
+# Item Management Actions
+# ============================================
+
+func move_item(slot_from: int, slot_to: int):
+	"""Move item from one slot to another"""
+	send("move_item", {
+		"int_argument1": slot_from,
+		"int_argument2": slot_to
+	})
+
+func sell_item(slot_id: int):
+	"""Sell an item from inventory"""
+	send("sell_item", {
+		"int_argument1": slot_id
+	})
+
+func socket_item(gem_slot: int, target_slot: int):
+	"""Socket a gem/rune into an item"""
+	send("socket_item", {
+		"int_argument1": gem_slot,
+		"int_argument2": target_slot
+	})
+
+func buy_item_vendor(item_id: int, target_slot: int):
+	"""Buy an item from vendor"""
+	send("buy_item_vendor", {
+		"int_argument1": item_id,
+		"int_argument2": target_slot
+	})
+
+func enchant_item(slot_id: int, effect_id: int):
+	"""Enchant an item with an effect"""
+	send("enchant_item", {
+		"int_argument1": slot_id,
+		"int_argument2": effect_id
+	})
+
