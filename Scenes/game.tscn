@@ -6486,7 +6486,7 @@ offset_bottom = 174.0
 size_flags_horizontal = 3
 text = "No"
 
-[node name="ChatOverlay" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button")]
+[node name="ChatOverlay" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button", "chat_input", "send_button")]
 visible = false
 z_index = 200
 layout_mode = 1
@@ -6501,6 +6501,8 @@ chat_container = NodePath("ChatPanel/ScrollContainer/ChatContainer")
 scroll_container = NodePath("ChatPanel/ScrollContainer")
 global_button = NodePath("ChatPanel/HeaderContainer/GlobalButton")
 local_button = NodePath("ChatPanel/HeaderContainer/LocalButton")
+chat_input = NodePath("ChatPanel/InputContainer/ChatInput")
+send_button = NodePath("ChatPanel/InputContainer/SendButton")
 
 [node name="ChatPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/ChatOverlay"]
 layout_mode = 1

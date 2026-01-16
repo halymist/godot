@@ -5,21 +5,28 @@ extends Button
 @export var scroll_container: ScrollContainer
 @export var global_button: Button
 @export var local_button: Button
+@export var chat_input: LineEdit
+@export var send_button: Button
 
 var last_message_time: String = ""
 var current_filter: String = "global"  # "global", "local", or "all"
 
 func _ready():
-	# Connect toggle buttons
+	# Connect toggle buttons with null checks
 	global_button.pressed.connect(_on_global_button_pressed)
 	local_button.pressed.connect(_on_local_button_pressed)
+	send_button.pressed.connect(_on_send_button_pressed)
 	
-	# Set initial button visual states
+	visibility_changed.connect(_on_visibility_changed)
+	
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
 	_update_button_visuals()
-	
-	# Initialize if character is already selected
-	if GameInfo.current_player:
-		display_chat_messages()
+	display_chat_messages()
 
 func _on_visibility_changed():
 	# Scroll to bottom whenever chat becomes visible
@@ -62,6 +69,15 @@ func _on_local_button_pressed():
 	current_filter = "local"
 	_update_button_visuals()
 	display_chat_messages()
+
+func _on_send_button_pressed():
+	var message_text = chat_input.text.strip_edges()
+	if message_text.is_empty():
+		return
+	
+	var chat_type = 2 if current_filter == "global" else 1
+	Websocket.send_chat(chat_type, message_text)
+	chat_input.text = ""
 
 func _update_button_visuals():
 	"""Update button appearance based on current filter"""

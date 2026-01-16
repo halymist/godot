@@ -711,6 +711,13 @@ func fight_player(enemy_id: int):
 		"int_argument1": enemy_id
 	})
 
+func send_chat(chat_type: int, message: String):
+	"""Send a chat message (1=local, 2=global)"""
+	send("send_chat", {
+		"int_argument1": chat_type,
+		"string_argument": message
+	})
+
 func start_expedition():
 	"""Start an expedition"""
 	send("start_expedition", {})
