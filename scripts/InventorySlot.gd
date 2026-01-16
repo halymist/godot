@@ -225,39 +225,34 @@ func _drop_data(_pos, data):
 	
 	# Update GameInfo directly based on the operation
 	if not is_slot_empty():
-		# Swapping items
 		var existing_item = get_item_data()
 		
-		# Find the actual item instances in GameInfo.bag_slots by their current bag_slot_id
-		# This is more reliable than matching by id (which can have duplicates)
 		var dragged_item_in_array = null
 		var existing_item_in_array = null
 		
 		for game_item in GameInfo.current_player.bag_slots:
 			if game_item.bag_slot_id == source_slot_id and dragged_item_in_array == null:
-				# This is the item being dragged from source
 				dragged_item_in_array = game_item
 			elif game_item.bag_slot_id == slot_id and existing_item_in_array == null:
-				# This is the item currently in this slot
 				existing_item_in_array = game_item
 		
-		# Swap their bag_slot_ids
 		if dragged_item_in_array:
 			dragged_item_in_array.bag_slot_id = slot_id
 		if existing_item_in_array:
 			existing_item_in_array.bag_slot_id = source_slot_id
+		
+		Websocket.move_item(source_slot_id, slot_id)
 
 		place_item_in_slot(dragged_item)
 		if source_container:
 			source_container.place_item_in_slot(existing_item)
 	else:
-		# Moving to empty slot
-		# Find the item by its current slot_id
 		for game_item in GameInfo.current_player.bag_slots:
 			if game_item.bag_slot_id == source_slot_id:
 				game_item.bag_slot_id = slot_id
 				break
-				
+		
+		Websocket.move_item(source_slot_id, slot_id)
 		place_item_in_slot(dragged_item)
 		if source_container:
 			source_container.clear_slot()
@@ -358,10 +353,8 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 	print("Item sold and removed from inventory")
 
 func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, gem_source_slot_id: int, gem_source_container):
-	"""Socket a gem into an item with an empty socket"""
 	print("Socketing gem ", gem_item.item_name, " into ", target_item.item_name)
 	
-	# Find the actual target item in GameInfo.bag_slots
 	var target_item_in_array = null
 	for game_item in GameInfo.current_player.bag_slots:
 		if game_item.bag_slot_id == slot_id:
@@ -371,6 +364,8 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 	if not target_item_in_array:
 		print("Error: Target item not found in bag_slots")
 		return
+	
+	Websocket.socket_item(gem_source_slot_id, slot_id)
 	
 	# Socket the gem (store gem's item ID and day value)
 	target_item_in_array.socket_id = gem_item.id
@@ -400,10 +395,8 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 			UIManager.instance.refresh_stats()
 
 func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.Item, hammer_source_slot_id: int, hammer_source_container):
-	"""Use a hammer to temper an item (+10% to all stats, rounded up)"""
 	print("Tempering ", target_item.item_name, " with ", hammer_item.item_name)
 	
-	# Find the actual target item in GameInfo.bag_slots
 	var target_item_in_array = null
 	for game_item in GameInfo.current_player.bag_slots:
 		if game_item.bag_slot_id == slot_id:
@@ -413,6 +406,8 @@ func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.I
 	if not target_item_in_array:
 		print("Error: Target item not found in bag_slots")
 		return
+	
+	Websocket.use_hammer(hammer_source_slot_id, slot_id)
 	
 	# Apply tempering: +10% to all stats (rounded up)
 	if target_item_in_array.get("strength") and target_item_in_array.strength > 0:
@@ -457,10 +452,8 @@ func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.I
 			UIManager.instance.refresh_stats()
 
 func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.Item, scroll_source_slot_id: int, scroll_source_container):
-	"""Use a scroll to enchant an item (apply effect_overdrive from scroll's effect_id)"""
 	print("Enchanting ", target_item.item_name, " with ", scroll_item.item_name)
 	
-	# Find the actual target item in GameInfo.bag_slots
 	var target_item_in_array = null
 	for game_item in GameInfo.current_player.bag_slots:
 		if game_item.bag_slot_id == slot_id:
@@ -470,6 +463,8 @@ func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.
 	if not target_item_in_array:
 		print("Error: Target item not found in bag_slots")
 		return
+	
+	Websocket.use_scroll(scroll_source_slot_id, slot_id)
 	
 	# Apply enchantment: set effect_overdrive to the scroll's effect_id
 	if scroll_item.effect_id > 0:
@@ -731,18 +726,18 @@ func handle_double_click(item: GameInfo.Item):
 				return
 
 func _consume_item(item: GameInfo.Item):
-	"""Consume a potion or elixir and apply its effects"""
 	print("Consuming item: ", item.item_name, " (Type: ", item.type, ")")
 	if item.type == "Potion":
+		Websocket.use_potion(item.bag_slot_id)
 		GameInfo.current_player.potion = item.id
 		GameInfo.current_player.bag_slots.erase(item)
 		clear_slot()
 	elif item.type == "Elixir":
+		Websocket.use_elixir(item.bag_slot_id)
 		GameInfo.current_player.elixir = item.id
 		GameInfo.current_player.bag_slots.erase(item)
 		clear_slot()
 	
-	# Update active perks display
 	UIManager.instance.refresh_active_effects()
 	UIManager.instance.refresh_bags()
 	UIManager.instance.refresh_stats()
