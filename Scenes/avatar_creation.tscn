@@ -1,0 +1,165 @@
+[gd_scene load_steps=7 format=3 uid="uid://dawdkje5hgcrr"]
+
+[ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="1_d62af"]
+[ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="1_vmn58"]
+[ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="2_vmn58"]
+[ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="3_085b2"]
+[ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="4_crdas"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
+bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="Avatar" type="Panel" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_vmn58")
+script = ExtResource("1_d62af")
+cosmetics_database = ExtResource("2_vmn58")
+avatar_instance = NodePath("PreviewPanel/AvatarPreview/AvatarInstance")
+selection_grid = NodePath("SelectionPanel/SelectionContainer/SelectionGrid")
+face_button = NodePath("CategoryButtons/FaceButton")
+hair_button = NodePath("CategoryButtons/HairButton")
+eyes_button = NodePath("CategoryButtons/EyesButton")
+nose_button = NodePath("CategoryButtons/NoseButton")
+mouth_button = NodePath("CategoryButtons/MouthButton")
+change_button = NodePath("ButtonsContainer/ChangeButton")
+create_button = NodePath("ButtonsContainer/CreateButton")
+
+[node name="PreviewPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -110.0
+offset_top = 20.0
+offset_right = 110.0
+offset_bottom = 240.0
+grow_horizontal = 2
+
+[node name="AvatarPreview" type="TextureRect" parent="PreviewPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_085b2")
+expand_mode = 1
+
+[node name="AvatarInstance" parent="PreviewPanel/AvatarPreview" instance=ExtResource("4_crdas")]
+layout_mode = 1
+
+[node name="CategoryButtons" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 250.0
+offset_right = 200.0
+offset_bottom = 290.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="FaceButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Face"
+
+[node name="HairButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Hair"
+
+[node name="EyesButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Eyes"
+
+[node name="NoseButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Nose"
+
+[node name="MouthButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Mouth"
+
+[node name="SelectionPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -188.5
+offset_top = 317.0
+offset_right = 185.5
+offset_bottom = 560.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
+[node name="SelectionContainer" type="ScrollContainer" parent="SelectionPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SelectionGrid" type="GridContainer" parent="SelectionPanel/SelectionContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 4
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -60.0
+offset_right = 160.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="ChangeButton" type="Button" parent="ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CHANGE"
+
+[node name="ButtonContent" type="HBoxContainer" parent="ButtonsContainer/ChangeButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -10.0
+offset_right = 50.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CreateButton" type="Button" parent="ButtonsContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CREATE CHARACTER"

@@ -1,35 +1,38 @@
 extends Panel
 @export var cosmetics_database: CosmeticDatabase
-
-@onready var avatar_instance: Node = $PreviewPanel/AvatarPreview/AvatarInstance
-@onready var selection_grid: GridContainer = $SelectionPanel/SelectionContainer/SelectionGrid
-@onready var face_button: Button = $CategoryButtons/FaceButton
-@onready var hair_button: Button = $CategoryButtons/HairButton
-@onready var eyes_button: Button = $CategoryButtons/EyesButton
-@onready var nose_button: Button = $CategoryButtons/NoseButton
-@onready var mouth_button: Button = $CategoryButtons/MouthButton
-@onready var change_button: Button = $ChangeButton
-@onready var change_label: Label = $ChangeButton/ButtonContent/ButtonLabel
-@onready var change_icon: TextureRect = $ChangeButton/ButtonContent/ButtonIcon
-@onready var change_paren: Label = $ChangeButton/ButtonContent/CloseParen
+@export var avatar_instance: Node
+@export var selection_grid: GridContainer
+@export var face_button: Button
+@export var hair_button: Button
+@export var eyes_button: Button
+@export var nose_button: Button
+@export var mouth_button: Button
+@export var change_button: Button
+@export var create_button: Button
 
 var current_category: String = "Face"
 var selected_cosmetic_id: int = -1
 var selected_cosmetics: Dictionary = {}  # Track selected cosmetics by category
+var is_creation_mode: bool = false  # True when creating new character
+
+signal create_character_pressed
+
+# Default avatar values
+const DEFAULT_AVATAR = [1, 10, 20, 30, 40]  # [face, hair, eyes, nose, mouth]
 
 # Temporary preview selections (not yet applied)
-var preview_face_id: int = 1
-var preview_hair_id: int = 10
-var preview_eyes_id: int = 20
-var preview_nose_id: int = 30
-var preview_mouth_id: int = 40
+var preview_face_id: int = DEFAULT_AVATAR[0]
+var preview_hair_id: int = DEFAULT_AVATAR[1]
+var preview_eyes_id: int = DEFAULT_AVATAR[2]
+var preview_nose_id: int = DEFAULT_AVATAR[3]
+var preview_mouth_id: int = DEFAULT_AVATAR[4]
 
 # Original player values (to calculate cost)
-var original_face_id: int = 1
-var original_hair_id: int = 10
-var original_eyes_id: int = 20
-var original_nose_id: int = 30
-var original_mouth_id: int = 40
+var original_face_id: int = DEFAULT_AVATAR[0]
+var original_hair_id: int = DEFAULT_AVATAR[1]
+var original_eyes_id: int = DEFAULT_AVATAR[2]
+var original_nose_id: int = DEFAULT_AVATAR[3]
+var original_mouth_id: int = DEFAULT_AVATAR[4]
 
 func _ready():
 	# Load cosmetics database
@@ -45,6 +48,7 @@ func _ready():
 	
 	# Connect change button
 	change_button.pressed.connect(_on_change_pressed)
+	create_button.pressed.connect(_on_create_pressed)
 	
 	# Initialize with current player avatar
 	if GameInfo.current_player:
@@ -181,17 +185,12 @@ func _has_changes() -> bool:
 			preview_mouth_id != original_mouth_id)
 
 func _update_change_button():
+	# Skip update if in creation mode
+	if is_creation_mode:
+		return
+	
 	var total_cost = _calculate_total_cost()
 	var has_changes = _has_changes()
-	
-	if total_cost > 0:
-		change_label.text = "CHANGE (%d " % total_cost
-		change_icon.visible = true
-		change_paren.visible = true
-	else:
-		change_label.text = "CHANGE"
-		change_icon.visible = false
-		change_paren.visible = false
 	
 	# Enable/disable button based on affordability and if there are changes
 	if GameInfo.current_player:
@@ -238,3 +237,41 @@ func _on_change_pressed():
 		
 		# TODO: Send to server to save
 		print("Avatar updated! Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id, " Nose:", preview_nose_id, " Mouth:", preview_mouth_id)
+
+func _on_create_pressed():
+	"""Handle create character button press during character creation"""
+	print("Create character pressed with avatar: ", preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
+	create_character_pressed.emit()
+
+func set_creation_mode(enabled: bool):
+	"""Toggle between creation mode and normal mode"""
+	is_creation_mode = enabled
+	
+	# If nodes aren't ready yet, defer the visibility changes
+	if not is_node_ready():
+		await ready
+	
+	if change_button:
+		change_button.visible = not enabled
+	if create_button:
+		create_button.visible = enabled
+	
+	if enabled:
+		# Set default avatar values for new character
+		preview_face_id = DEFAULT_AVATAR[0]
+		preview_hair_id = DEFAULT_AVATAR[1]
+		preview_eyes_id = DEFAULT_AVATAR[2]
+		preview_nose_id = DEFAULT_AVATAR[3]
+		preview_mouth_id = DEFAULT_AVATAR[4]
+		
+		if avatar_instance and avatar_instance.has_method("refresh_avatar"):
+			avatar_instance.refresh_avatar(preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
+
+func get_avatar_data() -> Dictionary:
+	return {
+		"face": preview_face_id,
+		"hair": preview_hair_id,
+		"eyes": preview_eyes_id,
+		"nose": preview_nose_id,
+		"mouth": preview_mouth_id
+	}

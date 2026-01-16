@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dtfwauux0ahsv"]
+[gd_scene load_steps=9 format=3 uid="uid://dtfwauux0ahsv"]
 
 [ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="1_lobby"]
 [ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="2_shroom"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://cu0dq450kmeqa" path="res://assets/images/ui/instagram.png" id="4_instagram"]
 [ext_resource type="Texture2D" uid="uid://cxg2iu8vi2jlc" path="res://assets/images/ui/twitter.png" id="5_twitter"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="6_theme"]
+[ext_resource type="PackedScene" path="res://Scenes/character_info.tscn" id="7_char_info"]
+[ext_resource type="PackedScene" uid="uid://dawdkje5hgcrr" path="res://Scenes/avatar_creation.tscn" id="8_avatar"]
 
 [node name="Login" type="Control"]
 layout_mode = 3
@@ -16,7 +18,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_theme")
 
-[node name="Lobby" type="Panel" parent="." node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button")]
+[node name="Lobby" type="Panel" parent="." node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,6 +30,8 @@ characters_container = NodePath("ScrollContainer/CharactersContainer")
 discord_button = NodePath("SocialLinks/DiscordButton")
 instagram_button = NodePath("SocialLinks/InstagramButton")
 twitter_button = NodePath("SocialLinks/TwitterButton")
+character_info_panel = NodePath("../CharacterInfo")
+avatar_creation_panel = NodePath("../Avatar")
 
 [node name="GameTitle" type="Label" parent="Lobby"]
 layout_mode = 1
@@ -194,3 +198,10 @@ size_flags_horizontal = 3
 text = "Create New Character"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="CharacterInfo" parent="." instance=ExtResource("7_char_info")]
+layout_mode = 1
+
+[node name="Avatar" parent="." instance=ExtResource("8_avatar")]
+visible = false
+layout_mode = 1

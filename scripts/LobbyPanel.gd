@@ -5,6 +5,8 @@ extends Panel
 @export var discord_button: TextureButton
 @export var instagram_button: TextureButton
 @export var twitter_button: TextureButton
+@export var character_info_panel: Panel
+@export var avatar_creation_panel: Panel
 
 # Social media URLs
 const DISCORD_URL = "https://discord.gg/your-discord-invite"
@@ -25,6 +27,7 @@ func _ready():
 	_load_game_scene_async()
 	add_character_list()
 	connect_social_buttons()
+	setup_character_creation()
 
 func _load_databases_async():
 	"""Load databases in background while user looks at character list"""
@@ -59,9 +62,33 @@ func connect_social_buttons():
 	instagram_button.pressed.connect(_on_instagram_pressed)
 	twitter_button.pressed.connect(_on_twitter_pressed)
 
+func setup_character_creation():
+	"""Setup character creation panels and signals"""
+	if character_info_panel:
+		character_info_panel.next_pressed.connect(_on_character_info_next)
+	
+	if avatar_creation_panel:
+		avatar_creation_panel.create_character_pressed.connect(_on_create_character_complete)
+		avatar_creation_panel.set_creation_mode(true)
+
+
 
 func add_character_list():
 	"""Add character panels from Websocket.mock_characters"""
+	# Add "Create New Character" button first
+	var create_new = characters_container.get_node("CreateNew")
+	if create_new:
+		var create_button = create_new.get_node("Label")
+		if create_button is Label:
+			# Make it clickable by converting parent to button
+			var button = Button.new()
+			button.custom_minimum_size = Vector2(0, 80)
+			button.text = "Create New Character"
+			button.pressed.connect(_on_create_new_character)
+			create_new.get_parent().add_child(button)
+			create_new.get_parent().move_child(button, 0)
+			create_new.queue_free()
+	
 	# Load characters from Websocket
 	for character in Websocket.mock_characters:
 		var card = PlayerCard.instantiate()
@@ -112,4 +139,33 @@ func _on_twitter_pressed():
 	"""Open Twitter link"""
 	OS.shell_open(TWITTER_URL)
 	print("Opening Twitter...")
+
+func _on_create_new_character():
+	"""Show character info panel to start creation flow"""
+	print("Create new character clicked")
+	visible = false
+	character_info_panel.visible = true
+
+func _on_character_info_next():
+	"""User completed character info, show avatar creation"""
+	print("Character info complete, showing avatar creation")
+	character_info_panel.visible = false
+	avatar_creation_panel.visible = true
+
+func _on_create_character_complete():
+	"""User completed avatar creation, create the character"""
+	var character_data = character_info_panel.get_character_data()
+	var avatar_data = avatar_creation_panel.get_avatar_data()
 	
+	print("Creating character:")
+	print("  Name: ", character_data.name)
+	print("  Faction: ", character_data.faction)
+	print("  VIP: ", character_data.vip)
+	print("  Avatar: ", avatar_data)
+	
+	# TODO: Send to server to create character
+	# For now, just go back to lobby
+	avatar_creation_panel.visible = false
+	visible = true
+	print("Character created! (mock)")
+

@@ -1,4 +1,4 @@
-[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=113 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -56,6 +56,7 @@
 [ext_resource type="Script" uid="uid://jgbt3dq66sjc" path="res://scripts/BlacksmithPanel.gd" id="41_blacksmith"]
 [ext_resource type="Texture2D" uid="uid://c0at4wwrwueri" path="res://assets/images/villages/forest2.png" id="41_w4j8i"]
 [ext_resource type="Script" uid="uid://uvb45o8c4dhi" path="res://scripts/PressHoldOverlay.gd" id="42_umggo"]
+[ext_resource type="PackedScene" uid="uid://dawdkje5hgcrr" path="res://Scenes/avatar_creation.tscn" id="43_a2m5q"]
 [ext_resource type="Texture2D" uid="uid://bbs4w4kbvqd7q" path="res://assets/images/ui/healthbar (2).png" id="43_fykvq"]
 [ext_resource type="Texture2D" uid="uid://bt1vtlhlu7wgb" path="res://assets/images/ui/healthbar_fill.png" id="44_ewwwr"]
 [ext_resource type="Texture2D" uid="uid://5n1rkplecshl" path="res://assets/images/ui/stren.png" id="44_k8ojv"]
@@ -68,8 +69,6 @@
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="67_e6ols"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/Payment.gd" id="67_payment"]
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="68_2cns2"]
-[ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="68_avatar_panel"]
-[ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="69_cosmetics"]
 [ext_resource type="Texture2D" uid="uid://cgcpygii1l82g" path="res://assets/images/ui/fight.png" id="79_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://c0byjvygn0ygi" path="res://assets/images/ui/luc.png" id="81_d5jaa"]
 [ext_resource type="Texture2D" uid="uid://n3yj5br5mlr7" path="res://assets/images/ui/faith.png" id="82_gsm33"]
@@ -251,7 +250,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "avatar_panel", "logout_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "logout_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -295,14 +294,13 @@ enemy_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy")
 enemy = [null]
 payment = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Payment")
 payment_button = NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/PaymentButton")
-avatar_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar")
 logout_panel = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Home/LogoutPanel")
 silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue")]
 mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
 bag_views = [NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/Bag")]
 character_display = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Character/CharacterDisplay")
 enemy_character_display = NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Enemy/CharacterDisplay")
-avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview/AvatarInstance"), NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
+avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), null, NodePath("../Portrait/GameSceneParent/Wrapper/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
 resolution_manager = NodePath("..")
 
 [node name="Portrait" type="Control" parent="."]
@@ -2636,148 +2634,9 @@ anchor_right = 0.994
 offset_top = -2.55005
 offset_right = 2.42999
 
-[node name="Avatar" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="Avatar" parent="Portrait/GameSceneParent/Wrapper/GameScene" instance=ExtResource("43_a2m5q")]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("68_avatar_panel")
-cosmetics_database = ExtResource("69_cosmetics")
-
-[node name="PreviewPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -110.0
-offset_top = 20.0
-offset_right = 110.0
-offset_bottom = 240.0
-grow_horizontal = 2
-
-[node name="AvatarPreview" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("54_b1mpw")
-expand_mode = 1
-
-[node name="AvatarInstance" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/PreviewPanel/AvatarPreview" instance=ExtResource("22_avatar")]
-layout_mode = 1
-
-[node name="CategoryButtons" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -200.0
-offset_top = 250.0
-offset_right = 200.0
-offset_bottom = 290.0
-grow_horizontal = 2
-alignment = 1
-
-[node name="FaceButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
-layout_mode = 2
-text = "Face"
-
-[node name="HairButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
-layout_mode = 2
-text = "Hair"
-
-[node name="EyesButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
-layout_mode = 2
-text = "Eyes"
-
-[node name="NoseButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
-layout_mode = 2
-text = "Nose"
-
-[node name="MouthButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/CategoryButtons"]
-layout_mode = 2
-text = "Mouth"
-
-[node name="SelectionPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -210.0
-offset_top = 310.0
-offset_right = 210.0
-offset_bottom = 560.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-
-[node name="SelectionContainer" type="ScrollContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/SelectionPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SelectionGrid" type="GridContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/SelectionPanel/SelectionContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-columns = 4
-
-[node name="ChangeButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -75.0
-offset_top = -60.0
-offset_right = 75.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="ButtonContent" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/ChangeButton"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -10.0
-offset_right = 50.0
-offset_bottom = 10.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="ButtonLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/ChangeButton/ButtonContent"]
-layout_mode = 2
-text = "CHANGE"
-
-[node name="ButtonIcon" type="TextureRect" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/ChangeButton/ButtonContent"]
-visible = false
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-texture = ExtResource("9_w4j8i")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="CloseParen" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Avatar/ChangeButton/ButtonContent"]
-visible = false
-layout_mode = 2
-text = ")"
 
 [node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
 visible = false
