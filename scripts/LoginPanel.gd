@@ -35,6 +35,12 @@ var current_method: String = "email"
 var is_register_mode: bool = false
 
 func _ready():
+	# Check if we already have login data (auto-login)
+	if not GameInfo.lobby_data.is_empty():
+		visible = false
+		lobby_panel.visible = true
+		return
+	
 	# Connect mode toggle buttons
 	login_mode_button.pressed.connect(_on_mode_toggle.bind(false))
 	register_mode_button.pressed.connect(_on_mode_toggle.bind(true))
@@ -89,15 +95,21 @@ func _on_method_selected(method: String):
 
 func _on_login():
 	"""Handle login (accept everything for now)"""
+	# Load lobby data (simulates successful login)
+	GameInfo.load_lobby_data()
 	visible = false
 	lobby_panel.visible = true
 
 func _on_login_or_register():
 	"""Handle login or register for non-email methods (same flow)"""
+	# Load lobby data (simulates successful login/register)
+	GameInfo.load_lobby_data()
 	visible = false
 	lobby_panel.visible = true
 
 func _on_register():
 	"""Handle registration (accept everything for now)"""
+	# Load lobby data (simulates successful registration)
+	GameInfo.load_lobby_data()
 	visible = false
 	lobby_panel.visible = true

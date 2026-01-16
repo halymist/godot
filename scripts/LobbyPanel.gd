@@ -35,7 +35,9 @@ var loading_in_progress = false  # Prevent multiple character selections while l
 func _ready():
 	_load_databases_async()
 	_load_game_scene_async()
-	GameInfo.load_lobby_data()
+	# lobby_data should already be loaded by LoginPanel, but ensure it's loaded
+	if GameInfo.lobby_data.is_empty():
+		GameInfo.load_lobby_data()
 	populate_account_info()
 	add_character_list()
 	setup_character_creation()
@@ -198,6 +200,8 @@ func _on_social_pressed(platform: String):
 
 func _on_logout():
 	"""Logout and return to login screen"""
+	# Clear lobby data to force login
+	GameInfo.lobby_data.clear()
 	get_tree().change_scene_to_file("res://Scenes/login.tscn")
 
 func _on_create_new_character():
