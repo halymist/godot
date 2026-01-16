@@ -18,6 +18,9 @@ var enemies_db: EnemyDatabase = null
 # ============================================
 # RUNTIME DATA
 # ============================================
+# Lobby data (account info, server list, character list)
+var lobby_data: Dictionary = {}
+
 # Character management
 var all_characters: Array[GameCurrentPlayer] = []
 var current_character_id: int = 0
@@ -72,6 +75,11 @@ func load_databases():
 	
 	databases_loaded = true
 	print("Databases loaded")
+
+func load_lobby_data():
+	"""Load lobby data from Websocket mock data"""
+	lobby_data = Websocket.mock_lobby_data.duplicate(true)
+	print("Lobby data loaded into GameInfo")
 
 # ============================================
 # TALENT REGISTRATION

@@ -32,6 +32,7 @@ func _ready():
 	# Start loading databases and game scene in background
 	_load_databases_async()
 	_load_game_scene_async()
+	GameInfo.load_lobby_data()
 	populate_account_info()
 	add_character_list()
 	connect_social_buttons()
@@ -74,7 +75,7 @@ func connect_social_buttons():
 
 func populate_account_info():
 	"""Populate account information from lobby data"""
-	var lobby_data = Websocket.mock_lobby_data
+	var lobby_data = GameInfo.lobby_data
 	
 	# Account created date
 	if account_created_label:
@@ -126,15 +127,19 @@ func _update_new_server_countdown():
 	if not new_server_countdown_label:
 		return
 	
-	var target_time = Websocket.mock_lobby_data.new_server_timestamp
+	var target_time = GameInfo.lobby_data.new_server_timestamp
 	var seconds_remaining = _calculate_seconds_until(target_time)
 	
 	if seconds_remaining <= 0:
 		new_server_countdown_label.text = "New Server Available!"
 		return
 	
-	var days = int(seconds_remaining / 86400)
-	var hours = int((seconds_remaining % 86400) / 3600)
+	var total: int = seconds_remaining
+	
+	var days: int = total / 86400
+	total %= 86400
+	
+	var hours: int = total / 3600
 	
 	new_server_countdown_label.text = "New start in: " + str(days) + "d " + str(hours) + "h"
 
@@ -179,7 +184,7 @@ func setup_character_creation():
 
 
 func add_character_list():
-	"""Add character panels from Websocket.mock_lobby_data"""
+	"""Add character panels from GameInfo.lobby_data"""
 	# Add "Create New Character" button first
 	var create_new = characters_container.get_node("CreateNew")
 	if create_new:
@@ -195,7 +200,7 @@ func add_character_list():
 			create_new.queue_free()
 	
 	# Load characters from all servers in lobby data
-	for server in Websocket.mock_lobby_data.server_list:
+	for server in GameInfo.lobby_data.server_list:
 		for character_mini in server.characters_mini:
 			var card = PlayerCard.instantiate()
 			characters_container.add_child(card)
