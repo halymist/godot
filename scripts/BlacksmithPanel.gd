@@ -18,7 +18,6 @@ var utility_background: UtilityBackground  # Found from loaded utility scene
 const TEMPER_COST = 10
 
 func _ready():
-	# Don't load location content yet - wait for character selection
 	# Connect to visibility changes to handle cleanup
 	visibility_changed.connect(_on_visibility_changed)
 	temper_button.pressed.connect(_on_temper_pressed)
@@ -53,9 +52,6 @@ func _on_visibility_changed():
 			utility_background.show_entered_greeting()
 
 func _load_location_content():
-	if not GameInfo.current_player:
-		return
-		
 	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
 	
 	# Clear existing utility background
@@ -104,38 +100,38 @@ func update_stats_display():
 		var day = item_in_slot.day if item_in_slot.get("day") else 0
 		
 		if res.strength > 0:
-			var current = item_in_slot.calculate_scaled_stat(res.strength, day, current_tempered)
-			var improved = item_in_slot.calculate_scaled_stat(res.strength, day, current_tempered + 1)
+			var current = GameInfo.Item.calculate_scaled_value(res.strength, day, current_tempered)
+			var improved = GameInfo.Item.calculate_scaled_value(res.strength, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Strength: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if res.stamina > 0:
-			var current = item_in_slot.calculate_scaled_stat(res.stamina, day, current_tempered)
-			var improved = item_in_slot.calculate_scaled_stat(res.stamina, day, current_tempered + 1)
+			var current = GameInfo.Item.calculate_scaled_value(res.stamina, day, current_tempered)
+			var improved = GameInfo.Item.calculate_scaled_value(res.stamina, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Stamina: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if res.agility > 0:
-			var current = item_in_slot.calculate_scaled_stat(res.agility, day, current_tempered)
-			var improved = item_in_slot.calculate_scaled_stat(res.agility, day, current_tempered + 1)
+			var current = GameInfo.Item.calculate_scaled_value(res.agility, day, current_tempered)
+			var improved = GameInfo.Item.calculate_scaled_value(res.agility, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Agility: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if res.luck > 0:
-			var current = item_in_slot.calculate_scaled_stat(res.luck, day, current_tempered)
-			var improved = item_in_slot.calculate_scaled_stat(res.luck, day, current_tempered + 1)
+			var current = GameInfo.Item.calculate_scaled_value(res.luck, day, current_tempered)
+			var improved = GameInfo.Item.calculate_scaled_value(res.luck, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Luck: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if res.armor > 0:
-			var current = item_in_slot.calculate_scaled_stat(res.armor, day, current_tempered)
-			var improved = item_in_slot.calculate_scaled_stat(res.armor, day, current_tempered + 1)
+			var current = GameInfo.Item.calculate_scaled_value(res.armor, day, current_tempered)
+			var improved = GameInfo.Item.calculate_scaled_value(res.armor, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Armor: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if res.damage_min > 0:
-			var current = item_in_slot.calculate_scaled_stat(res.damage_min, day, current_tempered)
-			var improved = item_in_slot.calculate_scaled_stat(res.damage_min, day, current_tempered + 1)
+			var current = GameInfo.Item.calculate_scaled_value(res.damage_min, day, current_tempered)
+			var improved = GameInfo.Item.calculate_scaled_value(res.damage_min, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Damage Min: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		if res.damage_max > 0:
-			var current = item_in_slot.calculate_scaled_stat(res.damage_max, day, current_tempered)
-			var improved = item_in_slot.calculate_scaled_stat(res.damage_max, day, current_tempered + 1)
+			var current = GameInfo.Item.calculate_scaled_value(res.damage_max, day, current_tempered)
+			var improved = GameInfo.Item.calculate_scaled_value(res.damage_max, day, current_tempered + 1)
 			var bonus = improved - current
 			stats_text += "Damage Max: " + str(current) + " + " + str(bonus) + " --> " + str(improved) + "\n"
 		
@@ -170,7 +166,6 @@ func return_blacksmith_item_to_bag():
 					return
 
 func update_temper_button_state():
-	
 	# Check if there's an item in the blacksmith slot
 	var item_in_slot = null
 	for item in GameInfo.current_player.bag_slots:
@@ -194,9 +189,8 @@ func _on_temper_pressed():
 	if not item_in_slot:
 		return
 	
-	# Check if player has enough silver
-	if GameInfo.current_player.silver < TEMPER_COST:
-		return
+	# Send temper request to server
+	Websocket.temper_item(BLACKSMITH_SLOT)
 	
 	# Deduct silver
 	UIManager.instance.update_silver(-TEMPER_COST)
