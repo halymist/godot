@@ -16,6 +16,7 @@ func _on_yes_pressed():
 	var quest_id = GameInfo.current_player.traveling_destination
 	
 	if quest_id != null and quest_id is int:
+		Websocket.quest_cancel()
 		GameInfo.complete_quest(quest_id)
 		print("Quest ", quest_id, " abandoned and marked as completed")
 	

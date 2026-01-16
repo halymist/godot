@@ -485,6 +485,14 @@ func handle_quest_arrived():
 func _load_quest_on_startup(quest_id: int):
 	quest.load_quest(quest_id)
 
+func handle_logout():
+	print("Logging out and returning to login scene...")
+	
+	GameInfo.current_player = null
+	GameInfo.current_character_id = 0
+	
+	get_tree().change_scene_to_file("res://Scenes/login.tscn")
+
 # ============================================================================
 # UIManager Functions - Currency, Stats, Effects, Bags, Avatars
 # ============================================================================

@@ -379,11 +379,10 @@ func refresh_quest_options_internal():
 				add_option(option.text, _on_quest_option_pressed.bind(option), option)
 
 func _on_quest_option_pressed(option: QuestOption):
-	"""Handle option click with persistent options system"""
-	# Clear previous reward display
 	reward_label.text = ""
 	
-	# Track this clicked option
+	Websocket.quest_option(option.option_index)
+	
 	if not clicked_option_ids.has(option.option_index):
 		clicked_option_ids.append(option.option_index)
 		print("Tracked clicked option: ", option.option_index, " Total clicked: ", clicked_option_ids)
