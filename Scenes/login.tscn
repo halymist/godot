@@ -73,7 +73,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "facebook_button", "google_button", "steam_button", "email_login_section", "facebook_login_section", "google_login_section", "steam_login_section", "email_register_section", "facebook_register_section", "google_register_section", "steam_register_section", "email_login_button", "facebook_login_button", "google_login_button", "steam_login_button", "email_register_button", "facebook_register_button", "google_register_button", "steam_register_button")]
+[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "facebook_button", "google_button", "steam_button", "email_login_section", "facebook_login_section", "google_login_section", "steam_login_section", "email_register_section", "email_login_button", "facebook_login_button", "google_login_button", "steam_login_button", "email_register_button")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -93,17 +93,11 @@ facebook_login_section = NodePath("FacebookLoginSection")
 google_login_section = NodePath("GoogleLoginSection")
 steam_login_section = NodePath("SteamLoginSection")
 email_register_section = NodePath("EmailRegisterSection")
-facebook_register_section = NodePath("FacebookRegisterSection")
-google_register_section = NodePath("GoogleRegisterSection")
-steam_register_section = NodePath("SteamRegisterSection")
 email_login_button = NodePath("EmailLoginSection/LoginButton")
 facebook_login_button = NodePath("FacebookLoginSection/LoginButton")
 google_login_button = NodePath("GoogleLoginSection/LoginButton")
 steam_login_button = NodePath("SteamLoginSection/LoginButton")
 email_register_button = NodePath("EmailRegisterSection/RegisterButton")
-facebook_register_button = NodePath("FacebookRegisterSection/RegisterButton")
-google_register_button = NodePath("GoogleRegisterSection/RegisterButton")
-steam_register_button = NodePath("SteamRegisterSection/RegisterButton")
 
 [node name="ModeToggle" type="HBoxContainer" parent="ContentContainer/Login"]
 layout_mode = 1
@@ -498,145 +492,7 @@ offset_bottom = 310.0
 grow_horizontal = 2
 text = "REGISTER"
 
-[node name="FacebookRegisterSection" type="Control" parent="ContentContainer/Login"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -50.0
-offset_right = 150.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Message" type="Label" parent="ContentContainer/Login/FacebookRegisterSection"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -40.0
-offset_right = 100.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Register with Facebook"
-horizontal_alignment = 1
-
-[node name="RegisterButton" type="Button" parent="ContentContainer/Login/FacebookRegisterSection"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -75.0
-offset_top = 10.0
-offset_right = 75.0
-offset_bottom = 60.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "REGISTER"
-
-[node name="GoogleRegisterSection" type="Control" parent="ContentContainer/Login"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -50.0
-offset_right = 150.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Message" type="Label" parent="ContentContainer/Login/GoogleRegisterSection"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -40.0
-offset_right = 100.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Register with Google"
-horizontal_alignment = 1
-
-[node name="RegisterButton" type="Button" parent="ContentContainer/Login/GoogleRegisterSection"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -75.0
-offset_top = 10.0
-offset_right = 75.0
-offset_bottom = 60.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "REGISTER"
-
-[node name="SteamRegisterSection" type="Control" parent="ContentContainer/Login"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -50.0
-offset_right = 150.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Message" type="Label" parent="ContentContainer/Login/SteamRegisterSection"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -40.0
-offset_right = 100.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Register with Steam"
-horizontal_alignment = 1
-
-[node name="RegisterButton" type="Button" parent="ContentContainer/Login/SteamRegisterSection"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -75.0
-offset_top = 10.0
-offset_right = 75.0
-offset_bottom = 60.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "REGISTER"
-
-[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
+[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -647,6 +503,7 @@ grow_vertical = 2
 script = ExtResource("1_lobby")
 characters_container = NodePath("ScrollContainer/CharactersContainer")
 create_new_button = NodePath("ScrollContainer/CharactersContainer/CreateNewButton")
+logout_button = NodePath("AccountInfo/LogoutButton")
 discord_button = NodePath("SocialLinks/DiscordButton")
 instagram_button = NodePath("SocialLinks/InstagramButton")
 twitter_button = NodePath("SocialLinks/TwitterButton")
@@ -701,6 +558,10 @@ text = "0"
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
+
+[node name="LogoutButton" type="Button" parent="ContentContainer/Lobby/AccountInfo"]
+layout_mode = 2
+text = "Logout"
 
 [node name="LoginMethodsLabel" type="Label" parent="ContentContainer/Lobby"]
 layout_mode = 1

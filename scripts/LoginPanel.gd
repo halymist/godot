@@ -19,11 +19,8 @@ extends Control
 @export var google_login_section: Control
 @export var steam_login_section: Control
 
-# Register sections
+# Register sections (only email needs separate UI)
 @export var email_register_section: Control
-@export var facebook_register_section: Control
-@export var google_register_section: Control
-@export var steam_register_section: Control
 
 # Login action buttons
 @export var email_login_button: Button
@@ -31,11 +28,8 @@ extends Control
 @export var google_login_button: Button
 @export var steam_login_button: Button
 
-# Register action buttons
+# Register action buttons (only email needs separate button)
 @export var email_register_button: Button
-@export var facebook_register_button: Button
-@export var google_register_button: Button
-@export var steam_register_button: Button
 
 var current_method: String = "email"
 var is_register_mode: bool = false
@@ -53,15 +47,12 @@ func _ready():
 	
 	# Connect login buttons
 	email_login_button.pressed.connect(_on_login)
-	facebook_login_button.pressed.connect(_on_login)
-	google_login_button.pressed.connect(_on_login)
-	steam_login_button.pressed.connect(_on_login)
+	facebook_login_button.pressed.connect(_on_login_or_register)
+	google_login_button.pressed.connect(_on_login_or_register)
+	steam_login_button.pressed.connect(_on_login_or_register)
 	
 	# Connect register buttons
 	email_register_button.pressed.connect(_on_register)
-	facebook_register_button.pressed.connect(_on_register)
-	google_register_button.pressed.connect(_on_register)
-	steam_register_button.pressed.connect(_on_register)
 	
 	# Start with login mode and email selected
 	_on_mode_toggle(false)
@@ -75,27 +66,21 @@ func _on_mode_toggle(register: bool):
 func _update_ui_for_mode():
 	"""Update UI to show login or register sections"""
 	if is_register_mode:
-		# Show register sections
+		# Email has separate register section
 		email_register_section.visible = current_method == "email"
-		facebook_register_section.visible = current_method == "facebook"
-		google_register_section.visible = current_method == "google"
-		steam_register_section.visible = current_method == "steam"
-		# Hide login sections
 		email_login_section.visible = false
-		facebook_login_section.visible = false
-		google_login_section.visible = false
-		steam_login_section.visible = false
+		# Non-email methods reuse login sections for both modes
+		facebook_login_section.visible = current_method == "facebook"
+		google_login_section.visible = current_method == "google"
+		steam_login_section.visible = current_method == "steam"
 	else:
 		# Show login sections
 		email_login_section.visible = current_method == "email"
 		facebook_login_section.visible = current_method == "facebook"
 		google_login_section.visible = current_method == "google"
 		steam_login_section.visible = current_method == "steam"
-		# Hide register sections
+		# Hide email register section
 		email_register_section.visible = false
-		facebook_register_section.visible = false
-		google_register_section.visible = false
-		steam_register_section.visible = false
 
 func _on_method_selected(method: String):
 	"""Show the selected login method section"""
@@ -104,6 +89,11 @@ func _on_method_selected(method: String):
 
 func _on_login():
 	"""Handle login (accept everything for now)"""
+	visible = false
+	lobby_panel.visible = true
+
+func _on_login_or_register():
+	"""Handle login or register for non-email methods (same flow)"""
 	visible = false
 	lobby_panel.visible = true
 

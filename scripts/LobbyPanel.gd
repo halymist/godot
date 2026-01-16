@@ -3,6 +3,7 @@ extends Control
 # Lobby panel for character selection and account management
 @export var characters_container: VBoxContainer
 @export var create_new_button: Button
+@export var logout_button: Button
 @export var discord_button: TextureButton
 @export var instagram_button: TextureButton
 @export var twitter_button: TextureButton
@@ -42,6 +43,7 @@ func _ready():
 	
 	# Connect buttons
 	create_new_button.pressed.connect(_on_create_new_character)
+	logout_button.pressed.connect(_on_logout)
 	discord_button.pressed.connect(_on_social_pressed.bind("discord"))
 	instagram_button.pressed.connect(_on_social_pressed.bind("instagram"))
 	twitter_button.pressed.connect(_on_social_pressed.bind("twitter"))
@@ -193,6 +195,10 @@ func _on_character_selected(character_id: int):
 func _on_social_pressed(platform: String):
 	"""Open social media link"""
 	OS.shell_open(SOCIAL_URLS[platform])
+
+func _on_logout():
+	"""Logout and return to login screen"""
+	get_tree().change_scene_to_file("res://Scenes/login.tscn")
 
 func _on_create_new_character():
 	"""Show character info panel to start creation flow"""
