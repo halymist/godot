@@ -73,7 +73,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "email_button", "facebook_button", "google_button", "steam_button", "email_section", "facebook_section", "google_section", "steam_section", "email_login_button", "facebook_login_button", "google_login_button", "steam_login_button")]
+[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "facebook_button", "google_button", "steam_button", "email_login_section", "facebook_login_section", "google_login_section", "steam_login_section", "email_register_section", "facebook_register_section", "google_register_section", "steam_register_section", "email_login_button", "facebook_login_button", "google_login_button", "steam_login_button", "email_register_button", "facebook_register_button", "google_register_button", "steam_register_button")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -82,32 +82,49 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_login")
 lobby_panel = NodePath("../Lobby")
+login_mode_button = NodePath("ModeToggle/LoginButton")
+register_mode_button = NodePath("ModeToggle/RegisterButton")
 email_button = NodePath("MethodButtons/EmailButton")
 facebook_button = NodePath("MethodButtons/FacebookButton")
 google_button = NodePath("MethodButtons/GoogleButton")
 steam_button = NodePath("MethodButtons/SteamButton")
-email_section = NodePath("EmailSection")
-facebook_section = NodePath("FacebookSection")
-google_section = NodePath("GoogleSection")
-steam_section = NodePath("SteamSection")
-email_login_button = NodePath("EmailSection/LoginButton")
-facebook_login_button = NodePath("FacebookSection/LoginButton")
-google_login_button = NodePath("GoogleSection/LoginButton")
-steam_login_button = NodePath("SteamSection/LoginButton")
+email_login_section = NodePath("EmailLoginSection")
+facebook_login_section = NodePath("FacebookLoginSection")
+google_login_section = NodePath("GoogleLoginSection")
+steam_login_section = NodePath("SteamLoginSection")
+email_register_section = NodePath("EmailRegisterSection")
+facebook_register_section = NodePath("FacebookRegisterSection")
+google_register_section = NodePath("GoogleRegisterSection")
+steam_register_section = NodePath("SteamRegisterSection")
+email_login_button = NodePath("EmailLoginSection/LoginButton")
+facebook_login_button = NodePath("FacebookLoginSection/LoginButton")
+google_login_button = NodePath("GoogleLoginSection/LoginButton")
+steam_login_button = NodePath("SteamLoginSection/LoginButton")
+email_register_button = NodePath("EmailRegisterSection/RegisterButton")
+facebook_register_button = NodePath("FacebookRegisterSection/RegisterButton")
+google_register_button = NodePath("GoogleRegisterSection/RegisterButton")
+steam_register_button = NodePath("SteamRegisterSection/RegisterButton")
 
-[node name="Title" type="Label" parent="ContentContainer/Login"]
+[node name="ModeToggle" type="HBoxContainer" parent="ContentContainer/Login"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -199.5
-offset_top = 172.0
-offset_right = 200.5
-offset_bottom = 224.0
+offset_left = -101.5
+offset_top = 179.0
+offset_right = 102.5
+offset_bottom = 223.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 32
+
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/ModeToggle"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
 text = "LOGIN"
-horizontal_alignment = 1
+
+[node name="RegisterButton" type="Button" parent="ContentContainer/Login/ModeToggle"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "REGISTER"
 
 [node name="MethodButtons" type="HBoxContainer" parent="ContentContainer/Login"]
 layout_mode = 1
@@ -141,7 +158,7 @@ custom_minimum_size = Vector2(60, 20)
 layout_mode = 2
 text = "Steam"
 
-[node name="EmailSection" type="Control" parent="ContentContainer/Login"]
+[node name="EmailLoginSection" type="Control" parent="ContentContainer/Login"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -155,7 +172,7 @@ offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="AccountLabel" type="Label" parent="ContentContainer/Login/EmailSection"]
+[node name="AccountLabel" type="Label" parent="ContentContainer/Login/EmailLoginSection"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -167,7 +184,7 @@ offset_bottom = 35.0
 grow_horizontal = 2
 text = "Email"
 
-[node name="AccountInput" type="LineEdit" parent="ContentContainer/Login/EmailSection"]
+[node name="AccountInput" type="LineEdit" parent="ContentContainer/Login/EmailLoginSection"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -179,7 +196,7 @@ offset_bottom = 75.0
 grow_horizontal = 2
 placeholder_text = "your@email.com"
 
-[node name="PasswordLabel" type="Label" parent="ContentContainer/Login/EmailSection"]
+[node name="PasswordLabel" type="Label" parent="ContentContainer/Login/EmailLoginSection"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -191,7 +208,7 @@ offset_bottom = 115.0
 grow_horizontal = 2
 text = "Password"
 
-[node name="PasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailSection"]
+[node name="PasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailLoginSection"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -204,7 +221,7 @@ grow_horizontal = 2
 placeholder_text = "password"
 secret = true
 
-[node name="ForgotPassword" type="Label" parent="ContentContainer/Login/EmailSection"]
+[node name="ForgotPassword" type="Label" parent="ContentContainer/Login/EmailLoginSection"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -218,7 +235,7 @@ theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 text = "Forgot password?"
 horizontal_alignment = 1
 
-[node name="StayLogged" type="CheckBox" parent="ContentContainer/Login/EmailSection"]
+[node name="StayLogged" type="CheckBox" parent="ContentContainer/Login/EmailLoginSection"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -230,7 +247,7 @@ offset_bottom = 230.0
 grow_horizontal = 2
 text = "Stay logged in"
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/EmailSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/EmailLoginSection"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -242,7 +259,7 @@ offset_bottom = 290.0
 grow_horizontal = 2
 text = "LOGIN"
 
-[node name="FacebookSection" type="Control" parent="ContentContainer/Login"]
+[node name="FacebookLoginSection" type="Control" parent="ContentContainer/Login"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -257,7 +274,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/FacebookSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/FacebookLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -273,7 +290,7 @@ grow_vertical = 2
 text = "Login with Facebook"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/FacebookSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/FacebookLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -288,7 +305,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="GoogleSection" type="Control" parent="ContentContainer/Login"]
+[node name="GoogleLoginSection" type="Control" parent="ContentContainer/Login"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -303,7 +320,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/GoogleSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/GoogleLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -319,7 +336,7 @@ grow_vertical = 2
 text = "Login with Google"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/GoogleSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/GoogleLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -334,7 +351,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="SteamSection" type="Control" parent="ContentContainer/Login"]
+[node name="SteamLoginSection" type="Control" parent="ContentContainer/Login"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -349,7 +366,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/SteamSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/SteamLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -365,7 +382,7 @@ grow_vertical = 2
 text = "Login with Steam"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/SteamSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/SteamLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -379,6 +396,245 @@ offset_bottom = 60.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
+
+[node name="EmailRegisterSection" type="Control" parent="ContentContainer/Login"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -110.0
+offset_right = 200.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AccountLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 10.0
+offset_right = -80.0
+offset_bottom = 35.0
+grow_horizontal = 2
+text = "Email"
+
+[node name="AccountInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 40.0
+offset_right = 180.0
+offset_bottom = 75.0
+grow_horizontal = 2
+placeholder_text = "your@email.com"
+
+[node name="PasswordLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 90.0
+offset_right = -80.0
+offset_bottom = 115.0
+grow_horizontal = 2
+text = "Password"
+
+[node name="PasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 120.0
+offset_right = 180.0
+offset_bottom = 155.0
+grow_horizontal = 2
+placeholder_text = "password"
+secret = true
+
+[node name="ConfirmPasswordLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 170.0
+offset_right = -40.0
+offset_bottom = 195.0
+grow_horizontal = 2
+text = "Confirm Password"
+
+[node name="ConfirmPasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 200.0
+offset_right = 180.0
+offset_bottom = 235.0
+grow_horizontal = 2
+placeholder_text = "confirm password"
+secret = true
+
+[node name="RegisterButton" type="Button" parent="ContentContainer/Login/EmailRegisterSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 260.0
+offset_right = 100.0
+offset_bottom = 310.0
+grow_horizontal = 2
+text = "REGISTER"
+
+[node name="FacebookRegisterSection" type="Control" parent="ContentContainer/Login"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="ContentContainer/Login/FacebookRegisterSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Register with Facebook"
+horizontal_alignment = 1
+
+[node name="RegisterButton" type="Button" parent="ContentContainer/Login/FacebookRegisterSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 10.0
+offset_right = 75.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "REGISTER"
+
+[node name="GoogleRegisterSection" type="Control" parent="ContentContainer/Login"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="ContentContainer/Login/GoogleRegisterSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Register with Google"
+horizontal_alignment = 1
+
+[node name="RegisterButton" type="Button" parent="ContentContainer/Login/GoogleRegisterSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 10.0
+offset_right = 75.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "REGISTER"
+
+[node name="SteamRegisterSection" type="Control" parent="ContentContainer/Login"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="ContentContainer/Login/SteamRegisterSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Register with Steam"
+horizontal_alignment = 1
+
+[node name="RegisterButton" type="Button" parent="ContentContainer/Login/SteamRegisterSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 10.0
+offset_right = 75.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "REGISTER"
 
 [node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 visible = false
