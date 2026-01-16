@@ -568,9 +568,9 @@ func socket_item(gem_slot: int, target_slot: int):
 		"int_argument2": target_slot
 	})
 
-func buy_item_vendor(item_id: int, target_slot: int):
+func buy_item(item_id: int, target_slot: int):
 	"""Buy an item from vendor"""
-	send("buy_item_vendor", {
+	send("buy_item", {
 		"int_argument1": item_id,
 		"int_argument2": target_slot
 	})
@@ -692,14 +692,17 @@ func skip_travel():
 # Combat/Encounter Actions
 # ============================================
 
-func load_character():
-	"""Load character data"""
-	send("load_character", {})
-
 func load_enemy(character_id: int):
 	"""Load enemy character data"""
 	send("load_enemy", {
 		"int_argument1": character_id
+	})
+
+func load_rankings(direction: int, reference_rank: int):
+	"""Load rankings leaderboard (direction: 1=up, 2=down, 3=center)"""
+	send("load_rankings", {
+		"int_argument1": direction,
+		"int_argument2": reference_rank
 	})
 
 func fight_player(enemy_id: int):
@@ -711,14 +714,4 @@ func fight_player(enemy_id: int):
 func start_expedition():
 	"""Start an expedition"""
 	send("start_expedition", {})
-
-# ============================================
-# Leaderboard/Ranking Actions
-# ============================================
-
-func load_rankings(direction: int = 2):
-	"""Load rankings leaderboard (direction: 1=up, 2=down, 3=center)"""
-	send("load_rankings", {
-		"int_argument1": direction
-	})
 
