@@ -4,28 +4,17 @@
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="3_item"]
 [ext_resource type="Texture2D" uid="uid://crrq3yx1yy7mx" path="res://assets/images/ui/slot2.png" id="3_vim8q"]
 
-[node name="ItemSlot" type="Control"]
+[node name="ItemSlot" type="TextureRect"]
 custom_minimum_size = Vector2(75, 75)
-layout_mode = 3
-anchors_preset = 0
-offset_right = 75.0
-offset_bottom = 75.0
+layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("2_inventory_slot")
-item_scene = ExtResource("3_item")
-
-[node name="Background" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+mouse_filter = 0
 texture = ExtResource("3_vim8q")
 expand_mode = 3
 stretch_mode = 5
+script = ExtResource("2_inventory_slot")
+item_scene = ExtResource("3_item")
 
 [node name="Outline" type="TextureRect" parent="."]
 visible = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -22,6 +22,7 @@
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
 [ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="16_q8b24"]
+[ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="17_aujhx"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="PackedScene" uid="uid://cducbq1tpj6uc" path="res://Scenes/bag.tscn" id="20_6xvgv"]
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
@@ -508,7 +509,6 @@ grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
 [node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "bag", "vendor_grid")]
-visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -558,38 +558,39 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 4
 script = ExtResource("16_q8b24")
+item_scene = ExtResource("17_aujhx")
 slot_id = 20
 
 [node name="Vendor1" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 21
 
 [node name="Vendor2" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 22
 
 [node name="Vendor3" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 23
 
 [node name="Vendor4" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 24
 
 [node name="Vendor5" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 25
 
 [node name="Vendor6" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 26
 
 [node name="Vendor7" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 27
 
 [node name="Vendor8" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
-layout_mode = 2
+texture = null
 slot_id = 28
 
 [node name="Bag" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay" instance=ExtResource("20_6xvgv")]
@@ -1207,7 +1208,6 @@ alignment = 1
 
 [node name="Slot1" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 17
@@ -1221,7 +1221,6 @@ vertical_alignment = 1
 
 [node name="Slot2" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 18
@@ -1235,7 +1234,6 @@ vertical_alignment = 1
 
 [node name="Slot3" parent="Portrait/GameSceneParent/Wrapper/GameScene/AlchemistPanel/Overlay/IngredientsRow" instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 19

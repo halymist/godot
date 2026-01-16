@@ -1,4 +1,3 @@
-# SlotContainer.gd - Attach to the slot Control (root level)
 extends Control
 
 # Slot numbering constants
@@ -17,11 +16,10 @@ const VENDOR_MIN = 21
 const VENDOR_MAX = 28
 
 @export var item_scene: PackedScene
-@export var outline_texture: Texture2D  # Outline texture for equipment slots (bag slots leave empty)
-@onready var slot_background = get_node_or_null("Background")
+@export var outline_texture: Texture2D
 @onready var item_outline = get_node_or_null("Outline")
 
-@export var slot_type: String = "Bag" # "Head", "Weapon", "Bag", etc.
+@export var slot_type: String = "Bag"
 @export var slot_id: int
 
 func _ready():
@@ -533,9 +531,8 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 			return false
 
 func is_slot_empty() -> bool:
-	# Check if slot has any children besides Background and Outline
 	for child in get_children():
-		if child != slot_background and child != item_outline:
+		if child != item_outline:
 			return false
 	return true
 
@@ -556,13 +553,11 @@ func place_item_in_slot(item_data: GameInfo.Item):
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func clear_slot():
-	# Collect children to remove (except Background and Outline)
 	var children_to_remove = []
 	for child in get_children():
-		if child != slot_background and child != item_outline:
+		if child != item_outline:
 			children_to_remove.append(child)
 	
-	# Free them with queue_free to avoid locked object errors
 	for child in children_to_remove:
 		child.queue_free()
 	
@@ -574,25 +569,20 @@ func clear_slot():
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func update_slot_appearance():
-	# Count non-background/outline children that aren't queued for deletion
 	var item_count = 0
 	for child in get_children():
-		if child != slot_background and child != item_outline and not child.is_queued_for_deletion():
+		if child != item_outline and not child.is_queued_for_deletion():
 			item_count += 1
 	
-	# Only show outline when empty AND outline_texture is set (equipment slots)
 	if item_outline:
 		item_outline.visible = (item_count == 0) and (outline_texture != null)
 
 func refresh_slot():
-	"""Manual refresh - used by external systems that change bag_slots data directly"""
-	# Vendor slots (21-28) are managed by VendorPanel, don't auto-refresh them
 	if slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
 		return
 	
-	# Clear existing item visuals (keep Background and Outline)
 	for child in get_children():
-		if child != slot_background and child != item_outline:
+		if child != item_outline:
 			child.queue_free()
 	
 	# Find if this slot has an item in bag_slots
@@ -611,9 +601,8 @@ func refresh_slot():
 
 func get_item_data() -> GameInfo.Item:
 	if not is_slot_empty():
-		# Find the first child that is not background or outline
 		for child in get_children():
-			if child != slot_background and child != item_outline:
+			if child != item_outline:
 				if child.has_method("get_item_data"):
 					return child.get_item_data()
 	return null
