@@ -68,8 +68,6 @@ func _load_location_content():
 func load_blessings():
 	# Clear blessing data
 	blessing_data.clear()
-	
-	# Get location-specific blessings
 	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
 	
 	# Load the 3 blessing perks from location's blessing IDs
@@ -122,8 +120,6 @@ func _on_blessing_selected(slot_index: int, perk: PerkResource):
 	
 	# Highlight selected slot
 	blessing_slots[slot_index].modulate = Color(0.8, 1.2, 0.8)  # Green tint for selection
-	
-	# Update selected blessing
 	selected_blessing_id = perk.id
 	
 	# Update description label with perk name and description with factor

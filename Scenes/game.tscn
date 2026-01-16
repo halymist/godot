@@ -1,4 +1,4 @@
-[gd_scene load_steps=113 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -29,6 +29,7 @@
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="22_avatar"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_healthbar"]
 [ext_resource type="Script" uid="uid://dhysbtyj43ckr" path="res://scripts/Arena.gd" id="26_arena_slideshow"]
+[ext_resource type="PackedScene" uid="uid://c8hk3lv5mqr8p" path="res://Scenes/enchant_option.tscn" id="26_lknxd"]
 [ext_resource type="Texture2D" uid="uid://crrq3yx1yy7mx" path="res://assets/images/ui/slot2.png" id="27_w4j8i"]
 [ext_resource type="Script" uid="uid://b4m0pxusl8lna" path="res://scripts/LogoutPanel.gd" id="28_a2m5q"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
@@ -1304,6 +1305,7 @@ bag = NodePath("Overlay/Bag")
 enchanter_slot = NodePath("Overlay/ItemSlot")
 enchant_button = NodePath("Overlay/EnchantButton")
 effect_list = NodePath("Overlay/EffectsSection/EffectScrollContainer/EffectList")
+enchant_option_scene = ExtResource("26_lknxd")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/EnchanterPanel"]
 layout_mode = 1
