@@ -1,4 +1,4 @@
-[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=116 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://drrca05nqixdx" path="res://assets/images/ui/talents/survive.png" id="15_7nbq1"]
 [ext_resource type="Theme" uid="uid://3h0nyefvnxqm" path="res://talent_slot.tres" id="15_22asu"]
 [ext_resource type="Texture2D" uid="uid://dspmn1ha177de" path="res://assets/images/ui/talents/talentFR.png" id="15_exi56"]
+[ext_resource type="Script" uid="uid://befy0aov2fy36" path="res://scripts/InventorySlot.gd" id="16_q8b24"]
 [ext_resource type="Script" uid="uid://bjqv6paql03e1" path="res://scripts/UpgradeTalent.gd" id="18_mg4q0"]
 [ext_resource type="PackedScene" uid="uid://cducbq1tpj6uc" path="res://Scenes/bag.tscn" id="20_6xvgv"]
 [ext_resource type="Script" uid="uid://cvkjf04ma5680" path="res://scripts/VillageManager.gd" id="20_village"]
@@ -556,6 +557,8 @@ offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 columns = 4
+script = ExtResource("16_q8b24")
+slot_id = 20
 
 [node name="Vendor1" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 layout_mode = 2
