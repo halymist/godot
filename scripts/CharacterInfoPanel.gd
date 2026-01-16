@@ -1,4 +1,4 @@
-extends Panel
+extends Control
 
 # Character info panel for name, faction, and VIP selection
 @export var name_input: LineEdit

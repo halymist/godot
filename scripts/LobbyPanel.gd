@@ -1,11 +1,11 @@
-extends Panel
+extends Control
 
 # Lobby panel for character selection and account management
 @export var characters_container: VBoxContainer
 @export var discord_button: TextureButton
 @export var instagram_button: TextureButton
 @export var twitter_button: TextureButton
-@export var character_info_panel: Panel
+@export var character_info_panel: Control
 @export var avatar_creation_panel: Panel
 
 # Social media URLs
@@ -168,4 +168,3 @@ func _on_create_character_complete():
 	avatar_creation_panel.visible = false
 	visible = true
 	print("Character created! (mock)")
-
