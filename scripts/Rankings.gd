@@ -57,6 +57,7 @@ func _setup():
 func _on_visibility_changed():
 	if visible:
 		_select_current_player()
+		fight_button.visible = false
 
 func _on_scroll_changed(_value: float):
 	_check_load_more()
@@ -189,6 +190,7 @@ func _on_row_clicked(rank: int, player_name: String, _faction: int, _honor: int)
 			break
 	
 	if selected_player:
+		fight_button.visible = (selected_player != GameInfo.current_player)
 		update_player_card()
 
 func update_player_card():
@@ -236,7 +238,13 @@ func _scroll_to_center(control: Control):
 	rankings_table.scroll_vertical = int(target_scroll)
 
 func _on_fight_pressed():
-	Websocket.fight_player(selected_player.id)
+	if selected_player:
+		if Websocket.mock_combat_logs.size() > 0:
+			var random_index = randi() % Websocket.mock_combat_logs.size()
+			var combat_data = Websocket.mock_combat_logs[random_index]
+			GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
+			UIManager.instance.show_panel(UIManager.instance.combat_panel)
+		Websocket.fight_player(selected_player.character_id)
 
 func _on_search_changed(_new_text: String):
 	pass
