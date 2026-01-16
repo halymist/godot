@@ -582,10 +582,6 @@ func enchant_item(slot_id: int, effect_id: int):
 		"int_argument2": effect_id
 	})
 
-# ============================================
-# Blacksmith/Tempering Actions
-# ============================================
-
 func temper_item(slot_id: int):
 	"""Temper/upgrade an item"""
 	send("temper_item", {
@@ -678,15 +674,19 @@ func quest_option(option_id: int):
 		"int_argument1": option_id
 	})
 
-func accept_quest_new(quest_id: int):
+func accept_quest(quest_id: int):
 	"""Accept a quest (new implementation)"""
-	send("accept_quest_new", {
+	send("accept_quest", {
 		"int_argument1": quest_id
 	})
 
 func quest_cancel():
 	"""Cancel current quest"""
 	send("quest_cancel", {})
+
+func skip_travel():
+	"""Skip travel time"""
+	send("skip_travel", {})
 
 # ============================================
 # Combat/Encounter Actions

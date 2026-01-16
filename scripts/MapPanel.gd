@@ -24,20 +24,18 @@ func _ready():
 	set_process(false)  # Only process when traveling
 	
 	# Check if we're the starter panel
-	if UIManager.instance.starter_panel == self:
-		print("MapPanel: I am the starter panel")
+	if UIManager.instance.game_is_ready:
 		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+    
+	if UIManager.instance.starter_panel == self:
 		UIManager.instance.game_is_ready = true
 		UIManager.instance.game_ready.emit()
-		print("MapPanel: Emitted game_ready signal")
-	else:
-		print("MapPanel: Waiting for game_ready signal")
-		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
 	# Initialize if character is already selected
-	if GameInfo.current_player:
-		refresh_travel_state()
+	refresh_travel_state()
 	print("MapPanel: Setup complete")
 
 func _on_visibility_changed():
@@ -172,6 +170,7 @@ func _on_skip_button_pressed():
 	
 	if current_player.traveling > 0 and not is_skipping:
 		# Start skipping animation - will load quest after 2 seconds
+		Websocket.skip_travel()
 		is_skipping = true
 		skip_start_time = Time.get_unix_time_from_system()
 		original_travel_end = current_player.traveling

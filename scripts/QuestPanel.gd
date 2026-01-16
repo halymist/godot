@@ -116,6 +116,6 @@ func show_quest(quest_data: Dictionary):
 	print("Quest panel shown as overlay with z_index: ", z_index)
 
 func accept_quest(quest_id: int):
-	Websocket.accept_quest_new(quest_id)
+	Websocket.accept_quest(quest_id)
 	GameInfo.current_player.traveling_destination = quest_id
 	print("Player accepted quest ", quest_id, " and is now traveling to it")
