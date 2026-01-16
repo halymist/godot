@@ -239,7 +239,7 @@ text = "Create New Character"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button")]
+[node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "strength_label", "stamina_label", "agility_label", "luck_label", "points_label", "strength_minus", "strength_plus", "stamina_minus", "stamina_plus", "agility_minus", "agility_plus", "luck_minus", "luck_plus", "faction_desc_label", "vip_desc_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -248,101 +248,142 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("7_d8m4u")
-name_input = NodePath("VBoxContainer/NameSection/NameInput")
-order_button = NodePath("VBoxContainer/FactionSection/FactionButtons/OrderButton")
-guild_button = NodePath("VBoxContainer/FactionSection/FactionButtons/GuildButton")
-companions_button = NodePath("VBoxContainer/FactionSection/FactionButtons/CompanionsButton")
-vip_yes_button = NodePath("VBoxContainer/VIPSection/VIPButtons/YesButton")
-vip_no_button = NodePath("VBoxContainer/VIPSection/VIPButtons/NoButton")
-next_button = NodePath("VBoxContainer/NextButton")
+name_input = NodePath("NameSection/NameInput")
+order_button = NodePath("FactionSection/FactionButtons/OrderButton")
+guild_button = NodePath("FactionSection/FactionButtons/GuildButton")
+companions_button = NodePath("FactionSection/FactionButtons/CompanionsButton")
+vip_yes_button = NodePath("VIPSection/VIPButtons/YesButton")
+vip_no_button = NodePath("VIPSection/VIPButtons/NoButton")
+next_button = NodePath("ButtonsContainer/NextButton")
+back_button = NodePath("ButtonsContainer/BackButton")
+strength_label = NodePath("StatsSection/StrengthRow/StrengthValue")
+stamina_label = NodePath("StatsSection/StaminaRow/StaminaValue")
+agility_label = NodePath("StatsSection/AgilityRow/AgilityValue")
+luck_label = NodePath("StatsSection/LuckRow/LuckValue")
+points_label = NodePath("StatsSection/PointsLabel")
+strength_minus = NodePath("StatsSection/StrengthRow/StrengthMinus")
+strength_plus = NodePath("StatsSection/StrengthRow/StrengthPlus")
+stamina_minus = NodePath("StatsSection/StaminaRow/StaminaMinus")
+stamina_plus = NodePath("StatsSection/StaminaRow/StaminaPlus")
+agility_minus = NodePath("StatsSection/AgilityRow/AgilityMinus")
+agility_plus = NodePath("StatsSection/AgilityRow/AgilityPlus")
+luck_minus = NodePath("StatsSection/LuckRow/LuckMinus")
+luck_plus = NodePath("StatsSection/LuckRow/LuckPlus")
+faction_desc_label = NodePath("FactionSection/FactionDesc")
+vip_desc_label = NodePath("VIPSection/VIPDesc")
+vip_description = "No timers
+Retroctively can finnish quests up to three days ago
+Free cosmetics"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+[node name="TitleLabel" type="Label" parent="ContentContainer/CharacterInfo"]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -150.0
-offset_top = -200.0
+offset_top = 20.0
 offset_right = 150.0
-offset_bottom = 200.0
+offset_bottom = 70.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-
-[node name="TitleLabel" type="Label" parent="ContentContainer/CharacterInfo/VBoxContainer"]
-layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Create Character"
 horizontal_alignment = 1
 
-[node name="NameSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
+[node name="NameSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 80.0
+offset_right = 150.0
+offset_bottom = 155.0
+grow_horizontal = 2
 
-[node name="NameLabel" type="Label" parent="ContentContainer/CharacterInfo/VBoxContainer/NameSection"]
+[node name="NameLabel" type="Label" parent="ContentContainer/CharacterInfo/NameSection"]
 layout_mode = 2
 text = "Character Name:"
 
-[node name="NameInput" type="LineEdit" parent="ContentContainer/CharacterInfo/VBoxContainer/NameSection"]
+[node name="NameInput" type="LineEdit" parent="ContentContainer/CharacterInfo/NameSection"]
 layout_mode = 2
 placeholder_text = "Enter your name..."
 max_length = 20
 
-[node name="FactionSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
+[node name="FactionSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -199.5
+offset_top = 170.0
+offset_right = 200.5
+offset_bottom = 333.0
+grow_horizontal = 2
 
-[node name="FactionLabel" type="Label" parent="ContentContainer/CharacterInfo/VBoxContainer/FactionSection"]
+[node name="FactionLabel" type="Label" parent="ContentContainer/CharacterInfo/FactionSection"]
 layout_mode = 2
 text = "Choose Your Faction:"
+horizontal_alignment = 1
 
-[node name="FactionButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VBoxContainer/FactionSection"]
+[node name="FactionButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/FactionSection"]
 layout_mode = 2
 alignment = 1
 
-[node name="OrderButton" type="Button" parent="ContentContainer/CharacterInfo/VBoxContainer/FactionSection/FactionButtons"]
-custom_minimum_size = Vector2(80, 60)
+[node name="OrderButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Order"
 
-[node name="GuildButton" type="Button" parent="ContentContainer/CharacterInfo/VBoxContainer/FactionSection/FactionButtons"]
-custom_minimum_size = Vector2(80, 60)
+[node name="GuildButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Guild"
 
-[node name="CompanionsButton" type="Button" parent="ContentContainer/CharacterInfo/VBoxContainer/FactionSection/FactionButtons"]
-custom_minimum_size = Vector2(80, 60)
+[node name="CompanionsButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Companions"
 
-[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo/VBoxContainer"]
+[node name="FactionDesc" type="Label" parent="ContentContainer/CharacterInfo/FactionSection"]
+custom_minimum_size = Vector2(-1, 0)
 layout_mode = 2
-theme_override_constants/separation = 8
+horizontal_alignment = 1
+autowrap_mode = 2
 
-[node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VBoxContainer/VIPSection"]
+[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -149.5
+offset_top = 336.0
+offset_right = 150.5
+offset_bottom = 487.0
+grow_horizontal = 2
+
+[node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
 layout_mode = 2
 text = "VIP Status:"
+horizontal_alignment = 1
 
-[node name="VIPButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VBoxContainer/VIPSection"]
+[node name="VIPButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VIPSection"]
 layout_mode = 2
 alignment = 1
 
-[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VBoxContainer/VIPSection/VIPButtons"]
+[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_f13kh")
 text = "Yes"
 
-[node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VBoxContainer/VIPSection/VIPButtons"]
+[node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 toggle_mode = true
@@ -350,11 +391,183 @@ button_pressed = true
 button_group = SubResource("ButtonGroup_f13kh")
 text = "No"
 
-[node name="NextButton" type="Button" parent="ContentContainer/CharacterInfo/VBoxContainer"]
+[node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-text = "NEXT"
+horizontal_alignment = 1
+autowrap_mode = 2
 
-[node name="Avatar" type="Panel" parent="ContentContainer" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button")]
+[node name="StatsSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -188.5
+offset_top = 504.0
+offset_right = 189.5
+offset_bottom = 719.0
+grow_horizontal = 2
+
+[node name="StatsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection"]
+layout_mode = 2
+text = "Distribute Your Stats:"
+horizontal_alignment = 1
+
+[node name="PointsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection"]
+layout_mode = 2
+text = "Points Remaining: 10"
+horizontal_alignment = 1
+
+[node name="StrengthRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="StrengthLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Strength:"
+
+[node name="StrengthMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "-"
+
+[node name="StrengthValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "5"
+horizontal_alignment = 1
+
+[node name="StrengthPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="StrengthDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases damage"
+
+[node name="StaminaRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="StaminaLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Stamina:"
+
+[node name="StaminaMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "-"
+
+[node name="StaminaValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "5"
+horizontal_alignment = 1
+
+[node name="StaminaPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="StaminaDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases health"
+
+[node name="AgilityRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="AgilityLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Agility:"
+
+[node name="AgilityMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "-"
+
+[node name="AgilityValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "5"
+horizontal_alignment = 1
+
+[node name="AgilityPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="AgilityDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases dodge chance"
+
+[node name="LuckRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="LuckLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Luck:"
+
+[node name="LuckMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "-"
+
+[node name="LuckValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "5"
+horizontal_alignment = 1
+
+[node name="LuckPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+text = "+"
+
+[node name="LuckDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases critical strike chance"
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/CharacterInfo"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -60.0
+offset_right = 160.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="BackButton" type="Button" parent="ContentContainer/CharacterInfo/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Back"
+
+[node name="NextButton" type="Button" parent="ContentContainer/CharacterInfo/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Next"
+
+[node name="Avatar" type="Panel" parent="ContentContainer" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button", "back_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -375,6 +588,7 @@ nose_button = NodePath("CategoryButtons/NoseButton")
 mouth_button = NodePath("CategoryButtons/MouthButton")
 change_button = NodePath("ButtonsContainer/ChangeButton")
 create_button = NodePath("ButtonsContainer/CreateButton")
+back_button = NodePath("ButtonsContainer/BackButton")
 
 [node name="PreviewPanel" type="Panel" parent="ContentContainer/Avatar"]
 layout_mode = 1
@@ -502,3 +716,9 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "CREATE CHARACTER"
+
+[node name="BackButton" type="Button" parent="ContentContainer/Avatar/ButtonsContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BACK"

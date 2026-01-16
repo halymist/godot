@@ -9,6 +9,7 @@ extends Panel
 @export var mouth_button: Button
 @export var change_button: Button
 @export var create_button: Button
+@export var back_button: Button
 
 var current_category: String = "Face"
 var selected_cosmetic_id: int = -1
@@ -16,6 +17,7 @@ var selected_cosmetics: Dictionary = {}  # Track selected cosmetics by category
 var is_creation_mode: bool = false  # True when creating new character
 
 signal create_character_pressed
+signal back_pressed
 
 # Default avatar values
 const DEFAULT_AVATAR = [1, 10, 20, 30, 40]  # [face, hair, eyes, nose, mouth]
@@ -49,6 +51,8 @@ func _ready():
 	# Connect change button
 	change_button.pressed.connect(_on_change_pressed)
 	create_button.pressed.connect(_on_create_pressed)
+	if back_button:
+		back_button.pressed.connect(_on_back_pressed)
 	
 	# Initialize with current player avatar
 	if GameInfo.current_player:
@@ -243,6 +247,10 @@ func _on_create_pressed():
 	print("Create character pressed with avatar: ", preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
 	create_character_pressed.emit()
 
+func _on_back_pressed():
+	"""Handle back button press"""
+	back_pressed.emit()
+
 func set_creation_mode(enabled: bool):
 	"""Toggle between creation mode and normal mode"""
 	is_creation_mode = enabled
@@ -255,6 +263,8 @@ func set_creation_mode(enabled: bool):
 		change_button.visible = not enabled
 	if create_button:
 		create_button.visible = enabled
+	if back_button:
+		back_button.visible = enabled
 	
 	if enabled:
 		# Set default avatar values for new character

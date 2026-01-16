@@ -18,7 +18,7 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="Avatar" type="Panel" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button")]
+[node name="Avatar" type="Panel" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button", "back_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -36,6 +36,7 @@ nose_button = NodePath("CategoryButtons/NoseButton")
 mouth_button = NodePath("CategoryButtons/MouthButton")
 change_button = NodePath("ButtonsContainer/ChangeButton")
 create_button = NodePath("ButtonsContainer/CreateButton")
+back_button = NodePath("ButtonsContainer/BackButton")
 
 [node name="PreviewPanel" type="Panel" parent="."]
 layout_mode = 1
@@ -163,3 +164,9 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "CREATE CHARACTER"
+
+[node name="BackButton" type="Button" parent="ButtonsContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BACK"

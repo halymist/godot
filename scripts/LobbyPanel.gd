@@ -66,9 +66,11 @@ func setup_character_creation():
 	"""Setup character creation panels and signals"""
 	if character_info_panel:
 		character_info_panel.next_pressed.connect(_on_character_info_next)
+		character_info_panel.back_pressed.connect(_on_character_info_back)
 	
 	if avatar_creation_panel:
 		avatar_creation_panel.create_character_pressed.connect(_on_create_character_complete)
+		avatar_creation_panel.back_pressed.connect(_on_avatar_back)
 		avatar_creation_panel.set_creation_mode(true)
 
 
@@ -152,6 +154,18 @@ func _on_character_info_next():
 	character_info_panel.visible = false
 	avatar_creation_panel.visible = true
 
+func _on_character_info_back():
+	"""Go back from character info to lobby"""
+	print("Going back to lobby from character info")
+	character_info_panel.visible = false
+	visible = true
+
+func _on_avatar_back():
+	"""Go back from avatar to character info"""
+	print("Going back to character info from avatar")
+	avatar_creation_panel.visible = false
+	character_info_panel.visible = true
+
 func _on_create_character_complete():
 	"""User completed avatar creation, create the character"""
 	var character_data = character_info_panel.get_character_data()
@@ -161,6 +175,7 @@ func _on_create_character_complete():
 	print("  Name: ", character_data.name)
 	print("  Faction: ", character_data.faction)
 	print("  VIP: ", character_data.vip)
+	print("  Stats: STR:", character_data.strength, " STA:", character_data.stamina, " AGI:", character_data.agility, " LCK:", character_data.luck)
 	print("  Avatar: ", avatar_data)
 	
 	# TODO: Send to server to create character
