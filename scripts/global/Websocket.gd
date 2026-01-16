@@ -582,3 +582,143 @@ func enchant_item(slot_id: int, effect_id: int):
 		"int_argument2": effect_id
 	})
 
+# ============================================
+# Blacksmith/Tempering Actions
+# ============================================
+
+func temper_item(slot_id: int):
+	"""Temper/upgrade an item"""
+	send("temper_item", {
+		"int_argument1": slot_id
+	})
+
+# ============================================
+# Character/Stat Training Actions
+# ============================================
+
+func train_stat(stat: int):
+	"""Train a character stat (stat ID)"""
+	send("train_stat", {
+		"int_argument1": stat
+	})
+
+func add_talent(talent_id: int):
+	"""Add a talent point to a talent"""
+	send("add_talent", {
+		"int_argument1": talent_id
+	})
+
+func reset_talents():
+	"""Reset all talent points"""
+	send("reset_talents", {})
+
+# ============================================
+# Blessing/Perk/Utility Actions
+# ============================================
+
+func choose_blessing(blessing_slot: int):
+	"""Choose a blessing/buff effect"""
+	send("choose_blessing", {
+		"int_argument1": blessing_slot
+	})
+
+func activate_perk(talent_id: int, perk_id: int):
+	"""Activate a perk with a talent"""
+	send("activate_perk", {
+		"int_argument1": talent_id,
+		"int_argument2": perk_id
+	})
+
+# ============================================
+# Consumable/Item Usage Actions
+# ============================================
+
+func brew_elixir(slot1: int, slot2: int = -1, slot3: int = -1):
+	"""Brew elixir from ingredients (slot1 required, slot2/3 optional)"""
+	var payload = {"int_argument1": slot1}
+	if slot2 >= 0:
+		payload["int_argument2"] = slot2
+	if slot3 >= 0:
+		payload["int_argument3"] = slot3
+	send("brew_elixir", payload)
+
+func use_elixir(slot_id: int):
+	"""Use an elixir from inventory"""
+	send("use_elixir", {
+		"int_argument1": slot_id
+	})
+
+func use_potion(slot_id: int):
+	"""Use a potion from inventory"""
+	send("use_potion", {
+		"int_argument1": slot_id
+	})
+
+func use_hammer(hammer_slot: int, target_slot: int):
+	"""Use a hammer on an item"""
+	send("use_hammer", {
+		"int_argument1": hammer_slot,
+		"int_argument2": target_slot
+	})
+
+func use_scroll(scroll_slot: int, target_slot: int):
+	"""Use a scroll on an item"""
+	send("use_scroll", {
+		"int_argument1": scroll_slot,
+		"int_argument2": target_slot
+	})
+
+# ============================================
+# Quest Actions
+# ============================================
+
+func quest_option(option_id: int):
+	"""Choose a quest dialog option"""
+	send("quest_option", {
+		"int_argument1": option_id
+	})
+
+func accept_quest_new(quest_id: int):
+	"""Accept a quest (new implementation)"""
+	send("accept_quest_new", {
+		"int_argument1": quest_id
+	})
+
+func quest_cancel():
+	"""Cancel current quest"""
+	send("quest_cancel", {})
+
+# ============================================
+# Combat/Encounter Actions
+# ============================================
+
+func load_character():
+	"""Load character data"""
+	send("load_character", {})
+
+func load_enemy(character_id: int):
+	"""Load enemy character data"""
+	send("load_enemy", {
+		"int_argument1": character_id
+	})
+
+func fight_player(enemy_id: int):
+	"""Initiate combat with another player"""
+	send("fight_player", {
+		"int_argument1": enemy_id
+	})
+
+func start_expedition():
+	"""Start an expedition"""
+	send("start_expedition", {})
+
+# ============================================
+# Leaderboard/Ranking Actions
+# ============================================
+
+func load_rankings(direction: int = 2):
+	"""Load rankings leaderboard (direction: 1=up, 2=down, 3=center)"""
+	send("load_rankings", {
+		"int_argument1": direction
+	})
+
