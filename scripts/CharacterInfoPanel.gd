@@ -41,7 +41,7 @@ extends Control
 
 # Store character creation data
 var character_name: String = ""
-var faction: int = 0  # 0=none, 1=Order, 2=Guild, 3=Companions
+var faction: int = 1  # 1=Order, 2=Guild, 3=Companions (Order pre-selected)
 var is_vip: bool = false
 
 # Stat allocation
@@ -60,6 +60,12 @@ func _ready():
 	order_button.pressed.connect(_on_faction_selected.bind(1))
 	guild_button.pressed.connect(_on_faction_selected.bind(2))
 	companions_button.pressed.connect(_on_faction_selected.bind(3))
+	
+	# Prevent deselection of faction buttons
+	order_button.toggled.connect(_on_faction_toggled.bind(1, order_button))
+	guild_button.toggled.connect(_on_faction_toggled.bind(2, guild_button))
+	companions_button.toggled.connect(_on_faction_toggled.bind(3, companions_button))
+	
 	vip_yes_button.pressed.connect(_on_vip_selected.bind(true))
 	vip_no_button.pressed.connect(_on_vip_selected.bind(false))
 	
@@ -80,6 +86,12 @@ func _on_faction_selected(faction_id: int):
 	faction = faction_id
 	print("Faction selected: ", faction_id)
 	_update_descriptions()
+
+func _on_faction_toggled(toggled_on: bool, faction_id: int, button: Button):
+	"""Prevent deselection of faction buttons"""
+	if not toggled_on:
+		# Force the button back to pressed state
+		button.set_pressed_no_signal(true)
 
 func _on_vip_selected(vip: bool):
 	is_vip = vip
@@ -149,10 +161,6 @@ func _on_next_pressed():
 	
 	if character_name == "":
 		print("Name is required!")
-		return
-	
-	if faction == 0:
-		print("Faction is required!")
 		return
 	
 	print("Character info complete: ", character_name, " Faction: ", faction, " VIP: ", is_vip)

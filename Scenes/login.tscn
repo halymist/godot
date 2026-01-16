@@ -333,8 +333,12 @@ alignment = 1
 custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 toggle_mode = true
+button_pressed = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Order"
+
+[node name="Separator1" type="HSeparator" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+layout_mode = 2
 
 [node name="GuildButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
 custom_minimum_size = Vector2(100, 60)
@@ -342,6 +346,9 @@ layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Guild"
+
+[node name="Separator2" type="HSeparator" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+layout_mode = 2
 
 [node name="CompanionsButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
 custom_minimum_size = Vector2(100, 60)
@@ -356,56 +363,15 @@ layout_mode = 2
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -149.5
-offset_top = 336.0
-offset_right = 150.5
-offset_bottom = 487.0
-grow_horizontal = 2
-
-[node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
-layout_mode = 2
-text = "VIP Status:"
-horizontal_alignment = 1
-
-[node name="VIPButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VIPSection"]
-layout_mode = 2
-alignment = 1
-
-[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
-custom_minimum_size = Vector2(100, 40)
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_f13kh")
-text = "Yes"
-
-[node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
-custom_minimum_size = Vector2(100, 40)
-layout_mode = 2
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_f13kh")
-text = "No"
-
-[node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-horizontal_alignment = 1
-autowrap_mode = 2
-
 [node name="StatsSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -188.5
-offset_top = 504.0
+offset_top = 336.0
 offset_right = 189.5
-offset_bottom = 719.0
+offset_bottom = 487.0
 grow_horizontal = 2
 
 [node name="StatsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection"]
@@ -541,6 +507,47 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
 text = "Increases critical strike chance"
+
+[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -149.5
+offset_top = 504.0
+offset_right = 150.5
+offset_bottom = 719.0
+grow_horizontal = 2
+
+[node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
+layout_mode = 2
+text = "VIP Status:"
+horizontal_alignment = 1
+
+[node name="VIPButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VIPSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_f13kh")
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_f13kh")
+text = "No"
+
+[node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/CharacterInfo"]
 layout_mode = 1
