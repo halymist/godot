@@ -94,6 +94,7 @@ func _load_vendor_items():
 
 func trigger_purchase_greeting():
 	"""Called by InventorySlot when player purchases from vendor"""
+	populate_vendor_slots()
 	if utility_background:
 		utility_background.show_action_greeting()
 
@@ -108,26 +109,21 @@ func _on_bag_slots_changed():
 		populate_vendor_slots()
 
 func populate_vendor_slots():
-	# Clear all vendor slots first
+	# Hide all vendor slots first and clear them
 	for slot in vendor_slots:
 		if slot.has_method("clear_slot"):
 			slot.clear_slot()
+		slot.visible = false
 	
-	# Populate vendor slots with local vendor_items (order doesn't matter)
+	# Populate vendor slots with local vendor_items
 	for i in range(min(vendor_items.size(), vendor_slots.size())):
 		var item = vendor_items[i]
 		var slot = vendor_slots[i]
-		# Set bag_slot_id to vendor slot ID (21-28) for pricing
+		slot.visible = true
 		item.bag_slot_id = VENDOR_MIN + i
 		
-		# Get item scene and instantiate
 		var item_scene = load("res://Scenes/item.tscn")
 		if item_scene:
 			var icon = item_scene.instantiate()
 			icon.set_item_data(item)
 			slot.add_child(icon)
-	
-	# Update visual appearance for all slots
-	for slot in vendor_slots:
-		if slot.has_method("update_slot_appearance"):
-			slot.update_slot_appearance()
