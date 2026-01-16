@@ -87,7 +87,7 @@ func _on_faction_selected(faction_id: int):
 	print("Faction selected: ", faction_id)
 	_update_descriptions()
 
-func _on_faction_toggled(toggled_on: bool, faction_id: int, button: Button):
+func _on_faction_toggled(toggled_on: bool, _faction_id: int, button: Button):
 	"""Prevent deselection of faction buttons"""
 	if not toggled_on:
 		# Force the button back to pressed state

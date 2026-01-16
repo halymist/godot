@@ -72,7 +72,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label")]
+[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -89,7 +89,8 @@ avatar_creation_panel = NodePath("../Avatar")
 account_created_label = NodePath("AccountInfo/CreatedLabel")
 email_label = NodePath("AccountInfo/EmailLabel")
 mushroom_value_label = NodePath("AccountInfo/MushroomContainer/MushroomValue")
-new_server_countdown_label = NodePath("NewStartsLabel")
+new_server_countdown_label = NodePath("HBoxContainer/NewStartsLabel")
+new_server_date_label = NodePath("HBoxContainer/NewServerDateLabel")
 
 [node name="AccountInfo" type="VBoxContainer" parent="ContentContainer/Lobby"]
 layout_mode = 1
@@ -203,17 +204,23 @@ texture_normal = ExtResource("5_twitter")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="NewStartsLabel" type="Label" parent="ContentContainer/Lobby"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -90.5
-offset_top = 420.0
-offset_right = 109.5
-offset_bottom = 449.0
-grow_horizontal = 2
+[node name="HBoxContainer" type="HBoxContainer" parent="ContentContainer/Lobby"]
+layout_mode = 2
+offset_left = 22.0
+offset_top = 413.0
+offset_right = 390.0
+offset_bottom = 454.0
+alignment = 1
+
+[node name="NewStartsLabel" type="Label" parent="ContentContainer/Lobby/HBoxContainer"]
+layout_mode = 2
 text = "New start in: 2d 15h 23m"
+horizontal_alignment = 1
+
+[node name="NewServerDateLabel" type="Label" parent="ContentContainer/Lobby/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "(January 20, 2026)"
 horizontal_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="ContentContainer/Lobby"]

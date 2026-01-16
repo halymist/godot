@@ -13,6 +13,7 @@ extends Control
 @export var email_label: Label
 @export var mushroom_value_label: Label
 @export var new_server_countdown_label: Label
+@export var new_server_date_label: Label
 
 # Social media URLs
 const DISCORD_URL = "https://discord.gg/your-discord-invite"
@@ -87,6 +88,11 @@ func populate_account_info():
 	# Mushrooms (global currency)
 	if mushroom_value_label:
 		mushroom_value_label.text = str(lobby_data.mushrooms)
+	
+	# New server date
+	if new_server_date_label:
+		var server_date = _parse_iso_date(lobby_data.new_server_timestamp)
+		new_server_date_label.text = "(" + server_date + ")"
 
 func _parse_iso_date(iso_string: String) -> String:
 	"""Parse ISO 8601 date to readable format"""
