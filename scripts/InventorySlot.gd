@@ -768,9 +768,11 @@ func _equip_item_to_character(item: GameInfo.Item):
 	
 	if target_slot.is_slot_empty():
 		# Simple equip - no swap
+		var source_slot_id = item.bag_slot_id
 		item.bag_slot_id = target_slot_id
 		target_slot.place_item_in_slot(item)
 		clear_slot()
+		Websocket.move_item(source_slot_id, target_slot_id)
 	else:
 		# Swap with existing equipped item
 		var existing_item = target_slot.get_item_data()
@@ -779,6 +781,7 @@ func _equip_item_to_character(item: GameInfo.Item):
 		existing_item.bag_slot_id = source_slot_id
 		target_slot.place_item_in_slot(item)
 		place_item_in_slot(existing_item)
+		Websocket.move_item(source_slot_id, target_slot_id)
 	
 	if UIManager.instance:
 		UIManager.instance.call_deferred("refresh_bags")
@@ -789,9 +792,11 @@ func _unequip_item_to_bag(item: GameInfo.Item):
 	for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
 		var target_slot = _find_slot_by_id(bag_slot_id)
 		if target_slot and target_slot.is_slot_empty():
+			var source_slot_id = item.bag_slot_id
 			item.bag_slot_id = bag_slot_id
 			target_slot.place_item_in_slot(item)
 			clear_slot()
+			Websocket.move_item(source_slot_id, bag_slot_id)
 			if UIManager.instance:
 				UIManager.instance.call_deferred("refresh_bags")
 				UIManager.instance.call_deferred("refresh_stats")

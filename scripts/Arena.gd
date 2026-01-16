@@ -61,6 +61,7 @@ func _on_fight_pressed():
 	if GameInfo.arena_opponents.size() > current_index:
 		var opponent_id = GameInfo.arena_opponents[current_index]
 		print("Fighting opponent with character_id: ", opponent_id)
+		Websocket.fight_player(opponent_id)
 		
 		# Pick a random combat log from Websocket mock data
 		if Websocket.mock_combat_logs.size() > 0:
