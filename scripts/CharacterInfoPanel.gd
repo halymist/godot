@@ -142,7 +142,7 @@ func _update_stat_display():
 	stamina_label.text = str(stamina)
 	agility_label.text = str(agility)
 	luck_label.text = str(luck)
-	points_label.text = "Points Remaining: " + str(points_remaining)
+	points_label.text = "Remaining: " + str(points_remaining)
 	
 	# Enable/disable minus buttons
 	strength_minus.disabled = strength <= 5

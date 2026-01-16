@@ -73,7 +73,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -241,6 +240,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "strength_label", "stamina_label", "agility_label", "luck_label", "points_label", "strength_minus", "strength_plus", "stamina_minus", "stamina_plus", "agility_minus", "agility_plus", "luck_minus", "luck_plus", "faction_desc_label", "vip_desc_label")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -260,7 +260,7 @@ strength_label = NodePath("StatsSection/StrengthRow/StrengthValue")
 stamina_label = NodePath("StatsSection/StaminaRow/StaminaValue")
 agility_label = NodePath("StatsSection/AgilityRow/AgilityValue")
 luck_label = NodePath("StatsSection/LuckRow/LuckValue")
-points_label = NodePath("StatsSection/PointsLabel")
+points_label = NodePath("StatsSection/StatsHeaderRow/PointsLabel")
 strength_minus = NodePath("StatsSection/StrengthRow/StrengthMinus")
 strength_plus = NodePath("StatsSection/StrengthRow/StrengthPlus")
 stamina_minus = NodePath("StatsSection/StaminaRow/StaminaMinus")
@@ -271,9 +271,8 @@ luck_minus = NodePath("StatsSection/LuckRow/LuckMinus")
 luck_plus = NodePath("StatsSection/LuckRow/LuckPlus")
 faction_desc_label = NodePath("FactionSection/FactionDesc")
 vip_desc_label = NodePath("VIPSection/VIPDesc")
-vip_description = "No timers
-Retroctively can finnish quests up to three days ago
-Free cosmetics"
+vip_description = "No timers, can finnish quests from up to three days ago
+Free cosmetics, can share combat logs in chat"
 
 [node name="TitleLabel" type="Label" parent="ContentContainer/CharacterInfo"]
 layout_mode = 1
@@ -366,6 +365,7 @@ text = "Companions"
 custom_minimum_size = Vector2(-1, 0)
 layout_mode = 2
 horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Separator2" type="HSeparator" parent="ContentContainer/CharacterInfo"]
@@ -385,20 +385,24 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -188.5
-offset_top = 336.0
+offset_top = 355.0
 offset_right = 189.5
-offset_bottom = 487.0
+offset_bottom = 533.0
 grow_horizontal = 2
 
-[node name="StatsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection"]
+[node name="StatsHeaderRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
 layout_mode = 2
-text = "Distribute Your Stats:"
-horizontal_alignment = 1
+alignment = 1
 
-[node name="PointsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection"]
+[node name="StatsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StatsHeaderRow"]
 layout_mode = 2
-text = "Points Remaining: 10"
-horizontal_alignment = 1
+size_flags_horizontal = 3
+text = "Your Stats:"
+
+[node name="PointsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StatsHeaderRow"]
+layout_mode = 2
+text = "Remaining: 10"
+horizontal_alignment = 2
 
 [node name="StrengthRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
 layout_mode = 2
@@ -408,6 +412,12 @@ alignment = 1
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Strength:"
+
+[node name="StrengthDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases damage"
 
 [node name="StrengthMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
 custom_minimum_size = Vector2(30, 30)
@@ -425,12 +435,6 @@ custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="StrengthDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases damage"
-
 [node name="StaminaRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
 layout_mode = 2
 alignment = 1
@@ -439,6 +443,12 @@ alignment = 1
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Stamina:"
+
+[node name="StaminaDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases health"
 
 [node name="StaminaMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
 custom_minimum_size = Vector2(30, 30)
@@ -456,12 +466,6 @@ custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="StaminaDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases health"
-
 [node name="AgilityRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
 layout_mode = 2
 alignment = 1
@@ -470,6 +474,12 @@ alignment = 1
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Agility:"
+
+[node name="AgilityDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases dodge chance"
 
 [node name="AgilityMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
 custom_minimum_size = Vector2(30, 30)
@@ -487,12 +497,6 @@ custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="AgilityDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases dodge chance"
-
 [node name="LuckRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
 layout_mode = 2
 alignment = 1
@@ -501,6 +505,12 @@ alignment = 1
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Luck:"
+
+[node name="LuckDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Increases critical strike chance"
 
 [node name="LuckMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
 custom_minimum_size = Vector2(30, 30)
@@ -517,12 +527,6 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
-
-[node name="LuckDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases critical strike chance"
 
 [node name="Separator3" type="HSeparator" parent="ContentContainer/CharacterInfo"]
 layout_mode = 1
@@ -555,13 +559,6 @@ horizontal_alignment = 1
 layout_mode = 2
 alignment = 1
 
-[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
-custom_minimum_size = Vector2(100, 40)
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_f13kh")
-text = "Yes"
-
 [node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
@@ -569,6 +566,13 @@ toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_f13kh")
 text = "No"
+
+[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_f13kh")
+text = "Yes"
 
 [node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
 custom_minimum_size = Vector2(20, 0)
