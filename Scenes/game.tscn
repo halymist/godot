@@ -508,7 +508,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "bag", "vendor_grid")]
+[node name="VendorPanel" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("utility_background_container", "bag", "vendor_grid", "vendor_slots")]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -520,6 +521,8 @@ script = ExtResource("40_vendor")
 utility_background_container = NodePath("Control")
 bag = NodePath("Overlay/Bag")
 vendor_grid = NodePath("Overlay/VendorSlots")
+vendor_slots = [NodePath("Overlay/VendorSlots/Vendor1"), NodePath("Overlay/VendorSlots/Vendor2"), NodePath("Overlay/VendorSlots/Vendor3"), NodePath("Overlay/VendorSlots/Vendor4"), NodePath("Overlay/VendorSlots/Vendor5"), NodePath("Overlay/VendorSlots/Vendor6"), NodePath("Overlay/VendorSlots/Vendor7"), NodePath("Overlay/VendorSlots/Vendor8")]
+item_scene = ExtResource("17_aujhx")
 
 [node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/VendorPanel"]
 layout_mode = 1

@@ -17,11 +17,7 @@ var blessing_data: Array = []  # Stores the 3 blessing PerkResources
 func _ready():
 	# Setup blessing slots array
 	blessing_slots = [blessing_slot_1, blessing_slot_2, blessing_slot_3]
-	
-	# Connect bless button
 	bless_button.pressed.connect(_on_bless_button_pressed)
-	
-	# Load blessings when panel becomes visible
 	visibility_changed.connect(_on_visibility_changed)
 	
 	# Wait for game to be ready
