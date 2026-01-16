@@ -76,7 +76,7 @@ func setup_character_creation():
 
 
 func add_character_list():
-	"""Add character panels from Websocket.mock_characters"""
+	"""Add character panels from Websocket.mock_lobby_data"""
 	# Add "Create New Character" button first
 	var create_new = characters_container.get_node("CreateNew")
 	if create_new:
@@ -91,13 +91,15 @@ func add_character_list():
 			create_new.get_parent().move_child(button, 0)
 			create_new.queue_free()
 	
-	# Load characters from Websocket
-	for character in Websocket.mock_characters:
-		var card = PlayerCard.instantiate()
-		characters_container.add_child(card)
-		card.setup(character)
-		# Connect to card's signal
-		card.character_selected.connect(_on_character_selected)
+	# Load characters from all servers in lobby data
+	for server in Websocket.mock_lobby_data.server_list:
+		for character_mini in server.characters_mini:
+			var card = PlayerCard.instantiate()
+			characters_container.add_child(card)
+			# Pass minimal character data plus server info for display
+			card.setup(character_mini, server.server_name, server.server_start)
+			# Connect to card's signal
+			card.character_selected.connect(_on_character_selected)
 
 func _on_character_selected(character_id: int):
 	"""Handle character selection from player card"""

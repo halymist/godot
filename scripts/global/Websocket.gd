@@ -1,5 +1,42 @@
 extends Node
 
+# Mock account/lobby data - what player receives when first connecting
+var mock_lobby_data = {
+	"account_created": "2023-01-15T10:30:00Z",
+	"email": "player15@example.com",
+	"mushrooms": 500,
+	"connected_methods": ["google", "mail"],
+	"new_server_timestamp": "2026-01-20T12:00:00Z",
+	"server_list": [
+		{
+			"server_name": "Europe Server",
+			"server_start": "2025-01-01T00:00:00Z",
+			"characters_mini": [
+				{
+					"character_id": 10078,
+					"name": "TestPlayer",
+					"vip": false,
+					"rank": 78,
+					"avatar": [1, 10, 20, 30, 40]
+				}
+			]
+		},
+		{
+			"server_name": "US East Server", 
+			"server_start": "2025-02-15T00:00:00Z",
+			"characters_mini": [
+				{
+					"character_id": 2,
+					"name": "Warrior2",
+					"vip": true,
+					"rank": 8523,
+					"avatar": [1, 11, 20, 30, 40]
+				}
+			]
+		}
+	]
+}
+
 # Helper function to generate full player data
 func generate_mock_player_data(player_name: String, rank: int, faction: int, honor: int, char_id: int = 0) -> Dictionary:
 	# Generate varied stats based on rank (better players have higher stats)

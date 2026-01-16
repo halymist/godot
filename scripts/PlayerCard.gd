@@ -15,18 +15,19 @@ func _ready():
 	# Connect button pressed signal
 	pressed.connect(_on_pressed)
 
-func setup(character: Dictionary):
-	"""Setup the player card with character data"""
+func setup(character: Dictionary, server_name: String = "", server_start: String = ""):
+	"""Setup the player card with character data and server info"""
 	character_data = character
 	character_id = character.character_id
 	
 	# Set labels
 	if name_label:
-		name_label.text = character.name + " (#" + str(character.rank) + ")"
+		var vip_badge = " [VIP]" if character.get("vip", false) else ""
+		name_label.text = character.name + " (#" + str(character.rank) + ")" + vip_badge
 	
-	if server_label:
-		var server_name = character.server_timezone.split("/")[1]  # Extract city from timezone
-		server_label.text = "Server: " + server_name + " (Day " + str(character.server_day) + ")"
+	if server_label and server_name != "":
+		var server_age_days = _calculate_server_age_days(server_start)
+		server_label.text = "Server: " + server_name + " (Day " + str(server_age_days) + ")"
 	
 	# Setup avatar with character's cosmetic IDs
 	if avatar and character.has("avatar"):
@@ -39,6 +40,19 @@ func setup(character: Dictionary):
 				avatar_data[3],  # nose
 				avatar_data[4]   # mouth
 			)
+
+func _calculate_server_age_days(server_start_iso: String) -> int:
+	"""Calculate number of days since server started"""
+	if server_start_iso == "":
+		return 0
+	
+	# Parse ISO 8601 timestamp (simplified - assumes format YYYY-MM-DDTHH:MM:SSZ)
+	var start_time = Time.get_ticks_msec() / 1000.0  # For now, mock it
+	# In real implementation, parse server_start_iso and calculate difference
+	# For mock data, we'll use a fixed calculation
+	var current_time = Time.get_ticks_msec() / 1000.0
+	var days_passed = int((current_time - start_time) / 86400.0)
+	return max(1, days_passed)  # At least 1 day
 
 func _on_pressed():
 	"""Handle button press"""
