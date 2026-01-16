@@ -80,19 +80,10 @@ func _ready():
 	settings_button.pressed.connect(toggle_overlay.bind(settings_panel))
 	payment_button.pressed.connect(toggle_overlay.bind(payment))
 	chat_button.pressed.connect(toggle_chat)
-	chat_panel.pressed.connect(toggle_chat)  # Close chat when clicking background
+	chat_panel.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
 	
-	# Connect cancel quest dialog buttons
-	var yes_button = cancel_quest.get_node("DialogPanel/VBoxContainer/HBoxContainer/YesButton")
-	var no_button = cancel_quest.get_node("DialogPanel/VBoxContainer/HBoxContainer/NoButton")
-	var background_button = cancel_quest.get_node("BackgroundButton")
-	yes_button.pressed.connect(_on_cancel_quest_yes)
-	no_button.pressed.connect(_on_cancel_quest_no)
-	background_button.pressed.connect(_on_cancel_quest_no)
-	
-	# Initial currency display update
 	update_display()
 	
 	# Determine which panel should be the starter
@@ -414,22 +405,19 @@ func go_back():
 		hide_current_overlay()
 		return
 	
-	# Priority 3: Panel-specific custom back behavior
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
 	
-	# Map panel: show cancel quest if traveling
 	if current == map_panel:
 		if traveling > 0 and destination != null:
 			print("-> Map panel with active quest, showing cancel dialog")
-			show_overlay(cancel_quest)
+			cancel_quest.show_dialog()
 			return
 	
-	# Quest panel: show cancel quest if arrived
 	if current == quest:
 		if traveling == 0 and destination != null:
 			print("-> Quest panel with completed travel, showing cancel dialog")
-			show_overlay(cancel_quest)
+			cancel_quest.show_dialog()
 			return
 	
 	# Home panel: check quest accept panel first, then interior navigation
@@ -494,42 +482,7 @@ func handle_quest_arrived():
 	# Show quest panel - it will automatically load the quest via visibility_changed
 	show_panel(quest)
 
-# Cancel quest dialog functions
-func _on_cancel_quest_yes():
-	# Get the quest ID before clearing it
-	var quest_id = GameInfo.current_player.traveling_destination
-	
-	# Mark quest as completed so NPC won't show up again
-	if quest_id != null and quest_id is int:
-		GameInfo.complete_quest(quest_id)
-		print("Quest ", quest_id, " abandoned and marked as completed")
-	
-	# Cancel the quest
-	GameInfo.current_player.traveling = 0
-	GameInfo.current_player.traveling_destination = null
-	
-	# Hide cancel dialog using unified overlay system and return to home
-	hide_overlay(cancel_quest)
-	show_panel(home_panel)
-	print("Quest canceled by user")
-
-func _on_cancel_quest_no():
-	# Just hide the dialog using unified overlay system, continue with quest
-	hide_overlay(cancel_quest)
-
-func handle_logout():
-	"""Handle logout UI transition - called by LogoutPanel"""
-	print("Logging out and returning to login scene...")
-	
-	# Clear current player data
-	GameInfo.current_player = null
-	GameInfo.current_character_id = 0
-	
-	# Transition to login scene
-	get_tree().change_scene_to_file("res://Scenes/login.tscn")
-
 func _load_quest_on_startup(quest_id: int):
-	"""Helper to load quest on startup after panel is visible"""
 	quest.load_quest(quest_id)
 
 # ============================================================================

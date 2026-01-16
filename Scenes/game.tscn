@@ -1,4 +1,4 @@
-[gd_scene load_steps=114 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=115 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -70,6 +70,7 @@
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="67_e6ols"]
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/Payment.gd" id="67_payment"]
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="68_2cns2"]
+[ext_resource type="Script" uid="uid://bxpbd8qnmw5gs" path="res://scripts/CancelQuest.gd" id="75_ckj55"]
 [ext_resource type="Texture2D" uid="uid://cgcpygii1l82g" path="res://assets/images/ui/fight.png" id="79_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://c0byjvygn0ygi" path="res://assets/images/ui/luc.png" id="81_d5jaa"]
 [ext_resource type="Texture2D" uid="uid://n3yj5br5mlr7" path="res://assets/images/ui/faith.png" id="82_gsm33"]
@@ -6415,7 +6416,7 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="CancelQuest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene"]
+[node name="CancelQuest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("yes_button", "no_button", "background_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6424,6 +6425,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
+script = ExtResource("75_ckj55")
+yes_button = NodePath("DialogPanel/YesButton")
+no_button = NodePath("DialogPanel/NoButton")
+background_button = NodePath("BackgroundButton")
 
 [node name="BackgroundButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest"]
 layout_mode = 1
@@ -6449,43 +6454,35 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dialog_panel")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 25.0
-offset_top = 25.0
-offset_right = -25.0
-offset_bottom = -25.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel/VBoxContainer"]
+[node name="Label" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel"]
 clip_contents = true
 layout_mode = 2
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 375.0
+offset_bottom = 131.0
 size_flags_vertical = 3
 text = "Do you wish to abandon the quest?"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="YesButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel/VBoxContainer/HBoxContainer"]
+[node name="YesButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel"]
 custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
+offset_left = 34.0
+offset_top = 130.0
+offset_right = 114.0
+offset_bottom = 175.0
 text = "Yes"
 
-[node name="Control" type="Control" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-
-[node name="NoButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel/VBoxContainer/HBoxContainer"]
+[node name="NoButton" type="Button" parent="Portrait/GameSceneParent/Wrapper/GameScene/CancelQuest/DialogPanel"]
 custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
+offset_left = 143.0
+offset_top = 129.0
+offset_right = 376.0
+offset_bottom = 174.0
 size_flags_horizontal = 3
 text = "No"
 
