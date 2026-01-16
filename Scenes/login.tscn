@@ -72,7 +72,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel")]
+[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -86,6 +86,10 @@ instagram_button = NodePath("SocialLinks/InstagramButton")
 twitter_button = NodePath("SocialLinks/TwitterButton")
 character_info_panel = NodePath("../CharacterInfo")
 avatar_creation_panel = NodePath("../Avatar")
+account_created_label = NodePath("AccountInfo/CreatedLabel")
+email_label = NodePath("AccountInfo/EmailLabel")
+mushroom_value_label = NodePath("AccountInfo/MushroomContainer/MushroomValue")
+new_server_countdown_label = NodePath("NewStartsLabel")
 
 [node name="AccountInfo" type="VBoxContainer" parent="ContentContainer/Lobby"]
 layout_mode = 1

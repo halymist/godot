@@ -8,6 +8,12 @@ extends Control
 @export var character_info_panel: Control
 @export var avatar_creation_panel: Panel
 
+# Account info labels
+@export var account_created_label: Label
+@export var email_label: Label
+@export var mushroom_value_label: Label
+@export var new_server_countdown_label: Label
+
 # Social media URLs
 const DISCORD_URL = "https://discord.gg/your-discord-invite"
 const INSTAGRAM_URL = "https://instagram.com/your-username"
@@ -25,9 +31,12 @@ func _ready():
 	# Start loading databases and game scene in background
 	_load_databases_async()
 	_load_game_scene_async()
+	populate_account_info()
 	add_character_list()
 	connect_social_buttons()
 	setup_character_creation()
+	# Start countdown timer
+	start_new_server_countdown()
 
 func _load_databases_async():
 	"""Load databases in background while user looks at character list"""
@@ -61,6 +70,94 @@ func connect_social_buttons():
 	discord_button.pressed.connect(_on_discord_pressed)
 	instagram_button.pressed.connect(_on_instagram_pressed)
 	twitter_button.pressed.connect(_on_twitter_pressed)
+
+func populate_account_info():
+	"""Populate account information from lobby data"""
+	var lobby_data = Websocket.mock_lobby_data
+	
+	# Account created date
+	if account_created_label:
+		var created_date = _parse_iso_date(lobby_data.account_created)
+		account_created_label.text = "Account Created: " + created_date
+	
+	# Email
+	if email_label:
+		email_label.text = "Email: " + lobby_data.email
+	
+	# Mushrooms (global currency)
+	if mushroom_value_label:
+		mushroom_value_label.text = str(lobby_data.mushrooms)
+
+func _parse_iso_date(iso_string: String) -> String:
+	"""Parse ISO 8601 date to readable format"""
+	# Format: 2023-01-15T10:30:00Z -> January 15, 2023
+	var parts = iso_string.split("T")[0].split("-")
+	if parts.size() >= 3:
+		var year = parts[0]
+		var month_num = int(parts[1])
+		var day = int(parts[2])
+		
+		var months = ["January", "February", "March", "April", "May", "June", 
+					  "July", "August", "September", "October", "November", "December"]
+		var month_name = months[month_num - 1] if month_num >= 1 and month_num <= 12 else "Unknown"
+		
+		return month_name + " " + str(day) + ", " + year
+	return iso_string
+
+func start_new_server_countdown():
+	"""Start countdown timer for new server"""
+	if new_server_countdown_label:
+		_update_new_server_countdown()
+		# Update every second
+		var timer = Timer.new()
+		timer.wait_time = 1.0
+		timer.timeout.connect(_update_new_server_countdown)
+		add_child(timer)
+		timer.start()
+
+func _update_new_server_countdown():
+	"""Update the countdown label"""
+	if not new_server_countdown_label:
+		return
+	
+	var target_time = Websocket.mock_lobby_data.new_server_timestamp
+	var seconds_remaining = _calculate_seconds_until(target_time)
+	
+	if seconds_remaining <= 0:
+		new_server_countdown_label.text = "New Server Available!"
+		return
+	
+	var days = int(seconds_remaining / 86400)
+	var hours = int((seconds_remaining % 86400) / 3600)
+	
+	new_server_countdown_label.text = "New start in: " + str(days) + "d " + str(hours) + "h"
+
+func _calculate_seconds_until(iso_timestamp: String) -> int:
+	"""Calculate seconds from now until target timestamp"""
+	# Parse ISO 8601: 2026-01-20T12:00:00Z
+	var parts = iso_timestamp.replace("Z", "").split("T")
+	if parts.size() < 2:
+		return 0
+	
+	var date_parts = parts[0].split("-")
+	var time_parts = parts[1].split(":")
+	
+	if date_parts.size() < 3 or time_parts.size() < 3:
+		return 0
+	
+	var target_dict = {
+		"year": int(date_parts[0]),
+		"month": int(date_parts[1]),
+		"day": int(date_parts[2]),
+		"hour": int(time_parts[0]),
+		"minute": int(time_parts[1]),
+		"second": int(time_parts[2])
+	}
+	
+	var target_unix = Time.get_unix_time_from_datetime_dict(target_dict)
+	var current_unix = Time.get_unix_time_from_system()
+	
+	return int(target_unix - current_unix)
 
 func setup_character_creation():
 	"""Setup character creation panels and signals"""
