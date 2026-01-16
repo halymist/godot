@@ -25,6 +25,7 @@ alchemist_utility_scene = ExtResource("3_n5k1k")
 enchanter_utility_scene = ExtResource("6_mli3h")
 trainer_utility_scene = ExtResource("9_7jouw")
 church_utility_scene = ExtResource("6_c0hw1")
+blessings = Array[int]([100, 101, 102])
 arena_background = ExtResource("4_n5k1k")
 metadata/_custom_type_script = "uid://pwd267vyc7jv"
 

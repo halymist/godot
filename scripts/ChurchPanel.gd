@@ -69,9 +69,13 @@ func load_blessings():
 	# Clear blessing data
 	blessing_data.clear()
 	
-	# Load all perks with id >= 100 (blessings) - should be exactly 3
-	for perk in GameInfo.perks_db.perks:
-		if perk.id >= 100:
+	# Get location-specific blessings
+	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
+	
+	# Load the 3 blessing perks from location's blessing IDs
+	for blessing_id in location_data.blessings:
+		var perk = GameInfo.perks_db.get_perk_by_id(blessing_id)
+		if perk:
 			blessing_data.append(perk)
 	
 	# Setup the 3 blessing slots

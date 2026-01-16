@@ -24,6 +24,9 @@ extends Resource
 
 @export var church_utility_scene: PackedScene
 
+# Three blessing perk IDs available at this location's church
+@export var blessings: Array[int] = []
+
 @export var arena_background: Texture
 
 func has_blacksmith() -> bool:
