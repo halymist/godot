@@ -9,7 +9,7 @@ extends Button
 @export var send_button: Button
 
 var last_message_time: String = ""
-var current_filter: String = "global"  # "global", "local", or "all"
+var current_filter: String = "local"  # "global", "local", or "all"
 
 func _ready():
 	# Connect toggle buttons with null checks
