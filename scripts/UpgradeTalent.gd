@@ -6,13 +6,20 @@ extends Button
 @export var title_label: Label
 @export var talents_container: GridContainer
 
-var talent_ref: Node = null  # Reference to the talent that opened this dialog
+var talent_ref: Node = null
 
 func _ready():
-	talents_container.update_title_label()
-	visible = false
 	pressed.connect(_on_button_pressed)
 	upgrade_button.pressed.connect(_on_upgrade_button_pressed)
+	visible = false
+	
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	talents_container.update_title_label()
 
 func set_talent_data(talent_name: String, description: String, factor: float, points: int, max_points: int, eligible_for_upgrade: bool, talent_reference: Node = null):
 	visible = true
@@ -62,7 +69,7 @@ func _on_button_pressed():
 
 func _on_upgrade_button_pressed():
 	print("Upgrade button pressed for talent: ", name_label.text)
+	Websocket.add_talent(talent_ref.talentID)
 	talent_ref.upgrade_talent()
-	talents_container.update_title_label()  # Refresh the title after upgrading
-	# Hide this sub-overlay
+	talents_container.update_title_label()
 	visible = false
