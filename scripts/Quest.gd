@@ -5,6 +5,7 @@ extends Panel
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
 @export var background: TextureRect
+@export var quest_text: Label
 
 # Icon textures for different option types
 @export_group("Option Icons")
@@ -145,23 +146,14 @@ func display_quest(quest_data: QuestData):
 
 func display_quest_with_text(text: String):
 	"""Display quest with custom text and current visible options"""
-	# Clear previous entry from the text container
-	for child in text_container.get_children():
-		child.queue_free()
+	quest_text.text = text
+	quest_text.modulate.a = 0
+	quest_text.position.y = 20
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	
-	# Create and add new entry to text container
-	var entry = create_quest_entry(text)
-	text_container.add_child(entry)
-	
-	# Animate entry sliding up from below
-	entry.modulate.a = 0
-	entry.position.y = 20
-	var entry_tween = create_tween()
-	entry_tween.set_parallel(true)
-	entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-	entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-	
-	# Update options based on visible_option_ids
 	clear_options()
 	if current_quest.options:
 		for option in current_quest.options:
@@ -169,18 +161,6 @@ func display_quest_with_text(text: String):
 				add_option(option.text, _on_quest_option_pressed.bind(option), option)
 	else:
 		print("WARNING: current_quest.options is null or empty")
-
-func create_quest_entry(text: String) -> Control:
-	"""Create a quest entry label"""
-	var label = Label.new()
-	label.text = text
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	label.custom_minimum_size = Vector2(350, 0)
-	label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	return label
 
 func apply_option_reward(option: QuestOption):
 	"""Apply reward from a quest option to the player"""
@@ -488,20 +468,13 @@ func _on_quest_option_pressed(option: QuestOption):
 	
 	# 3. Replace text with response_text if provided
 	if option.response_text != "":
-		# Clear previous entry and create new one with response text
-		for child in text_container.get_children():
-			child.queue_free()
-		
-		var entry = create_quest_entry(option.response_text)
-		text_container.add_child(entry)
-		
-		# Animate entry
-		entry.modulate.a = 0
-		entry.position.y = 20
-		var entry_tween = create_tween()
-		entry_tween.set_parallel(true)
-		entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-		entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+		quest_text.text = option.response_text
+		quest_text.modulate.a = 0
+		quest_text.position.y = 20
+		var tween = create_tween()
+		tween.set_parallel(true)
+		tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+		tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	
 	# 3b. Apply and display reward for this option
 	apply_option_reward(option)
@@ -576,20 +549,13 @@ func handle_combat_result():
 	if player_won:
 		# Win: use regular response_text and shows/hides
 		if option.response_text != "":
-			# Replace text with win response
-			for child in text_container.get_children():
-				child.queue_free()
-			
-			var entry = create_quest_entry(option.response_text)
-			text_container.add_child(entry)
-			
-			# Animate entry
-			entry.modulate.a = 0
-			entry.position.y = 20
-			var entry_tween = create_tween()
-			entry_tween.set_parallel(true)
-			entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-			entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+			quest_text.text = option.response_text
+			quest_text.modulate.a = 0
+			quest_text.position.y = 20
+			var tween = create_tween()
+			tween.set_parallel(true)
+			tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+			tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 		
 		# Always hide clicked option
 		visible_option_ids.erase(option.option_index)
@@ -608,20 +574,13 @@ func handle_combat_result():
 	else:
 		# Loss: use on_lose_response_text
 		if option.on_lose_response_text != "":
-			# Replace text with lose response
-			for child in text_container.get_children():
-				child.queue_free()
-			
-			var entry = create_quest_entry(option.on_lose_response_text)
-			text_container.add_child(entry)
-			
-			# Animate entry
-			entry.modulate.a = 0
-			entry.position.y = 20
-			var entry_tween = create_tween()
-			entry_tween.set_parallel(true)
-			entry_tween.tween_property(entry, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-			entry_tween.tween_property(entry, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+			quest_text.text = option.on_lose_response_text
+			quest_text.modulate.a = 0
+			quest_text.position.y = 20
+			var tween = create_tween()
+			tween.set_parallel(true)
+			tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+			tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 		
 		# Always hide clicked option
 		visible_option_ids.erase(option.option_index)

@@ -6456,7 +6456,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
 
-[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameSceneParent/Wrapper/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "quest_text", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6470,6 +6470,7 @@ text_container = NodePath("Overlay/TextContainer")
 options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
 background = NodePath("Bakcground")
+quest_text = NodePath("Overlay/TextContainer/QuestLabel")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
@@ -6521,6 +6522,14 @@ offset_right = 2.95999
 offset_bottom = -329.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="QuestLabel" type="Label" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest/Overlay/TextContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+text = "asdasd ads asda das dasd asd asd asd asd asd as d  "
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BottomContainer" type="VBoxContainer" parent="Portrait/GameSceneParent/Wrapper/GameScene/Quest/Overlay"]
 layout_mode = 1
