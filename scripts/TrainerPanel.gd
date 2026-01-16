@@ -17,68 +17,50 @@ const STAT_COST = 5
 @export var agility_button: Button
 @export var luck_button: Button
 
-var utility_background: UtilityBackground  # Found from loaded utility scene
+var utility_background: UtilityBackground
 
 func _ready():
-	# Don't load location content yet - wait for character selection
-	# Connect button signals
-	talent_points_button.pressed.connect(_on_talent_points_plus_pressed)
-	strength_button.pressed.connect(_on_strength_plus_pressed)
-	stamina_button.pressed.connect(_on_stamina_plus_pressed)
-	agility_button.pressed.connect(_on_agility_plus_pressed)
-	luck_button.pressed.connect(_on_luck_plus_pressed)
-	
-	# Initialize if character is already selected
-	if GameInfo.current_player:
-		_load_location_content()
-		update_stats_display()
-		update_button_states()
-	
-	# Update stats display when panel becomes visible
+	talent_points_button.pressed.connect(_on_stat_plus_pressed.bind("talent_points", TALENT_POINT_COST))
+	strength_button.pressed.connect(_on_stat_plus_pressed.bind("strength", STAT_COST))
+	stamina_button.pressed.connect(_on_stat_plus_pressed.bind("stamina", STAT_COST))
+	agility_button.pressed.connect(_on_stat_plus_pressed.bind("agility", STAT_COST))
+	luck_button.pressed.connect(_on_stat_plus_pressed.bind("luck", STAT_COST))
 	visibility_changed.connect(_on_visibility_changed)
+	
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	_load_location_content()
+	update_stats_display()
+	update_button_states()
 
 func _on_visibility_changed():
 	if visible:
 		update_stats_display()
 		update_button_states()
-		# Show entered greeting when panel becomes visible
-		if utility_background:
-			utility_background.show_entered_greeting()
+		utility_background.show_entered_greeting()
 
 func _load_location_content():
-	if not GameInfo.current_player:
-		return
-		
-	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
+	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
 	
-	# Clear existing children from container
-	if utility_background_container:
-		for child in utility_background_container.get_children():
-			child.queue_free()
+	for child in utility_background_container.get_children():
+		child.queue_free()
 	
-	# Instantiate and add the utility scene
-	if location_data.trainer_utility_scene:
-		var utility_instance = location_data.trainer_utility_scene.instantiate()
-		utility_background_container.add_child(utility_instance)
-		
-		# Set to full rect (anchors 0,0 to 1,1 with zero offsets)
-		if utility_instance is Control:
-			utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
-			utility_instance.offset_left = 0
-			utility_instance.offset_top = 0
-			utility_instance.offset_right = 0
-			utility_instance.offset_bottom = 0
-		
-		# Get reference to the utility background script
-		if utility_instance is UtilityBackground:
-			utility_background = utility_instance
-		else:
-			utility_background = null
+	var utility_instance = location_data.trainer_utility_scene.instantiate()
+	utility_background_container.add_child(utility_instance)
+	
+	utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
+	utility_instance.offset_left = 0
+	utility_instance.offset_top = 0
+	utility_instance.offset_right = 0
+	utility_instance.offset_bottom = 0
+	
+	utility_background = utility_instance
 
 func update_stats_display():
-	if not GameInfo.current_player:
-		return
-	
 	talent_points_label.text = "Talents: " + str(GameInfo.current_player.talent_points)
 	strength_label.text = "Strength: " + str(GameInfo.current_player.strength)
 	stamina_label.text = "Stamina: " + str(GameInfo.current_player.stamina)
@@ -86,70 +68,40 @@ func update_stats_display():
 	luck_label.text = "Luck: " + str(GameInfo.current_player.luck)
 
 func update_button_states():
-	if not GameInfo.current_player:
-		return
-	
 	var silver = GameInfo.current_player.silver
 	
-	# Enable/disable buttons based on gold availability
 	talent_points_button.disabled = silver < TALENT_POINT_COST
 	strength_button.disabled = silver < STAT_COST
 	stamina_button.disabled = silver < STAT_COST
 	agility_button.disabled = silver < STAT_COST
 	luck_button.disabled = silver < STAT_COST
 
-# Training functions
-func _on_talent_points_plus_pressed():
-	if GameInfo.current_player.silver >= TALENT_POINT_COST:
-		UIManager.instance.update_silver(-TALENT_POINT_COST)
-		GameInfo.current_player.talent_points += 1
-		UIManager.instance.refresh_stats()
-		update_stats_display()
-		print("Trained Talent Points - cost: ", TALENT_POINT_COST, " gold")
-		# Show action greeting after training
-		if utility_background:
-			utility_background.show_action_greeting()
-
-func _on_strength_plus_pressed():
-	if GameInfo.current_player.silver >= STAT_COST:
-		UIManager.instance.update_silver(-STAT_COST)
-		GameInfo.current_player.strength += 1
-		UIManager.instance.refresh_stats()
-		update_stats_display()
-		print("Trained Strength - cost: ", STAT_COST, " gold")
-		# Show action greeting after training
-		if utility_background:
-			utility_background.show_action_greeting()
-
-func _on_stamina_plus_pressed():
-	if GameInfo.current_player.silver >= STAT_COST:
-		UIManager.instance.update_silver(-STAT_COST)
-		GameInfo.current_player.stamina += 1
-		UIManager.instance.refresh_stats()
-		update_stats_display()
-		print("Trained Stamina - cost: ", STAT_COST, " gold")
-		# Show action greeting after training
-		if utility_background:
-			utility_background.show_action_greeting()
-
-func _on_agility_plus_pressed():
-	if GameInfo.current_player.silver >= STAT_COST:
-		UIManager.instance.update_silver(-STAT_COST)
-		GameInfo.current_player.agility += 1
-		UIManager.instance.refresh_stats()
-		update_stats_display()
-		print("Trained Agility - cost: ", STAT_COST, " gold")
-		# Show action greeting after training
-		if utility_background:
-			utility_background.show_action_greeting()
-
-func _on_luck_plus_pressed():
-	if GameInfo.current_player.silver >= STAT_COST:
-		UIManager.instance.update_silver(-STAT_COST)
-		GameInfo.current_player.luck += 1
-		UIManager.instance.refresh_stats()
-		update_stats_display()
-		print("Trained Luck - cost: ", STAT_COST, " gold")
-		# Show action greeting after training
-		if utility_background:
-			utility_background.show_action_greeting()
+func _on_stat_plus_pressed(stat_name: String, cost: int):
+	# Map stat names to stat IDs (1=strength, 2=stamina, 3=agility, 4=luck, 5=talent_points)
+	var stat_id_map = {
+		"strength": 1,
+		"stamina": 2,
+		"agility": 3,
+		"luck": 4,
+		"talent_points": 5
+	}
+	
+	Websocket.train_stat(stat_id_map[stat_name])
+	UIManager.instance.update_silver(-cost)
+	
+	match stat_name:
+		"strength":
+			GameInfo.current_player.strength += 1
+		"stamina":
+			GameInfo.current_player.stamina += 1
+		"agility":
+			GameInfo.current_player.agility += 1
+		"luck":
+			GameInfo.current_player.luck += 1
+		"talent_points":
+			GameInfo.current_player.talent_points += 1
+	
+	UIManager.instance.refresh_stats()
+	update_stats_display()
+	print("Trained ", stat_name, " - cost: ", cost, " gold")
+	utility_background.show_action_greeting()
