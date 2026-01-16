@@ -269,8 +269,8 @@ agility_minus = NodePath("StatsSection/AgilityRow/AgilityMinus")
 agility_plus = NodePath("StatsSection/AgilityRow/AgilityPlus")
 luck_minus = NodePath("StatsSection/LuckRow/LuckMinus")
 luck_plus = NodePath("StatsSection/LuckRow/LuckPlus")
-faction_desc_label = NodePath("FactionSection/FactionDesc")
-vip_desc_label = NodePath("VIPSection/VIPDesc")
+faction_desc_label = NodePath("FactionDesc")
+vip_desc_label = NodePath("VIPDesc")
 vip_description = "No timers, can finnish quests from up to three days ago
 Free cosmetics, can share combat logs in chat"
 
@@ -327,7 +327,7 @@ anchor_right = 0.5
 offset_left = -199.5
 offset_top = 170.0
 offset_right = 200.5
-offset_bottom = 333.0
+offset_bottom = 247.0
 grow_horizontal = 2
 
 [node name="FactionLabel" type="Label" parent="ContentContainer/CharacterInfo/FactionSection"]
@@ -361,9 +361,17 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Companions"
 
-[node name="FactionDesc" type="Label" parent="ContentContainer/CharacterInfo/FactionSection"]
+[node name="FactionDesc" type="Label" parent="ContentContainer/CharacterInfo"]
 custom_minimum_size = Vector2(-1, 0)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -189.5
+offset_top = 256.0
+offset_right = 185.5
+offset_bottom = 340.0
+grow_horizontal = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -547,7 +555,7 @@ anchor_right = 0.5
 offset_left = -149.5
 offset_top = 555.0
 offset_right = 150.5
-offset_bottom = 719.0
+offset_bottom = 631.0
 grow_horizontal = 2
 
 [node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
@@ -574,10 +582,19 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_f13kh")
 text = "Yes"
 
-[node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
+[node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo"]
 custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -183.5
+offset_top = 639.0
+offset_right = 177.5
+offset_bottom = 721.0
+grow_horizontal = 2
 horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/CharacterInfo"]
