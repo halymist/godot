@@ -45,11 +45,11 @@ func _ready():
 	login_mode_button.toggled.connect(_on_login_mode_toggled)
 	register_mode_button.toggled.connect(_on_register_mode_toggled)
 	
-	# Connect method selection buttons
-	email_button.pressed.connect(_on_method_selected.bind("email"))
-	facebook_button.pressed.connect(_on_method_selected.bind("facebook"))
-	google_button.pressed.connect(_on_method_selected.bind("google"))
-	steam_button.pressed.connect(_on_method_selected.bind("steam"))
+	# Connect method selection buttons (using toggled for toggle buttons)
+	email_button.toggled.connect(_on_email_toggled)
+	facebook_button.toggled.connect(_on_facebook_toggled)
+	google_button.toggled.connect(_on_google_toggled)
+	steam_button.toggled.connect(_on_steam_toggled)
 	
 	# Connect login buttons
 	email_login_button.pressed.connect(_on_login)
@@ -102,6 +102,22 @@ func _on_method_selected(method: String):
 	"""Show the selected login method section"""
 	current_method = method
 	_update_ui_for_mode()
+
+func _on_email_toggled(toggled_on: bool):
+	if toggled_on:
+		_on_method_selected("email")
+
+func _on_facebook_toggled(toggled_on: bool):
+	if toggled_on:
+		_on_method_selected("facebook")
+
+func _on_google_toggled(toggled_on: bool):
+	if toggled_on:
+		_on_method_selected("google")
+
+func _on_steam_toggled(toggled_on: bool):
+	if toggled_on:
+		_on_method_selected("steam")
 
 func _on_login():
 	"""Handle login (accept everything for now)"""

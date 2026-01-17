@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dtfwauux0ahsv"]
+[gd_scene load_steps=22 format=3 uid="uid://dtfwauux0ahsv"]
 
 [ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="1_lobby"]
 [ext_resource type="Script" uid="uid://boa2f7b48n2ck" path="res://scripts/LoginPanel.gd" id="2_login"]
@@ -35,6 +35,8 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_login_mode"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_auth_method"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_vnpwx"]
 
@@ -173,29 +175,38 @@ grow_horizontal = 2
 alignment = 1
 
 [node name="EmailButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_auth_method")
 texture_normal = ExtResource("2_shroom")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="FacebookButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_auth_method")
 texture_normal = ExtResource("4_instagram")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="GoogleButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_auth_method")
 texture_normal = ExtResource("5_twitter")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="SteamButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_auth_method")
 texture_normal = ExtResource("3_discord")
 ignore_texture_size = true
 stretch_mode = 5
@@ -287,6 +298,10 @@ offset_top = 161.0
 offset_right = -25.5
 offset_bottom = 194.0
 grow_horizontal = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_pressed_color = Color(0.9, 0.9, 0.9, 1)
 text = "Stay logged in"
 
 [node name="LoginButton" type="Button" parent="ContentContainer/Login/EmailLoginSection"]
