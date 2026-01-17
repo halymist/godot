@@ -79,6 +79,19 @@ func logout():
 	"""
 	send_request("/auth/logout", "POST", {})
 
+func reset_password(email: String):
+	"""
+	Send password reset email to the provided email address
+	email: Email address to send password reset link to
+	
+	Response: success/failure confirmation
+	"""
+	var payload = {
+		"email": email
+	}
+	
+	send_request("/auth/reset-password", "POST", payload)
+
 # ============================================
 # Character Management Actions
 # ============================================

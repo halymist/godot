@@ -35,6 +35,13 @@ extends Control
 @export var password_input: LineEdit
 @export var password_toggle: CheckBox
 
+# Forgot password panel
+@export var forgot_password_panel: Control
+@export var forgot_password_button: Button
+@export var forgot_email_input: LineEdit
+@export var forgot_submit_button: Button
+@export var forgot_cancel_button: Button
+
 var current_method: String = "email"
 var is_register_mode: bool = false
 
@@ -67,6 +74,16 @@ func _ready():
 	# Connect password toggle checkbox
 	if password_toggle:
 		password_toggle.toggled.connect(_on_password_toggle)
+	
+	# Connect forgot password button
+	if forgot_password_button:
+		forgot_password_button.pressed.connect(_on_forgot_password_clicked)
+	
+	if forgot_submit_button:
+		forgot_submit_button.pressed.connect(_on_forgot_submit)
+	
+	if forgot_cancel_button:
+		forgot_cancel_button.pressed.connect(_on_forgot_cancel)
 	
 	# Start with login mode and email selected
 	_on_mode_toggle(false)
@@ -173,3 +190,25 @@ func _on_password_toggle(toggled_on: bool):
 	"""Toggle password visibility"""
 	if password_input:
 		password_input.secret = not toggled_on
+
+func _on_forgot_password_clicked():
+	"""Show the forgot password panel"""
+	if forgot_password_panel:
+		forgot_password_panel.visible = true
+		if forgot_email_input:
+			forgot_email_input.text = ""
+			forgot_email_input.grab_focus()
+
+func _on_forgot_submit():
+	"""Submit forgot password request"""
+	if forgot_email_input and forgot_email_input.text != "":
+		Http.reset_password(forgot_email_input.text)
+		print("Password reset email sent to: ", forgot_email_input.text)
+		# Hide the panel
+		if forgot_password_panel:
+			forgot_password_panel.visible = false
+
+func _on_forgot_cancel():
+	"""Cancel forgot password and close panel"""
+	if forgot_password_panel:
+		forgot_password_panel.visible = false
