@@ -169,7 +169,7 @@ func _on_register():
 	visible = false
 	lobby_panel.visible = true
 
-func _on_password_toggle():
+func _on_password_toggle(toggled_on: bool):
 	"""Toggle password visibility"""
 	if password_input:
-		password_input.secret = not password_input.secret
+		password_input.secret = not toggled_on
