@@ -9,24 +9,30 @@ extends Control
 
 # Login method buttons
 @export var email_button: TextureButton
-@export var facebook_button: TextureButton
 @export var google_button: TextureButton
-@export var steam_button: TextureButton
+@export var google_play_button: TextureButton
+@export var apple_button: TextureButton
+@export var discord_button: TextureButton
+@export var facebook_button: TextureButton
 
 # Login sections
 @export var email_login_section: Control
-@export var facebook_login_section: Control
 @export var google_login_section: Control
-@export var steam_login_section: Control
+@export var google_play_login_section: Control
+@export var apple_login_section: Control
+@export var discord_login_section: Control
+@export var facebook_login_section: Control
 
 # Register sections (only email needs separate UI)
 @export var email_register_section: Control
 
 # Login action buttons
 @export var email_login_button: Button
-@export var facebook_login_button: Button
 @export var google_login_button: Button
-@export var steam_login_button: Button
+@export var google_play_login_button: Button
+@export var apple_login_button: Button
+@export var discord_login_button: Button
+@export var facebook_login_button: Button
 
 # Register action buttons (only email needs separate button)
 @export var email_register_button: Button
@@ -62,15 +68,19 @@ func _ready():
 	
 	# Connect method selection buttons (using toggled for toggle buttons)
 	email_button.toggled.connect(_on_email_toggled)
-	facebook_button.toggled.connect(_on_facebook_toggled)
 	google_button.toggled.connect(_on_google_toggled)
-	steam_button.toggled.connect(_on_steam_toggled)
+	google_play_button.toggled.connect(_on_google_play_toggled)
+	apple_button.toggled.connect(_on_apple_toggled)
+	discord_button.toggled.connect(_on_discord_toggled)
+	facebook_button.toggled.connect(_on_facebook_toggled)
 	
 	# Connect login buttons
 	email_login_button.pressed.connect(_on_login)
-	facebook_login_button.pressed.connect(_on_login_or_register)
 	google_login_button.pressed.connect(_on_login_or_register)
-	steam_login_button.pressed.connect(_on_login_or_register)
+	google_play_login_button.pressed.connect(_on_login_or_register)
+	apple_login_button.pressed.connect(_on_login_or_register)
+	discord_login_button.pressed.connect(_on_login_or_register)
+	facebook_login_button.pressed.connect(_on_login_or_register)
 	
 	# Connect register buttons
 	email_register_button.pressed.connect(_on_register)
@@ -122,15 +132,19 @@ func _update_ui_for_mode():
 		email_register_section.visible = current_method == "email"
 		email_login_section.visible = false
 		# Non-email methods reuse login sections for both modes
-		facebook_login_section.visible = current_method == "facebook"
 		google_login_section.visible = current_method == "google"
-		steam_login_section.visible = current_method == "steam"
+		google_play_login_section.visible = current_method == "google_play"
+		apple_login_section.visible = current_method == "apple"
+		discord_login_section.visible = current_method == "discord"
+		facebook_login_section.visible = current_method == "facebook"
 	else:
 		# Show login sections
 		email_login_section.visible = current_method == "email"
-		facebook_login_section.visible = current_method == "facebook"
 		google_login_section.visible = current_method == "google"
-		steam_login_section.visible = current_method == "steam"
+		google_play_login_section.visible = current_method == "google_play"
+		apple_login_section.visible = current_method == "apple"
+		discord_login_section.visible = current_method == "discord"
+		facebook_login_section.visible = current_method == "facebook"
 		# Hide email register section
 		email_register_section.visible = false
 
@@ -145,36 +159,54 @@ func _on_method_selected(method: String):
 		if email_indicator:
 			email_indicator.visible = (method == "email")
 	
-	if facebook_button:
-		var fb_indicator = facebook_button.get_node_or_null("Indicator")
-		if fb_indicator:
-			fb_indicator.visible = (method == "facebook")
-	
 	if google_button:
 		var google_indicator = google_button.get_node_or_null("Indicator")
 		if google_indicator:
 			google_indicator.visible = (method == "google")
 	
-	if steam_button:
-		var steam_indicator = steam_button.get_node_or_null("Indicator")
-		if steam_indicator:
-			steam_indicator.visible = (method == "steam")
+	if google_play_button:
+		var gp_indicator = google_play_button.get_node_or_null("Indicator")
+		if gp_indicator:
+			gp_indicator.visible = (method == "google_play")
+	
+	if apple_button:
+		var apple_indicator = apple_button.get_node_or_null("Indicator")
+		if apple_indicator:
+			apple_indicator.visible = (method == "apple")
+	
+	if discord_button:
+		var discord_indicator = discord_button.get_node_or_null("Indicator")
+		if discord_indicator:
+			discord_indicator.visible = (method == "discord")
+	
+	if facebook_button:
+		var fb_indicator = facebook_button.get_node_or_null("Indicator")
+		if fb_indicator:
+			fb_indicator.visible = (method == "facebook")
 
 func _on_email_toggled(toggled_on: bool):
 	if toggled_on:
 		_on_method_selected("email")
 
-func _on_facebook_toggled(toggled_on: bool):
-	if toggled_on:
-		_on_method_selected("facebook")
-
 func _on_google_toggled(toggled_on: bool):
 	if toggled_on:
 		_on_method_selected("google")
 
-func _on_steam_toggled(toggled_on: bool):
+func _on_google_play_toggled(toggled_on: bool):
 	if toggled_on:
-		_on_method_selected("steam")
+		_on_method_selected("google_play")
+
+func _on_apple_toggled(toggled_on: bool):
+	if toggled_on:
+		_on_method_selected("apple")
+
+func _on_discord_toggled(toggled_on: bool):
+	if toggled_on:
+		_on_method_selected("discord")
+
+func _on_facebook_toggled(toggled_on: bool):
+	if toggled_on:
+		_on_method_selected("facebook")
 
 func _on_login():
 	"""Handle login (accept everything for now)"""

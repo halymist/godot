@@ -1,17 +1,22 @@
-[gd_scene load_steps=22 format=3 uid="uid://dtfwauux0ahsv"]
+[gd_scene load_steps=27 format=3 uid="uid://dtfwauux0ahsv"]
 
 [ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="1_lobby"]
 [ext_resource type="Script" uid="uid://boa2f7b48n2ck" path="res://scripts/LoginPanel.gd" id="2_login"]
 [ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="2_shroom"]
-[ext_resource type="Texture2D" uid="uid://dy83nwpi2ssx8" path="res://assets/images/ui/discord.png" id="3_discord"]
-[ext_resource type="Texture2D" uid="uid://cu0dq450kmeqa" path="res://assets/images/ui/instagram.png" id="4_instagram"]
+[ext_resource type="Texture2D" uid="uid://dpcoffofmc3x5" path="res://assets/images/ui/mail.png" id="3_0apk8"]
+[ext_resource type="Texture2D" uid="uid://bkd6ur0ohl5ns" path="res://assets/images/ui/insta.png" id="4_omeci"]
+[ext_resource type="Texture2D" uid="uid://dacixq1r3qf0x" path="res://assets/images/ui/googleplay.png" id="5_f13kh"]
 [ext_resource type="Texture2D" uid="uid://cxg2iu8vi2jlc" path="res://assets/images/ui/twitter.png" id="5_twitter"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="6_theme"]
 [ext_resource type="Script" uid="uid://cewyy6eq1q28e" path="res://scripts/CharacterInfoPanel.gd" id="7_d8m4u"]
+[ext_resource type="Texture2D" uid="uid://dufw5i7kjpl3g" path="res://assets/images/ui/apple2.png" id="7_hcdb4"]
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="8_5ysxf"]
 [ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="9_a5vrk"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="10_0apk8"]
+[ext_resource type="Texture2D" uid="uid://blqerkdt70mlo" path="res://assets/images/ui/google1.png" id="10_f13kh"]
+[ext_resource type="Texture2D" uid="uid://4sqwevn2os21" path="res://assets/images/ui/discord3.png" id="11_hcdb4"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="11_omeci"]
+[ext_resource type="Texture2D" uid="uid://degnepqymupsv" path="res://assets/images/ui/facebook.png" id="12_yly4b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hover"]
 bg_color = Color(0.25, 0.25, 0.25, 0.8)
@@ -98,10 +103,12 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "facebook_button", "google_button", "steam_button", "email_login_section", "facebook_login_section", "google_login_section", "steam_login_section", "email_register_section", "email_login_button", "facebook_login_button", "google_login_button", "steam_login_button", "email_register_button", "password_input", "password_toggle", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
-anchors_preset = 0
+[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "email_login_section", "google_login_section", "google_play_login_section", "apple_login_section", "discord_login_section", "facebook_login_section", "email_register_section", "email_login_button", "google_login_button", "google_play_login_button", "apple_login_button", "discord_login_button", "facebook_login_button", "email_register_button", "password_input", "password_toggle", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
+layout_mode = 1
+anchor_top = 0.024
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -0.200001
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_login")
@@ -109,18 +116,24 @@ lobby_panel = NodePath("../Lobby")
 login_mode_button = NodePath("ModeToggle/LoginButton")
 register_mode_button = NodePath("ModeToggle/RegisterButton")
 email_button = NodePath("MethodButtons/EmailButton")
-facebook_button = NodePath("MethodButtons/FacebookButton")
 google_button = NodePath("MethodButtons/GoogleButton")
-steam_button = NodePath("MethodButtons/SteamButton")
+google_play_button = NodePath("MethodButtons/GooglePlayButton")
+apple_button = NodePath("MethodButtons/AppleButton")
+discord_button = NodePath("MethodButtons/DiscordButton")
+facebook_button = NodePath("MethodButtons/FacebookButton")
 email_login_section = NodePath("EmailLoginSection")
-facebook_login_section = NodePath("FacebookLoginSection")
 google_login_section = NodePath("GoogleLoginSection")
-steam_login_section = NodePath("SteamLoginSection")
+google_play_login_section = NodePath("GooglePlayLoginSection")
+apple_login_section = NodePath("AppleLoginSection")
+discord_login_section = NodePath("DiscordLoginSection")
+facebook_login_section = NodePath("FacebookLoginSection")
 email_register_section = NodePath("EmailRegisterSection")
 email_login_button = NodePath("EmailLoginSection/LoginButton")
-facebook_login_button = NodePath("FacebookLoginSection/LoginButton")
 google_login_button = NodePath("GoogleLoginSection/LoginButton")
-steam_login_button = NodePath("SteamLoginSection/LoginButton")
+google_play_login_button = NodePath("GooglePlayLoginSection/LoginButton")
+apple_login_button = NodePath("AppleLoginSection/LoginButton")
+discord_login_button = NodePath("DiscordLoginSection/LoginButton")
+facebook_login_button = NodePath("FacebookLoginSection/LoginButton")
 email_register_button = NodePath("EmailRegisterSection/RegisterButton")
 password_input = NodePath("EmailLoginSection/PasswordInput")
 password_toggle = NodePath("EmailLoginSection/PasswordToggle")
@@ -179,9 +192,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -147.5
+offset_left = -200.0
 offset_top = 226.0
-offset_right = 148.5
+offset_right = 200.0
 offset_bottom = 299.0
 grow_horizontal = 2
 alignment = 1
@@ -193,37 +206,11 @@ focus_mode = 0
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_auth_method")
-texture_normal = ExtResource("2_shroom")
+texture_normal = ExtResource("3_0apk8")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="Indicator" type="Panel" parent="ContentContainer/Login/MethodButtons/EmailButton"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -4.0
-offset_top = 5.0
-offset_right = 4.0
-offset_bottom = 10.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_tab_pressed")
-
-[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-focus_mode = 0
-toggle_mode = true
-button_group = SubResource("ButtonGroup_auth_method")
-texture_normal = ExtResource("4_instagram")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Indicator" type="Panel" parent="ContentContainer/Login/MethodButtons/FacebookButton"]
-visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -244,7 +231,7 @@ layout_mode = 2
 focus_mode = 0
 toggle_mode = true
 button_group = SubResource("ButtonGroup_auth_method")
-texture_normal = ExtResource("5_twitter")
+texture_normal = ExtResource("10_f13kh")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -264,17 +251,95 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_tab_pressed")
 
-[node name="SteamButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+[node name="GooglePlayButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 focus_mode = 0
 toggle_mode = true
 button_group = SubResource("ButtonGroup_auth_method")
-texture_normal = ExtResource("3_discord")
+texture_normal = ExtResource("5_f13kh")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Indicator" type="Panel" parent="ContentContainer/Login/MethodButtons/SteamButton"]
+[node name="Indicator" type="Panel" parent="ContentContainer/Login/MethodButtons/GooglePlayButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = 5.0
+offset_right = 4.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_tab_pressed")
+
+[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_group = SubResource("ButtonGroup_auth_method")
+texture_normal = ExtResource("11_hcdb4")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Indicator" type="Panel" parent="ContentContainer/Login/MethodButtons/DiscordButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = 5.0
+offset_right = 4.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_tab_pressed")
+
+[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_group = SubResource("ButtonGroup_auth_method")
+texture_normal = ExtResource("12_yly4b")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Indicator" type="Panel" parent="ContentContainer/Login/MethodButtons/FacebookButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = 5.0
+offset_right = 4.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_tab_pressed")
+
+[node name="AppleButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_group = SubResource("ButtonGroup_auth_method")
+texture_normal = ExtResource("7_hcdb4")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Indicator" type="Panel" parent="ContentContainer/Login/MethodButtons/AppleButton"]
 visible = false
 layout_mode = 1
 anchors_preset = 7
@@ -529,7 +594,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="SteamLoginSection" type="Control" parent="ContentContainer/Login"]
+[node name="DiscordLoginSection" type="Control" parent="ContentContainer/Login"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -544,7 +609,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/SteamLoginSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/DiscordLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -557,10 +622,102 @@ offset_right = 100.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Login with Steam"
+text = "Login with Discord"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/SteamLoginSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/DiscordLoginSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 10.0
+offset_right = 75.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "LOGIN"
+
+[node name="GooglePlayLoginSection" type="Control" parent="ContentContainer/Login"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="ContentContainer/Login/GooglePlayLoginSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Login with Google Play"
+horizontal_alignment = 1
+
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/GooglePlayLoginSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 10.0
+offset_right = 75.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "LOGIN"
+
+[node name="AppleLoginSection" type="Control" parent="ContentContainer/Login"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="ContentContainer/Login/AppleLoginSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Login with Apple"
+horizontal_alignment = 1
+
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/AppleLoginSection"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -813,7 +970,7 @@ theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 18
 text = "OK"
 
-[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
+[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "social_discord_button", "social_instagram_button", "social_twitter_button", "social_facebook_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -824,10 +981,17 @@ grow_vertical = 2
 script = ExtResource("1_lobby")
 characters_container = NodePath("ScrollContainer/CharactersContainer")
 create_new_button = NodePath("ScrollContainer/CharactersContainer/CreateNewButton")
-logout_button = NodePath("AccountInfo/LogoutButton")
-discord_button = NodePath("SocialLinks/DiscordButton")
-instagram_button = NodePath("SocialLinks/InstagramButton")
-twitter_button = NodePath("SocialLinks/TwitterButton")
+logout_button = NodePath("LogoutButton")
+email_button = NodePath("LoginMethods/EmailButton")
+google_button = NodePath("LoginMethods/GoogleButton")
+google_play_button = NodePath("LoginMethods/GooglePlayButton")
+apple_button = NodePath("LoginMethods/AppleButton")
+discord_button = NodePath("LoginMethods/DiscordButton")
+facebook_button = NodePath("LoginMethods/FacebookButton")
+social_discord_button = NodePath("SocialLinks/DiscordButton")
+social_instagram_button = NodePath("SocialLinks/InstagramButton")
+social_twitter_button = NodePath("SocialLinks/TwitterButton")
+social_facebook_button = NodePath("SocialLinks/FacebookButton")
 character_info_panel = NodePath("../CharacterInfo")
 avatar_creation_panel = NodePath("../Avatar")
 account_created_label = NodePath("AccountInfo/CreatedLabel")
@@ -880,8 +1044,12 @@ custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="LogoutButton" type="Button" parent="ContentContainer/Lobby/AccountInfo"]
+[node name="LogoutButton" type="Button" parent="ContentContainer/Lobby"]
 layout_mode = 2
+offset_left = 65.0
+offset_top = 202.0
+offset_right = 365.0
+offset_bottom = 233.0
 text = "Logout"
 
 [node name="LoginMethodsLabel" type="Label" parent="ContentContainer/Lobby"]
@@ -902,46 +1070,79 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -149.5
+offset_left = -200.0
 offset_top = 300.0
-offset_right = 150.5
-offset_bottom = 365.0
+offset_right = 200.0
+offset_bottom = 360.0
 grow_horizontal = 2
+theme_override_constants/separation = 7
 alignment = 1
 
-[node name="GoogleButton" type="Button" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="EmailButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
-text = "G"
+texture_normal = ExtResource("3_0apk8")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="AddNewButton" type="Button" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="GoogleButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
-text = "+"
+texture_normal = ExtResource("10_f13kh")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="GooglePlayButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("4_omeci")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="AppleButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("7_hcdb4")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("11_hcdb4")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("12_yly4b")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="SocialLinks" type="HBoxContainer" parent="ContentContainer/Lobby"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 75.5
-offset_top = 212.0
-offset_right = 200.5
-offset_bottom = 242.0
+offset_left = 53.5
+offset_top = 155.0
+offset_right = 190.5
+offset_bottom = 185.0
 grow_horizontal = 2
 alignment = 1
 
 [node name="DiscordButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-texture_normal = ExtResource("3_discord")
+texture_normal = ExtResource("11_hcdb4")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="InstagramButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-texture_normal = ExtResource("4_instagram")
+texture_normal = ExtResource("4_omeci")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -949,6 +1150,13 @@ stretch_mode = 0
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 texture_normal = ExtResource("5_twitter")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_normal = ExtResource("12_yly4b")
 ignore_texture_size = true
 stretch_mode = 0
 

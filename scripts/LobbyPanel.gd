@@ -4,9 +4,16 @@ extends Control
 @export var characters_container: VBoxContainer
 @export var create_new_button: Button
 @export var logout_button: Button
+@export var email_button: TextureButton
+@export var google_button: TextureButton
+@export var google_play_button: TextureButton
+@export var apple_button: TextureButton
 @export var discord_button: TextureButton
-@export var instagram_button: TextureButton
-@export var twitter_button: TextureButton
+@export var facebook_button: TextureButton
+@export var social_discord_button: TextureButton
+@export var social_instagram_button: TextureButton
+@export var social_twitter_button: TextureButton
+@export var social_facebook_button: TextureButton
 @export var character_info_panel: Control
 @export var avatar_creation_panel: Panel
 
@@ -17,15 +24,16 @@ extends Control
 @export var new_server_countdown_label: Label
 @export var new_server_date_label: Label
 
-# Social media URLs mapping
-const SOCIAL_URLS = {
-	"discord": "https://discord.gg/your-discord-invite",
-	"instagram": "https://instagram.com/your-username",
-	"twitter": "https://twitter.com/your-username"
-}
-
 # Preload the player card scene
 const PlayerCard = preload("res://Scenes/playercard.tscn")
+
+# Social media URLs
+const SOCIAL_URLS = {
+	"discord": "https://discord.gg/yourgame",
+	"instagram": "https://instagram.com/yourgame",
+	"twitter": "https://twitter.com/yourgame",
+	"facebook": "https://facebook.com/yourgame"
+}
 
 var databases_loaded = false
 var game_scene_loaded = false
@@ -46,9 +54,18 @@ func _ready():
 	# Connect buttons
 	create_new_button.pressed.connect(_on_create_new_character)
 	logout_button.pressed.connect(_on_logout)
-	discord_button.pressed.connect(_on_social_pressed.bind("discord"))
-	instagram_button.pressed.connect(_on_social_pressed.bind("instagram"))
-	twitter_button.pressed.connect(_on_social_pressed.bind("twitter"))
+	email_button.pressed.connect(_show_login_with_method.bind("email"))
+	google_button.pressed.connect(_show_login_with_method.bind("google"))
+	google_play_button.pressed.connect(_show_login_with_method.bind("google_play"))
+	apple_button.pressed.connect(_show_login_with_method.bind("apple"))
+	discord_button.pressed.connect(_show_login_with_method.bind("discord"))
+	facebook_button.pressed.connect(_show_login_with_method.bind("facebook"))
+	
+	# Connect social media buttons
+	social_discord_button.pressed.connect(_on_social_pressed.bind("discord"))
+	social_instagram_button.pressed.connect(_on_social_pressed.bind("instagram"))
+	social_twitter_button.pressed.connect(_on_social_pressed.bind("twitter"))
+	social_facebook_button.pressed.connect(_on_social_pressed.bind("facebook"))
 
 func _load_databases_async():
 	"""Load databases in background"""
@@ -194,9 +211,11 @@ func _on_character_selected(character_id: int):
 	# Switch to preloaded game scene (instant!)
 	get_tree().change_scene_to_packed(game_scene)
 
-func _on_social_pressed(platform: String):
-	"""Open social media link"""
-	OS.shell_open(SOCIAL_URLS[platform])
+func _show_login_with_method(method: String):
+	"""Show login screen to add/link another account with specified method"""
+	print("Link account with: ", method)
+	# TODO: Open login panel with specific method pre-selected
+	# For now, just show which method was clicked
 
 func _on_logout():
 	"""Logout and return to login screen"""
@@ -248,3 +267,8 @@ func _on_create_character_complete():
 	
 	avatar_creation_panel.visible = false
 	visible = true
+
+func _on_social_pressed(platform: String):
+	"""Open social media link"""
+	if platform in SOCIAL_URLS:
+		OS.shell_open(SOCIAL_URLS[platform])
