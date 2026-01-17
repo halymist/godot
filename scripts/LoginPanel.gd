@@ -31,6 +31,10 @@ extends Control
 # Register action buttons (only email needs separate button)
 @export var email_register_button: Button
 
+# Password input and toggle
+@export var password_input: LineEdit
+@export var password_toggle: CheckBox
+
 var current_method: String = "email"
 var is_register_mode: bool = false
 
@@ -59,6 +63,10 @@ func _ready():
 	
 	# Connect register buttons
 	email_register_button.pressed.connect(_on_register)
+	
+	# Connect password toggle checkbox
+	if password_toggle:
+		password_toggle.toggled.connect(_on_password_toggle)
 	
 	# Start with login mode and email selected
 	_on_mode_toggle(false)
@@ -102,6 +110,27 @@ func _on_method_selected(method: String):
 	"""Show the selected login method section"""
 	current_method = method
 	_update_ui_for_mode()
+	
+	# Update indicator visibility
+	if email_button:
+		var email_indicator = email_button.get_node_or_null("Indicator")
+		if email_indicator:
+			email_indicator.visible = (method == "email")
+	
+	if facebook_button:
+		var fb_indicator = facebook_button.get_node_or_null("Indicator")
+		if fb_indicator:
+			fb_indicator.visible = (method == "facebook")
+	
+	if google_button:
+		var google_indicator = google_button.get_node_or_null("Indicator")
+		if google_indicator:
+			google_indicator.visible = (method == "google")
+	
+	if steam_button:
+		var steam_indicator = steam_button.get_node_or_null("Indicator")
+		if steam_indicator:
+			steam_indicator.visible = (method == "steam")
 
 func _on_email_toggled(toggled_on: bool):
 	if toggled_on:
@@ -139,3 +168,8 @@ func _on_register():
 	GameInfo.load_lobby_data()
 	visible = false
 	lobby_panel.visible = true
+
+func _on_password_toggle():
+	"""Toggle password visibility"""
+	if password_input:
+		password_input.secret = not password_input.secret
