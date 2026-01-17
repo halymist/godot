@@ -671,7 +671,7 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 text = "Create New Character"
 
-[node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "strength_label", "stamina_label", "agility_label", "luck_label", "points_label", "strength_minus", "strength_plus", "stamina_minus", "stamina_plus", "agility_minus", "agility_plus", "luck_minus", "luck_plus", "faction_desc_label", "vip_desc_label")]
+[node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "faction_desc_label", "vip_desc_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -688,19 +688,6 @@ vip_yes_button = NodePath("VIPSection/VIPButtons/YesButton")
 vip_no_button = NodePath("VIPSection/VIPButtons/NoButton")
 next_button = NodePath("ButtonsContainer/NextButton")
 back_button = NodePath("ButtonsContainer/BackButton")
-strength_label = NodePath("StatsSection/StrengthRow/StrengthValue")
-stamina_label = NodePath("StatsSection/StaminaRow/StaminaValue")
-agility_label = NodePath("StatsSection/AgilityRow/AgilityValue")
-luck_label = NodePath("StatsSection/LuckRow/LuckValue")
-points_label = NodePath("StatsSection/StatsHeaderRow/PointsLabel")
-strength_minus = NodePath("StatsSection/StrengthRow/StrengthMinus")
-strength_plus = NodePath("StatsSection/StrengthRow/StrengthPlus")
-stamina_minus = NodePath("StatsSection/StaminaRow/StaminaMinus")
-stamina_plus = NodePath("StatsSection/StaminaRow/StaminaPlus")
-agility_minus = NodePath("StatsSection/AgilityRow/AgilityMinus")
-agility_plus = NodePath("StatsSection/AgilityRow/AgilityPlus")
-luck_minus = NodePath("StatsSection/LuckRow/LuckMinus")
-luck_plus = NodePath("StatsSection/LuckRow/LuckPlus")
 faction_desc_label = NodePath("FactionDesc")
 vip_desc_label = NodePath("VIPDesc")
 vip_description = "No timers, can finnish quests from up to three days ago
@@ -802,7 +789,7 @@ anchor_right = 0.5
 offset_left = -189.5
 offset_top = 256.0
 offset_right = 185.5
-offset_bottom = 340.0
+offset_bottom = 370.0
 grow_horizontal = 2
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -814,12 +801,12 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -200.0
-offset_top = 340.0
+offset_top = 380.0
 offset_right = 200.0
-offset_bottom = 350.0
+offset_bottom = 390.0
 grow_horizontal = 2
 
-[node name="StatsSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -828,166 +815,6 @@ offset_left = -188.5
 offset_top = 355.0
 offset_right = 189.5
 offset_bottom = 533.0
-grow_horizontal = 2
-
-[node name="StatsHeaderRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
-layout_mode = 2
-alignment = 1
-
-[node name="StatsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StatsHeaderRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Your Stats:"
-
-[node name="PointsLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StatsHeaderRow"]
-layout_mode = 2
-text = "Remaining: 10"
-horizontal_alignment = 2
-
-[node name="StrengthRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
-layout_mode = 2
-alignment = 1
-
-[node name="StrengthLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "Strength:"
-
-[node name="StrengthDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases damage"
-
-[node name="StrengthMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "-"
-
-[node name="StrengthValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-text = "5"
-horizontal_alignment = 1
-
-[node name="StrengthPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StrengthRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "+"
-
-[node name="StaminaRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
-layout_mode = 2
-alignment = 1
-
-[node name="StaminaLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "Stamina:"
-
-[node name="StaminaDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases health"
-
-[node name="StaminaMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "-"
-
-[node name="StaminaValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-text = "5"
-horizontal_alignment = 1
-
-[node name="StaminaPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/StaminaRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "+"
-
-[node name="AgilityRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
-layout_mode = 2
-alignment = 1
-
-[node name="AgilityLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "Agility:"
-
-[node name="AgilityDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases dodge chance"
-
-[node name="AgilityMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "-"
-
-[node name="AgilityValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-text = "5"
-horizontal_alignment = 1
-
-[node name="AgilityPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/AgilityRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "+"
-
-[node name="LuckRow" type="HBoxContainer" parent="ContentContainer/CharacterInfo/StatsSection"]
-layout_mode = 2
-alignment = 1
-
-[node name="LuckLabel" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "Luck:"
-
-[node name="LuckDesc" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "Increases critical strike chance"
-
-[node name="LuckMinus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "-"
-
-[node name="LuckValue" type="Label" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-text = "5"
-horizontal_alignment = 1
-
-[node name="LuckPlus" type="Button" parent="ContentContainer/CharacterInfo/StatsSection/LuckRow"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "+"
-
-[node name="Separator3" type="HSeparator" parent="ContentContainer/CharacterInfo"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -199.5
-offset_top = 540.0
-offset_right = 200.5
-offset_bottom = 552.0
-grow_horizontal = 2
-
-[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -149.5
-offset_top = 555.0
-offset_right = 150.5
-offset_bottom = 631.0
 grow_horizontal = 2
 
 [node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
@@ -1021,9 +848,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -183.5
-offset_top = 639.0
+offset_top = 484.0
 offset_right = 177.5
-offset_bottom = 721.0
+offset_bottom = 600.0
 grow_horizontal = 2
 horizontal_alignment = 1
 vertical_alignment = 1
