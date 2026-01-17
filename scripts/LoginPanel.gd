@@ -8,10 +8,10 @@ extends Control
 @export var register_mode_button: Button
 
 # Login method buttons
-@export var email_button: Button
-@export var facebook_button: Button
-@export var google_button: Button
-@export var steam_button: Button
+@export var email_button: TextureButton
+@export var facebook_button: TextureButton
+@export var google_button: TextureButton
+@export var steam_button: TextureButton
 
 # Login sections
 @export var email_login_section: Control
@@ -42,8 +42,8 @@ func _ready():
 		return
 	
 	# Connect mode toggle buttons
-	login_mode_button.pressed.connect(_on_mode_toggle.bind(false))
-	register_mode_button.pressed.connect(_on_mode_toggle.bind(true))
+	login_mode_button.toggled.connect(_on_login_mode_toggled)
+	register_mode_button.toggled.connect(_on_register_mode_toggled)
 	
 	# Connect method selection buttons
 	email_button.pressed.connect(_on_method_selected.bind("email"))
@@ -68,6 +68,16 @@ func _on_mode_toggle(register: bool):
 	"""Toggle between login and register mode"""
 	is_register_mode = register
 	_update_ui_for_mode()
+
+func _on_login_mode_toggled(toggled_on: bool):
+	"""Handle login button toggle"""
+	if toggled_on:
+		_on_mode_toggle(false)
+
+func _on_register_mode_toggled(toggled_on: bool):
+	"""Handle register button toggle"""
+	if toggled_on:
+		_on_mode_toggle(true)
 
 func _update_ui_for_mode():
 	"""Update UI to show login or register sections"""
