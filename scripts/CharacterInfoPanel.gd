@@ -174,9 +174,5 @@ func get_character_data() -> Dictionary:
 	return {
 		"name": character_name,
 		"faction": faction,
-		"vip": is_vip,
-		"strength": strength,
-		"stamina": stamina,
-		"agility": agility,
-		"luck": luck
+		"vip": is_vip
 	}

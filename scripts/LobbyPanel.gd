@@ -226,8 +226,25 @@ func _on_avatar_back():
 
 func _on_create_character_complete():
 	"""User completed avatar creation, create the character"""
-	var _character_data = character_info_panel.get_character_data()
-	var _avatar_data = avatar_creation_panel.get_avatar_data()
-	# TODO: Send to server to create character
+	var character_data = character_info_panel.get_character_data()
+	var avatar_data = avatar_creation_panel.get_avatar_data()
+	
+	# Build avatar array [face, hair, eyes, nose, mouth]
+	var avatar_array = [
+		avatar_data["face"],
+		avatar_data["hair"],
+		avatar_data["eyes"],
+		avatar_data["nose"],
+		avatar_data["mouth"]
+	]
+	
+	# Send character creation request to server
+	Http.create_character(
+		character_data["name"],
+		character_data["faction"],
+		avatar_array,
+		character_data["vip"]
+	)
+	
 	avatar_creation_panel.visible = false
 	visible = true
