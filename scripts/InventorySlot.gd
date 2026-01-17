@@ -741,6 +741,7 @@ func _consume_item(item: GameInfo.Item):
 	elif item.type == "Elixir":
 		Websocket.use_elixir(item.bag_slot_id)
 		GameInfo.current_player.elixir = item.id
+		GameInfo.current_player.elixir_ingredients = item.ingredients.duplicate()
 		GameInfo.current_player.bag_slots.erase(item)
 		clear_slot()
 	

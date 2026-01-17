@@ -200,16 +200,10 @@ func _on_consumable_hover_start(consumable_icon):
 		var tooltip_content = ""
 		
 		if consumable_type == "Elixir":
-			# Decode elixir ID and show combined effects
 			tooltip_content = "Elixir"
-			var id_str = str(item_id)
-			var ingredient1_id = int(id_str.substr(4, 3))
-			var ingredient2_id = int(id_str.substr(7, 3))
-			var ingredient3_id = int(id_str.substr(10, 3))
 			
-			# Build effect map to combine duplicate effects
-			var effect_map = {}  # Map effect_id to total factor
-			for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
+			var effect_map = {}
+			for ingredient_id in GameInfo.current_player.elixir_ingredients:
 				if ingredient_id > 0:
 					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
 					if ingredient_resource and ingredient_resource.effect_id > 0:
@@ -218,7 +212,6 @@ func _on_consumable_hover_start(consumable_icon):
 						else:
 							effect_map[ingredient_resource.effect_id] = ingredient_resource.effect_factor
 			
-			# Build effect text from combined effects
 			for effect_id in effect_map.keys():
 				var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
 				if effect_data:

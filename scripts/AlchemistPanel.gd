@@ -184,33 +184,16 @@ func _on_brew_button_pressed():
 	if ingredient_ids[0] == 0 and ingredient_ids[1] == 0 and ingredient_ids[2] == 0:
 		return
 	
-	# Generate encoded elixir ID using string concatenation
-	# Format: "1000" + ingredient1_id(3 digits) + ingredient2_id(3 digits) + ingredient3_id(3 digits)
-	var id_str = "1000"
-	for ingredient_id in ingredient_ids:
-		id_str += str(ingredient_id).pad_zeros(3)  # Pad each ID to 3 digits
-	
-	var encoded_id = int(id_str)
-	
-	print("Brewing elixir with ID: ", encoded_id)
-	print("  Ingredient IDs: ", ingredient_ids)
+	print("Brewing elixir with ingredients: ", ingredient_ids)
 	
 	# Deduct silver
 	UIManager.instance.update_silver(-BREW_COST)
 	
-	# Create new elixir item and add to first available bag slot
 	var new_elixir = GameInfo.Item.new({
-		"id": encoded_id,
-		"bag_slot_id": find_empty_bag_slot()
+		"id": 1000,
+		"bag_slot_id": find_empty_bag_slot(),
+		"ingredients": ingredient_ids
 	})
-	
-	# Elixirs use base texture from id 1000
-	if not new_elixir.texture:
-		var base_elixir_resource = GameInfo.items_db.get_item_by_id(1000)
-		if base_elixir_resource:
-			new_elixir.texture = base_elixir_resource.icon
-	
-	print("Elixir created with ID: ", new_elixir.id, " name: ", new_elixir.item_name)
 	
 	# Add to player's bag
 	GameInfo.current_player.bag_slots.append(new_elixir)

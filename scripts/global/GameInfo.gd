@@ -107,18 +107,21 @@ class Item:
 	var tempered: int = 0  # Tracks tempering level (0 = not tempered, 1+ = tempered)
 	var socket_id: int = -1  # ID of socketed gem (-1 = empty socket)
 	var socket_day: int = 0  # Day value of socketed gem for stat scaling
+	var ingredients: Array[int] = []  # Ingredient IDs for elixirs (id=1000)
 	
 	# Client-side cache (not serialized)
 	var texture: Texture2D = null
 	var _resource_cache: ItemResource = null
 	
 	func _init(data: Dictionary = {}):
-		# Simple direct assignment
 		for key in data:
-			if key in self:
+			if key == "ingredients":
+				ingredients.clear()
+				for ingredient_id in data[key]:
+					ingredients.append(ingredient_id)
+			elif key in self:
 				set(key, data[key])
 		
-		# Cache texture for performance
 		if GameInfo and GameInfo.items_db:
 			var res = get_resource()
 			if res:
@@ -403,6 +406,7 @@ class GamePlayer:
 	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
 	var potion: int = 0  # Equipped potion item ID (0 = no potion)
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
+	var elixir_ingredients: Array[int] = []  # Ingredients for equipped elixir
 	var bag_slots: Array[Item] = []
 	var perks: Array[Perk] = []
 	var talents: Array[Talent] = []
@@ -551,19 +555,13 @@ class GamePlayer:
 			if perk.effect2_id > 0 and perk.effect2_id <= 20:
 				total_effects[perk.effect2_id] += perk.factor2
 		
-		# 5. Add elixir effects (decode ID and sum ingredient effects) (if property exists in subclass)
-		if "elixir" in self and self.elixir > 0 and GameInfo and GameInfo.items_db:
-			var id_str = str(self.elixir)
-			if id_str.length() >= 13:  # Format: 1000XXXYYYZZZZ
-				var ingredient1_id = int(id_str.substr(4, 3))
-				var ingredient2_id = int(id_str.substr(7, 3))
-				var ingredient3_id = int(id_str.substr(10, 3))
-				
-				for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
-					if ingredient_id > 0:
-						var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
-						if ingredient and ingredient.effect_id > 0 and ingredient.effect_id <= 20:
-							total_effects[ingredient.effect_id] += ingredient.effect_factor
+		# 5. Add elixir effects from elixir_ingredients (if property exists in subclass)
+		if "elixir_ingredients" in self and self.elixir_ingredients.size() > 0 and GameInfo and GameInfo.items_db:
+			for ingredient_id in self.elixir_ingredients:
+				if ingredient_id > 0:
+					var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
+					if ingredient and ingredient.effect_id > 0 and ingredient.effect_id <= 20:
+						total_effects[ingredient.effect_id] += ingredient.effect_factor
 		
 		# 6. Add talents effects (from runtime registry populated by Talent.gd nodes)
 		for talent in talents:

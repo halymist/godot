@@ -47,11 +47,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 			else:
 				price_container.visible = false
 		
-		# Check if this is an elixir (ID > 1000)
-		var is_elixir = item_data.id > 1000
+		var is_elixir = item_data.id == 1000 and item_data.ingredients.size() > 0
 		
 		if is_elixir:
-			# Hide all stat containers for elixirs
 			strength_container.visible = false
 			stamina_container.visible = false
 			agility_container.visible = false
@@ -60,16 +58,8 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 			if damage_container:
 				damage_container.visible = false
 			
-			# Decode ingredient IDs from elixir ID using string manipulation
-			# Format: 1000000000000 + ingredientID1(3 digits) + ingredientID2(3 digits) + ingredientID3(3 digits)
-			var id_str = str(item_data.id)
-			var ingredient1_id = int(id_str.substr(4, 3))  # Characters 4-6 (positions 4,5,6)
-			var ingredient2_id = int(id_str.substr(7, 3))  # Characters 7-9 (positions 7,8,9)
-			var ingredient3_id = int(id_str.substr(10, 3)) # Characters 10-12 (positions 10,11,12)
-			
-			# Build effect map to combine duplicate effects
-			var effect_map = {}  # Map effect_id to total factor
-			for ingredient_id in [ingredient1_id, ingredient2_id, ingredient3_id]:
+			var effect_map = {}
+			for ingredient_id in item_data.ingredients:
 				if ingredient_id > 0:
 					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
 					if ingredient_resource != null and ingredient_resource.effect_id > 0:
