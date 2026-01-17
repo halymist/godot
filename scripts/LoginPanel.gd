@@ -14,6 +14,7 @@ extends Control
 @export var apple_button: TextureButton
 @export var discord_button: TextureButton
 @export var facebook_button: TextureButton
+@export var method_indicator: Panel
 
 # Login sections
 @export var email_login_section: Control
@@ -54,6 +55,7 @@ extends Control
 
 var current_method: String = "email"
 var is_register_mode: bool = false
+var indicator_tween: Tween
 
 func _ready():
 	# Check if we already have login data (auto-login)
@@ -153,36 +155,45 @@ func _on_method_selected(method: String):
 	current_method = method
 	_update_ui_for_mode()
 	
-	# Update indicator visibility
-	if email_button:
-		var email_indicator = email_button.get_node_or_null("Indicator")
-		if email_indicator:
-			email_indicator.visible = (method == "email")
+	# Animate indicator to the selected button
+	_animate_indicator_to_button(method)
+
+func _animate_indicator_to_button(method: String):
+	"""Animate the indicator to the selected button position"""
+	if not method_indicator:
+		return
 	
-	if google_button:
-		var google_indicator = google_button.get_node_or_null("Indicator")
-		if google_indicator:
-			google_indicator.visible = (method == "google")
+	var target_button: TextureButton = null
+	match method:
+		"email":
+			target_button = email_button
+		"google":
+			target_button = google_button
+		"google_play":
+			target_button = google_play_button
+		"apple":
+			target_button = apple_button
+		"discord":
+			target_button = discord_button
+		"facebook":
+			target_button = facebook_button
 	
-	if google_play_button:
-		var gp_indicator = google_play_button.get_node_or_null("Indicator")
-		if gp_indicator:
-			gp_indicator.visible = (method == "google_play")
+	if not target_button:
+		return
 	
-	if apple_button:
-		var apple_indicator = apple_button.get_node_or_null("Indicator")
-		if apple_indicator:
-			apple_indicator.visible = (method == "apple")
+	# Calculate target x position (center below button), keep y position fixed
+	var button_center_x = target_button.position.x + target_button.size.x / 2
+	var target_x = button_center_x - method_indicator.size.x / 2
 	
-	if discord_button:
-		var discord_indicator = discord_button.get_node_or_null("Indicator")
-		if discord_indicator:
-			discord_indicator.visible = (method == "discord")
+	# Kill existing tween if any
+	if indicator_tween:
+		indicator_tween.kill()
 	
-	if facebook_button:
-		var fb_indicator = facebook_button.get_node_or_null("Indicator")
-		if fb_indicator:
-			fb_indicator.visible = (method == "facebook")
+	# Create new tween animation (only animate x position)
+	indicator_tween = create_tween()
+	indicator_tween.set_ease(Tween.EASE_OUT)
+	indicator_tween.set_trans(Tween.TRANS_CUBIC)
+	indicator_tween.tween_property(method_indicator, "position:x", target_x, 0.3)
 
 func _on_email_toggled(toggled_on: bool):
 	if toggled_on:
