@@ -18,57 +18,66 @@ const BAG_MAX = 14
 @export var ingredient_slot2: Control
 @export var ingredient_slot3: Control
 
-var utility_background: UtilityBackground  # Found from loaded utility scene
+var utility_background: UtilityBackground
+var original_bag_slots: Dictionary = {}  # Maps alchemist slot (17-19) -> original bag slot (10-14)
 
 func _ready():
-	# Don't load location content yet - wait for character selection
-	# Connect brew button
-	if brew_button:
-		brew_button.pressed.connect(_on_brew_button_pressed)
-	
+	brew_button.pressed.connect(_on_brew_button_pressed)
 	visibility_changed.connect(_on_visibility_changed)
 	
-	# Initialize if character is already selected
-	if GameInfo.current_player:
-		_load_location_content()
-		update_brew_button_state()
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	_load_location_content()
+	update_brew_button_state()
 
 func on_slot_changed(slot_id: int):
-	"""Called by UIManager when a utility slot changes"""
 	if slot_id >= SLOT_1 and slot_id <= SLOT_3:
+		# Track original bag slot where item came from
+		var item_in_slot = null
+		for item in GameInfo.current_player.bag_slots:
+			if item.bag_slot_id == slot_id:
+				item_in_slot = item
+				break
+		
+		if item_in_slot:
+			# Find first empty bag slot - that's where it came from
+			for check_slot in range(BAG_MIN, BAG_MAX + 1):
+				var slot_occupied = false
+				for check_item in GameInfo.current_player.bag_slots:
+					if check_item.bag_slot_id == check_slot and check_item != item_in_slot:
+						slot_occupied = true
+						break
+				
+				if not slot_occupied:
+					original_bag_slots[slot_id] = check_slot
+					break
+		
 		update_result_preview()
 		update_brew_button_state()
-		# Show item placed greeting when ingredient is added
-		if utility_background:
-			utility_background.show_item_placed_greeting()
+		utility_background.show_item_placed_greeting()
 
 func _on_visibility_changed():
-	# When panel is hidden, return items from ingredient slots to bag
 	if not visible:
 		return_ingredients_to_bag()
+		original_bag_slots.clear()
 	else:
 		update_result_preview()
-		# Show entered greeting when panel becomes visible
-		if utility_background:
-			utility_background.show_entered_greeting()
+		utility_background.show_entered_greeting()
 
 func _load_location_content():
-	if not GameInfo.current_player:
-		return
-		
 	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
 	
-	# Clear existing children from container
-	if utility_background_container:
-		for child in utility_background_container.get_children():
-			child.queue_free()
+	for child in utility_background_container.get_children():
+		child.queue_free()
 	
-	# Instantiate and add the utility scene
 	if location_data.alchemist_utility_scene:
 		var utility_instance = location_data.alchemist_utility_scene.instantiate()
 		utility_background_container.add_child(utility_instance)
 		
-		# Set to full rect (anchors 0,0 to 1,1 with zero offsets)
 		if utility_instance is Control:
 			utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
 			utility_instance.offset_left = 0
@@ -76,18 +85,12 @@ func _load_location_content():
 			utility_instance.offset_right = 0
 			utility_instance.offset_bottom = 0
 		
-		# Get reference to the utility background script
-		if utility_instance is UtilityBackground:
-			utility_background = utility_instance
-		else:
-			utility_background = null
+		utility_background = utility_instance if utility_instance is UtilityBackground else null
 
 func return_ingredients_to_bag():
-	# Return items from ingredient slots to bag
 	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
 		for item in GameInfo.current_player.bag_slots:
 			if item.bag_slot_id == slot_id:
-				# Find first available bag slot
 				for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
 					var slot_occupied = false
 					for check_item in GameInfo.current_player.bag_slots:
@@ -96,20 +99,15 @@ func return_ingredients_to_bag():
 							break
 					
 					if not slot_occupied:
-						# Move item back to this bag slot
 						item.bag_slot_id = bag_slot_id
 						break
 				break
 	
-	# Clear the visual slots
 	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
-	
 	for container in slot_containers:
-		if container and container.has_method("clear_slot"):
-			container.clear_slot()
+		container.clear_slot()
 	
-	if UIManager.instance:
-		UIManager.instance.refresh_bags()
+	UIManager.instance.refresh_bags()
 
 func get_ingredient_in_slot(slot_id: int) -> GameInfo.Item:
 	for item in GameInfo.current_player.bag_slots:
@@ -166,65 +164,59 @@ func update_brew_button_state():
 	brew_button.disabled = not (has_ingredients and has_silver)
 
 func _on_brew_button_pressed():
-	# Check gold
 	if GameInfo.current_player.silver < BREW_COST:
 		return
 	
-	# Collect ingredient IDs from the slots
-	var ingredient_ids = [0, 0, 0]
-	var slot_index = 0
+	var items_to_brew = []
+	var original_slots = []
 	
 	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
 		var item = get_ingredient_in_slot(slot_id)
 		if item:
-			ingredient_ids[slot_index] = item.id
-		slot_index += 1
+			items_to_brew.append(item)
+			original_slots.append(original_bag_slots.get(slot_id, -1))
 	
-	# Check if we have at least one ingredient
-	if ingredient_ids[0] == 0 and ingredient_ids[1] == 0 and ingredient_ids[2] == 0:
+	if items_to_brew.is_empty():
 		return
 	
-	print("Brewing elixir with ingredients: ", ingredient_ids)
+	# Send WebSocket with original bag slot IDs (10-14)
+	if original_slots.size() == 1:
+		Websocket.brew_elixir(original_slots[0])
+	elif original_slots.size() == 2:
+		Websocket.brew_elixir(original_slots[0], original_slots[1])
+	else:
+		Websocket.brew_elixir(original_slots[0], original_slots[1], original_slots[2])
 	
-	# Deduct silver
+	# Client-side simulation
 	UIManager.instance.update_silver(-BREW_COST)
+	
+	var ingredient_ids = []
+	for item in items_to_brew:
+		ingredient_ids.append(item.id)
 	
 	var new_elixir = GameInfo.Item.new({
 		"id": 1000,
 		"bag_slot_id": find_empty_bag_slot(),
 		"ingredients": ingredient_ids
 	})
-	
-	# Add to player's bag
 	GameInfo.current_player.bag_slots.append(new_elixir)
 	
-	# Remove ingredients from slots (they get consumed)
-	var items_to_remove = []
-	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
-		var item = get_ingredient_in_slot(slot_id)
-		if item:
-			items_to_remove.append(item)
-	
-	for item in items_to_remove:
+	for item in items_to_brew:
 		GameInfo.current_player.bag_slots.erase(item)
 	
-	# Clear the visual slots
+	# Clear tracking
+	original_bag_slots.clear()
+	
 	clear_ingredient_slots()
-	
-	# Show action greeting after brewing
-	if utility_background:
-		utility_background.show_action_greeting()
-	
-	if UIManager.instance:
-		UIManager.instance.refresh_bags()
+	utility_background.show_action_greeting()
+	UIManager.instance.refresh_bags()
+	utility_background.show_action_greeting()
+	UIManager.instance.refresh_bags()
 
 func clear_ingredient_slots():
-	# Clear all three ingredient slot visuals
 	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
-	
 	for container in slot_containers:
-		if container and container.has_method("clear_slot"):
-			container.clear_slot()
+		container.clear_slot()
 
 func find_empty_bag_slot() -> int:
 	# Find first empty slot in bag

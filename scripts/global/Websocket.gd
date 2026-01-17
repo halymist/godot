@@ -155,13 +155,11 @@ var mock_characters = [
 		},
 		{
 			"id": 500,
-			"bag_slot_id": 12,
-			"day": 2
+			"bag_slot_id": 12
 		},
 		{
-			"id": 1000,
-			"bag_slot_id": 13,
-			"ingredients": [500, null, null]
+			"id": 500,
+			"bag_slot_id": 13
 		}
 	],
 	"perks": [
