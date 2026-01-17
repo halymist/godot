@@ -10,6 +10,8 @@ extends Control
 @export var apple_button: TextureButton
 @export var discord_button: TextureButton
 @export var facebook_button: TextureButton
+@export var add_method_button: Button
+@export var add_method_panel: Control
 @export var social_discord_button: TextureButton
 @export var social_instagram_button: TextureButton
 @export var social_twitter_button: TextureButton
@@ -50,6 +52,7 @@ func _ready():
 	add_character_list()
 	setup_character_creation()
 	start_new_server_countdown()
+	setup_login_methods()
 	
 	# Connect buttons
 	create_new_button.pressed.connect(_on_create_new_character)
@@ -60,6 +63,33 @@ func _ready():
 	apple_button.pressed.connect(_show_login_with_method.bind("apple"))
 	discord_button.pressed.connect(_show_login_with_method.bind("discord"))
 	facebook_button.pressed.connect(_show_login_with_method.bind("facebook"))
+	add_method_button.pressed.connect(_on_add_method_pressed)
+	
+	# Close add method panel on overlay click
+	if add_method_panel:
+		add_method_panel.gui_input.connect(_on_add_panel_overlay_click)
+		
+		# Connect option buttons
+		var methods_grid = add_method_panel.get_node_or_null("Content/MethodsGrid")
+		if methods_grid:
+			var email_opt = methods_grid.get_node_or_null("EmailOptionButton")
+			if email_opt:
+				email_opt.pressed.connect(_on_add_method_option.bind("email"))
+			var google_opt = methods_grid.get_node_or_null("GoogleOptionButton")
+			if google_opt:
+				google_opt.pressed.connect(_on_add_method_option.bind("google"))
+			var google_play_opt = methods_grid.get_node_or_null("GooglePlayOptionButton")
+			if google_play_opt:
+				google_play_opt.pressed.connect(_on_add_method_option.bind("google_play"))
+			var apple_opt = methods_grid.get_node_or_null("AppleOptionButton")
+			if apple_opt:
+				apple_opt.pressed.connect(_on_add_method_option.bind("apple"))
+			var discord_opt = methods_grid.get_node_or_null("DiscordOptionButton")
+			if discord_opt:
+				discord_opt.pressed.connect(_on_add_method_option.bind("discord"))
+			var facebook_opt = methods_grid.get_node_or_null("FacebookOptionButton")
+			if facebook_opt:
+				facebook_opt.pressed.connect(_on_add_method_option.bind("facebook"))
 	
 	# Connect social media buttons
 	social_discord_button.pressed.connect(_on_social_pressed.bind("discord"))
@@ -272,3 +302,88 @@ func _on_social_pressed(platform: String):
 	"""Open social media link"""
 	if platform in SOCIAL_URLS:
 		OS.shell_open(SOCIAL_URLS[platform])
+
+func setup_login_methods():
+	"""Show only connected login methods"""
+	var connected_methods = GameInfo.lobby_data.get("connected_methods", [])
+	
+	# Map method names to buttons
+	var method_buttons = {
+		"mail": email_button,
+		"email": email_button,
+		"google": google_button,
+		"google_play": google_play_button,
+		"apple": apple_button,
+		"discord": discord_button,
+		"facebook": facebook_button
+	}
+	
+	# Hide all method buttons first
+	for button in method_buttons.values():
+		if button:
+			button.visible = false
+	
+	# Show only connected methods
+	for method in connected_methods:
+		if method in method_buttons and method_buttons[method]:
+			method_buttons[method].visible = true
+
+func _on_add_method_pressed():
+	"""Show panel to add new login method (only unconnected ones)"""
+	if not add_method_panel:
+		return
+	
+	var connected_methods = GameInfo.lobby_data.get("connected_methods", [])
+	var methods_grid = add_method_panel.get_node_or_null("Content/MethodsGrid")
+	
+	if not methods_grid:
+		print("Error: MethodsGrid not found")
+		return
+	
+	# Map method names to option buttons
+	var method_buttons = {
+		"email": "EmailOptionButton",
+		"mail": "EmailOptionButton",
+		"google": "GoogleOptionButton",
+		"google_play": "GooglePlayOptionButton",
+		"apple": "AppleOptionButton",
+		"discord": "DiscordOptionButton",
+		"facebook": "FacebookOptionButton"
+	}
+	
+	# Hide all option buttons first
+	for button_name in method_buttons.values():
+		var button = methods_grid.get_node_or_null(button_name)
+		if button:
+			button.visible = false
+	
+	# Show only methods that are NOT connected
+	var all_methods = ["email", "google", "google_play", "apple", "discord", "facebook"]
+	for method in all_methods:
+		if method not in connected_methods and method != "mail":
+			var button_name = method_buttons.get(method, "")
+			if button_name:
+				var button = methods_grid.get_node_or_null(button_name)
+				if button:
+					button.visible = true
+	
+	# Handle "mail" mapping to "email"
+	if "mail" in connected_methods:
+		var email_btn = methods_grid.get_node_or_null("EmailOptionButton")
+		if email_btn:
+			email_btn.visible = false
+	
+	add_method_panel.visible = true
+
+func _on_add_panel_overlay_click(event: InputEvent):
+	"""Close add method panel when clicking overlay"""
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if add_method_panel:
+			add_method_panel.visible = false
+
+func _on_add_method_option(method: String):
+	"""Handle adding a new login method (placeholder)"""
+	print("Add login method: ", method)
+	if add_method_panel:
+		add_method_panel.visible = false
+	# TODO: Implement actual method linking

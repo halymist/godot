@@ -885,7 +885,7 @@ theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 18
 text = "OK"
 
-[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "social_discord_button", "social_instagram_button", "social_twitter_button", "social_facebook_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
+[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "add_method_button", "add_method_panel", "social_discord_button", "social_instagram_button", "social_twitter_button", "social_facebook_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -903,6 +903,8 @@ google_play_button = NodePath("LoginMethods/GooglePlayButton")
 apple_button = NodePath("LoginMethods/AppleButton")
 discord_button = NodePath("LoginMethods/DiscordButton")
 facebook_button = NodePath("LoginMethods/FacebookButton")
+add_method_button = NodePath("LoginMethods/AddMethodButton")
+add_method_panel = NodePath("AddMethodPanel")
 social_discord_button = NodePath("SocialLinks/DiscordButton")
 social_instagram_button = NodePath("SocialLinks/InstagramButton")
 social_twitter_button = NodePath("SocialLinks/TwitterButton")
@@ -1035,6 +1037,11 @@ texture_normal = ExtResource("12_yly4b")
 ignore_texture_size = true
 stretch_mode = 0
 
+[node name="AddMethodButton" type="Button" parent="ContentContainer/Lobby/LoginMethods"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "+"
+
 [node name="SocialLinks" type="HBoxContainer" parent="ContentContainer/Lobby"]
 layout_mode = 1
 anchors_preset = 5
@@ -1114,6 +1121,82 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 text = "Create New Character"
+
+[node name="AddMethodPanel" type="ColorRect" parent="ContentContainer/Lobby"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.124
+anchor_right = 1.01
+anchor_bottom = 1.0
+offset_top = 0.200005
+offset_right = -0.0499878
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.752941)
+
+[node name="Content" type="MarginContainer" parent="ContentContainer/Lobby/AddMethodPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -141.5
+offset_top = 28.5
+offset_right = 144.5
+offset_bottom = 175.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MethodsGrid" type="GridContainer" parent="ContentContainer/Lobby/AddMethodPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 4
+
+[node name="EmailOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("3_0apk8")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="GoogleOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("10_f13kh")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="GooglePlayOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("4_omeci")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="AppleOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("7_hcdb4")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="DiscordOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("11_hcdb4")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="FacebookOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture_normal = ExtResource("12_yly4b")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "faction_desc_label", "vip_desc_label")]
 visible = false
