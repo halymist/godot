@@ -4,9 +4,13 @@ extends Control
 @export var is_bag: bool = false
 
 func _ready():
-	# Initialize if character is already selected
-	if GameInfo.current_player:
-		update_equip_slots()
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	update_equip_slots()
 
 
 func update_equip_slots():

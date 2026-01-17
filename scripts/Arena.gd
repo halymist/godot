@@ -22,14 +22,18 @@ func _ready():
 	# Build cards array from exports
 	cards = [arena_opponent1, arena_opponent2, arena_opponent3]
 	
-	_load_arena_background()
-	
 	prev_button.pressed.connect(_on_prev_pressed)
 	next_button.pressed.connect(_on_next_pressed)
 	fight_button.pressed.connect(_on_fight_pressed)
 	visibility_changed.connect(_on_visibility_changed)
 	
-	# Show first card
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	_load_arena_background()
 	_update_display()
 
 func _on_visibility_changed():

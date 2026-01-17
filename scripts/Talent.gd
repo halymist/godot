@@ -23,9 +23,15 @@ func _ready():
 	# Register this talent's metadata globally
 	GameInfo.register_talent(talentID, effect_id, factor, maxPoints, perk_slot)
 	
-	# Initialize with current player if available
+	# Connect button
 	button.pressed.connect(_on_button_pressed)
 	
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
 	if GameInfo.current_player != null:
 		update_from_character(GameInfo.current_player, false)
 	
