@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dtfwauux0ahsv"]
+[gd_scene load_steps=20 format=3 uid="uid://dtfwauux0ahsv"]
 
 [ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="1_lobby"]
 [ext_resource type="Script" uid="uid://boa2f7b48n2ck" path="res://scripts/LoginPanel.gd" id="2_login"]
@@ -12,6 +12,27 @@
 [ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="9_a5vrk"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="10_0apk8"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="11_omeci"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hover"]
+bg_color = Color(0.25, 0.25, 0.25, 0.8)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_pressed"]
+bg_color = Color(0.8, 0.6, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
+bg_color = Color(0.15, 0.15, 0.15, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_vnpwx"]
 
@@ -690,8 +711,14 @@ next_button = NodePath("ButtonsContainer/NextButton")
 back_button = NodePath("ButtonsContainer/BackButton")
 faction_desc_label = NodePath("FactionDesc")
 vip_desc_label = NodePath("VIPDesc")
-vip_description = "No timers, can finnish quests from up to three days ago
-Free cosmetics, can share combat logs in chat"
+patron_description = "• No timers
+• Free premium cosmetics
+• Can share combat links in chat
+• No patron character limit per server
+• Can finnish quests from up to 3 days ago"
+commoner_description = "• Standard account
+• No actual disadvantage
+• Only one character per server"
 
 [node name="TitleLabel" type="Label" parent="ContentContainer/CharacterInfo"]
 layout_mode = 1
@@ -744,9 +771,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -199.5
-offset_top = 170.0
+offset_top = 176.0
 offset_right = 200.5
-offset_bottom = 247.0
+offset_bottom = 255.0
 grow_horizontal = 2
 
 [node name="FactionLabel" type="Label" parent="ContentContainer/CharacterInfo/FactionSection"]
@@ -761,6 +788,12 @@ alignment = 1
 [node name="OrderButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_vnpwx")
@@ -769,6 +802,12 @@ text = "Order"
 [node name="GuildButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Guild"
@@ -776,6 +815,12 @@ text = "Guild"
 [node name="CompanionsButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Companions"
@@ -787,12 +832,11 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -189.5
-offset_top = 256.0
+offset_top = 266.0
 offset_right = 185.5
-offset_bottom = 370.0
+offset_bottom = 412.0
 grow_horizontal = 2
 horizontal_alignment = 1
-vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Separator2" type="HSeparator" parent="ContentContainer/CharacterInfo"]
@@ -800,10 +844,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -200.0
-offset_top = 380.0
-offset_right = 200.0
-offset_bottom = 390.0
+offset_left = -199.5
+offset_top = 400.0
+offset_right = 200.5
+offset_bottom = 418.0
 grow_horizontal = 2
 
 [node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
@@ -812,14 +856,14 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -188.5
-offset_top = 355.0
+offset_top = 440.0
 offset_right = 189.5
-offset_bottom = 533.0
+offset_bottom = 521.0
 grow_horizontal = 2
 
 [node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
 layout_mode = 2
-text = "VIP Status:"
+text = "Patron Status:"
 horizontal_alignment = 1
 
 [node name="VIPButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VIPSection"]
@@ -829,17 +873,29 @@ alignment = 1
 [node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_f13kh")
-text = "No"
+text = "Commoner"
 
 [node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_f13kh")
-text = "Yes"
+text = "Patron"
 
 [node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo"]
 custom_minimum_size = Vector2(20, 0)
@@ -848,12 +904,11 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -183.5
-offset_top = 484.0
+offset_top = 541.0
 offset_right = 177.5
-offset_bottom = 600.0
+offset_bottom = 687.0
 grow_horizontal = 2
 horizontal_alignment = 1
-vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/CharacterInfo"]

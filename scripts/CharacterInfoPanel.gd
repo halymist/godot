@@ -20,9 +20,9 @@ extends Control
 @export_multiline var guild_description: String = "The Guild prizes wealth and trade. Masters of commerce."
 @export_multiline var companions_description: String = "The Companions seek freedom and adventure. Warriors of the wild."
 
-@export_group("VIP Description")
-@export_multiline var vip_description: String = "VIP status grants exclusive perks and benefits."
-@export_multiline var no_vip_description: String = "Standard account with core features."
+@export_group("Patron Description")
+@export_multiline var patron_description: String = "• Exclusive perks and benefits\n• Priority support\n• Special rewards"
+@export_multiline var commoner_description: String = "• Standard account\n• Core features available\n• Free to play"
 
 # Store character creation data
 var character_name: String = ""
@@ -39,11 +39,6 @@ func _ready():
 	guild_button.pressed.connect(_on_faction_selected.bind(2))
 	companions_button.pressed.connect(_on_faction_selected.bind(3))
 	
-	# Prevent deselection of faction buttons
-	order_button.toggled.connect(_on_faction_toggled.bind(1, order_button))
-	guild_button.toggled.connect(_on_faction_toggled.bind(2, guild_button))
-	companions_button.toggled.connect(_on_faction_toggled.bind(3, companions_button))
-	
 	vip_yes_button.pressed.connect(_on_vip_selected.bind(true))
 	vip_no_button.pressed.connect(_on_vip_selected.bind(false))
 	
@@ -53,12 +48,6 @@ func _on_faction_selected(faction_id: int):
 	faction = faction_id
 	print("Faction selected: ", faction_id)
 	_update_descriptions()
-
-func _on_faction_toggled(toggled_on: bool, _faction_id: int, button: Button):
-	"""Prevent deselection of faction buttons"""
-	if not toggled_on:
-		# Force the button back to pressed state
-		button.set_pressed_no_signal(true)
 
 func _on_vip_selected(vip: bool):
 	is_vip = vip
@@ -78,12 +67,12 @@ func _update_descriptions():
 			_:
 				faction_desc_label.text = ""
 	
-	# Update VIP description
+	# Update Patron description
 	if vip_desc_label:
 		if is_vip:
-			vip_desc_label.text = vip_description
+			vip_desc_label.text = patron_description
 		else:
-			vip_desc_label.text = no_vip_description
+			vip_desc_label.text = commoner_description
 
 func _on_next_pressed():
 	character_name = name_input.text.strip_edges()
