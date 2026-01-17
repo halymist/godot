@@ -40,6 +40,10 @@ corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hcdb4"]
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_vnpwx"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_f13kh"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
 border_width_left = 2
@@ -51,10 +55,6 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_vnpwx"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_f13kh"]
 
 [node name="Login" type="Panel"]
 anchors_preset = 15
@@ -78,10 +78,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -25.0
-offset_right = 100.0
-offset_bottom = 25.0
+offset_left = -99.5
+offset_top = -19.0
+offset_right = 100.5
+offset_bottom = 55.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 48
@@ -98,7 +98,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "facebook_button", "google_button", "steam_button", "email_login_section", "facebook_login_section", "google_login_section", "steam_login_section", "email_register_section", "email_login_button", "facebook_login_button", "google_login_button", "steam_login_button", "email_register_button", "password_input", "password_toggle", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button")]
+[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "facebook_button", "google_button", "steam_button", "email_login_section", "facebook_login_section", "google_login_section", "steam_login_section", "email_register_section", "email_login_button", "facebook_login_button", "google_login_button", "steam_login_button", "email_register_button", "password_input", "password_toggle", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -126,9 +126,13 @@ password_input = NodePath("EmailLoginSection/PasswordInput")
 password_toggle = NodePath("EmailLoginSection/PasswordToggle")
 forgot_password_panel = NodePath("ForgotPasswordPanel")
 forgot_password_button = NodePath("EmailLoginSection/ForgotPassword")
-forgot_email_input = NodePath("ForgotPasswordPanel/Panel/EmailInput")
-forgot_submit_button = NodePath("ForgotPasswordPanel/Panel/OkButton")
-forgot_cancel_button = NodePath("ForgotPasswordPanel/Panel/CancelButton")
+forgot_email_input = NodePath("ForgotPasswordPanel/InputPanel/EmailInput")
+forgot_submit_button = NodePath("ForgotPasswordPanel/InputPanel/OkButton")
+forgot_cancel_button = NodePath("ForgotPasswordPanel/InputPanel/CancelButton")
+forgot_input_panel = NodePath("ForgotPasswordPanel/InputPanel")
+forgot_confirmation_panel = NodePath("ForgotPasswordPanel/ConfirmationPanel")
+forgot_confirmation_email = NodePath("ForgotPasswordPanel/ConfirmationPanel/ConfirmationText")
+forgot_confirmation_ok = NodePath("ForgotPasswordPanel/ConfirmationPanel/OkButton")
 
 [node name="ModeToggle" type="HBoxContainer" parent="ContentContainer/Login"]
 layout_mode = 1
@@ -171,11 +175,15 @@ button_group = SubResource("ButtonGroup_login_mode")
 text = "REGISTER"
 
 [node name="MethodButtons" type="HBoxContainer" parent="ContentContainer/Login"]
-layout_mode = 2
-offset_left = 54.5
-offset_top = 232.0
-offset_right = 350.5
-offset_bottom = 298.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -147.5
+offset_top = 226.0
+offset_right = 148.5
+offset_bottom = 299.0
+grow_horizontal = 2
 alignment = 1
 
 [node name="EmailButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
@@ -680,7 +688,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="Panel" type="Panel" parent="ContentContainer/Login/ForgotPasswordPanel"]
+[node name="InputPanel" type="Panel" parent="ContentContainer/Login/ForgotPasswordPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -693,9 +701,8 @@ offset_right = 190.5
 offset_bottom = 274.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="Title" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/Panel"]
+[node name="Title" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
 layout_mode = 2
 offset_left = 20.0
 offset_top = 4.0
@@ -707,18 +714,18 @@ text = "WILDS ACCOUNT FORGOTTEN PASSWORD"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Description" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/Panel"]
+[node name="Description" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
 layout_mode = 2
 offset_left = 20.0
 offset_top = 89.0
 offset_right = 362.0
 offset_bottom = 170.0
 theme_override_font_sizes/font_size = 14
-text = "To have a new password sent to you for your WILDS Account, please enter the email address that was registered"
+text = "To have a new password sent to you for your WILDS Account, please enter the email address you registered with."
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="EmailInput" type="LineEdit" parent="ContentContainer/Login/ForgotPasswordPanel/Panel"]
+[node name="EmailInput" type="LineEdit" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 offset_left = 15.0
@@ -730,7 +737,7 @@ theme_override_font_sizes/font_size = 16
 placeholder_text = "Email address"
 alignment = 1
 
-[node name="ButtonContainer" type="HBoxContainer" parent="ContentContainer/Login/ForgotPasswordPanel/Panel"]
+[node name="ButtonContainer" type="HBoxContainer" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
 layout_mode = 2
 offset_left = 20.0
 offset_top = 206.0
@@ -738,7 +745,7 @@ offset_right = 362.0
 offset_bottom = 206.0
 alignment = 1
 
-[node name="OkButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/Panel"]
+[node name="OkButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
 custom_minimum_size = Vector2(140, 45)
 layout_mode = 2
 offset_left = 207.0
@@ -751,7 +758,7 @@ theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 18
 text = "OK"
 
-[node name="CancelButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/Panel"]
+[node name="CancelButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
 custom_minimum_size = Vector2(140, 45)
 layout_mode = 2
 offset_left = 47.0
@@ -763,6 +770,48 @@ theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
 theme_override_font_sizes/font_size = 18
 text = "CANCEL"
+
+[node name="ConfirmationPanel" type="Panel" parent="ContentContainer/Login/ForgotPasswordPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.5
+offset_top = -21.0
+offset_right = 193.5
+offset_bottom = 273.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConfirmationText" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/ConfirmationPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 370.0
+offset_bottom = 278.0
+theme_override_font_sizes/font_size = 14
+text = "We have sent a new password to your@email.com.
+
+Please check your email inbox as well as your spam inbox.
+
+The new password will be activated as soon as you log in with it for the first time. When you log in, your current password will become invalid and you will be logged out on all other devices."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="OkButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/ConfirmationPanel"]
+custom_minimum_size = Vector2(140, 45)
+layout_mode = 2
+offset_left = 126.0
+offset_top = 234.0
+offset_right = 266.0
+offset_bottom = 279.0
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 18
+text = "OK"
 
 [node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "discord_button", "instagram_button", "twitter_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 visible = false

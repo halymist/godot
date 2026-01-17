@@ -41,6 +41,10 @@ extends Control
 @export var forgot_email_input: LineEdit
 @export var forgot_submit_button: Button
 @export var forgot_cancel_button: Button
+@export var forgot_input_panel: Control
+@export var forgot_confirmation_panel: Control
+@export var forgot_confirmation_email: Label
+@export var forgot_confirmation_ok: Button
 
 var current_method: String = "email"
 var is_register_mode: bool = false
@@ -84,6 +88,13 @@ func _ready():
 	
 	if forgot_cancel_button:
 		forgot_cancel_button.pressed.connect(_on_forgot_cancel)
+	
+	if forgot_confirmation_ok:
+		forgot_confirmation_ok.pressed.connect(_on_forgot_cancel)
+	
+	# Connect overlay click to close
+	if forgot_password_panel:
+		forgot_password_panel.gui_input.connect(_on_overlay_click)
 	
 	# Start with login mode and email selected
 	_on_mode_toggle(false)
@@ -195,6 +206,10 @@ func _on_forgot_password_clicked():
 	"""Show the forgot password panel"""
 	if forgot_password_panel:
 		forgot_password_panel.visible = true
+		if forgot_input_panel:
+			forgot_input_panel.visible = true
+		if forgot_confirmation_panel:
+			forgot_confirmation_panel.visible = false
 		if forgot_email_input:
 			forgot_email_input.text = ""
 			forgot_email_input.grab_focus()
@@ -202,13 +217,36 @@ func _on_forgot_password_clicked():
 func _on_forgot_submit():
 	"""Submit forgot password request"""
 	if forgot_email_input and forgot_email_input.text != "":
-		Http.reset_password(forgot_email_input.text)
-		print("Password reset email sent to: ", forgot_email_input.text)
-		# Hide the panel
-		if forgot_password_panel:
-			forgot_password_panel.visible = false
+		var email = forgot_email_input.text
+		Http.reset_password(email)
+		print("Password reset email sent to: ", email)
+		
+		# Show confirmation panel
+		if forgot_input_panel:
+			forgot_input_panel.visible = false
+		if forgot_confirmation_panel:
+			forgot_confirmation_panel.visible = true
+			# Update the email in confirmation text
+			if forgot_confirmation_email:
+				var text = "We have sent a new password to " + email + ".\n\n"
+				text += "Please check your email inbox as well as your spam inbox.\n\n"
+				text += "The new password will be activated as soon as you log in with it for the first time. "
+				text += "When you log in, your current password will become invalid and you will be logged out on all other devices."
+				forgot_confirmation_email.text = text
 
 func _on_forgot_cancel():
 	"""Cancel forgot password and close panel"""
 	if forgot_password_panel:
 		forgot_password_panel.visible = false
+		if forgot_input_panel:
+			forgot_input_panel.visible = true
+		if forgot_confirmation_panel:
+			forgot_confirmation_panel.visible = false
+
+func _on_overlay_click(event: InputEvent):
+	"""Close forgot password panel when clicking on overlay"""
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			# Only close if clicking on the overlay itself, not the panels
+			if forgot_password_panel and forgot_password_panel.visible:
+				_on_forgot_cancel()
