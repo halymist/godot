@@ -118,7 +118,8 @@ class Item:
 			if key == "ingredients":
 				ingredients.clear()
 				for ingredient_id in data[key]:
-					ingredients.append(ingredient_id)
+					if ingredient_id != null and ingredient_id is int:
+						ingredients.append(ingredient_id)
 			elif key in self:
 				set(key, data[key])
 		
@@ -416,7 +417,12 @@ class GamePlayer:
 		
 		# Load simple properties (excluding arrays and special cases)
 		for key in data:
-			if key in self and key not in ["avatar", "stats", "bag_slots", "perks", "talents"]:
+			if key == "elixir_ingredients":
+				elixir_ingredients.clear()
+				for ingredient_id in data[key]:
+					if ingredient_id != null and ingredient_id is int:
+						elixir_ingredients.append(ingredient_id)
+			elif key in self and key not in ["avatar", "stats", "bag_slots", "perks", "talents"]:
 				set(key, data[key])
 		
 		# Handle avatar array [face, hair, eyes, nose, mouth]

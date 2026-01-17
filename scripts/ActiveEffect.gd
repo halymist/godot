@@ -24,6 +24,7 @@ func setup(effect_data: EffectResource, tooltip_ref: Panel = null, effect_factor
 		mouse_exited.connect(_on_hover_end)
 
 func _on_hover_start():
+	print("Hover start on effect icon")
 	if effect and tooltip_panel:
 		var tooltip_label = tooltip_panel.get_node("TooltipLabel")
 		if tooltip_label:

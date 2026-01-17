@@ -41,203 +41,32 @@ func refresh_effects():
 	
 	# Get active perks from GameInfo
 	var active_perks = get_active_perks()
-	print("ActivePerksDisplay: Found ", active_perks.size(), " active perks")
 	
 	# Create icon for each active perk
 	for perk in active_perks:
-		print("ActivePerksDisplay: Creating icon for: ", perk.perk_name)
-		
 		if perk_mini_scene:
 			var perk_icon = perk_mini_scene.instantiate()
-			# Store perk data in the icon for hover functionality
-			perk_icon.set_meta("perk_data", perk)
-			
-			# Set the perk texture if available
-			var texture_rect = perk_icon.get_node("TextureRect")
-			if texture_rect and perk.texture:
-				texture_rect.texture = perk.texture
-			
-			# Enable mouse detection for hover
-			perk_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-			
-			# Connect hover signals
-			perk_icon.mouse_entered.connect(_on_perk_hover_start.bind(perk_icon))
-			perk_icon.mouse_exited.connect(_on_perk_hover_end)
-			
+			perk_icon.setup(perk.texture, {"type": "perk", "perk": perk})
 			add_child(perk_icon)
-			print("ActivePerksDisplay: Added perk icon to HBox")
-		else:
-			print("ERROR: perk_mini_scene is null!")
 
 func create_consumable_display(icon_texture: Texture2D, consumable_type: String, item_id: int):
-	"""Create a display for an equipped consumable (potion or elixir)"""
 	if perk_mini_scene:
 		var consumable_icon = perk_mini_scene.instantiate()
-		# Store consumable type and item ID for hover functionality
-		consumable_icon.set_meta("consumable_type", consumable_type)
-		consumable_icon.set_meta("item_id", item_id)
-		
-		# Set the consumable texture
-		var texture_rect = consumable_icon.get_node("TextureRect")
-		if texture_rect:
-			texture_rect.texture = icon_texture
-		
-		# Enable mouse detection for hover
-		consumable_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-		
-		# Connect hover signals for consumable
-		consumable_icon.mouse_entered.connect(_on_consumable_hover_start.bind(consumable_icon))
-		consumable_icon.mouse_exited.connect(_on_perk_hover_end)
-		
+		var type_key = consumable_type.to_lower()
+		consumable_icon.setup(icon_texture, {"type": type_key, "id": item_id})
 		add_child(consumable_icon)
-		print("ActivePerksDisplay: Added consumable icon to HBox")
 
-func create_blessing_display(perk: PerkResource, effect: EffectResource):
-	"""Create a display for an active blessing (from perks.tres)"""
+func create_blessing_display(perk: PerkResource, _effect: EffectResource):
 	if perk_mini_scene:
 		var blessing_icon = perk_mini_scene.instantiate()
-		# Store perk and effect data for hover functionality
-		blessing_icon.set_meta("blessing_perk", perk)
-		blessing_icon.set_meta("blessing_effect", effect)
-		
-		# Use the icon from the perk (not the effect)
-		var texture_rect = blessing_icon.get_node("TextureRect")
-		if texture_rect and perk.icon:
-			texture_rect.texture = perk.icon
-		
-		# Enable mouse detection for hover
-		blessing_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-		
-		# Connect hover signals for blessing
-		blessing_icon.mouse_entered.connect(_on_blessing_hover_start.bind(blessing_icon))
-		blessing_icon.mouse_exited.connect(_on_perk_hover_end)
-		
+		blessing_icon.setup(perk.icon, {"type": "blessing", "perk": perk})
 		add_child(blessing_icon)
-		print("ActivePerksDisplay: Added blessing icon to HBox")
 
 func create_effect_display(effect: EffectResource, factor: float = 0.0):
-	"""Create a display for an active effect (like blessing)"""
 	if perk_mini_scene:
 		var effect_icon = perk_mini_scene.instantiate()
-		# Store effect data and factor in the icon for hover functionality
-		effect_icon.set_meta("effect_data", effect)
-		effect_icon.set_meta("effect_factor", factor)
-		
-		# Set the effect texture if available
-		var texture_rect = effect_icon.get_node("TextureRect")
-		if texture_rect and effect.icon:
-			texture_rect.texture = effect.icon
-		
-		# Enable mouse detection for hover
-		effect_icon.mouse_filter = Control.MOUSE_FILTER_PASS
-		
-		# Connect hover signals for effect
-		effect_icon.mouse_entered.connect(_on_effect_hover_start.bind(effect_icon))
-		effect_icon.mouse_exited.connect(_on_perk_hover_end)
-		
+		effect_icon.setup(effect.icon, {"type": "effect", "effect": effect, "factor": factor})
 		add_child(effect_icon)
-		print("ActivePerksDisplay: Added effect icon to HBox")
-
-func _on_perk_hover_start(perk_icon):
-	var perk_data = perk_icon.get_meta("perk_data")
-	if perk_data:
-		# Build tooltip with perk name and effects
-		var tooltip_content = perk_data.perk_name
-		
-		# Add effect 1 if it exists
-		if perk_data.effect1_description != "":
-			var effect1_text = perk_data.effect1_description
-			if perk_data.factor1 != 0.0:
-				effect1_text += " " + str(int(perk_data.factor1)) + "%"
-			tooltip_content += "\n" + effect1_text
-		
-		# Add effect 2 if it exists
-		if perk_data.effect2_description != "":
-			var effect2_text = perk_data.effect2_description
-			if perk_data.factor2 != 0.0:
-				effect2_text += " " + str(int(perk_data.factor2)) + "%"
-			tooltip_content += "\n" + effect2_text
-		
-		TooltipManager.show_perk_tooltip(tooltip_content, perk_icon)
-
-func _on_blessing_hover_start(blessing_icon):
-	"""Show tooltip for blessings"""
-	var perk_data = blessing_icon.get_meta("blessing_perk")
-	var effect_data = blessing_icon.get_meta("blessing_effect")
-	if perk_data and effect_data:
-		# Build tooltip with perk name (not effect name) and effect description with factor
-		var tooltip_content = perk_data.perk_name
-		if effect_data.description != "":
-			tooltip_content += "\n" + effect_data.description
-			# Add factor
-			if perk_data.factor1 > 0:
-				var factor_text = str(int(perk_data.factor1)) if perk_data.factor1 == int(perk_data.factor1) else str(perk_data.factor1)
-				tooltip_content += " " + factor_text + "%"
-		
-		TooltipManager.show_perk_tooltip(tooltip_content, blessing_icon)
-
-func _on_effect_hover_start(effect_icon):
-	"""Show tooltip for active effects"""
-	var effect_data = effect_icon.get_meta("effect_data")
-	var effect_factor = effect_icon.get_meta("effect_factor", 0.0)
-	if effect_data:
-		# Build tooltip with effect name and description
-		var tooltip_content = effect_data.name
-		if effect_data.description != "":
-			tooltip_content += "\n" + effect_data.description
-			# Add factor if non-zero
-			if effect_factor > 0:
-				var factor_text = str(int(effect_factor)) if effect_factor == int(effect_factor) else str(effect_factor)
-				tooltip_content += " " + factor_text + "%"
-		
-		TooltipManager.show_perk_tooltip(tooltip_content, effect_icon)
-
-func _on_consumable_hover_start(consumable_icon):
-	"""Show tooltip for equipped consumables"""
-	var consumable_type = consumable_icon.get_meta("consumable_type")
-	var item_id = consumable_icon.get_meta("item_id")
-	if consumable_type:
-		var tooltip_content = ""
-		
-		if consumable_type == "Elixir":
-			tooltip_content = "Elixir"
-			
-			var effect_map = {}
-			for ingredient_id in GameInfo.current_player.elixir_ingredients:
-				if ingredient_id > 0:
-					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
-					if ingredient_resource and ingredient_resource.effect_id > 0:
-						if effect_map.has(ingredient_resource.effect_id):
-							effect_map[ingredient_resource.effect_id] += ingredient_resource.effect_factor
-						else:
-							effect_map[ingredient_resource.effect_id] = ingredient_resource.effect_factor
-			
-			for effect_id in effect_map.keys():
-				var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
-				if effect_data:
-					var effect_line = effect_data.description
-					if effect_map[effect_id] > 0:
-						effect_line += " " + str(effect_map[effect_id]) + "%"
-					tooltip_content += "\n" + effect_line
-			
-		elif consumable_type == "Potion":
-			# Show potion name and effect
-			var potion_item = GameInfo.items_db.get_item_by_id(item_id)
-			if potion_item:
-				tooltip_content = potion_item.item_name
-				if potion_item.effect_id > 0:
-					var effect_data = GameInfo.effects_db.get_effect_by_id(potion_item.effect_id)
-					if effect_data:
-						var effect_line = effect_data.description
-						if potion_item.effect_factor > 0:
-							effect_line += " " + str(int(potion_item.effect_factor)) + "%"
-						tooltip_content += "\n" + effect_line
-		
-		TooltipManager.show_perk_tooltip(tooltip_content, consumable_icon)
-
-func _on_perk_hover_end():
-	TooltipManager.hide_perk_tooltip()
 
 func get_active_perks() -> Array:
-	# Use the new helper method directly on the player
 	return GameInfo.current_player.get_active_perks() if GameInfo.current_player else []

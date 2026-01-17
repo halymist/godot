@@ -150,9 +150,8 @@ var mock_characters = [
 			"bag_slot_id": 10,
 		},
 		{
-			"id": 400,
-			"bag_slot_id": 11,
-			"day": 5
+			"id": 373,
+			"bag_slot_id": 11
 		},
 		{
 			"id": 500,

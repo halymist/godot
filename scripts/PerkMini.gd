@@ -43,10 +43,8 @@ func _on_hover():
 		
 		"elixir":
 			content = "Elixir"
-			var id_str = str(meta_data.id)
 			var effect_map = {}
-			for i in [4, 7, 10]:
-				var ingredient_id = int(id_str.substr(i, 3))
+			for ingredient_id in GameInfo.current_player.elixir_ingredients:
 				if ingredient_id > 0:
 					var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
 					if ingredient and ingredient.effect_id > 0:
@@ -55,5 +53,14 @@ func _on_hover():
 			for effect_id in effect_map:
 				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
 				content += "\n" + effect.description + " " + str(effect_map[effect_id]) + "%"
+		
+		"effect":
+			var effect = meta_data.effect
+			var factor = meta_data.get("factor", 0.0)
+			content = effect.name
+			if effect.description != "":
+				content += "\n" + effect.description
+				if factor > 0:
+					content += " " + str(int(factor)) + "%"
 	
 	TooltipManager.show_perk_tooltip(content, self)
