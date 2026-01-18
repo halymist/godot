@@ -163,11 +163,18 @@ func _process(_delta):
 		set_process(false)  # Stop frame updates
 		
 		if is_expedition_travel:
-			print("Expedition travel completed - auto-loading expedition")
+			print("Expedition travel completed")
 			expedition_travel_end = 0.0
 			is_skipping = false
+			is_expedition_travel = false
 			
-			# Auto-load expedition (same behavior as quest)
+			# Update player's expedition state so is_on_expedition() returns true
+			if pending_expedition_slide_id > 0:
+				GameInfo.current_player.expedition = [pending_expedition_slide_id]
+			
+			refresh_travel_state()
+			
+			# Only auto-load expedition if map panel is visible
 			if visible:
 				_load_expedition()
 		else:
@@ -284,15 +291,9 @@ func _load_expedition():
 	
 	print("Loading expedition with slide ID: ", pending_expedition_slide_id)
 	
-	# Reset expedition travel state
-	is_expedition_travel = false
-	
 	# Show expedition panel - use expedition ID 1 for now (server could send this too)
 	UIManager.instance.expedition_panel.start_expedition(1, pending_expedition_slide_id)
 	UIManager.instance.show_panel(UIManager.instance.expedition_panel)
-	
-	# Update player's expedition state
-	GameInfo.current_player.expedition = [pending_expedition_slide_id]
 	
 	# Clear pending slide ID
 	pending_expedition_slide_id = 0

@@ -89,6 +89,18 @@ var STAT_REWARD_MAP = {
 
 func _ready():
 	visible = false
+	visibility_changed.connect(_on_visibility_changed)
+
+func _on_visibility_changed():
+	"""Auto-load expedition slide when panel becomes visible"""
+	if visible:
+		var expedition = GameInfo.current_player.expedition
+		if expedition and expedition.size() > 0:
+			var slide_id = expedition[0]
+			# Only load if we're not already showing this slide
+			if current_slide_id != slide_id:
+				print("ExpeditionPanel: Auto-loading slide ", slide_id)
+				start_expedition(1, slide_id)
 
 func start_expedition(_expedition_id: int, slide_id: int):
 	"""Start or resume an expedition at a specific slide"""
