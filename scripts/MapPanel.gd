@@ -10,6 +10,7 @@ extends Panel
 
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
+var skip_duration_target: float = 0.0  # Dynamic skip duration (remaining_time / 8)
 var original_travel_end: float = 0.0
 
 # Travel info set when quest is accepted
@@ -53,7 +54,10 @@ func _on_visibility_changed():
 func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: int = 0):
 	"""Start traveling with the given text and duration (0 for VIP = instant)"""
 	travel_text = quest_travel_text
-	travel_duration = float(duration_seconds)  # Duration is already in seconds (0 for VIP)
+	# Override duration to always be 15 seconds (unless VIP with 0)
+	if duration_seconds > 0:
+		duration_seconds = 15
+	travel_duration = float(duration_seconds)
 	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds (VIP=instant)" if duration_seconds == 0 else " seconds")
 	print("Travel duration in seconds: ", travel_duration)
 	set_process(true)  # Enable frame-by-frame updates for smooth progress
@@ -143,7 +147,7 @@ func _process(_delta):
 	# Handle skipping animation - accelerate the countdown
 	if is_skipping:
 		var skip_elapsed = current_time - skip_start_time
-		var skip_duration = 2.0  # 2 seconds to complete
+		var skip_duration = skip_duration_target  # Dynamic duration based on remaining time
 		
 		# Calculate accelerating progress (quadratic acceleration)
 		var skip_progress = skip_elapsed / skip_duration
@@ -157,6 +161,10 @@ func _process(_delta):
 		travel_end_time = current_time + simulated_remaining
 	
 	var time_remaining = travel_end_time - current_time
+	
+	# Hide skip button when 3 seconds or less remain (if not already skipping)
+	if not is_skipping and time_remaining <= 3.0:
+		skip_button.visible = false
 	
 	# Check if travel is completed (naturally or via skip)
 	if time_remaining <= 0:
@@ -210,10 +218,23 @@ func _on_skip_button_pressed():
 	var is_traveling = is_expedition_travel or current_player.traveling > 0
 	
 	if is_traveling and not is_skipping:
-		# Start skipping animation - will complete after 2 seconds
+		# Calculate remaining time
+		var current_time = Time.get_unix_time_from_system()
+		var travel_end_time: float
+		if is_expedition_travel:
+			travel_end_time = expedition_travel_end
+		else:
+			travel_end_time = current_player.traveling
+		
+		var remaining_time = travel_end_time - current_time
+		
+		# Calculate skip duration as remaining time / 8
+		skip_duration_target = remaining_time / 8.0
+		
+		# Start skipping animation
 		Websocket.skip_travel()
 		is_skipping = true
-		skip_start_time = Time.get_unix_time_from_system()
+		skip_start_time = current_time
 		
 		# Store the original end time based on travel type
 		if is_expedition_travel:
@@ -221,7 +242,7 @@ func _on_skip_button_pressed():
 		else:
 			original_travel_end = current_player.traveling
 		
-		print("Travel skip started - accelerating countdown...")
+		print("Travel skip started - skip duration: ", skip_duration_target, " seconds")
 		
 		# Disable the skip button during animation
 		skip_button.disabled = true

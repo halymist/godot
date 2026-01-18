@@ -50,8 +50,8 @@ func _on_accept_pressed():
 		GameInfo.current_player.traveling = 0  # No timer for VIP
 		print("VIP player - no timer")
 	else:
-		# Non-VIP: Start 20 second timer
-		var travel_time = 20.0  # Always 20 seconds
+		# Non-VIP: Start 15 second timer
+		var travel_time = 15.0  # 15 seconds
 		var current_time = Time.get_unix_time_from_system()
 		var travel_end_time: float = current_time + travel_time
 		
@@ -69,8 +69,8 @@ func _on_accept_pressed():
 		UIManager.instance.hide_current_overlay()
 		UIManager.instance.quest.load_quest(quest_id)
 	else:
-		# Normal flow: Go to map panel
-		map.start_travel(quest_definition.travel_text, 20 if not is_vip else 0, quest_id)
+		# Normal flow: Go to map panel (duration will be set to 15 in start_travel)
+		map.start_travel(quest_definition.travel_text, 15 if not is_vip else 0, quest_id)
 		UIManager.instance.hide_current_overlay()
 		UIManager.instance.show_panel(map)
 		print("Switched to map panel")
