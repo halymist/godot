@@ -190,13 +190,10 @@ text = "REGISTER"
 
 [node name="MethodButtons" type="HBoxContainer" parent="ContentContainer/Login"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -199.5
-offset_top = 216.0
-offset_right = 200.5
-offset_bottom = 285.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 223.0
+offset_bottom = 283.0
 grow_horizontal = 2
 alignment = 1
 
