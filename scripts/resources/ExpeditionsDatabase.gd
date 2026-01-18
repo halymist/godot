@@ -1,11 +1,13 @@
 class_name ExpeditionsDatabase
 extends Resource
 
-@export var expeditions: Array[Resource] = []  # Array of ExpeditionData
+# Just a collection of slides - no expedition grouping needed
+# Server controls which slides are shown and in what order
+@export var slides: Array[Resource] = []  # Array of ExpeditionSlide
 
-func get_expedition(expedition_id: int) -> Resource:
-	"""Get expedition by ID"""
-	for expedition in expeditions:
-		if expedition.id == expedition_id:
-			return expedition
+func get_slide(slide_id: int) -> Resource:
+	"""Get slide by ID"""
+	for slide in slides:
+		if slide.slide_id == slide_id:
+			return slide
 	return null

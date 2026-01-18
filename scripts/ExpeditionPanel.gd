@@ -31,7 +31,6 @@ extends Panel
 
 # Expedition state
 var current_slide_id: int = 0
-var current_expedition: Resource = null  # ExpeditionData
 
 # Preloaded option scene (reuse quest_option.tscn)
 const OptionScene = preload("res://Scenes/quest_option.tscn")
@@ -91,23 +90,16 @@ var STAT_REWARD_MAP = {
 func _ready():
 	visible = false
 
-func start_expedition(expedition_id: int, slide_id: int):
+func start_expedition(_expedition_id: int, slide_id: int):
 	"""Start or resume an expedition at a specific slide"""
-	current_expedition = GameInfo.expeditions_db.get_expedition(expedition_id)
-	if not current_expedition:
-		print("Error: Expedition not found: ", expedition_id)
-		return
-	
+	# expedition_id is ignored - we just use slides directly from database
 	current_slide_id = slide_id
 	show_slide(slide_id)
 	visible = true
 
 func show_slide(slide_id: int):
-	"""Display a specific slide"""
-	if not current_expedition:
-		return
-	
-	var slide = current_expedition.get_slide(slide_id)
+	"""Display a specific slide and apply its rewards"""
+	var slide = GameInfo.expeditions_db.get_slide(slide_id)
 	if not slide:
 		print("Error: Slide not found: ", slide_id)
 		return
@@ -129,6 +121,9 @@ func show_slide(slide_id: int):
 	if reward_label:
 		reward_label.text = ""
 	
+	# Apply slide rewards
+	_apply_slide_rewards(slide)
+
 	# Add options
 	for option in slide.options:
 		_add_option_button(option)
@@ -221,24 +216,22 @@ func _on_option_selected(option: Resource):
 	"""Handle option selection"""
 	print("Expedition option selected: ", option.option_id)
 	
-	# Apply rewards locally (for demo)
-	_apply_rewards(option)
-	
 	# Send to server - server will respond with next slide
 	Websocket.expedition_option(option.option_id)
-	
-	# For mock/demo purposes, show reward in UI
-	if option.reward_type != RewardType.NONE:
-		_show_reward_text(option)
 
-func _apply_rewards(option: Resource):
-	"""Apply rewards from the option (local demo)"""
+func _apply_slide_rewards(slide: Resource):
+	"""Apply rewards from the slide when it's shown"""
 	var player = GameInfo.current_player
 	if not player:
 		return
 	
-	var reward_type = option.reward_type
-	var reward_amount = option.reward_amount
+	var reward_type = slide.reward_type
+	var reward_amount = slide.reward_amount
+	
+	if reward_type == RewardType.NONE:
+		return
+	
+	print("Applying slide reward: type=", reward_type, " amount=", reward_amount)
 	
 	match reward_type:
 		RewardType.SILVER:
@@ -256,15 +249,22 @@ func _apply_rewards(option: Resource):
 				var stat_info = STAT_REWARD_MAP[reward_type]
 				var current_value = player.get(stat_info.property)
 				player.set(stat_info.property, current_value + reward_amount)
+	
+	# Show reward text in UI
+	_show_reward_text(slide)
 
-func _show_reward_text(option: Resource):
-	"""Display reward text"""
+func _show_reward_text(slide: Resource):
+	"""Display reward text for the slide"""
 	if not reward_label:
 		return
 	
-	var reward_type = option.reward_type
-	var reward_amount = option.reward_amount
+	var reward_type = slide.reward_type
+	var reward_amount = slide.reward_amount
 	var reward_text = ""
+	
+	if reward_type == RewardType.NONE:
+		reward_label.text = ""
+		return
 	
 	match reward_type:
 		RewardType.SILVER:
@@ -298,7 +298,6 @@ func receive_next_slide(slide_id: int):
 
 func end_expedition():
 	"""End the current expedition"""
-	current_expedition = null
 	current_slide_id = 0
 	visible = false
 	
@@ -309,4 +308,4 @@ func end_expedition():
 
 func is_on_expedition() -> bool:
 	"""Check if player is currently on an expedition"""
-	return visible and current_expedition != null
+	return visible and current_slide_id > 0
