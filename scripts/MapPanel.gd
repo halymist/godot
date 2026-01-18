@@ -16,6 +16,11 @@ var original_travel_end: float = 0.0
 var travel_text: String
 var travel_duration: float
 
+# Expedition state
+var is_expedition_travel: bool = false  # True when traveling to expedition (not quest)
+var pending_expedition_slide_id: int = 0  # Slide ID received from server
+var expedition_travel_end: float = 0.0  # When expedition travel ends
+
 func _ready():
 	# Always connect buttons and signals
 	skip_button.pressed.connect(_on_skip_button_pressed)
@@ -108,15 +113,22 @@ func refresh_travel_state():
 
 func _process(_delta):
 	"""Update progress bar every frame for smooth 60fps animation"""
-	print("QuestPanel._process called for travel update")
 	var current_player = GameInfo.current_player
+	var current_time = Time.get_unix_time_from_system()
+	var travel_end_time: float = 0.0
+	var is_traveling: bool = false
+	
+	# Check if we're traveling to expedition or quest
+	if is_expedition_travel and expedition_travel_end > 0:
+		travel_end_time = expedition_travel_end
+		is_traveling = true
+	elif current_player.traveling > 0:
+		travel_end_time = current_player.traveling
+		is_traveling = true
 	
 	# Only update if actively traveling
-	if current_player.traveling == 0:
+	if not is_traveling:
 		return
-	
-	var current_time = Time.get_unix_time_from_system()
-	var travel_end_time = current_player.traveling
 	
 	# Handle skipping animation - accelerate the countdown
 	if is_skipping:
@@ -139,16 +151,25 @@ func _process(_delta):
 	# Check if travel is completed (naturally or via skip)
 	if time_remaining <= 0:
 		set_process(false)  # Stop frame updates
-		print("Travel completed - loading quest")
 		
-		# Reset state
-		current_player.traveling = 0
-		is_skipping = false
-		refresh_travel_state()
-		
-		# Only auto-load quest if map panel is visible
-		if visible:
-			_on_enter_dungeon_pressed()
+		if is_expedition_travel:
+			print("Expedition travel completed - auto-loading expedition")
+			expedition_travel_end = 0.0
+			is_skipping = false
+			
+			# Auto-load expedition (same behavior as quest)
+			if visible:
+				_load_expedition()
+		else:
+			print("Travel completed - loading quest")
+			# Reset state
+			current_player.traveling = 0
+			is_skipping = false
+			refresh_travel_state()
+			
+			# Only auto-load quest if map panel is visible
+			if visible:
+				_on_enter_dungeon_pressed()
 		return
 	
 	# Update skip button text
@@ -168,12 +189,21 @@ func _process(_delta):
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
 	
-	if current_player.traveling > 0 and not is_skipping:
-		# Start skipping animation - will load quest after 2 seconds
+	# Check if we're traveling to expedition or quest
+	var is_traveling = is_expedition_travel or current_player.traveling > 0
+	
+	if is_traveling and not is_skipping:
+		# Start skipping animation - will complete after 2 seconds
 		Websocket.skip_travel()
 		is_skipping = true
 		skip_start_time = Time.get_unix_time_from_system()
-		original_travel_end = current_player.traveling
+		
+		# Store the original end time based on travel type
+		if is_expedition_travel:
+			original_travel_end = expedition_travel_end
+		else:
+			original_travel_end = current_player.traveling
+		
 		print("Travel skip started - accelerating countdown...")
 		
 		# Disable the skip button during animation
@@ -190,5 +220,69 @@ func _on_enter_dungeon_pressed():
 		UIManager.instance.quest.load_quest(quest_id)
 		
 	else:
-		# Dungeon functionality (future)
-		print("Enter dungeon button pressed - functionality not implemented yet")
+		# Start expedition - send to server and begin timer
+		print("Enter dungeon button pressed - starting expedition")
+		start_expedition_travel()
+
+func start_expedition_travel():
+	"""Start traveling to an expedition (dungeon)"""
+	# Send start_expedition to server (no parameter - server knows everything)
+	Websocket.start_expedition()
+	
+	# MOCK: Simulate server response with slide ID = 2
+	# In production, this would come from server via receive_expedition_slide()
+	pending_expedition_slide_id = 2
+	print("MOCK: Server responded with expedition slide ID: ", pending_expedition_slide_id)
+	
+	# Set up 15 second timer
+	var travel_time = 15.0
+	var current_time = Time.get_unix_time_from_system()
+	expedition_travel_end = current_time + travel_time
+	
+	# Mark as expedition travel
+	is_expedition_travel = true
+	travel_duration = travel_time
+	
+	# Update UI
+	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
+	if location_data:
+		travel_text = location_data.expedition_text if location_data.expedition_text != "" else "Entering the dungeon..."
+	else:
+		travel_text = "Entering the dungeon..."
+	
+	travel_text_label.text = travel_text
+	travel_progress.visible = true
+	travel_progress.value = 0
+	skip_button.visible = true
+	skip_button.disabled = false
+	skip_button.text = "Skip"
+	enter_dungeon_button.visible = false
+	
+	set_process(true)  # Enable frame updates
+	print("Expedition travel started - Duration: ", travel_time, " seconds")
+
+func receive_expedition_slide(slide_id: int):
+	"""Called when server responds with expedition slide ID"""
+	print("Received expedition slide ID from server: ", slide_id)
+	pending_expedition_slide_id = slide_id
+
+func _load_expedition():
+	"""Load the expedition panel with the pending slide ID"""
+	if pending_expedition_slide_id <= 0:
+		print("Error: No expedition slide ID received from server")
+		return
+	
+	print("Loading expedition with slide ID: ", pending_expedition_slide_id)
+	
+	# Reset expedition travel state
+	is_expedition_travel = false
+	
+	# Show expedition panel - use expedition ID 1 for now (server could send this too)
+	UIManager.instance.expedition_panel.start_expedition(1, pending_expedition_slide_id)
+	UIManager.instance.show_panel(UIManager.instance.expedition_panel)
+	
+	# Update player's expedition state
+	GameInfo.current_player.expedition = [pending_expedition_slide_id]
+	
+	# Clear pending slide ID
+	pending_expedition_slide_id = 0

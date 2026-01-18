@@ -6407,76 +6407,6 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="CancelQuest" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("yes_button", "no_button", "background_button")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
-script = ExtResource("75_ckj55")
-yes_button = NodePath("DialogPanel/YesButton")
-no_button = NodePath("DialogPanel/NoButton")
-background_button = NodePath("BackgroundButton")
-
-[node name="BackgroundButton" type="Button" parent="Portrait/GameScene/CancelQuest"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-flat = true
-
-[node name="DialogPanel" type="Panel" parent="Portrait/GameScene/CancelQuest"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -100.0
-offset_right = 200.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dialog_panel")
-
-[node name="Label" type="Label" parent="Portrait/GameScene/CancelQuest/DialogPanel"]
-clip_contents = true
-layout_mode = 2
-offset_left = 25.0
-offset_top = 25.0
-offset_right = 375.0
-offset_bottom = 131.0
-size_flags_vertical = 3
-text = "Do you wish to abandon the quest?"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="YesButton" type="Button" parent="Portrait/GameScene/CancelQuest/DialogPanel"]
-custom_minimum_size = Vector2(80, 40)
-layout_mode = 2
-offset_left = 34.0
-offset_top = 130.0
-offset_right = 114.0
-offset_bottom = 175.0
-text = "Yes"
-
-[node name="NoButton" type="Button" parent="Portrait/GameScene/CancelQuest/DialogPanel"]
-custom_minimum_size = Vector2(80, 40)
-layout_mode = 2
-offset_left = 143.0
-offset_top = 129.0
-offset_right = 376.0
-offset_bottom = 174.0
-size_flags_horizontal = 3
-text = "No"
-
 [node name="Expedition" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "expedition_text", "portrait")]
 visible = false
 layout_mode = 1
@@ -6574,6 +6504,76 @@ theme_override_constants/line_spacing = 10
 layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
+
+[node name="CancelQuest" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("yes_button", "no_button", "background_button")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
+script = ExtResource("75_ckj55")
+yes_button = NodePath("DialogPanel/YesButton")
+no_button = NodePath("DialogPanel/NoButton")
+background_button = NodePath("BackgroundButton")
+
+[node name="BackgroundButton" type="Button" parent="Portrait/GameScene/CancelQuest"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="DialogPanel" type="Panel" parent="Portrait/GameScene/CancelQuest"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dialog_panel")
+
+[node name="Label" type="Label" parent="Portrait/GameScene/CancelQuest/DialogPanel"]
+clip_contents = true
+layout_mode = 2
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 375.0
+offset_bottom = 131.0
+size_flags_vertical = 3
+text = "Do you wish to abandon the quest?"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="YesButton" type="Button" parent="Portrait/GameScene/CancelQuest/DialogPanel"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+offset_left = 34.0
+offset_top = 130.0
+offset_right = 114.0
+offset_bottom = 175.0
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="Portrait/GameScene/CancelQuest/DialogPanel"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+offset_left = 143.0
+offset_top = 129.0
+offset_right = 376.0
+offset_bottom = 174.0
+size_flags_horizontal = 3
+text = "No"
 
 [node name="ChatOverlay" type="Button" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button", "chat_input", "send_button")]
 visible = false

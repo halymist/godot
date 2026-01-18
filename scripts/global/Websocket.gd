@@ -717,11 +717,9 @@ func send_chat(chat_type: int, message: String):
 		"string_argument": message
 	})
 
-func start_expedition(expedition_id: int):
-	"""Start an expedition"""
-	send("start_expedition", {
-		"int_argument1": expedition_id
-	})
+func start_expedition():
+	"""Start an expedition - server knows which one based on player location"""
+	send("start_expedition", {})
 
 func expedition_option(option_id: int):
 	"""Choose an expedition option (server will respond with next slide)"""
