@@ -14,6 +14,7 @@ var cosmetics_db: CosmeticDatabase = null
 var settlements_db: SettlementsDatabase = null
 var quests_db: QuestsDatabase = null
 var enemies_db: EnemyDatabase = null
+var expeditions_db: Resource = null  # ExpeditionsDatabase
 
 # ============================================
 # RUNTIME DATA
@@ -72,6 +73,7 @@ func load_databases():
 	quests_db = load("res://scripts/resources/quests.tres")
 	settlements_db = load("res://scripts/resources/settlements.tres")
 	enemies_db = load("res://data/enemies.tres")
+	expeditions_db = load("res://scripts/resources/expeditions.tres")
 	
 	databases_loaded = true
 	print("Databases loaded")
@@ -637,6 +639,7 @@ class GameCurrentPlayer:
 	var talent_points: int = 0
 	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
 	var daily_quests: Array[int] = []  # Array of quest IDs available today
+	var expedition: Array = []  # Array: [current_slide] when active, empty when not on expedition
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
 	var server_day: int = 1  # Current day on the server (starts at 1)
 	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
@@ -669,6 +672,10 @@ class GameCurrentPlayer:
 			daily_quests.clear()
 			for quest_id in data.daily_quests:
 				daily_quests.append(quest_id as int)
+		
+		# Handle expedition array
+		if data.has("expedition"):
+			expedition = data.expedition.duplicate()
 		
 		# Handle mushrooms to trigger setter
 		if data.has("mushrooms"):

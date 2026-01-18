@@ -128,6 +128,7 @@ var mock_characters = [
 	"dungeon": false,
 	"daily_quests": [1, 2, 3],
 	"quest_log": [],
+	"expedition": [],  # Array: [current_slide] when active, empty when not on expedition
 	"bag_slots": [
 		{
 			"id": 1,
@@ -407,6 +408,7 @@ var mock_characters = [
 	"dungeon": false,
 	"daily_quests": [1, 5],
 	"quest_log": [],
+	"expedition": [],  # Array: [current_slide] when active, empty when not on expedition
 	"bag_slots": [
 		{
 			"id": 1,
@@ -715,7 +717,15 @@ func send_chat(chat_type: int, message: String):
 		"string_argument": message
 	})
 
-func start_expedition():
+func start_expedition(expedition_id: int):
 	"""Start an expedition"""
-	send("start_expedition", {})
+	send("start_expedition", {
+		"int_argument1": expedition_id
+	})
+
+func expedition_option(option_id: int):
+	"""Choose an expedition option (server will respond with next slide)"""
+	send("expedition_option", {
+		"int_argument1": option_id
+	})
 

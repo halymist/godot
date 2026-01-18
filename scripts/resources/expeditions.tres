@@ -1,0 +1,107 @@
+[gd_resource type="Resource" script_class="ExpeditionsDatabase" load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ExpeditionsDatabase.gd" id="1_db"]
+[ext_resource type="Script" path="res://scripts/resources/ExpeditionData.gd" id="2_data"]
+[ext_resource type="Script" path="res://scripts/resources/ExpeditionSlide.gd" id="3_slide"]
+[ext_resource type="Script" path="res://scripts/resources/ExpeditionOption.gd" id="4_option"]
+
+[sub_resource type="Resource" id="opt_1_1"]
+script = ExtResource("4_option")
+option_id = 1
+text = "Enter the cave"
+required_type = 0
+required_amount = 0
+reward_type = 0
+reward_amount = 0
+
+[sub_resource type="Resource" id="opt_1_2"]
+script = ExtResource("4_option")
+option_id = 2
+text = "Search outside first"
+required_type = 0
+required_amount = 0
+reward_type = 1
+reward_amount = 50
+
+[sub_resource type="Resource" id="slide_1"]
+script = ExtResource("3_slide")
+slide_id = 1
+text = "You arrive at a dark cave entrance. Strange sounds echo from within. The wind howls around you as you consider your options."
+texture = null
+options = [SubResource("opt_1_1"), SubResource("opt_1_2")]
+
+[sub_resource type="Resource" id="opt_2_1"]
+script = ExtResource("4_option")
+option_id = 3
+text = "Light a torch and proceed"
+required_type = 0
+required_amount = 0
+reward_type = 0
+reward_amount = 0
+
+[sub_resource type="Resource" id="opt_2_2"]
+script = ExtResource("4_option")
+option_id = 4
+text = "Feel your way in the dark"
+required_type = 5
+required_amount = 15
+reward_type = 0
+reward_amount = 0
+
+[sub_resource type="Resource" id="slide_2"]
+script = ExtResource("3_slide")
+slide_id = 2
+text = "Inside the cave, darkness surrounds you. You can barely see your hand in front of your face. Something skitters nearby..."
+texture = null
+options = [SubResource("opt_2_1"), SubResource("opt_2_2")]
+
+[sub_resource type="Resource" id="opt_3_1"]
+script = ExtResource("4_option")
+option_id = 5
+text = "Take the treasure"
+required_type = 0
+required_amount = 0
+reward_type = 1
+reward_amount = 200
+
+[sub_resource type="Resource" id="opt_3_2"]
+script = ExtResource("4_option")
+option_id = 6
+text = "Leave it alone"
+required_type = 0
+required_amount = 0
+reward_type = 0
+reward_amount = 0
+
+[sub_resource type="Resource" id="slide_3"]
+script = ExtResource("3_slide")
+slide_id = 3
+text = "You find a small chest hidden behind some rocks! It glimmers faintly in the dim light."
+texture = null
+options = [SubResource("opt_3_1"), SubResource("opt_3_2")]
+
+[sub_resource type="Resource" id="opt_4_1"]
+script = ExtResource("4_option")
+option_id = 7
+text = "Return to camp"
+required_type = 0
+required_amount = 0
+reward_type = 0
+reward_amount = 0
+
+[sub_resource type="Resource" id="slide_4"]
+script = ExtResource("3_slide")
+slide_id = 4
+text = "Your expedition comes to an end. Whether successful or not, you've gained valuable experience from this journey."
+texture = null
+options = [SubResource("opt_4_1")]
+
+[sub_resource type="Resource" id="expedition_1"]
+script = ExtResource("2_data")
+id = 1
+name = "The Dark Cave"
+slides = [SubResource("slide_1"), SubResource("slide_2"), SubResource("slide_3"), SubResource("slide_4")]
+
+[resource]
+script = ExtResource("1_db")
+expeditions = [SubResource("expedition_1")]

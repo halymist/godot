@@ -33,6 +33,7 @@ signal game_ready  # Emitted when starter panel finishes setup
 @export var quest_panel: Control
 @export var quest: Control
 @export var cancel_quest: Control
+@export var expedition_panel: Control
 @export var upgrade_talent: Control
 @export var perk_screen: Control
 @export var vendor_panel: Control
@@ -98,13 +99,21 @@ func _determine_starter_panel() -> Control:
 	"""Determine which panel is the starter based on player state"""
 	var destination = GameInfo.current_player.traveling_destination
 	var traveling = GameInfo.current_player.traveling
+	var expedition = GameInfo.current_player.expedition
 	
 	print("=== STARTUP QUEST STATE DEBUG ===")
 	print("destination: ", destination, " (type: ", typeof(destination), ")")
 	print("traveling: ", traveling, " (type: ", typeof(traveling), ")")
+	print("expedition: ", expedition)
 	print("================================")
 	
-	if destination != null and traveling != null and traveling != 0:
+	# Check expedition first
+	if expedition and expedition.size() > 0:
+		# Player is on an expedition - show expedition panel
+		print("-> On expedition, showing expedition panel")
+		call_deferred("_load_expedition_on_startup", expedition[0])
+		return expedition_panel
+	elif destination != null and traveling != null and traveling != 0:
 		# Player is currently traveling to a quest - show map panel
 		print("-> Traveling to quest, showing map panel")
 		return map_panel
@@ -128,6 +137,24 @@ func is_on_active_quest() -> bool:
 	
 	# Player is on active quest if: destination exists AND not currently traveling
 	return destination != null and traveling == 0
+
+func is_on_expedition() -> bool:
+	"""Check if player is currently on an expedition"""
+	if not GameInfo.current_player:
+		return false
+	
+	var expedition = GameInfo.current_player.expedition
+	return expedition and expedition.size() > 0
+
+func is_navigation_blocked() -> bool:
+	"""Check if navigation to other panels is blocked (quest or expedition active)"""
+	return is_on_active_quest() or is_on_expedition()
+
+func _load_expedition_on_startup(slide_id: int):
+	"""Load expedition panel on game startup"""
+	if expedition_panel and expedition_panel.has_method("start_expedition"):
+		# For now, use expedition ID 1 (the only one we have)
+		expedition_panel.start_expedition(1, slide_id)
 
 func show_enemy_panel(enemy_name: String):
 	"""Show enemy panel with the specified enemy's data"""
@@ -283,10 +310,13 @@ func show_panel(panel: Control):
 
 func handle_home_button():
 	"""Navigate to home panel - with custom home panel behavior"""
-	# Block navigation if player is on an active quest
-	if is_on_active_quest():
-		print(" player is on an active quest")
-		show_panel(quest)
+	# Block navigation if player is on an active quest or expedition
+	if is_navigation_blocked():
+		print("player is on an active quest or expedition")
+		if is_on_expedition():
+			show_panel(expedition_panel)
+		else:
+			show_panel(quest)
 		return
 
 	# Custom home panel behavior: exit interior and center view
@@ -298,9 +328,9 @@ func handle_home_button():
 
 func handle_map_button():
 	"""Navigate to map panel - with custom quest logic"""
-	# Block navigation if player is on an active quest
-	if is_on_active_quest():
-		print("Cannot go to map - player is on an active quest")
+	# Block navigation if player is on an active quest or expedition
+	if is_navigation_blocked():
+		print("Cannot go to map - player is on an active quest or expedition")
 		return
 	
 	var traveling = GameInfo.current_player.traveling
@@ -322,9 +352,9 @@ func handle_map_button():
 
 func handle_arena_button():
 	"""Toggle arena panel"""
-	# Block navigation if player is on an active quest
-	if is_on_active_quest():
-		print("Cannot go to arena - player is on an active quest")
+	# Block navigation if player is on an active quest or expedition
+	if is_navigation_blocked():
+		print("Cannot go to arena - player is on an active quest or expedition")
 		return
 	
 	if current_panel == arena_panel:
@@ -335,8 +365,10 @@ func handle_arena_button():
 func handle_character_button():
 	"""Toggle character panel"""
 	if current_panel == character_panel:
-		# When toggling off, return to quest if on active quest, otherwise home
-		if is_on_active_quest():
+		# When toggling off, return to quest/expedition if active, otherwise home
+		if is_on_expedition():
+			show_panel(expedition_panel)
+		elif is_on_active_quest():
 			show_panel(quest)
 		else:
 			show_panel(home_panel)
@@ -346,8 +378,10 @@ func handle_character_button():
 func handle_rankings_button():
 	"""Toggle rankings panel"""
 	if current_panel == rankings_panel:
-		# Toggle off - return to home or quest
-		if is_on_active_quest():
+		# Toggle off - return to home, quest, or expedition
+		if is_on_expedition():
+			show_panel(expedition_panel)
+		elif is_on_active_quest():
 			show_panel(quest)
 		else:
 			show_panel(home_panel)
@@ -446,17 +480,22 @@ func go_back():
 	# Talents/Details bookmarks - handled by overlay system now
 	# (removed specific cases since they're overlays)
 	
-	# Rankings panel: go back to home or quest
+	# Rankings panel: go back to home, quest, or expedition
 	if current == rankings_panel:
 		print("-> Rankings panel, going back")
-		if is_on_active_quest():
+		if is_on_expedition():
+			show_panel(expedition_panel)
+		elif is_on_active_quest():
 			show_panel(quest)
 		else:
 			show_panel(home_panel)
 		return
 	
-	# Default: go home, or go to quest panel if on active quest
-	if is_on_active_quest():
+	# Default: go home, or go to quest/expedition panel if active
+	if is_on_expedition():
+		print("-> Active expedition detected, returning to expedition panel")
+		show_panel(expedition_panel)
+	elif is_on_active_quest():
 		print("-> Active quest detected, returning to quest panel")
 		show_panel(quest)
 	else:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -73,6 +73,7 @@
 [ext_resource type="Script" uid="uid://k7cdeuow3hnv" path="res://scripts/Payment.gd" id="67_payment"]
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="68_2cns2"]
 [ext_resource type="Script" uid="uid://bxpbd8qnmw5gs" path="res://scripts/CancelQuest.gd" id="75_ckj55"]
+[ext_resource type="Script" uid="uid://cy4jtgk41lei7" path="res://scripts/ExpeditionPanel.gd" id="76_expedition"]
 [ext_resource type="Texture2D" uid="uid://cgcpygii1l82g" path="res://assets/images/ui/fight.png" id="79_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://c0byjvygn0ygi" path="res://assets/images/ui/luc.png" id="81_d5jaa"]
 [ext_resource type="Texture2D" uid="uid://n3yj5br5mlr7" path="res://assets/images/ui/faith.png" id="82_gsm33"]
@@ -254,7 +255,7 @@ phone_ui_root = NodePath("Portrait")
 desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "logout_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
+[node name="Background" type="ColorRect" parent="." node_paths=PackedStringArray("home_panel", "home_button", "arena_panel", "arena_button", "character_button", "character_panel", "talents_panel", "details_panel", "map_button", "map_panel", "back_button", "settings_button", "rankings_button", "chat_button", "chat_panel", "combat_panel", "settings_panel", "rankings_panel", "fight_button", "quest_panel", "quest", "cancel_quest", "expedition_panel", "upgrade_talent", "perk_screen", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "enemy_panel", "enemy", "payment", "payment_button", "logout_panel", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -286,6 +287,7 @@ fight_button = NodePath("../Portrait/GameScene/Arena/FightButton")
 quest_panel = NodePath("../Portrait/GameScene/Home/QuestAccept")
 quest = NodePath("../Portrait/GameScene/Quest")
 cancel_quest = NodePath("../Portrait/GameScene/CancelQuest")
+expedition_panel = NodePath("../Portrait/GameScene/Expedition")
 upgrade_talent = NodePath("../Portrait/GameScene/TalentsPanel/Upgrade")
 perk_screen = NodePath("../Portrait/GameScene/TalentsPanel/PerkScreen")
 vendor_panel = NodePath("../Portrait/GameScene/VendorPanel")
@@ -6474,6 +6476,104 @@ offset_right = 376.0
 offset_bottom = 174.0
 size_flags_horizontal = 3
 text = "No"
+
+[node name="Expedition" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "expedition_text", "portrait")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f3c8l")
+script = ExtResource("76_expedition")
+text_container = NodePath("Overlay/TextContainer")
+options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
+reward_label = NodePath("Overlay/BottomContainer/Reward")
+background = NodePath("Background")
+expedition_text = NodePath("Overlay/TextContainer/ExpeditionLabel")
+dialogue_icon = ExtResource("11_vm72l")
+combat_icon = ExtResource("79_qj5kr")
+currency_check_icon = ExtResource("32_ccfo7")
+end_icon = ExtResource("14_81klo")
+strength_icon = ExtResource("44_k8ojv")
+stamina_icon = ExtResource("46_gsm33")
+agility_icon = ExtResource("66_7sqp1")
+luck_icon = ExtResource("81_d5jaa")
+armor_icon = ExtResource("86_w4j8i")
+order_icon = ExtResource("82_gsm33")
+guild_icon = ExtResource("83_lrctp")
+companions_icon = ExtResource("84_e6ols")
+portrait = NodePath("../..")
+
+[node name="Background" type="TextureRect" parent="Portrait/GameScene/Expedition"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -315.0
+offset_right = 315.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("41_w4j8i")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Expedition"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+script = ExtResource("42_umggo")
+
+[node name="TextContainer" type="MarginContainer" parent="Portrait/GameScene/Expedition/Overlay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03
+anchor_top = 0.079
+anchor_right = 0.968
+anchor_bottom = 1.0
+offset_left = -2.15
+offset_top = 0.23
+offset_right = 2.95999
+offset_bottom = -329.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ExpeditionLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/TextContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+text = "Expedition text goes here..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="BottomContainer" type="VBoxContainer" parent="Portrait/GameScene/Expedition/Overlay"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 19.0
+offset_top = -231.0
+offset_right = -14.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 2
+
+[node name="Reward" type="Label" parent="Portrait/GameScene/Expedition/Overlay/BottomContainer"]
+layout_mode = 2
+theme_override_constants/line_spacing = 10
+
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameScene/Expedition/Overlay/BottomContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 2
 
 [node name="ChatOverlay" type="Button" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button", "chat_input", "send_button")]
 visible = false
