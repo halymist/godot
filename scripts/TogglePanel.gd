@@ -454,6 +454,12 @@ func go_back():
 			cancel_quest.show_dialog()
 			return
 	
+	# Expedition panel: show cancel dialog
+	if current == expedition_panel:
+		print("-> Expedition panel, showing cancel dialog")
+		cancel_quest.show_dialog()
+		return
+	
 	# Home panel: check quest accept panel first, then interior navigation
 	if current == home_panel:
 		# First priority: hide quest accept panel if visible
