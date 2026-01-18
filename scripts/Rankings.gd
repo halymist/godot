@@ -12,6 +12,7 @@ extends Panel
 @export var avatar_instance: Node
 @export var character_button: Button
 @export var fight_button: Button
+@export var fight_status_label: Label
 
 # Player card stat labels
 @export var strength: Label
@@ -190,8 +191,35 @@ func _on_row_clicked(rank: int, player_name: String, _faction: int, _honor: int)
 			break
 	
 	if selected_player:
-		fight_button.visible = (selected_player != GameInfo.current_player)
+		_update_fight_button_state()
 		update_player_card()
+
+func _update_fight_button_state():
+	"""Update fight button visibility and status based on player state"""
+	# Don't show fight button for self
+	if selected_player == GameInfo.current_player:
+		fight_button.visible = false
+		if fight_status_label:
+			fight_status_label.visible = false
+		return
+	
+	# Check if player can fight
+	var can_fight := true
+	var status_text := ""
+	
+	if UIManager.instance:
+		if UIManager.instance.is_traveling():
+			can_fight = false
+			status_text = "Can't fight while traveling"
+		elif UIManager.instance.is_on_active_quest() or UIManager.instance.is_on_expedition():
+			can_fight = false
+			status_text = "Can't fight while on quest"
+	
+	fight_button.visible = true
+	fight_button.disabled = not can_fight
+	if fight_status_label:
+		fight_status_label.text = status_text
+		fight_status_label.visible = not can_fight
 
 func update_player_card():
 	player_name_label.text = selected_player.name

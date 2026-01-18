@@ -73,6 +73,16 @@ func refresh_travel_state():
 	"""Update UI state based on current travel status - call this when state changes"""
 	var current_player = GameInfo.current_player
 	
+	# Check if expedition travel is active (local timer, not stored in GameInfo)
+	if is_expedition_travel and expedition_travel_end > Time.get_unix_time_from_system():
+		# Currently traveling to expedition - show skip button, hide enter dungeon button
+		travel_progress.visible = true
+		skip_button.visible = true
+		skip_button.disabled = is_skipping
+		skip_button.text = "Skipping..." if is_skipping else "Skip"
+		enter_dungeon_button.visible = false
+		return
+	
 	# Check if player has a quest destination (VIP instant travel or timer-based)
 	if current_player.traveling_destination != null and current_player.traveling == 0:
 		# VIP instant travel - show Go Quest button immediately

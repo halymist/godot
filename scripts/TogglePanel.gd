@@ -346,6 +346,12 @@ func show_panel(panel: Control):
 		chat_overlay_active = false
 		chat_panel.visible = false
 	
+	# Hide sub-overlays (these sit outside the main stack)
+	if upgrade_talent:
+		upgrade_talent.visible = false
+	if perk_screen:
+		perk_screen.visible = false
+	
 	# Hide current panel
 	var old_panel = current_panel
 	if old_panel:
