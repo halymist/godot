@@ -3,53 +3,82 @@ class_name UIManager
 
 static var instance: UIManager
 
+# ============================================================================
+# PANEL CATEGORIES
+# ============================================================================
+# Main Panels: home, arena, quest, expedition, character, rankings, map, combat
+# Overlays: settings, payment, enemy, details, talents, upgrade_talent, perk_screen, 
+#           cancel_quest, quest_panel, logout, avatar_panel
+# Chat: Independent toggle, always on top
+# ============================================================================
+
 # Starter panel tracking
 var starter_panel: Control = null
-var game_is_ready: bool = false  # Set to true when starter panel completes setup
-signal game_ready  # Emitted when starter panel finishes setup
+var game_is_ready: bool = false
+signal game_ready
 
-# Panel references (from TogglePanel)
+# ============================================================================
+# PANEL EXPORTS - Main Panels
+# ============================================================================
 @export var home_panel: Control
-@export var home_button: Button
 @export var arena_panel: Control
+@export var character_panel: Control
+@export var quest: Control              # Quest main panel
+@export var expedition_panel: Control
+@export var rankings_panel: Control
+@export var map_panel: Control
+@export var combat_panel: Control
+
+# ============================================================================
+# BUTTON EXPORTS
+# ============================================================================
+@export var home_button: Button
 @export var arena_button: Button
 @export var character_button: Button
-@export var character_panel: Control
+@export var map_button: Button
+@export var rankings_button: Button
+@export var settings_button: Button
+@export var chat_button: Button
+@export var payment_button: Button
+@export var back_button: Button
+@export var fight_button: Button
+
+# ============================================================================
+# OVERLAY EXPORTS
+# ============================================================================
+@export var settings_panel: Control
+@export var payment: Control
 @export var talents_panel: Control
 @export var details_panel: Control
-@export var map_button: Button
-@export var map_panel: Control
-@export var back_button: Button
-@export var settings_button: Button
-@export var rankings_button: Button
-@export var chat_button: Button
-@export var chat_panel: Button
-@export var combat_panel: Control
-@export var settings_panel: Control
-@export var rankings_panel: Control
-@export var fight_button: Button
-@export var interior_view: Control
-@export var village_view: Control
-@export var quest_panel: Control
-@export var quest: Control
-@export var cancel_quest: Control
-@export var expedition_panel: Control
 @export var upgrade_talent: Control
 @export var perk_screen: Control
+@export var cancel_quest: Control
+@export var quest_panel: Control        # Quest accept overlay (NOT the main quest panel)
+@export var enemy_panel: Control
+@export var logout_panel: Control
+@export var avatar_panel: Control
+
+# ============================================================================
+# BUILDING PANELS (Shop overlays from home interior)
+# ============================================================================
 @export var vendor_panel: Control
 @export var blacksmith_panel: Control
 @export var trainer_panel: Control
 @export var church_panel: Control
 @export var alchemist_panel: Control
 @export var enchanter_panel: Control
-@export var enemy_panel: Control
-@export var enemy: Array[Button] = []
-@export var payment: Control
-@export var payment_button: Button
-@export var avatar_panel: Control
-@export var logout_panel: Control
 
-# Additional UI references (from old UIManager)
+# ============================================================================
+# SPECIAL CONTROLS
+# ============================================================================
+@export var chat_panel: Button          # Chat toggle button/panel
+@export var interior_view: Control
+@export var village_view: Control
+@export var enemy: Array[Button] = []
+
+# ============================================================================
+# UI DATA REFERENCES
+# ============================================================================
 @export var silver_labels: Array[Label] = []
 @export var mushrooms_labels: Array[Label] = []
 @export var bag_views: Array[Node] = []
@@ -59,20 +88,30 @@ signal game_ready  # Emitted when starter panel finishes setup
 @export var avatars: Array[Node] = []
 @export var resolution_manager: Node
 
-# Track UI state
-var current_panel: Control = null  # Currently active main panel
-var current_panel_overlay: Control = null  # Currently active overlay
+# ============================================================================
+# STATE TRACKING
+# ============================================================================
+var current_panel: Control = null
+var current_panel_overlay: Control = null
 var chat_overlay_active: bool = false
-var overlay_stack: Array[Control] = []  # Stack of nested overlays
+var overlay_stack: Array[Control] = []
 const BASE_Z_INDEX: int = 200
 const Z_INDEX_INCREMENT: int = 10
 
+# ============================================================================
+# INITIALIZATION
+# ============================================================================
+
 func _enter_tree():
-	# Set singleton instance immediately when entering tree, before any _ready() calls
 	instance = self
 
 func _ready():
-	# Connect button signals FIRST - these work regardless of character selection
+	_connect_buttons()
+	update_display()
+	_initialize_starter_panel()
+
+func _connect_buttons():
+	"""Connect all button signals"""
 	home_button.pressed.connect(handle_home_button)
 	arena_button.pressed.connect(handle_arena_button)
 	character_button.pressed.connect(handle_character_button)
@@ -84,14 +123,11 @@ func _ready():
 	chat_panel.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
 	fight_button.pressed.connect(show_combat)
-	
-	update_display()
-	
-	# Determine which panel should be the starter
+
+func _initialize_starter_panel():
+	"""Determine and show the initial panel based on player state"""
 	var start_panel = _determine_starter_panel()
 	starter_panel = start_panel
-	
-	# Show the starter panel
 	current_panel = start_panel
 	start_panel.visible = true
 
@@ -146,9 +182,25 @@ func is_on_expedition() -> bool:
 	var expedition = GameInfo.current_player.expedition
 	return expedition and expedition.size() > 0
 
+func is_traveling() -> bool:
+	"""Check if player is currently traveling (quest or expedition timer running)"""
+	if not GameInfo.current_player:
+		return false
+	
+	# Check quest travel
+	var traveling = GameInfo.current_player.traveling
+	if traveling > 0:
+		return true
+	
+	# Check expedition travel (timer running on map panel)
+	if map_panel and map_panel.is_expedition_travel:
+		return true
+	
+	return false
+
 func is_navigation_blocked() -> bool:
-	"""Check if navigation to other panels is blocked (quest or expedition active)"""
-	return is_on_active_quest() or is_on_expedition()
+	"""Check if navigation to other panels is blocked (quest, expedition, or traveling)"""
+	return is_on_active_quest() or is_on_expedition() or is_traveling()
 
 func _load_expedition_on_startup(slide_id: int):
 	"""Load expedition panel on game startup"""
@@ -283,8 +335,17 @@ func toggle_overlay(overlay: Control):
 		# Overlay not in stack - push it
 		show_overlay(overlay)
 
+# ============================================================================
+# PANEL NAVIGATION
+# ============================================================================
+
 func show_panel(panel: Control):
-	"""Show main panel - hides all overlays and current panel"""	
+	"""Show main panel - hides chat, all overlays, and current panel"""
+	# Close chat when switching panels
+	if chat_overlay_active:
+		chat_overlay_active = false
+		chat_panel.visible = false
+	
 	# Hide current panel
 	var old_panel = current_panel
 	if old_panel:
@@ -300,61 +361,44 @@ func show_panel(panel: Control):
 		var overlay = overlay_stack.pop_back()
 		overlay.visible = false
 	
-	print("UIManager: Cleared overlay stack when switching to panel: ", panel.name)
-	
 	# Show new panel
 	panel.visible = true
 	current_panel = panel
-	current_panel_overlay = null
-	
+	print("UIManager: Switched to panel: ", panel.name)
+
+# ============================================================================
+# BUTTON HANDLERS
+# ============================================================================
 
 func handle_home_button():
-	"""Navigate to home panel - with custom home panel behavior"""
-	# Block navigation if player is on an active quest or expedition
+	"""Navigate to home panel"""
+	# Block if traveling/quest/expedition active
 	if is_navigation_blocked():
-		print("player is on an active quest or expedition")
-		if is_on_expedition():
-			show_panel(expedition_panel)
-		else:
-			show_panel(quest)
+		_go_to_default_panel()
 		return
-
-	# Custom home panel behavior: exit interior and center view
+	
+	# Reset and show home
 	home_panel.handle_back_navigation()
 	home_panel.center_village_view()
-	
-	# Show home panel
 	show_panel(home_panel)
 
 func handle_map_button():
-	"""Navigate to map panel - with custom quest logic"""
-	# Block navigation if player is on an active quest or expedition
+	"""Navigate to map panel"""
+	# Block if traveling/quest/expedition active
 	if is_navigation_blocked():
-		print("Cannot go to map - player is on an active quest or expedition")
 		return
 	
-	var traveling = GameInfo.current_player.traveling
-	var destination = GameInfo.current_player.traveling_destination
-	var current = current_panel
-	
 	# Toggle off if already on map
-	if current == map_panel:
+	if current_panel == map_panel:
 		show_panel(home_panel)
 		return
 	
-	# Quest states
-	if traveling > 0 and destination != null:
-		show_panel(map_panel)  # Traveling
-	elif traveling == null and destination != null:
-		show_panel(quest)  # Quest available
-	else:
-		show_panel(map_panel)  # Normal map
+	show_panel(map_panel)
 
 func handle_arena_button():
 	"""Toggle arena panel"""
-	# Block navigation if player is on an active quest or expedition
+	# Block if traveling/quest/expedition active
 	if is_navigation_blocked():
-		print("Cannot go to arena - player is on an active quest or expedition")
 		return
 	
 	if current_panel == arena_panel:
@@ -363,30 +407,17 @@ func handle_arena_button():
 		show_panel(arena_panel)
 
 func handle_character_button():
-	"""Toggle character panel"""
+	"""Toggle character panel - always accessible"""
 	if current_panel == character_panel:
-		# When toggling off, return to quest/expedition if active, otherwise home
-		if is_on_expedition():
-			show_panel(expedition_panel)
-		elif is_on_active_quest():
-			show_panel(quest)
-		else:
-			show_panel(home_panel)
+		_go_to_default_panel()
 	else:
 		show_panel(character_panel)
 
 func handle_rankings_button():
-	"""Toggle rankings panel"""
+	"""Toggle rankings panel - always accessible"""
 	if current_panel == rankings_panel:
-		# Toggle off - return to home, quest, or expedition
-		if is_on_expedition():
-			show_panel(expedition_panel)
-		elif is_on_active_quest():
-			show_panel(quest)
-		else:
-			show_panel(home_panel)
+		_go_to_default_panel()
 	else:
-		# Show rankings as main panel
 		show_panel(rankings_panel)
 
 func toggle_talents_bookmark():
@@ -405,107 +436,115 @@ func toggle_details_bookmark():
 	"""Toggle details panel overlay"""
 	toggle_overlay(details_panel)
 
+# ============================================================================
+# BACK BUTTON - SIMPLIFIED PRIORITY SYSTEM
+# ============================================================================
+# Priority order:
+# 1. Chat (independent, always closeable)
+# 2. Sub-overlays (upgrade_talent, perk_screen)
+# 3. Overlay stack
+# 4. Panel-specific behavior (cancel dialogs, interior navigation)
+# 5. Return to default panel (quest/expedition if active, otherwise home)
+# ============================================================================
 
 func go_back():
-	"""Back button - priority: chat > overlay stack > panel custom behavior > home"""
-	var current = current_panel
+	"""Back button - unified priority system"""
+	var panel_name := "null"
+	if current_panel:
+		panel_name = current_panel.name
+	print("=== BACK BUTTON === Panel: ", panel_name, " Overlays: ", overlay_stack.size())
 	
-	print("=== BACK BUTTON DEBUG ===")
-	print("Current panel: ", current.name if current else "null")
-	print("Overlay stack depth: ", overlay_stack.size())
-	print("Chat overlay active: ", chat_overlay_active)
-	print("========================")
-	
-	# Priority 0: Close chat overlay if active (highest priority)
+	# Priority 1: Close chat
 	if chat_overlay_active:
-		print("-> Closing chat overlay")
+		print("-> Closing chat")
 		toggle_chat()
 		return
 	
-	# Priority 1: Hide sub-overlays (upgrade/perkscreen on talents)
-	if upgrade_talent and upgrade_talent.visible:
-		print("-> Hiding upgrade sub-overlay")
-		upgrade_talent.visible = false
+	# Priority 2: Close sub-overlays (these sit outside the stack)
+	if _close_sub_overlays():
 		return
 	
-	if perk_screen and perk_screen.visible:
-		print("-> Hiding perks sub-overlay")
-		perk_screen.visible = false
-		return
-	
-	# Priority 2: Pop from overlay stack
+	# Priority 3: Pop overlay stack
 	if overlay_stack.size() > 0:
-		print("-> Popping overlay from stack")
+		print("-> Popping overlay")
 		hide_current_overlay()
 		return
 	
-	var traveling = GameInfo.current_player.traveling
-	var destination = GameInfo.current_player.traveling_destination
+	# Priority 4: Panel-specific behavior
+	if _handle_panel_back():
+		return
 	
-	if current == map_panel:
-		if traveling > 0 and destination != null:
-			print("-> Map panel with active quest, showing cancel dialog")
-			cancel_quest.show_dialog()
-			return
+	# Priority 5: Return to default panel
+	print("-> Going to default panel")
+	_go_to_default_panel()
+
+func _close_sub_overlays() -> bool:
+	"""Close sub-overlays that sit outside the main stack. Returns true if something was closed."""
+	if upgrade_talent and upgrade_talent.visible:
+		print("-> Closing upgrade_talent sub-overlay")
+		upgrade_talent.visible = false
+		return true
 	
-	if current == quest:
-		if traveling == 0 and destination != null:
-			print("-> Quest panel with completed travel, showing cancel dialog")
-			cancel_quest.show_dialog()
-			return
+	if perk_screen and perk_screen.visible:
+		print("-> Closing perk_screen sub-overlay")
+		perk_screen.visible = false
+		return true
 	
-	# Expedition panel: show cancel dialog
-	if current == expedition_panel:
-		print("-> Expedition panel, showing cancel dialog")
+	return false
+
+func _handle_panel_back() -> bool:
+	"""Handle panel-specific back behavior. Returns true if handled."""
+	var panel = current_panel
+	
+	# Map panel with active travel -> show cancel dialog
+	if panel == map_panel and is_traveling():
+		print("-> Map: showing cancel dialog")
 		cancel_quest.show_dialog()
-		return
+		return true
 	
-	# Home panel: check quest accept panel first, then interior navigation
-	if current == home_panel:
-		# First priority: hide quest accept panel if visible
-		if quest_panel.visible:
-			print("-> Hiding quest accept panel")
+	# Quest panel (arrived at destination) -> show cancel dialog
+	if panel == quest and is_on_active_quest():
+		print("-> Quest: showing cancel dialog")
+		cancel_quest.show_dialog()
+		return true
+	
+	# Expedition panel -> show cancel dialog
+	if panel == expedition_panel:
+		print("-> Expedition: showing cancel dialog")
+		cancel_quest.show_dialog()
+		return true
+	
+	# Home panel -> interior navigation or logout
+	if panel == home_panel:
+		# First: hide quest accept panel if visible
+		if quest_panel and quest_panel.visible:
+			print("-> Home: hiding quest accept panel")
 			quest_panel.visible = false
-			return
+			return true
 		
-		# Second priority: interior navigation
-		print("-> Home panel, checking interior navigation")
-		var handled = home_panel.handle_back_navigation()
-		if handled:
-			print("   -> Handled interior navigation")
-			return
-		else:
-			print("   -> Already in exterior, showing logout panel")
-			if logout_panel:
-				print("   -> logout_panel is valid, showing it")
-				show_overlay(logout_panel)
-			else:
-				print("   -> ERROR: logout_panel is null - not found in scene tree")
-			return
+		# Second: interior navigation
+		if home_panel.handle_back_navigation():
+			print("-> Home: exited interior")
+			return true
+		
+		# Third: show logout (already at exterior)
+		print("-> Home: showing logout")
+		show_overlay(logout_panel)
+		return true
 	
-	# Talents/Details bookmarks - handled by overlay system now
-	# (removed specific cases since they're overlays)
-	
-	# Rankings panel: go back to home, quest, or expedition
-	if current == rankings_panel:
-		print("-> Rankings panel, going back")
-		if is_on_expedition():
-			show_panel(expedition_panel)
-		elif is_on_active_quest():
-			show_panel(quest)
-		else:
-			show_panel(home_panel)
-		return
-	
-	# Default: go home, or go to quest/expedition panel if active
+	# Character/Rankings panels don't need special handling - fall through to default
+	return false
+
+func _go_to_default_panel():
+	"""Navigate to the appropriate default panel based on player state"""
 	if is_on_expedition():
-		print("-> Active expedition detected, returning to expedition panel")
 		show_panel(expedition_panel)
+	elif is_traveling():
+		# Currently traveling - go to map panel (where timer is)
+		show_panel(map_panel)
 	elif is_on_active_quest():
-		print("-> Active quest detected, returning to quest panel")
 		show_panel(quest)
 	else:
-		print("-> Default case, going home")
 		show_panel(home_panel)
 
 
