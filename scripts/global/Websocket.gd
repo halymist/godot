@@ -726,4 +726,13 @@ func expedition_option(option_id: int):
 	send("expedition_option", {
 		"int_argument1": option_id
 	})
+	
+	# MOCK: Simulate server response with random next slide (1-4)
+	# In production, this would come from the server
+	var random_slide = randi_range(1, 4)
+	print("MOCK: Server responded with next slide ID: ", random_slide)
+	
+	# Call the expedition panel to show the next slide
+	if UIManager.instance and UIManager.instance.expedition_panel:
+		UIManager.instance.expedition_panel.receive_next_slide(random_slide)
 
