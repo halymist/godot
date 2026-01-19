@@ -16,6 +16,7 @@
 script = ExtResource("2_ot23h")
 location_id = 1
 location_name = "Krasna"
+description = "Tiny settlement and some placeholder text to see how it looks like with few more lines and if content fitter is solid"
 village_scene = ExtResource("9_c0hw1")
 expedition_texture = ExtResource("8_n5k1k")
 expedition_text = "well this is kinda cool no?"

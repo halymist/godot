@@ -4,12 +4,13 @@ extends Control
 @export var gold_label: Label
 @export var currency_label: Label
 @export var location_label: Label
+@export var location_description_label: Label
 
 # Location panel exports (from LocationPanel.gd)
 @export var sunny_icon: Texture2D
 @export var rainy_icon: Texture2D
 @export var weather_icon_texture: TextureRect
-@export var location_info_panel: PanelContainer
+@export var location_info_panel: MarginContainer
 @export var location_hover_area: Control  # Optional control to detect hover on
 
 var update_timer: Timer
@@ -20,7 +21,7 @@ func _ready():
 	if location_info_panel:
 		location_info_panel.visible = false
 	
-	# Connect mouse signals for location hover
+	# Connect mouse signals for location hover (if assigned)
 	if location_hover_area:
 		location_hover_area.mouse_entered.connect(_on_mouse_entered)
 		location_hover_area.mouse_exited.connect(_on_mouse_exited)
@@ -37,12 +38,11 @@ func _ready():
 
 func _on_update_timer_timeout():
 	"""Called every second to update the time display"""
-	if location_label:
-		var location_id = GameInfo.current_player.location if GameInfo.current_player else 1
-		var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
-		var village_name = location.location_name if location else "Unknown Village"
-		var server_time = _get_server_time_string()
-		location_label.text = "%s - %s" % [village_name, server_time]
+	var location_id = GameInfo.current_player.location if GameInfo.current_player else 1
+	var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
+	var village_name = location.location_name if location else "Unknown Village"
+	var server_time = _get_server_time_string()
+	location_label.text = "%s - %s" % [village_name, server_time]
 
 func _on_location_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
@@ -75,6 +75,10 @@ func update_display():
 		
 		# Format: "Krasna Ves - 14:35"
 		location_label.text = "%s - %s" % [village_name, server_time]
+		
+		# Update location description
+		if location_description_label and location:
+			location_description_label.text = location.description if location.description else "No description available."
 	
 	# Update weather icon
 	_update_weather_icon()

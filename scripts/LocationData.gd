@@ -3,6 +3,7 @@ extends Resource
 
 @export var location_id: int
 @export var location_name: String
+@export_multiline var description: String = ""
 
 # Village scene for this location
 @export var village_scene: PackedScene

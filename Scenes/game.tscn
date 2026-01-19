@@ -319,7 +319,7 @@ offset_top = -900.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TopUI" type="Panel" parent="Portrait" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
+[node name="TopUI" type="Panel" parent="Portrait" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "location_description_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -332,6 +332,7 @@ script = ExtResource("4_2cns2")
 gold_label = NodePath("VBoxContainer/SilverContainer/SilverValue")
 currency_label = NodePath("VBoxContainer/MushroomContainer/MushroomValue")
 location_label = NodePath("LocationPanel/HBoxContainer/LocationLabel")
+location_description_label = NodePath("../GameScene/LocationInfoPanel/InfoLabel")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
 weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
@@ -2632,21 +2633,22 @@ offset_right = 2.42999
 visible = false
 layout_mode = 1
 
-[node name="LocationInfoPanel" type="PanelContainer" parent="Portrait/GameScene"]
+[node name="LocationInfoPanel" type="MarginContainer" parent="Portrait/GameScene"]
 visible = false
 layout_mode = 0
-offset_right = 285.0
+offset_right = 293.0
 offset_bottom = 120.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
+
+[node name="Panel" type="Panel" parent="Portrait/GameScene/LocationInfoPanel"]
+layout_mode = 2
 
 [node name="InfoLabel" type="Label" parent="Portrait/GameScene/LocationInfoPanel"]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-text = "Location Bonuses:
-+10% Gold from quests
-+5% Experience gain
-Weather: Rainy (-10% Travel Speed)"
+text = "Tiny settlement and some placeholder text to see how it looks like with few more lines and if content fitter is solid"
+autowrap_mode = 3
 
 [node name="Rankings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("rankings_table", "table_content", "player_card", "search_input", "player_name_label", "avatar_instance", "character_button", "fight_button", "fight_status_label", "strength", "stamina", "agility", "luck", "armor")]
 visible = false
@@ -6814,7 +6816,7 @@ location_label = NodePath("LocationPanel/HBoxContainer/LocationLabel")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
 weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
-location_info_panel = NodePath("../../Portrait/GameScene/LocationInfoPanel")
+location_info_panel = NodePath("")
 
 [node name="Character" type="TextureRect" parent="Wide/Sidebar"]
 layout_mode = 0
