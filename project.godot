@@ -18,10 +18,10 @@ config/icon="res://assets/images/icon.svg"
 [autoload]
 
 Websocket="*res://scripts/global/Websocket.gd"
-Http="*res://scripts/global/Http.gd"
 GameInfo="*res://scripts/global/GameInfo.gd"
 TooltipManager="*res://scripts/global/TooltipManager.gd"
 SettingsManager="*res://scripts/global/SettingsManager.gd"
+Http="*res://scripts/global/Http.gd"
 
 [display]
 

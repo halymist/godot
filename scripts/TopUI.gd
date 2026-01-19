@@ -35,10 +35,6 @@ func _ready():
 	# Initial update
 	update_display()
 
-func _on_mushrooms_changed(new_mushrooms: int):
-	if currency_label:
-		currency_label.text = str(new_mushrooms)
-
 func _on_update_timer_timeout():
 	"""Called every second to update the time display"""
 	if location_label:
@@ -66,9 +62,9 @@ func update_display():
 	if not GameInfo.current_player:
 		return
 	
-	# Update mushrooms if label exists
-	if currency_label:
-		currency_label.text = str(GameInfo.current_player.mushrooms)
+	# Update mushrooms (account-level, from lobby data)
+	if currency_label and GameInfo.lobby_data.has("mushrooms"):
+		currency_label.text = str(GameInfo.lobby_data.mushrooms)
 	
 	# Update location if label exists
 	if location_label:

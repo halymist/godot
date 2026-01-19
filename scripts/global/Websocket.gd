@@ -114,7 +114,6 @@ var mock_characters = [
 	"avatar": [1, 10, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
 	"stats": [10, 12, 18, 10, 5, 5, 12],  # [strength, stamina, agility, luck, armor, damage_min, damage_max]
 	"silver": 700,
-	"mushrooms": 150,
 	"talent_points": 10,
 	"blessing": 100,
 	"potion": 0,
@@ -393,7 +392,6 @@ var mock_characters = [
 	"avatar": [1, 11, 20, 30, 40],  # [face, hair, eyes, nose, mouth]
 	"stats": [15, 10, 8, 12, 8, 8, 15],  # [strength, stamina, agility, luck, armor, damage_min, damage_max]
 	"silver": 2500,
-	"mushrooms": 75,
 	"talent_points": 5,
 	"blessing": 50,
 	"potion": 0,

@@ -596,11 +596,12 @@ func update_silver(amount: int):
 	update_display()
 
 func update_mushrooms(amount: int):
-	"""Add or subtract mushrooms and update all displays"""
+	"""Add or subtract mushrooms and update all displays (account-level)"""
 	print("UIManager.update_mushrooms called with amount: ", amount)
-	print("Current mushrooms before: ", GameInfo.current_player.mushrooms)
-	GameInfo.current_player.mushrooms += amount
-	print("Current mushrooms after: ", GameInfo.current_player.mushrooms)
+	if GameInfo.lobby_data.has("mushrooms"):
+		print("Current mushrooms before: ", GameInfo.lobby_data.mushrooms)
+		GameInfo.lobby_data.mushrooms += amount
+		print("Current mushrooms after: ", GameInfo.lobby_data.mushrooms)
 	update_display()
 
 func update_display():
@@ -614,11 +615,12 @@ func update_display():
 		else:
 			print("Warning: null label in silver_labels array")
 
-	# Refresh mushrooms label displays
+	# Refresh mushrooms label displays (account-level)
 	print("UIManager.update_display mushrooms_labels count: ", mushrooms_labels.size())
-	var mushrooms_text = str(GameInfo.current_player.mushrooms)
-	for m_label in mushrooms_labels:
-		m_label.text = mushrooms_text
+	if GameInfo.lobby_data.has("mushrooms"):
+		var mushrooms_text = str(GameInfo.lobby_data.mushrooms)
+		for m_label in mushrooms_labels:
+			m_label.text = mushrooms_text
 
 func refresh_bags():
 	"""Ask all registered bag views to refresh from GameInfo state"""

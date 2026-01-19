@@ -650,20 +650,13 @@ class GameCurrentPlayer:
 	# Silver (no automatic emission - use UIManager.update_display())
 	var silver: int = 0
 	
-	# Mushrooms with automatic event emission
-	var _mushrooms: int = 0
-	var mushrooms: int:
-		get: return _mushrooms
-		set(value):
-			_mushrooms = value
-	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):
 		# Call parent constructor with data
 		super._init(data, game_info)
 		
 		# Load current player specific fields (excluding special cases)
 		for key in data:
-			if key in self and key not in ["daily_quests", "mushrooms", "avatar", "stats", "bag_slots", "perks", "talents"]:
+			if key in self and key not in ["daily_quests", "avatar", "stats", "bag_slots", "perks", "talents"]:
 				set(key, data[key])
 		
 		# Handle daily_quests array with type conversion
@@ -676,10 +669,6 @@ class GameCurrentPlayer:
 		if data.has("expedition"):
 			expedition = data.expedition.duplicate()
 		
-		# Handle mushrooms to trigger setter
-		if data.has("mushrooms"):
-			mushrooms = data.mushrooms
-		
 		# Convert null traveling to 0
 		if traveling == null:
 			traveling = 0
@@ -688,7 +677,6 @@ class GameCurrentPlayer:
 	func get_player_stats() -> Dictionary:
 		var stats = get_total_stats()
 		stats["silver"] = silver
-		stats["mushrooms"] = mushrooms
 		stats["talent_points"] = talent_points
 		return stats
 	
