@@ -11,7 +11,7 @@ extends Node
 var mock_lobby_data = {
 	"account_created": "2023-01-15T10:30:00Z",
 	"email": "player15@example.com",
-	"mushrooms": 500,
+	"mushrooms": 0,
 	"connected_methods": ["google", "mail"],
 	"new_server_timestamp": "2026-01-20T12:00:00Z",
 	"server_list": [

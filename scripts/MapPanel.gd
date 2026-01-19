@@ -1,5 +1,7 @@
 extends Panel
 
+const SKIP_COST: int = 1  # Mushroom cost to skip travel
+
 @export var quest_name_label: Label
 @export var travel_text_label: Label
 @export var travel_progress: TextureProgressBar
@@ -82,8 +84,8 @@ func refresh_travel_state():
 		# Currently traveling to expedition - show skip button, hide enter dungeon button
 		travel_progress.visible = true
 		skip_button.visible = true
-		skip_button.disabled = is_skipping
-		skip_button.text = "Skipping..." if is_skipping else "Skip"
+		skip_button.disabled = is_skipping or not _can_afford_skip()
+		skip_button.text = "Skipping..." if is_skipping else "Skip (1 🍄)"
 		enter_dungeon_button.visible = false
 		return
 	
@@ -121,7 +123,7 @@ func refresh_travel_state():
 	travel_progress.visible = true
 	skip_button.visible = true
 	skip_button.disabled = false
-	skip_button.text = "Skip"
+	skip_button.text = "Skip (1 🍄)"
 	enter_dungeon_button.visible = false
 	travel_text_label.text = travel_text
 
@@ -143,6 +145,10 @@ func _process(_delta):
 	# Only update if actively traveling
 	if not is_traveling:
 		return
+	
+	# Update skip button state based on mushroom availability
+	if not is_skipping and skip_button.visible:
+		skip_button.disabled = not _can_afford_skip()
 	
 	# Handle skipping animation - accelerate the countdown
 	if is_skipping:
@@ -211,6 +217,10 @@ func _process(_delta):
 	var seconds = int(time_remaining) % 60
 	travel_time_label.text = "%02d:%02d" % [minutes, seconds]
 
+func _can_afford_skip() -> bool:
+	"""Check if player has enough mushrooms to skip"""
+	return GameInfo.lobby_data.has("mushrooms") and GameInfo.lobby_data.mushrooms >= SKIP_COST
+
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
 	
@@ -218,6 +228,15 @@ func _on_skip_button_pressed():
 	var is_traveling = is_expedition_travel or current_player.traveling > 0
 	
 	if is_traveling and not is_skipping:
+		# Check if player has enough mushrooms
+		if not _can_afford_skip():
+			print("Not enough mushrooms to skip travel")
+			return
+		
+		# Deduct mushroom cost
+		UIManager.instance.update_mushrooms(-SKIP_COST)
+		print("Deducted ", SKIP_COST, " mushroom for skip")
+		
 		# Calculate remaining time
 		var current_time = Time.get_unix_time_from_system()
 		var travel_end_time: float
@@ -308,8 +327,8 @@ func start_expedition_travel():
 	travel_progress.visible = true
 	travel_progress.value = 0
 	skip_button.visible = true
-	skip_button.disabled = false
-	skip_button.text = "Skip"
+	skip_button.disabled = not _can_afford_skip()
+	skip_button.text = "Skip (1 🍄)"
 	enter_dungeon_button.visible = false
 	
 	set_process(true)  # Enable frame updates
