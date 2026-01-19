@@ -264,6 +264,12 @@ func _on_enter_dungeon_pressed():
 
 func start_expedition_travel():
 	"""Start traveling to an expedition (dungeon)"""
+	# Check if player is VIP and has autoskip enabled
+	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
+	var autoskip = false
+	if is_vip:
+		autoskip = SettingsManager.get_setting("gameplay", "autoskip_quest")
+	
 	# Send start_expedition to server (no parameter - server knows everything)
 	Websocket.start_expedition()
 	
@@ -271,6 +277,15 @@ func start_expedition_travel():
 	# In production, this would come from server via receive_expedition_slide()
 	pending_expedition_slide_id = 2
 	print("MOCK: Server responded with expedition slide ID: ", pending_expedition_slide_id)
+	
+	# Autoskip (VIP only): Go directly to expedition panel
+	if autoskip:
+		print("Autoskip enabled - going directly to expedition")
+		# Update player's expedition state
+		GameInfo.current_player.expedition = [pending_expedition_slide_id]
+		# Load expedition panel
+		_load_expedition()
+		return
 	
 	# Set up 15 second timer
 	var travel_time = 15.0

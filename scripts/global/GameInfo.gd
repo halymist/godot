@@ -646,7 +646,6 @@ class GameCurrentPlayer:
 	
 	# VIP status
 	var vip: bool = false
-	var autoskip: bool = false  # VIP only - skip travel screen and go directly to quest
 	
 	# Silver (no automatic emission - use UIManager.update_display())
 	var silver: int = 0

@@ -87,7 +87,6 @@ func _on_disable_ads_toggled(enabled: bool):
 	print("Disable ads: ", enabled)
 
 func _on_autoskip_quest_toggled(enabled: bool):
-	GameInfo.current_player.autoskip = enabled
 	_save_setting("gameplay", "autoskip_quest", enabled)
 	print("Quest auto-skip: ", enabled)
 

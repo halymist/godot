@@ -122,7 +122,6 @@ var mock_characters = [
 	
 	# Flags and state
 	"vip": false,
-	"autoskip": false,
 	"traveling": null,
 	"traveling_destination": null,
 	"dungeon": false,

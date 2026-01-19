@@ -39,14 +39,27 @@ func _on_accept_pressed():
 	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
 	print("Player VIP status: ", is_vip)
 	
+	# Check autoskip setting (device-level, VIP only)
+	var autoskip = false
+	if is_vip:
+		autoskip = SettingsManager.get_setting("gameplay", "autoskip_quest")
+	print("Autoskip setting: ", autoskip)
+	
 	# Always set the quest destination first
 	accept_quest(quest_id)  # This sets traveling_destination
 	
 	# Clear overlay stack so cancel button doesn't target quest_panel
 	UIManager.instance.hide_current_overlay()
 	
+	# Autoskip (VIP only): Go directly to quest, bypass map panel
+	if autoskip:
+		print("Autoskip enabled - going directly to quest")
+		GameInfo.current_player.traveling = 0  # No timer
+		UIManager.instance.quest.load_quest(quest_id)
+		return
+	
+	# VIP without autoskip: 0 timer (instant "Enter Quest" button)
 	if is_vip:
-		# VIP: No timer, map will show Go Quest button immediately
 		GameInfo.current_player.traveling = 0  # No timer for VIP
 		print("VIP player - no timer")
 	else:
@@ -60,20 +73,10 @@ func _on_accept_pressed():
 		
 		print("Travel started - Duration: ", travel_time, " seconds, End time: ", travel_end_time)
 	
-	# Check if player has autoskip enabled (VIP only)
-	var autoskip = GameInfo.current_player.autoskip if "autoskip" in GameInfo.current_player else false
-	
-	if autoskip and is_vip:
-		# Autoskip: Go directly to quest, bypass map panel
-		print("Autoskip enabled - going directly to quest")
-		UIManager.instance.hide_current_overlay()
-		UIManager.instance.quest.load_quest(quest_id)
-	else:
-		# Normal flow: Go to map panel (duration will be set to 15 in start_travel)
-		map.start_travel(quest_definition.travel_text, 15 if not is_vip else 0, quest_id)
-		UIManager.instance.hide_current_overlay()
-		UIManager.instance.show_panel(map)
-		print("Switched to map panel")
+	# Go to map panel (normal flow: VIP sees instant button, non-VIP sees timer)
+	map.start_travel(quest_definition.travel_text, 15 if not is_vip else 0, quest_id)
+	UIManager.instance.show_panel(map)
+	print("Switched to map panel")
 
 func show_quest(quest_data: Dictionary):
 	print("QuestPanel.show_quest called with data: ", quest_data)
