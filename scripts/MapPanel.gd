@@ -278,16 +278,17 @@ func start_expedition_travel():
 	pending_expedition_slide_id = 2
 	print("MOCK: Server responded with expedition slide ID: ", pending_expedition_slide_id)
 	
-	# Autoskip (VIP only): Go directly to expedition panel
-	if autoskip:
-		print("Autoskip enabled - going directly to expedition")
+	# Autoskip OR VIP: Go directly to expedition panel
+	# (User already on map, already read the text, no need for timer screen)
+	if autoskip or is_vip:
+		print("VIP or autoskip - going directly to expedition")
 		# Update player's expedition state
 		GameInfo.current_player.expedition = [pending_expedition_slide_id]
 		# Load expedition panel
 		_load_expedition()
 		return
 	
-	# Set up 15 second timer
+	# Non-VIP: Set up 15 second timer
 	var travel_time = 15.0
 	var current_time = Time.get_unix_time_from_system()
 	expedition_travel_end = current_time + travel_time
