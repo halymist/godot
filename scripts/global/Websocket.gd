@@ -67,7 +67,7 @@ func generate_mock_player_data(player_name: String, rank: int, faction: int, hon
 		],
 		"blessing": 0,  # No blessing by default (only IDs 1-4 exist in perks.tres)
 		"potion": 0,  # No potion by default
-		"elixir": 0,
+		"elixir": [],  # Array of ingredient IDs (empty = no elixir)
 		"bag_slots": [
 			{"id": 1, "bag_slot_id": 0, "day": 30 + stat_bonus},  # Basic helmet with day scaling
 			{"id": 2, "bag_slot_id": 2, "day": 25 + stat_bonus} if rank <= 50 else {}  
@@ -117,7 +117,7 @@ var mock_characters = [
 	"talent_points": 10,
 	"blessing": 100,
 	"potion": 0,
-	"elixir": 0,
+	"elixir": [],  # Array of ingredient IDs when active, empty when none
 	
 	# Flags and state
 	"vip": false,
@@ -397,7 +397,7 @@ var mock_characters = [
 	"talent_points": 5,
 	"blessing": 50,
 	"potion": 0,
-	"elixir": 0,
+	"elixir": [500, 501],  # Array of ingredient IDs when active, empty when none
 	
 	# Flags and state
 	"vip": true,

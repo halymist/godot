@@ -1,4 +1,4 @@
-extends Panel
+extends Control
 
 @export var ui_size_dropdown: OptionButton
 @export var autoskip_checkbox: CheckButton

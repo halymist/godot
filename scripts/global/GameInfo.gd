@@ -419,7 +419,18 @@ class GamePlayer:
 		
 		# Load simple properties (excluding arrays and special cases)
 		for key in data:
-			if key == "elixir_ingredients":
+			if key == "elixir":
+				# Elixir is now an array of ingredient IDs from server
+				if data[key] is Array and data[key].size() > 0:
+					elixir = 1000  # Elixir item ID is always 1000
+					elixir_ingredients.clear()
+					for ingredient_id in data[key]:
+						if ingredient_id != null and ingredient_id is int:
+							elixir_ingredients.append(ingredient_id)
+				else:
+					elixir = 0
+					elixir_ingredients.clear()
+			elif key == "elixir_ingredients":
 				elixir_ingredients.clear()
 				for ingredient_id in data[key]:
 					if ingredient_id != null and ingredient_id is int:
