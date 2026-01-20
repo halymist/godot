@@ -132,7 +132,9 @@ var mock_characters = [
 			"id": 1,
 			"effect_overdrive": 4,
 			"bag_slot_id": 0,
-			"day": 40
+			"day": 40,
+			"socket_id": 390,
+			"socket_day": 20
 		},
 		{
 			"id": 2,
