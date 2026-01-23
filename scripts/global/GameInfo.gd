@@ -744,6 +744,17 @@ func load_all_characters(characters_data: Array):
 		all_characters.append(player)
 	print("Loaded ", all_characters.size(), " characters")
 
+func load_character_from_server(character_data: Dictionary):
+	"""Load a single character from server data (WebSocket playerData response)"""
+	all_characters.clear()
+	var player = GameCurrentPlayer.new(character_data, self)
+	all_characters.append(player)
+	print("Loaded character from server: ", player.name, " (ID: ", player.character_id, ")")
+	
+	# Automatically select this character
+	current_character_id = player.character_id
+	_load_character_world_data_from_server(character_data)
+
 func select_character(character_id: int):
 	current_character_id = character_id
 	
@@ -767,6 +778,25 @@ func _load_character_world_data():
 	load_enemy_players_data(char_data.rankings)
 	load_chat_messages_data(char_data.chat_messages)
 	
+	if char_data.has("arena_opponents") and char_data.arena_opponents is Array:
+		arena_opponents.assign(char_data.arena_opponents)
+		print("Loaded ", arena_opponents.size(), " arena opponents")
+
+func _load_character_world_data_from_server(char_data: Dictionary):
+	"""Load world data from server response (no need to search mock data)"""
+	if char_data.is_empty():
+		print("ERROR: Empty character data from server")
+		return
+	
+	# Load rankings if available
+	if char_data.has("rankings") and char_data.rankings is Array:
+		load_enemy_players_data(char_data.rankings)
+	
+	# Load chat messages if available
+	if char_data.has("chat_messages") and char_data.chat_messages is Array:
+		load_chat_messages_data(char_data.chat_messages)
+	
+	# Load arena opponents if available
 	if char_data.has("arena_opponents") and char_data.arena_opponents is Array:
 		arena_opponents.assign(char_data.arena_opponents)
 		print("Loaded ", arena_opponents.size(), " arena opponents")

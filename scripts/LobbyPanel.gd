@@ -232,15 +232,15 @@ func add_character_list():
 			child.queue_free()
 	
 	for server in GameInfo.lobby_data.server_list:
-		for character_mini in server.characters_mini:
+		for character in server.characters:
 			var card = PlayerCard.instantiate()
 			characters_container.add_child(card)
-			# Pass minimal character data plus server info for display
-			card.setup(character_mini, server.server_name, server.server_start)
-			# Connect to card's signal
+			# Pass character data plus server info for display
+			card.setup(character, server.name, server.created_at, server.id)
+			# Connect to card's signal with proper signature (character_id, server_id)
 			card.character_selected.connect(_on_character_selected)
 
-func _on_character_selected(character_id: int):
+func _on_character_selected(character_id: int, server_id: int):
 	"""Handle character selection from player card"""
 	# Ignore if already loading a character
 	if loading_in_progress:
@@ -248,7 +248,7 @@ func _on_character_selected(character_id: int):
 		return
 	
 	loading_in_progress = true
-	print("Character selected in lobby: ", character_id)
+	print("Character selected in lobby: ", character_id, " on server: ", server_id)
 	
 	# Wait for both databases and game scene if they're still loading
 	while not databases_loaded or not game_scene_loaded:
@@ -258,14 +258,37 @@ func _on_character_selected(character_id: int):
 			print("Waiting for game scene to finish loading...")
 		await get_tree().process_frame
 	
-	# Load all character data
-	GameInfo.load_all_characters(Websocket.mock_characters)
+	# Connect to WebSocket and send joinLobby
+	print("Connecting to WebSocket...")
+	var ws_connected = await Websocket.connect_to_server()
 	
-	# Select this character
-	GameInfo.select_character(character_id)
+	if not ws_connected:
+		print("ERROR: Failed to connect to WebSocket server")
+		loading_in_progress = false
+		return
 	
-	print("Switching to game scene...")
-	# Switch to preloaded game scene (instant!)
+	# Connect to playerData signal
+	Websocket.player_data_received.connect(_on_player_data_received)
+	
+	# Send joinLobby request
+	Websocket.join_lobby(server_id, character_id, Http.session_id)
+	
+	# Wait for playerData response (handled in _on_player_data_received)
+	print("Waiting for player data from server...")
+
+func _on_player_data_received(character_data: Dictionary):
+	"""Handle playerData response from WebSocket"""
+	print("[Lobby] Received player data, loading character...")
+	
+	# Disconnect signal to avoid multiple calls
+	if Websocket.player_data_received.is_connected(_on_player_data_received):
+		Websocket.player_data_received.disconnect(_on_player_data_received)
+	
+	# Load character data into GameInfo (replaces mock data)
+	GameInfo.load_character_from_server(character_data)
+	
+	print("[Lobby] Character loaded, switching to game scene...")
+	# Switch to preloaded game scene
 	get_tree().change_scene_to_packed(game_scene)
 
 func _show_login_with_method(method: String):
@@ -352,8 +375,8 @@ func _on_character_created(success: bool, character_id: int, error: String):
 		avatar_data["mouth"]
 	]
 	
-	# Create character_mini object
-	var character_mini = {
+	# Create character object
+	var character_obj = {
 		"character_id": character_id,
 		"name": character_data["name"],
 		"vip": character_data["vip"],
@@ -361,34 +384,19 @@ func _on_character_created(success: bool, character_id: int, error: String):
 		"avatar": avatar_array
 	}
 	
-	# Find the newest server (last in the list with most recent created_at)
+	# Find the newest server (last in the list with most recent created_at timestamp)
 	var newest_server = null
 	var newest_timestamp = 0
 	
 	for server in GameInfo.lobby_data.server_list:
-		# Parse the server_start ISO timestamp to Unix
-		var parts = server.server_start.replace("Z", "").split("T")
-		if parts.size() >= 2:
-			var date_parts = parts[0].split("-")
-			var time_parts = parts[1].split(":")
-			if date_parts.size() >= 3 and time_parts.size() >= 3:
-				var server_dict = {
-					"year": int(date_parts[0]),
-					"month": int(date_parts[1]),
-					"day": int(date_parts[2]),
-					"hour": int(time_parts[0]),
-					"minute": int(time_parts[1]),
-					"second": int(time_parts[2])
-				}
-				var server_unix = Time.get_unix_time_from_datetime_dict(server_dict)
-				if server_unix > newest_timestamp:
-					newest_timestamp = server_unix
-					newest_server = server
+		if server.created_at > newest_timestamp:
+			newest_timestamp = server.created_at
+			newest_server = server
 	
 	# Add character to newest server
 	if newest_server:
-		newest_server.characters_mini.append(character_mini)
-		print("[Lobby] Added character to server: ", newest_server.server_name)
+		newest_server.characters.append(character_obj)
+		print("[Lobby] Added character to server: ", newest_server.name)
 		
 		# Refresh character list
 		add_character_list()

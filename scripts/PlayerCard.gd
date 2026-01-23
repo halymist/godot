@@ -2,9 +2,10 @@ extends Button
 
 # Player card for character selection in lobby
 
-signal character_selected(character_id: int)
+signal character_selected(character_id: int, server_id: int)
 
 var character_id: int = 0
+var server_id: int = 0
 var character_data: Dictionary = {}
 
 @onready var name_label = $HBox/Info/NameLabel
@@ -15,10 +16,11 @@ func _ready():
 	# Connect button pressed signal
 	pressed.connect(_on_pressed)
 
-func setup(character: Dictionary, server_name: String = "", server_start: String = ""):
+func setup(character: Dictionary, server_name: String = "", server_created_at: int = 0, srv_id: int = 0):
 	"""Setup the player card with character data and server info"""
 	character_data = character
 	character_id = character.character_id
+	server_id = srv_id
 	
 	# Set labels
 	if name_label:
@@ -26,8 +28,8 @@ func setup(character: Dictionary, server_name: String = "", server_start: String
 		name_label.text = character.name + vip_badge
 	
 	if server_label and server_name != "":
-		var server_age_days = _calculate_server_age_days(server_start)
-		server_label.text = "Server: " + server_name + " (Day " + str(server_age_days) + ")"
+		var server_age_days = _calculate_server_age_days(server_created_at)
+		server_label.text = server_name + " (Day " + str(server_age_days) + ")"
 	
 	# Setup avatar with character's cosmetic IDs
 	if avatar and character.has("avatar"):
@@ -41,20 +43,18 @@ func setup(character: Dictionary, server_name: String = "", server_start: String
 				avatar_data[4]   # mouth
 			)
 
-func _calculate_server_age_days(server_start_iso: String) -> int:
-	"""Calculate number of days since server started"""
-	if server_start_iso == "":
+func _calculate_server_age_days(server_created_at: int) -> int:
+	"""Calculate number of days since server started from unix timestamp"""
+	if server_created_at == 0:
 		return 0
 	
-	# Parse ISO 8601 timestamp (simplified - assumes format YYYY-MM-DDTHH:MM:SSZ)
-	var start_time = Time.get_ticks_msec() / 1000.0  # For now, mock it
-	# In real implementation, parse server_start_iso and calculate difference
-	# For mock data, we'll use a fixed calculation
-	var current_time = Time.get_ticks_msec() / 1000.0
-	var days_passed = int((current_time - start_time) / 86400.0)
+	var current_unix = Time.get_unix_time_from_system()
+	var seconds_passed = current_unix - server_created_at
+	var days_passed = int(seconds_passed / 86400.0)
+	
 	return max(1, days_passed)  # At least 1 day
 
 func _on_pressed():
 	"""Handle button press"""
-	print("Player card pressed for character ID: ", character_id)
-	character_selected.emit(character_id)
+	print("Player card pressed for character ID: ", character_id, " on server: ", server_id)
+	character_selected.emit(character_id, server_id)

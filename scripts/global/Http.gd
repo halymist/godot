@@ -123,43 +123,10 @@ func _transform_auth_response(response: Dictionary) -> Dictionary:
 		"mushrooms": response.get("mushrooms", 0),
 		"connected_methods": response.get("user_connected_methods", []),
 		"new_server_timestamp": response.get("new_server_timestamp", null),
-		"server_list": []
+		"server_list": response.get("server_list", [])
 	}
 	
-	# Transform server_list
-	var server_list = response.get("server_list", [])
-	for server in server_list:
-		var server_info = {
-			"server_id": server.get("id", ""),
-			"server_name": server.get("name", ""),
-			"server_start": _timestamp_to_iso(server.get("created_at", 0)),
-			"characters_mini": []
-		}
-		
-		# Transform characters
-		var characters = server.get("characters", [])
-		for char_data in characters:
-			server_info["characters_mini"].append({
-				"character_id": char_data.get("character_id", 0),
-				"name": char_data.get("name", ""),
-				"vip": char_data.get("vip", false),
-				"rank": char_data.get("rank", 0),
-				"avatar": char_data.get("avatar", [])
-			})
-		
-		lobby_data["server_list"].append(server_info)
-	
 	return lobby_data
-
-func _timestamp_to_iso(unix_timestamp: int) -> String:
-	"""Convert Unix timestamp to ISO 8601 string"""
-	if unix_timestamp == 0:
-		return ""
-	var datetime = Time.get_datetime_dict_from_unix_time(unix_timestamp)
-	return "%04d-%02d-%02dT%02d:%02d:%02dZ" % [
-		datetime.year, datetime.month, datetime.day,
-		datetime.hour, datetime.minute, datetime.second
-	]
 
 func register(auth_type: String, _username: String = "", _password: String = ""):
 	"""

@@ -4,8 +4,14 @@ extends Node
 # WEBSOCKET AUTOLOAD
 # ============================================
 # Handles all in-game WebSocket communication with the server
-# Currently stores mock data and prints actions
-# TODO: Implement actual WebSocket connection
+
+# WebSocket connection
+var ws: WebSocketPeer
+var ws_url: String = "ws://localhost:3000"
+var connected: bool = false
+
+# Signals
+signal player_data_received(character_data: Dictionary)
 
 # Mock account/lobby data - what player receives when first connecting
 var mock_lobby_data = {
@@ -83,6 +89,7 @@ func generate_mock_player_data(player_name: String, rank: int, faction: int, hon
 
 func _ready():
 	print("Websocket ready!")
+	set_process(false)  # Only process when connected
 	
 	# Generate rankings for each character
 	for character in mock_characters:
@@ -94,6 +101,124 @@ func _ready():
 				10000 - (i * 50),  # honor
 				10000 + i  # character_id (10000 + rank)
 			))
+
+func _process(_delta):
+	"""Poll WebSocket for new messages"""
+	if not ws:
+		return
+	
+	ws.poll()
+	var state = ws.get_ready_state()
+	
+	if state == WebSocketPeer.STATE_OPEN:
+		while ws.get_available_packet_count():
+			var packet = ws.get_packet()
+			var message = packet.get_string_from_utf8()
+			_handle_message(message)
+	elif state == WebSocketPeer.STATE_CLOSING:
+		pass
+	elif state == WebSocketPeer.STATE_CLOSED:
+		var code = ws.get_close_code()
+		var reason = ws.get_close_reason()
+		print("[WebSocket] Closed with code: %d, reason: %s" % [code, reason])
+		connected = false
+		set_process(false)
+
+func connect_to_server():
+	"""Connect to WebSocket server"""
+	ws = WebSocketPeer.new()
+	var err = ws.connect_to_url(ws_url)
+	
+	if err != OK:
+		print("[WebSocket] Failed to connect: ", err)
+		return false
+	
+	print("[WebSocket] Connecting to ", ws_url)
+	set_process(true)
+	
+	# Wait for connection
+	var max_attempts = 50  # 5 seconds
+	for i in range(max_attempts):
+		ws.poll()
+		var state = ws.get_ready_state()
+		if state == WebSocketPeer.STATE_OPEN:
+			connected = true
+			print("[WebSocket] Connected!")
+			return true
+		elif state == WebSocketPeer.STATE_CLOSED:
+			print("[WebSocket] Connection failed")
+			return false
+		await get_tree().create_timer(0.1).timeout
+	
+	print("[WebSocket] Connection timeout")
+	return false
+
+func disconnect_from_server():
+	"""Disconnect from WebSocket server"""
+	if ws:
+		ws.close()
+		ws = null
+		connected = false
+		set_process(false)
+		print("[WebSocket] Disconnected")
+
+func join_lobby(server_id: int, character_id: int, token: String):
+	"""Send joinLobby message to server"""
+	if not connected:
+		print("[WebSocket] Not connected! Cannot send joinLobby")
+		return
+	
+	var payload = {
+		"character_id": character_id,
+		"token": token
+	}
+	
+	var message = {
+		"function": "joinLobby",
+		"int_argument_1": server_id,
+		"string_argument": JSON.stringify(payload)
+	}
+	
+	var json = JSON.stringify(message)
+	print("[WebSocket] Sending joinLobby: ", json)
+	ws.send_text(json)
+
+func _handle_message(message: String):
+	"""Handle incoming WebSocket messages"""
+	print("[WebSocket] Received: ", message)
+	
+	var json = JSON.new()
+	var error = json.parse(message)
+	
+	if error != OK:
+		print("[WebSocket] Failed to parse JSON: ", json.get_error_message())
+		return
+	
+	var data = json.get_data()
+	
+	if typeof(data) != TYPE_DICTIONARY:
+		print("[WebSocket] Invalid message format")
+		return
+	
+	var function_name = data.get("function", "")
+	
+	match function_name:
+		"playerData":
+			_handle_player_data(data)
+		_:
+			print("[WebSocket] Unknown function: ", function_name)
+
+func _handle_player_data(message: Dictionary):
+	"""Handle playerData response"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid playerData format")
+		return
+	
+	var character_data = message.data[0]
+	print("[WebSocket] Player data received for character: ", character_data.get("character_id", "unknown"))
+	
+	# Emit signal with character data
+	player_data_received.emit(character_data)
 
 
 # Mock characters array - each character has their own world/data
