@@ -41,20 +41,10 @@ var databases_loaded = false
 var game_scene_loaded = false
 var game_scene: PackedScene = null
 var loading_in_progress = false  # Prevent multiple character selections while loading
+var initialized = false  # Track if we've initialized the lobby
 
 func _ready():
-	_load_databases_async()
-	_load_game_scene_async()
-	# lobby_data should already be loaded by LoginPanel, but ensure it's loaded
-	if GameInfo.lobby_data.is_empty():
-		GameInfo.load_lobby_data()
-	populate_account_info()
-	add_character_list()
-	setup_character_creation()
-	start_new_server_countdown()
-	setup_login_methods()
-	
-	# Connect buttons
+	# Connect buttons in _ready (they exist when scene loads)
 	create_new_button.pressed.connect(_on_create_new_character)
 	logout_button.pressed.connect(_on_logout)
 	email_button.pressed.connect(_show_login_with_method.bind("email"))
@@ -96,6 +86,31 @@ func _ready():
 	social_instagram_button.pressed.connect(_on_social_pressed.bind("instagram"))
 	social_twitter_button.pressed.connect(_on_social_pressed.bind("twitter"))
 	social_facebook_button.pressed.connect(_on_social_pressed.bind("facebook"))
+	
+	# Setup character creation panels
+	setup_character_creation()
+
+func initialize_lobby():
+	"""Initialize lobby with server data - called by LoginPanel after successful login"""
+	if initialized:
+		return  # Already initialized
+	
+	if GameInfo.lobby_data.is_empty():
+		print("Error: initialize_lobby called but no lobby data available")
+		return
+	
+	print("Initializing lobby with server data...")
+	initialized = true
+	
+	# Start resource loading
+	_load_databases_async()
+	_load_game_scene_async()
+	
+	# Populate UI with server data
+	populate_account_info()
+	add_character_list()
+	start_new_server_countdown()
+	setup_login_methods()
 
 func _load_databases_async():
 	"""Load databases in background"""

@@ -5,92 +5,201 @@ extends Node
 # ============================================
 # Handles all HTTP communication with the server
 # Authentication, character management, and account operations
-# Currently prints actions - TODO: Implement actual HTTP requests
 
 # Base URL for the server API
-var base_url = "https://api.example.com"  # TODO: Replace with actual server URL
+var base_url = "http://localhost:8080"
+
+# Signals for async responses
+signal login_completed(success: bool, data: Dictionary, error: String)
+signal register_completed(success: bool, data: Dictionary, error: String)
+
+# Session ID from successful login (used for authenticated requests)
+var session_id: String = ""
 
 func _ready():
 	print("Http ready!")
 
 # ============================================
-# HTTP API - Authentication & Account Actions
+# HTTP API - Helper Functions
 # ============================================
 
-func send_request(endpoint: String, method: String, payload: Dictionary):
-	"""Send an HTTP request to the server (placeholder for now)"""
-	print("[HTTP] ", method, " ", endpoint, " | Payload: ", payload)
-	# TODO: Implement actual HTTP request when connected to real server
-	# HTTPRequest node would be created here
-	# Handle response callbacks
+func _create_http_request() -> HTTPRequest:
+	"""Create a new HTTPRequest node for a single request"""
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+	return http_request
+
+func _get_headers(include_session: bool = false) -> PackedStringArray:
+	"""Get common headers for requests"""
+	var headers = PackedStringArray([
+		"Content-Type: application/json"
+	])
+	if include_session and session_id != "":
+		headers.append("Authorization: Bearer " + session_id)
+	return headers
 
 # ============================================
 # Authentication Actions
 # ============================================
 
-func login(auth_type: String, username: String = "", password: String = ""):
+func login(email: String, password: String):
 	"""
-	Login to account
-	auth_type: Authentication method (e.g., "google", "mail", "facebook")
-	username: Optional - username/email for certain auth types
-	password: Optional - password for certain auth types
+	Login to account with email and password
 	
-	Response on success: mock_lobby_data structure with account info and server list
-	Response on failure: error message
+	Emits login_completed signal with:
+	- success: bool - whether login was successful
+	- data: Dictionary - lobby data on success (account info, server list)
+	- error: String - error message on failure
 	"""
+	var http_request = _create_http_request()
+	http_request.request_completed.connect(_on_login_completed.bind(http_request))
+	
 	var payload = {
-		"auth_type": auth_type
+		"email": email,
+		"password": password
 	}
-	if username != "":
-		payload["username"] = username
-	if password != "":
-		payload["password"] = password
 	
-	send_request("/auth/login", "POST", payload)
+	var json_payload = JSON.stringify(payload)
+	var url = base_url + "/login"
 	
-	# TODO: On success, parse response and return lobby data
-	# For now, return mock data from Websocket
-	return Websocket.mock_lobby_data
+	print("[HTTP] POST ", url)
+	var error = http_request.request(url, _get_headers(), HTTPClient.METHOD_POST, json_payload)
+	
+	if error != OK:
+		print("[HTTP] Failed to send login request: ", error)
+		http_request.queue_free()
+		login_completed.emit(false, {}, "Failed to send request")
 
-func register(auth_type: String, username: String = "", password: String = ""):
+func _on_login_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
+	"""Handle login response from server"""
+	http_request.queue_free()
+	
+	if result != HTTPRequest.RESULT_SUCCESS:
+		print("[HTTP] Login request failed with result: ", result)
+		login_completed.emit(false, {}, "Connection failed")
+		return
+	
+	var body_text = body.get_string_from_utf8()
+	print("[HTTP] Login response (", response_code, "): ", body_text)
+	
+	if response_code != 200:
+		var error_msg = "Login failed (HTTP " + str(response_code) + ")"
+		# Try to parse error message from response
+		var err_json = JSON.new()
+		if err_json.parse(body_text) == OK:
+			var err_response = err_json.get_data()
+			if err_response is Dictionary and err_response.has("error"):
+				error_msg = err_response["error"]
+		login_completed.emit(false, {}, error_msg)
+		return
+	
+	# Parse successful response
+	var json = JSON.new()
+	if json.parse(body_text) != OK:
+		print("[HTTP] Failed to parse login response")
+		login_completed.emit(false, {}, "Invalid server response")
+		return
+	
+	var response = json.get_data()
+	if not response is Dictionary:
+		login_completed.emit(false, {}, "Invalid server response format")
+		return
+	
+	# Store session ID
+	if response.has("session_id"):
+		session_id = response["session_id"]
+	
+	# Transform server response to client format (lobby_data)
+	var lobby_data = _transform_auth_response(response)
+	
+	login_completed.emit(true, lobby_data, "")
+
+func _transform_auth_response(response: Dictionary) -> Dictionary:
+	"""Transform server AuthResponse to client lobby_data format"""
+	var lobby_data = {
+		"account_created": response.get("account_created", ""),
+		"email": response.get("user_email", ""),
+		"mushrooms": response.get("mushrooms", 0),
+		"connected_methods": response.get("user_connected_methods", []),
+		"new_server_timestamp": response.get("new_server_timestamp", null),
+		"server_list": []
+	}
+	
+	# Transform server_list
+	var server_list = response.get("server_list", [])
+	for server in server_list:
+		var server_info = {
+			"server_id": server.get("id", ""),
+			"server_name": server.get("name", ""),
+			"server_start": _timestamp_to_iso(server.get("created_at", 0)),
+			"characters_mini": []
+		}
+		
+		# Transform characters
+		var characters = server.get("characters", [])
+		for char_data in characters:
+			server_info["characters_mini"].append({
+				"character_id": char_data.get("character_id", 0),
+				"name": char_data.get("name", ""),
+				"vip": char_data.get("vip", false),
+				"rank": char_data.get("rank", 0),
+				"avatar": char_data.get("avatar", [])
+			})
+		
+		lobby_data["server_list"].append(server_info)
+	
+	return lobby_data
+
+func _timestamp_to_iso(unix_timestamp: int) -> String:
+	"""Convert Unix timestamp to ISO 8601 string"""
+	if unix_timestamp == 0:
+		return ""
+	var datetime = Time.get_datetime_dict_from_unix_time(unix_timestamp)
+	return "%04d-%02d-%02dT%02d:%02d:%02dZ" % [
+		datetime.year, datetime.month, datetime.day,
+		datetime.hour, datetime.minute, datetime.second
+	]
+
+func register(auth_type: String, _username: String = "", _password: String = ""):
 	"""
-	Register new account
+	Register new account (placeholder - will be implemented later)
 	auth_type: Authentication method (e.g., "google", "mail", "facebook")
-	username: Optional - username/email for certain auth types
-	password: Optional - password for certain auth types
+	_username: Optional - username/email for certain auth types
+	_password: Optional - password for certain auth types
 	
 	Response: success/failure message
 	"""
-	var payload = {
-		"auth_type": auth_type
-	}
-	if username != "":
-		payload["username"] = username
-	if password != "":
-		payload["password"] = password
-	
-	send_request("/auth/register", "POST", payload)
+	# TODO: Implement actual register endpoint
+	print("[HTTP] Register not yet implemented - auth_type: ", auth_type)
 
 func logout():
 	"""
-	Logout from current account
+	Logout from current account (placeholder - will be implemented later)
 	
 	Response: success confirmation
 	"""
-	send_request("/auth/logout", "POST", {})
+	# TODO: Implement actual logout endpoint
+	session_id = ""
+	print("[HTTP] Logout - session cleared")
 
 func reset_password(email: String):
 	"""
-	Send password reset email to the provided email address
+	Send password reset email to the provided email address (placeholder)
 	email: Email address to send password reset link to
 	
 	Response: success/failure confirmation
 	"""
-	var payload = {
-		"email": email
-	}
-	
-	send_request("/auth/reset-password", "POST", payload)
+	# TODO: Implement actual password reset endpoint
+	print("[HTTP] Password reset requested for: ", email)
+
+# ============================================
+# Generic Request (for not-yet-implemented endpoints)
+# ============================================
+
+func send_request(endpoint: String, method: String, payload: Dictionary):
+	"""Send an HTTP request to the server (placeholder for unimplemented endpoints)"""
+	print("[HTTP] ", method, " ", endpoint, " | Payload: ", payload)
+	# TODO: Implement actual HTTP request when endpoint is ready
 
 # ============================================
 # Character Management Actions

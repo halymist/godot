@@ -79,9 +79,11 @@ func load_databases():
 	print("Databases loaded")
 
 func load_lobby_data():
-	"""Load lobby data from Websocket mock data"""
-	lobby_data = Websocket.mock_lobby_data.duplicate(true)
-	print("Lobby data loaded into GameInfo")
+	"""Load lobby data - deprecated, lobby_data is now set directly from login response"""
+	# This function is kept for backwards compatibility but should not be used
+	# Lobby data is now set directly by LoginPanel._on_login_completed()
+	print("Warning: load_lobby_data() called but lobby data should come from server")
+	pass
 
 # ============================================
 # TALENT REGISTRATION

@@ -104,7 +104,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "method_indicator", "email_login_section", "google_login_section", "google_play_login_section", "apple_login_section", "discord_login_section", "facebook_login_section", "email_register_section", "email_login_button", "google_login_button", "google_play_login_button", "apple_login_button", "discord_login_button", "facebook_login_button", "email_register_button", "password_input", "password_toggle", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
+[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "method_indicator", "email_login_section", "google_login_section", "google_play_login_section", "apple_login_section", "discord_login_section", "facebook_login_section", "email_register_section", "email_login_button", "google_login_button", "google_play_login_button", "apple_login_button", "discord_login_button", "facebook_login_button", "email_register_button", "email_input", "password_input", "password_toggle", "stay_logged_in_checkbox", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
 layout_mode = 1
 anchor_top = 0.024
 anchor_right = 1.0
@@ -137,8 +137,10 @@ apple_login_button = NodePath("AppleLoginSection/LoginButton")
 discord_login_button = NodePath("DiscordLoginSection/LoginButton")
 facebook_login_button = NodePath("FacebookLoginSection/LoginButton")
 email_register_button = NodePath("EmailRegisterSection/RegisterButton")
+email_input = NodePath("EmailLoginSection/AccountInput")
 password_input = NodePath("EmailLoginSection/PasswordInput")
 password_toggle = NodePath("EmailLoginSection/PasswordToggle")
+stay_logged_in_checkbox = NodePath("EmailLoginSection/StayLogged")
 forgot_password_panel = NodePath("ForgotPasswordPanel")
 forgot_password_button = NodePath("EmailLoginSection/ForgotPassword")
 forgot_email_input = NodePath("ForgotPasswordPanel/InputPanel/EmailInput")

@@ -38,9 +38,17 @@ extends Control
 # Register action buttons (only email needs separate button)
 @export var email_register_button: Button
 
-# Password input and toggle
+# Email/Password inputs
+@export var email_input: LineEdit
 @export var password_input: LineEdit
 @export var password_toggle: CheckBox
+@export var stay_logged_in_checkbox: CheckBox
+
+# Error display
+@export var error_label: Label
+
+# Credential storage path
+const CREDENTIALS_PATH = "user://credentials.cfg"
 
 # Forgot password panel
 @export var forgot_password_panel: Control
@@ -56,6 +64,7 @@ extends Control
 var current_method: String = "email"
 var is_register_mode: bool = false
 var indicator_tween: Tween
+var is_logging_in: bool = false  # Prevent double-clicks during login
 
 func _ready():
 	# Check if we already have login data (auto-login)
@@ -63,6 +72,13 @@ func _ready():
 		visible = false
 		lobby_panel.visible = true
 		return
+	
+	# Try to auto-login with saved credentials
+	if _try_auto_login():
+		return
+	
+	# Connect HTTP login signal
+	Http.login_completed.connect(_on_login_completed)
 	
 	# Connect mode toggle buttons
 	login_mode_button.toggled.connect(_on_login_mode_toggled)
@@ -107,6 +123,10 @@ func _ready():
 	# Connect overlay click to close
 	if forgot_password_panel:
 		forgot_password_panel.gui_input.connect(_on_overlay_click)
+	
+	# Hide error label initially
+	if error_label:
+		error_label.visible = false
 	
 	# Start with login mode and email selected
 	_on_mode_toggle(false)
@@ -220,25 +240,153 @@ func _on_facebook_toggled(toggled_on: bool):
 		_on_method_selected("facebook")
 
 func _on_login():
-	"""Handle login (accept everything for now)"""
-	# Load lobby data (simulates successful login)
-	GameInfo.load_lobby_data()
-	visible = false
-	lobby_panel.visible = true
+	"""Handle email/password login"""
+	if is_logging_in:
+		return
+	
+	# Get email and password
+	var email = ""
+	var password = ""
+	
+	if email_input:
+		email = email_input.text.strip_edges()
+	if password_input:
+		password = password_input.text
+	
+	# Validate inputs
+	if email.is_empty():
+		_show_error("Please enter your email")
+		return
+	if password.is_empty():
+		_show_error("Please enter your password")
+		return
+	
+	# Clear any previous error
+	_hide_error()
+	
+	# Disable button and show loading state
+	is_logging_in = true
+	if email_login_button:
+		email_login_button.disabled = true
+		email_login_button.text = "Logging in..."
+	
+	# Send login request to server
+	Http.login(email, password)
+
+func _on_login_completed(success: bool, data: Dictionary, error: String):
+	"""Handle login response from server"""
+	is_logging_in = false
+	
+	# Re-enable button
+	if email_login_button:
+		email_login_button.disabled = false
+		email_login_button.text = "Login"
+	
+	if success:
+		# Store lobby data in GameInfo
+		GameInfo.lobby_data = data
+		print("Login successful! Lobby data loaded.")
+		
+		# Save credentials if "stay logged in" is checked
+		if stay_logged_in_checkbox and stay_logged_in_checkbox.button_pressed:
+			_save_credentials()
+		else:
+			# Clear saved credentials if unchecked
+			_clear_credentials()
+		
+		# Switch to lobby panel and initialize it with server data
+		visible = false
+		lobby_panel.visible = true
+		lobby_panel.initialize_lobby()
+	else:
+		# Show error message
+		_show_error(error if error != "" else "Login failed")
+
+# ============================================
+# Credential Storage Functions
+# ============================================
+
+func _try_auto_login() -> bool:
+	"""Try to login with saved credentials. Returns true if attempting auto-login."""
+	var config = ConfigFile.new()
+	var err = config.load(CREDENTIALS_PATH)
+	if err != OK:
+		return false
+	
+	var email = config.get_value("auth", "email", "")
+	var password = config.get_value("auth", "password", "")
+	
+	if email.is_empty() or password.is_empty():
+		return false
+	
+	print("[Login] Found saved credentials, attempting auto-login...")
+	
+	# Connect to login signal if not already connected
+	if not Http.login_completed.is_connected(_on_login_completed):
+		Http.login_completed.connect(_on_login_completed)
+	
+	# Pre-fill the email field for display
+	if email_input:
+		email_input.text = email
+	if password_input:
+		password_input.text = password
+	if stay_logged_in_checkbox:
+		stay_logged_in_checkbox.button_pressed = true
+	
+	# Show loading state
+	is_logging_in = true
+	if email_login_button:
+		email_login_button.disabled = true
+		email_login_button.text = "Logging in..."
+	
+	# Attempt login
+	Http.login(email, password)
+	return true
+
+func _save_credentials():
+	"""Save email and password to config file"""
+	if not email_input or not password_input:
+		return
+	
+	var config = ConfigFile.new()
+	config.set_value("auth", "email", email_input.text.strip_edges())
+	config.set_value("auth", "password", password_input.text)
+	
+	var err = config.save(CREDENTIALS_PATH)
+	if err == OK:
+		print("[Login] Credentials saved for auto-login")
+	else:
+		print("[Login] Failed to save credentials: ", err)
+
+func _clear_credentials():
+	"""Clear saved credentials"""
+	var dir = DirAccess.open("user://")
+	if dir and dir.file_exists("credentials.cfg"):
+		dir.remove("credentials.cfg")
+		print("[Login] Saved credentials cleared")
+
+func _show_error(message: String):
+	"""Display error message to user"""
+	print("[Login] Error: ", message)
+	if error_label:
+		error_label.text = message
+		error_label.visible = true
+
+func _hide_error():
+	"""Hide error message"""
+	if error_label:
+		error_label.visible = false
 
 func _on_login_or_register():
 	"""Handle login or register for non-email methods (same flow)"""
-	# Load lobby data (simulates successful login/register)
-	GameInfo.load_lobby_data()
-	visible = false
-	lobby_panel.visible = true
+	# TODO: Implement OAuth flows for other providers
+	# For now, show error that these methods are not yet implemented
+	_show_error("This login method is not yet available")
 
 func _on_register():
-	"""Handle registration (accept everything for now)"""
-	# Load lobby data (simulates successful registration)
-	GameInfo.load_lobby_data()
-	visible = false
-	lobby_panel.visible = true
+	"""Handle registration (placeholder)"""
+	# TODO: Implement registration endpoint
+	_show_error("Registration is not yet available")
 
 func _on_password_toggle(toggled_on: bool):
 	"""Toggle password visibility"""
