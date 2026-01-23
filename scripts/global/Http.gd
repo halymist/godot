@@ -12,6 +12,7 @@ var base_url = "http://localhost:8080"
 # Signals for async responses
 signal login_completed(success: bool, data: Dictionary, error: String)
 signal register_completed(success: bool, data: Dictionary, error: String)
+signal create_character_completed(success: bool, character_id: int, error: String)
 
 # Session ID from successful login (used for authenticated requests)
 var session_id: String = ""
@@ -174,13 +175,40 @@ func register(auth_type: String, _username: String = "", _password: String = "")
 
 func logout():
 	"""
-	Logout from current account (placeholder - will be implemented later)
+	Logout from current account - sends logout request to server
 	
 	Response: success confirmation
 	"""
-	# TODO: Implement actual logout endpoint
+	if session_id.is_empty():
+		print("[HTTP] No session to logout")
+		return
+	
+	var http_request = _create_http_request()
+	http_request.request_completed.connect(_on_logout_completed.bind(http_request))
+	
+	var url = base_url + "/logout"
+	
+	print("[HTTP] POST ", url)
+	var error = http_request.request(url, _get_headers(true), HTTPClient.METHOD_POST, "")
+	
+	if error != OK:
+		print("[HTTP] Failed to send logout request: ", error)
+		http_request.queue_free()
+		session_id = ""
+
+func _on_logout_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
+	"""Handle logout response from server"""
+	http_request.queue_free()
+	
+	if result != HTTPRequest.RESULT_SUCCESS:
+		print("[HTTP] Logout request failed with result: ", result)
+	else:
+		var body_text = body.get_string_from_utf8()
+		print("[HTTP] Logout response (", response_code, "): ", body_text)
+	
+	# Clear session regardless of response
 	session_id = ""
-	print("[HTTP] Logout - session cleared")
+	print("[HTTP] Session cleared")
 
 func reset_password(email: String):
 	"""
@@ -205,24 +233,77 @@ func send_request(endpoint: String, method: String, payload: Dictionary):
 # Character Management Actions
 # ============================================
 
-func create_character(character_name: String, guild: int, avatar: Array, vip: bool = false):
+func create_character(character_name: String, faction: int, avatar: Array, vip: bool = false):
 	"""
 	Create a new character on the selected server
 	character_name: Character name
-	guild: Guild/faction ID
+	faction: Faction/guild ID
 	avatar: Array of avatar customization IDs [face, hair, eyes, nose, mouth]
 	vip: VIP status (optional, default false)
 	
-	Response: success/failure with character data or error message
+	Emits create_character_completed signal with:
+	- success: bool - whether creation was successful
+	- character_id: int - the new character's ID on success
+	- error: String - error message on failure
 	"""
+	var http_request = _create_http_request()
+	http_request.request_completed.connect(_on_create_character_completed.bind(http_request))
+	
 	var payload = {
 		"name": character_name,
-		"guild": guild,
-		"avatar": avatar,  # [face, hair, eyes, nose, mouth]
+		"faction": faction,
+		"avatar": avatar,
 		"vip": vip
 	}
 	
-	send_request("/character/create", "POST", payload)
+	var json_payload = JSON.stringify(payload)
+	var url = base_url + "/create-character"
+	
+	print("[HTTP] POST ", url)
+	var error = http_request.request(url, _get_headers(true), HTTPClient.METHOD_POST, json_payload)
+	
+	if error != OK:
+		print("[HTTP] Failed to send create character request: ", error)
+		http_request.queue_free()
+		create_character_completed.emit(false, 0, "Failed to send request")
+
+func _on_create_character_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
+	"""Handle create character response from server"""
+	http_request.queue_free()
+	
+	if result != HTTPRequest.RESULT_SUCCESS:
+		print("[HTTP] Create character request failed with result: ", result)
+		create_character_completed.emit(false, 0, "Connection failed")
+		return
+	
+	var body_text = body.get_string_from_utf8()
+	print("[HTTP] Create character response (", response_code, "): ", body_text)
+	
+	if response_code != 200:
+		var error_msg = "Character creation failed (HTTP " + str(response_code) + ")"
+		# Try to parse error message from response
+		var err_json = JSON.new()
+		if err_json.parse(body_text) == OK:
+			var err_response = err_json.get_data()
+			if err_response is Dictionary and err_response.has("error"):
+				error_msg = err_response["error"]
+		create_character_completed.emit(false, 0, error_msg)
+		return
+	
+	# Parse successful response
+	var json = JSON.new()
+	if json.parse(body_text) != OK:
+		print("[HTTP] Failed to parse create character response")
+		create_character_completed.emit(false, 0, "Invalid server response")
+		return
+	
+	var response = json.get_data()
+	if not response is Dictionary or not response.has("character_id"):
+		create_character_completed.emit(false, 0, "Invalid server response format")
+		return
+	
+	var character_id = response["character_id"]
+	create_character_completed.emit(true, character_id, "")
 
 func delete_character(character_id: int):
 	"""

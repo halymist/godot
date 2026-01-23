@@ -319,13 +319,9 @@ func _try_auto_login() -> bool:
 	if email.is_empty() or password.is_empty():
 		return false
 	
-	print("[Login] Found saved credentials, attempting auto-login...")
+	print("[Login] Found saved credentials, pre-filling login form...")
 	
-	# Connect to login signal if not already connected
-	if not Http.login_completed.is_connected(_on_login_completed):
-		Http.login_completed.connect(_on_login_completed)
-	
-	# Pre-fill the email field for display
+	# Pre-fill the email and password fields
 	if email_input:
 		email_input.text = email
 	if password_input:
@@ -333,15 +329,8 @@ func _try_auto_login() -> bool:
 	if stay_logged_in_checkbox:
 		stay_logged_in_checkbox.button_pressed = true
 	
-	# Show loading state
-	is_logging_in = true
-	if email_login_button:
-		email_login_button.disabled = true
-		email_login_button.text = "Logging in..."
-	
-	# Attempt login
-	Http.login(email, password)
-	return true
+	# User still needs to click login button
+	return false
 
 func _save_credentials():
 	"""Save email and password to config file"""

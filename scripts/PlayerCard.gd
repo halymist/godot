@@ -23,7 +23,7 @@ func setup(character: Dictionary, server_name: String = "", server_start: String
 	# Set labels
 	if name_label:
 		var vip_badge = " [VIP]" if character.get("vip", false) else ""
-		name_label.text = character.name + " (#" + str(character.rank) + ")" + vip_badge
+		name_label.text = character.name + vip_badge
 	
 	if server_label and server_name != "":
 		var server_age_days = _calculate_server_age_days(server_start)

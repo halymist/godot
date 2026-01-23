@@ -89,6 +89,9 @@ func _ready():
 	
 	# Setup character creation panels
 	setup_character_creation()
+	
+	# Connect to HTTP signals
+	Http.create_character_completed.connect(_on_character_created)
 
 func initialize_lobby():
 	"""Initialize lobby with server data - called by LoginPanel after successful login"""
@@ -121,6 +124,10 @@ func _load_game_scene_async():
 	"""Load game scene in background"""
 	ResourceLoader.load_threaded_request("res://Scenes/game.tscn")
 	while true:
+		# Stop if node was removed from tree (e.g., during logout)
+		if not is_inside_tree():
+			return
+		
 		var status = ResourceLoader.load_threaded_get_status("res://Scenes/game.tscn")
 		if status == ResourceLoader.THREAD_LOAD_LOADED:
 			game_scene = ResourceLoader.load_threaded_get("res://Scenes/game.tscn")
@@ -135,7 +142,7 @@ func populate_account_info():
 	var lobby_data = GameInfo.lobby_data
 	account_created_label.text = "Account Created: " + _parse_iso_date(lobby_data.account_created)
 	email_label.text = "Email: " + lobby_data.email
-	mushroom_value_label.text = str(lobby_data.mushrooms)
+	mushroom_value_label.text = str(int(lobby_data.mushrooms))
 	new_server_date_label.text = "(" + _parse_iso_date(lobby_data.new_server_timestamp) + ")"
 
 func _parse_iso_date(iso_string: String) -> String:
@@ -219,6 +226,11 @@ func setup_character_creation():
 
 func add_character_list():
 	"""Add character panels from GameInfo.lobby_data"""
+	# Clear existing character cards BUT NOT the create button
+	for child in characters_container.get_children():
+		if child != create_new_button:
+			child.queue_free()
+	
 	for server in GameInfo.lobby_data.server_list:
 		for character_mini in server.characters_mini:
 			var card = PlayerCard.instantiate()
@@ -264,8 +276,13 @@ func _show_login_with_method(method: String):
 
 func _on_logout():
 	"""Logout and return to login screen"""
-	# Clear lobby data to force login
+	# Call server logout endpoint
+	Http.logout()
+	
+	# Clear lobby data
 	GameInfo.lobby_data.clear()
+	
+	# Return to login screen
 	get_tree().change_scene_to_file("res://Scenes/login.tscn")
 
 func _on_create_new_character():
@@ -312,6 +329,71 @@ func _on_create_character_complete():
 	
 	avatar_creation_panel.visible = false
 	visible = true
+
+func _on_character_created(success: bool, character_id: int, error: String):
+	"""Handle character creation response from server"""
+	if not success:
+		print("[Lobby] Character creation failed: ", error)
+		# TODO: Show error message to user
+		return
+	
+	print("[Lobby] Character created successfully with ID: ", character_id)
+	
+	# Get character data from the creation panels
+	var character_data = character_info_panel.get_character_data()
+	var avatar_data = avatar_creation_panel.get_avatar_data()
+	
+	# Build avatar array
+	var avatar_array = [
+		avatar_data["face"],
+		avatar_data["hair"],
+		avatar_data["eyes"],
+		avatar_data["nose"],
+		avatar_data["mouth"]
+	]
+	
+	# Create character_mini object
+	var character_mini = {
+		"character_id": character_id,
+		"name": character_data["name"],
+		"vip": character_data["vip"],
+		"rank": 9999,  # New characters start at bottom rank
+		"avatar": avatar_array
+	}
+	
+	# Find the newest server (last in the list with most recent created_at)
+	var newest_server = null
+	var newest_timestamp = 0
+	
+	for server in GameInfo.lobby_data.server_list:
+		# Parse the server_start ISO timestamp to Unix
+		var parts = server.server_start.replace("Z", "").split("T")
+		if parts.size() >= 2:
+			var date_parts = parts[0].split("-")
+			var time_parts = parts[1].split(":")
+			if date_parts.size() >= 3 and time_parts.size() >= 3:
+				var server_dict = {
+					"year": int(date_parts[0]),
+					"month": int(date_parts[1]),
+					"day": int(date_parts[2]),
+					"hour": int(time_parts[0]),
+					"minute": int(time_parts[1]),
+					"second": int(time_parts[2])
+				}
+				var server_unix = Time.get_unix_time_from_datetime_dict(server_dict)
+				if server_unix > newest_timestamp:
+					newest_timestamp = server_unix
+					newest_server = server
+	
+	# Add character to newest server
+	if newest_server:
+		newest_server.characters_mini.append(character_mini)
+		print("[Lobby] Added character to server: ", newest_server.server_name)
+		
+		# Refresh character list
+		add_character_list()
+	else:
+		print("[Lobby] Error: No server found to add character to")
 
 func _on_social_pressed(platform: String):
 	"""Open social media link"""
