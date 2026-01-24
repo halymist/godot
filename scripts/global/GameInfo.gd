@@ -504,10 +504,10 @@ class GamePlayer:
 		
 		print("  get_total_stats for ", name, " - Base strength: ", total_stats.strength, ", bag_slots.size: ", bag_slots.size())
 		
-		# Add stats from equipped items (slots 0-9)
+		# Add stats from equipped items (slots 1-9)
 		for item in bag_slots:
 			print("    Checking item: id=", item.id, " bag_slot_id=", item.bag_slot_id, " day=", item.day)
-			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
+			if item.bag_slot_id >= 1 and item.bag_slot_id <= 9:
 				print("      Item IS equipped - strength=", item.strength)
 				# Item stats (already scaled by day/tempered)
 				total_stats.strength += item.strength
@@ -552,9 +552,9 @@ class GamePlayer:
 		for i in range(1, 21):
 			total_effects[i] = 0.0
 		
-		# 1. Sum effects from equipped items (slots 0-9)
+		# 1. Sum effects from equipped items (slots 1-9)
 		for item in bag_slots:
-			if item.bag_slot_id >= 0 and item.bag_slot_id < 10:
+			if item.bag_slot_id >= 1 and item.bag_slot_id <= 9:
 				if item.effect_id > 0 and item.effect_id <= 20:
 					total_effects[item.effect_id] += item.effect_factor
 		

@@ -53,8 +53,8 @@ func _can_drop_data(_pos, data):
 	if source_slot_id >= VENDOR_MIN and source_slot_id <= VENDOR_MAX and slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
 		return false
 	
-	# Special case: Allow gems to be dropped on equipment slots (0-8) if item has a socket
-	if item_type == "Gem" and slot_id >= 0 and slot_id <= 8:
+	# Special case: Allow gems to be dropped on equipment slots (1-9) if item has a socket
+	if item_type == "Gem" and slot_id >= EQUIPMENT_MIN and slot_id <= EQUIPMENT_MAX:
 		if not is_slot_empty():
 			var target_item = get_item_data()
 			if target_item and target_item.has_socket and target_item.socket_id == -1:
@@ -127,15 +127,15 @@ func _can_drop_data(_pos, data):
 	print("DEBUG: Existing item type = ", existing_item_type)
 	
 	# Special case: Don't allow swapping equipment items of different types
-	# Equipment slots are 0-8, and each has a specific type requirement
-	if slot_id >= 0 and slot_id <= 8 and source_slot_id >= 0 and source_slot_id <= 8:
+	# Equipment slots are 1-9, and each has a specific type requirement
+	if slot_id >= EQUIPMENT_MIN and slot_id <= EQUIPMENT_MAX and source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX:
 		# Both are equipment slots - only allow swap if same type
 		if item_type != existing_item_type:
 			return false
 	
 	# Also check when swapping between equipment and bag
-	# If source is equipment (0-8) and target has an item, types must match
-	if source_slot_id >= 0 and source_slot_id <= 8:
+	# If source is equipment (1-9) and target has an item, types must match
+	if source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX:
 		# Source is equipment slot - the item types must match for a swap
 		print("DEBUG: Equipment->bag swap check. Source slot: ", source_slot_id, " Target slot: ", slot_id)
 		print("DEBUG: Dragged item type: ", item_type, " Existing item type: ", existing_item_type)
@@ -143,15 +143,15 @@ func _can_drop_data(_pos, data):
 		# Get the required type for the source equipment slot
 		var required_type = ""
 		match source_slot_id:
-			0: required_type = "Head"
-			1: required_type = "Chest"
-			2: required_type = "Hands"
-			3: required_type = "Foot"
-			4: required_type = "Belt"
-			5: required_type = "Legs"
-			6: required_type = "Ring"
-			7: required_type = "Amulet"
-			8: required_type = "Weapon"
+			1: required_type = "Head"
+			2: required_type = "Chest"
+			3: required_type = "Hands"
+			4: required_type = "Foot"
+			5: required_type = "Belt"
+			6: required_type = "Legs"
+			7: required_type = "Ring"
+			8: required_type = "Amulet"
+			9: required_type = "Weapon"
 		
 		# Both items must match the equipment slot's required type
 		if item_type != required_type or existing_item_type != required_type:
@@ -258,8 +258,8 @@ func _drop_data(_pos, data):
 	print("Updated GameInfo: item moved to slot ", slot_id)
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
-		# Refresh stats if equipment slots (0-8) are involved
-		if slot_id <= 8 or source_slot_id <= 8:
+		# Refresh stats if equipment slots (1-9) are involved
+		if (slot_id >= EQUIPMENT_MIN and slot_id <= EQUIPMENT_MAX) or (source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX):
 			UIManager.instance.refresh_stats()
 			UIManager.instance.refresh_stats()
 

@@ -177,22 +177,25 @@ func _on_avatar_pressed():
 	UIManager.instance.toggle_avatar_overlay()
 
 func update_equipment():
-	"""Update equipment slots from displayed character's bag_slots (equipment: 0-8)"""
+	"""Update equipment slots from displayed character's bag_slots (equipment: 1-9)"""
 	# Clear all equipment slots
 	for slot in equipment_slots:
 		slot.clear_slot()
 	
-	# Display items from bag_slots (0-8 are equipment)
+	# Display items from bag_slots (1-9 are equipment)
 	for item in displayed_character.bag_slots:
 		var bag_slot_id = item.bag_slot_id
-		if bag_slot_id >= 0 and bag_slot_id <= 8 and bag_slot_id < equipment_slots.size():
-			var icon = item_prefab.instantiate()
-			icon.set_item_data(item)
-			
-			if display_mode == DisplayMode.ENEMY:
-				icon.disable_dragging()
-			
-			equipment_slots[bag_slot_id].add_child(icon)
+		# Server sends slot_id 1-9, array is indexed 0-8
+		if bag_slot_id >= 1 and bag_slot_id <= 9:
+			var array_index = bag_slot_id - 1
+			if array_index < equipment_slots.size():
+				var icon = item_prefab.instantiate()
+				icon.set_item_data(item)
+				
+				if display_mode == DisplayMode.ENEMY:
+					icon.disable_dragging()
+				
+				equipment_slots[array_index].add_child(icon)
 	
 	# Update slot appearances
 	for slot in equipment_slots:

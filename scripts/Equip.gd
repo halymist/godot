@@ -22,7 +22,7 @@ func update_equip_slots():
 		if slot.has_method("clear_slot"):
 			slot.clear_slot()
 
-	# Slot numbering: Equipment 0-8, Consume 9, Bag 10-14, Special 15+
+	# Slot numbering: Equipment 1-9, Consume 29, Bag 10-14, Special 15+
 	for item in GameInfo.current_player.bag_slots:
 		var bag_slot_id = item.bag_slot_id
 		
@@ -35,9 +35,9 @@ func update_equip_slots():
 				slot_id = bag_slot_id - 10
 				valid = true
 		else:
-			# Equipment slots: 0-8 → display as indices 0-8
-			if bag_slot_id >= 0 and bag_slot_id <= 8:
-				slot_id = bag_slot_id
+			# Equipment slots: 1-9 → display as indices 0-8
+			if bag_slot_id >= 1 and bag_slot_id <= 9:
+				slot_id = bag_slot_id - 1
 				valid = true
 
 		if valid and slot_id < inventory_slots.size():
