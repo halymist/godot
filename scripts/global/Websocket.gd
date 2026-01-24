@@ -55,16 +55,8 @@ func _ready():
 	print("Websocket ready!")
 	set_process(false)  # Only process when connected
 	
-	# Generate rankings for each character
-	for character in mock_characters:
-		for i in range(1, 101):
-			character.rankings.append(generate_mock_player_data(
-				"Player" + str(i),
-				i,  # rank
-				(i % 3) + 1,  # faction
-				10000 - (i * 50),  # honor
-				10000 + i  # character_id (10000 + rank)
-			))
+	# Note: Rankings are now loaded from server in playerData response
+	# No need to generate mock rankings anymore
 
 func _process(_delta):
 	"""Poll WebSocket for new messages"""

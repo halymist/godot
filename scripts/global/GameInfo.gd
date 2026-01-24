@@ -939,9 +939,32 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 		print("ERROR: Empty character data from server")
 		return
 	
-	# Load rankings if available
-	if char_data.has("rankings") and char_data.rankings is Array:
-		load_enemy_players_data(char_data.rankings)
+	# Load rankings if available - transform minimal ranking data to GamePlayer format
+	if char_data.has("ranking") and char_data.ranking is Array:
+		var rankings_data = []
+		for ranking_entry in char_data.ranking:
+			# Transform minimal ranking data: {vip, honnor, faction, character_id, character_name}
+			# to GamePlayer compatible format with defaults for missing fields
+			var player_data = {
+				"character_id": ranking_entry.get("character_id", 0),
+				"name": ranking_entry.get("character_name", ""),
+				"faction": ranking_entry.get("faction", 1),
+				"honor": ranking_entry.get("honnor", 0),  # Note: server uses 'honnor' (typo)
+				"vip": ranking_entry.get("vip", false),
+				# Set minimal/default values for other required fields
+				"rank": 0,
+				"profession": 0,
+				"avatar": [1, 10, 20, 30, 40],  # Default avatar
+				"stats": [10, 10, 10, 10, 5, 1, 3],  # Default stats
+				"blessing": 0,
+				"potion": 0,
+				"elixir": [],
+				"bag_slots": [],
+				"perks": [],
+				"talents": []
+			}
+			rankings_data.append(player_data)
+		load_enemy_players_data(rankings_data)
 	
 	# Load chat messages if available
 	if char_data.has("chat_messages") and char_data.chat_messages is Array:
