@@ -5,8 +5,8 @@ extends Resource
 @export var location_name: String
 @export_multiline var description: String = ""
 
-# Village scene for this location
-@export var village_scene: PackedScene
+# Village background image for this location (replaces village_scene)
+@export var village_texture: Texture2D
 
 # Expedition/Map panel when not traveling
 @export var expedition_texture: Texture2D
