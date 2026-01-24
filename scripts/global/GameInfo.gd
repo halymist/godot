@@ -65,15 +65,19 @@ func load_databases():
 		return  # Already loaded
 	
 	print("Loading databases...")
-	effects_db = load("res://data/effects.tres")
-	items_db = load("res://data/items.tres")
-	perks_db = load("res://data/perks.tres")
+	
+	# Load from DataManager cache (downloaded from server)
+	effects_db = DataManager.load_effects_database()
+	items_db = DataManager.load_items_database()
+	perks_db = DataManager.load_perks_database()
+	enemies_db = DataManager.load_enemies_database()
+	expeditions_db = DataManager.load_expeditions_database()
+	
+	# These still load from .tres (not versioned from server)
 	npcs_db = load("res://data/npcs.tres")
 	cosmetics_db = load("res://data/cosmetics.tres")
 	quests_db = load("res://scripts/resources/quests.tres")
 	settlements_db = load("res://scripts/resources/settlements.tres")
-	enemies_db = load("res://data/enemies.tres")
-	expeditions_db = load("res://scripts/resources/expeditions.tres")
 	
 	databases_loaded = true
 	print("Databases loaded")
@@ -663,6 +667,14 @@ class GameCurrentPlayer:
 	# Silver (no automatic emission - use UIManager.update_display())
 	var silver: int = 0
 	
+	# Active consumable timestamps (Unix timestamp when effect expires)
+	var potion_until: float = 0.0
+	var elixir_until: float = 0.0
+	
+	# Shop/service arrays (populated by server)
+	var enchanter_effects: Array = []  # Available enchanter effects
+	var vendor_items: Array = []  # Items available from vendor
+	
 	func _init(data: Dictionary = {}, game_info: GameInfo = null):
 		# Call parent constructor with data
 		super._init(data, game_info)
@@ -737,6 +749,140 @@ class GameCurrentPlayer:
 		print("Bag is full, cannot add item ID ", item_id)
 		return false
 
+# ============================================
+# SERVER DATA TRANSFORMATION
+# ============================================
+
+func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
+	"""Transform server player data format to client format.
+	Server uses different field names and formats than the client expects."""
+	
+	var client_data = server_data.duplicate(true)
+	
+	# Field name mappings
+	if server_data.has("character_name"):
+		client_data["name"] = server_data["character_name"]
+		client_data.erase("character_name")
+	
+	if server_data.has("honnor"):
+		client_data["honor"] = server_data["honnor"]
+		client_data.erase("honnor")
+	
+	if server_data.has("settlement_id"):
+		client_data["location"] = server_data["settlement_id"]
+		client_data.erase("settlement_id")
+	
+	# Handle avatar: server sends object {face, hair, eyes, nose, mouth}, client expects array
+	if server_data.has("avatar") and server_data.avatar is Dictionary:
+		var avatar_obj = server_data.avatar
+		client_data["avatar"] = [
+			avatar_obj.get("face", 1),
+			avatar_obj.get("hair", 10),
+			avatar_obj.get("eyes", 20),
+			avatar_obj.get("nose", 30),
+			avatar_obj.get("mouth", 40)
+		]
+	
+	# Handle stats: server sends object, client expects array
+	# [strength, stamina, agility, luck, armor, damage_min, damage_max]
+	if server_data.has("stats") and server_data.stats is Dictionary:
+		var stats_obj = server_data.stats
+		client_data["stats"] = [
+			stats_obj.get("strength", 0),
+			stats_obj.get("stamina", 0),
+			stats_obj.get("agility", 0),
+			stats_obj.get("luck", 0),
+			stats_obj.get("armor", 0),
+			stats_obj.get("damage_min", 0),
+			stats_obj.get("damage_max", 0)
+		]
+	
+	# Handle inventory -> bag_slots
+	# Server: {slot_id, item_id, server_day, temper, effect_overdrive, factor, socket, socket_day, elixir_effect}
+	# Client: {id, bag_slot_id, day, tempered, effect_overdrive, socket_id, socket_day, ingredients}
+	if server_data.has("inventory") and server_data.inventory is Array:
+		var bag_slots_data = []
+		for inv_item in server_data.inventory:
+			var client_item = {
+				"id": inv_item.get("item_id", 0),
+				"bag_slot_id": inv_item.get("slot_id", 0),
+				"day": inv_item.get("server_day", 0),
+				"tempered": inv_item.get("temper", 0),
+				"effect_overdrive": inv_item.get("effect_overdrive", 0),
+				"socket_id": inv_item.get("socket", -1) if inv_item.get("socket", null) != null else -1,
+				"socket_day": inv_item.get("socket_day", 0)
+			}
+			# Handle elixir ingredients if item is an elixir
+			if inv_item.has("elixir_effect") and inv_item.elixir_effect != null:
+				client_item["ingredients"] = [
+					inv_item.get("elixir_effect", 0),
+					inv_item.get("factor", 0) if inv_item.get("factor", null) != null else 0
+				]
+			bag_slots_data.append(client_item)
+		client_data["bag_slots"] = bag_slots_data
+		client_data.erase("inventory")
+	
+	# Handle perks: server {perk_id, talent_id} -> client {id, slot}
+	if server_data.has("perks") and server_data.perks is Array:
+		var perks_data = []
+		for perk in server_data.perks:
+			perks_data.append({
+				"id": perk.get("perk_id", 0),
+				"slot": perk.get("talent_id", 0),  # talent_id is used as slot
+				"active": perk.get("talent_id", 0) > 0  # Active if assigned to a talent
+			})
+		client_data["perks"] = perks_data
+	
+	# Handle talents: server {talent_id, points} -> client {talent_id, points}
+	# Note: Talent class uses talent_id, not id
+	if server_data.has("talents") and server_data.talents is Array:
+		var talents_data = []
+		for talent in server_data.talents:
+			talents_data.append({
+				"talent_id": talent.get("talent_id", 0),
+				"points": talent.get("points", 0)
+			})
+		client_data["talents"] = talents_data
+	
+	# Handle travel fields
+	if server_data.has("destination") and server_data.destination != null:
+		client_data["traveling_destination"] = server_data["destination"]
+	if server_data.has("arrival") and server_data.arrival != null:
+		# Convert arrival timestamp to remaining time or boolean
+		client_data["traveling"] = server_data["arrival"]
+	
+	# Handle elixir (active elixir with 3 effects and 3 factors)
+	if server_data.has("elixir_effect1") or server_data.has("elixir_effect2") or server_data.has("elixir_effect3"):
+		var elixir_effects = []
+		for i in range(1, 4):
+			var effect = server_data.get("elixir_effect" + str(i), null)
+			if effect != null and effect > 0:
+				elixir_effects.append(effect)
+		if elixir_effects.size() > 0:
+			client_data["elixir"] = 1000  # Elixir item ID
+			client_data["elixir_ingredients"] = elixir_effects
+		# Clean up individual fields
+		for i in range(1, 4):
+			client_data.erase("elixir_effect" + str(i))
+			client_data.erase("elixir_factor" + str(i))
+	
+	# Handle enchanter and vendor arrays (store for later use)
+	if server_data.has("enchanter") and server_data.enchanter is Array:
+		client_data["enchanter_effects"] = server_data.enchanter
+		client_data.erase("enchanter")
+	
+	if server_data.has("vendor") and server_data.vendor is Array:
+		client_data["vendor_items"] = server_data.vendor
+		client_data.erase("vendor")
+	
+	# Handle timestamps (potion_until, elixir_until)
+	if server_data.has("potion_until") and server_data.potion_until != null:
+		client_data["potion_until"] = server_data.potion_until
+	if server_data.has("elixir_until") and server_data.elixir_until != null:
+		client_data["elixir_until"] = server_data.elixir_until
+	
+	return client_data
+
 func load_all_characters(characters_data: Array):
 	all_characters.clear()
 	for char_data in characters_data:
@@ -746,14 +892,17 @@ func load_all_characters(characters_data: Array):
 
 func load_character_from_server(character_data: Dictionary):
 	"""Load a single character from server data (WebSocket playerData response)"""
+	# Transform server data format to client format
+	var transformed_data = _transform_server_player_data(character_data)
+	
 	all_characters.clear()
-	var player = GameCurrentPlayer.new(character_data, self)
+	var player = GameCurrentPlayer.new(transformed_data, self)
 	all_characters.append(player)
 	print("Loaded character from server: ", player.name, " (ID: ", player.character_id, ")")
 	
 	# Automatically select this character
 	current_character_id = player.character_id
-	_load_character_world_data_from_server(character_data)
+	_load_character_world_data_from_server(transformed_data)
 
 func select_character(character_id: int):
 	current_character_id = character_id

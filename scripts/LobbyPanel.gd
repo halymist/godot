@@ -105,20 +105,33 @@ func initialize_lobby():
 	print("Initializing lobby with server data...")
 	initialized = true
 	
-	# Start resource loading
-	_load_databases_async()
-	_load_game_scene_async()
-	
-	# Populate UI with server data
+	# Populate UI immediately with lobby data
 	populate_account_info()
 	add_character_list()
 	start_new_server_countdown()
 	setup_login_methods()
-
-func _load_databases_async():
-	"""Load databases in background"""
+	
+	# Load databases immediately (local .tres files are fast)
 	GameInfo.load_databases()
 	databases_loaded = true
+	
+	# Sync server data in background (download if outdated)
+	_sync_data_with_server()
+	
+	# Preload game scene in background
+	_load_game_scene_async()
+
+func _sync_data_with_server():
+	"""Sync local data with server versions (background task)"""
+	var data_versions = GameInfo.lobby_data.get("data_versions", {})
+	
+	if data_versions.is_empty():
+		print("[Lobby] No data_versions in login response, skipping sync")
+		return
+	
+	print("[Lobby] Syncing data with server...")
+	DataManager.sync_data(data_versions)
+	# Don't wait - this runs in background
 
 func _load_game_scene_async():
 	"""Load game scene in background"""
@@ -140,10 +153,10 @@ func _load_game_scene_async():
 func populate_account_info():
 	"""Populate account information from lobby data"""
 	var lobby_data = GameInfo.lobby_data
-	account_created_label.text = "Account Created: " + _parse_iso_date(lobby_data.account_created)
-	email_label.text = "Email: " + lobby_data.email
-	mushroom_value_label.text = str(int(lobby_data.mushrooms))
-	new_server_date_label.text = "(" + _parse_iso_date(lobby_data.new_server_timestamp) + ")"
+	account_created_label.text = "Account Created: " + _parse_iso_date(lobby_data.get("account_created", ""))
+	email_label.text = "Email: " + lobby_data.get("user_email", "")
+	mushroom_value_label.text = str(int(lobby_data.get("mushrooms", 0)))
+	new_server_date_label.text = "(" + _parse_iso_date(lobby_data.get("new_server_timestamp", "")) + ")"
 
 func _parse_iso_date(iso_string: String) -> String:
 	"""Parse ISO 8601 date to readable format"""
@@ -172,7 +185,7 @@ func start_new_server_countdown():
 
 func _update_new_server_countdown():
 	"""Update the countdown label"""
-	var seconds_remaining = _calculate_seconds_until(GameInfo.lobby_data.new_server_timestamp)
+	var seconds_remaining = _calculate_seconds_until(GameInfo.lobby_data.get("new_server_timestamp", ""))
 	
 	if seconds_remaining <= 0:
 		new_server_countdown_label.text = "New Server Available!"
@@ -226,19 +239,30 @@ func setup_character_creation():
 
 func add_character_list():
 	"""Add character panels from GameInfo.lobby_data"""
+	print("[Lobby] add_character_list called")
+	
 	# Clear existing character cards BUT NOT the create button
 	for child in characters_container.get_children():
 		if child != create_new_button:
 			child.queue_free()
 	
-	for server in GameInfo.lobby_data.server_list:
-		for character in server.characters:
+	var server_list = GameInfo.lobby_data.get("server_list", [])
+	print("[Lobby] server_list size: ", server_list.size())
+	
+	var total_characters = 0
+	for server in server_list:
+		var characters = server.get("characters", [])
+		print("[Lobby] Server '", server.get("name", "?"), "' has ", characters.size(), " characters")
+		for character in characters:
+			total_characters += 1
 			var card = PlayerCard.instantiate()
 			characters_container.add_child(card)
 			# Pass character data plus server info for display
-			card.setup(character, server.name, server.created_at, server.id)
+			card.setup(character, server.get("name", ""), server.get("created_at", 0), server.get("id", 0))
 			# Connect to card's signal with proper signature (character_id, server_id)
 			card.character_selected.connect(_on_character_selected)
+	
+	print("[Lobby] Added ", total_characters, " character cards")
 
 func _on_character_selected(character_id: int, server_id: int):
 	"""Handle character selection from player card"""
@@ -388,15 +412,19 @@ func _on_character_created(success: bool, character_id: int, error: String):
 	var newest_server = null
 	var newest_timestamp = 0
 	
-	for server in GameInfo.lobby_data.server_list:
-		if server.created_at > newest_timestamp:
-			newest_timestamp = server.created_at
+	var server_list = GameInfo.lobby_data.get("server_list", [])
+	for server in server_list:
+		var created_at = server.get("created_at", 0)
+		if created_at > newest_timestamp:
+			newest_timestamp = created_at
 			newest_server = server
 	
 	# Add character to newest server
 	if newest_server:
-		newest_server.characters.append(character_obj)
-		print("[Lobby] Added character to server: ", newest_server.name)
+		var characters = newest_server.get("characters", [])
+		characters.append(character_obj)
+		newest_server["characters"] = characters
+		print("[Lobby] Added character to server: ", newest_server.get("name", "Unknown"))
 		
 		# Refresh character list
 		add_character_list()
@@ -410,7 +438,7 @@ func _on_social_pressed(platform: String):
 
 func setup_login_methods():
 	"""Show only connected login methods"""
-	var connected_methods = GameInfo.lobby_data.get("connected_methods", [])
+	var connected_methods = GameInfo.lobby_data.get("user_connected_methods", [])
 	
 	# Map method names to buttons
 	var method_buttons = {
@@ -438,7 +466,7 @@ func _on_add_method_pressed():
 	if not add_method_panel:
 		return
 	
-	var connected_methods = GameInfo.lobby_data.get("connected_methods", [])
+	var connected_methods = GameInfo.lobby_data.get("user_connected_methods", [])
 	var methods_grid = add_method_panel.get_node_or_null("Content/MethodsGrid")
 	
 	if not methods_grid:

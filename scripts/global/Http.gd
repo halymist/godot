@@ -123,7 +123,8 @@ func _transform_auth_response(response: Dictionary) -> Dictionary:
 		"mushrooms": response.get("mushrooms", 0),
 		"connected_methods": response.get("user_connected_methods", []),
 		"new_server_timestamp": response.get("new_server_timestamp", null),
-		"server_list": response.get("server_list", [])
+		"server_list": response.get("server_list", []),
+		"data_versions": response.get("data_versions", {})
 	}
 	
 	return lobby_data

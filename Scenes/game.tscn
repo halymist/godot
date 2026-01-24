@@ -6806,7 +6806,7 @@ wide_payment_button = NodePath("Sidebar/CurrencySection/MushroomContainer/Paymen
 wide_chat_button = NodePath("Sidebar/ButtonsSection/ChatButtonContainer/ChatButton")
 wide_back_button = NodePath("Sidebar/BackButton")
 
-[node name="Sidebar" type="Panel" parent="Wide" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture", "location_info_panel")]
+[node name="Sidebar" type="Panel" parent="Wide" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.2
@@ -6819,7 +6819,6 @@ location_label = NodePath("LocationPanel/HBoxContainer/LocationLabel")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
 weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
-location_info_panel = NodePath("")
 
 [node name="Character" type="TextureRect" parent="Wide/Sidebar"]
 layout_mode = 0

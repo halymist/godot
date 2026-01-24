@@ -19,13 +19,13 @@ func _ready():
 func setup(character: Dictionary, server_name: String = "", server_created_at: int = 0, srv_id: int = 0):
 	"""Setup the player card with character data and server info"""
 	character_data = character
-	character_id = character.character_id
+	character_id = character.get("character_id", 0)
 	server_id = srv_id
 	
 	# Set labels
 	if name_label:
 		var vip_badge = " [VIP]" if character.get("vip", false) else ""
-		name_label.text = character.name + vip_badge
+		name_label.text = character.get("name", "Unknown") + vip_badge
 	
 	if server_label and server_name != "":
 		var server_age_days = _calculate_server_age_days(server_created_at)
@@ -33,7 +33,7 @@ func setup(character: Dictionary, server_name: String = "", server_created_at: i
 	
 	# Setup avatar with character's cosmetic IDs
 	if avatar and character.has("avatar"):
-		var avatar_data = character.avatar  # [face, hair, eyes, nose, mouth]
+		var avatar_data = character.get("avatar", [1, 10, 20, 30, 40])  # [face, hair, eyes, nose, mouth]
 		if avatar_data.size() >= 5:
 			avatar.refresh_avatar(
 				avatar_data[0],  # face
