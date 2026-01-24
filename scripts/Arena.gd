@@ -65,19 +65,9 @@ func _on_fight_pressed():
 	if GameInfo.arena_opponents.size() > current_index:
 		var opponent_id = GameInfo.arena_opponents[current_index]
 		print("Fighting opponent with character_id: ", opponent_id)
+		# Send fight request to server - combat result will come via WebSocket response
 		Websocket.fight_player(opponent_id)
-		
-		# Pick a random combat log from Websocket mock data
-		if Websocket.mock_combat_logs.size() > 0:
-			var random_index = randi() % Websocket.mock_combat_logs.size()
-			var combat_data = Websocket.mock_combat_logs[random_index]
-			GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
-			print("Combat log loaded: ", GameInfo.current_combat_log.player1_name, " vs ", GameInfo.current_combat_log.player2_name)
-			
-			# Show combat panel
-			UIManager.instance.show_panel(UIManager.instance.combat_panel)
-		else:
-			print("No combat logs available")
+		# TODO: Handle combat response in Websocket._handle_message() and show combat panel
 		# TODO: Send opponent_id to server and wait for combat_log response
 	else:
 		print("No opponent data available")

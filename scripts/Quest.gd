@@ -439,13 +439,12 @@ func _on_quest_option_pressed(option: QuestOption):
 				add_option(quest_option.text, _on_quest_option_pressed.bind(quest_option), quest_option)
 
 func _start_combat():
-	"""Initialize combat by loading a random mock combat log and showing combat panel"""
-	# Pick a random combat log from Websocket mock data
-	var random_index = randi() % Websocket.mock_combat_logs.size()
-	var combat_data = Websocket.mock_combat_logs[random_index]
-	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
-	
-	print("Starting combat with log index: ", random_index)
+	"""Initialize combat - combat data will come from server response"""
+	# TODO: Send combat request to server via Websocket
+	# Combat result will come via WebSocket response and show combat panel
+	print("Starting quest combat - waiting for server response")
+	# TODO: Uncomment when server combat is implemented
+	# Websocket.start_quest_combat() or similar
 	
 	# Get combat panel and toggle UI through UIManager
 	var combat_panel = UIManager.instance.combat_panel

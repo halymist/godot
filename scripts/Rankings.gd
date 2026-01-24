@@ -267,12 +267,9 @@ func _scroll_to_center(control: Control):
 
 func _on_fight_pressed():
 	if selected_player:
-		if Websocket.mock_combat_logs.size() > 0:
-			var random_index = randi() % Websocket.mock_combat_logs.size()
-			var combat_data = Websocket.mock_combat_logs[random_index]
-			GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
-			UIManager.instance.show_panel(UIManager.instance.combat_panel)
+		# Send fight request to server - combat result will come via WebSocket response
 		Websocket.fight_player(selected_player.character_id)
+		# TODO: Handle combat response in Websocket._handle_message() and show combat panel
 
 func _on_search_changed(_new_text: String):
 	pass

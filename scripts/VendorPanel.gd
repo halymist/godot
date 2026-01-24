@@ -54,16 +54,12 @@ func _load_location_content():
 func _load_vendor_items():
 	vendor_items.clear()
 	
-	var char_data: Dictionary = {}
-	for character in Websocket.mock_characters:
-		if character.character_id == GameInfo.current_character_id:
-			char_data = character
-			break
-	
-	if char_data.is_empty() or not char_data.has("vendor_items"):
+	# Vendor items are now stored in current_player.vendor_items (loaded from server)
+	if not GameInfo.current_player or GameInfo.current_player.vendor_items.is_empty():
+		print("No vendor items available")
 		return
 	
-	for item_id in char_data.vendor_items:
+	for item_id in GameInfo.current_player.vendor_items:
 		var item = GameInfo.Item.new({
 			"id": item_id,
 			"day": GameInfo.current_player.server_day

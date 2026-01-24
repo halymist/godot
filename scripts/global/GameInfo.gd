@@ -911,27 +911,10 @@ func select_character(character_id: int):
 	
 	if current_player:
 		print("Selected character: ", current_player.name, " (ID: ", character_id, ")")
-		_load_character_world_data()
+		# World data is now loaded from server via _load_character_world_data_from_server()
+		# called from load_character_from_server()
 	else:
 		print("ERROR: Character ID ", character_id, " not found!")
-
-func _load_character_world_data():
-	var char_data: Dictionary = {}
-	for character in Websocket.mock_characters:
-		if character.character_id == current_character_id:
-			char_data = character
-			break
-	
-	if char_data.is_empty():
-		print("ERROR: Could not find character data for ID ", current_character_id)
-		return
-	
-	load_enemy_players_data(char_data.rankings)
-	load_chat_messages_data(char_data.chat_messages)
-	
-	if char_data.has("arena_opponents") and char_data.arena_opponents is Array:
-		arena_opponents.assign(char_data.arena_opponents)
-		print("Loaded ", arena_opponents.size(), " arena opponents")
 
 func _load_character_world_data_from_server(char_data: Dictionary):
 	"""Load world data from server response (no need to search mock data)"""
