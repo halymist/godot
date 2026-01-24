@@ -966,14 +966,86 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 			rankings_data.append(player_data)
 		load_enemy_players_data(rankings_data)
 	
+	# Load arena opponents if available - these have full data with stats/avatar
+	if char_data.has("arena") and char_data.arena is Array:
+		var arena_data = []
+		arena_opponents.clear()
+		
+		for arena_entry in char_data.arena:
+			var character_id = int(arena_entry.get("character_id", 0))  # Cast to int (JSON returns float)
+			arena_opponents.append(character_id)  # Keep IDs for arena panel
+			
+			# Transform arena data: {vip, stats{}, avatar{}, honnor, faction, character_id, character_name}
+			# Server format has stats/avatar as objects, need to convert to arrays
+			var avatar_obj = arena_entry.get("avatar", {})
+			var stats_obj = arena_entry.get("stats", {})
+			
+			var player_data = {
+				"character_id": character_id,
+				"name": arena_entry.get("character_name", ""),
+				"faction": arena_entry.get("faction", 1),
+				"honor": arena_entry.get("honnor", 0),
+				"vip": arena_entry.get("vip", false),
+				# Convert avatar object to array [face, hair, eyes, nose, mouth]
+				"avatar": [
+					avatar_obj.get("face", 1),
+					avatar_obj.get("hair", 10),
+					avatar_obj.get("eyes", 20),
+					avatar_obj.get("nose", 30),
+					avatar_obj.get("mouth", 40)
+				],
+				# Convert stats object to array [strength, stamina, agility, luck, armor, damage_min, damage_max]
+				"stats": [
+					stats_obj.get("strength", 10),
+					stats_obj.get("stamina", 10),
+					stats_obj.get("agility", 10),
+					stats_obj.get("luck", 10),
+					stats_obj.get("armor", 5),
+					stats_obj.get("min_damage", 1),
+					stats_obj.get("max_damage", 3)
+				],
+				"rank": 0,
+				"profession": 0,
+				"blessing": 0,
+				"potion": 0,
+				"elixir": [],
+				"bag_slots": [],
+				"perks": [],
+				"talents": []
+			}
+			arena_data.append(player_data)
+		
+		# Merge arena opponents into enemy_players (overwrite duplicates)
+		_merge_arena_into_enemies(arena_data)
+		print("Loaded ", arena_opponents.size(), " arena opponents")
+	
 	# Load chat messages if available
 	if char_data.has("chat_messages") and char_data.chat_messages is Array:
 		load_chat_messages_data(char_data.chat_messages)
+
+func _merge_arena_into_enemies(arena_data: Array):
+	"""Merge arena opponents into enemy_players, overwriting any duplicates"""
+	for arena_player_data in arena_data:
+		var character_id = arena_player_data.get("character_id", 0)
+		
+		# Find if this character already exists in enemy_players
+		var existing_index = -1
+		for i in range(enemy_players.size()):
+			if enemy_players[i].character_id == character_id:
+				existing_index = i
+				break
+		
+		var arena_player = GamePlayer.new(arena_player_data, self)
+		
+		if existing_index >= 0:
+			# Overwrite existing entry with more complete arena data
+			enemy_players[existing_index] = arena_player
+		else:
+			# Add new arena opponent
+			enemy_players.append(arena_player)
 	
-	# Load arena opponents if available
-	if char_data.has("arena_opponents") and char_data.arena_opponents is Array:
-		arena_opponents.assign(char_data.arena_opponents)
-		print("Loaded ", arena_opponents.size(), " arena opponents")
+	# Update rankings after merging
+	update_rankings()
 
 # ============================================
 # WORLD DATA LOADING
