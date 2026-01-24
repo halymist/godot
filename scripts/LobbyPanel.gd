@@ -111,27 +111,36 @@ func initialize_lobby():
 	start_new_server_countdown()
 	setup_login_methods()
 	
-	# Load databases immediately (local .tres files are fast)
-	GameInfo.load_databases()
-	databases_loaded = true
-	
-	# Sync server data in background (download if outdated)
-	_sync_data_with_server()
-	
 	# Preload game scene in background
 	_load_game_scene_async()
+	
+	# Initialize databases (download if needed, then load)
+	_initialize_databases()
 
-func _sync_data_with_server():
-	"""Sync local data with server versions (background task)"""
+func _initialize_databases():
+	"""Download data if needed, then initialize databases"""
 	var data_versions = GameInfo.lobby_data.get("data_versions", {})
 	
 	if data_versions.is_empty():
-		print("[Lobby] No data_versions in login response, skipping sync")
+		print("[Lobby] No data_versions, loading databases immediately")
+		GameInfo.load_databases()
+		databases_loaded = true
 		return
 	
-	print("[Lobby] Syncing data with server...")
-	DataManager.sync_data(data_versions)
-	# Don't wait - this runs in background
+	# Check if any downloads are needed
+	var needs_download = DataManager.needs_download(data_versions)
+	
+	if needs_download:
+		print("[Lobby] Downloads needed, syncing data first...")
+		# Download data + assets, then load databases
+		await DataManager.sync_data(data_versions)
+		print("[Lobby] Downloads complete, loading databases...")
+		GameInfo.load_databases()
+		databases_loaded = true
+	else:
+		print("[Lobby] All data up to date, loading databases...")
+		GameInfo.load_databases()
+		databases_loaded = true
 
 func _load_game_scene_async():
 	"""Load game scene in background"""

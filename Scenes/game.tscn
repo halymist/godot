@@ -535,7 +535,7 @@ grow_vertical = 2
 columns = 4
 script = ExtResource("16_q8b24")
 item_scene = ExtResource("17_aujhx")
-slot_id = 20
+slot_id = 29
 
 [node name="Vendor1" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" instance=ExtResource("6_itemslot")]
 texture = null

@@ -281,27 +281,24 @@ offset_right = -24.63
 grow_vertical = 2
 
 [node name="HeadSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
-layout_mode = 2
 outline_texture = ExtResource("9_c1b6y")
 slot_type = "Head"
-
-[node name="ChestSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
-layout_mode = 2
-outline_texture = ExtResource("10_nsw37")
-slot_type = "Chest"
 slot_id = 1
 
-[node name="HandSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
-layout_mode = 2
-outline_texture = ExtResource("11_wxltd")
-slot_type = "Hand"
+[node name="ChestSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
+outline_texture = ExtResource("10_nsw37")
+slot_type = "Chest"
 slot_id = 2
 
+[node name="HandSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
+outline_texture = ExtResource("11_wxltd")
+slot_type = "Hand"
+slot_id = 3
+
 [node name="ShoeSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
-layout_mode = 2
 outline_texture = ExtResource("12_6mnrb")
 slot_type = "Foot"
-slot_id = 3
+slot_id = 4
 
 [node name="Character" type="TextureRect" parent="Equip"]
 layout_mode = 1
@@ -357,7 +354,7 @@ offset_bottom = 315.0
 grow_horizontal = 2
 outline_texture = ExtResource("17_kv01l")
 slot_type = "Weapon"
-slot_id = 8
+slot_id = 9
 
 [node name="DamageSpreadLabel" type="Label" parent="Equip"]
 layout_mode = 1
@@ -385,28 +382,24 @@ grow_horizontal = 0
 grow_vertical = 2
 
 [node name="BeltSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
-layout_mode = 2
 outline_texture = ExtResource("18_h0hh0")
 slot_type = "Belt"
-slot_id = 4
-
-[node name="LegSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
-layout_mode = 2
-outline_texture = ExtResource("19_f1vnb")
-slot_type = "Legs"
 slot_id = 5
 
-[node name="RingSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
-layout_mode = 2
-outline_texture = ExtResource("20_1is51")
-slot_type = "Ring"
+[node name="LegSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
+outline_texture = ExtResource("19_f1vnb")
+slot_type = "Legs"
 slot_id = 6
 
+[node name="RingSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
+outline_texture = ExtResource("20_1is51")
+slot_type = "Ring"
+slot_id = 7
+
 [node name="AmuletSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
-layout_mode = 2
 outline_texture = ExtResource("21_7574k")
 slot_type = "Amulet"
-slot_id = 7
+slot_id = 8
 
 [node name="HealthBar" parent="." instance=ExtResource("22_srvda")]
 layout_mode = 1

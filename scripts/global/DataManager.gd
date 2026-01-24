@@ -133,8 +133,23 @@ func clear_all_cache():
 # DATA SYNC
 # ============================================
 
+func needs_download(server_data_versions: Dictionary) -> bool:
+	"""Check if any data needs to be downloaded"""
+	for data_type in local_versions.keys():
+		var server_key = data_type
+		if data_type == "expeditions":
+			server_key = "expedition"
+		
+		var server_version = server_data_versions.get(server_key, server_data_versions.get(data_type, 0))
+		var local_version = local_versions.get(data_type, 0)
+		
+		if server_version > local_version:
+			return true
+	
+	return false
+
 func sync_data(server_data_versions: Dictionary):
-	"""Check and sync all data types with server versions"""
+	"""Download all data types and assets, waits until complete"""
 	server_versions = server_data_versions
 	print("[DataManager] Server versions: ", server_versions)
 	print("[DataManager] Local versions: ", local_versions)
@@ -148,6 +163,13 @@ func sync_data(server_data_versions: Dictionary):
 	await _sync_data_type("expeditions", "/download-expedition")
 	
 	print("[DataManager] Data sync completed!")
+	
+	# Wait for all asset downloads to complete
+	while _pending_downloads > 0:
+		print("[DataManager] Waiting for %d asset downloads..." % _pending_downloads)
+		await get_tree().create_timer(0.1).timeout
+	
+	print("[DataManager] All downloads (data + assets) completed!")
 	data_sync_completed.emit(true)
 
 func _sync_data_type(data_type: String, endpoint: String):

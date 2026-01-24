@@ -1,9 +1,8 @@
 extends Control
 
 # Slot numbering constants
-const EQUIPMENT_MIN = 0
-const EQUIPMENT_MAX = 8
-const CONSUME_SLOT = 9
+const EQUIPMENT_MIN = 1
+const EQUIPMENT_MAX = 9
 const BAG_MIN = 10
 const BAG_MAX = 14
 const ENCHANTER_SLOT = 15
@@ -14,6 +13,7 @@ const ALCHEMIST_SLOT_3 = 19
 const VENDOR_SELL_SLOT = 20
 const VENDOR_MIN = 21
 const VENDOR_MAX = 28
+const CONSUME_SLOT = 29
 
 @export var item_scene: PackedScene
 @export var outline_texture: Texture2D
