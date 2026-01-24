@@ -57,7 +57,9 @@ var current_player: GameCurrentPlayer:
 var databases_loaded: bool = false
 
 func _ready():
-	print("GameInfo initialized (databases not loaded yet)")
+	# Load cosmetics immediately as it's needed for login/character creation
+	cosmetics_db = load("res://data/cosmetics.tres")
+	print("GameInfo initialized (cosmetics loaded, other databases not loaded yet)")
 
 func load_databases():
 	"""Call this from lobby scene to load all game databases"""
@@ -75,7 +77,7 @@ func load_databases():
 	
 	# These still load from .tres (not versioned from server)
 	npcs_db = load("res://data/npcs.tres")
-	cosmetics_db = load("res://data/cosmetics.tres")
+	# cosmetics_db already loaded in _ready()
 	quests_db = load("res://scripts/resources/quests.tres")
 	settlements_db = load("res://scripts/resources/settlements.tres")
 	

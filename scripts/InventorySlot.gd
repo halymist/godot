@@ -756,15 +756,15 @@ func _equip_item_to_character(item: GameInfo.Item):
 	"""Equip item from bag to character equipment slot"""
 	var target_slot_id = -1
 	match item.type:
-		"Head": target_slot_id = 0
-		"Chest": target_slot_id = 1
-		"Hands": target_slot_id = 2
-		"Foot": target_slot_id = 3
-		"Belt": target_slot_id = 4
-		"Legs": target_slot_id = 5
-		"Ring": target_slot_id = 6
-		"Amulet": target_slot_id = 7
-		"Weapon": target_slot_id = 8
+		"Head": target_slot_id = 1
+		"Chest": target_slot_id = 2
+		"Hands": target_slot_id = 3
+		"Foot": target_slot_id = 4
+		"Belt": target_slot_id = 5
+		"Legs": target_slot_id = 6
+		"Ring": target_slot_id = 7
+		"Amulet": target_slot_id = 8
+		"Weapon": target_slot_id = 9
 	
 	if target_slot_id == -1:
 		return
