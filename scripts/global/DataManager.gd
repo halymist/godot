@@ -5,10 +5,15 @@ extends Node
 # ============================================
 # Handles data versioning, downloading, and local storage
 # Downloads data from server and caches in user:// as JSON
+# Also downloads and caches asset images (webp)
 # GameInfo loads from cache instead of .tres files
 
 const VERSIONS_FILE = "user://data_versions.cfg"
 const CACHE_DIR = "user://data_cache/"
+const IMAGES_DIR = "user://images/"
+
+# Asset base URL
+const ASSETS_BASE_URL = "https://gamedata-assets.s3.eu-north-1.amazonaws.com/images/"
 
 # Cache file paths
 const EFFECTS_CACHE = CACHE_DIR + "effects.json"
@@ -19,6 +24,7 @@ const EXPEDITIONS_CACHE = CACHE_DIR + "expeditions.json"
 
 # Signals
 signal data_sync_completed(success: bool)
+signal asset_downloaded(type: String, asset_id: int)
 
 # Local version tracking
 var local_versions: Dictionary = {
@@ -32,16 +38,27 @@ var local_versions: Dictionary = {
 # Server versions (populated from login response)
 var server_versions: Dictionary = {}
 
+# Track pending asset downloads
+var _pending_downloads: int = 0
+
 func _ready():
 	print("[DataManager] Ready")
-	_ensure_cache_dir()
+	_ensure_cache_dirs()
 	_load_local_versions()
 
-func _ensure_cache_dir():
-	"""Ensure cache directory exists"""
-	var dir = DirAccess.open("user://")
-	if dir and not dir.dir_exists("data_cache"):
-		dir.make_dir("data_cache")
+func _ensure_cache_dirs():
+	"""Ensure all cache directories exist"""
+	# Create all directories recursively
+	DirAccess.make_dir_recursive_absolute("user://data_cache")
+	DirAccess.make_dir_recursive_absolute("user://images/items")
+	DirAccess.make_dir_recursive_absolute("user://images/perks")
+	DirAccess.make_dir_recursive_absolute("user://images/enemies")
+	
+	print("[DataManager] Created cache directories at user://")
+	print("[DataManager] - data_cache/")
+	print("[DataManager] - images/items/")
+	print("[DataManager] - images/perks/")
+	print("[DataManager] - images/enemies/")
 
 # ============================================
 # VERSION MANAGEMENT
@@ -79,6 +96,38 @@ func set_local_version(data_type: String, version: int):
 	"""Set local version for a data type and save"""
 	local_versions[data_type] = version
 	_save_local_versions()
+
+func reset_all_versions():
+	"""Reset all local versions to 0 to force re-download"""
+	for key in local_versions.keys():
+		local_versions[key] = 0
+	_save_local_versions()
+	print("[DataManager] Reset all versions to 0")
+
+func clear_all_cache():
+	"""Clear all cached data and images (nuclear option)"""
+	reset_all_versions()
+	
+	# Delete JSON caches
+	var cache_files = [EFFECTS_CACHE, ITEMS_CACHE, PERKS_CACHE, ENEMIES_CACHE, EXPEDITIONS_CACHE]
+	for cache_file in cache_files:
+		if FileAccess.file_exists(cache_file):
+			DirAccess.remove_absolute(cache_file)
+	
+	# Delete image folders
+	for folder in ["items", "perks", "enemies"]:
+		var folder_path = IMAGES_DIR + folder
+		var dir = DirAccess.open(folder_path)
+		if dir:
+			dir.list_dir_begin()
+			var file_name = dir.get_next()
+			while file_name != "":
+				if not dir.current_is_dir():
+					dir.remove(file_name)
+				file_name = dir.get_next()
+			dir.list_dir_end()
+	
+	print("[DataManager] Cleared all cache")
 
 # ============================================
 # DATA SYNC
@@ -161,6 +210,10 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	
 	# Save to cache and update version
 	_save_to_cache(data_type, data)
+	
+	# Download assets for types that have images
+	if data_type in ["items", "perks", "enemies"]:
+		_download_assets_for_data(data_type, data)
 
 func _save_to_cache(data_type: String, data: Array):
 	"""Save downloaded data to JSON cache file"""
@@ -258,6 +311,84 @@ func _load_cache_raw(data_type: String) -> Array:
 	return data if data is Array else []
 
 # ============================================
+# ASSET DOWNLOADING
+# ============================================
+
+func _download_assets_for_data(data_type: String, data: Array):
+	"""Download images for all items in data that don't have cached images"""
+	var folder = data_type  # items, perks, enemies
+	
+	for item in data:
+		# Use asset_id field for the download, not the item/perk/enemy ID
+		var asset_id = item.get("asset_id", 0)
+		if asset_id > 0:
+			_download_asset_if_needed(folder, asset_id)
+
+func _download_asset_if_needed(folder: String, asset_id: int):
+	"""Download an asset if it doesn't exist locally"""
+	var local_path = get_asset_path(folder, asset_id)
+	
+	if FileAccess.file_exists(local_path):
+		return  # Already cached
+	
+	var remote_url = "%s%s/%d.webp" % [ASSETS_BASE_URL, folder, asset_id]
+	print("[DataManager] Downloading asset: %s" % remote_url)
+	
+	_pending_downloads += 1
+	
+	var http = HTTPRequest.new()
+	add_child(http)
+	http.request_completed.connect(_on_asset_downloaded.bind(folder, asset_id, local_path, http))
+	
+	var error = http.request(remote_url)
+	if error != OK:
+		print("[DataManager] Failed to request asset %s/%d: %d" % [folder, asset_id, error])
+		http.queue_free()
+		_pending_downloads -= 1
+
+func _on_asset_downloaded(_result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, folder: String, asset_id: int, local_path: String, http: HTTPRequest):
+	"""Handle downloaded asset"""
+	http.queue_free()
+	_pending_downloads -= 1
+	
+	if response_code != 200:
+		print("[DataManager] Asset download failed %s/%d (HTTP %d)" % [folder, asset_id, response_code])
+		return
+	
+	# Save the webp file
+	var file = FileAccess.open(local_path, FileAccess.WRITE)
+	if file:
+		file.store_buffer(body)
+		file.close()
+		print("[DataManager] Saved asset: %s" % local_path)
+		asset_downloaded.emit(folder, asset_id)
+	else:
+		print("[DataManager] Failed to save asset: %s" % local_path)
+
+func get_asset_path(folder: String, asset_id: int) -> String:
+	"""Get the local path for an asset"""
+	return "%s%s/%d.webp" % [IMAGES_DIR, folder, asset_id]
+
+func load_asset_texture(folder: String, asset_id: int) -> ImageTexture:
+	"""Load an asset texture from cache, returns null if not found"""
+	var local_path = get_asset_path(folder, asset_id)
+	
+	if not FileAccess.file_exists(local_path):
+		return null
+	
+	var img = Image.new()
+	var err = img.load(local_path)
+	if err != OK:
+		print("[DataManager] Failed to load image: %s (error %d)" % [local_path, err])
+		return null
+	
+	return ImageTexture.create_from_image(img)
+
+func has_asset(folder: String, asset_id: int) -> bool:
+	"""Check if an asset exists in cache"""
+	return FileAccess.file_exists(get_asset_path(folder, asset_id))
+
+# ============================================
 # DATABASE LOADING (called by GameInfo)
 # ============================================
 
@@ -307,7 +438,12 @@ func load_items_database() -> ItemDatabase:
 		res.effect_factor = item.get("effect_factor", 0)
 		res.has_socket = item.get("socket", false)
 		res.price = item.get("silver", 0)
-		# Note: icon/texture loaded separately by asset_id if needed
+		# Load icon from cache using asset_id
+		var asset_id = item.get("asset_id", 0)
+		if asset_id > 0:
+			var icon_texture = load_asset_texture("items", asset_id)
+			if icon_texture:
+				res.icon = icon_texture
 		db.items.append(res)
 	
 	print("[DataManager] Loaded %d items from cache" % db.items.size())
@@ -331,7 +467,12 @@ func load_perks_database() -> PerkDatabase:
 		perk.factor1 = item.get("factor_1", 0.0)
 		perk.effect2_id = item.get("effect_id_2", 0)
 		perk.factor2 = item.get("factor_2", 0.0)
-		# Note: icon loaded separately by asset_id if needed
+		# Load icon from cache using asset_id
+		var asset_id = item.get("asset_id", 0)
+		if asset_id > 0:
+			var icon_texture = load_asset_texture("perks", asset_id)
+			if icon_texture:
+				perk.icon = icon_texture
 		db.perks.append(perk)
 	
 	print("[DataManager] Loaded %d perks from cache" % db.perks.size())
@@ -351,7 +492,12 @@ func load_enemies_database() -> EnemyDatabase:
 		enemy.id = item.get("enemy_id", 0)
 		enemy.name = item.get("enemy_name", "")
 		enemy.description = item.get("description", "")
-		# Note: texture loaded separately by asset_id if needed
+		# Load texture from cache using asset_id
+		var asset_id = item.get("asset_id", 0)
+		if asset_id > 0:
+			var enemy_texture = load_asset_texture("enemies", asset_id)
+			if enemy_texture:
+				enemy.texture = enemy_texture
 		db.enemies.append(enemy)
 	
 	print("[DataManager] Loaded %d enemies from cache" % db.enemies.size())
