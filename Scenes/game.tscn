@@ -1413,7 +1413,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 offset_top = -75.0
 
-[node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("village_image", "utility_background_container", "buttons_container", "quest_button", "quest_icon", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_panel", "quest_slide_panel", "map_panel")]
+[node name="Home" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("village_image", "buttons_container", "quest_button", "quest_icon", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_panel", "quest_slide_panel", "map_panel")]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1422,7 +1422,6 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 script = ExtResource("20_village")
 village_image = NodePath("VillageImage")
-utility_background_container = NodePath("")
 buttons_container = NodePath("Overlay/ButtonsContainer")
 quest_button = NodePath("Overlay/QuestButton")
 quest_icon = NodePath("Overlay/QuestButton/HBox/Icon")
@@ -1456,10 +1455,12 @@ script = ExtResource("42_umggo")
 
 [node name="ButtonsContainer" type="GridContainer" parent="Portrait/GameScene/Home/Overlay"]
 layout_mode = 2
-offset_left = 20.0
-offset_top = 26.0
-offset_right = 385.0
-offset_bottom = 147.0
+anchor_right = 0.951
+anchor_bottom = 0.607
+offset_left = 15.0
+offset_top = 5.0
+offset_right = -0.155029
+offset_bottom = 0.105988
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 12
 columns = 3
@@ -3036,15 +3037,49 @@ theme_override_font_sizes/font_size = 25
 text = "Talent points: "
 vertical_alignment = 1
 
-[node name="Reset" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/Title"]
+[node name="ResetButton" type="Button" parent="Portrait/GameScene/TalentsPanel/Title"]
+layout_mode = 2
+offset_left = 216.0
+offset_right = 356.0
+offset_bottom = 53.0
+theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.9
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
 
-[node name="ResetButton" type="Button" parent="Portrait/GameScene/TalentsPanel/Title/Reset"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Reset ("
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "10"
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = ")"
 
 [node name="GridContainer" type="GridContainer" parent="Portrait/GameScene/TalentsPanel" node_paths=PackedStringArray("talents", "reset_button", "title_label")]
 layout_mode = 1
@@ -3062,7 +3097,7 @@ grow_vertical = 2
 columns = 7
 script = ExtResource("14_vm72l")
 talents = [NodePath("Talent"), NodePath("Talent2"), NodePath("Talent3"), NodePath("Talent4"), NodePath("Talent5"), NodePath("Talent6"), NodePath("Talent7"), NodePath("Talent8"), NodePath("Talent9"), NodePath("Talent10"), NodePath("Talent11"), NodePath("Talent12"), NodePath("Talent13"), NodePath("Talent14"), NodePath("Talent15"), NodePath("Talent16"), NodePath("Talent17"), NodePath("Talent18"), NodePath("Talent19"), NodePath("Talent20"), NodePath("Talent21"), NodePath("Talent22"), NodePath("Talent23"), NodePath("Talent24"), NodePath("Talent25"), NodePath("Talent26"), NodePath("Talent27"), NodePath("Talent28"), NodePath("Talent29"), NodePath("Talent30"), NodePath("Talent31"), NodePath("Talent32"), NodePath("Talent33"), NodePath("Talent34"), NodePath("Talent35"), NodePath("Talent36"), NodePath("Talent37"), NodePath("Talent38"), NodePath("Talent39"), NodePath("Talent40"), NodePath("Talent41"), NodePath("Talent42"), NodePath("Talent43"), NodePath("Talent44"), NodePath("Talent45"), NodePath("Talent46"), NodePath("Talent47"), NodePath("Talent48"), NodePath("Talent49"), NodePath("Talent50"), NodePath("Talent51"), NodePath("Talent52"), NodePath("Talent53"), NodePath("Talent54"), NodePath("Talent55"), NodePath("Talent56")]
-reset_button = NodePath("../Title/Reset/ResetButton")
+reset_button = NodePath("../Title/ResetButton")
 title_label = NodePath("../Title/Label")
 
 [node name="Talent" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" node_paths=PackedStringArray("button", "pointsLabel")]

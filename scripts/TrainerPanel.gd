@@ -77,6 +77,10 @@ func update_button_states():
 	luck_button.disabled = silver < STAT_COST
 
 func _on_stat_plus_pressed(stat_name: String, cost: int):
+	# Check if we have enough silver
+	if GameInfo.current_player.silver < cost:
+		return
+	
 	# Map stat names to stat IDs (1=strength, 2=stamina, 3=agility, 4=luck, 5=talent_points)
 	var stat_id_map = {
 		"strength": 1,
@@ -103,5 +107,6 @@ func _on_stat_plus_pressed(stat_name: String, cost: int):
 	
 	UIManager.instance.refresh_stats()
 	update_stats_display()
-	print("Trained ", stat_name, " - cost: ", cost, " gold")
+	update_button_states()
+	print("Trained ", stat_name, " - cost: ", cost, " silver")
 	utility_background.show_action_greeting()

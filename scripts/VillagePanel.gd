@@ -125,7 +125,7 @@ func _setup_utility_buttons():
 func _add_button(text: String, icon_path: String, callback: Callable):
 	"""Create and add a utility button"""
 	var button = Button.new()
-	button.custom_minimum_size = Vector2(0, 56)
+	button.custom_minimum_size = Vector2(110, 80)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
 	# Create HBox for icon + label

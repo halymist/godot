@@ -3,6 +3,8 @@ extends GridContainer
 @export var reset_button: Button
 @export var title_label: Label
 
+const RESET_COST = 10
+
 var talents_registered_count: int = 0
 var displayed_character: GameInfo.GamePlayer = null
 var is_read_only: bool = false
@@ -49,6 +51,7 @@ func refresh_talents():
 			talent_node.update_from_character(displayed_character, is_read_only)
 	
 	update_title_label()
+	update_reset_button_state()
 
 func update_title_label():
 	var spent_points = 0
@@ -60,8 +63,17 @@ func update_title_label():
 	else:
 		title_label.text = "Talent points: %d/%d" % [spent_points, GameInfo.current_player.talent_points]
 
-func _on_reset_button_pressed():	
+func update_reset_button_state():
+	if not is_read_only:
+		reset_button.disabled = GameInfo.current_player.silver < RESET_COST
+
+func _on_reset_button_pressed():
+	# Check if we have enough silver
+	if GameInfo.current_player.silver < RESET_COST:
+		return
+	
 	Websocket.reset_talents()
+	UIManager.instance.update_silver(-RESET_COST)
 	
 	GameInfo.current_player.talents.clear()
 	for talent in talents:
