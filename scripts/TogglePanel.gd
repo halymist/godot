@@ -675,3 +675,57 @@ func notify_slot_changed(slot_id: int):
 		panel.on_slot_changed(slot_id)
 	elif panel.name == "EnchanterPanel" and panel.has_method("on_slot_changed"):
 		panel.on_slot_changed(slot_id)
+
+func notify_utility_slot_item_placed(slot_id: int, item: GameInfo.Item, source_slot_id: int):
+	"""Notify panels when an item is placed in a utility slot (without changing bag_slot_id)"""
+	var panel = current_panel
+	if not panel:
+		return
+	
+	print("DEBUG notify_utility_slot_item_placed: slot_id=", slot_id, " item=", item.item_name, " source_slot_id=", source_slot_id)
+	
+	if panel.name == "BlacksmithPanel" and panel.has_method("on_item_placed"):
+		panel.on_item_placed(item, source_slot_id)
+	elif panel.name == "AlchemistPanel" and panel.has_method("on_item_placed_in_slot"):
+		panel.on_item_placed_in_slot(slot_id, item, source_slot_id)
+	elif panel.name == "EnchanterPanel" and panel.has_method("on_item_placed"):
+		panel.on_item_placed(item, source_slot_id)
+
+func notify_utility_slot_item_removed(slot_id: int):
+	"""Notify panels when an item is removed from a utility slot"""
+	var panel = current_panel
+	if not panel:
+		return
+	
+	print("DEBUG notify_utility_slot_item_removed: slot_id=", slot_id)
+	
+	if panel.name == "BlacksmithPanel" and panel.has_method("on_item_removed"):
+		panel.on_item_removed()
+	elif panel.name == "AlchemistPanel" and panel.has_method("on_item_removed_from_slot"):
+		panel.on_item_removed_from_slot(slot_id)
+	elif panel.name == "EnchanterPanel" and panel.has_method("on_item_removed"):
+		panel.on_item_removed()
+
+func get_items_in_utility_slots() -> Array[GameInfo.Item]:
+	"""Get all items currently placed in utility slots (to exclude from bag refresh)"""
+	var items: Array[GameInfo.Item] = []
+	
+	# Check BlacksmithPanel
+	if blacksmith_panel and blacksmith_panel.has_method("get_working_item"):
+		var item = blacksmith_panel.get_working_item()
+		if item:
+			items.append(item)
+	
+	# Check EnchanterPanel
+	if enchanter_panel and enchanter_panel.has_method("get_working_item"):
+		var item = enchanter_panel.get_working_item()
+		if item:
+			items.append(item)
+	
+	# Check AlchemistPanel
+	if alchemist_panel and alchemist_panel.has_method("get_working_items"):
+		var alch_items = alchemist_panel.get_working_items()
+		for item in alch_items:
+			items.append(item)
+	
+	return items

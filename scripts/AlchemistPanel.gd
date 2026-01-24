@@ -19,7 +19,7 @@ const BAG_MAX = 14
 @export var ingredient_slot3: Control
 
 var utility_background: UtilityBackground
-var original_bag_slots: Dictionary = {}  # Maps alchemist slot (17-19) -> original bag slot (10-14)
+var working_items: Dictionary = {}  # Maps alchemist slot (17-19) -> GameInfo.Item reference
 
 func _ready():
 	brew_button.pressed.connect(_on_brew_button_pressed)
@@ -34,36 +34,31 @@ func _setup():
 	_load_location_content()
 	update_brew_button_state()
 
+func on_item_placed_in_slot(slot_id: int, item: GameInfo.Item, _source_slot_id: int):
+	"""Called when an item is placed in a specific alchemist slot (item keeps its original bag_slot_id)"""
+	print("DEBUG AlchemistPanel.on_item_placed_in_slot: slot=", slot_id, " item=", item.item_name, " bag_slot_id=", item.bag_slot_id)
+	working_items[slot_id] = item
+	update_result_preview()
+	update_brew_button_state()
+	utility_background.show_item_placed_greeting()
+
+func on_item_removed_from_slot(slot_id: int):
+	"""Called when an item is removed from a specific alchemist slot"""
+	print("DEBUG AlchemistPanel.on_item_removed_from_slot: slot=", slot_id)
+	working_items.erase(slot_id)
+	update_result_preview()
+	update_brew_button_state()
+
 func on_slot_changed(slot_id: int):
-	if slot_id >= SLOT_1 and slot_id <= SLOT_3:
-		# Track original bag slot where item came from
-		var item_in_slot = null
-		for item in GameInfo.current_player.bag_slots:
-			if item.bag_slot_id == slot_id:
-				item_in_slot = item
-				break
-		
-		if item_in_slot:
-			# Find first empty bag slot - that's where it came from
-			for check_slot in range(BAG_MIN, BAG_MAX + 1):
-				var slot_occupied = false
-				for check_item in GameInfo.current_player.bag_slots:
-					if check_item.bag_slot_id == check_slot and check_item != item_in_slot:
-						slot_occupied = true
-						break
-				
-				if not slot_occupied:
-					original_bag_slots[slot_id] = check_slot
-					break
-		
-		update_result_preview()
-		update_brew_button_state()
-		utility_background.show_item_placed_greeting()
+	"""Legacy - Called by UIManager when a utility slot changes (for compatibility)"""
+	print("DEBUG AlchemistPanel.on_slot_changed called with slot_id=", slot_id)
+	# This is now handled by on_item_placed_in_slot/on_item_removed_from_slot
+	pass
 
 func _on_visibility_changed():
 	if not visible:
 		return_ingredients_to_bag()
-		original_bag_slots.clear()
+		working_items.clear()
 	else:
 		update_result_preview()
 		utility_background.show_entered_greeting()
@@ -88,20 +83,8 @@ func _load_location_content():
 		utility_background = utility_instance if utility_instance is UtilityBackground else null
 
 func return_ingredients_to_bag():
-	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
-		for item in GameInfo.current_player.bag_slots:
-			if item.bag_slot_id == slot_id:
-				for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
-					var slot_occupied = false
-					for check_item in GameInfo.current_player.bag_slots:
-						if check_item.bag_slot_id == bag_slot_id:
-							slot_occupied = true
-							break
-					
-					if not slot_occupied:
-						item.bag_slot_id = bag_slot_id
-						break
-				break
+	# Just clear the visual slots - items never actually moved
+	working_items.clear()
 	
 	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
 	for container in slot_containers:
@@ -110,10 +93,8 @@ func return_ingredients_to_bag():
 	UIManager.instance.refresh_bags()
 
 func get_ingredient_in_slot(slot_id: int) -> GameInfo.Item:
-	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == slot_id:
-			return item
-	return null
+	# Use working_items dictionary instead of searching bag_slots by slot_id
+	return working_items.get(slot_id, null)
 
 func update_result_preview():
 	var effects = []
@@ -163,6 +144,14 @@ func update_brew_button_state():
 	# Enable button only if both conditions are met
 	brew_button.disabled = not (has_ingredients and has_silver)
 
+func get_working_items() -> Array[GameInfo.Item]:
+	"""Return all items currently in the alchemy slots (for excluding from bag refresh)"""
+	var items: Array[GameInfo.Item] = []
+	for item in working_items.values():
+		if item:
+			items.append(item)
+	return items
+
 func _on_brew_button_pressed():
 	if GameInfo.current_player.silver < BREW_COST:
 		return
@@ -170,11 +159,12 @@ func _on_brew_button_pressed():
 	var items_to_brew = []
 	var original_slots = []
 	
+	# Get items from working_items - they still have their original bag_slot_id
 	for slot_id in [SLOT_1, SLOT_2, SLOT_3]:
-		var item = get_ingredient_in_slot(slot_id)
+		var item = working_items.get(slot_id, null)
 		if item:
 			items_to_brew.append(item)
-			original_slots.append(original_bag_slots.get(slot_id, -1))
+			original_slots.append(item.bag_slot_id)  # Use the item's actual bag_slot_id
 	
 	if items_to_brew.is_empty():
 		return
@@ -205,7 +195,7 @@ func _on_brew_button_pressed():
 		GameInfo.current_player.bag_slots.erase(item)
 	
 	# Clear tracking
-	original_bag_slots.clear()
+	working_items.clear()
 	
 	clear_ingredient_slots()
 	utility_background.show_action_greeting()

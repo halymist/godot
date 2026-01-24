@@ -222,7 +222,27 @@ func _drop_data(_pos, data):
 					return
 	
 	# Update GameInfo directly based on the operation
-	if not is_slot_empty():
+	# SPECIAL: For utility slots (15-19), DON'T change bag_slot_id - they're visual only
+	var is_utility_target = slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3
+	var is_utility_source = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= ALCHEMIST_SLOT_3
+	
+	if is_utility_target:
+		# Moving TO a utility slot - just update visuals, don't change bag_slot_id
+		# The panel will track the item reference via on_slot_changed
+		place_item_in_slot(dragged_item)
+		if source_container:
+			source_container.clear_slot()
+		# Notify the panel about the item being placed (pass the source slot for tracking)
+		if UIManager.instance:
+			UIManager.instance.notify_utility_slot_item_placed(slot_id, dragged_item, source_slot_id)
+	elif is_utility_source:
+		# Moving FROM a utility slot back to bag - just update visuals
+		place_item_in_slot(dragged_item)
+		if source_container:
+			source_container.clear_slot()
+		if UIManager.instance:
+			UIManager.instance.notify_utility_slot_item_removed(source_slot_id)
+	elif not is_slot_empty():
 		var existing_item = get_item_data()
 		
 		var dragged_item_in_array = null
@@ -627,42 +647,48 @@ func handle_double_click(item: GameInfo.Item):
 			_consume_item(item)
 		return
 	
-	# Blacksmith: Move temperable items to slot 16
+	# Blacksmith: Move temperable items to slot 16 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "BlacksmithPanel":
 		if item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
 			if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
 				var target_slot = _find_slot_by_id(BLACKSMITH_SLOT)
 				if target_slot and target_slot.is_slot_empty():
-					item.bag_slot_id = BLACKSMITH_SLOT
+					var source_slot_id = item.bag_slot_id  # Save original before placing
+					# DON'T change bag_slot_id - this is a visual-only move
 					target_slot.place_item_in_slot(item)
-					clear_slot()
-					UIManager.instance.refresh_bags()
+					# Notify panel about the item placement
+					UIManager.instance.notify_utility_slot_item_placed(BLACKSMITH_SLOT, item, source_slot_id)
+					UIManager.instance.refresh_bags()  # Will exclude item from bag display
 		return
 	
-	# Enchanter: Move equippable items to slot 15
+	# Enchanter: Move equippable items to slot 15 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "EnchanterPanel":
 		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Elixir" and item.type != "Potion" and item.type != "Gem":
 			if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
 				var target_slot = _find_slot_by_id(ENCHANTER_SLOT)
 				if target_slot and target_slot.is_slot_empty():
-					item.bag_slot_id = ENCHANTER_SLOT
+					var source_slot_id = item.bag_slot_id  # Save original before placing
+					# DON'T change bag_slot_id - this is a visual-only move
 					target_slot.place_item_in_slot(item)
-					clear_slot()
+					# Notify panel about the item placement
 					if UIManager.instance:
-						UIManager.instance.refresh_bags()
+						UIManager.instance.notify_utility_slot_item_placed(ENCHANTER_SLOT, item, source_slot_id)
+						UIManager.instance.refresh_bags()  # Will exclude item from bag display
 		return
 	
-	# Alchemist: Move ingredients to slots 17-19
+	# Alchemist: Move ingredients to slots 17-19 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "AlchemistPanel":
 		if item.type == "Ingredient" and item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
 			for target_slot_id in [ALCHEMIST_SLOT_1, ALCHEMIST_SLOT_2, ALCHEMIST_SLOT_3]:
 				var target_slot = _find_slot_by_id(target_slot_id)
 				if target_slot and target_slot.is_slot_empty():
-					item.bag_slot_id = target_slot_id
+					var source_slot_id = item.bag_slot_id  # Save original before placing
+					# DON'T change bag_slot_id - this is a visual-only move
 					target_slot.place_item_in_slot(item)
-					clear_slot()
+					# Notify panel about the item placement
 					if UIManager.instance:
-						UIManager.instance.refresh_bags()
+						UIManager.instance.notify_utility_slot_item_placed(target_slot_id, item, source_slot_id)
+						UIManager.instance.refresh_bags()  # Will exclude item from bag display
 					break
 		return
 	

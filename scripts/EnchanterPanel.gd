@@ -19,7 +19,7 @@ const ENCHANT_COST = 10
 var utility_background: UtilityBackground
 var selected_effect_id: int = 0
 var selected_effect_factor: float = 0.0
-var original_bag_slot: int = -1
+var working_item: GameInfo.Item = null  # Reference to item being worked on (doesn't change bag_slot_id)
 
 func _ready():
 	visibility_changed.connect(_on_visibility_changed)
@@ -35,28 +35,30 @@ func _setup():
 	update_enchant_button_state()
 	populate_effect_list()
 
+func on_item_placed(item: GameInfo.Item, _source_slot_id: int):
+	"""Called when an item is placed in the enchanter slot (item keeps its original bag_slot_id)"""
+	print("DEBUG EnchanterPanel.on_item_placed: item=", item.item_name, " bag_slot_id=", item.bag_slot_id)
+	working_item = item
+	utility_background.show_item_placed_greeting()
+	update_enchant_button_state()
+	populate_effect_list()
+
+func on_item_removed():
+	"""Called when an item is removed from the enchanter slot"""
+	print("DEBUG EnchanterPanel.on_item_removed")
+	working_item = null
+	update_enchant_button_state()
+	populate_effect_list()
+
+func get_working_item() -> GameInfo.Item:
+	"""Return the item currently being worked on (for excluding from bag refresh)"""
+	return working_item
+
 func on_slot_changed(slot_id: int):
-	if slot_id == ENCHANTER_SLOT:
-		var item_in_slot = null
-		for item in GameInfo.current_player.bag_slots:
-			if item.bag_slot_id == ENCHANTER_SLOT:
-				item_in_slot = item
-				break
-		if item_in_slot:
-			# Track the bag slot this item came from (before moving to ENCHANTER_SLOT)
-			# Note: This should be set by ItemSlot when moving the item
-			for slot_id_check in range(BAG_MIN, BAG_MAX + 1):
-				var found_empty = true
-				for check_item in GameInfo.current_player.bag_slots:
-					if check_item != item_in_slot and check_item.bag_slot_id == slot_id_check:
-						found_empty = false
-						break
-				if found_empty:
-					original_bag_slot = slot_id_check
-					break
-			utility_background.show_item_placed_greeting()
-		update_enchant_button_state()
-		populate_effect_list()
+	"""Legacy - Called by UIManager when a utility slot changes (for compatibility)"""
+	print("DEBUG EnchanterPanel.on_slot_changed called with slot_id=", slot_id)
+	# This is now handled by on_item_placed/on_item_removed
+	pass
 
 func _on_visibility_changed():
 	if not visible:
@@ -85,30 +87,17 @@ func _load_location_content():
 
 
 func return_enchanter_item_to_bag():
-	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == ENCHANTER_SLOT:
-			for slot_id in range(BAG_MIN, BAG_MAX + 1):
-				var slot_occupied = false
-				for check_item in GameInfo.current_player.bag_slots:
-					if check_item.bag_slot_id == slot_id:
-						slot_occupied = true
-						break
-				
-				if not slot_occupied:
-					item.bag_slot_id = slot_id
-					if enchanter_slot.has_method("clear_slot"):
-						enchanter_slot.clear_slot()
-					UIManager.instance.refresh_bags()
-					return
+	# Just clear the visual slot and reset working_item
+	# The item never actually moved - it keeps its original bag_slot_id
+	if working_item:
+		print("DEBUG return_enchanter_item_to_bag: clearing working_item")
+		working_item = null
+		if enchanter_slot.has_method("clear_slot"):
+			enchanter_slot.clear_slot()
+		UIManager.instance.refresh_bags()
 
 func update_enchant_button_state():
-	var item_in_slot = null
-	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == ENCHANTER_SLOT:
-			item_in_slot = item
-			break
-	
-	var has_item = item_in_slot != null
+	var has_item = working_item != null
 	var has_silver = GameInfo.current_player.silver >= ENCHANT_COST
 	var has_selection = selected_effect_id > 0
 	enchant_button.disabled = not (has_item and has_silver and has_selection)
@@ -120,20 +109,16 @@ func populate_effect_list():
 	selected_effect_id = 0
 	selected_effect_factor = 0.0
 	
-	var item_in_slot = null
 	var item_type = ""
-	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == ENCHANTER_SLOT:
-			item_in_slot = item
-			item_type = item.type
-			break
+	if working_item:
+		item_type = working_item.type
 	
 	for effect in GameInfo.effects_db.effects:
 		if effect.factor == 0:
 			continue
 		
 		var effect_slot = effect.get_slot_string()
-		if item_in_slot and effect_slot != "" and effect_slot != item_type:
+		if working_item and effect_slot != "" and effect_slot != item_type:
 			continue
 		
 		var option = enchant_option_scene.instantiate()
@@ -154,30 +139,28 @@ func _on_effect_selected(effect_id: int, factor: float, option):
 	update_enchant_button_state()
 
 func _on_enchant_pressed():
-	var item_in_slot = null
-	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == ENCHANTER_SLOT:
-			item_in_slot = item
-			break
-	
-	if not item_in_slot or selected_effect_id == 0:
+	if not working_item or selected_effect_id == 0:
+		print("No working item or no effect selected")
 		return
 	
-	Websocket.enchant_item(original_bag_slot, selected_effect_id)
-	
-	UIManager.instance.update_silver(-ENCHANT_COST)
-	
-	item_in_slot.effect_overdrive = selected_effect_id
-	print("Applied enchantment overdrive: ", selected_effect_id)
+	# Send enchant request to server with the item's actual bag_slot_id
+	print("DEBUG: Sending enchant_item for slot ", working_item.bag_slot_id, " with effect ", selected_effect_id)
+	Websocket.enchant_item(working_item.bag_slot_id, selected_effect_id)
 	
 	utility_background.show_action_greeting()
 	
-	return_enchanter_item_to_bag()
+	# Server will handle the actual enchanting and silver deduction
+	# TODO: Handle server response to update item effect and silver
 	
+	# Clear the working item and return to bag view
+	if enchanter_slot.has_method("clear_slot"):
+		enchanter_slot.clear_slot()
+	working_item = null
 	selected_effect_id = 0
 	selected_effect_factor = 0.0
 	populate_effect_list()
 	update_enchant_button_state()
+	UIManager.instance.refresh_bags()
 
 func hide_panel():
 	"""Explicitly hide panel and clean up"""

@@ -22,8 +22,16 @@ func update_equip_slots():
 		if slot.has_method("clear_slot"):
 			slot.clear_slot()
 
+	# Get items currently in utility slots (to exclude from bag display)
+	var items_in_utility: Array[GameInfo.Item] = []
+	if UIManager.instance:
+		items_in_utility = UIManager.instance.get_items_in_utility_slots()
+
 	# Slot numbering: Equipment 1-9, Consume 29, Bag 10-14, Special 15+
 	for item in GameInfo.current_player.bag_slots:
+		# Skip items currently placed in utility slots
+		if item in items_in_utility:
+			continue
 		var bag_slot_id = item.bag_slot_id
 		
 		var valid = false
