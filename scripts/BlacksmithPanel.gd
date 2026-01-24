@@ -171,18 +171,20 @@ func _on_temper_pressed():
 	print("DEBUG: Sending temper_item for slot ", working_item.bag_slot_id)
 	Websocket.temper_item(working_item.bag_slot_id)
 	
+	# Apply temper instantly on client (rollback later if server rejects)
+	working_item.tempered += 1
+	UIManager.instance.update_silver(-TEMPER_COST)
+	
 	# Show action greeting
 	utility_background.show_action_greeting()
 	
-	# Server will handle the actual tempering and silver deduction
-	# For now, just update UI to show we're waiting for response
-	# TODO: Handle server response to update item stats and silver
-	
-	# Clear the working item and return to bag view
+	# Clear the slot and return item to bag visually
 	blacksmith_slot.clear_slot()
 	working_item = null
 	update_stats_display()
+	update_temper_button_state()
 	UIManager.instance.refresh_bags()
+	UIManager.instance.refresh_stats()
 
 func get_working_item() -> GameInfo.Item:
 	"""Return the item currently being worked on (for excluding from bag refresh)"""

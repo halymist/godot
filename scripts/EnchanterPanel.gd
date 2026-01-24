@@ -113,8 +113,12 @@ func populate_effect_list():
 	if working_item:
 		item_type = working_item.type
 	
-	for effect in GameInfo.effects_db.effects:
-		if effect.factor == 0:
+	# Only show effects that the player has unlocked (from enchanter_effects array)
+	var available_effect_ids = GameInfo.current_player.enchanter_effects
+	
+	for effect_id in available_effect_ids:
+		var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
+		if not effect or effect.factor == 0:
 			continue
 		
 		var effect_slot = effect.get_slot_string()
@@ -147,12 +151,13 @@ func _on_enchant_pressed():
 	print("DEBUG: Sending enchant_item for slot ", working_item.bag_slot_id, " with effect ", selected_effect_id)
 	Websocket.enchant_item(working_item.bag_slot_id, selected_effect_id)
 	
+	# Apply enchant instantly on client (rollback later if server rejects)
+	working_item.effect_overdrive = selected_effect_id
+	UIManager.instance.update_silver(-ENCHANT_COST)
+	
 	utility_background.show_action_greeting()
 	
-	# Server will handle the actual enchanting and silver deduction
-	# TODO: Handle server response to update item effect and silver
-	
-	# Clear the working item and return to bag view
+	# Clear the slot and return item to bag visually
 	if enchanter_slot.has_method("clear_slot"):
 		enchanter_slot.clear_slot()
 	working_item = null
@@ -161,6 +166,7 @@ func _on_enchant_pressed():
 	populate_effect_list()
 	update_enchant_button_state()
 	UIManager.instance.refresh_bags()
+	UIManager.instance.refresh_stats()
 
 func hide_panel():
 	"""Explicitly hide panel and clean up"""
