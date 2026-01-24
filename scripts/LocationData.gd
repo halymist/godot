@@ -8,6 +8,9 @@ extends Resource
 # Village background image for this location (replaces village_scene)
 @export var village_texture: Texture2D
 
+# Village utility background (overlay with NPC)
+@export var village_utility_scene: PackedScene
+
 # Expedition/Map panel when not traveling
 @export var expedition_texture: Texture2D
 @export var expedition_text: String = ""

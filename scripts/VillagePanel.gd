@@ -5,7 +5,8 @@ extends Panel
 # No scrolling, no NPCs, no interiors
 
 @export var village_image: TextureRect
-@export var buttons_container: VBoxContainer
+@export var utility_background_container: Control  # Container to load utility background scene into
+@export var buttons_container: GridContainer
 @export var quest_button: Button
 @export var quest_icon: TextureRect
 @export var quest_name_label: Label
@@ -16,6 +17,8 @@ extends Panel
 @export var quest_panel: Control  # QuestAccept panel
 @export var quest_slide_panel: Control
 @export var map_panel: Control
+
+var utility_background: UtilityBackground  # Found from loaded utility scene
 
 # Current quest tracking
 var current_quest_index: int = 0
@@ -37,6 +40,7 @@ func _setup():
 		return
 	
 	_load_village_background()
+	_load_utility_background()
 	_setup_utility_buttons()
 	_update_quest_display()
 	
@@ -54,6 +58,38 @@ func _load_village_background():
 	if location_data and location_data.village_texture and village_image:
 		village_image.texture = location_data.village_texture
 
+func _load_utility_background():
+	"""Load utility background scene (like BlacksmithPanel approach)"""
+	var location_id = GameInfo.current_player.location
+	var location_data = GameInfo.settlements_db.get_location_by_id(location_id)
+	
+	if not location_data or not utility_background_container:
+		return
+	
+	# Clear existing utility background
+	for child in utility_background_container.get_children():
+		child.queue_free()
+	
+	# Load and instance the utility background scene for this location
+	if location_data.village_utility_scene:
+		var utility_scene = location_data.village_utility_scene
+		var instance = utility_scene.instantiate()
+		utility_background_container.add_child(instance)
+		
+		# Set to fill container
+		instance.set_anchors_preset(Control.PRESET_FULL_RECT)
+		instance.offset_left = 0
+		instance.offset_top = 0
+		instance.offset_right = 0
+		instance.offset_bottom = 0
+		
+		# Get reference to the utility background script
+		utility_background = instance
+		
+		# Show greeting when entering village
+		if utility_background:
+			utility_background.show_entered_greeting()
+
 func _setup_utility_buttons():
 	"""Setup utility buttons based on current location"""
 	if buttons_initialized:
@@ -66,7 +102,7 @@ func _setup_utility_buttons():
 	if not location_data or not buttons_container:
 		return
 	
-	# Add Vendor button (always available)
+	# Add Vendor button (always available - for testing, add 6 total)
 	if location_data.has_vendor():
 		_add_button("Vendor", "res://assets/images/ui/vendor_icon.png", _on_vendor_pressed)
 	
