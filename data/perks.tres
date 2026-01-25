@@ -1,95 +1,9 @@
-[gd_resource type="Resource" script_class="PerkDatabase" load_steps=12 format=3 uid="uid://bxh8cyad6lih5"]
+[gd_resource type="Resource" script_class="PerkDatabase" load_steps=3 format=3 uid="uid://bxh8cyad6lih5"]
 
+[ext_resource type="Script" uid="uid://cph7aq216pdnc" path="res://scripts/resources/PerkDatabase.gd" id="1_db"]
 [ext_resource type="Script" uid="uid://d33tmwug4neyy" path="res://scripts/resources/PerkResource.gd" id="1_ocg54"]
-[ext_resource type="Texture2D" uid="uid://db2s8q0brdsna" path="res://data/perk_texture/perk.png" id="2_ptr4g"]
-[ext_resource type="Script" uid="uid://cph7aq216pdnc" path="res://scripts/resources/PerkDatabase.gd" id="2_txtgy"]
-[ext_resource type="Texture2D" uid="uid://de3hl0mcocv1p" path="res://assets/images/ui/Perks.png" id="3_ptr4g"]
-
-[sub_resource type="Resource" id="Resource_22ubc"]
-script = ExtResource("1_ocg54")
-id = 1
-perk_name = "Perk1"
-description = ""
-effect1_id = 1
-factor1 = 2.0
-effect2_id = 2
-factor2 = 5.0
-icon = ExtResource("2_ptr4g")
-metadata/_custom_type_script = "uid://d33tmwug4neyy"
-
-[sub_resource type="Resource" id="Resource_4k4mo"]
-script = ExtResource("1_ocg54")
-id = 2
-perk_name = "Perk2"
-description = ""
-effect1_id = 1
-factor1 = 3.0
-effect2_id = 2
-factor2 = 0.0
-icon = ExtResource("2_ptr4g")
-metadata/_custom_type_script = "uid://d33tmwug4neyy"
-
-[sub_resource type="Resource" id="Resource_uiww1"]
-script = ExtResource("1_ocg54")
-id = 3
-perk_name = "Perking it"
-description = ""
-effect1_id = 1
-factor1 = 5.0
-effect2_id = 2
-factor2 = 10.0
-icon = ExtResource("3_ptr4g")
-metadata/_custom_type_script = "uid://d33tmwug4neyy"
-
-[sub_resource type="Resource" id="Resource_p4f38"]
-script = ExtResource("1_ocg54")
-id = 4
-perk_name = "Perk reward"
-description = ""
-effect1_id = 1
-factor1 = 20.0
-effect2_id = 2
-factor2 = 20.0
-icon = ExtResource("3_ptr4g")
-metadata/_custom_type_script = "uid://d33tmwug4neyy"
-
-[sub_resource type="Resource" id="Resource_ptr4g"]
-script = ExtResource("1_ocg54")
-id = 100
-perk_name = "Druids touch"
-description = ""
-effect1_id = 18
-factor1 = 10.0
-effect2_id = 0
-factor2 = 0.0
-icon = ExtResource("3_ptr4g")
-metadata/_custom_type_script = "uid://d33tmwug4neyy"
-
-[sub_resource type="Resource" id="Resource_dsu5a"]
-script = ExtResource("1_ocg54")
-id = 101
-perk_name = "Monks wisdom"
-description = ""
-effect1_id = 16
-factor1 = 15.0
-effect2_id = 0
-factor2 = 0.0
-icon = ExtResource("3_ptr4g")
-metadata/_custom_type_script = "uid://d33tmwug4neyy"
-
-[sub_resource type="Resource" id="Resource_4xw67"]
-script = ExtResource("1_ocg54")
-id = 102
-perk_name = "Natures grasp"
-description = ""
-effect1_id = 5
-factor1 = 10.0
-effect2_id = 0
-factor2 = 0.0
-icon = ExtResource("3_ptr4g")
-metadata/_custom_type_script = "uid://d33tmwug4neyy"
 
 [resource]
-script = ExtResource("2_txtgy")
-perks = Array[ExtResource("1_ocg54")]([SubResource("Resource_22ubc"), SubResource("Resource_4k4mo"), SubResource("Resource_uiww1"), SubResource("Resource_p4f38"), SubResource("Resource_ptr4g"), SubResource("Resource_dsu5a"), SubResource("Resource_4xw67")])
+script = ExtResource("1_db")
+perks = Array[ExtResource("1_ocg54")]([])
 metadata/_custom_type_script = "uid://cph7aq216pdnc"

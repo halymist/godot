@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ExpeditionsDatabase" load_steps=2 format=3 uid="uid://dexpeditions"]
+
+[ext_resource type="Script" uid="uid://bwtytkoapw2n6" path="res://scripts/resources/ExpeditionsDatabase.gd" id="1_db"]
+
+[resource]
+script = ExtResource("1_db")
+slides = []

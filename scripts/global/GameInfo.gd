@@ -68,12 +68,12 @@ func load_databases():
 	
 	print("Loading databases...")
 	
-	# Load from DataManager cache (downloaded from server)
-	effects_db = DataManager.load_effects_database()
-	items_db = DataManager.load_items_database()
-	perks_db = DataManager.load_perks_database()
-	enemies_db = DataManager.load_enemies_database()
-	expeditions_db = DataManager.load_expeditions_database()
+	# Get databases from DataManager (already loaded and populated with downloaded data)
+	effects_db = DataManager.get_effects_database()
+	items_db = DataManager.get_items_database()
+	perks_db = DataManager.get_perks_database()
+	enemies_db = DataManager.get_enemies_database()
+	expeditions_db = DataManager.get_expeditions_database()
 	
 	# These still load from .tres (not versioned from server)
 	npcs_db = load("res://data/npcs.tres")
