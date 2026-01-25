@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="PerkDatabase" load_steps=3 format=3 uid="uid://bxh8cyad6lih5"]
-
-[ext_resource type="Script" uid="uid://cph7aq216pdnc" path="res://scripts/resources/PerkDatabase.gd" id="1_db"]
-[ext_resource type="Script" uid="uid://d33tmwug4neyy" path="res://scripts/resources/PerkResource.gd" id="1_ocg54"]
-
-[resource]
-script = ExtResource("1_db")
-perks = Array[ExtResource("1_ocg54")]([])
-metadata/_custom_type_script = "uid://cph7aq216pdnc"

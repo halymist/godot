@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="EffectDatabase" load_steps=2 format=3 uid="uid://bkg18l7ls21gy"]
-
-[ext_resource type="Script" uid="uid://tlx57q68wsqo" path="res://scripts/resources/EffectDatabase.gd" id="1_db"]
-
-[resource]
-script = ExtResource("1_db")
-effects = []

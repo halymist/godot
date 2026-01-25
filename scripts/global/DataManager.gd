@@ -9,16 +9,17 @@ extends Node
 
 const VERSIONS_FILE = "user://data_versions.cfg"
 const IMAGES_DIR = "user://images/"
+const DATA_DIR = "user://data/"
 
 # Asset base URL
 const ASSETS_BASE_URL = "https://gamedata-assets.s3.eu-north-1.amazonaws.com/images/"
 
-# Database paths (shipped .tres files)
-const EFFECTS_DB_PATH = "res://data/effects.tres"
-const ITEMS_DB_PATH = "res://data/items.tres"
-const PERKS_DB_PATH = "res://data/perks.tres"
-const ENEMIES_DB_PATH = "res://data/enemies.tres"
-const EXPEDITIONS_DB_PATH = "res://data/expeditions.tres"
+# Database paths (all in user://)
+const EFFECTS_DB_PATH = "user://data/effects.tres"
+const ITEMS_DB_PATH = "user://data/items.tres"
+const PERKS_DB_PATH = "user://data/perks.tres"
+const ENEMIES_DB_PATH = "user://data/enemies.tres"
+const EXPEDITIONS_DB_PATH = "user://data/expeditions.tres"
 
 # Signals
 signal data_sync_completed(success: bool)
@@ -46,6 +47,9 @@ var server_versions: Dictionary = {}
 # Track pending asset downloads
 var _pending_downloads: int = 0
 
+# Track databases that need saving after assets are applied
+var _databases_to_save: Array[String] = []
+
 func _ready():
 	print("[DataManager] Ready")
 	_ensure_cache_dirs()
@@ -53,20 +57,66 @@ func _ready():
 	_load_baseline_databases()
 
 func _ensure_cache_dirs():
-	"""Ensure image cache directories exist"""
+	"""Ensure cache directories exist"""
 	DirAccess.make_dir_recursive_absolute("user://images/items")
 	DirAccess.make_dir_recursive_absolute("user://images/perks")
 	DirAccess.make_dir_recursive_absolute("user://images/enemies")
-	print("[DataManager] Created image cache directories")
+	DirAccess.make_dir_recursive_absolute("user://data")
+	print("[DataManager] Created cache directories")
 
 func _load_baseline_databases():
-	"""Load baseline .tres databases from res://"""
-	effects_db = load(EFFECTS_DB_PATH)
-	items_db = load(ITEMS_DB_PATH)
-	perks_db = load(PERKS_DB_PATH)
-	enemies_db = load(ENEMIES_DB_PATH)
-	expeditions_db = load(EXPEDITIONS_DB_PATH)
-	print("[DataManager] Loaded baseline databases")
+	"""Load .tres databases from user:// if exists, otherwise create empty"""
+	effects_db = _load_or_create_database(EFFECTS_DB_PATH, "effects")
+	items_db = _load_or_create_database(ITEMS_DB_PATH, "items")
+	perks_db = _load_or_create_database(PERKS_DB_PATH, "perks")
+	enemies_db = _load_or_create_database(ENEMIES_DB_PATH, "enemies")
+	expeditions_db = _load_or_create_database(EXPEDITIONS_DB_PATH, "expeditions")
+	print("[DataManager] Loaded databases")
+
+func _load_or_create_database(user_path: String, db_type: String) -> Resource:
+	"""Load from user:// if exists, otherwise create empty database"""
+	if FileAccess.file_exists(user_path):
+		var db = load(user_path)
+		if db:
+			print("[DataManager] Loaded: %s" % user_path)
+			# Apply cached textures to loaded database
+			_apply_cached_textures_to_database(db_type, db)
+			return db
+	
+	# Create empty database
+	print("[DataManager] Creating empty %s database" % db_type)
+	match db_type:
+		"effects": return EffectDatabase.new()
+		"items": return ItemDatabase.new()
+		"perks": return PerkDatabase.new()
+		"enemies": return EnemyDatabase.new()
+		"expeditions": return ExpeditionsDatabase.new()
+		_: return null
+
+func _apply_cached_textures_to_database(db_type: String, db: Resource):
+	"""Apply cached textures from user:// to a loaded database"""
+	match db_type:
+		"items":
+			for item in db.items:
+				if item.has_meta("asset_id"):
+					var asset_id = item.get_meta("asset_id")
+					var texture = load_asset_texture("items", asset_id)
+					if texture:
+						item.icon = texture
+		"perks":
+			for perk in db.perks:
+				if perk.has_meta("asset_id"):
+					var asset_id = perk.get_meta("asset_id")
+					var texture = load_asset_texture("perks", asset_id)
+					if texture:
+						perk.icon = texture
+		"enemies":
+			for enemy in db.enemies:
+				if enemy.has_meta("asset_id"):
+					var asset_id = enemy.get_meta("asset_id")
+					var texture = load_asset_texture("enemies", asset_id)
+					if texture:
+						enemy.texture = texture
 
 # ============================================
 # VERSION MANAGEMENT
@@ -113,7 +163,7 @@ func reset_all_versions():
 	print("[DataManager] Reset all versions to 0")
 
 func clear_all_cache():
-	"""Clear all cached images and reset versions"""
+	"""Clear all cached images, persisted databases, and reset versions"""
 	reset_all_versions()
 	
 	# Delete image folders
@@ -129,12 +179,17 @@ func clear_all_cache():
 				file_name = dir.get_next()
 			dir.list_dir_end()
 	
-	# Clear database arrays
-	effects_db.effects.clear()
-	items_db.items.clear()
-	perks_db.perks.clear()
-	enemies_db.enemies.clear()
-	expeditions_db.slides.clear()
+	# Delete persisted .tres files
+	for db_path in [EFFECTS_DB_PATH, ITEMS_DB_PATH, PERKS_DB_PATH, ENEMIES_DB_PATH, EXPEDITIONS_DB_PATH]:
+		if FileAccess.file_exists(db_path):
+			DirAccess.remove_absolute(db_path)
+	
+	# Create empty databases
+	effects_db = EffectDatabase.new()
+	items_db = ItemDatabase.new()
+	perks_db = PerkDatabase.new()
+	enemies_db = EnemyDatabase.new()
+	expeditions_db = ExpeditionsDatabase.new()
 	
 	print("[DataManager] Cleared all cache")
 
@@ -178,6 +233,12 @@ func sync_data(server_data_versions: Dictionary):
 		await get_tree().create_timer(0.1).timeout
 	
 	print("[DataManager] All downloads (data + assets) completed!")
+	
+	# Save databases that were waiting for assets
+	for data_type in _databases_to_save:
+		_save_database(data_type)
+	_databases_to_save.clear()
+	
 	data_sync_completed.emit(true)
 
 func _sync_data_type(data_type: String, endpoint: String):
@@ -324,6 +385,45 @@ func _apply_to_database(data_type: String, data: Array):
 	# Update local version
 	set_local_version(data_type, max_version)
 	print("[DataManager] %s updated to version %d" % [data_type, max_version])
+	
+	# Save database immediately if no assets, otherwise defer until assets are applied
+	if data_type not in ["items", "perks", "enemies"]:
+		_save_database(data_type)
+	else:
+		if data_type not in _databases_to_save:
+			_databases_to_save.append(data_type)
+			print("[DataManager] %s will be saved after assets are applied" % data_type)
+
+func _save_database(data_type: String):
+	"""Save database to user:// as .tres file"""
+	var db: Resource
+	var path: String
+	
+	match data_type:
+		"effects":
+			db = effects_db
+			path = EFFECTS_DB_PATH
+		"items":
+			db = items_db
+			path = ITEMS_DB_PATH
+		"perks":
+			db = perks_db
+			path = PERKS_DB_PATH
+		"enemies":
+			db = enemies_db
+			path = ENEMIES_DB_PATH
+		"expeditions":
+			db = expeditions_db
+			path = EXPEDITIONS_DB_PATH
+		_:
+			print("[DataManager] Unknown data type for save: %s" % data_type)
+			return
+	
+	var err = ResourceSaver.save(db, path)
+	if err != OK:
+		print("[DataManager] Failed to save %s: %d" % [path, err])
+	else:
+		print("[DataManager] Saved %s" % path)
 
 # ============================================
 # FIND OR CREATE HELPERS

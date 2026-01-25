@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="EnemyDatabase" load_steps=2 format=3 uid="uid://ccrgwa4tqjjiv"]
-
-[ext_resource type="Script" uid="uid://b3xyipy0xv2py" path="res://scripts/resources/EnemyDatabase.gd" id="1_db"]
-
-[resource]
-script = ExtResource("1_db")
-enemies = []
