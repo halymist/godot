@@ -36,7 +36,11 @@ enum ItemType {
 @export var effect_factor: int = 0  # Strength/magnitude of the effect
 @export var price: int = 0
 @export var has_socket: bool = false  # Whether item has a socket slot
-@export var icon: Texture2D = null
+@export var asset_id: int = 0  # Asset ID for texture lookup (not the texture itself)
+@export var version: int = 0  # Data version for sync tracking
+
+# Runtime-only (NOT persisted to .res file - loaded from user://images/)
+var icon: Texture2D = null
 
 # Helper function to get type as string (for compatibility with existing code)
 func get_type_string() -> String:

@@ -21,6 +21,7 @@ enum EffectSlot {
 @export var description: String = ""
 @export var slot: EffectSlot = EffectSlot.ANY  # Equipment slot restriction
 @export var factor: int = 0  # Enchanting factor (client-side)
+@export var version: int = 0  # Data version for sync tracking
 @export var icon: Texture2D = null
 
 # Helper function to get slot as string (for compatibility with existing code)

@@ -15,11 +15,11 @@ const DATA_DIR = "user://data/"
 const ASSETS_BASE_URL = "https://gamedata-assets.s3.eu-north-1.amazonaws.com/images/"
 
 # Database paths (all in user://)
-const EFFECTS_DB_PATH = "user://data/effects.tres"
-const ITEMS_DB_PATH = "user://data/items.tres"
-const PERKS_DB_PATH = "user://data/perks.tres"
-const ENEMIES_DB_PATH = "user://data/enemies.tres"
-const EXPEDITIONS_DB_PATH = "user://data/expeditions.tres"
+const EFFECTS_DB_PATH = "user://data/effects.res"
+const ITEMS_DB_PATH = "user://data/items.res"
+const PERKS_DB_PATH = "user://data/perks.res"
+const ENEMIES_DB_PATH = "user://data/enemies.res"
+const EXPEDITIONS_DB_PATH = "user://data/expeditions.res"
 
 # Signals
 signal data_sync_completed(success: bool)
@@ -98,23 +98,20 @@ func _apply_cached_textures_to_database(db_type: String, db: Resource):
 	match db_type:
 		"items":
 			for item in db.items:
-				if item.has_meta("asset_id"):
-					var asset_id = item.get_meta("asset_id")
-					var texture = load_asset_texture("items", asset_id)
+				if item.asset_id > 0:
+					var texture = load_asset_texture("items", item.asset_id)
 					if texture:
 						item.icon = texture
 		"perks":
 			for perk in db.perks:
-				if perk.has_meta("asset_id"):
-					var asset_id = perk.get_meta("asset_id")
-					var texture = load_asset_texture("perks", asset_id)
+				if perk.asset_id > 0:
+					var texture = load_asset_texture("perks", perk.asset_id)
 					if texture:
 						perk.icon = texture
 		"enemies":
 			for enemy in db.enemies:
-				if enemy.has_meta("asset_id"):
-					var asset_id = enemy.get_meta("asset_id")
-					var texture = load_asset_texture("enemies", asset_id)
+				if enemy.asset_id > 0:
+					var texture = load_asset_texture("enemies", enemy.asset_id)
 					if texture:
 						enemy.texture = texture
 
@@ -234,10 +231,13 @@ func sync_data(server_data_versions: Dictionary):
 	
 	print("[DataManager] All downloads (data + assets) completed!")
 	
-	# Save databases that were waiting for assets
+	# Save databases that were waiting for assets (WITHOUT textures - keeps .tres small)
 	for data_type in _databases_to_save:
 		_save_database(data_type)
 	_databases_to_save.clear()
+	
+	# NOW apply cached textures to in-memory databases for runtime use
+	_apply_all_cached_textures()
 	
 	data_sync_completed.emit(true)
 
@@ -337,10 +337,8 @@ func _apply_to_database(data_type: String, data: Array):
 				res.effect_factor = item.get("effect_factor", 0)
 				res.has_socket = item.get("socket", false)
 				res.price = item.get("silver", 0)
-				# Icon loaded separately after asset download
-				var asset_id = item.get("asset_id", 0)
-				if asset_id > 0:
-					res.set_meta("asset_id", asset_id)
+				res.asset_id = item.get("asset_id", 0)
+				res.version = item.get("version", 0)
 				max_version = max(max_version, item.get("version", 0))
 			print("[DataManager] Applied %d items to database (total: %d)" % [data.size(), items_db.items.size()])
 		
@@ -354,9 +352,8 @@ func _apply_to_database(data_type: String, data: Array):
 				perk.factor1 = item.get("factor_1", 0.0)
 				perk.effect2_id = item.get("effect_id_2", 0)
 				perk.factor2 = item.get("factor_2", 0.0)
-				var asset_id = item.get("asset_id", 0)
-				if asset_id > 0:
-					perk.set_meta("asset_id", asset_id)
+				perk.asset_id = item.get("asset_id", 0)
+				perk.version = item.get("version", 0)
 				max_version = max(max_version, item.get("version", 0))
 			print("[DataManager] Applied %d perks to database (total: %d)" % [data.size(), perks_db.perks.size()])
 		
@@ -366,9 +363,8 @@ func _apply_to_database(data_type: String, data: Array):
 				enemy.id = item.get("enemy_id", 0)
 				enemy.name = item.get("enemy_name", "")
 				enemy.description = item.get("description", "")
-				var asset_id = item.get("asset_id", 0)
-				if asset_id > 0:
-					enemy.set_meta("asset_id", asset_id)
+				enemy.asset_id = item.get("asset_id", 0)
+				enemy.version = item.get("version", 0)
 				max_version = max(max_version, item.get("version", 0))
 			print("[DataManager] Applied %d enemies to database (total: %d)" % [data.size(), enemies_db.enemies.size()])
 		
@@ -536,22 +532,17 @@ func _get_expedition_reward_amount(item: Dictionary) -> int:
 # ============================================
 
 func _download_assets_for_data(data_type: String, data: Array):
-	"""Download images for all items in data that don't have cached images"""
+	"""Download images for all items in data (always re-download to get latest)"""
 	for item in data:
 		var asset_id = item.get("asset_id", 0)
 		if asset_id > 0:
-			_download_asset_if_needed(data_type, asset_id)
+			_download_asset(data_type, asset_id)
 
-func _download_asset_if_needed(folder: String, asset_id: int):
-	"""Download an asset if it doesn't exist locally"""
+func _download_asset(folder: String, asset_id: int):
+	"""Download an asset (always download to ensure we have latest version)"""
 	var local_path = get_asset_path(folder, asset_id)
-	
-	if FileAccess.file_exists(local_path):
-		# Already cached, just apply it to the database
-		_apply_asset_to_database(folder, asset_id)
-		return
-	
 	var remote_url = "%s%s/%d.webp" % [ASSETS_BASE_URL, folder, asset_id]
+	
 	print("[DataManager] Downloading asset: %s" % remote_url)
 	
 	_pending_downloads += 1
@@ -581,9 +572,6 @@ func _on_asset_downloaded(_result: int, response_code: int, _headers: PackedStri
 		file.store_buffer(body)
 		file.close()
 		print("[DataManager] Saved asset: %s" % local_path)
-		
-		# Apply to database
-		_apply_asset_to_database(folder, asset_id)
 		asset_downloaded.emit(folder, asset_id)
 	else:
 		print("[DataManager] Failed to save asset: %s" % local_path)
@@ -597,16 +585,43 @@ func _apply_asset_to_database(folder: String, asset_id: int):
 	match folder:
 		"items":
 			for item in items_db.items:
-				if item.has_meta("asset_id") and item.get_meta("asset_id") == asset_id:
+				if item.asset_id == asset_id:
 					item.icon = texture
 		"perks":
 			for perk in perks_db.perks:
-				if perk.has_meta("asset_id") and perk.get_meta("asset_id") == asset_id:
+				if perk.asset_id == asset_id:
 					perk.icon = texture
 		"enemies":
 			for enemy in enemies_db.enemies:
-				if enemy.has_meta("asset_id") and enemy.get_meta("asset_id") == asset_id:
+				if enemy.asset_id == asset_id:
 					enemy.texture = texture
+
+func _apply_all_cached_textures():
+	"""Apply all cached textures to in-memory databases"""
+	print("[DataManager] Applying cached textures to databases...")
+	
+	# Items
+	for item in items_db.items:
+		if item.asset_id > 0:
+			var texture = load_asset_texture("items", item.asset_id)
+			if texture:
+				item.icon = texture
+	
+	# Perks
+	for perk in perks_db.perks:
+		if perk.asset_id > 0:
+			var texture = load_asset_texture("perks", perk.asset_id)
+			if texture:
+				perk.icon = texture
+	
+	# Enemies
+	for enemy in enemies_db.enemies:
+		if enemy.asset_id > 0:
+			var texture = load_asset_texture("enemies", enemy.asset_id)
+			if texture:
+				enemy.texture = texture
+	
+	print("[DataManager] Cached textures applied")
 
 func get_asset_path(folder: String, asset_id: int) -> String:
 	"""Get the local path for an asset"""
