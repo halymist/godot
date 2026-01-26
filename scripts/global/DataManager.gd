@@ -325,7 +325,14 @@ func _apply_to_database(data_type: String, data: Array):
 				var res = _find_or_create_item(item.get(id_field, 0))
 				res.id = item.get("item_id", 0)
 				res.item_name = item.get("item_name", "")
-				res.type = item.get("type", 0)
+				
+				# Map string type to enum
+				var type_value = item.get("type", "")
+				if type_value is String:
+					res.type = _map_item_type_to_enum(type_value)
+				else:
+					res.type = int(type_value)  # Fallback if server sends int
+				
 				res.strength = item.get("strength", 0)
 				res.stamina = item.get("stamina", 0)
 				res.agility = item.get("agility", 0)
@@ -484,6 +491,29 @@ func _get_id_field(data_type: String) -> String:
 		"enemies": return "enemy_id"
 		"expeditions": return "slide_id"
 		_: return "id"
+
+func _map_item_type_to_enum(type_str: String) -> int:
+	"""Map server string type to ItemResource.ItemType enum"""
+	match type_str.to_lower():
+		"head": return ItemResource.ItemType.HEAD
+		"chest": return ItemResource.ItemType.CHEST
+		"hands": return ItemResource.ItemType.HANDS
+		"foot", "feet": return ItemResource.ItemType.FOOT
+		"belt": return ItemResource.ItemType.BELT
+		"legs": return ItemResource.ItemType.LEGS
+		"ring", "back": return ItemResource.ItemType.RING  # 'back' might be ring slot
+		"amulet": return ItemResource.ItemType.AMULET
+		"weapon": return ItemResource.ItemType.WEAPON
+		"gem": return ItemResource.ItemType.GEM
+		"potion": return ItemResource.ItemType.POTION
+		"elixir": return ItemResource.ItemType.ELIXIR
+		"scroll": return ItemResource.ItemType.SCROLL
+		"hammer": return ItemResource.ItemType.HAMMER
+		"ration": return ItemResource.ItemType.RATION
+		"ingredient": return ItemResource.ItemType.INGREDIENT
+		_: 
+			print("[DataManager] WARNING: Unknown item type '%s', defaulting to HEAD" % type_str)
+			return ItemResource.ItemType.HEAD
 
 # ============================================
 # EXPEDITION REWARD MAPPING
