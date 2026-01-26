@@ -296,7 +296,8 @@ class Perk:
 				factor1 = perk_resource.factor1
 				effect2_id = perk_resource.effect2_id
 				factor2 = perk_resource.factor2
-				texture = perk_resource.icon
+				# Texture might be null if not loaded yet - that's OK
+				texture = perk_resource.icon if perk_resource.icon else null
 				
 				# Look up effect details from effects_db
 				if GameInfo.effects_db:
@@ -310,6 +311,8 @@ class Perk:
 						if effect2_res:
 							effect2 = effect2_res.name
 							effect2_description = effect2_res.description
+			else:
+				print("[GameInfo.Perk] WARNING: Perk ID ", id, " not found in perks_db")
 
 class Talent:
 	extends RefCounted

@@ -156,7 +156,12 @@ func _on_bind_pressed():
 	selected_perk.active = true
 	selected_perk.slot = current_slot
 	
-	Websocket.activate_perk(selected_perk.id, current_slot)
+	# Find the talent_id that unlocks this perk slot
+	var talent_id = _get_talent_id_for_perk_slot(current_slot)
+	if talent_id > 0:
+		Websocket.activate_perk(talent_id, selected_perk.id)
+	else:
+		print("[PerkScreen] ERROR: Could not find talent_id for perk_slot ", current_slot)
 	
 	UIManager.instance.refresh_active_effects()
 	_update_active_display(selected_perk)
@@ -175,6 +180,15 @@ func _get_next_inactive_slot() -> int:
 		if not perk.active and perk.slot > max_slot:
 			max_slot = perk.slot
 	return max_slot + 1
+
+func _get_talent_id_for_perk_slot(perk_slot_num: int) -> int:
+	"""Find the talent_id that unlocks the given perk slot"""
+	# Search through talent_registry to find which talent has this perk_slot
+	for talent_id in GameInfo.talent_registry:
+		var talent_meta = GameInfo.talent_registry[talent_id]
+		if talent_meta.perk_slot == perk_slot_num:
+			return talent_id
+	return 0  # Not found
 
 func _on_button_pressed():
 	visible = false
