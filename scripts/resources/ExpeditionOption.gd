@@ -1,31 +1,12 @@
 class_name ExpeditionOption
 extends Resource
 
-# Requirement types for selecting options
-enum RequirementType {
-	NONE,
-	# Combat
-	COMBAT,
-	# Stats
-	STRENGTH,
-	STAMINA,
-	AGILITY,
-	LUCK,
-	ARMOR,
-	# Currency
-	SILVER,
-	# Factions
-	ORDER,
-	GUILD,
-	COMPANIONS
-}
+# Matches server JSON: option_id, option_text, stat_type, stat_required, effect_id, effect_amount, enemy_id
 
 @export var option_id: int = 0
-@export var text: String = ""
-
-# Requirement to select this option (optional)
-@export var required_type: RequirementType = RequirementType.NONE
-@export var required_amount: int = 0
-
-# Note: next_slide is NOT stored here - server decides it dynamically
-# Note: rewards are on slides, not options
+@export var option_text: String = ""
+@export var stat_type: String = ""  # "strength", "stamina", "agility", "luck", or empty
+@export var stat_required: int = 0
+@export var effect_id: int = 0
+@export var effect_amount: float = 0.0
+@export var enemy_id: int = 0

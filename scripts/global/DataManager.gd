@@ -61,6 +61,7 @@ func _ensure_cache_dirs():
 	DirAccess.make_dir_recursive_absolute("user://images/items")
 	DirAccess.make_dir_recursive_absolute("user://images/perks")
 	DirAccess.make_dir_recursive_absolute("user://images/enemies")
+	DirAccess.make_dir_recursive_absolute("user://images/expedition")
 	DirAccess.make_dir_recursive_absolute("user://data")
 	print("[DataManager] Created cache directories")
 
@@ -114,6 +115,12 @@ func _apply_cached_textures_to_database(db_type: String, db: Resource):
 					var texture = load_asset_texture("enemies", enemy.asset_id)
 					if texture:
 						enemy.texture = texture
+		"expeditions":
+			for slide in db.slides:
+				if slide.asset_id > 0:
+					var texture = load_asset_texture("expedition", slide.asset_id)
+					if texture:
+						slide.texture = texture
 
 # ============================================
 # VERSION MANAGEMENT
@@ -292,11 +299,23 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 		return
 	
 	var data = json.get_data()
+	
+	# Expeditions have special format: {version: X, slides: [...]}
+	if data_type == "expeditions":
+		if not data is Dictionary:
+			print("[DataManager] Invalid expeditions data format (expected dict)")
+			return
+		var exp_version = data.get("version", 0)
+		var slides_data = data.get("slides", [])
+		_apply_expeditions_to_database(slides_data, exp_version)
+		_download_expedition_assets(slides_data)
+		return
+	
 	if not data is Array:
 		print("[DataManager] Invalid %s data format" % data_type)
 		return
 	
-	# Apply data directly to .tres database
+	# Apply data directly to .res database
 	_apply_to_database(data_type, data)
 	
 	# Download assets for types that have images
@@ -374,16 +393,6 @@ func _apply_to_database(data_type: String, data: Array):
 				enemy.version = item.get("version", 0)
 				max_version = max(max_version, item.get("version", 0))
 			print("[DataManager] Applied %d enemies to database (total: %d)" % [data.size(), enemies_db.enemies.size()])
-		
-		"expeditions":
-			for item in data:
-				var slide = _find_or_create_expedition_slide(item.get(id_field, 0))
-				slide.slide_id = item.get("slide_id", 0)
-				slide.text = item.get("slide_text", "")
-				slide.reward_type = _map_expedition_reward_type(item)
-				slide.reward_amount = _get_expedition_reward_amount(item)
-				max_version = max(max_version, item.get("version", 0))
-			print("[DataManager] Applied %d expedition slides to database (total: %d)" % [data.size(), expeditions_db.slides.size()])
 	
 	# Update local version
 	set_local_version(data_type, max_version)
@@ -516,46 +525,55 @@ func _map_item_type_to_enum(type_str: String) -> int:
 			return ItemResource.ItemType.HEAD
 
 # ============================================
-# EXPEDITION REWARD MAPPING
+# EXPEDITION HANDLING (special format: {version, slides})
 # ============================================
 
-func _map_expedition_reward_type(item: Dictionary) -> int:
-	"""Map server expedition reward fields to RewardType enum"""
-	if item.get("reward_stat_type", 0) > 0:
-		var stat_type = item.get("reward_stat_type", 0)
-		match stat_type:
-			1: return 4  # STRENGTH
-			2: return 5  # STAMINA
-			3: return 6  # AGILITY
-			4: return 7  # LUCK
-			_: return 0
-	elif item.get("reward_item", 0) > 0:
-		return 2  # ITEM
-	elif item.get("reward_perk", 0) > 0:
-		return 3  # PERK
-	elif item.get("reward_talent", 0) > 0:
-		return 17  # TALENT_POINT
-	elif item.get("reward_blessing", 0) > 0:
-		return 19  # BLESSING
-	elif item.get("reward_potion", 0) > 0:
-		return 18  # POTION
-	return 0  # NONE
+func _apply_expeditions_to_database(slides_data: Array, exp_version: int):
+	"""Apply expedition slides to database"""
+	for item in slides_data:
+		var slide = _find_or_create_expedition_slide(item.get("slide_id", 0))
+		slide.slide_id = item.get("slide_id", 0)
+		slide.slide_text = item.get("slide_text", "")
+		slide.asset_id = item.get("asset_id", 0)
+		slide.effect_id = item.get("effect_id", 0)
+		slide.effect_factor = item.get("effect_factor", 0.0)
+		slide.reward_stat_type = item.get("reward_stat_type", 0)
+		slide.reward_stat_amount = item.get("reward_stat_amount", 0)
+		slide.reward_talent = item.get("reward_talent", 0)
+		slide.reward_item = item.get("reward_item", 0)
+		slide.reward_perk = item.get("reward_perk", 0)
+		slide.reward_blessing = item.get("reward_blessing", 0)
+		slide.reward_potion = item.get("reward_potion", 0)
+		
+		# Parse options
+		slide.options.clear()
+		var options_data = item.get("options", [])
+		for opt_data in options_data:
+			var option = ExpeditionOption.new()
+			option.option_id = opt_data.get("option_id", 0)
+			option.option_text = opt_data.get("option_text", "")
+			option.stat_type = str(opt_data.get("stat_type", ""))
+			option.stat_required = opt_data.get("stat_required", 0)
+			option.effect_id = opt_data.get("effect_id", 0)
+			option.effect_amount = opt_data.get("effect_amount", 0.0)
+			option.enemy_id = opt_data.get("enemy_id", 0)
+			slide.options.append(option)
+	
+	expeditions_db.version = exp_version
+	print("[DataManager] Applied %d expedition slides (version %d)" % [slides_data.size(), exp_version])
+	
+	# Update version and save
+	set_local_version("expeditions", exp_version)
+	_save_database("expeditions")
 
-func _get_expedition_reward_amount(item: Dictionary) -> int:
-	"""Get expedition reward amount from server data"""
-	if item.get("reward_stat_amount", 0) > 0:
-		return item.get("reward_stat_amount", 0)
-	elif item.get("reward_item", 0) > 0:
-		return item.get("reward_item", 0)
-	elif item.get("reward_perk", 0) > 0:
-		return item.get("reward_perk", 0)
-	elif item.get("reward_talent", 0) > 0:
-		return item.get("reward_talent", 0)
-	elif item.get("reward_blessing", 0) > 0:
-		return item.get("reward_blessing", 0)
-	elif item.get("reward_potion", 0) > 0:
-		return item.get("reward_potion", 0)
-	return 0
+func _download_expedition_assets(slides_data: Array):
+	"""Download expedition assets"""
+	var downloaded_ids = {}
+	for item in slides_data:
+		var asset_id = item.get("asset_id", 0)
+		if asset_id > 0 and not downloaded_ids.has(asset_id):
+			downloaded_ids[asset_id] = true
+			_download_asset("expedition", asset_id)
 
 # ============================================
 # ASSET DOWNLOADING

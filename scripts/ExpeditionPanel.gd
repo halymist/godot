@@ -35,56 +35,13 @@ var current_slide_id: int = 0
 # Preloaded option scene (reuse quest_option.tscn)
 const OptionScene = preload("res://Scenes/quest_option.tscn")
 
-# Requirement types (matching ExpeditionOption enum)
-enum RequirementType {
-	NONE,
-	COMBAT,
-	STRENGTH,
-	STAMINA,
-	AGILITY,
-	LUCK,
-	ARMOR,
-	SILVER,
-	ORDER,
-	GUILD,
-	COMPANIONS
-}
-
-# Reward types (matching ExpeditionOption enum)
-enum RewardType {
-	NONE,
-	SILVER,
-	ITEM,
-	PERK,
-	STRENGTH,
-	STAMINA,
-	AGILITY,
-	LUCK,
-	ARMOR,
-	MIN_DAMAGE,
-	MAX_DAMAGE,
-	TALENT_POINT,
-	POTION,
-	BLESSING
-}
-
-# Stat maps for unified handling
-var STAT_REQUIREMENT_MAP = {
-	RequirementType.STRENGTH: "strength",
-	RequirementType.STAMINA: "stamina",
-	RequirementType.AGILITY: "agility",
-	RequirementType.LUCK: "luck",
-	RequirementType.ARMOR: "armor"
-}
-
-var STAT_REWARD_MAP = {
-	RewardType.STRENGTH: {"property": "strength", "name": "strength"},
-	RewardType.STAMINA: {"property": "stamina", "name": "stamina"},
-	RewardType.AGILITY: {"property": "agility", "name": "agility"},
-	RewardType.LUCK: {"property": "luck", "name": "luck"},
-	RewardType.ARMOR: {"property": "armor", "name": "armor"},
-	RewardType.MIN_DAMAGE: {"property": "damage_min", "name": "min damage"},
-	RewardType.MAX_DAMAGE: {"property": "damage_max", "name": "max damage"}
+# Stat type string -> icon mapping (server sends stat_type as string)
+var STAT_ICON_MAP = {
+	"strength": "strength_icon",
+	"stamina": "stamina_icon",
+	"agility": "agility_icon",
+	"luck": "luck_icon",
+	"armor": "armor_icon"
 }
 
 func _ready():
@@ -119,7 +76,7 @@ func show_slide(slide_id: int):
 	current_slide_id = slide_id
 	
 	# Update text
-	expedition_text.text = slide.text
+	expedition_text.text = slide.slide_text
 	
 	# Update background if slide has texture
 	if slide.texture and background:
@@ -148,7 +105,7 @@ func _add_option_button(option: Resource):
 	# Set text
 	var label = option_button.get_node_or_null("Label")
 	if label:
-		label.text = option.text
+		label.text = option.option_text
 	
 	# Set icon based on requirement type
 	var icon = option_button.get_node_or_null("Icon")
@@ -164,37 +121,32 @@ func _add_option_button(option: Resource):
 	option_button.pressed.connect(_on_option_selected.bind(option))
 
 func _get_option_icon(option: Resource) -> Texture2D:
-	"""Get the appropriate icon for an option based on its requirement type"""
-	var req_type = option.required_type
-	match req_type:
-		RequirementType.COMBAT:
-			return combat_icon
-		RequirementType.SILVER:
-			return currency_check_icon
-		RequirementType.STRENGTH:
+	"""Get the appropriate icon for an option based on its stat_type or enemy_id"""
+	# Combat option (has enemy)
+	if option.enemy_id > 0:
+		return combat_icon
+	
+	# Stat check option
+	var stat = option.stat_type
+	match stat:
+		"strength":
 			return strength_icon
-		RequirementType.STAMINA:
+		"stamina":
 			return stamina_icon
-		RequirementType.AGILITY:
+		"agility":
 			return agility_icon
-		RequirementType.LUCK:
+		"luck":
 			return luck_icon
-		RequirementType.ARMOR:
+		"armor":
 			return armor_icon
-		RequirementType.ORDER:
-			return order_icon
-		RequirementType.GUILD:
-			return guild_icon
-		RequirementType.COMPANIONS:
-			return companions_icon
 		_:
+			# Default dialogue icon
 			return dialogue_icon
 
 func _check_requirements(option: Resource) -> bool:
 	"""Check if player meets the requirements for an option"""
-	var req_type = option.required_type
-	
-	if req_type == RequirementType.NONE:
+	# No stat requirement
+	if option.stat_type == "" and option.stat_required <= 0:
 		return true
 	
 	var player = GameInfo.current_player
@@ -203,24 +155,11 @@ func _check_requirements(option: Resource) -> bool:
 	
 	var stats = player.get_total_stats()
 	
-	# Check stat requirements
-	if req_type in STAT_REQUIREMENT_MAP:
-		var stat_name = STAT_REQUIREMENT_MAP[req_type]
-		var stat_value = stats.get(stat_name, 0)
-		return stat_value >= option.required_amount
-	
-	# Check silver
-	if req_type == RequirementType.SILVER:
-		return player.silver >= option.required_amount
-	
-	# Check faction requirements
-	match req_type:
-		RequirementType.ORDER:
-			return player.faction == 1
-		RequirementType.GUILD:
-			return player.faction == 2
-		RequirementType.COMPANIONS:
-			return player.faction == 3
+	# Check stat requirement
+	var stat_type = option.stat_type
+	if stat_type != "" and option.stat_required > 0:
+		var stat_value = stats.get(stat_type, 0)
+		return stat_value >= option.stat_required
 	
 	return true
 
@@ -237,66 +176,55 @@ func _apply_slide_rewards(slide: Resource):
 	if not player:
 		return
 	
-	var reward_type = slide.reward_type
-	var reward_amount = slide.reward_amount
+	var reward_texts = []
 	
-	if reward_type == RewardType.NONE:
-		return
+	# Check each reward type (new individual fields)
+	if slide.reward_stat_type > 0 and slide.reward_stat_amount > 0:
+		var stat_name = _get_stat_name(slide.reward_stat_type)
+		if stat_name != "":
+			var current = player.get(stat_name)
+			player.set(stat_name, current + slide.reward_stat_amount)
+			reward_texts.append("+%d %s" % [slide.reward_stat_amount, stat_name.capitalize()])
 	
-	print("Applying slide reward: type=", reward_type, " amount=", reward_amount)
+	if slide.reward_talent > 0:
+		player.talent_points += slide.reward_talent
+		reward_texts.append("+%d Talent Point(s)" % slide.reward_talent)
 	
-	match reward_type:
-		RewardType.SILVER:
-			player.silver += reward_amount
-			UIManager.instance.update_display()
-		RewardType.TALENT_POINT:
-			player.talent_points += reward_amount
-		RewardType.BLESSING:
-			player.blessing += reward_amount
-		RewardType.POTION:
-			player.potion += reward_amount
-		_:
-			# Handle stat rewards
-			if reward_type in STAT_REWARD_MAP:
-				var stat_info = STAT_REWARD_MAP[reward_type]
-				var current_value = player.get(stat_info.property)
-				player.set(stat_info.property, current_value + reward_amount)
+	if slide.reward_item > 0:
+		# Server handles item - just show notification
+		reward_texts.append("Item received!")
 	
-	# Show reward text in UI
-	_show_reward_text(slide)
-
-func _show_reward_text(slide: Resource):
-	"""Display reward text for the slide"""
-	if not reward_label:
-		return
+	if slide.reward_perk > 0:
+		reward_texts.append("Perk unlocked!")
 	
-	var reward_type = slide.reward_type
-	var reward_amount = slide.reward_amount
-	var reward_text = ""
+	if slide.reward_blessing > 0:
+		player.blessing += slide.reward_blessing
+		reward_texts.append("+%d Blessing" % slide.reward_blessing)
 	
-	if reward_type == RewardType.NONE:
+	if slide.reward_potion > 0:
+		player.potion += slide.reward_potion
+		reward_texts.append("+%d Potion" % slide.reward_potion)
+	
+	# Show combined reward text
+	if reward_label and reward_texts.size() > 0:
+		reward_label.text = ", ".join(reward_texts)
+		print("Applying slide rewards: ", reward_label.text)
+	elif reward_label:
 		reward_label.text = ""
-		return
-	
-	match reward_type:
-		RewardType.SILVER:
-			reward_text = "+" + str(reward_amount) + " Silver"
-		RewardType.ITEM:
-			reward_text = "Item received!"
-		RewardType.PERK:
-			reward_text = "New perk unlocked!"
-		RewardType.TALENT_POINT:
-			reward_text = "+" + str(reward_amount) + " Talent Point(s)"
-		RewardType.BLESSING:
-			reward_text = "Blessing increased!"
-		RewardType.POTION:
-			reward_text = "Potion received!"
-		_:
-			if reward_type in STAT_REWARD_MAP:
-				var stat_info = STAT_REWARD_MAP[reward_type]
-				reward_text = "+" + str(reward_amount) + " " + stat_info.name
-	
-	reward_label.text = reward_text
+
+func _get_stat_name(stat_type: int) -> String:
+	"""Convert stat type int to stat name"""
+	match stat_type:
+		1: return "strength"
+		2: return "stamina"
+		3: return "agility"
+		4: return "luck"
+		5: return "armor"
+		_: return ""
+
+func _show_reward_text(_slide: Resource):
+	"""Display reward text for the slide - handled in _apply_slide_rewards now"""
+	pass
 
 func receive_next_slide(slide_id: int):
 	"""Called when server responds with next slide"""
