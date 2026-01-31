@@ -120,6 +120,8 @@ func _handle_message(message: String):
 	match function_name:
 		"playerData":
 			_handle_player_data(data)
+		"startExpeditionResponse":
+			_handle_start_expedition_response(data)
 		_:
 			print("[WebSocket] Unknown function: ", function_name)
 
@@ -134,6 +136,27 @@ func _handle_player_data(message: Dictionary):
 	
 	# Emit signal with character data
 	player_data_received.emit(character_data)
+
+func _handle_start_expedition_response(message: Dictionary):
+	"""Handle startExpeditionResponse - server returns {data: [{started: true, slide_id: X, arrival: timestamp}]}"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid startExpeditionResponse format")
+		return
+	
+	var data = message.data[0]
+	
+	if not data.get("started", false):
+		print("[WebSocket] Expedition start failed")
+		return
+	
+	var slide_id = data.get("slide_id", 0)
+	var arrival = data.get("arrival", "")
+	
+	print("[WebSocket] Expedition started - slide_id: ", slide_id, ", arrival: ", arrival)
+	
+	# Pass to MapPanel to handle the travel timer with server-provided arrival time
+	if UIManager.instance and UIManager.instance.map_panel:
+		UIManager.instance.map_panel.receive_expedition_start(slide_id, arrival)
 
 # ============================================
 # WEBSOCKET API - Game Actions
@@ -348,4 +371,3 @@ func expedition_option(option_id: int):
 	# Call the expedition panel to show the next slide
 	if UIManager.instance and UIManager.instance.expedition_panel:
 		UIManager.instance.expedition_panel.receive_next_slide(random_slide)
-

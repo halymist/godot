@@ -289,16 +289,26 @@ func start_expedition_travel():
 	if is_vip:
 		autoskip = SettingsManager.get_setting("gameplay", "autoskip_quest")
 	
-	# Send start_expedition to server (no parameter - server knows everything)
+	# Send start_expedition to server (server will respond with slide_id and arrival time)
 	Websocket.start_expedition()
 	
-	# MOCK: Simulate server response with slide ID = 2
-	# In production, this would come from server via receive_expedition_slide()
-	pending_expedition_slide_id = 2
-	print("MOCK: Server responded with expedition slide ID: ", pending_expedition_slide_id)
+	# Server will call receive_expedition_start() with the response
+	# For now, if autoskip/VIP, we'll wait for the response in receive_expedition_start()
+	print("Expedition start request sent to server")
+
+func receive_expedition_start(slide_id: int, arrival_timestamp: String):
+	"""Called when server responds with expedition start data"""
+	print("Received expedition start - slide_id: ", slide_id, ", arrival: ", arrival_timestamp)
+	
+	pending_expedition_slide_id = slide_id
+	
+	# Check if player is VIP and has autoskip enabled
+	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
+	var autoskip = false
+	if is_vip:
+		autoskip = SettingsManager.get_setting("gameplay", "autoskip_quest")
 	
 	# Autoskip OR VIP: Go directly to expedition panel
-	# (User already on map, already read the text, no need for timer screen)
 	if autoskip or is_vip:
 		print("VIP or autoskip - going directly to expedition")
 		# Update player's expedition state
@@ -307,10 +317,15 @@ func start_expedition_travel():
 		_load_expedition()
 		return
 	
-	# Non-VIP: Set up 15 second timer
-	var travel_time = 15.0
+	# Non-VIP: Parse arrival timestamp and calculate travel time
+	var arrival_time = _parse_iso8601_timestamp(arrival_timestamp)
 	var current_time = Time.get_unix_time_from_system()
-	expedition_travel_end = current_time + travel_time
+	var travel_time = arrival_time - current_time
+	
+	# Clamp to minimum 0.5 seconds (in case of negative due to latency)
+	travel_time = max(travel_time, 0.5)
+	
+	expedition_travel_end = arrival_time
 	
 	# Mark as expedition travel
 	is_expedition_travel = true
@@ -332,12 +347,35 @@ func start_expedition_travel():
 	enter_dungeon_button.visible = false
 	
 	set_process(true)  # Enable frame updates
-	print("Expedition travel started - Duration: ", travel_time, " seconds")
+	print("Expedition travel started - Duration: ", travel_time, " seconds (synced with server)")
 
-func receive_expedition_slide(slide_id: int):
-	"""Called when server responds with expedition slide ID"""
-	print("Received expedition slide ID from server: ", slide_id)
-	pending_expedition_slide_id = slide_id
+func _parse_iso8601_timestamp(timestamp: String) -> float:
+	"""Parse ISO8601 timestamp to Unix time"""
+	# Format: "2026-01-29T17:48:16Z"
+	# We'll use Time.get_datetime_dict_from_datetime_string() for Godot 4.x
+	var parts = timestamp.split("T")
+	if parts.size() != 2:
+		print("Invalid timestamp format: ", timestamp)
+		return Time.get_unix_time_from_system() + 10.0  # Fallback to 10 seconds
+	
+	var date_parts = parts[0].split("-")
+	var time_str = parts[1].replace("Z", "")
+	var time_parts = time_str.split(":")
+	
+	if date_parts.size() != 3 or time_parts.size() != 3:
+		print("Invalid timestamp format: ", timestamp)
+		return Time.get_unix_time_from_system() + 10.0
+	
+	var datetime = {
+		"year": int(date_parts[0]),
+		"month": int(date_parts[1]),
+		"day": int(date_parts[2]),
+		"hour": int(time_parts[0]),
+		"minute": int(time_parts[1]),
+		"second": int(time_parts[2])
+	}
+	
+	return Time.get_unix_time_from_datetime_dict(datetime)
 
 func _load_expedition():
 	"""Load the expedition panel with the pending slide ID"""
