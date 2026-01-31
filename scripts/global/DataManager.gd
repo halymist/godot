@@ -20,6 +20,7 @@ const ITEMS_DB_PATH = "user://data/items.res"
 const PERKS_DB_PATH = "user://data/perks.res"
 const ENEMIES_DB_PATH = "user://data/enemies.res"
 const EXPEDITIONS_DB_PATH = "user://data/expeditions.res"
+const SETTLEMENTS_DB_PATH = "user://data/settlements.res"
 
 # Signals
 signal data_sync_completed(success: bool)
@@ -31,6 +32,7 @@ var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
 var enemies_db: EnemyDatabase = null
 var expeditions_db: ExpeditionsDatabase = null
+var settlements_db: SettlementsDatabase = null
 
 # Local version tracking
 var local_versions: Dictionary = {
@@ -38,7 +40,8 @@ var local_versions: Dictionary = {
 	"items": 0,
 	"perks": 0,
 	"enemies": 0,
-	"expeditions": 0
+	"expeditions": 0,
+	"settlements": 0
 }
 
 # Server versions (populated from login response)
@@ -62,6 +65,7 @@ func _ensure_cache_dirs():
 	DirAccess.make_dir_recursive_absolute("user://images/perks")
 	DirAccess.make_dir_recursive_absolute("user://images/enemies")
 	DirAccess.make_dir_recursive_absolute("user://images/expedition")
+	DirAccess.make_dir_recursive_absolute("user://images/settlements")
 	DirAccess.make_dir_recursive_absolute("user://data")
 	print("[DataManager] Created cache directories")
 
@@ -72,6 +76,7 @@ func _load_baseline_databases():
 	perks_db = _load_or_create_database(PERKS_DB_PATH, "perks")
 	enemies_db = _load_or_create_database(ENEMIES_DB_PATH, "enemies")
 	expeditions_db = _load_or_create_database(EXPEDITIONS_DB_PATH, "expeditions")
+	settlements_db = _load_or_create_database(SETTLEMENTS_DB_PATH, "settlements")
 	print("[DataManager] Loaded databases")
 
 func _load_or_create_database(user_path: String, db_type: String) -> Resource:
@@ -92,6 +97,7 @@ func _load_or_create_database(user_path: String, db_type: String) -> Resource:
 		"perks": return PerkDatabase.new()
 		"enemies": return EnemyDatabase.new()
 		"expeditions": return ExpeditionsDatabase.new()
+		"settlements": return SettlementsDatabase.new()
 		_: return null
 
 func _apply_cached_textures_to_database(db_type: String, db: Resource):
@@ -121,6 +127,24 @@ func _apply_cached_textures_to_database(db_type: String, db: Resource):
 					var texture = load_asset_texture("expedition", slide.asset_id)
 					if texture:
 						slide.texture = texture
+		"settlements":
+			for settlement in db.settlements:
+				if settlement.expedition_asset_id > 0:
+					var texture = load_asset_texture("settlements", settlement.expedition_asset_id)
+					if texture:
+						settlement.expedition_texture = texture
+				if settlement.vendor_asset_id > 0:
+					var texture = load_asset_texture("settlements", settlement.vendor_asset_id)
+					if texture:
+						settlement.vendor_texture = texture
+				if settlement.utility_asset_id > 0:
+					var texture = load_asset_texture("settlements", settlement.utility_asset_id)
+					if texture:
+						settlement.utility_texture = texture
+				if settlement.arena_asset_id > 0:
+					var texture = load_asset_texture("settlements", settlement.arena_asset_id)
+					if texture:
+						settlement.arena_background = texture
 
 # ============================================
 # VERSION MANAGEMENT
@@ -184,7 +208,7 @@ func clear_all_cache():
 			dir.list_dir_end()
 	
 	# Delete persisted .tres files
-	for db_path in [EFFECTS_DB_PATH, ITEMS_DB_PATH, PERKS_DB_PATH, ENEMIES_DB_PATH, EXPEDITIONS_DB_PATH]:
+	for db_path in [EFFECTS_DB_PATH, ITEMS_DB_PATH, PERKS_DB_PATH, ENEMIES_DB_PATH, EXPEDITIONS_DB_PATH, SETTLEMENTS_DB_PATH]:
 		if FileAccess.file_exists(db_path):
 			DirAccess.remove_absolute(db_path)
 	
@@ -194,6 +218,7 @@ func clear_all_cache():
 	perks_db = PerkDatabase.new()
 	enemies_db = EnemyDatabase.new()
 	expeditions_db = ExpeditionsDatabase.new()
+	settlements_db = SettlementsDatabase.new()
 	
 	print("[DataManager] Cleared all cache")
 
@@ -207,6 +232,8 @@ func needs_download(server_data_versions: Dictionary) -> bool:
 		var server_key = data_type
 		if data_type == "expeditions":
 			server_key = "expedition"
+		elif data_type == "settlements":
+			server_key = "world"
 		
 		var server_version = server_data_versions.get(server_key, server_data_versions.get(data_type, 0))
 		var local_version = local_versions.get(data_type, 0)
@@ -228,6 +255,7 @@ func sync_data(server_data_versions: Dictionary):
 	await _sync_data_type("perks", "/download-perks")
 	await _sync_data_type("enemies", "/download-enemies")
 	await _sync_data_type("expeditions", "/download-expedition")
+	await _sync_data_type("settlements", "/download-world")
 	
 	print("[DataManager] Data sync completed!")
 	
@@ -253,6 +281,8 @@ func _sync_data_type(data_type: String, endpoint: String):
 	var server_key = data_type
 	if data_type == "expeditions":
 		server_key = "expedition"
+	elif data_type == "settlements":
+		server_key = "world"
 	
 	var server_version = server_versions.get(server_key, server_versions.get(data_type, 0))
 	var local_version = local_versions.get(data_type, 0)
@@ -309,6 +339,17 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 		var slides_data = data.get("slides", [])
 		_apply_expeditions_to_database(slides_data, exp_version)
 		_download_expedition_assets(slides_data)
+		return
+	
+	# Settlements have special format: {version: X, settlements: [...]}
+	if data_type == "settlements":
+		if not data is Dictionary:
+			print("[DataManager] Invalid settlements data format (expected dict)")
+			return
+		var set_version = data.get("version", 0)
+		var settlements_data = data.get("settlements", [])
+		_apply_settlements_to_database(settlements_data, set_version)
+		_download_settlement_assets(settlements_data)
 		return
 	
 	if not data is Array:
@@ -427,6 +468,9 @@ func _save_database(data_type: String):
 		"expeditions":
 			db = expeditions_db
 			path = EXPEDITIONS_DB_PATH
+		"settlements":
+			db = settlements_db
+			path = SETTLEMENTS_DB_PATH
 		_:
 			print("[DataManager] Unknown data type for save: %s" % data_type)
 			return
@@ -576,6 +620,103 @@ func _download_expedition_assets(slides_data: Array):
 			_download_asset("expedition", asset_id)
 
 # ============================================
+# SETTLEMENTS HANDLING (special format: {version, settlements})
+# ============================================
+
+func _parse_greeting_array(val) -> Array[String]:
+	if val is Array:
+		var result: Array[String] = []
+		for item in val:
+			if item is String:
+				result.append(item)
+		return result
+	if val is String:
+		return [val]
+	if val is Dictionary:
+		return []
+	return []
+
+func _apply_settlements_to_database(settlements_data: Array, set_version: int):
+	"""Apply settlement data to database"""
+	for item in settlements_data:
+		var settlement = _find_or_create_settlement(item.get("settlement_id", 0))
+		settlement.settlement_id = item.get("settlement_id", 0)
+		settlement.settlement_name = item.get("settlement_name", "")
+		settlement.faction = item.get("faction", 0)
+		settlement.description = item.get("description", "")
+
+		# Expedition fields (flat)
+		settlement.expedition_asset_id = item.get("expedition_asset_id", 0)
+		settlement.expedition_description = item.get("expedition_description", "")
+		# Arena field
+		settlement.arena_asset_id = item.get("arena_asset_id", 0)
+		
+		# Vendor fields (nested)
+		var vendor_data = item.get("vendor", {})
+		if vendor_data is Dictionary:
+			settlement.vendor_asset_id = vendor_data.get("vendor_asset_id", 0)
+			settlement.vendor_on_entered = _parse_greeting_array(vendor_data.get("on_entered", []))
+			settlement.vendor_on_sold = _parse_greeting_array(vendor_data.get("on_sold", []))
+			settlement.vendor_on_bought = _parse_greeting_array(vendor_data.get("on_bought", []))
+
+		
+		# Utility fields (nested)
+		var utility_data = item.get("utility", {})
+		if utility_data is Dictionary:
+			settlement.utility_type = utility_data.get("type", "")
+			settlement.utility_asset_id = utility_data.get("utility_asset_id", 0)
+			settlement.utility_on_entered = _parse_greeting_array(utility_data.get("on_entered", []))
+			settlement.utility_on_placed = _parse_greeting_array(utility_data.get("on_placed", []))
+			settlement.utility_on_action = _parse_greeting_array(utility_data.get("on_action", []))
+			# Church-only blessings
+			settlement.blessing1 = utility_data.get("blessing1", 0)
+			settlement.blessing2 = utility_data.get("blessing2", 0)
+			settlement.blessing3 = utility_data.get("blessing3", 0)
+	
+	settlements_db.version = set_version
+	print("[DataManager] Applied %d settlements (version %d)" % [settlements_data.size(), set_version])
+	
+	# Update version and save
+	set_local_version("settlements", set_version)
+	_save_database("settlements")
+
+func _find_or_create_settlement(settlement_id: int) -> Settlement:
+	"""Find existing settlement by ID or create new one"""
+	for settlement in settlements_db.settlements:
+		if settlement.settlement_id == settlement_id:
+			return settlement
+	var new_settlement = Settlement.new()
+	new_settlement.settlement_id = settlement_id
+	settlements_db.settlements.append(new_settlement)
+	return new_settlement
+
+func _download_settlement_assets(settlements_data: Array):
+	"""Download settlement assets"""
+	var downloaded_ids = {}
+	for item in settlements_data:
+		# Expedition asset
+		var expedition_asset_id = item.get("expedition_asset_id", 0)
+		if expedition_asset_id > 0 and not downloaded_ids.has(expedition_asset_id):
+			downloaded_ids[expedition_asset_id] = true
+			_download_asset("settlements", expedition_asset_id)
+		
+		# Vendor asset
+		var vendor_data = item.get("vendor", {})
+		if vendor_data is Dictionary:
+			var vendor_asset_id = vendor_data.get("vendor_asset_id", 0)
+			if vendor_asset_id > 0 and not downloaded_ids.has(vendor_asset_id):
+				downloaded_ids[vendor_asset_id] = true
+				_download_asset("settlements", vendor_asset_id)
+		
+		# Utility asset
+		var utility_data = item.get("utility", {})
+		if utility_data is Dictionary:
+			var utility_asset_id = utility_data.get("utility_asset_id", 0)
+			if utility_asset_id > 0 and not downloaded_ids.has(utility_asset_id):
+				downloaded_ids[utility_asset_id] = true
+				_download_asset("settlements", utility_asset_id)
+
+# ============================================
 # ASSET DOWNLOADING
 # ============================================
 
@@ -717,3 +858,7 @@ func get_enemies_database() -> EnemyDatabase:
 func get_expeditions_database() -> ExpeditionsDatabase:
 	"""Get the expeditions database"""
 	return expeditions_db
+
+func get_settlements_database() -> SettlementsDatabase:
+	"""Get the settlements database"""
+	return settlements_db

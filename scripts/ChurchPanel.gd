@@ -42,14 +42,18 @@ func _on_visibility_changed():
 		utility_background.show_entered_greeting()
 
 func _load_location_content():
-	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
+	if not settlement:
+		print("Error: No settlement found for location ", GameInfo.current_player.location)
+		return
 	
 	# Clear existing children from container
 	for child in utility_background_container.get_children():
 		child.queue_free()
 	
-	# Instantiate and add the utility scene
-	var utility_instance = location_data.church_utility_scene.instantiate()
+	# Load shared utility background scene
+	var utility_scene = preload("res://Scenes/UtilityBackground.tscn")
+	var utility_instance = utility_scene.instantiate()
 	utility_background_container.add_child(utility_instance)
 	
 	# Set to full rect
@@ -59,15 +63,22 @@ func _load_location_content():
 	utility_instance.offset_right = 0
 	utility_instance.offset_bottom = 0
 	
+	# Setup from settlement data (utility, not vendor)
+	utility_instance.setup_from_settlement(settlement, false)
+	
 	utility_background = utility_instance
 
 func load_blessings():
 	# Clear blessing data
 	blessing_data.clear()
-	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
+	if not settlement:
+		print("Error: No settlement found for location ", GameInfo.current_player.location)
+		return
 	
-	# Load the 3 blessing perks from location's blessing IDs
-	for blessing_id in location_data.blessings:
+	# Load the 3 blessing perks from settlement's blessing IDs
+	var blessings = settlement.get_blessings()
+	for blessing_id in blessings:
 		var perk = GameInfo.perks_db.get_perk_by_id(blessing_id)
 		if perk:
 			blessing_data.append(perk)

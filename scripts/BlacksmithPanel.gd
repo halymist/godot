@@ -63,14 +63,17 @@ func _on_visibility_changed():
 		utility_background.show_entered_greeting()
 
 func _load_location_content():
-	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
+	if not settlement:
+		print("Error: No settlement found for location ", GameInfo.current_player.location)
+		return
 	
 	# Clear existing utility background
 	for child in utility_background_container.get_children():
 		child.queue_free()
 	
-	# Load and instance the utility background scene for this location
-	var utility_scene = location_data.blacksmith_utility_scene
+	# Load and instance the shared utility background scene
+	var utility_scene = preload("res://Scenes/UtilityBackground.tscn")
 	var instance = utility_scene.instantiate()
 	utility_background_container.add_child(instance)
 	
@@ -80,6 +83,9 @@ func _load_location_content():
 	instance.offset_top = 0
 	instance.offset_right = 0
 	instance.offset_bottom = 0
+	
+	# Setup from settlement data (utility, not vendor)
+	instance.setup_from_settlement(settlement, false)
 	
 	# Get reference to the utility background script
 	utility_background = instance

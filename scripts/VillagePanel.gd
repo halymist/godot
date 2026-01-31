@@ -53,42 +53,27 @@ func _setup():
 func _load_village_background():
 	"""Load village background image from current location"""
 	var location_id = GameInfo.current_player.location
-	var location_data = GameInfo.settlements_db.get_location_by_id(location_id)
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
-	if location_data and location_data.village_texture and village_image:
-		village_image.texture = location_data.village_texture
+	# Village texture not in server data - would need to be added or use expedition_texture as fallback
+	if settlement and settlement.expedition_texture and village_image:
+		village_image.texture = settlement.expedition_texture
 
 func _load_utility_background():
-	"""Load utility background scene (like BlacksmithPanel approach)"""
+	"""Load utility background scene - simplified for new settlement structure"""
 	var location_id = GameInfo.current_player.location
-	var location_data = GameInfo.settlements_db.get_location_by_id(location_id)
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
-	if not location_data or not utility_background_container:
+	if not settlement or not utility_background_container:
 		return
 	
 	# Clear existing utility background
 	for child in utility_background_container.get_children():
 		child.queue_free()
 	
-	# Load and instance the utility background scene for this location
-	if location_data.village_utility_scene:
-		var utility_scene = location_data.village_utility_scene
-		var instance = utility_scene.instantiate()
-		utility_background_container.add_child(instance)
-		
-		# Set to fill container
-		instance.set_anchors_preset(Control.PRESET_FULL_RECT)
-		instance.offset_left = 0
-		instance.offset_top = 0
-		instance.offset_right = 0
-		instance.offset_bottom = 0
-		
-		# Get reference to the utility background script
-		utility_background = instance
-		
-		# Show greeting when entering village
-		if utility_background:
-			utility_background.show_entered_greeting()
+	# Village utility scene is no longer per-location - skip for now
+	# The village screen just shows buttons to access utilities
+	utility_background = null
 
 func _setup_utility_buttons():
 	"""Setup utility buttons based on current location"""
@@ -97,29 +82,29 @@ func _setup_utility_buttons():
 	buttons_initialized = true
 	
 	var location_id = GameInfo.current_player.location
-	var location_data = GameInfo.settlements_db.get_location_by_id(location_id)
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
-	if not location_data or not buttons_container:
+	if not settlement or not buttons_container:
 		return
 	
-	# Add Vendor button (always available - for testing, add 6 total)
-	if location_data.has_vendor():
+	# Add Vendor button (always available if vendor asset exists)
+	if settlement.has_vendor():
 		_add_button("Vendor", "res://assets/images/ui/vendor_icon.png", _on_vendor_pressed)
 	
-	# Add utility buttons based on availability
-	if location_data.has_church():
+	# Add utility button based on settlement's utility type
+	if settlement.has_church():
 		_add_button("Church", "res://assets/images/ui/church_icon.png", _on_church_pressed)
 	
-	if location_data.has_trainer():
+	if settlement.has_trainer():
 		_add_button("Trainer", "res://assets/images/ui/trainer_icon.png", _on_trainer_pressed)
 	
-	if location_data.has_blacksmith():
+	if settlement.has_blacksmith():
 		_add_button("Blacksmith", "res://assets/images/ui/blacksmith_icon.png", _on_blacksmith_pressed)
 	
-	if location_data.has_enchanter():
+	if settlement.has_enchanter():
 		_add_button("Enchanter", "res://assets/images/ui/enchanter_icon.png", _on_enchanter_pressed)
 	
-	if location_data.has_alchemist():
+	if settlement.has_alchemist():
 		_add_button("Alchemist", "res://assets/images/ui/alchemist_icon.png", _on_alchemist_pressed)
 
 func _add_button(text: String, icon_path: String, callback: Callable):

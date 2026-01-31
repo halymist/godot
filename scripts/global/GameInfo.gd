@@ -74,12 +74,12 @@ func load_databases():
 	perks_db = DataManager.get_perks_database()
 	enemies_db = DataManager.get_enemies_database()
 	expeditions_db = DataManager.get_expeditions_database()
+	settlements_db = DataManager.get_settlements_database()
 	
 	# These still load from .tres (not versioned from server)
 	npcs_db = load("res://data/npcs.tres")
 	# cosmetics_db already loaded in _ready()
 	quests_db = load("res://scripts/resources/quests.tres")
-	settlements_db = load("res://scripts/resources/settlements.tres")
 	
 	databases_loaded = true
 	print("Databases loaded")

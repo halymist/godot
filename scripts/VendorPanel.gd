@@ -35,12 +35,17 @@ func _load_location_content():
 	
 	_load_vendor_items()
 		
-	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
+	if not settlement:
+		print("Error: No settlement found for location ", GameInfo.current_player.location)
+		return
 	
 	for child in utility_background_container.get_children():
 		child.queue_free()
 	
-	var utility_instance = location_data.vendor_utility_scene.instantiate()
+	# Load shared utility background scene
+	var utility_scene = preload("res://Scenes/UtilityBackground.tscn")
+	var utility_instance = utility_scene.instantiate()
 	utility_background_container.add_child(utility_instance)
 	
 	utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -48,6 +53,9 @@ func _load_location_content():
 	utility_instance.offset_top = 0
 	utility_instance.offset_right = 0
 	utility_instance.offset_bottom = 0
+	
+	# Setup from settlement data (vendor, not utility)
+	utility_instance.setup_from_settlement(settlement, true)
 	
 	utility_background = utility_instance
 
