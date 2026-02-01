@@ -483,7 +483,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("bag", "vendor_grid")]
+[node name="VendorPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_bubble", "bag", "vendor_grid")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -495,10 +495,21 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("40_vendor")
-chat_bubble = ExtResource("14_k8ojv")
+chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 vendor_grid = NodePath("Overlay/VendorSlots")
 item_scene = ExtResource("17_aujhx")
+
+[node name="ChatBubble" parent="Portrait/GameScene/VendorPanel" instance=ExtResource("14_k8ojv")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/VendorPanel"]
 layout_mode = 1
@@ -572,7 +583,7 @@ offset_top = 167.0
 offset_right = 405.0
 offset_bottom = 242.0
 
-[node name="BlacksmithPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_bubble", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -584,11 +595,22 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("41_blacksmith")
-chat_bubble = ExtResource("14_k8ojv")
+chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 blacksmith_slot = NodePath("Overlay/ItemArea/ItemSlot")
 improved_stats_label = NodePath("Overlay/ItemArea/StatsContainer/ImprovedStats")
 temper_button = NodePath("Overlay/ItemArea/TemperButton")
+
+[node name="ChatBubble" parent="Portrait/GameScene/BlacksmithPanel" instance=ExtResource("14_k8ojv")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/BlacksmithPanel"]
 layout_mode = 1
@@ -743,7 +765,7 @@ anchor_bottom = 0.924
 offset_top = -29.326
 offset_bottom = 16.392
 
-[node name="TrainerPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
+[node name="TrainerPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_bubble", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -755,7 +777,7 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("28_sjh24")
-chat_bubble = ExtResource("14_k8ojv")
+chat_bubble = NodePath("ChatBubble")
 talent_points_label = NodePath("Overlay/TalentsRow/Label")
 strength_label = NodePath("Overlay/Strength/Label")
 stamina_label = NodePath("Overlay/Stamina/Label")
@@ -766,6 +788,17 @@ strength_button = NodePath("Overlay/Strength/PlusButton")
 stamina_button = NodePath("Overlay/Stamina/PlusButton")
 agility_button = NodePath("Overlay/Agility/PlusButton")
 luck_button = NodePath("Overlay/Luck/PlusButton")
+
+[node name="ChatBubble" parent="Portrait/GameScene/TrainerPanel" instance=ExtResource("14_k8ojv")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/TrainerPanel"]
 layout_mode = 1
@@ -918,7 +951,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "+"
 
-[node name="ChurchPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
+[node name="ChurchPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_bubble", "blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -930,12 +963,23 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("29_k5jl5")
-chat_bubble = ExtResource("14_k8ojv")
+chat_bubble = NodePath("ChatBubble")
 blessing_slot_1 = NodePath("Overlay/BlessingSlot1")
 blessing_slot_2 = NodePath("Overlay/BlessingSlot2")
 blessing_slot_3 = NodePath("Overlay/BlessingSlot3")
 effect_description_label = NodePath("Overlay/EffectDescription")
 bless_button = NodePath("Overlay/BlessButton")
+
+[node name="ChatBubble" parent="Portrait/GameScene/ChurchPanel" instance=ExtResource("14_k8ojv")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/ChurchPanel"]
 layout_mode = 1
@@ -1074,7 +1118,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_bubble", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1086,13 +1130,24 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("30_nqk4g")
-chat_bubble = ExtResource("14_k8ojv")
+chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 result_preview = NodePath("Overlay/ResultPreview")
 brew_button = NodePath("Overlay/BrewButton")
 ingredient_slot1 = NodePath("Overlay/IngredientsRow/Slot1")
 ingredient_slot2 = NodePath("Overlay/IngredientsRow/Slot2")
 ingredient_slot3 = NodePath("Overlay/IngredientsRow/Slot3")
+
+[node name="ChatBubble" parent="Portrait/GameScene/AlchemistPanel" instance=ExtResource("14_k8ojv")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/AlchemistPanel"]
 layout_mode = 1
@@ -1224,7 +1279,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 offset_top = -75.0
 
-[node name="EnchanterPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("bag", "enchanter_slot", "enchant_button", "effect_list")]
+[node name="EnchanterPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_bubble", "bag", "enchanter_slot", "enchant_button", "effect_list")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1236,12 +1291,23 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("31_enchanter")
-chat_bubble = ExtResource("14_k8ojv")
+chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 enchanter_slot = NodePath("Overlay/ItemSlot")
 enchant_button = NodePath("Overlay/EnchantButton")
 effect_list = NodePath("Overlay/EffectsSection/EffectScrollContainer/EffectList")
 enchant_option_scene = ExtResource("26_lknxd")
+
+[node name="ChatBubble" parent="Portrait/GameScene/EnchanterPanel" instance=ExtResource("14_k8ojv")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel"]
 layout_mode = 1

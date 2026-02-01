@@ -4,7 +4,7 @@ extends TextureRect
 const TALENT_POINT_COST = 100
 const STAT_COST = 5
 
-@export var chat_bubble: PackedScene
+@export var chat_bubble: ChatBubble
 @export var talent_points_label: Label
 @export var strength_label : Label
 @export var stamina_label: Label
@@ -64,14 +64,8 @@ func _load_location_content():
 func _show_greeting(greetings: Array[String]):
 	if not chat_bubble or greetings.is_empty():
 		return
-	# Lazily instantiate chat bubble on first use
-	if not _chat_bubble_instance:
-		_chat_bubble_instance = chat_bubble.instantiate()
-		add_child(_chat_bubble_instance)
-		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
-		_chat_bubble_instance.position.y = 20
 	var greeting = greetings[randi() % greetings.size()]
-	_chat_bubble_instance.show_with_text(greeting, 4.0)
+	chat_bubble.show_with_text(greeting, 4.0)
 
 func update_stats_display():
 	talent_points_label.text = "Talents: " + str(GameInfo.current_player.talent_points)

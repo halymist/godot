@@ -3,7 +3,7 @@ extends TextureRect
 const VENDOR_MIN = 21
 const VENDOR_MAX = 28
 
-@export var chat_bubble: PackedScene
+@export var chat_bubble: ChatBubble
 @export var bag: Control
 @export var vendor_grid: GridContainer
 @export var vendor_slots: Array[Control] = []
@@ -14,7 +14,6 @@ var on_entered_greetings: Array[String] = []
 var on_sold_greetings: Array[String] = []
 var on_bought_greetings: Array[String] = []
 var vendor_items: Array[GameInfo.Item] = []
-var _chat_bubble_instance: ChatBubble = null
 
 func _ready():
 	visibility_changed.connect(_on_visibility_changed)
@@ -75,14 +74,8 @@ func trigger_purchase_greeting():
 func _show_greeting(greetings: Array[String]):
 	if not chat_bubble or greetings.is_empty():
 		return
-	# Lazily instantiate chat bubble on first use
-	if not _chat_bubble_instance:
-		_chat_bubble_instance = chat_bubble.instantiate()
-		add_child(_chat_bubble_instance)
-		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
-		_chat_bubble_instance.position.y = 20
 	var greeting = greetings[randi() % greetings.size()]
-	_chat_bubble_instance.show_with_text(greeting, 4.0)
+	chat_bubble.show_with_text(greeting, 4.0)
 
 func trigger_sell_greeting():
 	_show_greeting(on_sold_greetings)

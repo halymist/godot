@@ -7,7 +7,7 @@ const BLACKSMITH_SLOT = 16
 const BAG_MIN = 10
 const BAG_MAX = 14
 
-@export var chat_bubble: PackedScene
+@export var chat_bubble: ChatBubble
 @export var bag: Control
 @export var blacksmith_slot: Control
 @export var improved_stats_label: Label
@@ -17,7 +17,6 @@ var on_entered_greetings: Array[String] = []
 var on_placed_greetings: Array[String] = []
 var on_action_greetings: Array[String] = []
 var working_item: GameInfo.Item = null
-var _chat_bubble_instance: ChatBubble = null  # Reference to item being worked on (doesn't change bag_slot_id)
 
 const TEMPER_COST = 10
 
@@ -83,15 +82,8 @@ func _load_location_content():
 func _show_greeting(greetings: Array[String]):
 	if not chat_bubble or greetings.is_empty():
 		return
-	# Lazily instantiate chat bubble on first use
-	if not _chat_bubble_instance:
-		_chat_bubble_instance = chat_bubble.instantiate()
-		add_child(_chat_bubble_instance)
-		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
-		_chat_bubble_instance.position.y = 20
 	var greeting = greetings[randi() % greetings.size()]
-	_chat_bubble_instance.show_with_text(greeting, 4.0)
-
+	chat_bubble.show_with_text(greeting, 4.0)
 
 func update_stats_display():
 	# Use working_item reference (item keeps its original bag_slot_id)

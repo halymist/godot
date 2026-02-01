@@ -10,7 +10,7 @@ const BAG_MIN = 10
 const BAG_MAX = 14
 
 # Node references
-@export var chat_bubble: PackedScene
+@export var chat_bubble: ChatBubble
 @export var bag: Control
 @export var result_preview: Label
 @export var brew_button: Button
@@ -22,7 +22,6 @@ var on_entered_greetings: Array[String] = []
 var on_placed_greetings: Array[String] = []
 var on_action_greetings: Array[String] = []
 var working_items: Dictionary = {}  # Maps alchemist slot (17-19) -> GameInfo.Item reference
-var _chat_bubble_instance: ChatBubble = null
 
 func _ready():
 	brew_button.pressed.connect(_on_brew_button_pressed)
@@ -84,14 +83,8 @@ func _load_location_content():
 func _show_greeting(greetings: Array[String]):
 	if not chat_bubble or greetings.is_empty():
 		return
-	# Lazily instantiate chat bubble on first use
-	if not _chat_bubble_instance:
-		_chat_bubble_instance = chat_bubble.instantiate()
-		add_child(_chat_bubble_instance)
-		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
-		_chat_bubble_instance.position.y = 20
 	var greeting = greetings[randi() % greetings.size()]
-	_chat_bubble_instance.show_with_text(greeting, 4.0)
+	chat_bubble.show_with_text(greeting, 4.0)
 
 func return_ingredients_to_bag():
 	# Just clear the visual slots - items never actually moved

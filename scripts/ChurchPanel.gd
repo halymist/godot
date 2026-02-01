@@ -2,7 +2,7 @@ extends TextureRect
 
 const BLESSING_COST = 10
 
-@export var chat_bubble: PackedScene
+@export var chat_bubble: ChatBubble
 @export var blessing_slot_1: TextureRect
 @export var blessing_slot_2: TextureRect
 @export var blessing_slot_3: TextureRect
@@ -12,7 +12,6 @@ const BLESSING_COST = 10
 var on_entered_greetings: Array[String] = []
 var on_placed_greetings: Array[String] = []
 var on_action_greetings: Array[String] = []
-var _chat_bubble_instance: ChatBubble = null
 var selected_blessing_id: int = -1
 var blessing_slots: Array[TextureRect] = []
 var blessing_data: Array = []  # Stores the 3 blessing PerkResources
@@ -62,14 +61,8 @@ func _load_location_content():
 func _show_greeting(greetings: Array[String]):
 	if not chat_bubble or greetings.is_empty():
 		return
-	# Lazily instantiate chat bubble on first use
-	if not _chat_bubble_instance:
-		_chat_bubble_instance = chat_bubble.instantiate()
-		add_child(_chat_bubble_instance)
-		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
-		_chat_bubble_instance.position.y = 20
 	var greeting = greetings[randi() % greetings.size()]
-	_chat_bubble_instance.show_with_text(greeting, 4.0)
+	chat_bubble.show_with_text(greeting, 4.0)
 
 func load_blessings():
 	# Clear blessing data
