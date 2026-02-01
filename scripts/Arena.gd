@@ -1,8 +1,7 @@
-extends Panel
+extends TextureRect
 
 # Arena slideshow for enemy cards
 @export var slide_duration: float = 0.3
-@export var background: TextureRect
 @export var card_container: Control
 @export var prev_button: Button
 @export var next_button: Button
@@ -57,7 +56,7 @@ func _load_arena_background():
 	var settlement = GameInfo.settlements_db.get_location_by_id(settlement_id)
 	
 	if settlement and settlement.arena_background:
-		background.texture = settlement.arena_background
+		texture = settlement.arena_background
 	else:
 		print("Warning: No arena background found for settlement ", settlement_id)
 

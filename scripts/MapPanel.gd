@@ -1,4 +1,4 @@
-extends Panel
+extends TextureRect
 
 const SKIP_COST: int = 1  # Mushroom cost to skip travel
 
@@ -8,7 +8,6 @@ const SKIP_COST: int = 1  # Mushroom cost to skip travel
 @export var travel_time_label: Label
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
-@export var background: TextureRect
 
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
@@ -68,7 +67,7 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 	if quest_data:
 		if quest_data.background_texture:
-			background.texture = quest_data.background_texture
+			texture = quest_data.background_texture
 			print("Applied quest background texture")
 		quest_name_label.text = quest_data.quest_name
 	
@@ -102,11 +101,11 @@ func refresh_travel_state():
 	
 	if current_player.traveling == 0 and current_player.traveling_destination == null:
 		print("No active travel detected")
-		# No active travel - show location expedition info
+		# No active travel - show location/settlement info
 		var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
 		if location_data:
 			quest_name_label.text = "Expedition"
-			background.texture = location_data.expedition_texture
+			texture = location_data.settlement_texture
 			travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
 		else:
 			travel_text_label.text = "No active travel"
