@@ -122,6 +122,10 @@ func _handle_message(message: String):
 			_handle_player_data(data)
 		"startExpeditionResponse":
 			_handle_start_expedition_response(data)
+		"localChat":
+			_handle_chat_message(data, "local")
+		"globalChat":
+			_handle_chat_message(data, "global")
 		_:
 			print("[WebSocket] Unknown function: ", function_name)
 
@@ -157,6 +161,67 @@ func _handle_start_expedition_response(message: Dictionary):
 	# Pass to MapPanel to handle the travel timer with server-provided arrival time
 	if UIManager.instance and UIManager.instance.map_panel:
 		UIManager.instance.map_panel.receive_expedition_start(slide_id, arrival)
+
+func _handle_chat_message(message: Dictionary, chat_type: String):
+	"""Handle incoming chat messages (localChat or globalChat)"""
+	if not message.has("data") or not message.data is Array:
+		print("[WebSocket] Invalid chat message format")
+		return
+	
+	for chat_data in message.data:
+		# Build ChatMessage data from server format
+		# Server sends: {id, lobby_id, message, player_id, timestamp}
+		var player_id = str(chat_data.get("player_id", ""))
+		var sender_name = _get_player_name(player_id)
+		
+		var chat_message_data = {
+			"sender": sender_name,
+			"message": chat_data.get("message", ""),
+			"timestamp": _unix_to_iso(chat_data.get("timestamp", 0)),
+			"type": chat_type,
+			"status": _get_player_status(player_id)
+		}
+		
+		# Add to GameInfo chat messages
+		var chat_message = GameInfo.ChatMessage.new(chat_message_data)
+		GameInfo.chat_messages.append(chat_message)
+		print("[WebSocket] Chat message added: ", sender_name, ": ", chat_data.get("message", ""))
+	
+	# Notify ChatPanel (ChatOverlay) to refresh display
+	if UIManager.instance and UIManager.instance.chat_panel:
+		UIManager.instance.chat_panel.display_chat_messages()
+
+func _get_player_name(player_id: String) -> String:
+	"""Get player name from ID, checking current player and enemy players"""
+	if GameInfo.current_player and str(GameInfo.current_player.character_id) == player_id:
+		return GameInfo.current_player.name
+	
+	for player in GameInfo.enemy_players:
+		if str(player.character_id) == player_id:
+			return player.name
+	
+	return "Player " + player_id
+
+func _get_player_status(player_id: String) -> String:
+	"""Get player status (lord/peasant) from ID"""
+	if GameInfo.current_player and str(GameInfo.current_player.character_id) == player_id:
+		return "lord" if GameInfo.current_player.premium else "peasant"
+	
+	for player in GameInfo.enemy_players:
+		if str(player.character_id) == player_id:
+			return "lord" if player.premium else "peasant"
+	
+	return "peasant"
+
+func _unix_to_iso(unix_timestamp: int) -> String:
+	"""Convert Unix timestamp to ISO 8601 format"""
+	if unix_timestamp == 0:
+		return ""
+	var datetime = Time.get_datetime_dict_from_unix_time(unix_timestamp)
+	return "%04d-%02d-%02dT%02d:%02d:%02dZ" % [
+		datetime.year, datetime.month, datetime.day,
+		datetime.hour, datetime.minute, datetime.second
+	]
 
 # ============================================
 # WEBSOCKET API - Game Actions

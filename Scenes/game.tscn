@@ -1430,12 +1430,13 @@ map_panel = NodePath("../Map")
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Home"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 388.0
+offset_top = -179.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
@@ -1453,11 +1454,17 @@ columns = 3
 
 [node name="QuestButton" type="Button" parent="Portrait/GameScene/Home/Overlay"]
 custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-offset_left = 20.0
-offset_top = 166.0
-offset_right = 385.0
-offset_bottom = 222.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -182.5
+offset_top = -56.0
+offset_right = 182.5
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/QuestButton"]
 layout_mode = 1

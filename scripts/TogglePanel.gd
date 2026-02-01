@@ -71,7 +71,7 @@ signal game_ready
 # ============================================================================
 # SPECIAL CONTROLS
 # ============================================================================
-@export var chat_panel: Button          # Chat toggle button/panel
+@export var chat_panel: Control         # ChatOverlay with ChatPanel.gd script
 @export var interior_view: Control
 @export var village_view: Control
 @export var enemy: Array[Button] = []

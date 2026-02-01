@@ -75,7 +75,8 @@ func _on_send_button_pressed():
 	if message_text.is_empty():
 		return
 	
-	var chat_type = 2 if current_filter == "global" else 1
+	# 0 = local, 1 = global
+	var chat_type = 1 if current_filter == "global" else 0
 	Websocket.send_chat(chat_type, message_text)
 	chat_input.text = ""
 
