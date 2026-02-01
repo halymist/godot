@@ -109,9 +109,9 @@ func update_stats():
 	if health_bar.has_node("HealthLabel"):
 		health_bar.get_node("HealthLabel").text = str(max_health)
 	
-	# Damage spread (total damage * strength)
+	# Damage spread - calculate from total stats (base + equipment) multiplied by strength
 	var damage = displayed_character.get_damage_range()
-	damage_spread_label.text = str(damage.min) + " - " + str(damage.max)
+	damage_spread_label.text = str(int(damage.min)) + " - " + str(int(damage.max))
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs, perks)"""

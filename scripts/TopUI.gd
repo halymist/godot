@@ -62,9 +62,10 @@ func update_display():
 	if not GameInfo.current_player:
 		return
 	
-	# Update mushrooms (account-level, from lobby data)
+	# Update mushrooms (account-level, from lobby data) - ensure displayed as integer
 	if currency_label and GameInfo.lobby_data.has("mushrooms"):
-		currency_label.text = str(GameInfo.lobby_data.mushrooms)
+		var mushrooms = int(GameInfo.lobby_data.mushrooms)
+		currency_label.text = str(mushrooms)
 	
 	# Update location if label exists
 	if location_label:

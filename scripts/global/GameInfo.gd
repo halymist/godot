@@ -492,6 +492,9 @@ class GamePlayer:
 			if data.stats.size() >= 7:
 				damage_min = data.stats[5]
 				damage_max = data.stats[6]
+				print("Loaded damage stats: min=", damage_min, " max=", damage_max)
+			else:
+				print("WARNING: Stats array size < 7, damage not loaded. Size: ", data.stats.size())
 		
 		# Load arrays
 		load_bag_slots(data)
@@ -571,10 +574,13 @@ class GamePlayer:
 	func get_damage_range() -> Dictionary:
 		"""Calculate final damage range (total damage stats * strength)"""
 		var total_stats = get_total_stats()
-		return {
+		print("get_damage_range: total_stats.damage_min=", total_stats.damage_min, " damage_max=", total_stats.damage_max, " strength=", total_stats.strength)
+		var result = {
 			"min": total_stats.damage_min * total_stats.strength,
 			"max": total_stats.damage_max * total_stats.strength
 		}
+		print("get_damage_range result: min=", result.min, " max=", result.max)
+		return result
 	
 	func get_total_effects() -> Dictionary:
 		# Initialize effect totals for all 20 effects (IDs 1-20)
@@ -856,6 +862,7 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	
 	# Handle stats: server sends object, client expects array
 	# [strength, stamina, agility, luck, armor, damage_min, damage_max]
+	# Note: Server uses min_damage/max_damage field names
 	if server_data.has("stats") and server_data.stats is Dictionary:
 		var stats_obj = server_data.stats
 		client_data["stats"] = [
@@ -864,8 +871,8 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 			stats_obj.get("agility", 0),
 			stats_obj.get("luck", 0),
 			stats_obj.get("armor", 0),
-			stats_obj.get("damage_min", 0),
-			stats_obj.get("damage_max", 0)
+			stats_obj.get("min_damage", 0),
+			stats_obj.get("max_damage", 0)
 		]
 	
 	# Handle inventory -> bag_slots
@@ -1077,6 +1084,7 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 					avatar_obj.get("mouth", 40)
 				],
 				# Convert stats object to array [strength, stamina, agility, luck, armor, damage_min, damage_max]
+				# Note: Server uses min_damage/max_damage field names
 				"stats": [
 					stats_obj.get("strength", 10),
 					stats_obj.get("stamina", 10),
