@@ -52,9 +52,9 @@ func _load_village_background():
 	var location_id = GameInfo.current_player.location
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
-	# Apply expedition texture directly to self as village background
-	if settlement and settlement.expedition_texture:
-		texture = settlement.expedition_texture
+	# Apply settlement texture directly to self as village background
+	if settlement and settlement.settlement_texture:
+		texture = settlement.settlement_texture
 
 func _load_utility_background():
 	"""Village doesn't need utility background - just shows buttons"""

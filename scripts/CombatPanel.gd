@@ -1,9 +1,8 @@
-extends Panel
+extends TextureRect
 
 # Combat panel that displays combat messages with fade in/out
 
 # Signal emitted when combat finishes and player clicks continue
-@onready var combat_background = $CombatBackground
 @onready var player_avatar = $PlayerContainer/PlayerIcon/PlayerAvatar
 @onready var player_health_bar = $PlayerContainer/PlayerHealthBar
 @onready var player_health_label = $PlayerContainer/PlayerHealthBar/HealthLabel
@@ -345,15 +344,12 @@ func _on_button_unhover():
 
 func set_combat_background():
 	"""Set the combat background texture based on current location"""
-	if not combat_background:
-		return
-	
 	var location = GameInfo.current_player.location if GameInfo.current_player else 1
 	
 	# Get location data from settlements database
 	var location_data = GameInfo.settlements_db.get_location_by_id(location) if GameInfo.settlements_db else null
 	if location_data and location_data.arena_background:
-		combat_background.texture = location_data.arena_background
+		texture = location_data.arena_background
 
 func _on_visibility_changed():
 	if visible:

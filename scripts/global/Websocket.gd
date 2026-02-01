@@ -347,8 +347,8 @@ func fight_player(enemy_id: int):
 	})
 
 func send_chat(chat_type: int, message: String):
-	"""Send a chat message (1=local, 2=global)"""
-	send("send_chat", {
+	"""Send a chat message (0=local, 1=global)"""
+	send("chat", {
 		"int_argument1": chat_type,
 		"string_argument": message
 	})

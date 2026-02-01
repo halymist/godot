@@ -101,11 +101,11 @@ func refresh_travel_state():
 	
 	if current_player.traveling == 0 and current_player.traveling_destination == null:
 		print("No active travel detected")
-		# No active travel - show location/settlement info
+		# No active travel - show expedition info
 		var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
 		if location_data:
 			quest_name_label.text = "Expedition"
-			texture = location_data.settlement_texture
+			texture = location_data.expedition_texture
 			travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
 		else:
 			travel_text_label.text = "No active travel"

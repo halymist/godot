@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -50,7 +50,6 @@
 [ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/Rankings.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
-[ext_resource type="Texture2D" uid="uid://d7skxybllre3" path="res://assets/images/ui/arena_full.png" id="37_b1mpw"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/Quest.gd" id="38_dynamic_options"]
@@ -134,18 +133,6 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lknxd"]
 texture = ExtResource("31_lknxd")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combat_bg"]
-bg_color = Color(0.08, 0.05, 0.15, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.8)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b1mpw"]
 texture = ExtResource("38_ff75x")
@@ -2313,7 +2300,7 @@ theme_override_font_sizes/font_size = 16
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "NEXT >"
 
-[node name="Combat" type="Panel" parent="Portrait/GameScene"]
+[node name="Combat" type="TextureRect" parent="Portrait/GameScene"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -2321,19 +2308,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_combat_bg")
-script = ExtResource("35_combat_panel")
-
-[node name="CombatBackground" type="TextureRect" parent="Portrait/GameScene/Combat"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("37_b1mpw")
 expand_mode = 1
 stretch_mode = 6
+script = ExtResource("35_combat_panel")
 
 [node name="PlayerContainer" type="Control" parent="Portrait/GameScene/Combat"]
 layout_mode = 1
