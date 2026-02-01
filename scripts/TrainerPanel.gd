@@ -20,7 +20,6 @@ const STAT_COST = 5
 var on_entered_greetings: Array[String] = []
 var on_placed_greetings: Array[String] = []
 var on_action_greetings: Array[String] = []
-var _chat_bubble_instance: ChatBubble = null
 
 func _ready():
 	talent_points_button.pressed.connect(_on_stat_plus_pressed.bind("talent_points", TALENT_POINT_COST))

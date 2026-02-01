@@ -442,7 +442,9 @@ class GamePlayer:
 	var avatar_mouth: int = 40
 	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
 	var potion: int = 0  # Equipped potion item ID (0 = no potion)
+	var potion_day: int = 0  # Server day when potion effect expires (0 = no expiration tracked)
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
+	var elixir_day: int = 0  # Server day when elixir effect expires (0 = no expiration tracked)
 	var elixir_ingredients: Array[int] = []  # Ingredients for equipped elixir
 	var bag_slots: Array[Item] = []
 	var perks: Array[Perk] = []
@@ -776,6 +778,47 @@ class GameCurrentPlayer:
 		# No empty slots found
 		print("Bag is full, cannot add item ID ", item_id)
 		return false
+	
+	func check_expired_effects() -> bool:
+		"""Check if any active effects have expired based on current time or server_day. Returns true if any effects were removed."""
+		var effects_removed = false
+		var current_time = Time.get_unix_time_from_system()
+		
+		# Check potion expiration (timestamp-based)
+		if potion > 0 and potion_until > 0 and current_time > potion_until:
+			print("Potion effect expired (until ", potion_until, " < current ", current_time, ")")
+			potion = 0
+			potion_until = 0.0
+			potion_day = 0
+			effects_removed = true
+		
+		# Check potion expiration (day-based fallback)
+		if potion > 0 and potion_day > 0 and server_day > potion_day:
+			print("Potion effect expired (day ", potion_day, " < current day ", server_day, ")")
+			potion = 0
+			potion_until = 0.0
+			potion_day = 0
+			effects_removed = true
+		
+		# Check elixir expiration (timestamp-based)
+		if elixir > 0 and elixir_until > 0 and current_time > elixir_until:
+			print("Elixir effect expired (until ", elixir_until, " < current ", current_time, ")")
+			elixir = 0
+			elixir_until = 0.0
+			elixir_day = 0
+			elixir_ingredients.clear()
+			effects_removed = true
+		
+		# Check elixir expiration (day-based fallback)
+		if elixir > 0 and elixir_day > 0 and server_day > elixir_day:
+			print("Elixir effect expired (day ", elixir_day, " < current day ", server_day, ")")
+			elixir = 0
+			elixir_until = 0.0
+			elixir_day = 0
+			elixir_ingredients.clear()
+			effects_removed = true
+		
+		return effects_removed
 
 # ============================================
 # SERVER DATA TRANSFORMATION
@@ -903,13 +946,37 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 		client_data["vendor_items"] = server_data.vendor
 		client_data.erase("vendor")
 	
-	# Handle timestamps (potion_until, elixir_until)
+	# Handle timestamps (potion_until, elixir_until) - ISO 8601 strings from server
 	if server_data.has("potion_until") and server_data.potion_until != null:
-		client_data["potion_until"] = server_data.potion_until
+		var timestamp = _parse_iso_timestamp(server_data.potion_until)
+		client_data["potion_until"] = timestamp
 	if server_data.has("elixir_until") and server_data.elixir_until != null:
-		client_data["elixir_until"] = server_data.elixir_until
+		var timestamp = _parse_iso_timestamp(server_data.elixir_until)
+		client_data["elixir_until"] = timestamp
+	
+	# Handle server_day based expiration (potion_day, elixir_day) - legacy support
+	if server_data.has("potion_day") and server_data.potion_day != null:
+		client_data["potion_day"] = server_data.potion_day
+	if server_data.has("elixir_day") and server_data.elixir_day != null:
+		client_data["elixir_day"] = server_data.elixir_day
 	
 	return client_data
+
+func _parse_iso_timestamp(iso_string: Variant) -> float:
+	"""Parse ISO 8601 timestamp string to Unix timestamp. Returns 0.0 if invalid."""
+	if iso_string == null or not iso_string is String or iso_string.is_empty():
+		return 0.0
+	
+	# Try using Godot's built-in parser first
+	# Format: "2026-02-01T12:00:00+00:00"
+	var datetime_dict = Time.get_datetime_dict_from_datetime_string(iso_string, true)
+	if datetime_dict.is_empty():
+		print("Failed to parse ISO timestamp: ", iso_string)
+		return 0.0
+	
+	var unix_time = Time.get_unix_time_from_datetime_dict(datetime_dict)
+	print("Parsed ISO timestamp '", iso_string, "' -> ", unix_time)
+	return unix_time
 
 func load_all_characters(characters_data: Array):
 	all_characters.clear()
@@ -927,6 +994,12 @@ func load_character_from_server(character_data: Dictionary):
 	var player = GameCurrentPlayer.new(transformed_data, self)
 	all_characters.append(player)
 	print("Loaded character from server: ", player.name, " (ID: ", player.character_id, ")")
+	print("  - Potion: ", player.potion, " (until: ", player.potion_until, ")")
+	print("  - Elixir: ", player.elixir, " (until: ", player.elixir_until, ")")
+	
+	# Check for expired effects based on timestamps
+	if player.check_expired_effects():
+		print("  - Removed expired effects")
 	
 	# Automatically select this character
 	current_character_id = player.character_id

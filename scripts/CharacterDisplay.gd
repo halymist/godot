@@ -122,14 +122,16 @@ func refresh_active_effects():
 	if displayed_character.elixir > 0:
 		var elixir_res = GameInfo.items_db.get_item_by_id(1000)
 		var icon = perk_mini_scene.instantiate()
-		icon.setup(elixir_res.icon, {"type": "elixir", "id": displayed_character.elixir})
+		var elixir_until = displayed_character.elixir_until if "elixir_until" in displayed_character else 0.0
+		icon.setup(elixir_res.icon, {"type": "elixir", "id": displayed_character.elixir, "expire_until": elixir_until})
 		active_perks_display.add_child(icon)
 	
 	# Add equipped potion second if any
 	if displayed_character.potion > 0:
 		var potion_res = GameInfo.items_db.get_item_by_id(displayed_character.potion)
 		var icon = perk_mini_scene.instantiate()
-		icon.setup(potion_res.icon, {"type": "potion", "id": displayed_character.potion})
+		var potion_until = displayed_character.potion_until if "potion_until" in displayed_character else 0.0
+		icon.setup(potion_res.icon, {"type": "potion", "id": displayed_character.potion, "expire_until": potion_until})
 		active_perks_display.add_child(icon)
 	
 	# Add active blessing effect third if any

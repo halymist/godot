@@ -11,6 +11,34 @@ func setup(texture: Texture2D, data: Dictionary):
 	mouse_entered.connect(_on_hover)
 	mouse_exited.connect(TooltipManager.hide_perk_tooltip)
 
+func _format_time_remaining(expire_until: float) -> String:
+	"""Format the remaining time until expiration in a human-readable way."""
+	if expire_until <= 0:
+		return ""
+	
+	var current_time = Time.get_unix_time_from_system()
+	var seconds_left = expire_until - current_time
+	
+	if seconds_left <= 0:
+		return "[Expired]"
+	
+	# Convert to hours and minutes
+	var hours_left = int(seconds_left / 3600)
+	var minutes_left = int((int(seconds_left) % 3600) / 60)
+	
+	if hours_left >= 24:
+		var days_left = hours_left / 24
+		hours_left = hours_left % 24
+		if days_left == 1:
+			return "[%dd %dh remaining]" % [days_left, hours_left]
+		return "[%dd %dh remaining]" % [days_left, hours_left]
+	elif hours_left > 0:
+		return "[%dh %dm remaining]" % [hours_left, minutes_left]
+	elif minutes_left > 0:
+		return "[%dm remaining]" % [minutes_left]
+	else:
+		return "[< 1m remaining]"
+
 func _on_hover():
 	var content = ""
 	
@@ -36,10 +64,27 @@ func _on_hover():
 		
 		"potion":
 			var item = GameInfo.items_db.get_item_by_id(meta_data.id)
-			content = item.item_name
-			if item.effect_id > 0:
-				var effect = GameInfo.effects_db.get_effect_by_id(item.effect_id)
-				content += "\n" + effect.description + " " + str(int(item.effect_factor)) + "%"
+			if not item:
+				print("ERROR: Potion item not found in items_db: ", meta_data.id)
+				content = "Unknown Potion (ID: " + str(meta_data.id) + ")"
+			else:
+				content = item.item_name
+				print("Potion found: ", item.item_name, " (ID: ", meta_data.id, ")")
+				print("  - effect_id: ", item.effect_id, ", effect_factor: ", item.effect_factor)
+				# Show effect + factor from item database
+				if item.effect_id > 0:
+					var effect = GameInfo.effects_db.get_effect_by_id(item.effect_id)
+					if effect:
+						print("  - Effect found: ", effect.description)
+						content += "\n" + effect.description + " " + str(int(item.effect_factor)) + "%"
+					else:
+						print("  - ERROR: Effect not found in effects_db: ", item.effect_id)
+				else:
+					print("  - No effect_id on this item")
+			# Show expiration time if available
+			var expire_until = meta_data.get("expire_until", 0.0)
+			if expire_until > 0:
+				content += "\n" + _format_time_remaining(expire_until)
 		
 		"elixir":
 			content = "Elixir"
@@ -52,7 +97,13 @@ func _on_hover():
 			
 			for effect_id in effect_map:
 				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
-				content += "\n" + effect.description + " " + str(effect_map[effect_id]) + "%"
+				if effect:
+					content += "\n" + effect.description + " " + str(effect_map[effect_id]) + "%"
+			
+			# Show expiration time if available
+			var expire_until = meta_data.get("expire_until", 0.0)
+			if expire_until > 0:
+				content += "\n" + _format_time_remaining(expire_until)
 		
 		"effect":
 			var effect = meta_data.effect
