@@ -5,7 +5,16 @@ extends TextureRect
 # No scrolling, no NPCs, no interiors
 
 @export var chat_bubble: ChatBubble
-@export var buttons_container: GridContainer
+
+# Static buttons in scene
+@export var vendor_button: Button
+@export var vendor_icon: TextureRect
+@export var vendor_label: Label
+@export var utility_button: Button
+@export var utility_icon: TextureRect
+@export var utility_label: Label
+
+# Quest button
 @export var quest_button: Button
 @export var quest_icon: TextureRect
 @export var quest_name_label: Label
@@ -20,7 +29,7 @@ extends TextureRect
 # Current quest tracking
 var current_quest_index: int = 0
 var available_quests: Array[int] = []
-var buttons_initialized: bool = false
+var _utility_type: String = ""  # Track current utility type for callback
 
 func _ready():
 	# Check if we're the starter panel
@@ -37,11 +46,14 @@ func _setup():
 		return
 	
 	_load_village_background()
-	_load_utility_background()
-	_setup_utility_buttons()
+	_setup_buttons()
 	_update_quest_display()
 	
-	# Connect quest button signals
+	# Connect button signals
+	if vendor_button and not vendor_button.pressed.is_connected(_on_vendor_pressed):
+		vendor_button.pressed.connect(_on_vendor_pressed)
+	if utility_button and not utility_button.pressed.is_connected(_on_utility_pressed):
+		utility_button.pressed.connect(_on_utility_pressed)
 	if quest_button and not quest_button.pressed.is_connected(_on_quest_button_pressed):
 		quest_button.pressed.connect(_on_quest_button_pressed)
 	if quest_arrow and not quest_arrow.pressed.is_connected(_on_quest_arrow_pressed):
@@ -56,79 +68,41 @@ func _load_village_background():
 	if settlement and settlement.settlement_texture:
 		texture = settlement.settlement_texture
 
-func _load_utility_background():
-	"""Village doesn't need utility background - just shows buttons"""
-
-func _setup_utility_buttons():
-	"""Setup utility buttons based on current location"""
-	if buttons_initialized:
-		return
-	buttons_initialized = true
-	
+func _setup_buttons():
+	"""Configure vendor and utility buttons based on settlement"""
 	var location_id = GameInfo.current_player.location
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
-	if not settlement or not buttons_container:
+	if not settlement:
 		return
 	
-	# Add Vendor button (always available if vendor asset exists)
-	if settlement.has_vendor():
-		_add_button("Vendor", "res://assets/images/ui/vendor_icon.png", _on_vendor_pressed)
+	# Vendor button - always show if available
+	if vendor_button:
+		vendor_button.visible = settlement.has_vendor()
 	
-	# Add utility button based on settlement's utility type
-	if settlement.has_church():
-		_add_button("Church", "res://assets/images/ui/church_icon.png", _on_church_pressed)
-	
-	if settlement.has_trainer():
-		_add_button("Trainer", "res://assets/images/ui/trainer_icon.png", _on_trainer_pressed)
-	
-	if settlement.has_blacksmith():
-		_add_button("Blacksmith", "res://assets/images/ui/blacksmith_icon.png", _on_blacksmith_pressed)
-	
-	if settlement.has_enchanter():
-		_add_button("Enchanter", "res://assets/images/ui/enchanter_icon.png", _on_enchanter_pressed)
-	
-	if settlement.has_alchemist():
-		_add_button("Alchemist", "res://assets/images/ui/alchemist_icon.png", _on_alchemist_pressed)
+	# Utility button - configure based on what's available
+	if utility_button:
+		if settlement.has_blacksmith():
+			_configure_utility("Blacksmith", "res://assets/images/ui/blacksmith_icon.png")
+		elif settlement.has_enchanter():
+			_configure_utility("Enchanter", "res://assets/images/ui/enchanter_icon.png")
+		elif settlement.has_alchemist():
+			_configure_utility("Alchemist", "res://assets/images/ui/alchemist_icon.png")
+		elif settlement.has_church():
+			_configure_utility("Church", "res://assets/images/ui/church_icon.png")
+		elif settlement.has_trainer():
+			_configure_utility("Trainer", "res://assets/images/ui/trainer_icon.png")
+		else:
+			utility_button.visible = false
 
-func _add_button(text: String, icon_path: String, callback: Callable):
-	"""Create and add a utility button"""
-	var button = Button.new()
-	button.custom_minimum_size = Vector2(110, 80)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
-	# Create HBox for icon + label
-	var hbox = HBoxContainer.new()
-	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_theme_constant_override("separation", 12)
-	
-	# Icon
-	var icon = TextureRect.new()
-	icon.custom_minimum_size = Vector2(32, 32)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	if ResourceLoader.exists(icon_path):
-		icon.texture = load(icon_path)
-	hbox.add_child(icon)
-	
-	# Label
-	var label = Label.new()
-	label.text = text
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 20)
-	label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.7, 1))
-	hbox.add_child(label)
-	
-	button.add_child(hbox)
-	button.pressed.connect(callback)
-	
-	# Insert before quest button (quest should be last)
-	var quest_idx = quest_button.get_index() if quest_button else buttons_container.get_child_count()
-	buttons_container.add_child(button)
-	buttons_container.move_child(button, quest_idx)
+func _configure_utility(type_name: String, icon_path: String):
+	"""Configure the utility button appearance"""
+	_utility_type = type_name
+	if utility_label:
+		utility_label.text = type_name
+	if utility_icon and ResourceLoader.exists(icon_path):
+		utility_icon.texture = load(icon_path)
+	utility_button.visible = true
 
 func _update_quest_display():
 	"""Update quest button to show current quest info"""
@@ -206,20 +180,19 @@ func _on_quest_arrow_pressed():
 func _on_vendor_pressed():
 	UIManager.instance.show_panel(UIManager.instance.vendor_panel)
 
-func _on_church_pressed():
-	UIManager.instance.show_panel(UIManager.instance.church_panel)
-
-func _on_trainer_pressed():
-	UIManager.instance.show_panel(UIManager.instance.trainer_panel)
-
-func _on_blacksmith_pressed():
-	UIManager.instance.show_panel(UIManager.instance.blacksmith_panel)
-
-func _on_enchanter_pressed():
-	UIManager.instance.show_panel(UIManager.instance.enchanter_panel)
-
-func _on_alchemist_pressed():
-	UIManager.instance.show_panel(UIManager.instance.alchemist_panel)
+func _on_utility_pressed():
+	"""Handle utility button press based on configured type"""
+	match _utility_type:
+		"Blacksmith":
+			UIManager.instance.show_panel(UIManager.instance.blacksmith_panel)
+		"Enchanter":
+			UIManager.instance.show_panel(UIManager.instance.enchanter_panel)
+		"Alchemist":
+			UIManager.instance.show_panel(UIManager.instance.alchemist_panel)
+		"Church":
+			UIManager.instance.show_panel(UIManager.instance.church_panel)
+		"Trainer":
+			UIManager.instance.show_panel(UIManager.instance.trainer_panel)
 
 func refresh_quests():
 	"""Call when quests change"""
@@ -227,9 +200,8 @@ func refresh_quests():
 
 func refresh_location():
 	"""Call when player changes location"""
-	buttons_initialized = false
 	_load_village_background()
-	_setup_utility_buttons()
+	_setup_buttons()
 	_update_quest_display()
 
 # Stub methods for compatibility with TogglePanel
