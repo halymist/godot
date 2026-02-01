@@ -1,4 +1,4 @@
-extends Panel
+extends TextureRect
 
 # EnchanterPanel-specific functionality
 
@@ -7,7 +7,7 @@ const ENCHANTER_SLOT = 15
 const BAG_MIN = 10
 const BAG_MAX = 14
 
-@export var utility_background_container: Control
+@export var chat_bubble: PackedScene
 @export var bag: Control
 @export var enchanter_slot: Control
 @export var enchant_button: Button
@@ -16,7 +16,9 @@ const BAG_MAX = 14
 
 const ENCHANT_COST = 10
 
-var utility_background: UtilityBackground
+var on_entered_greetings: Array[String] = []
+var on_placed_greetings: Array[String] = []
+var on_action_greetings: Array[String] = []
 var selected_effect_id: int = 0
 var selected_effect_factor: float = 0.0
 var working_item: GameInfo.Item = null  # Reference to item being worked on (doesn't change bag_slot_id)
@@ -39,7 +41,7 @@ func on_item_placed(item: GameInfo.Item, _source_slot_id: int):
 	"""Called when an item is placed in the enchanter slot (item keeps its original bag_slot_id)"""
 	print("DEBUG EnchanterPanel.on_item_placed: item=", item.item_name, " bag_slot_id=", item.bag_slot_id)
 	working_item = item
-	utility_background.show_item_placed_greeting()
+	_show_greeting(on_placed_greetings)
 	update_enchant_button_state()
 	populate_effect_list()
 
@@ -66,7 +68,7 @@ func _on_visibility_changed():
 	else:
 		update_enchant_button_state()
 		populate_effect_list()
-		utility_background.show_entered_greeting()
+		_show_greeting(on_entered_greetings)
 
 func _load_location_content():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
@@ -74,24 +76,26 @@ func _load_location_content():
 		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
-	for child in utility_background_container.get_children():
-		child.queue_free()
+	# Apply utility texture directly to self
+	if settlement.utility_texture:
+		texture = settlement.utility_texture
 	
-	# Load shared utility background scene
-	var utility_scene = preload("res://Scenes/UtilityBackground.tscn")
-	var utility_instance = utility_scene.instantiate()
-	utility_background_container.add_child(utility_instance)
-	
-	utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
-	utility_instance.offset_left = 0
-	utility_instance.offset_top = 0
-	utility_instance.offset_right = 0
-	utility_instance.offset_bottom = 0
-	
-	# Setup from settlement data (utility, not vendor)
-	utility_instance.setup_from_settlement(settlement, false)
-	
-	utility_background = utility_instance
+	# Load utility greetings from settlement
+	on_entered_greetings = settlement.get_utility_on_entered_lines()
+	on_placed_greetings = settlement.get_utility_on_placed_lines()
+	on_action_greetings = settlement.get_utility_on_action_lines()
+
+func _show_greeting(greetings: Array[String]):
+	if not chat_bubble or greetings.is_empty():
+		return
+	# Lazily instantiate chat bubble on first use
+	if not _chat_bubble_instance:
+		_chat_bubble_instance = chat_bubble.instantiate()
+		add_child(_chat_bubble_instance)
+		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
+		_chat_bubble_instance.position.y = 20
+	var greeting = greetings[randi() % greetings.size()]
+	_chat_bubble_instance.show_with_text(greeting, 4.0)
 
 
 func return_enchanter_item_to_bag():
@@ -163,7 +167,7 @@ func _on_enchant_pressed():
 	working_item.effect_overdrive = selected_effect_id
 	UIManager.instance.update_silver(-ENCHANT_COST)
 	
-	utility_background.show_action_greeting()
+	_show_greeting(on_action_greetings)
 	
 	# Clear the slot and return item to bag visually
 	if enchanter_slot.has_method("clear_slot"):

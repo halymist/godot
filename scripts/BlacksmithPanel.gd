@@ -1,4 +1,4 @@
-extends Panel
+extends TextureRect
 
 # BlacksmithPanel-specific functionality
 
@@ -7,14 +7,17 @@ const BLACKSMITH_SLOT = 16
 const BAG_MIN = 10
 const BAG_MAX = 14
 
-@export var utility_background_container: Control  # Container to load utility background scene into
+@export var chat_bubble: PackedScene
 @export var bag: Control
 @export var blacksmith_slot: Control
 @export var improved_stats_label: Label
 @export var temper_button: Button
 
-var utility_background: UtilityBackground  # Found from loaded utility scene
-var working_item: GameInfo.Item = null  # Reference to item being worked on (doesn't change bag_slot_id)
+var on_entered_greetings: Array[String] = []
+var on_placed_greetings: Array[String] = []
+var on_action_greetings: Array[String] = []
+var working_item: GameInfo.Item = null
+var _chat_bubble_instance: ChatBubble = null  # Reference to item being worked on (doesn't change bag_slot_id)
 
 const TEMPER_COST = 10
 
@@ -39,7 +42,7 @@ func on_item_placed(item: GameInfo.Item, _source_slot_id: int):
 	working_item = item
 	update_stats_display()
 	update_temper_button_state()
-	utility_background.show_item_placed_greeting()
+	_show_greeting(on_placed_greetings)
 
 func on_item_removed():
 	"""Called when an item is removed from the blacksmith slot"""
@@ -60,7 +63,7 @@ func _on_visibility_changed():
 		return_blacksmith_item_to_bag()
 	else:
 		update_stats_display()
-		utility_background.show_entered_greeting()
+		_show_greeting(on_entered_greetings)
 
 func _load_location_content():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
@@ -68,27 +71,26 @@ func _load_location_content():
 		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
-	# Clear existing utility background
-	for child in utility_background_container.get_children():
-		child.queue_free()
+	# Apply utility texture directly to self
+	if settlement.utility_texture:
+		texture = settlement.utility_texture
 	
-	# Load and instance the shared utility background scene
-	var utility_scene = preload("res://Scenes/UtilityBackground.tscn")
-	var instance = utility_scene.instantiate()
-	utility_background_container.add_child(instance)
-	
-	# Set to fill container
-	instance.set_anchors_preset(Control.PRESET_FULL_RECT)
-	instance.offset_left = 0
-	instance.offset_top = 0
-	instance.offset_right = 0
-	instance.offset_bottom = 0
-	
-	# Setup from settlement data (utility, not vendor)
-	instance.setup_from_settlement(settlement, false)
-	
-	# Get reference to the utility background script
-	utility_background = instance
+	# Load utility greetings from settlement
+	on_entered_greetings = settlement.get_utility_on_entered_lines()
+	on_placed_greetings = settlement.get_utility_on_placed_lines()
+	on_action_greetings = settlement.get_utility_on_action_lines()
+
+func _show_greeting(greetings: Array[String]):
+	if not chat_bubble or greetings.is_empty():
+		return
+	# Lazily instantiate chat bubble on first use
+	if not _chat_bubble_instance:
+		_chat_bubble_instance = chat_bubble.instantiate()
+		add_child(_chat_bubble_instance)
+		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
+		_chat_bubble_instance.position.y = 20
+	var greeting = greetings[randi() % greetings.size()]
+	_chat_bubble_instance.show_with_text(greeting, 4.0)
 
 
 func update_stats_display():
@@ -182,7 +184,7 @@ func _on_temper_pressed():
 	UIManager.instance.update_silver(-TEMPER_COST)
 	
 	# Show action greeting
-	utility_background.show_action_greeting()
+	_show_greeting(on_action_greetings)
 	
 	# Clear the slot and return item to bag visually
 	blacksmith_slot.clear_slot()

@@ -1,11 +1,10 @@
-extends Panel
+extends TextureRect
 
 # Simple Village/Home Panel
 # Just displays village image + overlay with buttons
 # No scrolling, no NPCs, no interiors
 
-@export var village_image: TextureRect
-@export var utility_background_container: Control  # Container to load utility background scene into
+@export var chat_bubble: ChatBubble
 @export var buttons_container: GridContainer
 @export var quest_button: Button
 @export var quest_icon: TextureRect
@@ -17,8 +16,6 @@ extends Panel
 @export var quest_panel: Control  # QuestAccept panel
 @export var quest_slide_panel: Control
 @export var map_panel: Control
-
-var utility_background: UtilityBackground  # Found from loaded utility scene
 
 # Current quest tracking
 var current_quest_index: int = 0
@@ -55,25 +52,12 @@ func _load_village_background():
 	var location_id = GameInfo.current_player.location
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
-	# Village texture not in server data - would need to be added or use expedition_texture as fallback
-	if settlement and settlement.expedition_texture and village_image:
-		village_image.texture = settlement.expedition_texture
+	# Apply expedition texture directly to self as village background
+	if settlement and settlement.expedition_texture:
+		texture = settlement.expedition_texture
 
 func _load_utility_background():
-	"""Load utility background scene - simplified for new settlement structure"""
-	var location_id = GameInfo.current_player.location
-	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
-	
-	if not settlement or not utility_background_container:
-		return
-	
-	# Clear existing utility background
-	for child in utility_background_container.get_children():
-		child.queue_free()
-	
-	# Village utility scene is no longer per-location - skip for now
-	# The village screen just shows buttons to access utilities
-	utility_background = null
+	"""Village doesn't need utility background - just shows buttons"""
 
 func _setup_utility_buttons():
 	"""Setup utility buttons based on current location"""

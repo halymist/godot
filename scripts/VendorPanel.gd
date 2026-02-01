@@ -1,16 +1,20 @@
-extends Panel
+extends TextureRect
 
 const VENDOR_MIN = 21
 const VENDOR_MAX = 28
 
-@export var utility_background_container: Control
+@export var chat_bubble: PackedScene
 @export var bag: Control
 @export var vendor_grid: GridContainer
 @export var vendor_slots: Array[Control] = []
 @export var item_scene: PackedScene
 
-var utility_background: UtilityBackground
+# Greeting arrays loaded from settlement
+var on_entered_greetings: Array[String] = []
+var on_sold_greetings: Array[String] = []
+var on_bought_greetings: Array[String] = []
 var vendor_items: Array[GameInfo.Item] = []
+var _chat_bubble_instance: ChatBubble = null
 
 func _ready():
 	visibility_changed.connect(_on_visibility_changed)
@@ -27,7 +31,7 @@ func _setup():
 func _on_visibility_changed():
 	if visible:
 		populate_vendor_slots()
-		utility_background.show_entered_greeting()
+		_show_greeting(on_entered_greetings)
 
 func _load_location_content():
 	if not GameInfo.current_player:
@@ -40,24 +44,14 @@ func _load_location_content():
 		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
-	for child in utility_background_container.get_children():
-		child.queue_free()
+	# Apply vendor texture directly to self
+	if settlement.vendor_texture:
+		texture = settlement.vendor_texture
 	
-	# Load shared utility background scene
-	var utility_scene = preload("res://Scenes/UtilityBackground.tscn")
-	var utility_instance = utility_scene.instantiate()
-	utility_background_container.add_child(utility_instance)
-	
-	utility_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
-	utility_instance.offset_left = 0
-	utility_instance.offset_top = 0
-	utility_instance.offset_right = 0
-	utility_instance.offset_bottom = 0
-	
-	# Setup from settlement data (vendor, not utility)
-	utility_instance.setup_from_settlement(settlement, true)
-	
-	utility_background = utility_instance
+	# Load vendor greetings from settlement
+	on_entered_greetings = settlement.get_vendor_on_entered_lines()
+	on_sold_greetings = settlement.get_vendor_on_sold_lines()
+	on_bought_greetings = settlement.get_vendor_on_bought_lines()
 
 func _load_vendor_items():
 	vendor_items.clear()
@@ -76,10 +70,22 @@ func _load_vendor_items():
 
 func trigger_purchase_greeting():
 	populate_vendor_slots()
-	utility_background.show_action_greeting()
+	_show_greeting(on_bought_greetings)
+
+func _show_greeting(greetings: Array[String]):
+	if not chat_bubble or greetings.is_empty():
+		return
+	# Lazily instantiate chat bubble on first use
+	if not _chat_bubble_instance:
+		_chat_bubble_instance = chat_bubble.instantiate()
+		add_child(_chat_bubble_instance)
+		_chat_bubble_instance.anchors_preset = Control.PRESET_CENTER_TOP
+		_chat_bubble_instance.position.y = 20
+	var greeting = greetings[randi() % greetings.size()]
+	_chat_bubble_instance.show_with_text(greeting, 4.0)
 
 func trigger_sell_greeting():
-	utility_background.show_item_placed_greeting()
+	_show_greeting(on_sold_greetings)
 
 func _on_bag_slots_changed():
 	if visible:
