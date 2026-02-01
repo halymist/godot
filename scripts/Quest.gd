@@ -440,18 +440,11 @@ func _on_quest_option_pressed(option: QuestOption):
 
 func _start_combat():
 	"""Initialize combat - combat data will come from server response"""
-	# TODO: Send combat request to server via Websocket
-	# Combat result will come via WebSocket response and show combat panel
+	# Send combat request to server via Websocket
+	# Combat result will come via WebSocket response and show combat panel automatically
 	print("Starting quest combat - waiting for server response")
-	# TODO: Uncomment when server combat is implemented
-	# Websocket.start_quest_combat() or similar
-	
-	# Get combat panel and toggle UI through UIManager
-	var combat_panel = UIManager.instance.combat_panel
-	
-	# Show combat panel using UIManager's show_panel method
-	UIManager.instance.show_panel(combat_panel)
-	UIManager.instance.current_panel = combat_panel
+	# TODO: Call appropriate Websocket function for quest combat when server implements it
+	# For now, this is a placeholder - server will send combatLog which shows the combat panel
 
 func handle_combat_result():
 	"""Called after combat panel closes to handle quest continuation"""

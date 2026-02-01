@@ -30,6 +30,8 @@ var current_action_index = 0
 var all_actions = []
 var current_message_tween: Tween
 
+var is_prepared: bool = false  # Track if combat is prepared and ready to show
+
 func _ready():
 	# Create timer for displaying actions
 	action_timer = Timer.new()
@@ -44,7 +46,7 @@ func _ready():
 	fade_timer.timeout.connect(_fade_current_message)
 	add_child(fade_timer)
 	
-	# Connect to visibility changes
+	# Connect to visibility changes - only starts playback, doesn't setup
 	visibility_changed.connect(_on_visibility_changed)
 	
 	# Connect button signal
@@ -57,14 +59,22 @@ func _ready():
 	# Set up message labels array
 	message_labels = [message1, message2, message3]
 
-func display_combat_log():
+func prepare_combat():
+	"""Prepare all combat visuals BEFORE showing the panel. Call this before making panel visible."""
 	if not GameInfo.current_combat_log:
-		print("No current combat log to display")
+		print("No current combat log to prepare")
+		is_prepared = false
 		return
 	
 	var combat = GameInfo.current_combat_log
 	
-	# Set combat background based on location
+	# Stop any existing timers from previous combat
+	if action_timer:
+		action_timer.stop()
+	if fade_timer:
+		fade_timer.stop()
+	
+	# Set combat background
 	set_combat_background()
 	
 	# Set up player info
@@ -131,10 +141,46 @@ func display_combat_log():
 	button_label.text = "Skip"
 	clear_messages()
 	
+	# Mark as prepared
+	is_prepared = true
+
+func display_combat_log():
+	"""Legacy method - now just calls prepare_combat and starts playback."""
+	prepare_combat()
+	start_combat_playback()
+
+func start_combat_playback():
+	"""Start the combat animation playback. Called after panel is visible."""
+	if not is_prepared or not GameInfo.current_combat_log:
+		return
+	
+	var combat = GameInfo.current_combat_log
+	
 	if all_actions.size() > 0:
 		call_deferred("_start_action_timer")
 	else:
-		show_final_message(combat.final_message)
+		# Build final message
+		var final_msg = ""
+		if combat.has_won():
+			final_msg = "Victory! You defeated " + combat.enemy_name + "!"
+		else:
+			final_msg = "Defeat! " + combat.enemy_name + " has won."
+		show_final_message(final_msg)
+
+func _legacy_display_combat_log():
+	if not GameInfo.current_combat_log:
+		print("No current combat log to display")
+		return
+	
+	var combat = GameInfo.current_combat_log
+	
+	# Set combat background FIRST to reduce flicker
+	set_combat_background()
+	
+	# Set up player info
+	player_label.text = combat.player_name
+	
+
 
 func _start_action_timer():
 	if is_inside_tree():
@@ -343,7 +389,7 @@ func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 		update_health_label(health_label, new_health)
 
 func is_damage_action(action: String) -> bool:
-	return action in ["hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
+	return action in ["attacks", "hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
 
 func update_health_label(label: Label, current: float):
 	"""Update health label to show current health value"""
@@ -365,8 +411,11 @@ func set_combat_background():
 		texture = location_data.arena_background
 
 func _on_visibility_changed():
-	if visible:
-		display_combat_log()
+	if visible and is_prepared:
+		# Panel is now visible and was prepared - start playback
+		start_combat_playback()
+		# Reset prepared flag so we don't restart on next visibility toggle
+		is_prepared = false
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:

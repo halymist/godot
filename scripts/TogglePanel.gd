@@ -122,7 +122,7 @@ func _connect_buttons():
 	chat_button.pressed.connect(toggle_chat)
 	chat_panel.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
-	fight_button.pressed.connect(show_combat)
+	# Fight button is handled by Arena.gd - it sends request to server, waits for response, then shows combat panel
 
 func _initialize_starter_panel():
 	"""Determine and show the initial panel based on player state"""

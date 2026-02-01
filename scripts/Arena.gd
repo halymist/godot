@@ -64,12 +64,20 @@ func _on_fight_pressed():
 	if GameInfo.arena_opponents.size() > current_index:
 		var opponent_id = GameInfo.arena_opponents[current_index]
 		print("Fighting opponent with character_id: ", opponent_id)
+		
+		# Show loading state on button
+		fight_button.disabled = true
+		fight_button.text = "..."
+		
 		# Send fight request to server - combat result will come via WebSocket response
 		Websocket.fight_player(opponent_id)
-		# TODO: Handle combat response in Websocket._handle_message() and show combat panel
-		# TODO: Send opponent_id to server and wait for combat_log response
 	else:
 		print("No opponent data available")
+
+func reset_fight_button():
+	"""Reset fight button to normal state (called after combat loads or on error)"""
+	fight_button.disabled = false
+	fight_button.text = "Fight"
 
 func _on_prev_pressed():
 	if is_animating:

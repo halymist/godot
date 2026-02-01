@@ -227,6 +227,9 @@ func _handle_combat_log(message: Dictionary):
 	"""Handle combatLog response from server"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
 		print("[WebSocket] Invalid combatLog format")
+		# Reset fight button on error
+		if UIManager.instance and UIManager.instance.arena_panel:
+			UIManager.instance.arena_panel.reset_fight_button()
 		return
 	
 	var combat_data = message.data[0]
@@ -235,9 +238,22 @@ func _handle_combat_log(message: Dictionary):
 	# Create CombatResponse from server data
 	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
 	
-	# Show combat panel
+	# Reset the arena fight button
+	if UIManager.instance and UIManager.instance.arena_panel:
+		UIManager.instance.arena_panel.reset_fight_button()
+	
+	# Prepare and show combat panel
 	if UIManager.instance and UIManager.instance.combat_panel:
-		UIManager.instance.show_panel(UIManager.instance.combat_panel)
+		var combat_panel = UIManager.instance.combat_panel
+		
+		# Prepare all visuals while panel is still hidden
+		combat_panel.prepare_combat()
+		
+		# Wait one frame for Godot to process UI updates before showing
+		await Engine.get_main_loop().process_frame
+		
+		# Now show the panel - playback starts via visibility_changed
+		UIManager.instance.show_panel(combat_panel)
 
 # ============================================
 # WEBSOCKET API - Game Actions
