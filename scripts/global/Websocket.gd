@@ -126,6 +126,8 @@ func _handle_message(message: String):
 			_handle_chat_message(data, "local")
 		"globalChat":
 			_handle_chat_message(data, "global")
+		"combatLog":
+			_handle_combat_log(data)
 		_:
 			print("[WebSocket] Unknown function: ", function_name)
 
@@ -169,17 +171,15 @@ func _handle_chat_message(message: Dictionary, chat_type: String):
 		return
 	
 	for chat_data in message.data:
-		# Build ChatMessage data from server format
-		# Server sends: {id, lobby_id, message, player_id, timestamp}
-		var player_id = str(chat_data.get("player_id", ""))
-		var sender_name = _get_player_name(player_id)
+		# Server sends: {id, lobby_id, message, character_name, timestamp}
+		var sender_name = chat_data.get("character_name", "Unknown")
 		
 		var chat_message_data = {
 			"sender": sender_name,
 			"message": chat_data.get("message", ""),
 			"timestamp": _unix_to_iso(chat_data.get("timestamp", 0)),
 			"type": chat_type,
-			"status": _get_player_status(player_id)
+			"status": "peasant"  # TODO: Get from server if available
 		}
 		
 		# Add to GameInfo chat messages
@@ -222,6 +222,22 @@ func _unix_to_iso(unix_timestamp: int) -> String:
 		datetime.year, datetime.month, datetime.day,
 		datetime.hour, datetime.minute, datetime.second
 	]
+
+func _handle_combat_log(message: Dictionary):
+	"""Handle combatLog response from server"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid combatLog format")
+		return
+	
+	var combat_data = message.data[0]
+	print("[WebSocket] Combat log received")
+	
+	# Create CombatResponse from server data
+	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
+	
+	# Show combat panel
+	if UIManager.instance and UIManager.instance.combat_panel:
+		UIManager.instance.show_panel(UIManager.instance.combat_panel)
 
 # ============================================
 # WEBSOCKET API - Game Actions

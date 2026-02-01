@@ -67,23 +67,23 @@ func display_combat_log():
 	# Set combat background based on location
 	set_combat_background()
 	
-	# Set up character info using player1_name from combat log
-	player_label.text = combat.player1_name
+	# Set up player info
+	player_label.text = combat.player_name
 	
-	# Update player avatar cosmetics from combat data
-	if combat.player1_avatar.size() >= 5:
+	# Update player avatar cosmetics from combat data (server sends 4 elements)
+	if combat.player_avatar.size() >= 4:
 		player_avatar.refresh_avatar(
-			combat.player1_avatar[0],
-			combat.player1_avatar[1],
-			combat.player1_avatar[2],
-			combat.player1_avatar[3],
-			combat.player1_avatar[4]
+			combat.player_avatar[0],
+			combat.player_avatar[1],
+			combat.player_avatar[2],
+			combat.player_avatar[3],
+			0  # Default mouth if not provided
 		)
 	
 	# Check if enemy is NPC or player
-	if combat.enemyid > 0:
+	if combat.is_enemy_npc():
 		# Enemy is NPC - use enemies database
-		var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(combat.enemyid)
+		var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(combat.enemy_asset_id)
 		if enemy_resource:
 			enemy_label.text = enemy_resource.name
 			# Show enemy texture, hide avatar
@@ -91,34 +91,36 @@ func display_combat_log():
 			enemy_texture.visible = true
 			enemy_avatar.visible = false
 		else:
-			enemy_label.text = "Unknown Enemy"
+			enemy_label.text = combat.enemy_name
+			enemy_texture.visible = false
+			enemy_avatar.visible = true
 	else:
-		# Enemy is player - use player2 data
-		enemy_label.text = combat.player2_name
+		# Enemy is player - use enemy data from combat
+		enemy_label.text = combat.enemy_name
 		# Show avatar, hide texture
 		enemy_avatar.visible = true
 		enemy_texture.visible = false
-		# Use enemy avatar from combat data
-		if combat.player2_avatar.size() >= 5:
+		# Use enemy avatar from combat data (server sends 4 elements)
+		if combat.enemy_avatar.size() >= 4:
 			enemy_avatar.refresh_avatar(
-				combat.player2_avatar[0],
-				combat.player2_avatar[1],
-				combat.player2_avatar[2],
-				combat.player2_avatar[3],
-				combat.player2_avatar[4]
+				combat.enemy_avatar[0],
+				combat.enemy_avatar[1],
+				combat.enemy_avatar[2],
+				combat.enemy_avatar[3],
+				0  # Default mouth if not provided
 			)
 		else:
-			enemy_avatar.refresh_avatar(1, 11, 21, 31, 41)  # Fallback to defaults
+			enemy_avatar.refresh_avatar(1, 1, 1, 1, 0)  # Fallback to defaults
 	
 	# Set initial health bars and labels
-	player_health_bar.max_value = combat.player1_health
-	enemy_health_bar.max_value = combat.player2_health
-	player_health_bar.value = combat.player1_health
-	enemy_health_bar.value = combat.player2_health
+	player_health_bar.max_value = combat.player_max_hp
+	enemy_health_bar.max_value = combat.enemy_max_hp
+	player_health_bar.value = combat.player_max_hp
+	enemy_health_bar.value = combat.enemy_max_hp
 	
 	# Update health labels
-	update_health_label(player_health_label, combat.player1_health)
-	update_health_label(enemy_health_label, combat.player2_health)
+	update_health_label(player_health_label, combat.player_max_hp)
+	update_health_label(enemy_health_label, combat.enemy_max_hp)
 	
 	# Build action list
 	create_action_sequence(combat)
@@ -153,10 +155,16 @@ func create_action_sequence(combat: GameInfo.CombatResponse):
 			"entry": entry
 		})
 	
-	# Add final message (client-side)
+	# Add final message based on winner
+	var final_msg = ""
+	if combat.has_won():
+		final_msg = "Victory! You defeated " + combat.enemy_name + "!"
+	else:
+		final_msg = "Defeat! " + combat.enemy_name + " has won."
+	
 	all_actions.append({
 		"type": "final_message",
-		"message": victory_message
+		"message": final_msg
 	})
 
 func _display_next_action():
@@ -213,16 +221,21 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	if not combat:
 		return
 	
-	# Determine which health bar to affect based on player (1 = player, 2 = enemy)
+	# Determine which health bar to affect based on character_id
 	var health_bar = null
-	if int(action.player) == 1:
+	if action.character_id == combat.player_id:
 		health_bar = player_health_bar
 	else:
 		health_bar = enemy_health_bar
 	
-	# Apply the effect
+	# Apply the effect - damage is dealt TO the opponent of whoever is acting
+	# So if player attacks, enemy takes damage
 	if is_damage_action(action.action):
-		animate_health_decrease(health_bar, action.factor)
+		# Swap the health bar - attacker deals damage to opponent
+		if action.character_id == combat.player_id:
+			animate_health_decrease(enemy_health_bar, action.factor)
+		else:
+			animate_health_decrease(player_health_bar, action.factor)
 	elif action.action == "heal" and action.factor > 0:
 		animate_health_increase(health_bar, action.factor)
 
@@ -234,70 +247,70 @@ func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	if not combat:
 		return ""
 	
-	# Get the player name based on player number (1 or 2)
-	var player_name = ""
-	if int(entry.player) == 1:
-		player_name = combat.player1_name
+	# Get the actor name based on character_id
+	var actor_name = ""
+	if entry.character_id == combat.player_id:
+		actor_name = combat.player_name
 	else:
-		# Player 2 - check if NPC or player
-		if combat.enemyid > 0:
-			var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(combat.enemyid)
-			player_name = enemy_resource.name if enemy_resource else "Enemy"
-		else:
-			player_name = combat.player2_name
+		actor_name = combat.enemy_name
 	
 	match entry.action:
+		"attacks":
+			if entry.factor > 0:
+				text += actor_name + " attacks for " + str(entry.factor) + " damage!"
+			else:
+				text += actor_name + " attacks!"
 		"attack":
-			text += player_name + " attacks!"
+			text += actor_name + " attacks!"
 		"dodge":
-			text += player_name + " dodges!"
+			text += actor_name + " dodges!"
 		"hit":
 			if entry.factor > 0:
-				text += player_name + " takes " + str(entry.factor) + " damage!"
+				text += actor_name + " takes " + str(entry.factor) + " damage!"
 			else:
-				text += player_name + " is hit!"
+				text += actor_name + " is hit!"
 		"miss":
-			text += player_name + " misses!"
+			text += actor_name + " misses!"
 		"burn damage":
 			if entry.factor > 0:
-				text += player_name + " suffers " + str(entry.factor) + " burn damage!"
+				text += actor_name + " suffers " + str(entry.factor) + " burn damage!"
 			else:
-				text += player_name + " suffers burn damage!"
+				text += actor_name + " suffers burn damage!"
 		"fire damage":
 			if entry.factor > 0:
-				text += player_name + " takes " + str(entry.factor) + " fire damage!"
+				text += actor_name + " takes " + str(entry.factor) + " fire damage!"
 			else:
-				text += player_name + " takes fire damage!"
+				text += actor_name + " takes fire damage!"
 		"poison damage":
 			if entry.factor > 0:
-				text += player_name + " takes " + str(entry.factor) + " poison damage!"
+				text += actor_name + " takes " + str(entry.factor) + " poison damage!"
 			else:
-				text += player_name + " takes poison damage!"
+				text += actor_name + " takes poison damage!"
 		"heal":
 			if entry.factor > 0:
-				text += player_name + " heals for " + str(entry.factor) + " HP!"
+				text += actor_name + " heals for " + str(entry.factor) + " HP!"
 			else:
-				text += player_name + " heals!"
+				text += actor_name + " heals!"
 		"cast spell":
-			text += player_name + " casts a spell!"
+			text += actor_name + " casts a spell!"
 		"shield":
-			text += player_name + " raises a shield!"
+			text += actor_name + " raises a shield!"
 		"rage":
-			text += player_name + " enters a rage!"
+			text += actor_name + " enters a rage!"
 		"fire breath":
 			if entry.factor > 0:
-				text += player_name + " breathes fire for " + str(entry.factor) + " damage!"
+				text += actor_name + " breathes fire for " + str(entry.factor) + " damage!"
 			else:
-				text += player_name + " breathes fire!"
+				text += actor_name + " breathes fire!"
 		"intimidate":
-			text += player_name + " intimidates!"
+			text += actor_name + " intimidates!"
 		"claw strike":
 			if entry.factor > 0:
-				text += player_name + " strikes with claws for " + str(entry.factor) + " damage!"
+				text += actor_name + " strikes with claws for " + str(entry.factor) + " damage!"
 			else:
-				text += player_name + " strikes with claws!"
+				text += actor_name + " strikes with claws!"
 		_:
-			text += player_name + " " + entry.action
+			text += actor_name + " " + entry.action
 			if entry.factor > 0:
 				text += " (" + str(entry.factor) + ")"
 	
@@ -381,23 +394,23 @@ func _on_skip_replay_pressed():
 				# Apply health changes instantly (no animation)
 				var combat = GameInfo.current_combat_log
 				if combat:
-					var health_bar = null
-					var health_label = null
-					if int(entry.player) == 1:  # 1 = player, 2 = enemy
-						health_bar = player_health_bar
-						health_label = player_health_label
+					# Determine which health bar based on character_id
+					if entry.character_id == combat.player_id:
+						# Player is the attacker, so enemy takes damage
+						if is_damage_action(entry.action):
+							enemy_health_bar.value = max(0, enemy_health_bar.value - entry.factor)
+							update_health_label(enemy_health_label, enemy_health_bar.value)
+						elif entry.action == "heal" and entry.factor > 0:
+							player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + entry.factor)
+							update_health_label(player_health_label, player_health_bar.value)
 					else:
-						health_bar = enemy_health_bar
-						health_label = enemy_health_label
-					
-					if is_damage_action(entry.action):
-						health_bar.value = max(0, health_bar.value - entry.factor)
-					elif entry.action == "heal" and entry.factor > 0:
-						health_bar.value = min(health_bar.max_value, health_bar.value + entry.factor)
-					
-					# Update health label
-					if health_label:
-						update_health_label(health_label, health_bar.value)
+						# Enemy is the attacker, so player takes damage
+						if is_damage_action(entry.action):
+							player_health_bar.value = max(0, player_health_bar.value - entry.factor)
+							update_health_label(player_health_label, player_health_bar.value)
+						elif entry.action == "heal" and entry.factor > 0:
+							enemy_health_bar.value = min(enemy_health_bar.max_value, enemy_health_bar.value + entry.factor)
+							update_health_label(enemy_health_label, enemy_health_bar.value)
 			elif action_data.type == "final_message":
 				show_final_message(action_data.message)
 			

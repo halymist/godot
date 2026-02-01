@@ -346,9 +346,10 @@ class ChatMessage:
 class CombatLogEntry:
 	extends RefCounted
 	
-	var player: int = 1  # 1 = player, 2 = enemy
+	var turn: int = 0
+	var character_id: int = 0  # character_id from server
 	var action: String = ""
-	var factor: int = 0  # Optional damage/heal amount
+	var factor: int = 0  # Damage/heal amount
 	
 	func _init(data: Dictionary = {}):
 		# Simple direct assignment
@@ -359,38 +360,60 @@ class CombatLogEntry:
 class CombatResponse:
 	extends RefCounted
 	
-	var player1_name: String = ""
-	var player1_health: int = 0
-	var player1_avatar: Array = [1, 10, 20, 30, 40]  # [face, hair, eyes, nose, mouth]
-	var player2_name: String = ""
-	var player2_health: int = 0
-	var player2_avatar: Array = [1, 11, 21, 31, 41]  # [face, hair, eyes, nose, mouth]
-	var enemyid: int = 0  # If > 0, enemy is NPC (lookup in enemies_db), otherwise player vs player
-	var haswon: bool = false  # True if player1 won, false if player1 lost
+	# Player info (from header.player)
+	var player_id: int = 0
+	var player_name: String = ""
+	var player_max_hp: int = 100
+	var player_avatar: Array = [1, 1, 1, 1]  # [face, hair, eyes, mouth] - 4 elements from server
+	
+	# Enemy info (from header.enemy)
+	var enemy_id: int = 0
+	var enemy_name: String = ""
+	var enemy_max_hp: int = 100
+	var enemy_avatar: Array = [1, 1, 1, 1]
+	var enemy_asset_id: int = 0  # NPC asset ID if enemy is NPC (null for players)
+	
+	# Result
+	var winner_id: int = 0  # character_id of winner
 	var combat_log: Array[CombatLogEntry] = []
 	
 	func _init(data: Dictionary = {}):
-		# Load simple properties (excluding combat_log)
-		for key in data:
-			if key in self and key not in ["logs", "combat_log"]:
-				set(key, data[key])
+		# Parse header
+		var header = data.get("header", {})
 		
-		# Handle combat_log/logs array specially
-		var logs_data = data.get("logs", data.get("combat_log", []))
-		if logs_data:
-			combat_log.clear()
-			for log_data in logs_data:
-				combat_log.append(CombatLogEntry.new(log_data))
+		# Parse player data
+		var player_data = header.get("player", {})
+		player_id = player_data.get("character_id", 0)
+		player_name = player_data.get("name", "")
+		player_max_hp = player_data.get("max_hp", 100)
+		if player_data.has("avatar") and player_data.avatar is Array:
+			player_avatar = player_data.avatar
 		
-		# Handle alternate field names from server
-		if data.has("player1name"):
-			player1_name = data["player1name"]
-		if data.has("player1health"):
-			player1_health = data["player1health"]
-		if data.has("player2name"):
-			player2_name = data["player2name"]
-		if data.has("player2health"):
-			player2_health = data["player2health"]
+		# Parse enemy data
+		var enemy_data = header.get("enemy", {})
+		enemy_id = enemy_data.get("character_id", 0)
+		enemy_name = enemy_data.get("name", "")
+		enemy_max_hp = enemy_data.get("max_hp", 100)
+		if enemy_data.has("avatar") and enemy_data.avatar is Array:
+			enemy_avatar = enemy_data.avatar
+		var asset_id = enemy_data.get("asset_id", null)
+		if asset_id != null and asset_id is int:
+			enemy_asset_id = asset_id
+		
+		# Parse winner
+		winner_id = header.get("winner", 0)
+		
+		# Parse combat log
+		var log_data = data.get("log", [])
+		combat_log.clear()
+		for entry in log_data:
+			combat_log.append(CombatLogEntry.new(entry))
+	
+	func has_won() -> bool:
+		return winner_id == player_id
+	
+	func is_enemy_npc() -> bool:
+		return enemy_asset_id > 0
 
 class GamePlayer:
 	extends RefCounted
