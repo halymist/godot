@@ -7,6 +7,7 @@ extends Resource
 @export var settlement_name: String = ""
 @export var faction: int = 0
 @export_multiline var description: String = ""
+@export var settlement_asset_id: int = 0  # Map icon/thumbnail
 
 
 # Expedition (flat fields)
@@ -41,6 +42,7 @@ var expedition_texture: Texture2D = null
 var vendor_texture: Texture2D = null
 var utility_texture: Texture2D = null
 var arena_background: Texture2D = null
+var settlement_texture: Texture2D = null  # Map icon/thumbnail
 
 # Backwards compatibility aliases
 var location_id: int:

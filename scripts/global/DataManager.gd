@@ -129,6 +129,10 @@ func _apply_cached_textures_to_database(db_type: String, db: Resource):
 						slide.texture = texture
 		"settlements":
 			for settlement in db.settlements:
+				if settlement.settlement_asset_id > 0:
+					var texture = load_asset_texture("settlements", settlement.settlement_asset_id)
+					if texture:
+						settlement.settlement_texture = texture
 				if settlement.expedition_asset_id > 0:
 					var texture = load_asset_texture("settlements", settlement.expedition_asset_id)
 					if texture:
@@ -644,6 +648,7 @@ func _apply_settlements_to_database(settlements_data: Array, set_version: int):
 		settlement.settlement_name = item.get("settlement_name", "")
 		settlement.faction = item.get("faction", 0)
 		settlement.description = item.get("description", "")
+		settlement.settlement_asset_id = item.get("settlement_asset_id", 0)
 
 		# Expedition fields (flat)
 		settlement.expedition_asset_id = item.get("expedition_asset_id", 0)
@@ -694,11 +699,23 @@ func _download_settlement_assets(settlements_data: Array):
 	"""Download settlement assets"""
 	var downloaded_ids = {}
 	for item in settlements_data:
+		# Settlement asset (map icon)
+		var settlement_asset_id = item.get("settlement_asset_id", 0)
+		if settlement_asset_id > 0 and not downloaded_ids.has(settlement_asset_id):
+			downloaded_ids[settlement_asset_id] = true
+			_download_asset("settlements", settlement_asset_id)
+		
 		# Expedition asset
 		var expedition_asset_id = item.get("expedition_asset_id", 0)
 		if expedition_asset_id > 0 and not downloaded_ids.has(expedition_asset_id):
 			downloaded_ids[expedition_asset_id] = true
 			_download_asset("settlements", expedition_asset_id)
+		
+		# Arena asset
+		var arena_asset_id = item.get("arena_asset_id", 0)
+		if arena_asset_id > 0 and not downloaded_ids.has(arena_asset_id):
+			downloaded_ids[arena_asset_id] = true
+			_download_asset("settlements", arena_asset_id)
 		
 		# Vendor asset
 		var vendor_data = item.get("vendor", {})
