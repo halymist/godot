@@ -105,9 +105,18 @@ func update_stats():
 	# Health bar (stamina * 10)
 	var max_health = total_stats.stamina * 10
 	health_bar.max_value = max_health
-	health_bar.value = max_health
-	if health_bar.has_node("HealthLabel"):
-		health_bar.get_node("HealthLabel").text = str(max_health)
+	
+	# For current player, show depleted health (max - depleted) / max
+	if display_mode == DisplayMode.PLAYER and displayed_character == GameInfo.current_player:
+		var depleted = displayed_character.depleted_health
+		var current_health = max_health - depleted
+		health_bar.value = current_health
+		if health_bar.has_node("HealthLabel"):
+			health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
+	else:
+		health_bar.value = max_health
+		if health_bar.has_node("HealthLabel"):
+			health_bar.get_node("HealthLabel").text = str(max_health)
 	
 	# Damage spread - calculate from total stats (base + equipment) multiplied by strength
 	var damage = displayed_character.get_damage_range()

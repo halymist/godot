@@ -446,6 +446,7 @@ class GamePlayer:
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var elixir_day: int = 0  # Server day when elixir effect expires (0 = no expiration tracked)
 	var elixir_ingredients: Array[int] = []  # Ingredients for equipped elixir
+	var depleted_health: int = 0  # Health lost from combat (reduces effective max HP)
 	var bag_slots: Array[Item] = []
 	var perks: Array[Perk] = []
 	var talents: Array[Talent] = []
@@ -1032,7 +1033,7 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 	if char_data.has("ranking") and char_data.ranking is Array:
 		var rankings_data = []
 		for ranking_entry in char_data.ranking:
-			# Transform minimal ranking data: {vip, honnor, faction, character_id, character_name}
+			# Transform minimal ranking data: {vip, honnor, faction, character_id, character_name, rank}
 			# to GamePlayer compatible format with defaults for missing fields
 			var player_data = {
 				"character_id": ranking_entry.get("character_id", 0),
@@ -1040,8 +1041,7 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 				"faction": ranking_entry.get("faction", 1),
 				"honor": ranking_entry.get("honnor", 0),  # Note: server uses 'honnor' (typo)
 				"vip": ranking_entry.get("vip", false),
-				# Set minimal/default values for other required fields
-				"rank": 0,
+				"rank": ranking_entry.get("rank", 0),  # Player rank from server
 				"profession": 0,
 				"avatar": [1, 10, 20, 30, 40],  # Default avatar
 				"stats": [10, 10, 10, 10, 5, 1, 3],  # Default stats

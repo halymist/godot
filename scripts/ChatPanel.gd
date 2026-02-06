@@ -93,12 +93,23 @@ func _update_button_visuals():
 		local_button.modulate = Color.WHITE  # Full brightness
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
-	# Add timestamp separator if more than 10 minutes passed
-	if last_message_time != "":
+	# Add timestamp separator if more than 10 minutes passed since last message
+	# or if this is the first message and it's older than 10 minutes from now
+	var message_time = Time.get_unix_time_from_datetime_string(chat_message.timestamp.replace("Z", "+00:00"))
+	var should_show_separator = false
+	
+	if last_message_time == "":
+		# First message - check if older than 10 minutes from current time
+		var current_unix = Time.get_unix_time_from_system()
+		if current_unix - message_time >= 600:
+			should_show_separator = true
+	else:
+		# Not first message - check time difference from previous message
 		var last_time = Time.get_unix_time_from_datetime_string(last_message_time.replace("Z", "+00:00"))
-		var current_time = Time.get_unix_time_from_datetime_string(chat_message.timestamp.replace("Z", "+00:00"))
-		
-		if current_time - last_time >= 600:
+		if message_time - last_time >= 600:
+			should_show_separator = true
+	
+	if should_show_separator:
 			# Create timestamp separator
 			var timestamp_label = RichTextLabel.new()
 			timestamp_label.fit_content = true
