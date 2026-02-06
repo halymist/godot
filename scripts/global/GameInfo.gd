@@ -15,6 +15,7 @@ var settlements_db: SettlementsDatabase = null
 var quests_db: QuestsDatabase = null
 var enemies_db: EnemyDatabase = null
 var expeditions_db: Resource = null  # ExpeditionsDatabase
+var talents_db: Resource = null  # TalentsDatabase
 
 # ============================================
 # RUNTIME DATA
@@ -68,18 +69,19 @@ func load_databases():
 	
 	print("Loading databases...")
 	
-	# Get databases from DataManager (already loaded and populated with downloaded data)
+	# Get databases from DataManager (loaded from JSON)
 	effects_db = DataManager.get_effects_database()
 	items_db = DataManager.get_items_database()
 	perks_db = DataManager.get_perks_database()
 	enemies_db = DataManager.get_enemies_database()
 	expeditions_db = DataManager.get_expeditions_database()
 	settlements_db = DataManager.get_settlements_database()
+	talents_db = DataManager.get_talents_database()
+	quests_db = DataManager.get_quests_database()
 	
 	# These still load from .tres (not versioned from server)
 	npcs_db = load("res://data/npcs.tres")
 	# cosmetics_db already loaded in _ready()
-	quests_db = load("res://scripts/resources/quests.tres")
 	
 	databases_loaded = true
 	print("Databases loaded")
@@ -1094,7 +1096,7 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 					stats_obj.get("min_damage", 1),
 					stats_obj.get("max_damage", 3)
 				],
-				"rank": 0,
+				"rank": arena_entry.get("rank", 0),  # Player rank from server
 				"profession": 0,
 				"blessing": 0,
 				"potion": 0,

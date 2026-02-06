@@ -1,10 +1,10 @@
 extends Node
 
 # ============================================
-# DATA MANAGER AUTOLOAD
+# DATA MANAGER AUTOLOAD (JSON-based)
 # ============================================
 # Handles data versioning and downloading
-# Downloads data from server and applies directly to .tres databases
+# Stores data as JSON files, creates database objects at runtime
 # Assets are downloaded and stored in user:// then applied as textures
 
 const VERSIONS_FILE = "user://data_versions.cfg"
@@ -14,25 +14,29 @@ const DATA_DIR = "user://data/"
 # Asset base URL
 const ASSETS_BASE_URL = "https://gamedata-assets.s3.eu-north-1.amazonaws.com/images/"
 
-# Database paths (all in user://)
-const EFFECTS_DB_PATH = "user://data/effects.res"
-const ITEMS_DB_PATH = "user://data/items.res"
-const PERKS_DB_PATH = "user://data/perks.res"
-const ENEMIES_DB_PATH = "user://data/enemies.res"
-const EXPEDITIONS_DB_PATH = "user://data/expeditions.res"
-const SETTLEMENTS_DB_PATH = "user://data/settlements.res"
+# JSON data file paths
+const EFFECTS_JSON = "user://data/effects.json"
+const ITEMS_JSON = "user://data/items.json"
+const PERKS_JSON = "user://data/perks.json"
+const ENEMIES_JSON = "user://data/enemies.json"
+const EXPEDITIONS_JSON = "user://data/expeditions.json"
+const SETTLEMENTS_JSON = "user://data/settlements.json"
+const TALENTS_JSON = "user://data/talents.json"
+const QUESTS_JSON = "user://data/quests.json"
 
 # Signals
 signal data_sync_completed(success: bool)
 signal asset_downloaded(type: String, asset_id: int)
 
-# Loaded databases (populated after sync)
+# Loaded databases (created from JSON at runtime)
 var effects_db: EffectDatabase = null
 var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
 var enemies_db: EnemyDatabase = null
 var expeditions_db: ExpeditionsDatabase = null
 var settlements_db: SettlementsDatabase = null
+var talents_db: TalentsDatabase = null
+var quests_db: QuestsDatabase = null
 
 # Local version tracking
 var local_versions: Dictionary = {
@@ -41,7 +45,9 @@ var local_versions: Dictionary = {
 	"perks": 0,
 	"enemies": 0,
 	"expeditions": 0,
-	"settlements": 0
+	"settlements": 0,
+	"talents": 0,
+	"quests": 0
 }
 
 # Server versions (populated from login response)
@@ -50,105 +56,20 @@ var server_versions: Dictionary = {}
 # Track pending asset downloads
 var _pending_downloads: int = 0
 
-# Track databases that need saving after assets are applied
-var _databases_to_save: Array[String] = []
-
 func _ready():
 	print("[DataManager] Ready")
 	_ensure_cache_dirs()
 	_load_local_versions()
-	_load_baseline_databases()
 
 func _ensure_cache_dirs():
 	"""Ensure cache directories exist"""
 	DirAccess.make_dir_recursive_absolute("user://images/items")
 	DirAccess.make_dir_recursive_absolute("user://images/perks")
 	DirAccess.make_dir_recursive_absolute("user://images/enemies")
-	DirAccess.make_dir_recursive_absolute("user://images/expedition")
+	DirAccess.make_dir_recursive_absolute("user://images/quests")
 	DirAccess.make_dir_recursive_absolute("user://images/settlements")
 	DirAccess.make_dir_recursive_absolute("user://data")
 	print("[DataManager] Created cache directories")
-
-func _load_baseline_databases():
-	"""Load .tres databases from user:// if exists, otherwise create empty"""
-	effects_db = _load_or_create_database(EFFECTS_DB_PATH, "effects")
-	items_db = _load_or_create_database(ITEMS_DB_PATH, "items")
-	perks_db = _load_or_create_database(PERKS_DB_PATH, "perks")
-	enemies_db = _load_or_create_database(ENEMIES_DB_PATH, "enemies")
-	expeditions_db = _load_or_create_database(EXPEDITIONS_DB_PATH, "expeditions")
-	settlements_db = _load_or_create_database(SETTLEMENTS_DB_PATH, "settlements")
-	print("[DataManager] Loaded databases")
-
-func _load_or_create_database(user_path: String, db_type: String) -> Resource:
-	"""Load from user:// if exists, otherwise create empty database"""
-	if FileAccess.file_exists(user_path):
-		var db = load(user_path)
-		if db:
-			print("[DataManager] Loaded: %s" % user_path)
-			# Apply cached textures to loaded database
-			_apply_cached_textures_to_database(db_type, db)
-			return db
-	
-	# Create empty database
-	print("[DataManager] Creating empty %s database" % db_type)
-	match db_type:
-		"effects": return EffectDatabase.new()
-		"items": return ItemDatabase.new()
-		"perks": return PerkDatabase.new()
-		"enemies": return EnemyDatabase.new()
-		"expeditions": return ExpeditionsDatabase.new()
-		"settlements": return SettlementsDatabase.new()
-		_: return null
-
-func _apply_cached_textures_to_database(db_type: String, db: Resource):
-	"""Apply cached textures from user:// to a loaded database"""
-	match db_type:
-		"items":
-			for item in db.items:
-				if item.asset_id > 0:
-					var texture = load_asset_texture("items", item.asset_id)
-					if texture:
-						item.icon = texture
-		"perks":
-			for perk in db.perks:
-				if perk.asset_id > 0:
-					var texture = load_asset_texture("perks", perk.asset_id)
-					if texture:
-						perk.icon = texture
-		"enemies":
-			for enemy in db.enemies:
-				if enemy.asset_id > 0:
-					var texture = load_asset_texture("enemies", enemy.asset_id)
-					if texture:
-						enemy.texture = texture
-		"expeditions":
-			for slide in db.slides:
-				if slide.asset_id > 0:
-					var texture = load_asset_texture("expedition", slide.asset_id)
-					if texture:
-						slide.texture = texture
-		"settlements":
-			for settlement in db.settlements:
-				if settlement.settlement_asset_id > 0:
-					var texture = load_asset_texture("settlements", settlement.settlement_asset_id)
-					if texture:
-						settlement.settlement_texture = texture
-				if settlement.expedition_asset_id > 0:
-					var texture = load_asset_texture("settlements", settlement.expedition_asset_id)
-					if texture:
-						settlement.expedition_texture = texture
-				if settlement.vendor_asset_id > 0:
-					var texture = load_asset_texture("settlements", settlement.vendor_asset_id)
-					if texture:
-						settlement.vendor_texture = texture
-				if settlement.utility_asset_id > 0:
-					var texture = load_asset_texture("settlements", settlement.utility_asset_id)
-					if texture:
-						settlement.utility_texture = texture
-				if settlement.arena_asset_id > 0:
-					var texture = load_asset_texture("settlements", settlement.arena_asset_id)
-					if texture:
-						settlement.arena_background = texture
 
 # ============================================
 # VERSION MANAGEMENT
@@ -195,11 +116,11 @@ func reset_all_versions():
 	print("[DataManager] Reset all versions to 0")
 
 func clear_all_cache():
-	"""Clear all cached images, persisted databases, and reset versions"""
+	"""Clear all cached images, JSON data, and reset versions"""
 	reset_all_versions()
 	
 	# Delete image folders
-	for folder in ["items", "perks", "enemies"]:
+	for folder in ["items", "perks", "enemies", "expedition", "settlements"]:
 		var folder_path = IMAGES_DIR + folder
 		var dir = DirAccess.open(folder_path)
 		if dir:
@@ -211,18 +132,20 @@ func clear_all_cache():
 				file_name = dir.get_next()
 			dir.list_dir_end()
 	
-	# Delete persisted .tres files
-	for db_path in [EFFECTS_DB_PATH, ITEMS_DB_PATH, PERKS_DB_PATH, ENEMIES_DB_PATH, EXPEDITIONS_DB_PATH, SETTLEMENTS_DB_PATH]:
-		if FileAccess.file_exists(db_path):
-			DirAccess.remove_absolute(db_path)
+	# Delete JSON data files
+	for json_path in [EFFECTS_JSON, ITEMS_JSON, PERKS_JSON, ENEMIES_JSON, EXPEDITIONS_JSON, SETTLEMENTS_JSON, TALENTS_JSON, QUESTS_JSON]:
+		if FileAccess.file_exists(json_path):
+			DirAccess.remove_absolute(json_path)
 	
-	# Create empty databases
-	effects_db = EffectDatabase.new()
-	items_db = ItemDatabase.new()
-	perks_db = PerkDatabase.new()
-	enemies_db = EnemyDatabase.new()
-	expeditions_db = ExpeditionsDatabase.new()
-	settlements_db = SettlementsDatabase.new()
+	# Clear databases
+	effects_db = null
+	items_db = null
+	perks_db = null
+	enemies_db = null
+	expeditions_db = null
+	settlements_db = null
+	talents_db = null
+	quests_db = null
 	
 	print("[DataManager] Cleared all cache")
 
@@ -233,19 +156,21 @@ func clear_all_cache():
 func needs_download(server_data_versions: Dictionary) -> bool:
 	"""Check if any data needs to be downloaded"""
 	for data_type in local_versions.keys():
-		var server_key = data_type
-		if data_type == "expeditions":
-			server_key = "expedition"
-		elif data_type == "settlements":
-			server_key = "world"
-		
-		var server_version = server_data_versions.get(server_key, server_data_versions.get(data_type, 0))
+		var server_key = _get_server_key(data_type)
+		var server_version = server_data_versions.get(server_key, 0)
 		var local_version = local_versions.get(data_type, 0)
 		
 		if server_version > local_version:
 			return true
 	
 	return false
+
+func _get_server_key(data_type: String) -> String:
+	"""Map local data type to server version key"""
+	match data_type:
+		"expeditions": return "expedition"
+		"settlements": return "world"
+		_: return data_type
 
 func sync_data(server_data_versions: Dictionary):
 	"""Download all data types and assets, waits until complete"""
@@ -260,6 +185,8 @@ func sync_data(server_data_versions: Dictionary):
 	await _sync_data_type("enemies", "/download-enemies")
 	await _sync_data_type("expeditions", "/download-expedition")
 	await _sync_data_type("settlements", "/download-world")
+	await _sync_data_type("talents", "/download-talents")
+	await _sync_data_type("quests", "/download-quests")
 	
 	print("[DataManager] Data sync completed!")
 	
@@ -269,26 +196,12 @@ func sync_data(server_data_versions: Dictionary):
 		await get_tree().create_timer(0.1).timeout
 	
 	print("[DataManager] All downloads (data + assets) completed!")
-	
-	# Save databases that were waiting for assets (WITHOUT textures - keeps .tres small)
-	for data_type in _databases_to_save:
-		_save_database(data_type)
-	_databases_to_save.clear()
-	
-	# NOW apply cached textures to in-memory databases for runtime use
-	_apply_all_cached_textures()
-	
 	data_sync_completed.emit(true)
 
 func _sync_data_type(data_type: String, endpoint: String):
 	"""Sync a single data type if needed"""
-	var server_key = data_type
-	if data_type == "expeditions":
-		server_key = "expedition"
-	elif data_type == "settlements":
-		server_key = "world"
-	
-	var server_version = server_versions.get(server_key, server_versions.get(data_type, 0))
+	var server_key = _get_server_key(data_type)
+	var server_version = server_versions.get(server_key, 0)
 	var local_version = local_versions.get(data_type, 0)
 	
 	if server_version > local_version:
@@ -298,7 +211,7 @@ func _sync_data_type(data_type: String, endpoint: String):
 		print("[DataManager] %s is up to date (version: %d)" % [data_type, local_version])
 
 func _download_data(data_type: String, endpoint: String, local_version: int):
-	"""Download data from server"""
+	"""Download data from server and save as JSON"""
 	print("[DataManager] Downloading %s (version > %d)..." % [data_type, local_version])
 	
 	var http_request = HTTPRequest.new()
@@ -334,257 +247,247 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	
 	var data = json.get_data()
 	
-	# Expeditions have special format: {version: X, slides: [...]}
-	if data_type == "expeditions":
-		if not data is Dictionary:
-			print("[DataManager] Invalid expeditions data format (expected dict)")
-			return
-		var exp_version = data.get("version", 0)
-		var slides_data = data.get("slides", [])
-		_apply_expeditions_to_database(slides_data, exp_version)
-		_download_expedition_assets(slides_data)
-		return
+	# Get version and items from response
+	var new_version = 0
+	var items_data = []
 	
-	# Settlements have special format: {version: X, settlements: [...]}
-	if data_type == "settlements":
-		if not data is Dictionary:
-			print("[DataManager] Invalid settlements data format (expected dict)")
-			return
-		var set_version = data.get("version", 0)
-		var settlements_data = data.get("settlements", [])
-		_apply_settlements_to_database(settlements_data, set_version)
-		_download_settlement_assets(settlements_data)
-		return
+	if data is Dictionary:
+		new_version = data.get("version", 0)
+		# Different endpoints use different array keys
+		match data_type:
+			"expeditions": items_data = data.get("slides", [])
+			"settlements": items_data = data.get("settlements", [])
+			"talents": items_data = data.get("talents", [])
+			"quests": items_data = data.get("quests", [])
+			_: items_data = data.get(data_type, data)
+	elif data is Array:
+		items_data = data
+		# Get max version from items
+		for item in data:
+			new_version = max(new_version, item.get("version", 0))
 	
-	if not data is Array:
-		print("[DataManager] Invalid %s data format" % data_type)
-		return
-	
-	# Apply data directly to .res database
-	_apply_to_database(data_type, data)
+	# Merge with existing data and save
+	_merge_and_save_json(data_type, items_data, new_version)
 	
 	# Download assets for types that have images
 	if data_type in ["items", "perks", "enemies"]:
-		_download_assets_for_data(data_type, data)
+		_download_assets_for_data(data_type, items_data)
+	elif data_type == "expeditions":
+		_download_quest_assets(items_data)  # Expeditions use quests folder
+	elif data_type == "quests":
+		_download_quest_assets(items_data)  # Quests also use quests folder
+	elif data_type == "settlements":
+		_download_settlement_assets(items_data)
 
-func _apply_to_database(data_type: String, data: Array):
-	"""Apply downloaded JSON data directly to the .tres database"""
+func _merge_and_save_json(data_type: String, new_data: Array, new_version: int):
+	"""Merge new data with existing JSON and save"""
+	var json_path = _get_json_path(data_type)
 	var id_field = _get_id_field(data_type)
-	var max_version = local_versions.get(data_type, 0)
 	
+	# Load existing data
+	var existing_data = _load_json_file(json_path)
+	
+	# Merge: update existing items or add new ones
+	var existing_by_id = {}
+	for item in existing_data:
+		var item_id = item.get(id_field, 0)
+		existing_by_id[item_id] = item
+	
+	for new_item in new_data:
+		var item_id = new_item.get(id_field, 0)
+		existing_by_id[item_id] = new_item  # Overwrite or add
+	
+	# Convert back to array
+	var merged_data = existing_by_id.values()
+	
+	# Save merged data
+	_save_json_file(json_path, merged_data)
+	
+	# Update version
+	set_local_version(data_type, new_version)
+	print("[DataManager] %s saved (version %d, %d items)" % [data_type, new_version, merged_data.size()])
+
+func _get_json_path(data_type: String) -> String:
+	"""Get JSON file path for data type"""
 	match data_type:
-		"effects":
-			for item in data:
-				var effect = _find_or_create_effect(item.get(id_field, 0))
-				effect.id = item.get("effect_id", 0)
-				effect.name = item.get("name", "")
-				effect.description = item.get("description", "")
-				effect.slot = item.get("slot", 0)
-				effect.factor = item.get("factor", 0)
-				max_version = max(max_version, item.get("version", 0))
-			print("[DataManager] Applied %d effects to database (total: %d)" % [data.size(), effects_db.effects.size()])
-		
-		"items":
-			for item in data:
-				var res = _find_or_create_item(item.get(id_field, 0))
-				res.id = item.get("item_id", 0)
-				res.item_name = item.get("item_name", "")
-				
-				# Map string type to enum
-				var type_value = item.get("type", "")
-				if type_value is String:
-					res.type = _map_item_type_to_enum(type_value)
-				else:
-					res.type = int(type_value)  # Fallback if server sends int
-				
-				res.strength = item.get("strength", 0)
-				res.stamina = item.get("stamina", 0)
-				res.agility = item.get("agility", 0)
-				res.luck = item.get("luck", 0)
-				res.armor = item.get("armor", 0)
-				res.damage_min = item.get("min_damage", 0)
-				res.damage_max = item.get("max_damage", 0)
-				res.effect_id = item.get("effect_id", 0)
-				res.effect_factor = item.get("effect_factor", 0)
-				res.has_socket = item.get("socket", false)
-				res.price = item.get("silver", 0)
-				res.asset_id = item.get("asset_id", 0)
-				res.version = item.get("version", 0)
-				max_version = max(max_version, item.get("version", 0))
-			print("[DataManager] Applied %d items to database (total: %d)" % [data.size(), items_db.items.size()])
-		
-		"perks":
-			for item in data:
-				var perk = _find_or_create_perk(item.get(id_field, 0))
-				perk.id = item.get("perk_id", 0)
-				perk.perk_name = item.get("perk_name", "")
-				perk.description = item.get("description", "")
-				perk.effect1_id = item.get("effect_id_1", 0)
-				perk.factor1 = item.get("factor_1", 0.0)
-				perk.effect2_id = item.get("effect_id_2", 0)
-				perk.factor2 = item.get("factor_2", 0.0)
-				perk.asset_id = item.get("asset_id", 0)
-				perk.version = item.get("version", 0)
-				max_version = max(max_version, item.get("version", 0))
-			print("[DataManager] Applied %d perks to database (total: %d)" % [data.size(), perks_db.perks.size()])
-		
-		"enemies":
-			for item in data:
-				var enemy = _find_or_create_enemy(item.get(id_field, 0))
-				enemy.id = item.get("enemy_id", 0)
-				enemy.name = item.get("enemy_name", "")
-				enemy.description = item.get("description", "")
-				enemy.asset_id = item.get("asset_id", 0)
-				enemy.version = item.get("version", 0)
-				max_version = max(max_version, item.get("version", 0))
-			print("[DataManager] Applied %d enemies to database (total: %d)" % [data.size(), enemies_db.enemies.size()])
-	
-	# Update local version
-	set_local_version(data_type, max_version)
-	print("[DataManager] %s updated to version %d" % [data_type, max_version])
-	
-	# Save database immediately if no assets, otherwise defer until assets are applied
-	if data_type not in ["items", "perks", "enemies"]:
-		_save_database(data_type)
-	else:
-		if data_type not in _databases_to_save:
-			_databases_to_save.append(data_type)
-			print("[DataManager] %s will be saved after assets are applied" % data_type)
-
-func _save_database(data_type: String):
-	"""Save database to user:// as .tres file"""
-	var db: Resource
-	var path: String
-	
-	match data_type:
-		"effects":
-			db = effects_db
-			path = EFFECTS_DB_PATH
-		"items":
-			db = items_db
-			path = ITEMS_DB_PATH
-		"perks":
-			db = perks_db
-			path = PERKS_DB_PATH
-		"enemies":
-			db = enemies_db
-			path = ENEMIES_DB_PATH
-		"expeditions":
-			db = expeditions_db
-			path = EXPEDITIONS_DB_PATH
-		"settlements":
-			db = settlements_db
-			path = SETTLEMENTS_DB_PATH
-		_:
-			print("[DataManager] Unknown data type for save: %s" % data_type)
-			return
-	
-	var err = ResourceSaver.save(db, path)
-	if err != OK:
-		print("[DataManager] Failed to save %s: %d" % [path, err])
-	else:
-		print("[DataManager] Saved %s" % path)
-
-# ============================================
-# FIND OR CREATE HELPERS
-# ============================================
-
-func _find_or_create_effect(effect_id: int) -> EffectResource:
-	"""Find existing effect by ID or create new one"""
-	for effect in effects_db.effects:
-		if effect.id == effect_id:
-			return effect
-	var new_effect = EffectResource.new()
-	new_effect.id = effect_id
-	effects_db.effects.append(new_effect)
-	return new_effect
-
-func _find_or_create_item(item_id: int) -> ItemResource:
-	"""Find existing item by ID or create new one"""
-	for item in items_db.items:
-		if item.id == item_id:
-			return item
-	var new_item = ItemResource.new()
-	new_item.id = item_id
-	items_db.items.append(new_item)
-	return new_item
-
-func _find_or_create_perk(perk_id: int) -> PerkResource:
-	"""Find existing perk by ID or create new one"""
-	for perk in perks_db.perks:
-		if perk.id == perk_id:
-			return perk
-	var new_perk = PerkResource.new()
-	new_perk.id = perk_id
-	perks_db.perks.append(new_perk)
-	return new_perk
-
-func _find_or_create_enemy(enemy_id: int) -> EnemyResource:
-	"""Find existing enemy by ID or create new one"""
-	for enemy in enemies_db.enemies:
-		if enemy.id == enemy_id:
-			return enemy
-	var new_enemy = EnemyResource.new()
-	new_enemy.id = enemy_id
-	enemies_db.enemies.append(new_enemy)
-	return new_enemy
-
-func _find_or_create_expedition_slide(slide_id: int) -> ExpeditionSlide:
-	"""Find existing slide by ID or create new one"""
-	for slide in expeditions_db.slides:
-		if slide.slide_id == slide_id:
-			return slide
-	var new_slide = ExpeditionSlide.new()
-	new_slide.slide_id = slide_id
-	expeditions_db.slides.append(new_slide)
-	return new_slide
+		"effects": return EFFECTS_JSON
+		"items": return ITEMS_JSON
+		"perks": return PERKS_JSON
+		"enemies": return ENEMIES_JSON
+		"expeditions": return EXPEDITIONS_JSON
+		"settlements": return SETTLEMENTS_JSON
+		"talents": return TALENTS_JSON
+		"quests": return QUESTS_JSON
+		_: return ""
 
 func _get_id_field(data_type: String) -> String:
-	"""Get the ID field name for a data type"""
+	"""Get ID field name for data type"""
 	match data_type:
 		"effects": return "effect_id"
 		"items": return "item_id"
 		"perks": return "perk_id"
 		"enemies": return "enemy_id"
 		"expeditions": return "slide_id"
+		"settlements": return "settlement_id"
+		"talents": return "talent_id"
+		"quests": return "quest_id"
 		_: return "id"
 
-func _map_item_type_to_enum(type_str: String) -> int:
-	"""Map server string type to ItemResource.ItemType enum"""
-	match type_str.to_lower():
-		"head": return ItemResource.ItemType.HEAD
-		"chest": return ItemResource.ItemType.CHEST
-		"hands": return ItemResource.ItemType.HANDS
-		"foot", "feet": return ItemResource.ItemType.FOOT
-		"belt": return ItemResource.ItemType.BELT
-		"legs": return ItemResource.ItemType.LEGS
-		"ring", "back": return ItemResource.ItemType.RING  # 'back' might be ring slot
-		"amulet": return ItemResource.ItemType.AMULET
-		"weapon": return ItemResource.ItemType.WEAPON
-		"gem": return ItemResource.ItemType.GEM
-		"potion": return ItemResource.ItemType.POTION
-		"elixir": return ItemResource.ItemType.ELIXIR
-		"scroll": return ItemResource.ItemType.SCROLL
-		"hammer": return ItemResource.ItemType.HAMMER
-		"ration": return ItemResource.ItemType.RATION
-		"ingredient": return ItemResource.ItemType.INGREDIENT
-		_: 
-			print("[DataManager] WARNING: Unknown item type '%s', defaulting to HEAD" % type_str)
-			return ItemResource.ItemType.HEAD
+func _load_json_file(path: String) -> Array:
+	"""Load JSON array from file, returns empty array if not found"""
+	if not FileAccess.file_exists(path):
+		return []
+	
+	var file = FileAccess.open(path, FileAccess.READ)
+	if not file:
+		return []
+	
+	var content = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	if json.parse(content) != OK:
+		print("[DataManager] Failed to parse JSON: %s" % path)
+		return []
+	
+	var data = json.get_data()
+	return data if data is Array else []
+
+func _save_json_file(path: String, data: Array):
+	"""Save array as JSON file"""
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	if not file:
+		print("[DataManager] Failed to open for writing: %s" % path)
+		return
+	
+	file.store_string(JSON.stringify(data, "\t"))
+	file.close()
 
 # ============================================
-# EXPEDITION HANDLING (special format: {version, slides})
+# DATABASE LOADING (from JSON)
 # ============================================
 
-func _apply_expeditions_to_database(slides_data: Array, exp_version: int):
-	"""Apply expedition slides to database"""
-	for item in slides_data:
-		var slide = _find_or_create_expedition_slide(item.get("slide_id", 0))
+func load_databases():
+	"""Load all databases from JSON files"""
+	effects_db = _load_effects_database()
+	items_db = _load_items_database()
+	perks_db = _load_perks_database()
+	enemies_db = _load_enemies_database()
+	expeditions_db = _load_expeditions_database()
+	settlements_db = _load_settlements_database()
+	talents_db = _load_talents_database()
+	quests_db = _load_quests_database()
+	print("[DataManager] All databases loaded from JSON")
+
+func _load_effects_database() -> EffectDatabase:
+	"""Create EffectDatabase from JSON"""
+	var db = EffectDatabase.new()
+	var data = _load_json_file(EFFECTS_JSON)
+	
+	for item in data:
+		var effect = EffectResource.new()
+		effect.id = item.get("effect_id", 0)
+		effect.name = item.get("name", "")
+		effect.description = item.get("description", "")
+		effect.slot = item.get("slot", 0)
+		effect.factor = item.get("factor", 0)
+		db.effects.append(effect)
+	
+	print("[DataManager] Loaded %d effects" % db.effects.size())
+	return db
+
+func _load_items_database() -> ItemDatabase:
+	"""Create ItemDatabase from JSON"""
+	var db = ItemDatabase.new()
+	var data = _load_json_file(ITEMS_JSON)
+	
+	for item in data:
+		var res = ItemResource.new()
+		res.id = item.get("item_id", 0)
+		res.item_name = item.get("item_name", "")
+		res.type = _map_item_type_to_enum(item.get("type", ""))
+		res.strength = item.get("strength", 0)
+		res.stamina = item.get("stamina", 0)
+		res.agility = item.get("agility", 0)
+		res.luck = item.get("luck", 0)
+		res.armor = item.get("armor", 0)
+		res.damage_min = item.get("min_damage", 0)
+		res.damage_max = item.get("max_damage", 0)
+		res.effect_id = item.get("effect_id", 0)
+		res.effect_factor = item.get("effect_factor", 0)
+		res.has_socket = item.get("socket", false)
+		res.price = item.get("silver", 0)
+		res.asset_id = int(item.get("asset_id", 0))
+		
+		# Load texture from cache
+		if res.asset_id > 0:
+			res.icon = load_asset_texture("items", res.asset_id)
+		
+		db.items.append(res)
+	
+	print("[DataManager] Loaded %d items" % db.items.size())
+	return db
+
+func _load_perks_database() -> PerkDatabase:
+	"""Create PerkDatabase from JSON"""
+	var db = PerkDatabase.new()
+	var data = _load_json_file(PERKS_JSON)
+	
+	for item in data:
+		var perk = PerkResource.new()
+		perk.id = item.get("perk_id", 0)
+		perk.perk_name = item.get("perk_name", "")
+		perk.description = item.get("description", "")
+		perk.effect1_id = item.get("effect_id_1", 0)
+		perk.factor1 = item.get("factor_1", 0.0)
+		perk.effect2_id = item.get("effect_id_2", 0)
+		perk.factor2 = item.get("factor_2", 0.0)
+		perk.asset_id = int(item.get("asset_id", 0))
+		
+		# Load texture from cache
+		if perk.asset_id > 0:
+			perk.icon = load_asset_texture("perks", perk.asset_id)
+		
+		db.perks.append(perk)
+	
+	print("[DataManager] Loaded %d perks" % db.perks.size())
+	return db
+
+func _load_enemies_database() -> EnemyDatabase:
+	"""Create EnemyDatabase from JSON"""
+	var db = EnemyDatabase.new()
+	var data = _load_json_file(ENEMIES_JSON)
+	
+	for item in data:
+		var enemy = EnemyResource.new()
+		enemy.id = item.get("enemy_id", 0)
+		enemy.name = item.get("enemy_name", "")
+		enemy.description = item.get("description", "")
+		enemy.asset_id = int(item.get("asset_id", 0))
+		
+		# Load texture from cache
+		if enemy.asset_id > 0:
+			enemy.texture = load_asset_texture("enemies", enemy.asset_id)
+		
+		db.enemies.append(enemy)
+	
+	print("[DataManager] Loaded %d enemies" % db.enemies.size())
+	return db
+
+func _load_expeditions_database() -> ExpeditionsDatabase:
+	"""Create ExpeditionsDatabase from JSON"""
+	var db = ExpeditionsDatabase.new()
+	var data = _load_json_file(EXPEDITIONS_JSON)
+	
+	for item in data:
+		var slide = ExpeditionSlide.new()
 		slide.slide_id = item.get("slide_id", 0)
 		slide.slide_text = item.get("slide_text", "")
-		slide.asset_id = item.get("asset_id", 0)
+		slide.asset_id = int(item.get("asset_id", 0))
 		slide.effect_id = item.get("effect_id", 0)
 		slide.effect_factor = item.get("effect_factor", 0.0)
+		
+		# Rewards
 		slide.reward_stat_type = item.get("reward_stat_type", 0)
 		slide.reward_stat_amount = item.get("reward_stat_amount", 0)
 		slide.reward_talent = item.get("reward_talent", 0)
@@ -593,159 +496,250 @@ func _apply_expeditions_to_database(slides_data: Array, exp_version: int):
 		slide.reward_blessing = item.get("reward_blessing", 0)
 		slide.reward_potion = item.get("reward_potion", 0)
 		
-		# Parse options
-		slide.options.clear()
+		# Load options
 		var options_data = item.get("options", [])
-		for opt_data in options_data:
+		for opt in options_data:
 			var option = ExpeditionOption.new()
-			option.option_id = opt_data.get("option_id", 0)
-			option.option_text = opt_data.get("option_text", "")
-			option.stat_type = str(opt_data.get("stat_type", ""))
-			option.stat_required = opt_data.get("stat_required", 0)
-			option.effect_id = opt_data.get("effect_id", 0)
-			option.effect_amount = opt_data.get("effect_amount", 0.0)
-			option.enemy_id = opt_data.get("enemy_id", 0)
+			option.option_id = opt.get("option_id", 0)
+			option.option_text = opt.get("option_text", "")
+			option.stat_type = opt.get("stat_type", "")
+			option.stat_required = opt.get("stat_required", 0)
+			option.effect_id = opt.get("effect_id", 0)
+			option.effect_amount = opt.get("effect_amount", 0.0)
+			option.enemy_id = opt.get("enemy_id", 0)
 			slide.options.append(option)
+		
+		# Load texture from cache (uses quests folder)
+		if slide.asset_id > 0:
+			slide.texture = load_asset_texture("quests", slide.asset_id)
+		
+		db.slides.append(slide)
 	
-	expeditions_db.version = exp_version
-	print("[DataManager] Applied %d expedition slides (version %d)" % [slides_data.size(), exp_version])
+	print("[DataManager] Loaded %d expedition slides" % db.slides.size())
+	return db
+
+func _load_settlements_database() -> SettlementsDatabase:
+	"""Create SettlementsDatabase from JSON"""
+	var db = SettlementsDatabase.new()
+	var data = _load_json_file(SETTLEMENTS_JSON)
 	
-	# Update version and save
-	set_local_version("expeditions", exp_version)
-	_save_database("expeditions")
-
-func _download_expedition_assets(slides_data: Array):
-	"""Download expedition assets"""
-	var downloaded_ids = {}
-	for item in slides_data:
-		var asset_id = item.get("asset_id", 0)
-		if asset_id > 0 and not downloaded_ids.has(asset_id):
-			downloaded_ids[asset_id] = true
-			_download_asset("expedition", asset_id)
-
-# ============================================
-# SETTLEMENTS HANDLING (special format: {version, settlements})
-# ============================================
-
-func _parse_greeting_array(val) -> Array[String]:
-	if val is Array:
-		var result: Array[String] = []
-		for item in val:
-			if item is String:
-				result.append(item)
-		return result
-	if val is String:
-		return [val]
-	if val is Dictionary:
-		return []
-	return []
-
-func _apply_settlements_to_database(settlements_data: Array, set_version: int):
-	"""Apply settlement data to database"""
-	for item in settlements_data:
-		var settlement = _find_or_create_settlement(item.get("settlement_id", 0))
+	for item in data:
+		var settlement = Settlement.new()
 		settlement.settlement_id = item.get("settlement_id", 0)
 		settlement.settlement_name = item.get("settlement_name", "")
 		settlement.faction = item.get("faction", 0)
 		settlement.description = item.get("description", "")
-		settlement.settlement_asset_id = item.get("settlement_asset_id", 0)
-
-		# Expedition fields (flat)
-		settlement.expedition_asset_id = item.get("expedition_asset_id", 0)
+		settlement.settlement_asset_id = int(item.get("settlement_asset_id", 0))
+		settlement.expedition_asset_id = int(item.get("expedition_asset_id", 0))
 		settlement.expedition_description = item.get("expedition_description", "")
-		# Arena field
-		settlement.arena_asset_id = item.get("arena_asset_id", 0)
+		settlement.arena_asset_id = int(item.get("arena_asset_id", 0))
 		
-		# Vendor fields (nested)
+		# Vendor data
 		var vendor_data = item.get("vendor", {})
 		if vendor_data is Dictionary:
-			settlement.vendor_asset_id = vendor_data.get("vendor_asset_id", 0)
-			settlement.vendor_on_entered = _parse_greeting_array(vendor_data.get("on_entered", []))
-			settlement.vendor_on_sold = _parse_greeting_array(vendor_data.get("on_sold", []))
-			settlement.vendor_on_bought = _parse_greeting_array(vendor_data.get("on_bought", []))
-
+			settlement.vendor_asset_id = int(vendor_data.get("vendor_asset_id", 0))
+			# Vendor on_entered, on_sold, on_bought arrays
+			if vendor_data.has("on_entered") and vendor_data.on_entered is Array:
+				for line in vendor_data.on_entered:
+					settlement.vendor_on_entered.append(str(line))
+			if vendor_data.has("on_sold") and vendor_data.on_sold is Array:
+				for line in vendor_data.on_sold:
+					settlement.vendor_on_sold.append(str(line))
+			if vendor_data.has("on_bought") and vendor_data.on_bought is Array:
+				for line in vendor_data.on_bought:
+					settlement.vendor_on_bought.append(str(line))
 		
-		# Utility fields (nested)
+		# Utility data
 		var utility_data = item.get("utility", {})
 		if utility_data is Dictionary:
 			settlement.utility_type = utility_data.get("type", "")
-			settlement.utility_asset_id = utility_data.get("utility_asset_id", 0)
-			settlement.utility_on_entered = _parse_greeting_array(utility_data.get("on_entered", []))
-			settlement.utility_on_placed = _parse_greeting_array(utility_data.get("on_placed", []))
-			settlement.utility_on_action = _parse_greeting_array(utility_data.get("on_action", []))
-			# Church-only blessings
+			settlement.utility_asset_id = int(utility_data.get("utility_asset_id", 0))
+			# Utility on_entered, on_placed, on_action arrays
+			if utility_data.has("on_entered") and utility_data.on_entered is Array:
+				for line in utility_data.on_entered:
+					settlement.utility_on_entered.append(str(line))
+			if utility_data.has("on_placed") and utility_data.on_placed is Array:
+				for line in utility_data.on_placed:
+					settlement.utility_on_placed.append(str(line))
+			if utility_data.has("on_action") and utility_data.on_action is Array:
+				for line in utility_data.on_action:
+					settlement.utility_on_action.append(str(line))
+			# Church blessings
 			settlement.blessing1 = utility_data.get("blessing1", 0)
 			settlement.blessing2 = utility_data.get("blessing2", 0)
 			settlement.blessing3 = utility_data.get("blessing3", 0)
+		
+		# Load textures from cache
+		if settlement.settlement_asset_id > 0:
+			settlement.settlement_texture = load_asset_texture("settlements", settlement.settlement_asset_id)
+		if settlement.expedition_asset_id > 0:
+			settlement.expedition_texture = load_asset_texture("settlements", settlement.expedition_asset_id)
+		if settlement.vendor_asset_id > 0:
+			settlement.vendor_texture = load_asset_texture("settlements", settlement.vendor_asset_id)
+		if settlement.utility_asset_id > 0:
+			settlement.utility_texture = load_asset_texture("settlements", settlement.utility_asset_id)
+		if settlement.arena_asset_id > 0:
+			settlement.arena_background = load_asset_texture("settlements", settlement.arena_asset_id)
+		
+		db.settlements.append(settlement)
 	
-	settlements_db.version = set_version
-	print("[DataManager] Applied %d settlements (version %d)" % [settlements_data.size(), set_version])
+	print("[DataManager] Loaded %d settlements" % db.settlements.size())
+	return db
+
+func _load_talents_database() -> TalentsDatabase:
+	"""Create TalentsDatabase from JSON"""
+	var db = TalentsDatabase.new()
+	var data = _load_json_file(TALENTS_JSON)
 	
-	# Update version and save
-	set_local_version("settlements", set_version)
-	_save_database("settlements")
+	for item in data:
+		var talent = TalentResource.new()
+		talent.talent_id = item.get("talent_id", 0)
+		talent.name = item.get("name", "")
+		talent.description = item.get("description", "")
+		talent.max_points = item.get("max_points", 0)
+		talent.perk_slot = item.get("perk_slot", 0)
+		talent.effect_id = item.get("effect_id", 0)
+		talent.factor = item.get("factor", 0.0)
+		talent.row = item.get("row", 0)
+		talent.col = item.get("col", 0)
+		db.talents.append(talent)
+	
+	print("[DataManager] Loaded %d talents" % db.talents.size())
+	return db
 
-func _find_or_create_settlement(settlement_id: int) -> Settlement:
-	"""Find existing settlement by ID or create new one"""
-	for settlement in settlements_db.settlements:
-		if settlement.settlement_id == settlement_id:
-			return settlement
-	var new_settlement = Settlement.new()
-	new_settlement.settlement_id = settlement_id
-	settlements_db.settlements.append(new_settlement)
-	return new_settlement
+func _load_quests_database() -> QuestsDatabase:
+	"""Create QuestsDatabase from JSON"""
+	var db = QuestsDatabase.new()
+	var data = _load_json_file(QUESTS_JSON)
+	
+	for item in data:
+		var quest = QuestData.new()
+		quest.quest_id = item.get("quest_id", 0)
+		quest.quest_name = item.get("name", "")
+		quest.travel_text = item.get("travel_text", "")
+		quest.initial_text = item.get("start_text", "")
+		quest.settlement_id = item.get("settlement_id", 0)
+		quest.asset_id = int(item.get("asset_id", 0))
+		quest.ending = item.get("ending", false)
+		
+		# Load background texture from cache (uses quests folder)
+		if quest.asset_id > 0:
+			quest.background_texture = load_asset_texture("quests", quest.asset_id)
+		
+		# Default entry determines initially visible options
+		var default_entry = int(item.get("default_entry", 0))
+		if default_entry > 0:
+			quest.initially_visible_options.append(default_entry)
+		
+		# Load options
+		var options_data = item.get("options", [])
+		for opt in options_data:
+			var option = QuestOption.new()
+			option.option_id = opt.get("option_id", 0)
+			option.option_text = opt.get("option_text", "")
+			option.node_text = opt.get("node_text", "")
+			option.stat_type = opt.get("stat_type", 0)
+			option.stat_required = opt.get("stat_required", 0)
+			option.effect_id = opt.get("effect_id", 0)
+			option.effect_amount = opt.get("effect_amount", 0)
+			option.enemy_id = opt.get("enemy_id", 0)
+			option.is_start = opt.get("start", false)
+			option.reward_stat_type = opt.get("reward_stat_type", 0)
+			option.reward_stat_amount = opt.get("reward_stat_amount", 0)
+			option.reward_talent = opt.get("reward_talent", 0)
+			option.reward_item = opt.get("reward_item", 0)
+			option.reward_perk = opt.get("reward_perk", 0)
+			option.reward_blessing = opt.get("reward_blessing", 0)
+			option.reward_potion = opt.get("reward_potion", 0)
+			
+			# Requirements (options that must be clicked first)
+			var requirements = opt.get("requirements", [])
+			for req in requirements:
+				option.requirements.append(int(req))
+			
+			quest.options.append(option)
+			
+			# If this is a start option, add to initially visible
+			if option.is_start and option.option_id not in quest.initially_visible_options:
+				quest.initially_visible_options.append(option.option_id)
+		
+		db.quests.append(quest)
+	
+	print("[DataManager] Loaded %d quests" % db.quests.size())
+	return db
 
-func _download_settlement_assets(settlements_data: Array):
-	"""Download settlement assets"""
-	var downloaded_ids = {}
-	for item in settlements_data:
-		# Settlement asset (map icon)
-		var settlement_asset_id = item.get("settlement_asset_id", 0)
-		if settlement_asset_id > 0 and not downloaded_ids.has(settlement_asset_id):
-			downloaded_ids[settlement_asset_id] = true
-			_download_asset("settlements", settlement_asset_id)
-		
-		# Expedition asset
-		var expedition_asset_id = item.get("expedition_asset_id", 0)
-		if expedition_asset_id > 0 and not downloaded_ids.has(expedition_asset_id):
-			downloaded_ids[expedition_asset_id] = true
-			_download_asset("settlements", expedition_asset_id)
-		
-		# Arena asset
-		var arena_asset_id = item.get("arena_asset_id", 0)
-		if arena_asset_id > 0 and not downloaded_ids.has(arena_asset_id):
-			downloaded_ids[arena_asset_id] = true
-			_download_asset("settlements", arena_asset_id)
-		
-		# Vendor asset
-		var vendor_data = item.get("vendor", {})
-		if vendor_data is Dictionary:
-			var vendor_asset_id = vendor_data.get("vendor_asset_id", 0)
-			if vendor_asset_id > 0 and not downloaded_ids.has(vendor_asset_id):
-				downloaded_ids[vendor_asset_id] = true
-				_download_asset("settlements", vendor_asset_id)
-		
-		# Utility asset
-		var utility_data = item.get("utility", {})
-		if utility_data is Dictionary:
-			var utility_asset_id = utility_data.get("utility_asset_id", 0)
-			if utility_asset_id > 0 and not downloaded_ids.has(utility_asset_id):
-				downloaded_ids[utility_asset_id] = true
-				_download_asset("settlements", utility_asset_id)
+func _map_item_type_to_enum(type_string: String) -> int:
+	"""Map item type string to ItemResource.ItemType enum"""
+	# ItemType enum: HEAD=0, CHEST=1, HANDS=2, FOOT=3, BELT=4, LEGS=5, RING=6, AMULET=7, WEAPON=8, GEM=9, POTION=10, ELIXIR=11, SCROLL=12, HAMMER=13, RATION=14, INGREDIENT=15
+	match type_string.to_lower():
+		"head", "helmet": return 0  # HEAD
+		"chest": return 1  # CHEST
+		"hands", "gloves": return 2  # HANDS
+		"foot", "boots": return 3  # FOOT
+		"belt": return 4  # BELT
+		"legs": return 5  # LEGS
+		"ring": return 6  # RING
+		"amulet": return 7  # AMULET
+		"weapon": return 8  # WEAPON
+		"gem": return 9  # GEM
+		"potion": return 10  # POTION
+		"elixir": return 11  # ELIXIR
+		"scroll": return 12  # SCROLL
+		"hammer": return 13  # HAMMER
+		"ration": return 14  # RATION
+		"ingredient": return 15  # INGREDIENT
+		_: return 0
 
 # ============================================
 # ASSET DOWNLOADING
 # ============================================
 
 func _download_assets_for_data(data_type: String, data: Array):
-	"""Download images for all items in data (always re-download to get latest)"""
+	"""Download images for all items in data"""
 	for item in data:
-		var asset_id = item.get("asset_id", 0)
+		var asset_id = int(item.get("asset_id", 0))
 		if asset_id > 0:
 			_download_asset(data_type, asset_id)
 
+# Track downloaded quest/expedition assets to avoid duplicates
+var _downloaded_quest_assets: Dictionary = {}
+
+func _download_quest_assets(data: Array):
+	"""Download quest/expedition assets (both share the quests folder)"""
+	for item in data:
+		var asset_id = int(item.get("asset_id", 0))
+		if asset_id > 0 and not _downloaded_quest_assets.has(asset_id):
+			_downloaded_quest_assets[asset_id] = true
+			_download_asset("quests", asset_id)
+
+func _download_settlement_assets(settlements_data: Array):
+	"""Download settlement assets"""
+	var downloaded_ids = {}
+	for item in settlements_data:
+		for key in ["settlement_asset_id", "expedition_asset_id", "arena_asset_id"]:
+			var asset_id = int(item.get(key, 0))
+			if asset_id > 0 and not downloaded_ids.has(asset_id):
+				downloaded_ids[asset_id] = true
+				_download_asset("settlements", asset_id)
+		
+		# Vendor asset
+		var vendor_data = item.get("vendor", {})
+		if vendor_data is Dictionary:
+			var asset_id = int(vendor_data.get("vendor_asset_id", 0))
+			if asset_id > 0 and not downloaded_ids.has(asset_id):
+				downloaded_ids[asset_id] = true
+				_download_asset("settlements", asset_id)
+		
+		# Utility asset
+		var utility_data = item.get("utility", {})
+		if utility_data is Dictionary:
+			var asset_id = int(utility_data.get("utility_asset_id", 0))
+			if asset_id > 0 and not downloaded_ids.has(asset_id):
+				downloaded_ids[asset_id] = true
+				_download_asset("settlements", asset_id)
+
 func _download_asset(folder: String, asset_id: int):
-	"""Download an asset (always download to ensure we have latest version)"""
+	"""Download an asset"""
 	var local_path = get_asset_path(folder, asset_id)
 	var remote_url = "%s%s/%d.webp" % [ASSETS_BASE_URL, folder, asset_id]
 	
@@ -772,7 +766,6 @@ func _on_asset_downloaded(_result: int, response_code: int, _headers: PackedStri
 		print("[DataManager] Asset download failed %s/%d (HTTP %d)" % [folder, asset_id, response_code])
 		return
 	
-	# Save the webp file
 	var file = FileAccess.open(local_path, FileAccess.WRITE)
 	if file:
 		file.store_buffer(body)
@@ -781,53 +774,6 @@ func _on_asset_downloaded(_result: int, response_code: int, _headers: PackedStri
 		asset_downloaded.emit(folder, asset_id)
 	else:
 		print("[DataManager] Failed to save asset: %s" % local_path)
-
-func _apply_asset_to_database(folder: String, asset_id: int):
-	"""Apply a cached asset texture to the appropriate database entry"""
-	var texture = load_asset_texture(folder, asset_id)
-	if not texture:
-		return
-	
-	match folder:
-		"items":
-			for item in items_db.items:
-				if item.asset_id == asset_id:
-					item.icon = texture
-		"perks":
-			for perk in perks_db.perks:
-				if perk.asset_id == asset_id:
-					perk.icon = texture
-		"enemies":
-			for enemy in enemies_db.enemies:
-				if enemy.asset_id == asset_id:
-					enemy.texture = texture
-
-func _apply_all_cached_textures():
-	"""Apply all cached textures to in-memory databases"""
-	print("[DataManager] Applying cached textures to databases...")
-	
-	# Items
-	for item in items_db.items:
-		if item.asset_id > 0:
-			var texture = load_asset_texture("items", item.asset_id)
-			if texture:
-				item.icon = texture
-	
-	# Perks
-	for perk in perks_db.perks:
-		if perk.asset_id > 0:
-			var texture = load_asset_texture("perks", perk.asset_id)
-			if texture:
-				perk.icon = texture
-	
-	# Enemies
-	for enemy in enemies_db.enemies:
-		if enemy.asset_id > 0:
-			var texture = load_asset_texture("enemies", enemy.asset_id)
-			if texture:
-				enemy.texture = texture
-	
-	print("[DataManager] Cached textures applied")
 
 func get_asset_path(folder: String, asset_id: int) -> String:
 	"""Get the local path for an asset"""
@@ -857,25 +803,41 @@ func has_asset(folder: String, asset_id: int) -> bool:
 # ============================================
 
 func get_effects_database() -> EffectDatabase:
-	"""Get the effects database"""
+	if not effects_db:
+		effects_db = _load_effects_database()
 	return effects_db
 
 func get_items_database() -> ItemDatabase:
-	"""Get the items database"""
+	if not items_db:
+		items_db = _load_items_database()
 	return items_db
 
 func get_perks_database() -> PerkDatabase:
-	"""Get the perks database"""
+	if not perks_db:
+		perks_db = _load_perks_database()
 	return perks_db
 
 func get_enemies_database() -> EnemyDatabase:
-	"""Get the enemies database"""
+	if not enemies_db:
+		enemies_db = _load_enemies_database()
 	return enemies_db
 
 func get_expeditions_database() -> ExpeditionsDatabase:
-	"""Get the expeditions database"""
+	if not expeditions_db:
+		expeditions_db = _load_expeditions_database()
 	return expeditions_db
 
 func get_settlements_database() -> SettlementsDatabase:
-	"""Get the settlements database"""
+	if not settlements_db:
+		settlements_db = _load_settlements_database()
 	return settlements_db
+
+func get_talents_database() -> TalentsDatabase:
+	if not talents_db:
+		talents_db = _load_talents_database()
+	return talents_db
+
+func get_quests_database() -> QuestsDatabase:
+	if not quests_db:
+		quests_db = _load_quests_database()
+	return quests_db
