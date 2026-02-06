@@ -1,4 +1,4 @@
-[gd_scene load_steps=109 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=108 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -47,7 +47,6 @@
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="32_lknxd"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
-[ext_resource type="Script" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/Rankings.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
@@ -90,18 +89,6 @@ bg_color = Color(0, 0, 0, 0)
 Button/styles/focus = SubResource("StyleBoxFlat_transparent")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ifeo7"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
-bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.6, 0.4, 0.2, 0.7)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
 bg_color = Color(0.2, 0.2, 0.2, 0.9)
@@ -189,6 +176,18 @@ rebound_strength = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
+bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 0.2, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="Resource" id="Resource_umggo"]
 script = ExtResource("68_2cns2")
@@ -1507,133 +1506,6 @@ custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_vertical = 4
 text = ">"
-
-[node name="QuestAccept" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("quest_name_label", "quest_dialogue_label", "background_button", "accept_button", "portrait_texture", "map", "alreadyTraveling", "npc_name_label")]
-visible = false
-z_index = 100
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
-script = ExtResource("36_quest_panel")
-quest_name_label = NodePath("QuestContent/VBoxContainer/QuestName")
-quest_dialogue_label = NodePath("QuestContent/VBoxContainer/QuestDialogue")
-background_button = NodePath("BackgroundButton")
-accept_button = NodePath("QuestContent/VBoxContainer/AcceptButton")
-portrait_texture = NodePath("QuestContent/VBoxContainer/HeaderContainer/PortraitPanel/Portrait")
-map = NodePath("../../Map")
-alreadyTraveling = NodePath("QuestContent/VBoxContainer/AlreadyTraveling")
-npc_name_label = NodePath("QuestContent/VBoxContainer/HeaderContainer/NPCName")
-
-[node name="BackgroundButton" type="Button" parent="Portrait/GameScene/Home/QuestAccept"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
-flat = true
-
-[node name="QuestContent" type="Panel" parent="Portrait/GameScene/Home/QuestAccept"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.1
-anchor_right = 0.9
-anchor_bottom = 0.9
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Portrait/GameScene/Home/QuestAccept/QuestContent"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = -15.0
-offset_bottom = -15.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="NPCName" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
-theme_override_font_sizes/font_size = 24
-text = "NPC Name"
-vertical_alignment = 1
-
-[node name="PortraitPanel" type="Panel" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer"]
-custom_minimum_size = Vector2(80, 80)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
-
-[node name="Portrait" type="TextureRect" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer/HeaderContainer/PortraitPanel"]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="HSeparator" type="HSeparator" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_font_sizes/font_size = 18
-text = "Quest Name"
-horizontal_alignment = 1
-
-[node name="QuestDialogue" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_font_sizes/font_size = 14
-text = "Quest dialogue goes here..."
-autowrap_mode = 3
-
-[node name="AcceptButton" type="Button" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
-theme_override_font_sizes/font_size = 16
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-text = "Accept Quest"
-
-[node name="AlreadyTraveling" type="Label" parent="Portrait/GameScene/Home/QuestAccept/QuestContent/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_font_sizes/font_size = 16
-text = "You are already on a quest."
-horizontal_alignment = 1
 
 [node name="LogoutPanel" type="Panel" parent="Portrait/GameScene/Home" node_paths=PackedStringArray("yes_button", "no_button", "background_button")]
 visible = false

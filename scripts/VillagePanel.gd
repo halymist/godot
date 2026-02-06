@@ -203,9 +203,6 @@ func refresh_location():
 	_setup_buttons()
 	_update_quest_display()
 
-# Stub methods for compatibility with TogglePanel
+# Stub method for compatibility with TogglePanel
 func handle_back_navigation() -> bool:
 	return false
-
-func center_village_view():
-	pass

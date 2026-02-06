@@ -71,8 +71,6 @@ signal game_ready
 # SPECIAL CONTROLS
 # ============================================================================
 @export var chat_panel: Control         # ChatOverlay with ChatPanel.gd script
-@export var interior_view: Control
-@export var village_view: Control
 @export var enemy: Array[Button] = []
 
 # ============================================================================
@@ -362,7 +360,6 @@ func show_panel(panel: Control):
 		# Reset home panel to default view when leaving it
 		if old_panel == home_panel:
 			home_panel.handle_back_navigation()
-			home_panel.center_village_view()
 	
 	# Clear entire overlay stack
 	while overlay_stack.size() > 0:
@@ -387,7 +384,6 @@ func handle_home_button():
 	
 	# Reset and show home
 	home_panel.handle_back_navigation()
-	home_panel.center_village_view()
 	show_panel(home_panel)
 
 func handle_map_button():
