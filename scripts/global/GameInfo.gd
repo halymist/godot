@@ -9,7 +9,6 @@ extends Node
 var effects_db: EffectDatabase = null
 var items_db: ItemDatabase = null
 var perks_db: PerkDatabase = null
-var npcs_db: NpcDatabase = null
 var cosmetics_db: CosmeticDatabase = null
 var settlements_db: SettlementsDatabase = null
 var quests_db: QuestsDatabase = null
@@ -79,8 +78,6 @@ func load_databases():
 	talents_db = DataManager.get_talents_database()
 	quests_db = DataManager.get_quests_database()
 	
-	# These still load from .tres (not versioned from server)
-	npcs_db = load("res://data/npcs.tres")
 	# cosmetics_db already loaded in _ready()
 	
 	databases_loaded = true

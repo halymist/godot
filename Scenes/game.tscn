@@ -1,4 +1,4 @@
-[gd_scene load_steps=110 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=109 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -47,7 +47,7 @@
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="32_lknxd"]
 [ext_resource type="Script" uid="uid://dbd1uie2iasnv" path="res://scripts/CombatPanel.gd" id="35_combat_panel"]
 [ext_resource type="Texture2D" uid="uid://bffndllscsjrv" path="res://assets/images/ui/ingredient_outline.png" id="35_p5qon"]
-[ext_resource type="Script" uid="uid://dm8qjxrhbu61" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
+[ext_resource type="Script" path="res://scripts/QuestPanel.gd" id="36_quest_panel"]
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/Rankings.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
@@ -82,7 +82,6 @@
 [ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="83_lrctp"]
 [ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="84_e6ols"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
-[ext_resource type="Script" uid="uid://cqdrglw3ojju2" path="res://scripts/TogglePanel_Wide.gd" id="94_fykvq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -203,7 +202,7 @@ friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
 
-[node name="Game" type="Control" node_paths=PackedStringArray("phone_ui_root", "desktop_ui_root")]
+[node name="Game" type="Control" node_paths=PackedStringArray("phone_ui_root")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -215,10 +214,9 @@ size_flags_vertical = 3
 theme = ExtResource("2_nb51f")
 script = ExtResource("1_1phco")
 phone_ui_root = NodePath("Portrait")
-desktop_ui_root = NodePath("Wide")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="Panel" parent="." node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "quest_panel", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "enemy", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
+[node name="Background" type="Panel" parent="." node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "enemy", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -252,7 +250,6 @@ details_panel = NodePath("../Portrait/GameScene/DetailsPanel")
 upgrade_talent = NodePath("../Portrait/GameScene/TalentsPanel/Upgrade")
 perk_screen = NodePath("../Portrait/GameScene/TalentsPanel/PerkScreen")
 cancel_quest = NodePath("../Portrait/GameScene/CancelQuest")
-quest_panel = NodePath("../Portrait/GameScene/Home/QuestAccept")
 enemy_panel = NodePath("../Portrait/GameScene/Enemy")
 logout_panel = NodePath("../Portrait/GameScene/Home/LogoutPanel")
 vendor_panel = NodePath("../Portrait/GameScene/VendorPanel")
@@ -1356,7 +1353,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 offset_top = -75.0
 
-[node name="Home" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("vendor_button", "vendor_icon", "vendor_label", "utility_button", "utility_icon", "utility_label", "quest_button", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_panel", "quest_slide_panel", "map_panel")]
+[node name="Home" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("vendor_button", "vendor_icon", "vendor_label", "utility_button", "utility_icon", "utility_label", "quest_button", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_slide_panel", "map_panel")]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1376,7 +1373,6 @@ quest_button = NodePath("Overlay/QuestButton")
 quest_name_label = NodePath("Overlay/QuestButton/HBox/QuestInfo/QuestName")
 quest_progress_label = NodePath("Overlay/QuestButton/HBox/QuestInfo/Progress")
 quest_arrow = NodePath("Overlay/QuestButton/HBox/Arrow")
-quest_panel = NodePath("QuestAccept")
 quest_slide_panel = NodePath("../Quest")
 map_panel = NodePath("../Map")
 
@@ -6863,283 +6859,3 @@ alignment = 0
 icon_alignment = 2
 vertical_icon_alignment = 0
 expand_icon = true
-
-[node name="Wide" type="Control" parent="." node_paths=PackedStringArray("home_panel", "character_panel", "arena_panel", "map_panel", "talents_panel", "enemy_panel", "details_panel", "settings_panel", "rankings_panel", "payment", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "wide_home_button", "wide_character_button", "wide_arena_button", "wide_map_button", "wide_settings_button", "wide_rankings_button", "wide_payment_button", "wide_chat_button", "wide_back_button")]
-visible = false
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -525.0
-offset_top = -630.0
-offset_right = 525.0
-grow_horizontal = 2
-grow_vertical = 0
-theme = ExtResource("2_nb51f")
-script = ExtResource("94_fykvq")
-home_panel = NodePath("../Portrait/GameScene/Home")
-character_panel = NodePath("../Portrait/GameScene/Character")
-arena_panel = NodePath("../Portrait/GameScene/Arena")
-map_panel = NodePath("../Portrait/GameScene/Map")
-talents_panel = NodePath("../Portrait/GameScene/TalentsPanel")
-enemy_panel = NodePath("../Portrait/GameScene/Enemy")
-details_panel = NodePath("../Portrait/GameScene/DetailsPanel")
-settings_panel = NodePath("../Portrait/GameScene/Settings")
-rankings_panel = NodePath("../Portrait/GameScene/Rankings")
-payment = NodePath("../Portrait/GameScene/Payment")
-vendor_panel = NodePath("../Portrait/GameScene/VendorPanel")
-blacksmith_panel = NodePath("../Portrait/GameScene/BlacksmithPanel")
-trainer_panel = NodePath("../Portrait/GameScene/TrainerPanel")
-church_panel = NodePath("../Portrait/GameScene/ChurchPanel")
-alchemist_panel = NodePath("../Portrait/GameScene/AlchemistPanel")
-enchanter_panel = NodePath("../Portrait/GameScene/EnchanterPanel")
-wide_home_button = NodePath("Sidebar/ButtonsSection/HomeButtonContainer/HomeButton")
-wide_character_button = NodePath("Sidebar/Character/CharacterButton")
-wide_arena_button = NodePath("Sidebar/ButtonsSection/ArenaButtonContainer/ArenaButton")
-wide_map_button = NodePath("Sidebar/ButtonsSection/MapButtonContainer/MapButton")
-wide_settings_button = NodePath("Sidebar/ButtonsSection/SettingsButtonContainer/SettingsButton")
-wide_rankings_button = NodePath("Sidebar/ButtonsSection/RankingsButtonContainer/RankingsButton")
-wide_payment_button = NodePath("Sidebar/CurrencySection/MushroomContainer/PaymentButton")
-wide_chat_button = NodePath("Sidebar/ButtonsSection/ChatButtonContainer/ChatButton")
-wide_back_button = NodePath("Sidebar/BackButton")
-
-[node name="Sidebar" type="Panel" parent="Wide" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "weather_icon_texture")]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.2
-anchor_bottom = 1.0
-grow_vertical = 2
-script = ExtResource("4_2cns2")
-gold_label = NodePath("CurrencySection/SilverContainer/SilverValue")
-currency_label = NodePath("CurrencySection/MushroomContainer/MushroomValue")
-location_label = NodePath("LocationPanel/HBoxContainer/LocationLabel")
-sunny_icon = ExtResource("8_e6ols")
-rainy_icon = ExtResource("9_2cns2")
-weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
-
-[node name="Character" type="TextureRect" parent="Wide/Sidebar"]
-layout_mode = 0
-offset_left = 28.5
-offset_top = 13.0
-offset_right = 177.5
-offset_bottom = 168.0
-texture = ExtResource("54_b1mpw")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="CharacterButton" type="Button" parent="Wide/Sidebar/Character"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-
-[node name="Avatar" parent="Wide/Sidebar/Character" instance=ExtResource("22_avatar")]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.15
-anchor_bottom = 0.9
-mouse_filter = 2
-
-[node name="CurrencySection" type="VBoxContainer" parent="Wide/Sidebar"]
-layout_mode = 2
-offset_left = 9.0
-offset_top = 180.0
-offset_right = 112.0
-offset_bottom = 259.0
-theme_override_constants/separation = 10
-
-[node name="MushroomContainer" type="HBoxContainer" parent="Wide/Sidebar/CurrencySection"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="MushroomIcon" type="TextureRect" parent="Wide/Sidebar/CurrencySection/MushroomContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("9_w4j8i")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="MushroomValue" type="Label" parent="Wide/Sidebar/CurrencySection/MushroomContainer"]
-layout_mode = 2
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-text = "0"
-
-[node name="PaymentButton" type="Button" parent="Wide/Sidebar/CurrencySection/MushroomContainer"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-text = "+"
-
-[node name="SilverContainer" type="HBoxContainer" parent="Wide/Sidebar/CurrencySection"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="SilverIcon" type="TextureRect" parent="Wide/Sidebar/CurrencySection/SilverContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("32_ccfo7")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="SilverValue" type="Label" parent="Wide/Sidebar/CurrencySection/SilverContainer"]
-layout_mode = 2
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-text = "0"
-
-[node name="BackButton" type="Button" parent="Wide/Sidebar"]
-layout_mode = 2
-offset_left = 128.0
-offset_top = 186.0
-offset_right = 179.0
-offset_bottom = 238.0
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-icon = ExtResource("4_ewbju")
-expand_icon = true
-
-[node name="LocationPanel" type="Panel" parent="Wide/Sidebar"]
-layout_mode = 2
-offset_left = 12.0
-offset_top = 251.0
-offset_right = 196.0
-offset_bottom = 298.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Wide/Sidebar/LocationPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 5
-
-[node name="LocationLabel" type="Label" parent="Wide/Sidebar/LocationPanel/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-text = "Krasna Ves - 14:35"
-vertical_alignment = 1
-
-[node name="WeatherIcon" type="TextureRect" parent="Wide/Sidebar/LocationPanel/HBoxContainer"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-texture = ExtResource("9_2cns2")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="ButtonsSection" type="VBoxContainer" parent="Wide/Sidebar"]
-layout_mode = 2
-offset_top = 300.0
-offset_right = 206.0
-offset_bottom = 622.0
-size_flags_vertical = 3
-theme_override_constants/separation = 10
-
-[node name="HomeButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(150, 45)
-layout_mode = 2
-size_flags_horizontal = 4
-ratio = 4.0
-
-[node name="HomeButton" type="Button" parent="Wide/Sidebar/ButtonsSection/HomeButtonContainer"]
-layout_mode = 2
-text = "Home"
-icon = ExtResource("14_81klo")
-expand_icon = true
-
-[node name="ArenaButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(150, 45)
-layout_mode = 2
-size_flags_horizontal = 4
-ratio = 4.0
-
-[node name="ArenaButton" type="Button" parent="Wide/Sidebar/ButtonsSection/ArenaButtonContainer"]
-layout_mode = 2
-text = "Arena"
-icon = ExtResource("13_fkdbe")
-expand_icon = true
-
-[node name="MapButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(150, 45)
-layout_mode = 2
-size_flags_horizontal = 4
-ratio = 4.0
-
-[node name="MapButton" type="Button" parent="Wide/Sidebar/ButtonsSection/MapButtonContainer"]
-layout_mode = 2
-text = "Map"
-icon = ExtResource("12_22asu")
-expand_icon = true
-
-[node name="RankingsButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(150, 45)
-layout_mode = 2
-size_flags_horizontal = 4
-ratio = 4.0
-
-[node name="RankingsButton" type="Button" parent="Wide/Sidebar/ButtonsSection/RankingsButtonContainer"]
-layout_mode = 2
-text = "Rankings"
-icon = ExtResource("13_fkdbe")
-expand_icon = true
-
-[node name="ChatButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(150, 45)
-layout_mode = 2
-size_flags_horizontal = 4
-ratio = 4.0
-
-[node name="ChatButton" type="Button" parent="Wide/Sidebar/ButtonsSection/ChatButtonContainer"]
-layout_mode = 2
-text = "Chat"
-icon = ExtResource("11_vm72l")
-expand_icon = true
-
-[node name="SettingsButtonContainer" type="AspectRatioContainer" parent="Wide/Sidebar/ButtonsSection"]
-custom_minimum_size = Vector2(150, 45)
-layout_mode = 2
-size_flags_horizontal = 4
-ratio = 4.0
-
-[node name="SettingsButton" type="Button" parent="Wide/Sidebar/ButtonsSection/SettingsButtonContainer"]
-layout_mode = 2
-text = "Settings"
-icon = ExtResource("5_settings")
-expand_icon = true
-
-[node name="GameSceneParent" type="Control" parent="Wide"]
-layout_mode = 1
-anchor_left = 0.2
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 0
-grow_vertical = 2
-
-[node name="Full" type="Control" parent="Wide/GameSceneParent"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Left" type="Control" parent="Wide/GameSceneParent"]
-layout_mode = 1
-anchor_right = 0.5
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Right" type="Control" parent="Wide/GameSceneParent"]
-layout_mode = 1
-anchor_left = 0.5
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2

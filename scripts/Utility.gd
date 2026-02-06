@@ -68,11 +68,5 @@ func _on_button_pressed():
 		# Show the target panel and register it as current panel in GameInfo
 		target.visible = true
 		UIManager.instance.current_panel = target
-		
-		# In wide mode, also show character panel on the left
-		var resolution_manager = get_node_or_null("/root/Game")
-		if resolution_manager and resolution_manager.current_layout == resolution_manager.desktop_ui_root:
-			if resolution_manager.character_panel:
-				resolution_manager.character_panel.visible = true
 	
 	utility_clicked.emit(self)

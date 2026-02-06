@@ -53,7 +53,6 @@ signal game_ready
 @export var upgrade_talent: Control
 @export var perk_screen: Control
 @export var cancel_quest: Control
-@export var quest_panel: Control        # Quest accept overlay (NOT the main quest panel)
 @export var enemy_panel: Control
 @export var logout_panel: Control
 @export var avatar_panel: Control
@@ -527,13 +526,7 @@ func _handle_panel_back() -> bool:
 	
 	# Home panel -> interior navigation or logout
 	if panel == home_panel:
-		# First: hide quest accept panel if visible
-		if quest_panel and quest_panel.visible:
-			print("-> Home: hiding quest accept panel")
-			quest_panel.visible = false
-			return true
-		
-		# Second: interior navigation
+		# Interior navigation
 		if home_panel.handle_back_navigation():
 			print("-> Home: exited interior")
 			return true

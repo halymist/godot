@@ -22,7 +22,6 @@ extends TextureRect
 @export var quest_arrow: Button
 
 # Child panels that exist under Home (for compatibility)
-@export var quest_panel: Control  # QuestAccept panel
 @export var quest_slide_panel: Control
 @export var map_panel: Control
 
