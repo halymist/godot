@@ -1,7 +1,6 @@
 extends Control
 
 @export var ui_size_dropdown: OptionButton
-@export var autoskip_checkbox: CheckButton
 @export var disable_ads_checkbox: CheckButton
 @export var master_volume_slider: HSlider
 @export var music_volume_slider: HSlider
@@ -35,7 +34,6 @@ func _ready():
 func _connect_signals():
 	"""Connect all UI element signals"""
 	disable_ads_checkbox.toggled.connect(_on_disable_ads_toggled)
-	autoskip_checkbox.toggled.connect(_on_autoskip_quest_toggled)
 	language_dropdown.item_selected.connect(_on_language_selected)
 	master_volume_slider.value_changed.connect(_on_master_volume_changed)
 	music_volume_slider.value_changed.connect(_on_music_volume_changed)
@@ -48,13 +46,6 @@ func _load_character_settings():
 	
 	# Apply gameplay settings
 	disable_ads_checkbox.button_pressed = settings.gameplay.disable_ads
-	autoskip_checkbox.button_pressed = settings.gameplay.autoskip_quest
-	
-	# Disable quest autoskip if not VIP
-	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
-	autoskip_checkbox.disabled = not is_vip
-	if not is_vip:
-		autoskip_checkbox.tooltip_text = "VIP feature - upgrade to unlock"
 	
 	# Set language dropdown
 	var lang_index = 0
@@ -85,10 +76,6 @@ func _save_setting(section: String, key: String, value):
 func _on_disable_ads_toggled(enabled: bool):
 	_save_setting("gameplay", "disable_ads", enabled)
 	print("Disable ads: ", enabled)
-
-func _on_autoskip_quest_toggled(enabled: bool):
-	_save_setting("gameplay", "autoskip_quest", enabled)
-	print("Quest auto-skip: ", enabled)
 
 func _on_language_selected(index: int):
 	var languages = ["English", "Czech", "German"]

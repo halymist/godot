@@ -502,11 +502,13 @@ func _handle_panel_back() -> bool:
 	"""Handle panel-specific back behavior. Returns true if handled."""
 	var panel = current_panel
 	
-	# Map panel with active travel -> show cancel dialog
-	if panel == map_panel and is_traveling():
-		print("-> Map: showing cancel dialog")
-		cancel_quest.show_dialog()
-		return true
+	# Map panel (traveling or waiting to enter) -> show cancel dialog
+	if panel == map_panel:
+		# Show cancel if traveling, or if travel finished but still on map (waiting to enter quest/expedition)
+		if is_traveling() or GameInfo.current_player.traveling_destination != null or map_panel.is_expedition_travel:
+			print("-> Map: showing cancel dialog")
+			cancel_quest.show_dialog()
+			return true
 	
 	# Quest panel (arrived at destination) -> show cancel dialog
 	if panel == quest and is_on_active_quest():

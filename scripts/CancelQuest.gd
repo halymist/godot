@@ -3,6 +3,7 @@ extends Control
 @export var yes_button : Button
 @export var no_button : Button
 @export var background_button : Button
+@export var dialog_label : Label
 
 func _ready():
 	yes_button.pressed.connect(_on_yes_pressed)
@@ -10,18 +11,34 @@ func _ready():
 	background_button.pressed.connect(_on_no_pressed)
 
 func show_dialog():
+	# Update dialog text based on what we're canceling
+	var expedition = GameInfo.current_player.expedition
+	var is_expedition_travel = UIManager.instance.map_panel.is_expedition_travel
+	if (expedition and expedition.size() > 0) or is_expedition_travel:
+		dialog_label.text = "Do you wish to abandon the expedition?"
+	else:
+		dialog_label.text = "Do you wish to abandon the quest?"
+	
 	UIManager.instance.show_overlay(self)
 
 func _on_yes_pressed():
 	var quest_id = GameInfo.current_player.traveling_destination
 	var expedition = GameInfo.current_player.expedition
+	var is_expedition_travel = UIManager.instance.map_panel.is_expedition_travel
 	
-	# Check if we're canceling an expedition
-	if expedition and expedition.size() > 0:
+	# Check if we're canceling an expedition (active or traveling to one)
+	if (expedition and expedition.size() > 0) or is_expedition_travel:
 		print("Expedition canceled by user")
 		Websocket.expedition_cancel()
 		GameInfo.current_player.expedition = []
-		UIManager.instance.expedition_panel.end_expedition()
+		
+		# Reset expedition travel state on map panel
+		UIManager.instance.map_panel.is_expedition_travel = false
+		UIManager.instance.map_panel.expedition_travel_end = 0.0
+		
+		if expedition and expedition.size() > 0:
+			UIManager.instance.expedition_panel.end_expedition()
+		
 		UIManager.instance.hide_current_overlay()
 		UIManager.instance.show_panel(UIManager.instance.home_panel)
 		return

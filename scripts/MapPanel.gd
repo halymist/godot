@@ -14,6 +14,10 @@ const EXPEDITION_COST: int = 100  # Silver cost to enter dungeon
 @onready var skip_action_label: Label = skip_button.get_node("Content/ActionLabel")
 @onready var enter_action_label: Label = enter_dungeon_button.get_node("Content/ActionLabel")
 
+# Colors for button states
+const COLOR_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
+const COLOR_DISABLED = Color(0.5, 0.5, 0.5, 1.0)
+
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
 var skip_duration_target: float = 0.0  # Dynamic skip duration (remaining_time / 8)
@@ -40,7 +44,7 @@ func _ready():
 		_setup()
 	else:
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
-    
+	
 	if UIManager.instance.starter_panel == self:
 		UIManager.instance.game_is_ready = true
 		UIManager.instance.game_ready.emit()
@@ -60,9 +64,9 @@ func _on_visibility_changed():
 func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: int = 0):
 	"""Start traveling with the given text and duration (0 for VIP = instant)"""
 	travel_text = quest_travel_text
-	# Override duration to always be 15 seconds (unless VIP with 0)
+	# Override duration to always be 10 seconds (unless VIP with 0)
 	if duration_seconds > 0:
-		duration_seconds = 15
+		duration_seconds = 10
 	travel_duration = float(duration_seconds)
 	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds (VIP=instant)" if duration_seconds == 0 else " seconds")
 	print("Travel duration in seconds: ", travel_duration)
@@ -88,7 +92,9 @@ func refresh_travel_state():
 		# Currently traveling to expedition - show skip button, hide enter dungeon button
 		travel_progress.visible = true
 		skip_button.visible = true
-		skip_button.disabled = is_skipping or not _can_afford_skip()
+		var skip_disabled = is_skipping or not _can_afford_skip()
+		skip_button.disabled = skip_disabled
+		_update_button_label_colors(skip_button, skip_disabled)
 		skip_action_label.text = "Skipping..." if is_skipping else "Skip ("
 		enter_dungeon_button.visible = false
 		return
@@ -101,6 +107,8 @@ func refresh_travel_state():
 		travel_time_label.text = ""
 		skip_button.visible = false
 		enter_dungeon_button.visible = true
+		enter_dungeon_button.disabled = false
+		_update_button_label_colors(enter_dungeon_button, false)
 		enter_action_label.text = "Go Quest"
 		# Hide the price section for Go Quest
 		enter_dungeon_button.get_node("Content/PriceLabel").visible = false
@@ -123,7 +131,9 @@ func refresh_travel_state():
 		is_skipping = false
 		skip_button.visible = false
 		enter_dungeon_button.visible = true
-		enter_dungeon_button.disabled = not _can_afford_expedition()
+		var enter_disabled = not _can_afford_expedition()
+		enter_dungeon_button.disabled = enter_disabled
+		_update_button_label_colors(enter_dungeon_button, enter_disabled)
 		# Show Enter Dungeon with price
 		enter_action_label.text = "Enter Dungeon ("
 		enter_dungeon_button.get_node("Content/PriceLabel").visible = true
@@ -136,6 +146,7 @@ func refresh_travel_state():
 	travel_progress.visible = true
 	skip_button.visible = true
 	skip_button.disabled = false
+	_update_button_label_colors(skip_button, false)
 	skip_action_label.text = "Skip ("
 	enter_dungeon_button.visible = false
 	travel_text_label.text = travel_text
@@ -161,7 +172,10 @@ func _process(_delta):
 	
 	# Update skip button state based on mushroom availability
 	if not is_skipping and skip_button.visible:
-		skip_button.disabled = not _can_afford_skip()
+		var skip_disabled = not _can_afford_skip()
+		if skip_button.disabled != skip_disabled:
+			skip_button.disabled = skip_disabled
+			_update_button_label_colors(skip_button, skip_disabled)
 	
 	# Handle skipping animation - accelerate the countdown
 	if is_skipping:
@@ -200,20 +214,14 @@ func _process(_delta):
 				GameInfo.current_player.expedition = [pending_expedition_slide_id]
 			
 			refresh_travel_state()
-			
-			# Only auto-load expedition if map panel is visible
-			if visible:
-				_load_expedition()
+			# Timer done - show Enter Dungeon button, user clicks to enter
 		else:
-			print("Travel completed - loading quest")
+			print("Travel completed")
 			# Reset state
 			current_player.traveling = 0
 			is_skipping = false
 			refresh_travel_state()
-			
-			# Only auto-load quest if map panel is visible
-			if visible:
-				_on_enter_dungeon_pressed()
+			# Timer done - show Go Quest button, user clicks to enter
 		return
 	
 	# Update skip button text
@@ -237,6 +245,15 @@ func _can_afford_skip() -> bool:
 func _can_afford_expedition() -> bool:
 	"""Check if player has enough silver for expedition"""
 	return GameInfo.current_player.silver >= EXPEDITION_COST
+
+func _update_button_label_colors(button: Button, disabled: bool):
+	"""Update all label colors in a button based on disabled state"""
+	var color = COLOR_DISABLED if disabled else COLOR_NORMAL
+	var content = button.get_node_or_null("Content")
+	if content:
+		for child in content.get_children():
+			if child is Label:
+				child.add_theme_color_override("font_color", color)
 
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
@@ -309,17 +326,13 @@ func start_expedition_travel():
 	UIManager.instance.update_silver(-EXPEDITION_COST)
 	print("Deducted ", EXPEDITION_COST, " silver for expedition")
 	
-	# Check if player is VIP and has autoskip enabled
+	# Check if player is VIP
 	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
-	var autoskip = false
-	if is_vip:
-		autoskip = SettingsManager.get_setting("gameplay", "autoskip_quest")
 	
 	# Send start_expedition to server (server will respond with slide_id and arrival time)
 	Websocket.start_expedition()
 	
 	# Server will call receive_expedition_start() with the response
-	# For now, if autoskip/VIP, we'll wait for the response in receive_expedition_start()
 	print("Expedition start request sent to server")
 
 func receive_expedition_start(slide_id: int, arrival_timestamp: String):
@@ -328,30 +341,23 @@ func receive_expedition_start(slide_id: int, arrival_timestamp: String):
 	
 	pending_expedition_slide_id = slide_id
 	
-	# Check if player is VIP and has autoskip enabled
+	# Check if player is VIP
 	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
-	var autoskip = false
-	if is_vip:
-		autoskip = SettingsManager.get_setting("gameplay", "autoskip_quest")
 	
-	# Autoskip OR VIP: Go directly to expedition panel
-	if autoskip or is_vip:
-		print("VIP or autoskip - going directly to expedition")
+	# VIP: Go directly to expedition panel (no timer)
+	if is_vip:
+		print("VIP - going directly to expedition")
 		# Update player's expedition state
 		GameInfo.current_player.expedition = [pending_expedition_slide_id]
 		# Load expedition panel
 		_load_expedition()
 		return
 	
-	# Non-VIP: Parse arrival timestamp and calculate travel time
-	var arrival_time = _parse_iso8601_timestamp(arrival_timestamp)
+	# Non-VIP: Use 10 second timer
 	var current_time = Time.get_unix_time_from_system()
-	var travel_time = arrival_time - current_time
+	var travel_time = 10.0  # Fixed 10 seconds for non-VIP
 	
-	# Clamp to minimum 0.5 seconds (in case of negative due to latency)
-	travel_time = max(travel_time, 0.5)
-	
-	expedition_travel_end = arrival_time
+	expedition_travel_end = current_time + travel_time
 	
 	# Mark as expedition travel
 	is_expedition_travel = true

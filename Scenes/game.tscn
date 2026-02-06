@@ -1,4 +1,4 @@
-[gd_scene load_steps=118 format=3 uid="uid://cggugbbbhxwry"]
+[gd_scene load_steps=110 format=3 uid="uid://cggugbbbhxwry"]
 
 [ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
@@ -91,22 +91,6 @@ bg_color = Color(0, 0, 0, 0)
 Button/styles/focus = SubResource("StyleBoxFlat_transparent")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ifeo7"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2o6t"]
-bg_color = Color(0.08, 0.05, 0.15, 0.85)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnkle"]
-bg_color = Color(0.460477, 0.598623, 0.860762, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feb5d"]
-bg_color = Color(0.372919, 0.641864, 0.750955, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wr3wg"]
-bg_color = Color(0.649928, 0.613808, 0.210934, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_215e1"]
 bg_color = Color(0.0784314, 0.0509804, 0.14902, 1)
@@ -203,14 +187,6 @@ rebound_strength = 7.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_pressed"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_normal"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_disabled"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_hover"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_pressed"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_autoskip_normal"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3c8l"]
 bg_color = Color(0.471358, 0.565318, 0.976186, 1)
@@ -682,13 +658,6 @@ offset_right = -46.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton"]
 layout_mode = 1
@@ -701,12 +670,12 @@ alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "Temper:"
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
 [node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
@@ -1060,13 +1029,6 @@ offset_top = -50.0
 offset_right = 202.5
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton"]
@@ -1080,12 +1042,12 @@ alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "Receive Blessing ("
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
 [node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
@@ -1097,7 +1059,7 @@ stretch_mode = 5
 
 [node name="ClosingParen" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
 [node name="AlchemistPanel" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("chat_bubble", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
@@ -1216,13 +1178,6 @@ offset_right = 398.0
 offset_bottom = 140.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 disabled = true
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton"]
@@ -1236,12 +1191,12 @@ alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "Brew ("
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
 [node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
@@ -1253,7 +1208,7 @@ stretch_mode = 5
 
 [node name="ClosingParen" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
 [node name="Bag" parent="Portrait/GameScene/AlchemistPanel/Overlay" instance=ExtResource("20_6xvgv")]
@@ -1333,13 +1288,6 @@ offset_right = -46.5
 offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton"]
 layout_mode = 1
@@ -1352,12 +1300,12 @@ alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "Enchant ("
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
 [node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
@@ -1369,7 +1317,7 @@ stretch_mode = 5
 
 [node name="ClosingParen" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
 [node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay"]
@@ -2541,11 +2489,11 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
 script = ExtResource("37_map_panel")
-quest_name_label = NodePath("Overlay/TravelInfoContainer/QuestNameLabel")
-travel_text_label = NodePath("Overlay/TravelInfoContainer/TravelTextLabel")
+quest_name_label = NodePath("Overlay/QuestNameLabel")
+travel_text_label = NodePath("Overlay/TravelTextLabel")
 travel_progress = NodePath("Overlay/TravelBarContainer/TravelProgress")
 travel_time_label = NodePath("Overlay/TravelBarContainer/TravelProgress/TravelTimeLabel")
-skip_button = NodePath("Overlay/SkipButton")
+skip_button = NodePath("Overlay/TravelBarContainer/SkipButton")
 enter_dungeon_button = NodePath("Overlay/TravelBarContainer/EnterDungeonButton")
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Map"]
@@ -2553,48 +2501,42 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 450.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="TravelInfoContainer" type="VBoxContainer" parent="Portrait/GameScene/Map/Overlay"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -152.5
-offset_top = -185.0
-offset_right = 140.5
-offset_bottom = -87.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="QuestNameLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelInfoContainer"]
-custom_minimum_size = Vector2(50, 50)
+[node name="QuestNameLabel" type="Label" parent="Portrait/GameScene/Map/Overlay"]
+custom_minimum_size = Vector2(50, 30)
 layout_mode = 2
+offset_left = 50.0
+offset_top = 13.0
+offset_right = 343.0
+offset_bottom = 43.0
 theme_override_colors/font_color = Color(1, 0.9, 0.7, 1)
 theme_override_font_sizes/font_size = 18
 text = "Quest name"
 horizontal_alignment = 1
-vertical_alignment = 2
 autowrap_mode = 3
 
-[node name="TravelTextLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelInfoContainer"]
+[node name="TravelTextLabel" type="Label" parent="Portrait/GameScene/Map/Overlay"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
+offset_top = 35.0
+offset_right = 343.0
+offset_bottom = 127.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 14
 text = "No active travel
 "
 horizontal_alignment = 1
-vertical_alignment = 2
+vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="TravelBarContainer" type="Control" parent="Portrait/GameScene/Map/Overlay"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -2602,9 +2544,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -179.5
-offset_top = -92.0
+offset_top = -45.0
 offset_right = 182.5
-offset_bottom = -36.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
@@ -2612,15 +2554,12 @@ size_flags_vertical = 0
 
 [node name="TravelProgress" type="TextureProgressBar" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.041
-anchor_top = 0.071
-anchor_right = 0.961
-anchor_bottom = 0.696
-offset_left = 0.158
-offset_top = 0.0239999
-offset_right = 0.117981
-offset_bottom = 0.0239983
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -174.0
+offset_right = 95.0
 grow_horizontal = 2
 grow_vertical = 2
 max_value = 1000.0
@@ -2649,23 +2588,14 @@ vertical_alignment = 1
 
 [node name="EnterDungeonButton" type="Button" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.108
-anchor_right = 0.9
-anchor_bottom = 0.9
-offset_left = -0.0960007
-offset_top = -5.0
-offset_right = 2.80002
-offset_bottom = -1.52
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -131.0
+offset_right = 119.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton"]
 layout_mode = 1
@@ -2678,16 +2608,18 @@ alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 16
 text = "Enter Dungeon ("
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 16
 text = "100"
 
 [node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content"]
-custom_minimum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
@@ -2695,61 +2627,57 @@ stretch_mode = 5
 
 [node name="ClosingParen" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 16
 text = ")"
 
-[node name="SkipButton" type="Button" parent="Portrait/GameScene/Map/Overlay"]
-custom_minimum_size = Vector2(120, 30)
+[node name="SkipButton" type="Button" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer"]
+custom_minimum_size = Vector2(60, 30)
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = 13
 anchor_left = 0.5
-anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -30.0
-offset_right = 60.0
+offset_left = 107.0
+offset_right = 191.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/Overlay/SkipButton"]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/SkipButton/Content"]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 14
 text = "Skip ("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/SkipButton/Content"]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 14
 text = "1"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Map/Overlay/SkipButton/Content"]
-custom_minimum_size = Vector2(20, 20)
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content"]
+custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
 texture = ExtResource("9_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Map/Overlay/SkipButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 14
 text = ")"
 
 [node name="Character" type="Panel" parent="Portrait/GameScene"]
@@ -3115,13 +3043,6 @@ layout_mode = 2
 offset_left = 216.0
 offset_right = 356.0
 offset_bottom = 53.0
-theme_override_colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_e2o6t")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnkle")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_feb5d")
-theme_override_styles/normal = SubResource("StyleBoxFlat_wr3wg")
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton"]
 layout_mode = 1
@@ -3134,12 +3055,12 @@ alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "Reset ("
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
 [node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
@@ -3151,7 +3072,7 @@ stretch_mode = 5
 
 [node name="ClosingParen" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
 [node name="GridContainer" type="GridContainer" parent="Portrait/GameScene/TalentsPanel" node_paths=PackedStringArray("talents", "reset_button", "title_label")]
@@ -6140,7 +6061,7 @@ mouse_filter = 1
 text = "-"
 horizontal_alignment = 2
 
-[node name="Settings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("ui_size_dropdown", "autoskip_checkbox", "disable_ads_checkbox", "master_volume_slider", "music_volume_slider", "language_dropdown")]
+[node name="Settings" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("ui_size_dropdown", "disable_ads_checkbox", "master_volume_slider", "music_volume_slider", "language_dropdown")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6150,7 +6071,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("37_settings")
 ui_size_dropdown = NodePath("Video/UISize/OptionButton")
-autoskip_checkbox = NodePath("Gameplay/QuestAutoSkip/CheckBox")
 disable_ads_checkbox = NodePath("Gameplay/DisableAds/CheckButton")
 master_volume_slider = NodePath("Audio/Volume/Master")
 music_volume_slider = NodePath("Audio/MusicVolume/Music")
@@ -6211,22 +6131,6 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_disable_ads_disabled
 theme_override_styles/hover = SubResource("StyleBoxEmpty_disable_ads_hover")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_disable_ads_pressed")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_disable_ads_normal")
-
-[node name="QuestAutoSkip" type="HBoxContainer" parent="Portrait/GameScene/Settings/Gameplay"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Portrait/GameScene/Settings/Gameplay/QuestAutoSkip"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Quest Auto-Skip (VIP)"
-
-[node name="CheckBox" type="CheckButton" parent="Portrait/GameScene/Settings/Gameplay/QuestAutoSkip"]
-layout_mode = 2
-focus_mode = 0
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_autoskip_disabled")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_autoskip_hover")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_autoskip_pressed")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_autoskip_normal")
 
 [node name="Language" type="HBoxContainer" parent="Portrait/GameScene/Settings/Gameplay"]
 layout_mode = 2
@@ -6697,7 +6601,7 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="CancelQuest" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("yes_button", "no_button", "background_button")]
+[node name="CancelQuest" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("yes_button", "no_button", "background_button", "dialog_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6710,6 +6614,7 @@ script = ExtResource("75_ckj55")
 yes_button = NodePath("DialogPanel/YesButton")
 no_button = NodePath("DialogPanel/NoButton")
 background_button = NodePath("BackgroundButton")
+dialog_label = NodePath("DialogPanel/Label")
 
 [node name="BackgroundButton" type="Button" parent="Portrait/GameScene/CancelQuest"]
 layout_mode = 1

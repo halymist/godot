@@ -85,7 +85,6 @@ func _get_default_settings() -> Dictionary:
 	return {
 		"gameplay": {
 			"disable_ads": false,
-			"autoskip_quest": false,
 			"language": "English"
 		},
 		"audio": {
