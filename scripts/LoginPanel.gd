@@ -67,10 +67,12 @@ var indicator_tween: Tween
 var is_logging_in: bool = false  # Prevent double-clicks during login
 
 func _ready():
-	# Check if we already have login data (auto-login)
+	# Check if we already have login data (returning from game)
 	if not GameInfo.lobby_data.is_empty():
 		visible = false
 		lobby_panel.visible = true
+		# Re-initialize lobby to display characters (new scene instance, initialized=false)
+		lobby_panel.initialize_lobby()
 		return
 	
 	# Try to auto-login with saved credentials

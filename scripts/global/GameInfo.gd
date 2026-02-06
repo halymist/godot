@@ -1109,9 +1109,13 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 		_merge_arena_into_enemies(arena_data)
 		print("Loaded ", arena_opponents.size(), " arena opponents")
 	
-	# Load chat messages if available
-	if char_data.has("chat_messages") and char_data.chat_messages is Array:
-		load_chat_messages_data(char_data.chat_messages)
+	# Load chat messages if available (new format: local_chat and global_chat arrays)
+	chat_messages.clear()
+	if char_data.has("local_chat") and char_data.local_chat is Array:
+		_load_chat_array(char_data.local_chat, "local")
+	if char_data.has("global_chat") and char_data.global_chat is Array:
+		_load_chat_array(char_data.global_chat, "global")
+	print("Loaded ", chat_messages.size(), " chat messages")
 
 func _merge_arena_into_enemies(arena_data: Array):
 	"""Merge arena opponents into enemy_players, overwriting any duplicates"""
@@ -1148,7 +1152,33 @@ func load_enemy_players_data(players_data: Array):
 	print("Loaded ", enemy_players.size(), " enemy players")
 	update_rankings()
 
+func _load_chat_array(messages_data: Array, chat_type: String):
+	"""Load chat messages from server array (new format with character_name, timestamp as int)"""
+	for message_data in messages_data:
+		# Transform server format to ChatMessage format
+		# Server: {id, character_name, lobby_id, message, timestamp (unix int)}
+		# ChatMessage: {sender, timestamp (ISO string), status, message, type}
+		var chat_data = {
+			"sender": message_data.get("character_name", "Unknown"),
+			"message": message_data.get("message", ""),
+			"timestamp": _unix_to_iso(message_data.get("timestamp", 0)),
+			"type": chat_type,
+			"status": "peasant"  # TODO: Get from server if available
+		}
+		chat_messages.append(ChatMessage.new(chat_data))
+
+func _unix_to_iso(unix_timestamp: int) -> String:
+	"""Convert Unix timestamp to ISO 8601 format"""
+	if unix_timestamp == 0:
+		return ""
+	var datetime = Time.get_datetime_dict_from_unix_time(unix_timestamp)
+	return "%04d-%02d-%02dT%02d:%02d:%02dZ" % [
+		datetime.year, datetime.month, datetime.day,
+		datetime.hour, datetime.minute, datetime.second
+	]
+
 func load_chat_messages_data(messages_data: Array):
+	"""Legacy: Load chat messages (old format)"""
 	chat_messages.clear()
 	for message_data in messages_data:
 		chat_messages.append(ChatMessage.new(message_data))

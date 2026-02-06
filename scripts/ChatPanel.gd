@@ -38,9 +38,10 @@ func display_chat_messages():
 		print("ERROR: chat_container not assigned!")
 		return
 	
-	# Clear existing messages
+	# Clear existing messages and reset time tracking
 	for child in chat_container.get_children():
 		child.queue_free()
+	last_message_time = ""  # Reset so first message doesn't trigger separator
 	
 	# Add each chat message that matches the current filter
 	for message in GameInfo.chat_messages:

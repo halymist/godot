@@ -115,7 +115,7 @@ func refresh_travel_state():
 	
 	# ── State 2: Arrived (travel finished, waiting for user to click) ──
 	if has_arrived:
-		travel_progress.value = travel_progress.max_value
+		travel_progress.visible = false
 		travel_time_label.text = ""
 		skip_button.visible = false
 		enter_dungeon_button.visible = true

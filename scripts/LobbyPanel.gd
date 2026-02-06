@@ -94,28 +94,28 @@ func _ready():
 	Http.create_character_completed.connect(_on_character_created)
 
 func initialize_lobby():
-	"""Initialize lobby with server data - called by LoginPanel after successful login"""
-	if initialized:
-		return  # Already initialized
-	
+	"""Initialize lobby with server data - called by LoginPanel after successful login or when returning from game"""
 	if GameInfo.lobby_data.is_empty():
 		print("Error: initialize_lobby called but no lobby data available")
 		return
 	
 	print("Initializing lobby with server data...")
-	initialized = true
 	
-	# Populate UI immediately with lobby data
+	# Populate UI with lobby data
 	populate_account_info()
+	# Wait a frame for UI nodes to be ready before adding character cards
+	await get_tree().process_frame
 	add_character_list()
-	start_new_server_countdown()
-	setup_login_methods()
 	
-	# Preload game scene in background
-	_load_game_scene_async()
-	
-	# Initialize databases (download if needed, then load)
-	_initialize_databases()
+	# Only do these once (first time initialization)
+	if not initialized:
+		initialized = true
+		start_new_server_countdown()
+		setup_login_methods()
+		# Preload game scene in background
+		_load_game_scene_async()
+		# Initialize databases (download if needed, then load)
+		_initialize_databases()
 
 func _initialize_databases():
 	"""Download data if needed, then initialize databases"""
