@@ -618,7 +618,7 @@ func update_display():
 	# Refresh mushrooms label displays (account-level)
 	print("UIManager.update_display mushrooms_labels count: ", mushrooms_labels.size())
 	if GameInfo.lobby_data.has("mushrooms"):
-		var mushrooms_text = str(GameInfo.lobby_data.mushrooms)
+		var mushrooms_text = str(int(GameInfo.lobby_data.mushrooms))
 		for m_label in mushrooms_labels:
 			m_label.text = mushrooms_text
 

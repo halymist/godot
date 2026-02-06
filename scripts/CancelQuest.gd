@@ -19,7 +19,7 @@ func _on_yes_pressed():
 	# Check if we're canceling an expedition
 	if expedition and expedition.size() > 0:
 		print("Expedition canceled by user")
-		Websocket.quest_cancel()  # Reuse quest_cancel for expedition too
+		Websocket.expedition_cancel()
 		GameInfo.current_player.expedition = []
 		UIManager.instance.expedition_panel.end_expedition()
 		UIManager.instance.hide_current_overlay()

@@ -454,6 +454,10 @@ func start_expedition():
 	"""Start an expedition - server knows which one based on player location"""
 	send("start_expedition", {})
 
+func expedition_cancel():
+	"""Cancel current expedition"""
+	send("expedition_cancel", {})
+
 func expedition_option(option_id: int):
 	"""Choose an expedition option (server will respond with next slide)"""
 	send("expedition_option", {

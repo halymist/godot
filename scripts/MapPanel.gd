@@ -1,6 +1,7 @@
 extends TextureRect
 
 const SKIP_COST: int = 1  # Mushroom cost to skip travel
+const EXPEDITION_COST: int = 100  # Silver cost to enter dungeon
 
 @export var quest_name_label: Label
 @export var travel_text_label: Label
@@ -8,6 +9,10 @@ const SKIP_COST: int = 1  # Mushroom cost to skip travel
 @export var travel_time_label: Label
 @export var skip_button: Button
 @export var enter_dungeon_button: Button
+
+# Labels inside the buttons (for dynamic text updates)
+@onready var skip_action_label: Label = skip_button.get_node("Content/ActionLabel")
+@onready var enter_action_label: Label = enter_dungeon_button.get_node("Content/ActionLabel")
 
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
@@ -84,7 +89,7 @@ func refresh_travel_state():
 		travel_progress.visible = true
 		skip_button.visible = true
 		skip_button.disabled = is_skipping or not _can_afford_skip()
-		skip_button.text = "Skipping..." if is_skipping else "Skip (1 🍄)"
+		skip_action_label.text = "Skipping..." if is_skipping else "Skip ("
 		enter_dungeon_button.visible = false
 		return
 	
@@ -96,7 +101,11 @@ func refresh_travel_state():
 		travel_time_label.text = ""
 		skip_button.visible = false
 		enter_dungeon_button.visible = true
-		enter_dungeon_button.text = "Go Quest"
+		enter_action_label.text = "Go Quest"
+		# Hide the price section for Go Quest
+		enter_dungeon_button.get_node("Content/PriceLabel").visible = false
+		enter_dungeon_button.get_node("Content/CurrencyIcon").visible = false
+		enter_dungeon_button.get_node("Content/ClosingParen").visible = false
 		return
 	
 	if current_player.traveling == 0 and current_player.traveling_destination == null:
@@ -114,7 +123,12 @@ func refresh_travel_state():
 		is_skipping = false
 		skip_button.visible = false
 		enter_dungeon_button.visible = true
-		enter_dungeon_button.text = "Enter Dungeon"
+		enter_dungeon_button.disabled = not _can_afford_expedition()
+		# Show Enter Dungeon with price
+		enter_action_label.text = "Enter Dungeon ("
+		enter_dungeon_button.get_node("Content/PriceLabel").visible = true
+		enter_dungeon_button.get_node("Content/CurrencyIcon").visible = true
+		enter_dungeon_button.get_node("Content/ClosingParen").visible = true
 
 		return
 	
@@ -122,7 +136,7 @@ func refresh_travel_state():
 	travel_progress.visible = true
 	skip_button.visible = true
 	skip_button.disabled = false
-	skip_button.text = "Skip (1 🍄)"
+	skip_action_label.text = "Skip ("
 	enter_dungeon_button.visible = false
 	travel_text_label.text = travel_text
 
@@ -204,7 +218,7 @@ func _process(_delta):
 	
 	# Update skip button text
 	if is_skipping:
-		skip_button.text = "Skipping..."
+		skip_action_label.text = "Skipping..."
 	
 	# Calculate progress using stored duration
 	if travel_duration > 0:
@@ -219,6 +233,10 @@ func _process(_delta):
 func _can_afford_skip() -> bool:
 	"""Check if player has enough mushrooms to skip"""
 	return GameInfo.lobby_data.has("mushrooms") and GameInfo.lobby_data.mushrooms >= SKIP_COST
+
+func _can_afford_expedition() -> bool:
+	"""Check if player has enough silver for expedition"""
+	return GameInfo.current_player.silver >= EXPEDITION_COST
 
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
@@ -282,6 +300,15 @@ func _on_enter_dungeon_pressed():
 
 func start_expedition_travel():
 	"""Start traveling to an expedition (dungeon)"""
+	# Check if player can afford the expedition
+	if not _can_afford_expedition():
+		print("Not enough silver for expedition")
+		return
+	
+	# Deduct silver cost
+	UIManager.instance.update_silver(-EXPEDITION_COST)
+	print("Deducted ", EXPEDITION_COST, " silver for expedition")
+	
 	# Check if player is VIP and has autoskip enabled
 	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
 	var autoskip = false
@@ -342,7 +369,7 @@ func receive_expedition_start(slide_id: int, arrival_timestamp: String):
 	travel_progress.value = 0
 	skip_button.visible = true
 	skip_button.disabled = not _can_afford_skip()
-	skip_button.text = "Skip (1 🍄)"
+	skip_action_label.text = "Skip ("
 	enter_dungeon_button.visible = false
 	
 	set_process(true)  # Enable frame updates
