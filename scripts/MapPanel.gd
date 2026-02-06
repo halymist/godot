@@ -32,6 +32,9 @@ var is_expedition_travel: bool = false  # True when traveling to expedition (not
 var pending_expedition_slide_id: int = 0  # Slide ID received from server
 var expedition_travel_end: float = 0.0  # When expedition travel ends
 
+# Arrival state - true when travel completed and waiting for user to click "Arrived"
+var has_arrived: bool = false
+
 func _ready():
 	# Always connect buttons and signals
 	skip_button.pressed.connect(_on_skip_button_pressed)
@@ -87,9 +90,9 @@ func refresh_travel_state():
 	"""Update UI state based on current travel status - call this when state changes"""
 	var current_player = GameInfo.current_player
 	
-	# Check if expedition travel is active (local timer, not stored in GameInfo)
+	# ── State 1: Currently traveling (expedition or quest timer running) ──
 	if is_expedition_travel and expedition_travel_end > Time.get_unix_time_from_system():
-		# Currently traveling to expedition - show skip button, hide enter dungeon button
+		# Expedition travel in progress
 		travel_progress.visible = true
 		skip_button.visible = true
 		var skip_disabled = is_skipping or not _can_afford_skip()
@@ -99,9 +102,35 @@ func refresh_travel_state():
 		enter_dungeon_button.visible = false
 		return
 	
-	# Check if player has a quest destination (VIP instant travel or timer-based)
+	if current_player.traveling > 0:
+		# Quest travel in progress
+		travel_progress.visible = true
+		skip_button.visible = true
+		skip_button.disabled = false
+		_update_button_label_colors(skip_button, false)
+		skip_action_label.text = "Skip ("
+		enter_dungeon_button.visible = false
+		travel_text_label.text = travel_text
+		return
+	
+	# ── State 2: Arrived (travel finished, waiting for user to click) ──
+	if has_arrived:
+		travel_progress.value = travel_progress.max_value
+		travel_time_label.text = ""
+		skip_button.visible = false
+		enter_dungeon_button.visible = true
+		enter_dungeon_button.disabled = false
+		_update_button_label_colors(enter_dungeon_button, false)
+		enter_action_label.text = "Arrived"
+		# Hide the price section for Arrived
+		enter_dungeon_button.get_node("Content/PriceLabel").visible = false
+		enter_dungeon_button.get_node("Content/CurrencyIcon").visible = false
+		enter_dungeon_button.get_node("Content/ClosingParen").visible = false
+		return
+	
+	# ── State 3: VIP instant arrival (destination set, no timer) ──
 	if current_player.traveling_destination != null and current_player.traveling == 0:
-		# VIP instant travel - show Go Quest button immediately
+		# VIP instant - show Arrived immediately
 		travel_text_label.text = travel_text
 		travel_progress.value = travel_progress.max_value
 		travel_time_label.text = ""
@@ -109,47 +138,35 @@ func refresh_travel_state():
 		enter_dungeon_button.visible = true
 		enter_dungeon_button.disabled = false
 		_update_button_label_colors(enter_dungeon_button, false)
-		enter_action_label.text = "Go Quest"
-		# Hide the price section for Go Quest
+		enter_action_label.text = "Arrived"
+		# Hide the price section
 		enter_dungeon_button.get_node("Content/PriceLabel").visible = false
 		enter_dungeon_button.get_node("Content/CurrencyIcon").visible = false
 		enter_dungeon_button.get_node("Content/ClosingParen").visible = false
 		return
 	
-	if current_player.traveling == 0 and current_player.traveling_destination == null:
-		print("No active travel detected")
-		# No active travel - show expedition info
-		var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
-		if location_data:
-			quest_name_label.text = "Expedition"
-			texture = location_data.expedition_texture
-			travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
-		else:
-			travel_text_label.text = "No active travel"
-		
-		travel_progress.visible = false
-		is_skipping = false
-		skip_button.visible = false
-		enter_dungeon_button.visible = true
-		var enter_disabled = not _can_afford_expedition()
-		enter_dungeon_button.disabled = enter_disabled
-		_update_button_label_colors(enter_dungeon_button, enter_disabled)
-		# Show Enter Dungeon with price
-		enter_action_label.text = "Enter Dungeon ("
-		enter_dungeon_button.get_node("Content/PriceLabel").visible = true
-		enter_dungeon_button.get_node("Content/CurrencyIcon").visible = true
-		enter_dungeon_button.get_node("Content/ClosingParen").visible = true
-
-		return
+	# ── State 4: Idle - show Embark button (expedition) ──
+	print("No active travel detected")
+	var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
+	if location_data:
+		quest_name_label.text = "Expedition"
+		texture = location_data.expedition_texture
+		travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
+	else:
+		travel_text_label.text = "No active travel"
 	
-	# Currently traveling - show skip button, hide enter dungeon button
-	travel_progress.visible = true
-	skip_button.visible = true
-	skip_button.disabled = false
-	_update_button_label_colors(skip_button, false)
-	skip_action_label.text = "Skip ("
-	enter_dungeon_button.visible = false
-	travel_text_label.text = travel_text
+	travel_progress.visible = false
+	is_skipping = false
+	skip_button.visible = false
+	enter_dungeon_button.visible = true
+	var enter_disabled = not _can_afford_expedition()
+	enter_dungeon_button.disabled = enter_disabled
+	_update_button_label_colors(enter_dungeon_button, enter_disabled)
+	# Show Embark with price
+	enter_action_label.text = "Embark ("
+	enter_dungeon_button.get_node("Content/PriceLabel").visible = true
+	enter_dungeon_button.get_node("Content/CurrencyIcon").visible = true
+	enter_dungeon_button.get_node("Content/ClosingParen").visible = true
 
 func _process(_delta):
 	"""Update progress bar every frame for smooth 60fps animation"""
@@ -202,26 +219,17 @@ func _process(_delta):
 	# Check if travel is completed (naturally or via skip)
 	if time_remaining <= 0:
 		set_process(false)  # Stop frame updates
+		is_skipping = false
+		has_arrived = true
 		
 		if is_expedition_travel:
-			print("Expedition travel completed")
+			print("Expedition travel completed - showing Arrived button")
 			expedition_travel_end = 0.0
-			is_skipping = false
-			is_expedition_travel = false
-			
-			# Update player's expedition state so is_on_expedition() returns true
-			if pending_expedition_slide_id > 0:
-				GameInfo.current_player.expedition = [pending_expedition_slide_id]
-			
-			refresh_travel_state()
-			# Timer done - show Enter Dungeon button, user clicks to enter
 		else:
-			print("Travel completed")
-			# Reset state
+			print("Quest travel completed - showing Arrived button")
 			current_player.traveling = 0
-			is_skipping = false
-			refresh_travel_state()
-			# Timer done - show Go Quest button, user clicks to enter
+		
+		refresh_travel_state()
 		return
 	
 	# Update skip button text
@@ -301,19 +309,34 @@ func _on_skip_button_pressed():
 		skip_button.disabled = true
 
 func _on_enter_dungeon_pressed():
-	# Check if this is a quest (not dungeon)
+	# ── Arrived state: load the quest or expedition ──
+	if has_arrived:
+		has_arrived = false
+		
+		if is_expedition_travel:
+			# Expedition arrived - load expedition panel
+			print("Arrived pressed - loading expedition")
+			is_expedition_travel = false
+			if pending_expedition_slide_id > 0:
+				GameInfo.current_player.expedition = [pending_expedition_slide_id]
+			_load_expedition()
+		else:
+			# Quest arrived - load quest panel
+			print("Arrived pressed - loading quest")
+			var quest_id = GameInfo.current_player.traveling_destination
+			UIManager.instance.quest.load_quest(quest_id)
+		return
+	
+	# ── VIP instant arrival for quest ──
 	if GameInfo.current_player.traveling_destination != null:
-		# Go Quest functionality
-		print("Go Quest button pressed - loading quest")
+		print("Arrived pressed (VIP) - loading quest")
 		var quest_id = GameInfo.current_player.traveling_destination
-		
-		# Load quest directly
 		UIManager.instance.quest.load_quest(quest_id)
-		
-	else:
-		# Start expedition - send to server and begin timer
-		print("Enter dungeon button pressed - starting expedition")
-		start_expedition_travel()
+		return
+	
+	# ── Embark: start expedition travel ──
+	print("Embark button pressed - starting expedition")
+	start_expedition_travel()
 
 func start_expedition_travel():
 	"""Start traveling to an expedition (dungeon)"""
@@ -340,17 +363,17 @@ func receive_expedition_start(slide_id: int, arrival_timestamp: String):
 	print("Received expedition start - slide_id: ", slide_id, ", arrival: ", arrival_timestamp)
 	
 	pending_expedition_slide_id = slide_id
+	is_expedition_travel = true
 	
 	# Check if player is VIP
 	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
 	
-	# VIP: Go directly to expedition panel (no timer)
+	# VIP: Show Arrived button immediately (no timer)
 	if is_vip:
-		print("VIP - going directly to expedition")
-		# Update player's expedition state
-		GameInfo.current_player.expedition = [pending_expedition_slide_id]
-		# Load expedition panel
-		_load_expedition()
+		print("VIP - showing Arrived button immediately")
+		has_arrived = true
+		expedition_travel_end = 0.0
+		refresh_travel_state()
 		return
 	
 	# Non-VIP: Use 10 second timer
@@ -359,8 +382,6 @@ func receive_expedition_start(slide_id: int, arrival_timestamp: String):
 	
 	expedition_travel_end = current_time + travel_time
 	
-	# Mark as expedition travel
-	is_expedition_travel = true
 	travel_duration = travel_time
 	
 	# Update UI

@@ -24,17 +24,21 @@ func show_dialog():
 func _on_yes_pressed():
 	var quest_id = GameInfo.current_player.traveling_destination
 	var expedition = GameInfo.current_player.expedition
-	var is_expedition_travel = UIManager.instance.map_panel.is_expedition_travel
+	var map = UIManager.instance.map_panel
+	var is_expedition_travel = map.is_expedition_travel
 	
-	# Check if we're canceling an expedition (active or traveling to one)
+	# Check if we're canceling an expedition (active or traveling/arrived to one)
 	if (expedition and expedition.size() > 0) or is_expedition_travel:
 		print("Expedition canceled by user")
 		Websocket.expedition_cancel()
 		GameInfo.current_player.expedition = []
 		
-		# Reset expedition travel state on map panel
-		UIManager.instance.map_panel.is_expedition_travel = false
-		UIManager.instance.map_panel.expedition_travel_end = 0.0
+		# Reset map panel expedition state
+		map.is_expedition_travel = false
+		map.expedition_travel_end = 0.0
+		map.has_arrived = false
+		map.pending_expedition_slide_id = 0
+		map.set_process(false)
 		
 		if expedition and expedition.size() > 0:
 			UIManager.instance.expedition_panel.end_expedition()
@@ -51,6 +55,10 @@ func _on_yes_pressed():
 	
 	GameInfo.current_player.traveling = 0
 	GameInfo.current_player.traveling_destination = null
+	
+	# Reset map panel state
+	map.has_arrived = false
+	map.set_process(false)
 	
 	UIManager.instance.hide_current_overlay()
 	UIManager.instance.show_panel(UIManager.instance.home_panel)

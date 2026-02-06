@@ -199,7 +199,10 @@ func is_traveling() -> bool:
 	return false
 
 func is_navigation_blocked() -> bool:
-	"""Check if navigation to other panels is blocked (quest, expedition, or traveling)"""
+	"""Check if navigation to other panels is blocked (quest, expedition, traveling, or arrived)"""
+	# Block if arrived on map but not yet entered
+	if map_panel.has_arrived or map_panel.is_expedition_travel:
+		return true
 	return is_on_active_quest() or is_on_expedition() or is_traveling()
 
 func _load_expedition_on_startup(slide_id: int):
@@ -502,10 +505,10 @@ func _handle_panel_back() -> bool:
 	"""Handle panel-specific back behavior. Returns true if handled."""
 	var panel = current_panel
 	
-	# Map panel (traveling or waiting to enter) -> show cancel dialog
+	# Map panel -> show cancel dialog if anything is pending
 	if panel == map_panel:
-		# Show cancel if traveling, or if travel finished but still on map (waiting to enter quest/expedition)
-		if is_traveling() or GameInfo.current_player.traveling_destination != null or map_panel.is_expedition_travel:
+		# Cancel if traveling, arrived, has destination, or expedition pending
+		if is_traveling() or map_panel.has_arrived or GameInfo.current_player.traveling_destination != null or map_panel.is_expedition_travel:
 			print("-> Map: showing cancel dialog")
 			cancel_quest.show_dialog()
 			return true
@@ -545,7 +548,10 @@ func _handle_panel_back() -> bool:
 
 func _go_to_default_panel():
 	"""Navigate to the appropriate default panel based on player state"""
-	if is_on_expedition():
+	# If map panel has pending arrival or expedition travel, stay on map
+	if map_panel.has_arrived or map_panel.is_expedition_travel:
+		show_panel(map_panel)
+	elif is_on_expedition():
 		show_panel(expedition_panel)
 	elif is_traveling():
 		# Currently traveling - go to map panel (where timer is)
