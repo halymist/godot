@@ -17,6 +17,7 @@ var vendor_items: Array[GameInfo.Item] = []
 
 func _ready():
 	visibility_changed.connect(_on_visibility_changed)
+	_cache_vendor_slots()
 	
 	if UIManager.instance.game_is_ready:
 		_setup()
@@ -24,6 +25,7 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
+	_cache_vendor_slots()
 	_load_location_content()
 	populate_vendor_slots()
 
@@ -52,19 +54,37 @@ func _load_location_content():
 	on_sold_greetings = settlement.get_vendor_on_sold_lines()
 	on_bought_greetings = settlement.get_vendor_on_bought_lines()
 
+func _cache_vendor_slots():
+	if vendor_slots.size() > 0:
+		return
+	if not vendor_grid:
+		return
+	vendor_slots.clear()
+	for child in vendor_grid.get_children():
+		if child is Control:
+			vendor_slots.append(child)
+
 func _load_vendor_items():
 	vendor_items.clear()
 	
 	# Vendor items are now stored in current_player.vendor_items (loaded from server)
-	if not GameInfo.current_player or GameInfo.current_player.vendor_items.is_empty():
-		print("No vendor items available")
+	if not GameInfo.current_player:
+		print("[VendorPanel] No current player")
+		return
+	
+	print("[VendorPanel] Loading vendor items. current_player.vendor_items = ", GameInfo.current_player.vendor_items)
+	
+	if GameInfo.current_player.vendor_items.is_empty():
+		print("[VendorPanel] No vendor items available")
 		return
 	
 	for item_id in GameInfo.current_player.vendor_items:
+		print("[VendorPanel] Creating vendor item with id: ", item_id)
 		var item = GameInfo.Item.new({
 			"id": item_id,
 			"day": GameInfo.current_player.server_day
 		})
+		print("[VendorPanel] Created item: ", item.item_name, " (id=", item.id, ")")
 		vendor_items.append(item)
 
 func trigger_purchase_greeting():

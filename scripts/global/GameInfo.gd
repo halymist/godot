@@ -735,7 +735,7 @@ class GameCurrentPlayer:
 		
 		# Load current player specific fields (excluding special cases)
 		for key in data:
-			if key in self and key not in ["daily_quests", "avatar", "stats", "bag_slots", "perks", "talents"]:
+			if key in self and key not in ["daily_quests", "avatar", "stats", "bag_slots", "perks", "talents", "vendor_items", "enchanter_effects"]:
 				set(key, data[key])
 		
 		# Handle daily_quests array with type conversion
@@ -743,6 +743,26 @@ class GameCurrentPlayer:
 			daily_quests.clear()
 			for quest_id in data.daily_quests:
 				daily_quests.append(quest_id as int)
+		
+		# Handle vendor_items array (item IDs from server)
+		print("[GameCurrentPlayer] data.has('vendor_items') = ", data.has("vendor_items"))
+		if data.has("vendor_items"):
+			print("[GameCurrentPlayer] data.vendor_items = ", data.vendor_items, " is Array: ", data.vendor_items is Array)
+		if data.has("vendor_items") and data.vendor_items is Array:
+			vendor_items = []  # Reset to new array instead of clear()
+			for item_id in data.vendor_items:
+				print("[GameCurrentPlayer] Appending item_id: ", item_id, " type: ", typeof(item_id))
+				vendor_items.append(int(item_id))  # Convert to int
+			print("[GameCurrentPlayer] Loaded vendor_items: ", vendor_items)
+		else:
+			print("[GameCurrentPlayer] No vendor_items in data or not an Array")
+		
+		# Handle enchanter_effects array
+		if data.has("enchanter_effects") and data.enchanter_effects is Array:
+			enchanter_effects.clear()
+			for effect_id in data.enchanter_effects:
+				enchanter_effects.append(effect_id)
+			print("[GameCurrentPlayer] Loaded enchanter_effects: ", enchanter_effects)
 		
 		# Handle expedition array
 		if data.has("expedition"):
@@ -966,10 +986,12 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	if server_data.has("enchanter") and server_data.enchanter is Array:
 		client_data["enchanter_effects"] = server_data.enchanter
 		client_data.erase("enchanter")
+		print("[Transform] enchanter -> enchanter_effects: ", client_data["enchanter_effects"])
 	
 	if server_data.has("vendor") and server_data.vendor is Array:
 		client_data["vendor_items"] = server_data.vendor
 		client_data.erase("vendor")
+		print("[Transform] vendor -> vendor_items: ", client_data["vendor_items"])
 	
 	# Handle timestamps (potion_until, elixir_until) - ISO 8601 strings from server
 	if server_data.has("potion_until") and server_data.potion_until != null:
