@@ -91,6 +91,18 @@ func load_lobby_data():
 	pass
 
 # ============================================
+# PERK DATA REFRESH
+# ============================================
+func refresh_all_perks():
+	"""Refresh all perks for current player from databases. Call after databases are loaded."""
+	if current_player:
+		for perk in current_player.perks:
+			perk.refresh_from_database()
+	for character in all_characters:
+		for perk in character.perks:
+			perk.refresh_from_database()
+
+# ============================================
 # TALENT REGISTRATION
 # ============================================
 func register_talent(id: int, effect_id: int, factor: float, max_points: int, perk_slot: int = 0):
@@ -285,33 +297,39 @@ class Perk:
 			if key in self:
 				set(key, data[key])
 		
-		# Get perk data from perks_db if available
-		if GameInfo and GameInfo.perks_db:
-			var perk_resource = GameInfo.perks_db.get_perk_by_id(id)
-			if perk_resource:
-				# Copy static data from resource
-				perk_name = perk_resource.perk_name
-				effect1_id = perk_resource.effect1_id
-				factor1 = perk_resource.factor1
-				effect2_id = perk_resource.effect2_id
-				factor2 = perk_resource.factor2
-				# Texture might be null if not loaded yet - that's OK
-				texture = perk_resource.icon if perk_resource.icon else null
-				
-				# Look up effect details from effects_db
-				if GameInfo.effects_db:
-					if effect1_id > 0:
-						var effect = GameInfo.effects_db.get_effect_by_id(effect1_id)
-						if effect:
-							effect1 = effect.name
-							effect1_description = effect.description
-					if effect2_id > 0:
-						var effect2_res = GameInfo.effects_db.get_effect_by_id(effect2_id)
-						if effect2_res:
-							effect2 = effect2_res.name
-							effect2_description = effect2_res.description
-			else:
-				print("[GameInfo.Perk] WARNING: Perk ID ", id, " not found in perks_db")
+		# Try to load static data from databases
+		refresh_from_database()
+	
+	func refresh_from_database():
+		"""Refresh perk data from perks_db and effects_db. Call this if databases weren't ready during _init."""
+		if not GameInfo or not GameInfo.perks_db:
+			return
+		
+		var perk_resource = GameInfo.perks_db.get_perk_by_id(id)
+		if perk_resource:
+			# Copy static data from resource
+			perk_name = perk_resource.perk_name
+			effect1_id = perk_resource.effect1_id
+			factor1 = perk_resource.factor1
+			effect2_id = perk_resource.effect2_id
+			factor2 = perk_resource.factor2
+			# Texture might be null if not loaded yet - that's OK
+			texture = perk_resource.icon if perk_resource.icon else null
+			
+			# Look up effect details from effects_db
+			if GameInfo.effects_db:
+				if effect1_id > 0:
+					var effect = GameInfo.effects_db.get_effect_by_id(effect1_id)
+					if effect:
+						effect1 = effect.name
+						effect1_description = effect.description
+				if effect2_id > 0:
+					var effect2_res = GameInfo.effects_db.get_effect_by_id(effect2_id)
+					if effect2_res:
+						effect2 = effect2_res.name
+						effect2_description = effect2_res.description
+		else:
+			print("[GameInfo.Perk] WARNING: Perk ID ", id, " not found in perks_db")
 
 class Talent:
 	extends RefCounted

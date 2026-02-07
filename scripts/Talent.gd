@@ -1,15 +1,16 @@
 extends AspectRatioContainer
 
+# These exports remain so the scene can set the talent ID, but other values will be loaded from talents_db
 @export var talentID: int
-@export var talentName: String
-@export var maxPoints: int
+@export var talentName: String  # Fallback name if not in database
+@export var maxPoints: int = 5  # Fallback if not in database
 @export var points: int = 0
 @export var isStarter: bool = false
 
-@export var effect_id: int = 0  # Reference to effect in effects.tres
-@export var factor: float = 1.0  # Custom factor value for this talent
+@export var effect_id: int = 0  # Will be loaded from talents_db
+@export var factor: float = 1.0  # Will be loaded from talents_db
 
-@export var perk_slot: int = 0  # 0 = regular talent, >0 = perk talent with this slot ID
+@export var perk_slot: int = 0  # Will be loaded from talents_db
 
 @export var button: Button
 @export var pointsLabel: Label
@@ -20,7 +21,10 @@ var is_read_only: bool = false
 
 
 func _ready():
-	# Register this talent's metadata globally
+	# Load talent data from talents_db if available
+	_load_from_database()
+	
+	# Register this talent's metadata globally (uses loaded values)
 	GameInfo.register_talent(talentID, effect_id, factor, maxPoints, perk_slot)
 	
 	# Connect button
@@ -30,6 +34,23 @@ func _ready():
 		_setup()
 	else:
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _load_from_database():
+	"""Load talent properties from talents_db based on talentID"""
+	if not GameInfo.talents_db:
+		print("[Talent] WARNING: talents_db not loaded, using fallback values for talent ", talentID)
+		return
+	
+	var talent_data = GameInfo.talents_db.get_talent_by_id(talentID)
+	if talent_data:
+		talentName = talent_data.name
+		maxPoints = talent_data.max_points
+		effect_id = talent_data.effect_id
+		factor = talent_data.factor
+		perk_slot = talent_data.perk_slot
+		print("[Talent] Loaded from DB: ID=", talentID, " name=", talentName, " maxPoints=", maxPoints, " effect=", effect_id, " factor=", factor, " perk_slot=", perk_slot)
+	else:
+		print("[Talent] WARNING: Talent ID ", talentID, " not found in talents_db, using fallback values")
 
 func _setup():
 	if GameInfo.current_player != null:
@@ -91,18 +112,18 @@ func _on_button_pressed():
 			# Find the assigned perk for this slot
 			var assigned_perk = null
 			for perk in displayed_character.perks:
-				if perk.slot_id == perk_slot:
+				if perk.active and perk.slot == perk_slot:
 					assigned_perk = perk
 					break
 			
 			var perk_description = ""
 			if assigned_perk:
 				# Get perk details from perks database
-				var perk_data = GameInfo.perks_db.get_perk_by_id(assigned_perk.perk_id)
+				var perk_data = GameInfo.perks_db.get_perk_by_id(assigned_perk.id)
 				if perk_data:
 					perk_description = perk_data.perk_name + "\n" + perk_data.description
 				else:
-					perk_description = "Perk Slot " + str(perk_slot) + " - Perk ID: " + str(assigned_perk.perk_id)
+					perk_description = "Perk Slot " + str(perk_slot) + " - Perk ID: " + str(assigned_perk.id)
 			else:
 				perk_description = "Perk Slot " + str(perk_slot) + " (No perk assigned)"
 			

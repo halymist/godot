@@ -24,6 +24,8 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
+	# Refresh perk data from databases in case they weren't ready when perks were created
+	GameInfo.refresh_all_perks()
 	refresh_perks()
 
 func refresh_perks():
@@ -65,8 +67,15 @@ func load_active_perks_for_slot(slot: int):
 	print("Loading perks for slot: ", slot)
 	current_slot = slot
 	
+	# Ensure perk data is refreshed from databases
+	GameInfo.refresh_all_perks()
+	
+	# Refresh the perk grid to show current state
+	refresh_perks()
+	
 	# Check if there's already an active perk in this slot
 	var active_perk = _get_active_perk_for_slot(slot)
+	print("Active perk for slot ", slot, ": ", active_perk.perk_name if active_perk else "None")
 	if active_perk:
 		# Show the currently active perk in the display
 		_update_active_display(active_perk)
@@ -76,7 +85,10 @@ func load_active_perks_for_slot(slot: int):
 
 func _get_active_perk_for_slot(slot: int) -> GameInfo.Perk:
 	"""Find the active perk for the given slot"""
+	print("[PerkScreen] Looking for active perk in slot ", slot)
+	print("[PerkScreen] Total perks: ", GameInfo.current_player.perks.size())
 	for perk in GameInfo.current_player.perks:
+		print("[PerkScreen]   Perk: ", perk.perk_name, " active=", perk.active, " slot=", perk.slot)
 		if perk.active and perk.slot == slot:
 			return perk
 	return null

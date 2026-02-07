@@ -57,6 +57,8 @@ func _ready():
 		avatar_button.visible = false
 
 func _setup():
+	# Ensure perk data is refreshed from databases before display
+	GameInfo.refresh_all_perks()
 	if GameInfo.current_player:
 		display_player()
 	print("CharacterDisplay: Setup complete")
