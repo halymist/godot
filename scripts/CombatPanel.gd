@@ -419,6 +419,15 @@ func _on_visibility_changed():
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
+		# If combat came from expedition, continue to next slide
+		if GameInfo.pending_expedition_slide_id_after_combat > 0:
+			var next_slide_id = GameInfo.pending_expedition_slide_id_after_combat
+			GameInfo.pending_expedition_slide_id_after_combat = 0
+			if UIManager.instance and UIManager.instance.expedition_panel:
+				UIManager.instance.show_panel(UIManager.instance.expedition_panel)
+				UIManager.instance.expedition_panel.receive_next_slide(next_slide_id)
+			return
+
 		# Navigate using UIManager
 		var on_quest = GameInfo.current_player.traveling_destination != null
 		

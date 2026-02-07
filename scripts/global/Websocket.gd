@@ -122,6 +122,8 @@ func _handle_message(message: String):
 			_handle_player_data(data)
 		"startExpeditionResponse":
 			_handle_start_expedition_response(data)
+		"expeditionOptionResponse":
+			_handle_expedition_option_response(data)
 		"localChat":
 			_handle_chat_message(data, "local")
 		"globalChat":
@@ -163,6 +165,43 @@ func _handle_start_expedition_response(message: Dictionary):
 	# Pass to MapPanel to handle the travel timer with server-provided arrival time
 	if UIManager.instance and UIManager.instance.map_panel:
 		UIManager.instance.map_panel.receive_expedition_start(slide_id, arrival)
+
+func _handle_expedition_option_response(message: Dictionary):
+	"""Handle expeditionOptionResponse - server returns {data: [{success: true, slide_id: X, message: "..."}]}"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid expeditionOptionResponse format")
+		return
+
+	var data = message.data[0]
+	if not data.get("success", false):
+		print("[WebSocket] Expedition option failed: ", data.get("message", ""))
+		if UIManager.instance and UIManager.instance.expedition_panel:
+			UIManager.instance.expedition_panel.handle_expedition_failed(data.get("message", ""))
+		return
+
+	var slide_id = int(data.get("slide_id", 0))
+	print("[WebSocket] Expedition option processed - slide_id: ", slide_id)
+
+	# Update depleted health if provided
+	if data.has("depleted_health") and GameInfo.current_player:
+		GameInfo.current_player.depleted_health = int(data.depleted_health)
+		if UIManager.instance:
+			UIManager.instance.refresh_stats()
+
+	# If combat data is included, show combat panel first and defer slide advance
+	if data.has("combat") and data.combat is Dictionary:
+		GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
+		GameInfo.pending_expedition_slide_id_after_combat = slide_id
+
+		if UIManager.instance and UIManager.instance.combat_panel:
+			var combat_panel = UIManager.instance.combat_panel
+			combat_panel.prepare_combat()
+			await Engine.get_main_loop().process_frame
+			UIManager.instance.show_panel(combat_panel)
+		return
+
+	if UIManager.instance and UIManager.instance.expedition_panel:
+		UIManager.instance.expedition_panel.receive_next_slide(slide_id)
 
 func _handle_chat_message(message: Dictionary, chat_type: String):
 	"""Handle incoming chat messages (localChat or globalChat)"""
@@ -463,12 +502,3 @@ func expedition_option(option_id: int):
 	send("expedition_option", {
 		"int_argument1": option_id
 	})
-	
-	# MOCK: Simulate server response with random next slide (1-4)
-	# In production, this would come from the server
-	var random_slide = randi_range(1, 4)
-	print("MOCK: Server responded with next slide ID: ", random_slide)
-	
-	# Call the expedition panel to show the next slide
-	if UIManager.instance and UIManager.instance.expedition_panel:
-		UIManager.instance.expedition_panel.receive_next_slide(random_slide)

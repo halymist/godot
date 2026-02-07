@@ -444,3 +444,11 @@ func _load_expedition():
 	
 	# Clear pending slide ID
 	pending_expedition_slide_id = 0
+
+func reset_expedition_state():
+	"""Clear expedition travel flags and refresh UI"""
+	is_expedition_travel = false
+	pending_expedition_slide_id = 0
+	expedition_travel_end = 0.0
+	has_arrived = false
+	refresh_travel_state()

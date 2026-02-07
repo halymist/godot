@@ -32,6 +32,7 @@ var rankings_players: Array[GamePlayer] = []  # Unified list: enemy_players + cu
 var arena_opponents: Array[int] = []
 var chat_messages: Array[ChatMessage] = []
 var current_combat_log: CombatResponse = null
+var pending_expedition_slide_id_after_combat: int = 0
 
 # Talent registry (populated by Talent.gd nodes on _ready)
 var talent_registry: Dictionary = {}

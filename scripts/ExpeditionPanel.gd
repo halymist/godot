@@ -76,15 +76,14 @@ func show_slide(slide_id: int):
 	current_slide_id = slide_id
 	
 	# Update text
-	expedition_text.text = slide.slide_text
+	_animate_expedition_text(slide.slide_text)
 	
 	# Update background if slide has texture
 	if slide.texture and background:
 		background.texture = slide.texture
 	
 	# Clear existing options
-	for child in options_container.get_children():
-		child.queue_free()
+	_clear_options()
 	
 	# Clear reward label
 	if reward_label:
@@ -236,6 +235,26 @@ func receive_next_slide(slide_id: int):
 		# Update player's expedition state
 		GameInfo.current_player.expedition = [slide_id]
 
+func handle_expedition_failed(message: String):
+	"""Handle a failed expedition option by clearing state and showing a placeholder message"""
+	current_slide_id = 0
+	visible = true
+
+	_clear_options()
+	if reward_label:
+		reward_label.text = ""
+
+	var placeholder = message if message != "" else "Expedition ended. Return home."
+	_animate_expedition_text(placeholder)
+
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = []
+		GameInfo.current_player.traveling_destination = null
+		GameInfo.current_player.traveling = 0
+
+	if UIManager.instance and UIManager.instance.map_panel:
+		UIManager.instance.map_panel.reset_expedition_state()
+
 func end_expedition():
 	"""End the current expedition"""
 	current_slide_id = 0
@@ -249,3 +268,17 @@ func end_expedition():
 func is_on_expedition() -> bool:
 	"""Check if player is currently on an expedition"""
 	return visible and current_slide_id > 0
+
+func _clear_options():
+	for child in options_container.get_children():
+		child.queue_free()
+
+func _animate_expedition_text(text: String):
+	"""Animate expedition text with fade and slide effect (match quest style)"""
+	expedition_text.text = text
+	expedition_text.modulate.a = 0
+	expedition_text.position.y = 20
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(expedition_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	tween.tween_property(expedition_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
