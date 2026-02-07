@@ -105,12 +105,12 @@ func refresh_all_perks():
 # ============================================
 # TALENT REGISTRATION
 # ============================================
-func register_talent(id: int, effect_id: int, factor: float, max_points: int, perk_slot: int = 0):
+func register_talent(id: int, effect_id: int, factor: float, max_points: int, perk_slot: bool = false):
 	talent_registry[id] = {
 		"effect_id": effect_id,
 		"factor": factor,
 		"max_points": max_points,
-		"perk_slot": perk_slot
+		"perk_slot": perk_slot  # bool: true if this talent unlocks a perk slot
 	}
 
 # ============================================
@@ -652,7 +652,7 @@ class GamePlayer:
 				var talent_meta = GameInfo.talent_registry[talent_id]
 				
 				# Skip perk slot talents (they don't provide direct effects)
-				if talent_meta.perk_slot > 0:
+				if talent_meta.perk_slot:
 					continue
 				
 				# Calculate talent contribution

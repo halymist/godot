@@ -10,7 +10,7 @@ extends AspectRatioContainer
 @export var effect_id: int = 0  # Will be loaded from talents_db
 @export var factor: float = 1.0  # Will be loaded from talents_db
 
-@export var perk_slot: int = 0  # Will be loaded from talents_db
+@export var perk_slot: bool = false  # true if this talent unlocks a perk slot (talentID identifies the slot)
 
 @export var button: Button
 @export var pointsLabel: Label
@@ -47,7 +47,7 @@ func _load_from_database():
 		maxPoints = talent_data.max_points
 		effect_id = talent_data.effect_id
 		factor = talent_data.factor
-		perk_slot = talent_data.perk_slot
+		perk_slot = talent_data.perk_slot  # bool: true if this talent unlocks a perk slot
 		print("[Talent] Loaded from DB: ID=", talentID, " name=", talentName, " maxPoints=", maxPoints, " effect=", effect_id, " factor=", factor, " perk_slot=", perk_slot)
 	else:
 		print("[Talent] WARNING: Talent ID ", talentID, " not found in talents_db, using fallback values")
@@ -108,11 +108,11 @@ func _on_button_pressed():
 	# In read-only mode, show info but don't allow perk selection or upgrades
 	if is_read_only:
 		# For perk slot talents in read-only mode, show assigned perk description
-		if perk_slot > 0 and points >= maxPoints:
-			# Find the assigned perk for this slot
+		if perk_slot and points >= maxPoints:
+			# Find the assigned perk for this slot (slot = talentID)
 			var assigned_perk = null
 			for perk in displayed_character.perks:
-				if perk.active and perk.slot == perk_slot:
+				if perk.active and perk.slot == talentID:
 					assigned_perk = perk
 					break
 			
@@ -123,16 +123,16 @@ func _on_button_pressed():
 				if perk_data:
 					perk_description = perk_data.perk_name + "\n" + perk_data.description
 				else:
-					perk_description = "Perk Slot " + str(perk_slot) + " - Perk ID: " + str(assigned_perk.id)
+					perk_description = "Perk Slot (Talent " + str(talentID) + ") - Perk ID: " + str(assigned_perk.id)
 			else:
-				perk_description = "Perk Slot " + str(perk_slot) + " (No perk assigned)"
+				perk_description = "Perk Slot (Talent " + str(talentID) + ") (No perk assigned)"
 			
 			UIManager.instance.upgrade_talent.set_talent_data(talentName, perk_description, 0, points, maxPoints, false, self)
 			return
 		
 		# For regular talents in read-only mode, show description without upgrade option
 		var description = ""
-		if perk_slot > 0:
+		if perk_slot:
 			description = "Unlocks an additional perk slot"
 		elif effect_id > 0:
 			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
@@ -147,8 +147,9 @@ func _on_button_pressed():
 	
 	# Player mode logic
 	# Check if this is a perk slot talent (to select a perk)
-	if perk_slot > 0 and points >= maxPoints:
-		UIManager.instance.perk_screen.load_active_perks_for_slot(perk_slot)
+	if perk_slot and points >= maxPoints:
+		# Use talentID as the perk slot identifier
+		UIManager.instance.perk_screen.load_active_perks_for_slot(talentID)
 		UIManager.instance.perk_screen.visible = true
 	else:
 		# Show upgrade screen for all other cases (unlock perk slot or upgrade regular talent)
@@ -156,7 +157,7 @@ func _on_button_pressed():
 		var description = ""
 		
 		# Check if this is a perk slot talent
-		if perk_slot > 0:
+		if perk_slot:
 			description = "Unlocks an additional perk slot"
 		elif effect_id > 0:
 			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)

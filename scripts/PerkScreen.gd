@@ -62,10 +62,10 @@ func refresh_perks():
 	
 	print("Loaded ", all_perks.size(), " perks")
 
-func load_active_perks_for_slot(slot: int):
-	"""Called when opening the perk screen for a specific active slot (1-3)"""
-	print("Loading perks for slot: ", slot)
-	current_slot = slot
+func load_active_perks_for_slot(talent_id: int):
+	"""Called when opening the perk screen for a specific perk slot talent (talent_id identifies the slot)"""
+	print("Loading perks for talent_id (perk slot): ", talent_id)
+	current_slot = talent_id  # current_slot now stores the talent_id
 	
 	# Ensure perk data is refreshed from databases
 	GameInfo.refresh_all_perks()
@@ -73,9 +73,9 @@ func load_active_perks_for_slot(slot: int):
 	# Refresh the perk grid to show current state
 	refresh_perks()
 	
-	# Check if there's already an active perk in this slot
-	var active_perk = _get_active_perk_for_slot(slot)
-	print("Active perk for slot ", slot, ": ", active_perk.perk_name if active_perk else "None")
+	# Check if there's already an active perk in this slot (slot = talent_id)
+	var active_perk = _get_active_perk_for_slot(talent_id)
+	print("Active perk for talent_id ", talent_id, ": ", active_perk.perk_name if active_perk else "None")
 	if active_perk:
 		# Show the currently active perk in the display
 		_update_active_display(active_perk)
@@ -83,13 +83,13 @@ func load_active_perks_for_slot(slot: int):
 		# Clear the display
 		_clear_active_display()
 
-func _get_active_perk_for_slot(slot: int) -> GameInfo.Perk:
-	"""Find the active perk for the given slot"""
-	print("[PerkScreen] Looking for active perk in slot ", slot)
+func _get_active_perk_for_slot(talent_id: int) -> GameInfo.Perk:
+	"""Find the active perk for the given slot (slot = talent_id that unlocks the perk slot)"""
+	print("[PerkScreen] Looking for active perk with slot (talent_id) = ", talent_id)
 	print("[PerkScreen] Total perks: ", GameInfo.current_player.perks.size())
 	for perk in GameInfo.current_player.perks:
 		print("[PerkScreen]   Perk: ", perk.perk_name, " active=", perk.active, " slot=", perk.slot)
-		if perk.active and perk.slot == slot:
+		if perk.active and perk.slot == talent_id:
 			return perk
 	return null
 
@@ -156,24 +156,22 @@ func _on_bind_pressed():
 		print("No perk selected to bind")
 		return
 	
-	print("Binding perk '", selected_perk.perk_name, "' to slot ", current_slot)
+	# current_slot is now the talent_id that unlocks this perk slot
+	var talent_id = current_slot
+	print("Binding perk '", selected_perk.perk_name, "' to talent_id ", talent_id)
 	
-	var existing_perk = _get_active_perk_for_slot(current_slot)
+	var existing_perk = _get_active_perk_for_slot(talent_id)
 	
 	if existing_perk:
 		existing_perk.active = false
 		existing_perk.slot = _get_next_inactive_slot()
-		print("Deactivated perk '", existing_perk.perk_name, "' from slot ", current_slot)
+		print("Deactivated perk '", existing_perk.perk_name, "' from talent_id ", talent_id)
 	
 	selected_perk.active = true
-	selected_perk.slot = current_slot
+	selected_perk.slot = talent_id  # slot stores the talent_id
 	
-	# Find the talent_id that unlocks this perk slot
-	var talent_id = _get_talent_id_for_perk_slot(current_slot)
-	if talent_id > 0:
-		Websocket.activate_perk(talent_id, selected_perk.id)
-	else:
-		print("[PerkScreen] ERROR: Could not find talent_id for perk_slot ", current_slot)
+	# Send to server: talent_id identifies which perk slot, perk.id is the perk to activate
+	Websocket.activate_perk(talent_id, selected_perk.id)
 	
 	UIManager.instance.refresh_active_effects()
 	_update_active_display(selected_perk)
@@ -192,15 +190,6 @@ func _get_next_inactive_slot() -> int:
 		if not perk.active and perk.slot > max_slot:
 			max_slot = perk.slot
 	return max_slot + 1
-
-func _get_talent_id_for_perk_slot(perk_slot_num: int) -> int:
-	"""Find the talent_id that unlocks the given perk slot"""
-	# Search through talent_registry to find which talent has this perk_slot
-	for talent_id in GameInfo.talent_registry:
-		var talent_meta = GameInfo.talent_registry[talent_id]
-		if talent_meta.perk_slot == perk_slot_num:
-			return talent_id
-	return 0  # Not found
 
 func _on_button_pressed():
 	visible = false
