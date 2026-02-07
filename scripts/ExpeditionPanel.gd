@@ -6,6 +6,8 @@ extends Panel
 @export var reward_label: Label  # Label to display rewards
 @export var background: TextureRect
 @export var expedition_text: Label
+@export var health_bar: TextureProgressBar
+@export var effects_container: Control
 
 # Icon textures for different option types
 @export_group("Option Icons")
@@ -51,6 +53,7 @@ func _ready():
 func _on_visibility_changed():
 	"""Auto-load expedition slide when panel becomes visible"""
 	if visible:
+		_update_health_bar()
 		var expedition = GameInfo.current_player.expedition
 		if expedition and expedition.size() > 0:
 			var slide_id = expedition[0]
@@ -77,6 +80,7 @@ func show_slide(slide_id: int):
 	
 	# Update text
 	_animate_expedition_text(slide.slide_text)
+	_update_health_bar()
 	
 	# Update background if slide has texture
 	if slide.texture and background:
@@ -190,19 +194,50 @@ func _apply_slide_rewards(slide: Resource):
 		reward_texts.append("+%d Talent Point(s)" % slide.reward_talent)
 	
 	if slide.reward_item > 0:
-		# Server handles item - just show notification
-		reward_texts.append("Item received!")
+		var added = player.add_item_to_bag(slide.reward_item)
+		if added:
+			var item_resource = GameInfo.items_db.get_item_by_id(slide.reward_item) if GameInfo.items_db else null
+			if item_resource:
+				reward_texts.append("You receive " + item_resource.item_name + ".")
+			else:
+				reward_texts.append("Item received!")
+			print("REWARD: Added Item ID ", slide.reward_item, " to bag")
+		else:
+			reward_texts.append("Your bag is full!")
 	
 	if slide.reward_perk > 0:
-		reward_texts.append("Perk unlocked!")
+		var added_perk = player.add_perk_if_new(slide.reward_perk)
+		var perk_resource = GameInfo.perks_db.get_perk_by_id(slide.reward_perk) if GameInfo.perks_db else null
+		if added_perk:
+			reward_texts.append("You receive the perk: " + perk_resource.perk_name + "." if perk_resource else "Perk unlocked!")
+		else:
+			reward_texts.append("You already have this perk (" + perk_resource.perk_name + ")." if perk_resource else "Perk already owned!")
 	
 	if slide.reward_blessing > 0:
-		player.blessing += slide.reward_blessing
-		reward_texts.append("+%d Blessing" % slide.reward_blessing)
+		player.blessing = slide.reward_blessing
+		var blessing_res = GameInfo.perks_db.get_perk_by_id(slide.reward_blessing) if GameInfo.perks_db else null
+		reward_texts.append("You receive a blessing: " + blessing_res.perk_name + "." if blessing_res else "+%d Blessing" % slide.reward_blessing)
+		if UIManager.instance:
+			UIManager.instance.refresh_active_effects()
 	
 	if slide.reward_potion > 0:
-		player.potion += slide.reward_potion
-		reward_texts.append("+%d Potion" % slide.reward_potion)
+		player.potion = slide.reward_potion
+		var potion_res = GameInfo.items_db.get_item_by_id(slide.reward_potion) if GameInfo.items_db else null
+		reward_texts.append("You receive a potion: " + potion_res.item_name + "." if potion_res else "+%d Potion" % slide.reward_potion)
+		if UIManager.instance:
+			UIManager.instance.refresh_active_effects()
+
+	# Apply slide effect (e.g., effect_id 200 = health depletion)
+	if slide.effect_id == 200 and slide.effect_factor != 0:
+		var total_stats = player.get_total_stats()
+		var max_health = total_stats.stamina * 10
+		var percent = abs(float(slide.effect_factor))
+		var health_loss = int(round(max_health * (percent / 100.0)))
+		player.depleted_health += health_loss
+		reward_texts.append("You lose %d%% of your health." % int(percent))
+		if UIManager.instance:
+			UIManager.instance.refresh_stats()
+		_update_health_bar()
 	
 	# Show combined reward text
 	if reward_label and reward_texts.size() > 0:
@@ -210,6 +245,8 @@ func _apply_slide_rewards(slide: Resource):
 		print("Applying slide rewards: ", reward_label.text)
 	elif reward_label:
 		reward_label.text = ""
+
+	_update_health_bar()
 
 func _get_stat_name(stat_type: int) -> String:
 	"""Convert stat type int to stat name"""
@@ -268,6 +305,19 @@ func end_expedition():
 func is_on_expedition() -> bool:
 	"""Check if player is currently on an expedition"""
 	return visible and current_slide_id > 0
+
+func _update_health_bar():
+	if not health_bar or not GameInfo.current_player:
+		return
+
+	var total_stats = GameInfo.current_player.get_total_stats()
+	var max_health = total_stats.stamina * 10
+	var depleted = GameInfo.current_player.depleted_health
+	var current_health = max(0, max_health - depleted)
+	health_bar.max_value = max_health
+	health_bar.value = current_health
+	if health_bar.has_node("HealthLabel"):
+		health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
 
 func _clear_options():
 	for child in options_container.get_children():

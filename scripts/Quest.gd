@@ -6,6 +6,8 @@ extends Panel
 @export var reward_label: Label  # Label to display quest rewards
 @export var background: TextureRect
 @export var quest_text: Label
+@export var health_bar: TextureProgressBar
+@export var effects_container: Control
 
 # Icon textures for different option types
 @export_group("Option Icons")
@@ -85,6 +87,8 @@ func _on_visibility_changed():
 	"""Load quest when panel becomes visible"""
 	if not visible:
 		return
+
+	_update_health_bar()
 	
 	# Check if we're returning from combat
 	if pending_combat_option != null:
@@ -178,6 +182,7 @@ func animate_quest_text(text: String):
 func display_quest_with_text(text: String):
 	"""Display quest with custom text and current visible options"""
 	animate_quest_text(text)
+	_update_health_bar()
 	
 	clear_options()
 	if current_quest.options:
@@ -264,6 +269,21 @@ func apply_option_reward(option: QuestOption):
 		reward_label.text = reward_text
 	else:
 		reward_label.text = ""
+
+	_update_health_bar()
+
+func _update_health_bar():
+	if not health_bar or not GameInfo.current_player:
+		return
+
+	var total_stats = GameInfo.current_player.get_total_stats()
+	var max_health = total_stats.stamina * 10
+	var depleted = GameInfo.current_player.depleted_health
+	var current_health = max(0, max_health - depleted)
+	health_bar.max_value = max_health
+	health_bar.value = current_health
+	if health_bar.has_node("HealthLabel"):
+		health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
 
 func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""

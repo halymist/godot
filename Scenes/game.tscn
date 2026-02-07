@@ -6258,7 +6258,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
 
-[node name="Quest" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "quest_text", "portrait")]
+[node name="Quest" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "quest_text", "health_bar", "effects_container", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6273,6 +6273,8 @@ options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
 background = NodePath("Bakcground")
 quest_text = NodePath("Overlay/TextContainer/QuestLabel")
+health_bar = NodePath("Overlay/TopBar/HealthBar")
+effects_container = NodePath("Overlay/TopBar/EffectsPanel")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
@@ -6310,6 +6312,31 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
+
+[node name="TopBar" type="HBoxContainer" parent="Portrait/GameScene/Quest/Overlay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03
+anchor_right = 0.97
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 12
+
+[node name="HealthBar" parent="Portrait/GameScene/Quest/Overlay/TopBar" instance=ExtResource("22_healthbar")]
+custom_minimum_size = Vector2(220, 28)
+layout_mode = 2
+
+[node name="EffectsPanel" type="PanelContainer" parent="Portrait/GameScene/Quest/Overlay/TopBar"]
+custom_minimum_size = Vector2(220, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EffectsLabel" type="Label" parent="Portrait/GameScene/Quest/Overlay/TopBar/EffectsPanel"]
+layout_mode = 2
+text = "Effects: (placeholder)"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextContainer" type="MarginContainer" parent="Portrait/GameScene/Quest/Overlay"]
 layout_mode = 1
@@ -6356,7 +6383,7 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="Expedition" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "expedition_text", "portrait")]
+[node name="Expedition" type="Panel" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "background", "expedition_text", "health_bar", "effects_container", "portrait")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6371,6 +6398,8 @@ options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
 background = NodePath("Background")
 expedition_text = NodePath("Overlay/TextContainer/ExpeditionLabel")
+health_bar = NodePath("Overlay/TopBar/HealthBar")
+effects_container = NodePath("Overlay/TopBar/EffectsPanel")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
@@ -6408,6 +6437,31 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
+
+[node name="TopBar" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03
+anchor_right = 0.97
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 12
+
+[node name="HealthBar" parent="Portrait/GameScene/Expedition/Overlay/TopBar" instance=ExtResource("22_healthbar")]
+custom_minimum_size = Vector2(220, 28)
+layout_mode = 2
+
+[node name="EffectsPanel" type="PanelContainer" parent="Portrait/GameScene/Expedition/Overlay/TopBar"]
+custom_minimum_size = Vector2(220, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EffectsLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/TopBar/EffectsPanel"]
+layout_mode = 2
+text = "Effects: (placeholder)"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextContainer" type="MarginContainer" parent="Portrait/GameScene/Expedition/Overlay"]
 layout_mode = 1
