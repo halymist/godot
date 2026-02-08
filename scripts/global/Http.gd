@@ -110,15 +110,21 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 	if response.has("session_id"):
 		session_id = response["session_id"]
 	
-	# Transform server response to client format (lobby_data)
-	var lobby_data = _transform_auth_response(response)
+	# If response already includes lobby data, emit immediately
+	var has_lobby_data = response.has("server_list") or response.has("data_versions") or response.has("mushrooms") or response.has("user_email") or response.has("account_created")
+	if has_lobby_data:
+		var lobby_data = _transform_auth_response(response)
+		login_completed.emit(true, lobby_data, "")
+		return
 	
-	login_completed.emit(true, lobby_data, "")
+	# Otherwise, fetch lobby data before emitting
+	fetch_lobby()
 
 func _transform_auth_response(response: Dictionary) -> Dictionary:
 	"""Transform server AuthResponse to client lobby_data format"""
 	var lobby_data = {
 		"account_created": response.get("account_created", ""),
+		"user_email": response.get("user_email", ""),
 		"email": response.get("user_email", ""),
 		"mushrooms": response.get("mushrooms", 0),
 		"connected_methods": response.get("user_connected_methods", []),
@@ -128,6 +134,51 @@ func _transform_auth_response(response: Dictionary) -> Dictionary:
 	}
 	
 	return lobby_data
+
+func fetch_lobby():
+	"""Fetch lobby data using stored session ID and emit login_completed when ready."""
+	if session_id.is_empty():
+		login_completed.emit(false, {}, "Missing session ID for lobby request")
+		return
+
+	var http_request = _create_http_request()
+	http_request.request_completed.connect(_on_lobby_completed.bind(http_request))
+	var url = base_url + "/lobby"
+	print("[HTTP] GET ", url)
+	var error = http_request.request(url, _get_headers(true), HTTPClient.METHOD_GET, "")
+	if error != OK:
+		print("[HTTP] Failed to send lobby request: ", error)
+		http_request.queue_free()
+		login_completed.emit(false, {}, "Failed to request lobby data")
+
+func _on_lobby_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
+	"""Handle lobby response from server"""
+	http_request.queue_free()
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		print("[HTTP] Lobby request failed with result: ", result)
+		login_completed.emit(false, {}, "Connection failed")
+		return
+
+	var body_text = body.get_string_from_utf8()
+	print("[HTTP] Lobby response (", response_code, "): ", body_text)
+	if response_code != 200:
+		login_completed.emit(false, {}, "Lobby load failed (HTTP " + str(response_code) + ")")
+		return
+
+	var json = JSON.new()
+	if json.parse(body_text) != OK:
+		print("[HTTP] Failed to parse lobby response")
+		login_completed.emit(false, {}, "Invalid lobby response")
+		return
+
+	var response = json.get_data()
+	if not response is Dictionary:
+		login_completed.emit(false, {}, "Invalid lobby response format")
+		return
+
+	var lobby_data = _transform_auth_response(response)
+	login_completed.emit(true, lobby_data, "")
 
 func register(auth_type: String, _username: String = "", _password: String = ""):
 	"""
