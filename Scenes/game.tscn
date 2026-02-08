@@ -398,11 +398,13 @@ expand_icon = true
 [node name="LocationPanel" type="Panel" parent="Portrait/TopUI"]
 layout_mode = 1
 anchors_preset = -1
+anchor_left = 0.758
 anchor_top = 0.8
+anchor_right = 0.758
 anchor_bottom = 0.978
-offset_left = 10.0
-offset_right = 307.0
-offset_bottom = -0.0399933
+offset_left = -130.99
+offset_right = 0.00997925
+offset_bottom = -0.0400085
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 
@@ -6366,7 +6368,6 @@ size_flags_vertical = 8
 alignment = 2
 
 [node name="Expedition" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "expedition_text", "health_bar", "effects_container", "portrait")]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -6380,8 +6381,8 @@ text_container = NodePath("Overlay/TextContainer")
 options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
 expedition_text = NodePath("Overlay/TextContainer/ExpeditionLabel")
-health_bar = NodePath("Overlay/TopBar/HealthBar")
-effects_container = NodePath("Overlay/TopBar/EffectsPanel")
+health_bar = NodePath("Overlay/HealthBar")
+effects_container = NodePath("Overlay/EffectsPanel")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
@@ -6406,26 +6407,30 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="TopBar" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.03
-anchor_right = 0.97
+[node name="HealthBar" parent="Portrait/GameScene/Expedition/Overlay" instance=ExtResource("22_healthbar")]
+custom_minimum_size = Vector2(100, 28)
+layout_mode = 2
+anchor_left = 0.235
+anchor_top = 0.03
+anchor_right = 0.235
+anchor_bottom = 0.03
+offset_left = -84.175
+offset_top = -10.9
+offset_right = 83.825
+offset_bottom = 21.1
+
+[node name="EffectsPanel" type="PanelContainer" parent="Portrait/GameScene/Expedition/Overlay"]
+custom_minimum_size = Vector2(100, 28)
+layout_mode = 2
+anchor_left = 0.696
+anchor_right = 0.696
+offset_left = -85.88
+offset_top = 1.0
+offset_right = 110.12
 offset_bottom = 52.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 12
-
-[node name="HealthBar" parent="Portrait/GameScene/Expedition/Overlay/TopBar" instance=ExtResource("22_healthbar")]
-custom_minimum_size = Vector2(220, 28)
-layout_mode = 2
-
-[node name="EffectsPanel" type="PanelContainer" parent="Portrait/GameScene/Expedition/Overlay/TopBar"]
-custom_minimum_size = Vector2(220, 28)
-layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EffectsLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/TopBar/EffectsPanel"]
+[node name="EffectsLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/EffectsPanel"]
 layout_mode = 2
 text = "Effects: (placeholder)"
 horizontal_alignment = 1

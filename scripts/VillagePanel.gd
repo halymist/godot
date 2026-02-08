@@ -31,11 +31,9 @@ var available_quests: Array[int] = []
 var _utility_type: String = ""  # Track current utility type for callback
 
 func _ready():
-	# Check if we're the starter panel
-	if UIManager.instance.starter_panel == self:
+	# Wait for game_ready before setup
+	if UIManager.instance.game_is_ready:
 		_setup()
-		UIManager.instance.game_is_ready = true
-		UIManager.instance.game_ready.emit()
 	else:
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 

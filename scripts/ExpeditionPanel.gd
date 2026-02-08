@@ -49,6 +49,15 @@ func _ready():
 	visible = false
 	visibility_changed.connect(_on_visibility_changed)
 
+	# Wait for game_ready before setup
+	if UIManager.instance.game_is_ready:
+		_setup()
+	else:
+		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _setup():
+	print("ExpeditionPanel: Setup complete")
+
 func _on_visibility_changed():
 	"""Auto-load expedition slide when panel becomes visible"""
 	if visible:

@@ -68,15 +68,10 @@ func _ready():
 	# Always connect to visibility changes
 	visibility_changed.connect(_on_visibility_changed)
 	
-	# Check if we're the starter panel
-	if UIManager.instance.starter_panel == self:
-		print("DynamicOptionsPanel: I am the starter panel")
+	# Wait for game_ready before setup
+	if UIManager.instance.game_is_ready:
 		_setup()
-		UIManager.instance.game_is_ready = true
-		UIManager.instance.game_ready.emit()
-		print("DynamicOptionsPanel: Emitted game_ready signal")
 	else:
-		print("DynamicOptionsPanel: Waiting for game_ready signal")
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():

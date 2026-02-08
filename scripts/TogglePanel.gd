@@ -125,8 +125,13 @@ func _initialize_starter_panel():
 	"""Determine and show the initial panel based on player state"""
 	var start_panel = _determine_starter_panel()
 	starter_panel = start_panel
-	current_panel = start_panel
-	start_panel.visible = true
+	show_panel(start_panel)
+	print("UIManager: Starter panel determined: ", starter_panel.name)
+	if not game_is_ready:
+		if start_panel and start_panel.has_method("_setup"):
+			start_panel.call("_setup")
+		game_is_ready = true
+		game_ready.emit()
 
 func _determine_starter_panel() -> Control:
 	"""Determine which panel is the starter based on player state"""
@@ -134,12 +139,13 @@ func _determine_starter_panel() -> Control:
 	var traveling = GameInfo.current_player.traveling
 	var expedition = GameInfo.current_player.expedition
 	var now = Time.get_unix_time_from_system()
-	var arrival_ts = traveling if traveling != null else 0
+	var arrival_ts = float(traveling) if traveling != null else 0.0
 	
 	print("=== STARTUP QUEST STATE DEBUG ===")
 	print("destination: ", destination, " (type: ", typeof(destination), ")")
 	print("traveling: ", traveling, " (type: ", typeof(traveling), ")")
 	print("expedition: ", expedition)
+	print("arrival_ts: ", arrival_ts, " now: ", now, " (diff: ", arrival_ts - now, ")")
 	print("================================")
 	
 	# If arrival time is in the future, show map (traveling)
@@ -168,11 +174,10 @@ func is_on_active_quest() -> bool:
 	
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
-	if traveling == null:
-		traveling = 0
+	var arrival_ts = float(traveling) if traveling != null else 0.0
 	
 	# Player is on active quest if: destination exists AND not currently traveling
-	return destination != null and traveling <= Time.get_unix_time_from_system()
+	return destination != null and arrival_ts <= Time.get_unix_time_from_system()
 
 func is_on_expedition() -> bool:
 	"""Check if player is currently on an expedition"""
@@ -189,7 +194,8 @@ func is_traveling() -> bool:
 	
 	# Check quest travel
 	var traveling = GameInfo.current_player.traveling
-	if traveling != null and traveling > Time.get_unix_time_from_system():
+	var arrival_ts = float(traveling) if traveling != null else 0.0
+	if arrival_ts > Time.get_unix_time_from_system():
 		return true
 	
 	# Check expedition travel (timer running on map panel)
