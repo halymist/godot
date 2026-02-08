@@ -173,12 +173,17 @@ func _handle_expedition_option_response(message: Dictionary):
 		return
 
 	var data = message.data[0]
+	# Update depleted health if provided by server
+	if GameInfo.current_player and data.has("depleted_health"):
+		GameInfo.current_player.depleted_health = clamp(float(data.get("depleted_health", 0.0)), 0.0, 100.0)
+		if UIManager.instance:
+			UIManager.instance.refresh_stats()
 	if not data.get("success", false):
 		print("[WebSocket] Expedition option failed: ", data.get("message", ""))
 		# If combat data exists, show combat and defer failure handling
 		if data.has("combat") and data.combat is Dictionary:
 			GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
-			if GameInfo.current_player:
+			if GameInfo.current_player and not data.has("depleted_health"):
 				GameInfo.current_player.depleted_health = clamp(GameInfo.current_combat_log.player_depleted_health, 0.0, 100.0)
 				if UIManager.instance:
 					UIManager.instance.refresh_stats()
@@ -208,7 +213,7 @@ func _handle_expedition_option_response(message: Dictionary):
 	# If combat data is included, show combat panel first and defer slide advance
 	if data.has("combat") and data.combat is Dictionary:
 		GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
-		if GameInfo.current_player:
+		if GameInfo.current_player and not data.has("depleted_health"):
 			GameInfo.current_player.depleted_health = clamp(GameInfo.current_combat_log.player_depleted_health, 0.0, 100.0)
 			if UIManager.instance:
 				UIManager.instance.refresh_stats()

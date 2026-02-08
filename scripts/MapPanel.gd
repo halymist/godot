@@ -374,16 +374,16 @@ func _update_button_label_colors(button: Button, disabled: bool):
 			if child is Label:
 				child.add_theme_color_override("font_color", color)
 
-func _set_enter_price_visible(is_visible: bool):
+func _set_enter_price_visible(price_visible: bool):
 	var price_label = enter_dungeon_button.get_node_or_null("Content/PriceLabel")
 	var currency_icon = enter_dungeon_button.get_node_or_null("Content/CurrencyIcon")
 	var closing_paren = enter_dungeon_button.get_node_or_null("Content/ClosingParen")
 	if price_label:
-		price_label.visible = is_visible
+		price_label.visible = price_visible
 	if currency_icon:
-		currency_icon.visible = is_visible
+		currency_icon.visible = price_visible
 	if closing_paren:
-		closing_paren.visible = is_visible
+		closing_paren.visible = price_visible
 
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player

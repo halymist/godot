@@ -11,7 +11,6 @@ var base_url = "http://localhost:8080"
 
 # Signals for async responses
 signal login_completed(success: bool, data: Dictionary, error: String)
-signal register_completed(success: bool, data: Dictionary, error: String)
 signal create_character_completed(success: bool, character_id: int, error: String)
 
 # Session ID from successful login (used for authenticated requests)

@@ -347,6 +347,7 @@ func _on_logout():
 	"""Logout and return to login screen"""
 	# Call server logout endpoint
 	Http.logout()
+	GameInfo.skip_auto_login_once = true
 	
 	# Clear lobby data
 	GameInfo.lobby_data.clear()

@@ -72,12 +72,17 @@ func _ready():
 		_show_lobby_after_init()
 		return
 	
-	# Try to auto-login with saved credentials
-	if _try_auto_login():
-		return
-	
 	# Connect HTTP login signal
-	Http.login_completed.connect(_on_login_completed)
+	if not Http.login_completed.is_connected(_on_login_completed):
+		Http.login_completed.connect(_on_login_completed)
+	
+	# Try to auto-login with saved credentials (unless explicitly skipped)
+	if GameInfo.skip_auto_login_once:
+		GameInfo.skip_auto_login_once = false
+		_prefill_saved_credentials()
+	else:
+		if _try_auto_login():
+			return
 	
 	# Connect mode toggle buttons
 	login_mode_button.toggled.connect(_on_login_mode_toggled)
@@ -289,9 +294,6 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 		# Save credentials if "stay logged in" is checked
 		if stay_logged_in_checkbox and stay_logged_in_checkbox.button_pressed:
 			_save_credentials()
-		else:
-			# Clear saved credentials if unchecked
-			_clear_credentials()
 		
 		# Switch to lobby panel and initialize it with server data
 		_show_lobby_after_init()
@@ -316,18 +318,32 @@ func _try_auto_login() -> bool:
 	if email.is_empty() or password.is_empty():
 		return false
 	
-	print("[Login] Found saved credentials, pre-filling login form...")
+	_prefill_saved_credentials()
 	
-	# Pre-fill the email and password fields
+	# Auto-login if we have both fields
+	if not email_input.text.strip_edges().is_empty() and not password_input.text.is_empty():
+		_on_login()
+		return true
+	
+	return false
+
+func _prefill_saved_credentials():
+	"""Pre-fill the email and password fields without auto-login."""
+	var config = ConfigFile.new()
+	var err = config.load(CREDENTIALS_PATH)
+	if err != OK:
+		return
+	var email = config.get_value("auth", "email", "")
+	var password = config.get_value("auth", "password", "")
+	if email.is_empty() or password.is_empty():
+		return
+	print("[Login] Found saved credentials, pre-filling login form...")
 	if email_input:
 		email_input.text = email
 	if password_input:
 		password_input.text = password
 	if stay_logged_in_checkbox:
 		stay_logged_in_checkbox.button_pressed = true
-	
-	# User still needs to click login button
-	return false
 
 func _save_credentials():
 	"""Save email and password to config file"""

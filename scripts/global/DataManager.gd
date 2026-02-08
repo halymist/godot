@@ -668,10 +668,10 @@ func _load_quests_database() -> QuestsDatabase:
 	print("[DataManager] Loaded %d quests" % db.quests.size())
 	return db
 
-func _map_item_type_to_enum(type_string: String) -> int:
+func _map_item_type_to_enum(item_type_string: String) -> int:
 	"""Map item type string to ItemResource.ItemType enum"""
 	# ItemType enum: HEAD=0, CHEST=1, HANDS=2, FOOT=3, BELT=4, LEGS=5, RING=6, AMULET=7, WEAPON=8, GEM=9, POTION=10, ELIXIR=11, SCROLL=12, HAMMER=13, RATION=14, INGREDIENT=15
-	match type_string.to_lower():
+	match item_type_string.to_lower():
 		"head", "helmet": return 0  # HEAD
 		"chest": return 1  # CHEST
 		"hands", "gloves": return 2  # HANDS

@@ -22,6 +22,9 @@ var talents_db: Resource = null  # TalentsDatabase
 # Lobby data (account info, server list, character list)
 var lobby_data: Dictionary = {}
 
+# Skip auto-login after explicit logout
+var skip_auto_login_once: bool = false
+
 # Character management
 var all_characters: Array[GameCurrentPlayer] = []
 var current_character_id: int = 0

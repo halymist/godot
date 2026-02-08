@@ -31,6 +31,10 @@ func _ready():
 		item_outline.texture = outline_texture
 	
 	update_slot_appearance()
+	call_deferred("update_slot_appearance")
+
+func _is_item_child(child: Node) -> bool:
+	return child != item_outline and child.has_method("get_item_data")
 
 func _can_drop_data(_pos, data):
 	# Check if data is valid drag package
@@ -556,7 +560,7 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 
 func is_slot_empty() -> bool:
 	for child in get_children():
-		if child != item_outline:
+		if _is_item_child(child):
 			return false
 	return true
 
@@ -579,7 +583,7 @@ func place_item_in_slot(item_data: GameInfo.Item):
 func clear_slot():
 	var children_to_remove = []
 	for child in get_children():
-		if child != item_outline:
+		if _is_item_child(child):
 			children_to_remove.append(child)
 	
 	for child in children_to_remove:
@@ -595,10 +599,12 @@ func clear_slot():
 func update_slot_appearance():
 	var item_count = 0
 	for child in get_children():
-		if child != item_outline and not child.is_queued_for_deletion():
+		if _is_item_child(child) and not child.is_queued_for_deletion():
 			item_count += 1
 	
 	if item_outline:
+		if outline_texture and item_outline.texture != outline_texture:
+			item_outline.texture = outline_texture
 		item_outline.visible = (item_count == 0) and (outline_texture != null)
 
 func refresh_slot():
