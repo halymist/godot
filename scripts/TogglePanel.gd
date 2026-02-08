@@ -133,6 +133,8 @@ func _determine_starter_panel() -> Control:
 	var destination = GameInfo.current_player.traveling_destination
 	var traveling = GameInfo.current_player.traveling
 	var expedition = GameInfo.current_player.expedition
+	var now = Time.get_unix_time_from_system()
+	var arrival_ts = traveling if traveling != null else 0
 	
 	print("=== STARTUP QUEST STATE DEBUG ===")
 	print("destination: ", destination, " (type: ", typeof(destination), ")")
@@ -140,21 +142,20 @@ func _determine_starter_panel() -> Control:
 	print("expedition: ", expedition)
 	print("================================")
 	
-	# Check expedition first
-	if expedition and expedition.size() > 0:
-		# Player is on an expedition - show expedition panel
-		print("-> On expedition, showing expedition panel")
-		call_deferred("_load_expedition_on_startup", expedition[0])
-		return expedition_panel
-	elif destination != null and traveling != null and traveling != 0:
-		# Player is currently traveling to a quest - show map panel
-		print("-> Traveling to quest, showing map panel")
+	# If arrival time is in the future, show map (traveling)
+	if arrival_ts > now:
+		print("-> Traveling, showing map panel")
 		return map_panel
-	elif destination != null:
-		# Player has arrived at quest - show quest panel and load it directly
+
+	# Arrived: show quest or expedition if active
+	if destination != null:
 		print("-> Arrived at quest, showing quest panel")
 		call_deferred("_load_quest_on_startup", destination)
 		return quest
+	if expedition and expedition.size() > 0:
+		print("-> Arrived at expedition, showing expedition panel")
+		call_deferred("_load_expedition_on_startup", expedition[0])
+		return expedition_panel
 	else:
 		# No quest active - show home panel
 		print("-> No quest active, showing home panel")
@@ -167,9 +168,11 @@ func is_on_active_quest() -> bool:
 	
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
+	if traveling == null:
+		traveling = 0
 	
 	# Player is on active quest if: destination exists AND not currently traveling
-	return destination != null and traveling == 0
+	return destination != null and traveling <= Time.get_unix_time_from_system()
 
 func is_on_expedition() -> bool:
 	"""Check if player is currently on an expedition"""
@@ -186,7 +189,7 @@ func is_traveling() -> bool:
 	
 	# Check quest travel
 	var traveling = GameInfo.current_player.traveling
-	if traveling > 0:
+	if traveling != null and traveling > Time.get_unix_time_from_system():
 		return true
 	
 	# Check expedition travel (timer running on map panel)

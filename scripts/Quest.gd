@@ -171,12 +171,11 @@ func display_quest(quest_data: QuestData):
 func animate_quest_text(text: String):
 	"""Animate quest text with fade and slide effect"""
 	quest_text.text = text
+	quest_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	quest_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	quest_text.modulate.a = 0
-	quest_text.position.y = 20
 	var tween = create_tween()
-	tween.set_parallel(true)
 	tween.tween_property(quest_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-	tween.tween_property(quest_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 
 func display_quest_with_text(text: String):
 	"""Display quest with custom text and current visible options"""

@@ -34,7 +34,6 @@ var chat_messages: Array[ChatMessage] = []
 var current_combat_log: CombatResponse = null
 var pending_expedition_slide_id_after_combat: int = 0
 var pending_expedition_failure_message: String = ""
-var expedition_depleted_from_server: bool = false
 
 # Talent registry (populated by Talent.gd nodes on _ready)
 var talent_registry: Dictionary = {}
@@ -773,7 +772,8 @@ class GameCurrentPlayer:
 		
 		# Handle expedition array
 		if data.has("expedition"):
-			expedition = data.expedition.duplicate()
+			if data.expedition is Array:
+				expedition = data.expedition.duplicate()
 		
 		# Convert null traveling to 0
 		if traveling == null:
@@ -971,8 +971,12 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	if server_data.has("destination") and server_data.destination != null:
 		client_data["traveling_destination"] = server_data["destination"]
 	if server_data.has("arrival") and server_data.arrival != null:
-		# Convert arrival timestamp to remaining time or boolean
-		client_data["traveling"] = server_data["arrival"]
+		# Convert arrival timestamp to unix time
+		client_data["traveling"] = _parse_iso_timestamp(server_data["arrival"])
+
+	# Handle expedition slide (single id)
+	if server_data.has("expedition_slide") and server_data.expedition_slide != null:
+		client_data["expedition"] = [int(server_data.expedition_slide)]
 	
 	# Handle elixir (active elixir with 3 effects and 3 factors)
 	if server_data.has("elixir_effect1") or server_data.has("elixir_effect2") or server_data.has("elixir_effect3"):

@@ -232,17 +232,10 @@ func _apply_slide_rewards(slide: Resource):
 	# Apply slide effect (e.g., effect_id 200 = health depletion)
 	if slide.effect_id == 200 and slide.effect_factor != 0:
 		var percent = abs(float(slide.effect_factor))
-		# If server already sent depleted_health for this response, avoid double-applying
-		if not GameInfo.expedition_depleted_from_server:
-			player.depleted_health = clamp(player.depleted_health + percent, 0.0, 100.0)
-			reward_texts.append("You lose %d%% of your health." % int(percent))
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		else:
-			reward_texts.append("You lose %d%% of your health." % int(percent))
-
-		# Reset flag after applying slide effects
-		GameInfo.expedition_depleted_from_server = false
+		player.depleted_health = clamp(player.depleted_health + percent, 0.0, 100.0)
+		reward_texts.append("You lose %d%% of your health." % int(percent))
+		if UIManager.instance:
+			UIManager.instance.refresh_stats()
 	
 	# Show combined reward text
 	if reward_label and reward_texts.size() > 0:
@@ -353,9 +346,8 @@ func _clear_options():
 func _animate_expedition_text(text: String):
 	"""Animate expedition text with fade and slide effect (match quest style)"""
 	expedition_text.text = text
+	expedition_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	expedition_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	expedition_text.modulate.a = 0
-	expedition_text.position.y = 20
 	var tween = create_tween()
-	tween.set_parallel(true)
 	tween.tween_property(expedition_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-	tween.tween_property(expedition_text, "position:y", 0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)

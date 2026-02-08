@@ -175,15 +175,13 @@ func _handle_expedition_option_response(message: Dictionary):
 	var data = message.data[0]
 	if not data.get("success", false):
 		print("[WebSocket] Expedition option failed: ", data.get("message", ""))
-		# Update depleted health if provided
-		if data.has("depleted_health") and GameInfo.current_player:
-			GameInfo.current_player.depleted_health = clamp(float(data.depleted_health), 0.0, 100.0)
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-
 		# If combat data exists, show combat and defer failure handling
 		if data.has("combat") and data.combat is Dictionary:
 			GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
+			if GameInfo.current_player:
+				GameInfo.current_player.depleted_health = clamp(GameInfo.current_combat_log.player_depleted_health, 0.0, 100.0)
+				if UIManager.instance:
+					UIManager.instance.refresh_stats()
 			GameInfo.pending_expedition_slide_id_after_combat = 0
 			GameInfo.pending_expedition_failure_message = data.get("message", "")
 
@@ -198,13 +196,6 @@ func _handle_expedition_option_response(message: Dictionary):
 			UIManager.instance.expedition_panel.handle_expedition_failed(data.get("message", ""))
 		return
 
-	# Update depleted health if provided
-	if data.has("depleted_health") and GameInfo.current_player:
-		GameInfo.current_player.depleted_health = clamp(float(data.depleted_health), 0.0, 100.0)
-		GameInfo.expedition_depleted_from_server = true
-		if UIManager.instance:
-			UIManager.instance.refresh_stats()
-
 	# Handle expedition end response (keep panel visible with placeholder text)
 	if data.get("end", false):
 		if UIManager.instance and UIManager.instance.expedition_panel:
@@ -217,6 +208,10 @@ func _handle_expedition_option_response(message: Dictionary):
 	# If combat data is included, show combat panel first and defer slide advance
 	if data.has("combat") and data.combat is Dictionary:
 		GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
+		if GameInfo.current_player:
+			GameInfo.current_player.depleted_health = clamp(GameInfo.current_combat_log.player_depleted_health, 0.0, 100.0)
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
 		GameInfo.pending_expedition_slide_id_after_combat = slide_id
 
 		if UIManager.instance and UIManager.instance.combat_panel:
