@@ -93,7 +93,8 @@ func prepare_combat():
 	# Check if enemy is NPC or player
 	if combat.is_enemy_npc():
 		# Enemy is NPC - use enemies database
-		var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(combat.enemy_asset_id)
+		var enemy_lookup_id = combat.enemy_npc_id if combat.enemy_npc_id > 0 else combat.enemy_asset_id
+		var enemy_resource = GameInfo.enemies_db.get_enemy_by_id(enemy_lookup_id)
 		if enemy_resource:
 			enemy_label.text = enemy_resource.name
 			# Show enemy texture, hide avatar
@@ -125,11 +126,12 @@ func prepare_combat():
 	# Set initial health bars and labels
 	player_health_bar.max_value = combat.player_max_hp
 	enemy_health_bar.max_value = combat.enemy_max_hp
-	player_health_bar.value = combat.player_max_hp
+	var starting_player_hp = max(0, combat.player_max_hp - combat.player_depleted_health)
+	player_health_bar.value = starting_player_hp
 	enemy_health_bar.value = combat.enemy_max_hp
 	
 	# Update health labels
-	update_health_label(player_health_label, combat.player_max_hp)
+	update_health_label(player_health_label, starting_player_hp)
 	update_health_label(enemy_health_label, combat.enemy_max_hp)
 	
 	# Build action list

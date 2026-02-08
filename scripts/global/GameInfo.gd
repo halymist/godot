@@ -382,6 +382,7 @@ class CombatResponse:
 	var player_id: int = 0
 	var player_name: String = ""
 	var player_max_hp: int = 100
+	var player_depleted_health: int = 0
 	var player_avatar: Array = [1, 1, 1, 1]  # [face, hair, eyes, mouth] - 4 elements from server
 	
 	# Enemy info (from header.enemy)
@@ -390,6 +391,7 @@ class CombatResponse:
 	var enemy_max_hp: int = 100
 	var enemy_avatar: Array = [1, 1, 1, 1]
 	var enemy_asset_id: int = 0  # NPC asset ID if enemy is NPC (null for players)
+	var enemy_npc_id: int = 0
 	
 	# Result
 	var winner_id: int = 0  # character_id of winner
@@ -404,12 +406,14 @@ class CombatResponse:
 		player_id = player_data.get("character_id", 0)
 		player_name = player_data.get("name", "")
 		player_max_hp = player_data.get("max_hp", 100)
+		player_depleted_health = int(player_data.get("depleted_health", 0))
 		if player_data.has("avatar") and player_data.avatar is Array:
 			player_avatar = player_data.avatar
 		
 		# Parse enemy data
 		var enemy_data = header.get("enemy", {})
 		enemy_id = enemy_data.get("character_id", 0)
+		enemy_npc_id = int(enemy_data.get("enemy_id", 0))
 		enemy_name = enemy_data.get("name", "")
 		enemy_max_hp = enemy_data.get("max_hp", 100)
 		if enemy_data.has("avatar") and enemy_data.avatar is Array:
@@ -431,7 +435,7 @@ class CombatResponse:
 		return winner_id == player_id
 	
 	func is_enemy_npc() -> bool:
-		return enemy_asset_id > 0
+		return enemy_asset_id > 0 or enemy_npc_id > 0
 
 class GamePlayer:
 	extends RefCounted

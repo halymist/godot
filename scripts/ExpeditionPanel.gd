@@ -1,10 +1,9 @@
-extends Panel
+extends TextureRect
 
 # Expedition panel - similar to Quest.gd but for expedition content
 @export var text_container: Node  # Center container for expedition text
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display rewards
-@export var background: TextureRect
 @export var expedition_text: Label
 @export var health_bar: TextureProgressBar
 @export var effects_container: Control
@@ -83,8 +82,9 @@ func show_slide(slide_id: int):
 	_update_health_bar()
 	
 	# Update background if slide has texture
-	if slide.texture and background:
-		background.texture = slide.texture
+	if slide.texture:
+		texture = slide.texture
+
 	
 	# Clear existing options
 	_clear_options()
@@ -202,6 +202,8 @@ func _apply_slide_rewards(slide: Resource):
 			else:
 				reward_texts.append("Item received!")
 			print("REWARD: Added Item ID ", slide.reward_item, " to bag")
+			if UIManager.instance:
+				UIManager.instance.refresh_bags()
 		else:
 			reward_texts.append("Your bag is full!")
 	
@@ -227,17 +229,10 @@ func _apply_slide_rewards(slide: Resource):
 		if UIManager.instance:
 			UIManager.instance.refresh_active_effects()
 
-	# Apply slide effect (e.g., effect_id 200 = health depletion)
+	# Apply slide effect (e.g., effect_id 200 = health depletion) - server authoritative
 	if slide.effect_id == 200 and slide.effect_factor != 0:
-		var total_stats = player.get_total_stats()
-		var max_health = total_stats.stamina * 10
 		var percent = abs(float(slide.effect_factor))
-		var health_loss = int(round(max_health * (percent / 100.0)))
-		player.depleted_health += health_loss
 		reward_texts.append("You lose %d%% of your health." % int(percent))
-		if UIManager.instance:
-			UIManager.instance.refresh_stats()
-		_update_health_bar()
 	
 	# Show combined reward text
 	if reward_label and reward_texts.size() > 0:

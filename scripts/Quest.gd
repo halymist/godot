@@ -1,10 +1,9 @@
-extends Panel
+extends TextureRect
 
 # Eldrum-style scrolling quest display
 @export var text_container: Node  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
 @export var reward_label: Label  # Label to display quest rewards
-@export var background: TextureRect
 @export var quest_text: Label
 @export var health_bar: TextureProgressBar
 @export var effects_container: Control
@@ -112,7 +111,7 @@ func load_quest(quest_id: int):
 		# Set quest background
 		var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 		if quest_data:
-			background.texture = quest_data.background_texture
+			texture = quest_data.background_texture
 			current_quest = quest_data
 	
 	current_quest_id = quest_id
