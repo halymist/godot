@@ -232,7 +232,13 @@ func _apply_slide_rewards(slide: Resource):
 	# Apply slide effect (e.g., effect_id 200 = health depletion) - server authoritative
 	if slide.effect_id == 200 and slide.effect_factor != 0:
 		var percent = abs(float(slide.effect_factor))
+		var total_stats = player.get_total_stats()
+		var max_health = total_stats.stamina * 10
+		var health_loss = int(round(max_health * (percent / 100.0)))
+		player.depleted_health += health_loss
 		reward_texts.append("You lose %d%% of your health." % int(percent))
+		if UIManager.instance:
+			UIManager.instance.refresh_stats()
 	
 	# Show combined reward text
 	if reward_label and reward_texts.size() > 0:
@@ -286,6 +292,28 @@ func handle_expedition_failed(message: String):
 
 	if UIManager.instance and UIManager.instance.map_panel:
 		UIManager.instance.map_panel.reset_expedition_state()
+	_update_health_bar()
+
+func handle_expedition_end(message: String):
+	"""Handle a successful expedition end by showing a placeholder while keeping last texture"""
+	current_slide_id = 0
+	visible = true
+
+	_clear_options()
+	if reward_label:
+		reward_label.text = ""
+
+	var placeholder = message if message != "" else "Expedition ended. Return home."
+	_animate_expedition_text(placeholder)
+
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = []
+		GameInfo.current_player.traveling_destination = null
+		GameInfo.current_player.traveling = 0
+
+	if UIManager.instance and UIManager.instance.map_panel:
+		UIManager.instance.map_panel.reset_expedition_state()
+	_update_health_bar()
 
 func end_expedition():
 	"""End the current expedition"""

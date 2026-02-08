@@ -179,14 +179,20 @@ func _handle_expedition_option_response(message: Dictionary):
 			UIManager.instance.expedition_panel.handle_expedition_failed(data.get("message", ""))
 		return
 
-	var slide_id = int(data.get("slide_id", 0))
-	print("[WebSocket] Expedition option processed - slide_id: ", slide_id)
-
 	# Update depleted health if provided
 	if data.has("depleted_health") and GameInfo.current_player:
 		GameInfo.current_player.depleted_health = int(data.depleted_health)
 		if UIManager.instance:
 			UIManager.instance.refresh_stats()
+
+	# Handle expedition end response (keep panel visible with placeholder text)
+	if data.get("end", false):
+		if UIManager.instance and UIManager.instance.expedition_panel:
+			UIManager.instance.expedition_panel.handle_expedition_end(data.get("message", ""))
+		return
+
+	var slide_id = int(data.get("slide_id", 0))
+	print("[WebSocket] Expedition option processed - slide_id: ", slide_id)
 
 	# If combat data is included, show combat panel first and defer slide advance
 	if data.has("combat") and data.combat is Dictionary:
