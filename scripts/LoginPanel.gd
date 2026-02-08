@@ -69,10 +69,7 @@ var is_logging_in: bool = false  # Prevent double-clicks during login
 func _ready():
 	# Check if we already have login data (returning from game)
 	if not GameInfo.lobby_data.is_empty():
-		visible = false
-		lobby_panel.visible = true
-		# Re-initialize lobby to display characters (new scene instance, initialized=false)
-		lobby_panel.initialize_lobby()
+		_show_lobby_after_init()
 		return
 	
 	# Try to auto-login with saved credentials
@@ -297,9 +294,7 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 			_clear_credentials()
 		
 		# Switch to lobby panel and initialize it with server data
-		visible = false
-		lobby_panel.visible = true
-		lobby_panel.initialize_lobby()
+		_show_lobby_after_init()
 	else:
 		# Show error message
 		_show_error(error if error != "" else "Login failed")
@@ -362,6 +357,14 @@ func _show_error(message: String):
 	if error_label:
 		error_label.text = message
 		error_label.visible = true
+
+func _show_lobby_after_init():
+	"""Initialize lobby while hidden, then show to avoid flicker."""
+	visible = false
+	if lobby_panel:
+		lobby_panel.visible = false
+		lobby_panel.initialize_lobby()
+		lobby_panel.call_deferred("show")
 
 func _hide_error():
 	"""Hide error message"""

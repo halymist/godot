@@ -211,7 +211,7 @@ script = ExtResource("1_1phco")
 phone_ui_root = NodePath("Portrait")
 base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="Panel" parent="." node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "enemy", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager")]
+[node name="Background" type="Panel" parent="." node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "enemy", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager", "top_ui")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -262,6 +262,7 @@ character_display = NodePath("../Portrait/GameScene/Character/CharacterDisplay")
 enemy_character_display = NodePath("../Portrait/GameScene/Enemy/CharacterDisplay")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), null, NodePath("../Portrait/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
 resolution_manager = NodePath("..")
+top_ui = NodePath("../Portrait/TopUI")
 
 [node name="Portrait" type="Control" parent="."]
 layout_mode = 1
@@ -273,7 +274,7 @@ offset_top = -900.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TopUI" type="Panel" parent="Portrait" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "location_description_label", "weather_icon_texture", "location_info_panel", "location_hover_area")]
+[node name="TopUI" type="Panel" parent="Portrait" node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "location_description_label", "health_bar", "weather_icon_texture", "location_info_panel", "location_hover_area")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -287,6 +288,7 @@ gold_label = NodePath("VBoxContainer/SilverContainer/SilverValue")
 currency_label = NodePath("VBoxContainer/MushroomContainer/MushroomValue")
 location_label = NodePath("LocationPanel/HBoxContainer/LocationLabel")
 location_description_label = NodePath("../GameScene/LocationInfoPanel/InfoLabel")
+health_bar = NodePath("HealthBar")
 sunny_icon = ExtResource("8_e6ols")
 rainy_icon = ExtResource("9_2cns2")
 weather_icon_texture = NodePath("LocationPanel/HBoxContainer/WeatherIcon")
@@ -319,28 +321,13 @@ anchors_preset = -1
 anchor_top = 0.15
 mouse_filter = 2
 
-[node name="StatusBar" type="HBoxContainer" parent="Portrait/TopUI"]
-layout_mode = 0
+[node name="HealthBar" parent="Portrait/TopUI" instance=ExtResource("22_healthbar")]
+custom_minimum_size = Vector2(100, 28)
+layout_mode = 2
 offset_left = 10.0
 offset_top = 140.0
-offset_right = 350.0
+offset_right = 146.0
 offset_bottom = 172.0
-theme_override_constants/separation = 12
-
-[node name="HealthBar" parent="Portrait/TopUI/StatusBar" instance=ExtResource("22_healthbar")]
-custom_minimum_size = Vector2(220, 28)
-layout_mode = 2
-
-[node name="EffectsPanel" type="PanelContainer" parent="Portrait/TopUI/StatusBar"]
-custom_minimum_size = Vector2(220, 28)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="EffectsLabel" type="Label" parent="Portrait/TopUI/StatusBar/EffectsPanel"]
-layout_mode = 2
-text = "Effects: (placeholder)"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Portrait/TopUI"]
 layout_mode = 2
@@ -6279,7 +6266,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "1200 Gold - $39.99"
 
-[node name="Quest" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "quest_text", "health_bar", "effects_container", "portrait")]
+[node name="Quest" type="TextureRect" parent="Portrait/GameScene" node_paths=PackedStringArray("text_container", "options_container", "reward_label", "quest_text", "health_bar")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6294,21 +6281,7 @@ text_container = NodePath("Overlay/TextContainer")
 options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
 quest_text = NodePath("Overlay/TextContainer/QuestLabel")
-health_bar = NodePath("../../TopUI/StatusBar/HealthBar")
-effects_container = NodePath("../../TopUI/StatusBar/EffectsPanel")
-dialogue_icon = ExtResource("11_vm72l")
-combat_icon = ExtResource("79_qj5kr")
-currency_check_icon = ExtResource("32_ccfo7")
-end_icon = ExtResource("14_81klo")
-strength_icon = ExtResource("44_k8ojv")
-stamina_icon = ExtResource("46_gsm33")
-agility_icon = ExtResource("66_7sqp1")
-luck_icon = ExtResource("81_d5jaa")
-armor_icon = ExtResource("86_w4j8i")
-order_icon = ExtResource("82_gsm33")
-guild_icon = ExtResource("83_lrctp")
-companions_icon = ExtResource("84_e6ols")
-portrait = NodePath("../..")
+health_bar = NodePath("../../TopUI/HealthBar")
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Quest"]
 layout_mode = 1
@@ -6319,6 +6292,27 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
+
+[node name="TopBar" type="HBoxContainer" parent="Portrait/GameScene/Quest/Overlay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03
+anchor_right = 0.97
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 12
+
+[node name="EffectsPanel" type="PanelContainer" parent="Portrait/GameScene/Quest/Overlay/TopBar"]
+custom_minimum_size = Vector2(220, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EffectsLabel" type="Label" parent="Portrait/GameScene/Quest/Overlay/TopBar/EffectsPanel"]
+layout_mode = 2
+text = "Effects: (placeholder)"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextContainer" type="MarginContainer" parent="Portrait/GameScene/Quest/Overlay"]
 layout_mode = 1
@@ -6380,8 +6374,8 @@ text_container = NodePath("Overlay/TextContainer")
 options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
 reward_label = NodePath("Overlay/BottomContainer/Reward")
 expedition_text = NodePath("Overlay/TextContainer/ExpeditionLabel")
-health_bar = NodePath("../../TopUI/StatusBar/HealthBar")
-effects_container = NodePath("../../TopUI/StatusBar/EffectsPanel")
+health_bar = NodePath("../../TopUI/HealthBar")
+effects_container = NodePath("Overlay/TopBar/EffectsPanel")
 dialogue_icon = ExtResource("11_vm72l")
 combat_icon = ExtResource("79_qj5kr")
 currency_check_icon = ExtResource("32_ccfo7")
@@ -6405,6 +6399,27 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
+
+[node name="TopBar" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03
+anchor_right = 0.97
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 12
+
+[node name="EffectsPanel" type="PanelContainer" parent="Portrait/GameScene/Expedition/Overlay/TopBar"]
+custom_minimum_size = Vector2(220, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EffectsLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/TopBar/EffectsPanel"]
+layout_mode = 2
+text = "Effects: (placeholder)"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextContainer" type="MarginContainer" parent="Portrait/GameScene/Expedition/Overlay"]
 layout_mode = 1

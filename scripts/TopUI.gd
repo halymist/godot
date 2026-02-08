@@ -5,6 +5,7 @@ extends Control
 @export var currency_label: Label
 @export var location_label: Label
 @export var location_description_label: Label
+@export var health_bar: TextureProgressBar
 
 # Location panel exports (from LocationPanel.gd)
 @export var sunny_icon: Texture2D
@@ -83,6 +84,23 @@ func update_display():
 	
 	# Update weather icon
 	_update_weather_icon()
+
+	# Update health bar
+	update_health_bar()
+
+func update_health_bar():
+	"""Update the shared health bar from current player stats."""
+	if not health_bar or not GameInfo.current_player:
+		return
+
+	var max_health = GameInfo.current_player.stamina * 10
+	var depleted_percent = GameInfo.current_player.depleted_health
+	var current_health = int(max_health * (1.0 - (depleted_percent / 100.0)))
+
+	health_bar.max_value = max_health
+	health_bar.value = current_health
+	if health_bar.has_node("HealthLabel"):
+		health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
 
 func _get_server_time_string() -> String:
 	if not GameInfo.current_player:

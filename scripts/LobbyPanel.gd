@@ -44,6 +44,7 @@ var loading_in_progress = false  # Prevent multiple character selections while l
 var initialized = false  # Track if we've initialized the lobby
 
 func _ready():
+	print("LobbyPanel: _ready() called")
 	# Connect buttons in _ready (they exist when scene loads)
 	create_new_button.pressed.connect(_on_create_new_character)
 	logout_button.pressed.connect(_on_logout)
@@ -104,7 +105,6 @@ func initialize_lobby():
 	# Populate UI with lobby data
 	populate_account_info()
 	# Wait a frame for UI nodes to be ready before adding character cards
-	await get_tree().process_frame
 	add_character_list()
 	
 	# Only do these once (first time initialization)

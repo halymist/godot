@@ -84,6 +84,7 @@ signal game_ready
 @export var active_effects: Node
 @export var avatars: Array[Node] = []
 @export var resolution_manager: Node
+@export var top_ui: Control
 
 # ============================================================================
 # STATE TRACKING
@@ -106,6 +107,8 @@ func _ready():
 	_connect_buttons()
 	update_display()
 	_initialize_starter_panel()
+	if GameInfo.current_player:
+		refresh_stats()
 
 func _connect_buttons():
 	"""Connect all button signals"""
@@ -639,6 +642,8 @@ func refresh_stats():
 	
 	character_display.stats_changed(GameInfo.current_player.get_player_stats())
 	details_panel.display_effects(GameInfo.current_player)
+	if top_ui and top_ui.has_method("update_health_bar"):
+		top_ui.call("update_health_bar")
 	
 	# Refresh quest options if currently on a quest
 	if GameInfo.current_player and GameInfo.current_player.traveling_destination:
