@@ -23,7 +23,6 @@ const PORTRAIT_BASE = Vector2i(405, 900)  # 21:9 aspect ratio base
 var last_window_size: Vector2i = Vector2i.ZERO
 
 signal user_font_scale_changed(new_scale)
-signal layout_changed(new_layout)
 
 func _ready():
 	if phone_ui_root:

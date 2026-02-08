@@ -93,6 +93,11 @@ func _ready():
 	
 	# Connect to HTTP signals
 	Http.create_character_completed.connect(_on_character_created)
+	Http.login_completed.connect(_on_login_completed)
+
+	# If lobby data already exists (returning from game), initialize immediately
+	if not GameInfo.lobby_data.is_empty():
+		initialize_lobby()
 
 func initialize_lobby():
 	"""Initialize lobby with server data - called by LoginPanel after successful login or when returning from game"""
@@ -272,6 +277,14 @@ func add_character_list():
 			card.character_selected.connect(_on_character_selected)
 	
 	print("[Lobby] Added ", total_characters, " character cards")
+
+func _on_login_completed(success: bool, data: Dictionary, _error: String):
+	"""Initialize lobby when login response arrives and lobby data was empty."""
+	if not success:
+		return
+	if GameInfo.lobby_data.is_empty():
+		GameInfo.lobby_data = data
+	initialize_lobby()
 
 func _on_character_selected(character_id: int, server_id: int):
 	"""Handle character selection from player card"""

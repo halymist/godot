@@ -93,9 +93,10 @@ func update_health_bar():
 	if not health_bar or not GameInfo.current_player:
 		return
 
-	var max_health = GameInfo.current_player.stamina * 10
+	var total_stats = GameInfo.current_player.get_total_stats()
+	var max_health = total_stats.stamina * 10
 	var depleted_percent = GameInfo.current_player.depleted_health
-	var current_health = int(max_health * (1.0 - (depleted_percent / 100.0)))
+	var current_health = max(0, int(round(max_health * (1.0 - (depleted_percent / 100.0)))))
 
 	health_bar.max_value = max_health
 	health_bar.value = current_health

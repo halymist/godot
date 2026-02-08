@@ -471,9 +471,6 @@ func start_expedition_travel():
 	UIManager.instance.update_silver(-EXPEDITION_COST)
 	print("Deducted ", EXPEDITION_COST, " silver for expedition")
 	
-	# Check if player is VIP
-	var is_vip = GameInfo.current_player.vip if "vip" in GameInfo.current_player else false
-	
 	# Send start_expedition to server (server will respond with slide_id and arrival time)
 	Websocket.start_expedition()
 	
