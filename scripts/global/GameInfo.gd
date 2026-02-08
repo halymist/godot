@@ -382,7 +382,7 @@ class CombatResponse:
 	var player_id: int = 0
 	var player_name: String = ""
 	var player_max_hp: int = 100
-	var player_depleted_health: int = 0
+	var player_depleted_health: float = 0.0
 	var player_avatar: Array = [1, 1, 1, 1]  # [face, hair, eyes, mouth] - 4 elements from server
 	
 	# Enemy info (from header.enemy)
@@ -406,7 +406,7 @@ class CombatResponse:
 		player_id = player_data.get("character_id", 0)
 		player_name = player_data.get("name", "")
 		player_max_hp = player_data.get("max_hp", 100)
-		player_depleted_health = int(player_data.get("depleted_health", 0))
+		player_depleted_health = float(player_data.get("depleted_health", 0.0))
 		if player_data.has("avatar") and player_data.avatar is Array:
 			player_avatar = player_data.avatar
 		
@@ -468,7 +468,7 @@ class GamePlayer:
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var elixir_day: int = 0  # Server day when elixir effect expires (0 = no expiration tracked)
 	var elixir_ingredients: Array[int] = []  # Ingredients for equipped elixir
-	var depleted_health: int = 0  # Health lost from combat (reduces effective max HP)
+	var depleted_health: float = 0.0  # Percent of max HP depleted (0-100)
 	var bag_slots: Array[Item] = []
 	var perks: Array[Perk] = []
 	var talents: Array[Talent] = []

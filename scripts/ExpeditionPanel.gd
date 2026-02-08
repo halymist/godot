@@ -232,10 +232,7 @@ func _apply_slide_rewards(slide: Resource):
 	# Apply slide effect (e.g., effect_id 200 = health depletion) - server authoritative
 	if slide.effect_id == 200 and slide.effect_factor != 0:
 		var percent = abs(float(slide.effect_factor))
-		var total_stats = player.get_total_stats()
-		var max_health = total_stats.stamina * 10
-		var health_loss = int(round(max_health * (percent / 100.0)))
-		player.depleted_health += health_loss
+		player.depleted_health = clamp(player.depleted_health + percent, 0.0, 100.0)
 		reward_texts.append("You lose %d%% of your health." % int(percent))
 		if UIManager.instance:
 			UIManager.instance.refresh_stats()
@@ -335,8 +332,8 @@ func _update_health_bar():
 
 	var total_stats = GameInfo.current_player.get_total_stats()
 	var max_health = total_stats.stamina * 10
-	var depleted = GameInfo.current_player.depleted_health
-	var current_health = max(0, max_health - depleted)
+	var depleted_percent = GameInfo.current_player.depleted_health
+	var current_health = max(0, int(round(max_health * (1.0 - depleted_percent / 100.0))))
 	health_bar.max_value = max_health
 	health_bar.value = current_health
 	if health_bar.has_node("HealthLabel"):

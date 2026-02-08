@@ -181,7 +181,7 @@ func _handle_expedition_option_response(message: Dictionary):
 
 	# Update depleted health if provided
 	if data.has("depleted_health") and GameInfo.current_player:
-		GameInfo.current_player.depleted_health = int(data.depleted_health)
+		GameInfo.current_player.depleted_health = clamp(float(data.depleted_health), 0.0, 100.0)
 		if UIManager.instance:
 			UIManager.instance.refresh_stats()
 
