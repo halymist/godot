@@ -229,13 +229,20 @@ func _apply_slide_rewards(slide: Resource):
 		if UIManager.instance:
 			UIManager.instance.refresh_active_effects()
 
-	# Apply slide effect (e.g., effect_id 200 = health depletion) - server authoritative
+	# Apply slide effect (e.g., effect_id 200 = health depletion)
 	if slide.effect_id == 200 and slide.effect_factor != 0:
 		var percent = abs(float(slide.effect_factor))
-		player.depleted_health = clamp(player.depleted_health + percent, 0.0, 100.0)
-		reward_texts.append("You lose %d%% of your health." % int(percent))
-		if UIManager.instance:
-			UIManager.instance.refresh_stats()
+		# If server already sent depleted_health for this response, avoid double-applying
+		if not GameInfo.expedition_depleted_from_server:
+			player.depleted_health = clamp(player.depleted_health + percent, 0.0, 100.0)
+			reward_texts.append("You lose %d%% of your health." % int(percent))
+			if UIManager.instance:
+				UIManager.instance.refresh_stats()
+		else:
+			reward_texts.append("You lose %d%% of your health." % int(percent))
+
+		# Reset flag after applying slide effects
+		GameInfo.expedition_depleted_from_server = false
 	
 	# Show combined reward text
 	if reward_label and reward_texts.size() > 0:

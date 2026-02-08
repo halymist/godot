@@ -430,6 +430,15 @@ func _on_skip_replay_pressed():
 				UIManager.instance.expedition_panel.receive_next_slide(next_slide_id)
 			return
 
+		# If expedition failed after combat, show placeholder
+		if GameInfo.pending_expedition_failure_message != "":
+			var failure_message = GameInfo.pending_expedition_failure_message
+			GameInfo.pending_expedition_failure_message = ""
+			if UIManager.instance and UIManager.instance.expedition_panel:
+				UIManager.instance.show_panel(UIManager.instance.expedition_panel)
+				UIManager.instance.expedition_panel.handle_expedition_failed(failure_message)
+			return
+
 		# Navigate using UIManager
 		var on_quest = GameInfo.current_player.traveling_destination != null
 		

@@ -33,6 +33,8 @@ var arena_opponents: Array[int] = []
 var chat_messages: Array[ChatMessage] = []
 var current_combat_log: CombatResponse = null
 var pending_expedition_slide_id_after_combat: int = 0
+var pending_expedition_failure_message: String = ""
+var expedition_depleted_from_server: bool = false
 
 # Talent registry (populated by Talent.gd nodes on _ready)
 var talent_registry: Dictionary = {}
