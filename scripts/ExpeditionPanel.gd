@@ -138,6 +138,19 @@ func _get_option_icon(option: Resource) -> Texture2D:
 	if option.enemy_id > 0:
 		return combat_icon
 	
+	# Silver requirement
+	if option.silver_required > 0:
+		return currency_check_icon
+	
+	# Faction requirement
+	if option.faction_required > 0:
+		var faction_icons = {1: order_icon, 2: guild_icon, 3: companions_icon}
+		return faction_icons.get(option.faction_required, dialogue_icon)
+	
+	# Effect requirement
+	if option.effect_id > 0 and option.effect_amount > 0:
+		return dialogue_icon  # No specific effect icon, use default
+	
 	# Stat check option
 	var stat = option.stat_type
 	match stat:
@@ -157,10 +170,6 @@ func _get_option_icon(option: Resource) -> Texture2D:
 
 func _check_requirements(option: Resource) -> bool:
 	"""Check if player meets the requirements for an option"""
-	# No stat requirement
-	if option.stat_type == "" and option.stat_required <= 0:
-		return true
-	
 	var player = GameInfo.current_player
 	if not player:
 		return false
@@ -171,13 +180,37 @@ func _check_requirements(option: Resource) -> bool:
 	var stat_type = option.stat_type
 	if stat_type != "" and option.stat_required > 0:
 		var stat_value = stats.get(stat_type, 0)
-		return stat_value >= option.stat_required
+		if stat_value < option.stat_required:
+			return false
+	
+	# Check silver requirement
+	if option.silver_required > 0:
+		if player.silver < option.silver_required:
+			return false
+	
+	# Check faction requirement
+	if option.faction_required > 0:
+		if player.faction != option.faction_required:
+			return false
+	
+	# Check effect requirement
+	if option.effect_id > 0 and option.effect_amount > 0:
+		var total_effects = player.get_total_effects()
+		var player_effect = total_effects.get(option.effect_id, 0.0)
+		if player_effect < option.effect_amount:
+			return false
 	
 	return true
 
 func _on_option_selected(option: Resource):
 	"""Handle option selection"""
 	print("Expedition option selected: ", option.option_id)
+	
+	# Deduct silver cost if required
+	if option.silver_required > 0 and GameInfo.current_player:
+		UIManager.instance.update_silver(-option.silver_required)
+		GameInfo.current_player.silver -= option.silver_required
+		print("Deducted ", option.silver_required, " silver for expedition option")
 	
 	# Send to server - server will respond with next slide
 	Websocket.expedition_option(option.option_id)
@@ -191,6 +224,12 @@ func _apply_slide_rewards(slide: Resource):
 	var reward_texts = []
 	
 	# Check each reward type (new individual fields)
+	if slide.reward_silver > 0:
+		UIManager.instance.update_silver(slide.reward_silver)
+		player.silver += slide.reward_silver
+		reward_texts.append("+%d silver" % slide.reward_silver)
+		print("REWARD: Awarded ", slide.reward_silver, " silver")
+	
 	if slide.reward_stat_type > 0 and slide.reward_stat_amount > 0:
 		var stat_name = _get_stat_name(slide.reward_stat_type)
 		if stat_name != "":

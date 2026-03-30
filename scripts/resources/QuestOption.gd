@@ -29,9 +29,11 @@ enum RequirementType {
 @export var option_text: String = ""  # Button text
 @export var node_text: String = ""  # Text shown when this option is reached
 
-# Legacy fields (for backwards compatibility)
-@export var option_index: int
-@export var text: String = ""
+# Legacy aliases (computed from new fields)
+var option_index: int:
+	get: return option_id
+var text: String:
+	get: return option_text
 
 # Response text shown when option is clicked
 @export_multiline var response_text: String = ""  # Text shown when clicked (replaces current text)
@@ -46,11 +48,17 @@ enum RequirementType {
 # Requirements from server (new format)
 @export var stat_type: int = 0  # Stat required (1=str, 2=sta, 3=agi, 4=luck)
 @export var stat_required: int = 0  # Amount needed
-@export var effect_id: int = 0  # Effect required
-@export var effect_amount: int = 0  # Effect amount needed
+@export var effect_id: int = 0  # Effect required (effect_id_required from server)
+@export var effect_amount: int = 0  # Effect amount needed (effect_amount_required from server)
+@export var silver_required: int = 0  # Silver cost to pick this option
+@export var faction_required: int = 0  # Faction required (1=order, 2=guild, 3=companions)
 @export var enemy_id: int = 0  # Enemy to fight (if combat required)
 @export var is_start: bool = false  # Is this a starting option
 @export var requirements: Array[int] = []  # Option IDs that must be clicked first
+
+# Effect applied when option is chosen
+@export var effect_applied: int = 0  # Effect ID to apply to player
+@export var effect_applied_factor: float = 0.0  # Magnitude of applied effect
 
 # Quest completion
 @export var ends_quest: bool = false  # If true, quest completes after this option
@@ -67,6 +75,7 @@ enum RequirementType {
 @export var reward_perk: int = 0  # Perk ID to reward
 @export var reward_blessing: int = 0  # Blessing ID to reward
 @export var reward_potion: int = 0  # Potion ID to reward
+@export var reward_silver: int = 0  # Silver reward amount
 
 # Reward system (legacy)
 enum RewardType {

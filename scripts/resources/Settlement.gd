@@ -13,6 +13,7 @@ extends Resource
 # Expedition (flat fields)
 @export var expedition_asset_id: int = 0
 @export_multiline var expedition_description: String = ""
+@export var expedition_failure: Array[String] = []  # Failure text lines for expeditions
 
 # Arena
 @export var arena_asset_id: int = 0

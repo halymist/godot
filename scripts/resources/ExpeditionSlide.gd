@@ -8,6 +8,8 @@ extends Resource
 @export var slide_id: int = 0
 @export_multiline var slide_text: String = ""
 @export var asset_id: int = 0
+@export var is_start: bool = false  # Whether this is a starting slide
+@export var settlement_id: int = 0  # Which settlement this slide belongs to
 @export var effect_id: int = 0
 @export var effect_factor: float = 0.0
 
@@ -19,6 +21,7 @@ extends Resource
 @export var reward_perk: int = 0
 @export var reward_blessing: int = 0
 @export var reward_potion: int = 0
+@export var reward_silver: int = 0  # Silver reward
 
 # Options - use Array (not typed) for reliable .res serialization
 @export var options: Array = []

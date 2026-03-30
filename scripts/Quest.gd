@@ -187,75 +187,117 @@ func display_quest_with_text(text: String):
 
 func apply_option_reward(option: QuestOption):
 	"""Apply reward from a quest option to the player"""
-	if option.reward_type == QuestOption.RewardType.NONE or option.reward_amount == 0:
-		reward_label.text = ""
-		return
-	
 	if not GameInfo.current_player:
 		return
 	
-	var server_day = GameInfo.current_player.server_day
-	var scaled_amount = option.reward_amount
 	var reward_text = ""
+	var server_day = GameInfo.current_player.server_day
 	
-	match option.reward_type:
-		QuestOption.RewardType.SILVER:
-			UIManager.instance.update_silver(option.reward_amount)
-			GameInfo.current_player.silver += option.reward_amount
-			reward_text = "You receive " + str(option.reward_amount) + " silver."
-			print("REWARD: Awarded ", option.reward_amount, " silver")
-		
-		QuestOption.RewardType.ITEM:
-			var added = GameInfo.current_player.add_item_to_bag(option.reward_amount)
-			if added:
-				var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
-				reward_text = "You receive " + item_resource.item_name + "."
-				print("REWARD: Added Item ID ", option.reward_amount, " to bag")
-				UIManager.instance.refresh_bags()
-			else:
-				reward_text = "Your bag is full!"
-				print("REWARD: No empty bag slot for item")
-		
-		QuestOption.RewardType.PERK:
-			var added = GameInfo.current_player.add_perk_if_new(option.reward_amount)
-			var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
-			if added:
-				reward_text = "You receive the perk: " + perk_resource.perk_name + "."
-				print("REWARD: Perk added to inactive perks")
-				UIManager.instance.refresh_perks()
-			else:
-				reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
-				print("REWARD: Perk already owned, skipping")
-		
-		QuestOption.RewardType.TALENT_POINT:
-			GameInfo.current_player.talent_points += option.reward_amount
-			reward_text = "You receive " + str(option.reward_amount) + " talent point" + ("s" if option.reward_amount > 1 else "") + "."
-			print("REWARD: Awarded ", option.reward_amount, " Talent Points")
+	# New server format: individual reward fields
+	if option.reward_silver > 0:
+		UIManager.instance.update_silver(option.reward_silver)
+		GameInfo.current_player.silver += option.reward_silver
+		reward_text = "You receive " + str(option.reward_silver) + " silver."
+		print("REWARD: Awarded ", option.reward_silver, " silver")
+	
+	if option.reward_stat_type > 0 and option.reward_stat_amount > 0:
+		var stat_name = _get_stat_name_from_type(option.reward_stat_type)
+		if stat_name != "":
+			var scaled_amount = int(option.reward_stat_amount * pow(1.02, server_day - 1))
+			GameInfo.current_player.set(stat_name, GameInfo.current_player.get(stat_name) + scaled_amount)
+			reward_text = "You receive " + str(scaled_amount) + " " + stat_name + "."
+			print("REWARD: Awarded ", scaled_amount, " ", stat_name)
 			UIManager.instance.refresh_stats()
+	
+	if option.reward_talent > 0:
+		GameInfo.current_player.talent_points += option.reward_talent
+		reward_text = "You receive " + str(option.reward_talent) + " talent point" + ("s" if option.reward_talent > 1 else "") + "."
+		print("REWARD: Awarded ", option.reward_talent, " Talent Points")
+		UIManager.instance.refresh_stats()
+	
+	if option.reward_item > 0:
+		var added = GameInfo.current_player.add_item_to_bag(option.reward_item)
+		if added:
+			var item_resource = GameInfo.items_db.get_item_by_id(option.reward_item)
+			reward_text = "You receive " + item_resource.item_name + "."
+			print("REWARD: Added Item ID ", option.reward_item, " to bag")
+			UIManager.instance.refresh_bags()
+		else:
+			reward_text = "Your bag is full!"
+	
+	if option.reward_perk > 0:
+		var added = GameInfo.current_player.add_perk_if_new(option.reward_perk)
+		var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_perk) if GameInfo.perks_db else null
+		if added:
+			reward_text = "You receive the perk: " + perk_resource.perk_name + "."
+			UIManager.instance.refresh_perks()
+		else:
+			reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
+	
+	if option.reward_blessing > 0:
+		GameInfo.current_player.blessing = option.reward_blessing
+		var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_blessing) if GameInfo.perks_db else null
+		reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
+		UIManager.instance.refresh_active_effects()
+	
+	if option.reward_potion > 0:
+		GameInfo.current_player.potion = option.reward_potion
+		var item_resource = GameInfo.items_db.get_item_by_id(option.reward_potion)
+		reward_text = "You receive a potion: " + item_resource.item_name + "."
+		UIManager.instance.refresh_active_effects()
+	
+	# Fallback: Legacy enum-based reward system
+	if reward_text == "" and option.reward_type != QuestOption.RewardType.NONE and option.reward_amount != 0:
+		var scaled_amount = option.reward_amount
 		
-		QuestOption.RewardType.POTION:
-			GameInfo.current_player.potion = option.reward_amount
-			var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
-			reward_text = "You receive a potion: " + item_resource.item_name + "."
-			print("REWARD: Equipped Potion ID ", option.reward_amount)
-			UIManager.instance.refresh_active_effects()
-		
-		QuestOption.RewardType.BLESSING:
-			GameInfo.current_player.blessing = option.reward_amount
-			var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
-			reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
-			print("REWARD: Equipped Blessing ID ", option.reward_amount)
-			UIManager.instance.refresh_active_effects()
-		
-		_:
-			# Handle all stat rewards using the map
-			if option.reward_type in STAT_REWARD_MAP:
-				var stat_data = STAT_REWARD_MAP[option.reward_type]
-				scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
-				GameInfo.current_player.set(stat_data.property, GameInfo.current_player.get(stat_data.property) + scaled_amount)
-				reward_text = "You receive " + str(scaled_amount) + " " + stat_data.name + "."
-				print("REWARD: Awarded ", scaled_amount, " ", stat_data.name)
+		match option.reward_type:
+			QuestOption.RewardType.SILVER:
+				UIManager.instance.update_silver(option.reward_amount)
+				GameInfo.current_player.silver += option.reward_amount
+				reward_text = "You receive " + str(option.reward_amount) + " silver."
+			
+			QuestOption.RewardType.ITEM:
+				var added = GameInfo.current_player.add_item_to_bag(option.reward_amount)
+				if added:
+					var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
+					reward_text = "You receive " + item_resource.item_name + "."
+					UIManager.instance.refresh_bags()
+				else:
+					reward_text = "Your bag is full!"
+			
+			QuestOption.RewardType.PERK:
+				var added = GameInfo.current_player.add_perk_if_new(option.reward_amount)
+				var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
+				if added:
+					reward_text = "You receive the perk: " + perk_resource.perk_name + "."
+					UIManager.instance.refresh_perks()
+				else:
+					reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
+			
+			QuestOption.RewardType.TALENT_POINT:
+				GameInfo.current_player.talent_points += option.reward_amount
+				reward_text = "You receive " + str(option.reward_amount) + " talent point" + ("s" if option.reward_amount > 1 else "") + "."
 				UIManager.instance.refresh_stats()
+			
+			QuestOption.RewardType.POTION:
+				GameInfo.current_player.potion = option.reward_amount
+				var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
+				reward_text = "You receive a potion: " + item_resource.item_name + "."
+				UIManager.instance.refresh_active_effects()
+			
+			QuestOption.RewardType.BLESSING:
+				GameInfo.current_player.blessing = option.reward_amount
+				var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
+				reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
+				UIManager.instance.refresh_active_effects()
+			
+			_:
+				if option.reward_type in STAT_REWARD_MAP:
+					var stat_data = STAT_REWARD_MAP[option.reward_type]
+					scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+					GameInfo.current_player.set(stat_data.property, GameInfo.current_player.get(stat_data.property) + scaled_amount)
+					reward_text = "You receive " + str(scaled_amount) + " " + stat_data.name + "."
+					UIManager.instance.refresh_stats()
 	
 	# Display reward text
 	if reward_text != "":
@@ -290,7 +332,45 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	var meets_requirement = true
 	var scaled_requirement = 0
 	
-	# Check unified requirement
+	# Check new server format fields first (stat_type, silver_required, faction_required, effect_id)
+	if option_data and GameInfo.current_player:
+		var player = GameInfo.current_player
+		var total_stats = player.get_total_stats()
+		var server_day = player.server_day
+		
+		# Stat requirement (stat_type is int: 1=str, 2=sta, 3=agi, 4=luck, 5=armor)
+		if option_data.stat_type > 0 and option_data.stat_required > 0:
+			scaled_requirement = int(option_data.stat_required * pow(1.02, server_day - 1))
+			var stat_name = _get_stat_name_from_type(option_data.stat_type)
+			if stat_name != "":
+				var player_value = total_stats.get(stat_name, 0)
+				meets_requirement = player_value >= scaled_requirement
+			label_text = "(" + str(scaled_requirement) + ") " + label_text
+		
+		# Silver requirement
+		if option_data.silver_required > 0:
+			meets_requirement = meets_requirement and player.silver >= option_data.silver_required
+			label_text = "(" + str(option_data.silver_required) + ") " + label_text
+		
+		# Faction requirement
+		if option_data.faction_required > 0:
+			meets_requirement = meets_requirement and player.faction == option_data.faction_required
+		
+		# Effect requirement
+		if option_data.effect_id > 0 and option_data.effect_amount > 0:
+			var total_effects = player.get_total_effects()
+			var player_effect = total_effects.get(option_data.effect_id, 0.0)
+			meets_requirement = meets_requirement and player_effect >= option_data.effect_amount
+			label_text = "(" + str(option_data.effect_amount) + ") " + label_text
+		
+		# Prerequisite options requirement
+		if option_data.requirements.size() > 0:
+			for req_id in option_data.requirements:
+				if not clicked_option_ids.has(req_id):
+					meets_requirement = false
+					break
+	
+	# Fallback: Check legacy unified requirement system
 	if option_data and option_data.required_type != QuestOption.RequirementType.NONE and GameInfo.current_player:
 		var req_type = option_data.required_type
 		var req_amount = option_data.required_amount
@@ -335,7 +415,21 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	# Set icon based on requirement type and option type
 	var icon_texture = dialogue_icon  # Default icon
 	if option_data:
-		if option_data.required_type == QuestOption.RequirementType.COMBAT:
+		# New server format: check individual fields first
+		if option_data.enemy_id > 0:
+			icon_texture = combat_icon
+		elif option_data.stat_type > 0 and option_data.stat_required > 0:
+			var stat_icons = {1: strength_icon, 2: stamina_icon, 3: agility_icon, 4: luck_icon, 5: armor_icon}
+			icon_texture = stat_icons.get(option_data.stat_type, dialogue_icon)
+		elif option_data.silver_required > 0:
+			icon_texture = currency_check_icon
+		elif option_data.faction_required > 0:
+			var faction_icons = {1: order_icon, 2: guild_icon, 3: companions_icon}
+			icon_texture = faction_icons.get(option_data.faction_required, dialogue_icon)
+		elif option_data.ends_quest:
+			icon_texture = end_icon
+		# Fallback: Legacy enum-based icons
+		elif option_data.required_type == QuestOption.RequirementType.COMBAT:
 			icon_texture = combat_icon
 		elif option_data.required_type in STAT_ICON_MAP:
 			icon_texture = get(STAT_ICON_MAP[option_data.required_type])
@@ -349,8 +443,6 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 					icon_texture = guild_icon
 				QuestOption.RequirementType.COMPANIONS:
 					icon_texture = companions_icon
-		elif option_data.ends_quest:
-			icon_texture = end_icon
 	
 	# Set button properties (TextureButton with children)
 	var label = option_button.get_node("Label")
@@ -400,17 +492,26 @@ func _on_quest_option_pressed(option: QuestOption):
 		clicked_option_ids.append(option.option_index)
 		print("Tracked clicked option: ", option.option_index, " Total clicked: ", clicked_option_ids)
 	
-	# 1. Handle currency cost (silver requirement)
-	if option.required_type == QuestOption.RequirementType.SILVER and option.required_amount > 0:
-		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_amount:
-			UIManager.instance.update_silver(-option.required_amount)
-			print("Deducted ", option.required_amount, " silver")
+	# 1. Handle silver cost (new server field)
+	if option.silver_required > 0:
+		if GameInfo.current_player and GameInfo.current_player.silver >= option.silver_required:
+			UIManager.instance.update_silver(-option.silver_required)
+			print("Deducted ", option.silver_required, " silver (silver_required)")
 		else:
 			print("Not enough silver for option: ", option.text)
 			return
 	
-	# 2. Handle combat requirement
-	if option.required_type == QuestOption.RequirementType.COMBAT:
+	# 1b. Handle legacy currency cost (silver requirement via enum)
+	if option.required_type == QuestOption.RequirementType.SILVER and option.required_amount > 0:
+		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_amount:
+			UIManager.instance.update_silver(-option.required_amount)
+			print("Deducted ", option.required_amount, " silver (legacy)")
+		else:
+			print("Not enough silver for option: ", option.text)
+			return
+	
+	# 2. Handle combat requirement (enemy_id or legacy enum)
+	if option.enemy_id > 0 or option.required_type == QuestOption.RequirementType.COMBAT:
 		pending_combat_option = option
 		_start_combat()
 		return  # Combat flow will handle the rest
@@ -418,6 +519,15 @@ func _on_quest_option_pressed(option: QuestOption):
 	# 3. Replace text with response_text if provided
 	if option.response_text != "":
 		animate_quest_text(option.response_text)
+	
+	# 3a. Apply effect if this option applies one
+	if option.effect_applied > 0 and option.effect_applied_factor != 0.0 and GameInfo.current_player:
+		# Effect 200 = health depletion (same convention as expeditions)
+		if option.effect_applied == 200:
+			var percent = abs(option.effect_applied_factor)
+			GameInfo.current_player.depleted_health = clamp(GameInfo.current_player.depleted_health + percent, 0.0, 100.0)
+			print("Applied effect 200 (health depletion): ", percent, "%")
+			UIManager.instance.refresh_stats()
 	
 	# 3b. Apply and display reward for this option
 	apply_option_reward(option)
@@ -531,3 +641,13 @@ func _finish_quest():
 	# This will hide the panel and navigate home
 	print("UIManager exists: ", UIManager.instance != null)
 	UIManager.instance.handle_quest_completed()
+
+func _get_stat_name_from_type(stat_type: int) -> String:
+	"""Convert stat type int to property name"""
+	match stat_type:
+		1: return "strength"
+		2: return "stamina"
+		3: return "agility"
+		4: return "luck"
+		5: return "armor"
+		_: return ""

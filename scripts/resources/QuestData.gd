@@ -7,7 +7,8 @@ extends Resource
 @export var travel_text: String = ""
 @export var settlement_id: int = 0  # Which settlement this quest belongs to
 @export var asset_id: int = 0  # Background image asset
-@export var ending: bool = false  # Is this an ending quest
+@export var ending: bool = false  # Is this an ending quest (legacy)
+@export var failure_text: String = ""  # Text shown when quest fails
 
 # Flat quest structure
 @export_multiline var initial_text: String = ""  # Starting text (start_text from server)
