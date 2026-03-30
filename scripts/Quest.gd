@@ -111,51 +111,32 @@ func load_quest(quest_id: int):
 	
 	current_quest_id = quest_id
 	
-	# Initialize visible_option_ids from initially_visible_options
-	if current_quest.initially_visible_options.size() > 0:
-		visible_option_ids = current_quest.initially_visible_options.duplicate()
-	else:
-		# Default to all options visible if not specified
-		visible_option_ids = []
-		for i in range(current_quest.options.size()):
-			visible_option_ids.append(current_quest.options[i].option_index)
-	
 	# Reset clicked options tracking for new quest
 	clicked_option_ids.clear()
 	
 	# Restore quest state from quest_log if exists
-	var last_response_text: String = ""
+	var last_node_text: String = ""
 	if GameInfo.current_player:
 		for quest_log_entry in GameInfo.current_player.quest_log:
 			if quest_log_entry.get("quest_id", 0) == quest_id:
 				var clicked_options = quest_log_entry.get("clicked_options", [])
 				if clicked_options.size() > 0:
 					print("Restoring quest state with clicked_options: ", clicked_options)
-					# Replay clicked options to restore state
 					for option_id in clicked_options:
 						clicked_option_ids.append(option_id)
-						# Hide the clicked option
-						if option_id in visible_option_ids:
-							visible_option_ids.erase(option_id)
-						# Show options that were revealed by this choice
-						for option in current_quest.options:
-							if option.option_index == option_id:
-								# Store the response text from the last clicked option
-								last_response_text = option.response_text
-								# Show options revealed by this choice
-								for show_id in option.shows_option_ids:
-									if not show_id in visible_option_ids:
-										visible_option_ids.append(show_id)
-								# Hide options hidden by this choice
-								for hide_id in option.hides_option_ids:
-									if hide_id in visible_option_ids:
-										visible_option_ids.erase(hide_id)
+					# Find the last clicked option's node_text
+					var last_clicked_id = clicked_options[clicked_options.size() - 1]
+					for option in current_quest.options:
+						if option.option_id == last_clicked_id and option.node_text != "":
+							last_node_text = option.node_text
 				break
 	
+	# Compute visible options based on requirements tree
+	visible_option_ids = _compute_visible_options()
+	
 	# Display quest with the correct text
-	if last_response_text != "":
-		# Show the last clicked option's response text instead of initial text
-		display_quest_with_text(last_response_text)
+	if last_node_text != "":
+		display_quest_with_text(last_node_text)
 	else:
 		display_quest(current_quest)
 
@@ -180,10 +161,33 @@ func display_quest_with_text(text: String):
 	clear_options()
 	if current_quest.options:
 		for option in current_quest.options:
-			if option and visible_option_ids.has(option.option_index):
-				add_option(option.text, _on_quest_option_pressed.bind(option), option)
+			if option and visible_option_ids.has(option.option_id):
+				add_option(option.option_text, _on_quest_option_pressed.bind(option), option)
 	else:
 		print("WARNING: current_quest.options is null or empty")
+
+func _compute_visible_options() -> Array[int]:
+	"""Compute which options are visible based on the requirements tree.
+	An option is visible if:
+	  - It's a start option (is_start == true) and hasn't been clicked, OR
+	  - ANY of its requirements are in clicked_option_ids and it hasn't been clicked
+	"""
+	var result: Array[int] = []
+	for option in current_quest.options:
+		# Skip already clicked options
+		if option.option_id in clicked_option_ids:
+			continue
+		# Start options are always visible
+		if option.is_start:
+			result.append(option.option_id)
+			continue
+		# Check if any requirement has been clicked (OR logic)
+		if option.requirements.size() > 0:
+			for req_id in option.requirements:
+				if req_id in clicked_option_ids:
+					result.append(option.option_id)
+					break
+	return result
 
 func apply_option_reward(option: QuestOption):
 	"""Apply reward from a quest option to the player"""
@@ -474,23 +478,24 @@ func refresh_quest_options_internal():
 		print("No quest loaded, returning")
 		return
 	
-	# Rebuild options with current visible_option_ids
+	# Recompute and rebuild visible options
+	visible_option_ids = _compute_visible_options()
 	print("Clearing options...")
 	clear_options()
 	if current_quest and current_quest.options:
 		print("Rebuilding ", current_quest.options.size(), " options")
 		for option in current_quest.options:
-			if option and visible_option_ids.has(option.option_index):
-				add_option(option.text, _on_quest_option_pressed.bind(option), option)
+			if option and visible_option_ids.has(option.option_id):
+				add_option(option.option_text, _on_quest_option_pressed.bind(option), option)
 
 func _on_quest_option_pressed(option: QuestOption):
 	reward_label.text = ""
 	
-	Websocket.quest_option(option.option_index)
+	Websocket.quest_option(option.option_id)
 	
-	if not clicked_option_ids.has(option.option_index):
-		clicked_option_ids.append(option.option_index)
-		print("Tracked clicked option: ", option.option_index, " Total clicked: ", clicked_option_ids)
+	if not clicked_option_ids.has(option.option_id):
+		clicked_option_ids.append(option.option_id)
+		print("Tracked clicked option: ", option.option_id, " Total clicked: ", clicked_option_ids)
 	
 	# 1. Handle silver cost (new server field)
 	if option.silver_required > 0:
@@ -498,7 +503,7 @@ func _on_quest_option_pressed(option: QuestOption):
 			UIManager.instance.update_silver(-option.silver_required)
 			print("Deducted ", option.silver_required, " silver (silver_required)")
 		else:
-			print("Not enough silver for option: ", option.text)
+			print("Not enough silver for option: ", option.option_text)
 			return
 	
 	# 1b. Handle legacy currency cost (silver requirement via enum)
@@ -507,7 +512,7 @@ func _on_quest_option_pressed(option: QuestOption):
 			UIManager.instance.update_silver(-option.required_amount)
 			print("Deducted ", option.required_amount, " silver (legacy)")
 		else:
-			print("Not enough silver for option: ", option.text)
+			print("Not enough silver for option: ", option.option_text)
 			return
 	
 	# 2. Handle combat requirement (enemy_id or legacy enum)
@@ -516,9 +521,9 @@ func _on_quest_option_pressed(option: QuestOption):
 		_start_combat()
 		return  # Combat flow will handle the rest
 	
-	# 3. Replace text with response_text if provided
-	if option.response_text != "":
-		animate_quest_text(option.response_text)
+	# 3. Show node_text for the clicked option (the tree's dialogue text)
+	if option.node_text != "":
+		animate_quest_text(option.node_text)
 	
 	# 3a. Apply effect if this option applies one
 	if option.effect_applied > 0 and option.effect_applied_factor != 0.0 and GameInfo.current_player:
@@ -532,34 +537,21 @@ func _on_quest_option_pressed(option: QuestOption):
 	# 3b. Apply and display reward for this option
 	apply_option_reward(option)
 	
-	# 4. Always hide clicked option (exhausted)
-	visible_option_ids.erase(option.option_index)
-	print("After hiding clicked option ", option.option_index, ", visible_option_ids: ", visible_option_ids)
+	# 4. Recompute visible options from requirements tree
+	visible_option_ids = _compute_visible_options()
+	print("After clicking option ", option.option_id, ", visible_option_ids: ", visible_option_ids)
 	
-	# 5. Show new options
-	for show_id in option.shows_option_ids:
-		if not visible_option_ids.has(show_id):
-			visible_option_ids.append(show_id)
-	print("After showing options ", option.shows_option_ids, ", visible_option_ids: ", visible_option_ids)
-	
-	# 6. Hide other options
-	for hide_id in option.hides_option_ids:
-		visible_option_ids.erase(hide_id)
-	print("After hiding options ", option.hides_option_ids, ", visible_option_ids: ", visible_option_ids)
-	
-	# 7. Check if quest ends
+	# 5. Check if quest ends
 	if option.ends_quest:
 		_finish_quest()
 		return
 	
-	# 8. If staying in quest, refresh options
-	print("Refreshing options, current_quest.options.size(): ", current_quest.options.size())
+	# 6. Refresh displayed options
 	clear_options()
 	if current_quest.options:
 		for quest_option in current_quest.options:
-			print("Checking option ", quest_option.option_index, " - visible: ", visible_option_ids.has(quest_option.option_index))
-			if quest_option and visible_option_ids.has(quest_option.option_index):
-				add_option(quest_option.text, _on_quest_option_pressed.bind(quest_option), quest_option)
+			if quest_option and visible_option_ids.has(quest_option.option_id):
+				add_option(quest_option.option_text, _on_quest_option_pressed.bind(quest_option), quest_option)
 
 func _start_combat():
 	"""Initialize combat - combat data will come from server response"""
@@ -584,45 +576,28 @@ func handle_combat_result():
 	pending_combat_option = null
 	
 	if player_won:
-		# Win: use regular response_text and shows/hides
-		if option.response_text != "":
-			animate_quest_text(option.response_text)
+		# Win: show node_text for the clicked option
+		if option.node_text != "":
+			animate_quest_text(option.node_text)
 		
-		# Always hide clicked option
-		visible_option_ids.erase(option.option_index)
-		
-		# Show/hide options
-		for show_id in option.shows_option_ids:
-			if not visible_option_ids.has(show_id):
-				visible_option_ids.append(show_id)
-		for hide_id in option.hides_option_ids:
-			visible_option_ids.erase(hide_id)
+		# Recompute visible options from requirements tree
+		visible_option_ids = _compute_visible_options()
 		
 		# Check if quest ends
 		if option.ends_quest:
 			_finish_quest()
 			return
 	else:
-		# Loss: use on_lose_response_text
-		if option.on_lose_response_text != "":
-			animate_quest_text(option.on_lose_response_text)
-		
-		# Always hide clicked option
-		visible_option_ids.erase(option.option_index)
-		
-		# Show/hide options for lose scenario
-		for show_id in option.on_lose_shows_option_ids:
-			if not visible_option_ids.has(show_id):
-				visible_option_ids.append(show_id)
-		for hide_id in option.on_lose_hides_option_ids:
-			visible_option_ids.erase(hide_id)
+		# Loss: remove this option from clicked so it can be retried
+		clicked_option_ids.erase(option.option_id)
+		visible_option_ids = _compute_visible_options()
 	
 	# Refresh options
 	clear_options()
 	if current_quest.options:
 		for quest_option in current_quest.options:
-			if quest_option and visible_option_ids.has(quest_option.option_index):
-				add_option(quest_option.text, _on_quest_option_pressed.bind(quest_option), quest_option)
+			if quest_option and visible_option_ids.has(quest_option.option_id):
+				add_option(quest_option.option_text, _on_quest_option_pressed.bind(quest_option), quest_option)
 
 func _finish_quest():
 	"""End quest and return home"""

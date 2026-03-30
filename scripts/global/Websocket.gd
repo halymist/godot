@@ -124,6 +124,12 @@ func _handle_message(message: String):
 			_handle_start_expedition_response(data)
 		"expeditionOptionResponse":
 			_handle_expedition_option_response(data)
+		"questOptionResponse":
+			_handle_quest_option_response(data)
+		"questCancelResponse":
+			_handle_quest_cancel_response(data)
+		"acceptQuestResponse":
+			_handle_accept_quest_response(data)
 		"localChat":
 			_handle_chat_message(data, "local")
 		"globalChat":
@@ -319,6 +325,51 @@ func _handle_combat_log(message: Dictionary):
 		
 		# Now show the panel - playback starts via visibility_changed
 		UIManager.instance.show_panel(combat_panel)
+
+func _handle_quest_option_response(message: Dictionary):
+	"""Handle questOptionResponse from server"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid questOptionResponse format")
+		return
+	
+	var response = message.data[0]
+	var success = response.get("success", false)
+	var msg = response.get("message", "")
+	
+	if not success:
+		print("[WebSocket] Quest option failed: ", msg)
+		# If server says we're not on a quest, could be a desync
+		return
+	
+	print("[WebSocket] Quest option success: ", msg)
+	# Server confirmed the option - client already applied it optimistically
+
+func _handle_quest_cancel_response(message: Dictionary):
+	"""Handle questCancelResponse from server"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid questCancelResponse format")
+		return
+	
+	var response = message.data[0]
+	var success = response.get("success", false)
+	var msg = response.get("message", "")
+	
+	print("[WebSocket] Quest cancel response: success=", success, " message=", msg)
+
+func _handle_accept_quest_response(message: Dictionary):
+	"""Handle acceptQuestResponse from server"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid acceptQuestResponse format")
+		return
+	
+	var response = message.data[0]
+	var success = response.get("success", false)
+	var msg = response.get("message", "")
+	
+	if success:
+		print("[WebSocket] Quest accepted: ", msg)
+	else:
+		print("[WebSocket] Quest accept failed: ", msg)
 
 # ============================================
 # WEBSOCKET API - Game Actions

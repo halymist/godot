@@ -167,6 +167,17 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	print("Travel duration in seconds: ", travel_duration)
 	set_process(true)  # Enable frame-by-frame updates for smooth progress
 	
+	# Set player travel state so refresh_travel_state() enters the correct branch
+	if quest_id > 0 and GameInfo.current_player:
+		GameInfo.current_player.traveling_destination = quest_id
+		if duration_seconds > 0:
+			GameInfo.current_player.traveling = Time.get_unix_time_from_system() + duration_seconds
+		else:
+			# VIP instant: traveling in the past means "already arrived"
+			GameInfo.current_player.traveling = 0.0
+		# Notify server
+		Websocket.accept_quest(quest_id)
+	
 	# Apply quest background texture and set quest name
 	var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 	if quest_data:
@@ -291,6 +302,14 @@ func _process(_delta):
 	elif current_player.traveling > current_time:
 		travel_end_time = current_player.traveling
 		is_traveling = true
+	elif current_player.traveling > 0 and current_player.traveling <= current_time and current_player.traveling_destination != null:
+		# Timer just expired this frame — mark as arrived
+		has_arrived = true
+		current_player.traveling = 0
+		set_process(false)
+		print("Quest travel completed - showing Arrived button")
+		refresh_travel_state()
+		return
 	
 	# Only update if actively traveling
 	if not is_traveling:

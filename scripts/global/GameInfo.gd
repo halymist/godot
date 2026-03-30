@@ -748,9 +748,11 @@ class GameCurrentPlayer:
 				set(key, data[key])
 		
 		# Handle daily_quests array with type conversion
-		if data.has("daily_quests"):
+		# Server sends "quests" field, client stores as "daily_quests"
+		var quests_data = data.get("daily_quests", data.get("quests", []))
+		if quests_data is Array and quests_data.size() > 0:
 			daily_quests.clear()
-			for quest_id in data.daily_quests:
+			for quest_id in quests_data:
 				daily_quests.append(quest_id as int)
 		
 		# Handle vendor_items array (item IDs from server)
