@@ -124,6 +124,8 @@ func _handle_message(message: String):
 			_handle_start_expedition_response(data)
 		"expeditionOptionResponse":
 			_handle_expedition_option_response(data)
+		"expeditionCancelResponse":
+			_handle_simple_response(data, "expeditionCancel")
 		"questOptionResponse":
 			_handle_quest_option_response(data)
 		"questCancelResponse":
@@ -136,6 +138,48 @@ func _handle_message(message: String):
 			_handle_chat_message(data, "global")
 		"combatLog":
 			_handle_combat_log(data)
+		"sellItemResponse", "sellItemsResponse":
+			_handle_sell_item_response(data)
+		"temperItemResponse":
+			_handle_simple_response(data, "temperItem")
+		"resetTalentsResponse":
+			_handle_simple_response(data, "resetTalents")
+		"trainStatResponse":
+			_handle_simple_response(data, "trainStat")
+		"addTalentResponse":
+			_handle_simple_response(data, "addTalent")
+		"buyItemResponse":
+			_handle_simple_response(data, "buyItem")
+		"buyItemVendorResponse":
+			_handle_simple_response(data, "buyItemVendor")
+		"enchantItemResponse":
+			_handle_simple_response(data, "enchantItem")
+		"chooseBlessingResponse":
+			_handle_simple_response(data, "chooseBlessing")
+		"activatePerkResponse":
+			_handle_simple_response(data, "activatePerk")
+		"brewElixirResponse":
+			_handle_simple_response(data, "brewElixir")
+		"useElixirResponse":
+			_handle_simple_response(data, "useElixir")
+		"usePotionResponse":
+			_handle_simple_response(data, "usePotion")
+		"useHammerResponse":
+			_handle_simple_response(data, "useHammer")
+		"useScrollResponse":
+			_handle_simple_response(data, "useScroll")
+		"moveItemResponse":
+			_handle_simple_response(data, "moveItem")
+		"socketItemResponse":
+			_handle_simple_response(data, "socketItem")
+		"skipTravelResponse":
+			_handle_simple_response(data, "skipTravel")
+		"loadEnemyResponse":
+			_handle_load_enemy_response(data)
+		"rankingsData":
+			_handle_rankings_data(data)
+		"error":
+			_handle_error(data)
 		_:
 			print("[WebSocket] Unknown function: ", function_name)
 
@@ -370,6 +414,102 @@ func _handle_accept_quest_response(message: Dictionary):
 		print("[WebSocket] Quest accepted: ", msg)
 	else:
 		print("[WebSocket] Quest accept failed: ", msg)
+
+func _handle_simple_response(message: Dictionary, action_name: String):
+	"""Generic handler for optimistic actions - log result, warn on failure"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid ", action_name, "Response format")
+		return
+
+	var response = message.data[0]
+	var success = response.get("success", false)
+	var msg = response.get("message", "")
+
+	if success:
+		print("[WebSocket] ", action_name, " success: ", msg)
+	else:
+		print("[WebSocket] ", action_name, " FAILED: ", msg)
+
+func _handle_sell_item_response(message: Dictionary):
+	"""Handle sellItemResponse - server may return authoritative silver"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid sellItemResponse format")
+		return
+
+	var response = message.data[0]
+	var success = response.get("success", false)
+	var msg = response.get("message", "")
+
+	if success:
+		# Server may provide authoritative silver total
+		if response.has("silver") and GameInfo.current_player:
+			GameInfo.current_player.silver = int(response.silver)
+			if UIManager.instance:
+				UIManager.instance.update_display()
+		print("[WebSocket] sellItem success: ", msg)
+	else:
+		print("[WebSocket] sellItem FAILED: ", msg)
+
+func _handle_load_enemy_response(message: Dictionary):
+	"""Handle loadEnemyResponse - server returns enemy character data"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Invalid loadEnemyResponse format")
+		return
+
+	var enemy_data = message.data[0]
+	print("[WebSocket] Enemy data received: ", enemy_data.get("name", "unknown"))
+
+	# Create enemy player object and show enemy panel
+	var enemy = GameInfo.GamePlayer.new(enemy_data, GameInfo)
+	if UIManager.instance:
+		UIManager.instance.enemy_character_display.display_enemy(enemy.name)
+		UIManager.instance.show_overlay(UIManager.instance.enemy_panel)
+
+func _handle_rankings_data(message: Dictionary):
+	"""Handle rankingsData - server returns array of ranked players"""
+	if not message.has("data") or not message.data is Array:
+		print("[WebSocket] Invalid rankingsData format")
+		return
+
+	var players_data = message.data
+	var new_players: Array = []
+
+	for p in players_data:
+		var player = GameInfo.GamePlayer.new(p, GameInfo)
+		new_players.append(player)
+		# Also store in global rankings list
+		var exists = false
+		for i in range(GameInfo.rankings_players.size()):
+			if GameInfo.rankings_players[i].rank == player.rank:
+				GameInfo.rankings_players[i] = player
+				exists = true
+				break
+		if not exists:
+			GameInfo.rankings_players.append(player)
+
+	# Sort by rank
+	GameInfo.rankings_players.sort_custom(func(a, b): return a.rank < b.rank)
+
+	# Notify rankings panel
+	if UIManager.instance and UIManager.instance.rankings_panel:
+		var rankings = UIManager.instance.rankings_panel
+		if rankings.is_loading_up and new_players.size() > 0 and new_players[0].rank < rankings.loaded_min_rank:
+			rankings.append_rankings_up(new_players)
+		elif rankings.is_loading_down:
+			rankings.append_rankings_down(new_players)
+		else:
+			rankings.is_loading_up = false
+			rankings.is_loading_down = false
+
+func _handle_error(message: Dictionary):
+	"""Handle server error messages"""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		print("[WebSocket] Error with no data")
+		return
+
+	var error_data = message.data[0]
+	var msg = error_data.get("message", "Unknown error")
+	print("[WebSocket] Server error: ", msg)
 
 # ============================================
 # WEBSOCKET API - Game Actions
