@@ -48,13 +48,18 @@ func _on_yes_pressed():
 		return
 	
 	# Otherwise, handle quest cancellation
-	if quest_id != null and quest_id is int:
+	if quest_id != null:
 		Websocket.quest_cancel()
-		GameInfo.complete_quest(quest_id)
+		GameInfo.complete_quest(int(quest_id))
 		print("Quest ", quest_id, " abandoned and marked as completed")
 	
 	GameInfo.current_player.traveling = 0
 	GameInfo.current_player.traveling_destination = null
+	
+	# Reset quest panel state so it can reload cleanly
+	UIManager.instance.quest.current_quest_id = 0
+	UIManager.instance.quest.current_quest = null
+	UIManager.instance.quest.clicked_option_ids.clear()
 	
 	# Reset map panel state
 	map.has_arrived = false

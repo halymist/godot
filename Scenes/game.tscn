@@ -2338,6 +2338,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Map" type="TextureRect" parent="Portrait/GameScene" unique_id=1422676398 node_paths=PackedStringArray("quest_name_label", "travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -6292,7 +6293,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.03
 anchor_right = 0.97
-offset_bottom = 52.0
+offset_bottom = 29.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 12
