@@ -50,8 +50,13 @@ func _on_yes_pressed():
 	# Otherwise, handle quest cancellation
 	if quest_id != null:
 		Websocket.quest_cancel()
-		GameInfo.complete_quest(int(quest_id))
-		print("Quest ", quest_id, " abandoned and marked as completed")
+		# Only remove from available quests if player clicked at least one option
+		var clicked = UIManager.instance.quest.clicked_option_ids
+		if clicked.size() > 0:
+			GameInfo.complete_quest(int(quest_id))
+			print("Quest ", quest_id, " abandoned (options clicked) and removed from daily quests")
+		else:
+			print("Quest ", quest_id, " canceled before any options clicked, keeping in daily quests")
 	
 	GameInfo.current_player.traveling = 0
 	GameInfo.current_player.traveling_destination = null

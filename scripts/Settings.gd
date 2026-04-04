@@ -5,6 +5,7 @@ extends Control
 @export var master_volume_slider: HSlider
 @export var music_volume_slider: HSlider
 @export var language_dropdown: OptionButton
+@export var skip_combat_checkbox: CheckButton
 
 # Font size presets for small, medium, large
 const FONT_SIZES = {
@@ -35,6 +36,7 @@ func _connect_signals():
 	"""Connect all UI element signals"""
 	disable_ads_checkbox.toggled.connect(_on_disable_ads_toggled)
 	language_dropdown.item_selected.connect(_on_language_selected)
+	skip_combat_checkbox.toggled.connect(_on_skip_combat_toggled)
 	master_volume_slider.value_changed.connect(_on_master_volume_changed)
 	music_volume_slider.value_changed.connect(_on_music_volume_changed)
 	ui_size_dropdown.item_selected.connect(_on_ui_size_selected)
@@ -46,6 +48,7 @@ func _load_character_settings():
 	
 	# Apply gameplay settings
 	disable_ads_checkbox.button_pressed = settings.gameplay.disable_ads
+	skip_combat_checkbox.button_pressed = settings.gameplay.get("skip_combat", false)
 	
 	# Set language dropdown
 	var lang_index = 0
@@ -76,6 +79,10 @@ func _save_setting(section: String, key: String, value):
 func _on_disable_ads_toggled(enabled: bool):
 	_save_setting("gameplay", "disable_ads", enabled)
 	print("Disable ads: ", enabled)
+
+func _on_skip_combat_toggled(enabled: bool):
+	_save_setting("gameplay", "skip_combat", enabled)
+	print("Skip combat: ", enabled)
 
 func _on_language_selected(index: int):
 	var languages = ["English", "Czech", "German"]

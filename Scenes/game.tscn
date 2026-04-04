@@ -5905,7 +5905,7 @@ mouse_filter = 1
 text = "-"
 horizontal_alignment = 2
 
-[node name="Settings" type="Panel" parent="Portrait/GameScene" unique_id=1819568224 node_paths=PackedStringArray("ui_size_dropdown", "disable_ads_checkbox", "master_volume_slider", "music_volume_slider", "language_dropdown")]
+[node name="Settings" type="Panel" parent="Portrait/GameScene" unique_id=1819568224 node_paths=PackedStringArray("ui_size_dropdown", "disable_ads_checkbox", "master_volume_slider", "music_volume_slider", "language_dropdown", "skip_combat_checkbox")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5919,6 +5919,7 @@ disable_ads_checkbox = NodePath("Gameplay/DisableAds/CheckButton")
 master_volume_slider = NodePath("Audio/Volume/Master")
 music_volume_slider = NodePath("Audio/MusicVolume/Music")
 language_dropdown = NodePath("Gameplay/Language/OptionButton")
+skip_combat_checkbox = NodePath("Gameplay/SkipCombat/CheckButton")
 
 [node name="Title" type="Label" parent="Portrait/GameScene/Settings" unique_id=1583340305]
 layout_mode = 1
@@ -5995,6 +5996,18 @@ popup/item_1/text = "Czech"
 popup/item_1/id = 1
 popup/item_2/text = "German"
 popup/item_2/id = 2
+
+[node name="SkipCombat" type="HBoxContainer" parent="Portrait/GameScene/Settings/Gameplay"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/Gameplay/SkipCombat"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Skip Combat"
+
+[node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/Gameplay/SkipCombat"]
+layout_mode = 2
+focus_mode = 0
 
 [node name="HSeparator2" type="HSeparator" parent="Portrait/GameScene/Settings" unique_id=2029570904]
 layout_mode = 1
