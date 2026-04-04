@@ -466,7 +466,7 @@ func _handle_load_enemy_response(message: Dictionary):
 		UIManager.instance.show_overlay(UIManager.instance.enemy_panel)
 
 func _handle_rankings_data(message: Dictionary):
-	"""Handle rankingsData - server returns array of ranked players"""
+	"""Handle rankingsData - server returns array of minimal ranking entries"""
 	if not message.has("data") or not message.data is Array:
 		print("[WebSocket] Invalid rankingsData format")
 		return
@@ -474,10 +474,30 @@ func _handle_rankings_data(message: Dictionary):
 	var players_data = message.data
 	var new_players: Array = []
 
-	for p in players_data:
-		var player = GameInfo.GamePlayer.new(p, GameInfo)
+	for ranking_entry in players_data:
+		if not ranking_entry is Dictionary:
+			continue
+		# Transform minimal server format to full GamePlayer-compatible dict
+		var player_data = {
+			"character_id": ranking_entry.get("character_id", 0),
+			"name": ranking_entry.get("character_name", ""),
+			"faction": ranking_entry.get("faction", 1),
+			"honor": ranking_entry.get("honnor", 0),
+			"vip": ranking_entry.get("vip", false),
+			"rank": ranking_entry.get("rank", 0),
+			"profession": 0,
+			"avatar": [1, 10, 20, 30, 40],
+			"stats": [10, 10, 10, 10, 5, 1, 3],
+			"blessing": 0,
+			"potion": 0,
+			"elixir": [],
+			"bag_slots": [],
+			"perks": [],
+			"talents": []
+		}
+		var player = GameInfo.GamePlayer.new(player_data, GameInfo)
 		new_players.append(player)
-		# Also store in global rankings list
+		# Merge into global rankings list
 		var exists = false
 		for i in range(GameInfo.rankings_players.size()):
 			if GameInfo.rankings_players[i].rank == player.rank:
@@ -487,19 +507,15 @@ func _handle_rankings_data(message: Dictionary):
 		if not exists:
 			GameInfo.rankings_players.append(player)
 
-	# Sort by rank
 	GameInfo.rankings_players.sort_custom(func(a, b): return a.rank < b.rank)
 
 	# Notify rankings panel
 	if UIManager.instance and UIManager.instance.rankings_panel:
 		var rankings = UIManager.instance.rankings_panel
-		if rankings.is_loading_up and new_players.size() > 0 and new_players[0].rank < rankings.loaded_min_rank:
+		if rankings.is_loading_up:
 			rankings.append_rankings_up(new_players)
 		elif rankings.is_loading_down:
 			rankings.append_rankings_down(new_players)
-		else:
-			rankings.is_loading_up = false
-			rankings.is_loading_down = false
 
 func _handle_error(message: Dictionary):
 	"""Handle server error messages"""

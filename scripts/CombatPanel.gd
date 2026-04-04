@@ -415,9 +415,12 @@ func set_combat_background():
 func _on_visibility_changed():
 	if visible and is_prepared:
 		# Panel is now visible and was prepared - start playback
-		start_combat_playback()
-		# Reset prepared flag so we don't restart on next visibility toggle
 		is_prepared = false
+		# If skip combat is enabled, skip straight to result
+		if SettingsManager.get_setting("gameplay", "skip_combat", false):
+			_skip_to_end()
+		else:
+			start_combat_playback()
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
@@ -450,40 +453,45 @@ func _on_skip_replay_pressed():
 			UIManager.instance.handle_home_button()
 	else:
 		# Skip to the end
+		_skip_to_end()
+
+func _skip_to_end():
+	"""Skip all remaining combat actions and show the final result."""
+	if action_timer:
 		action_timer.stop()
-		if fade_timer:
-			fade_timer.stop()
+	if fade_timer:
+		fade_timer.stop()
+	
+	# Apply all remaining actions instantly
+	while current_action_index < all_actions.size():
+		var action_data = all_actions[current_action_index]
 		
-		# Apply all remaining actions instantly
-		while current_action_index < all_actions.size():
-			var action_data = all_actions[current_action_index]
-			
-			if action_data.type == "combat_action":
-				var entry = action_data.entry
-				# Apply health changes instantly (no animation)
-				var combat = GameInfo.current_combat_log
-				if combat:
-					# Determine which health bar based on character_id
-					if entry.character_id == combat.player_id:
-						# Player is the attacker, so enemy takes damage
-						if is_damage_action(entry.action):
-							enemy_health_bar.value = max(0, enemy_health_bar.value - entry.factor)
-							update_health_label(enemy_health_label, enemy_health_bar.value)
-						elif entry.action == "heal" and entry.factor > 0:
-							player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + entry.factor)
-							update_health_label(player_health_label, player_health_bar.value)
-					else:
-						# Enemy is the attacker, so player takes damage
-						if is_damage_action(entry.action):
-							player_health_bar.value = max(0, player_health_bar.value - entry.factor)
-							update_health_label(player_health_label, player_health_bar.value)
-						elif entry.action == "heal" and entry.factor > 0:
-							enemy_health_bar.value = min(enemy_health_bar.max_value, enemy_health_bar.value + entry.factor)
-							update_health_label(enemy_health_label, enemy_health_bar.value)
-			elif action_data.type == "final_message":
-				show_final_message(action_data.message)
-			
-			current_action_index += 1
+		if action_data.type == "combat_action":
+			var entry = action_data.entry
+			# Apply health changes instantly (no animation)
+			var combat = GameInfo.current_combat_log
+			if combat:
+				# Determine which health bar based on character_id
+				if entry.character_id == combat.player_id:
+					# Player is the attacker, so enemy takes damage
+					if is_damage_action(entry.action):
+						enemy_health_bar.value = max(0, enemy_health_bar.value - entry.factor)
+						update_health_label(enemy_health_label, enemy_health_bar.value)
+					elif entry.action == "heal" and entry.factor > 0:
+						player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + entry.factor)
+						update_health_label(player_health_label, player_health_bar.value)
+				else:
+					# Enemy is the attacker, so player takes damage
+					if is_damage_action(entry.action):
+						player_health_bar.value = max(0, player_health_bar.value - entry.factor)
+						update_health_label(player_health_label, player_health_bar.value)
+					elif entry.action == "heal" and entry.factor > 0:
+						enemy_health_bar.value = min(enemy_health_bar.max_value, enemy_health_bar.value + entry.factor)
+						update_health_label(enemy_health_label, enemy_health_bar.value)
+		elif action_data.type == "final_message":
+			show_final_message(action_data.message)
 		
-		is_combat_finished = true
-		button_label.text = "Continue"
+		current_action_index += 1
+	
+	is_combat_finished = true
+	button_label.text = "Continue"

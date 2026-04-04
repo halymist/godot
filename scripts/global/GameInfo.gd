@@ -1257,8 +1257,8 @@ func update_rankings():
 	# Always add current_player
 	rankings_players.append(current_player)
 	
-	# Sort by honor (highest to lowest)
-	rankings_players.sort_custom(func(a, b): return a.honor > b.honor)
+	# Sort by rank (ascending - rank 1 first)
+	rankings_players.sort_custom(func(a, b): return a.rank < b.rank)
 	
 	print("Rankings updated: ", rankings_players.size(), " players (current player included)")
 

@@ -108,10 +108,12 @@ func populate_rankings():
 		row.row_double_clicked.connect(_on_row_double_clicked)
 		table_content.add_child(row)
 	
-	for i in range(LOADING_ROWS_COUNT):
-		var row = _create_loading_row()
-		bottom_loading_rows.append(row)
-		table_content.add_child(row)
+	# Only add bottom loading rows if initial set is a full page (likely more data)
+	if GameInfo.rankings_players.size() >= LOADING_ROWS_COUNT:
+		for i in range(LOADING_ROWS_COUNT):
+			var row = _create_loading_row()
+			bottom_loading_rows.append(row)
+			table_content.add_child(row)
 	
 	is_loading_up = false
 	is_loading_down = false
@@ -147,7 +149,8 @@ func append_rankings_up(new_players: Array):
 	
 	loaded_min_rank = new_players[0].rank
 	
-	if loaded_min_rank <= 1:
+	# If at rank 1 or fewer than a full page, no more data above
+	if loaded_min_rank <= 1 or new_players.size() < LOADING_ROWS_COUNT:
 		_clear_loading_rows(top_loading_rows)
 	
 	is_loading_up = false
@@ -170,6 +173,11 @@ func append_rankings_down(new_players: Array):
 		bottom_index += 1
 	
 	loaded_max_rank = new_players[-1].rank
+	
+	# If fewer than a full page returned, no more data below
+	if new_players.size() < LOADING_ROWS_COUNT:
+		_clear_loading_rows(bottom_loading_rows)
+	
 	is_loading_down = false
 
 func _on_row_clicked(rank: int, player_name: String, _faction: int, _honor: int):
