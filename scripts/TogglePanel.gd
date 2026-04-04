@@ -159,7 +159,6 @@ func _determine_starter_panel() -> Control:
 	# Arrived: show quest or expedition if active
 	if destination != null:
 		print("-> Arrived at quest, showing quest panel")
-		call_deferred("_load_quest_on_startup", destination)
 		return quest
 	if expedition and expedition.size() > 0:
 		print("-> Arrived at expedition, showing expedition panel")

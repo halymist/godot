@@ -100,16 +100,22 @@ func _on_visibility_changed():
 func load_quest(quest_id: int):
 	"""Load a quest and display initial state"""
 	print("Loading quest ", quest_id)
-	UIManager.instance.show_panel(self)
 	
-	if current_quest_id != quest_id:
+	# Capture whether this is a new quest before setting the guard
+	var is_new_quest = current_quest_id != quest_id
+	# Set ID early to prevent recursive re-entry from _on_visibility_changed
+	current_quest_id = quest_id
+	
+	# Only switch panels if we're not already the active panel
+	if UIManager.instance.current_panel != self:
+		UIManager.instance.show_panel(self)
+	
+	if is_new_quest:
 		# Set quest background
 		var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 		if quest_data:
 			texture = quest_data.background_texture
 			current_quest = quest_data
-	
-	current_quest_id = quest_id
 	
 	# Reset clicked options tracking for new quest
 	clicked_option_ids.clear()
@@ -168,25 +174,28 @@ func display_quest_with_text(text: String):
 
 func _compute_visible_options() -> Array[int]:
 	"""Compute which options are visible based on the requirements tree.
+	The tree works depth-first: only the children of the LAST clicked option
+	are shown. When nothing has been clicked yet, start options are shown.
 	An option is visible if:
-	  - It's a start option (is_start == true) and hasn't been clicked, OR
-	  - ANY of its requirements are in clicked_option_ids and it hasn't been clicked
+	  - Nothing clicked yet AND it's a start option (no requirements), OR
+	  - Its requirements contain the last clicked option AND it hasn't been clicked
 	"""
 	var result: Array[int] = []
+	var last_clicked: int = clicked_option_ids[clicked_option_ids.size() - 1] if clicked_option_ids.size() > 0 else -1
+	
 	for option in current_quest.options:
 		# Skip already clicked options
 		if option.option_id in clicked_option_ids:
 			continue
-		# Start options are always visible
-		if option.is_start:
-			result.append(option.option_id)
-			continue
-		# Check if any requirement has been clicked (OR logic)
-		if option.requirements.size() > 0:
-			for req_id in option.requirements:
-				if req_id in clicked_option_ids:
-					result.append(option.option_id)
-					break
+		
+		if last_clicked == -1:
+			# Nothing clicked yet - show start options only
+			if option.is_start:
+				result.append(option.option_id)
+		else:
+			# Show options whose requirements include the last clicked option
+			if last_clicked in option.requirements:
+				result.append(option.option_id)
 	return result
 
 func apply_option_reward(option: QuestOption):
