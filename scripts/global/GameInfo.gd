@@ -1269,6 +1269,9 @@ func complete_quest(quest_id: int, clicked_options: Array[int] = []):
 	if not current_player:
 		return
 	
+	# Remove from daily quests so it no longer shows in the village
+	current_player.daily_quests.erase(quest_id)
+	
 	for entry in current_player.quest_log:
 		if entry.get("quest_id") == quest_id:
 			entry["finished"] = true

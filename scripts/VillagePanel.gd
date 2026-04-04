@@ -31,11 +31,17 @@ var available_quests: Array[int] = []
 var _utility_type: String = ""  # Track current utility type for callback
 
 func _ready():
+	# Refresh quest display whenever village becomes visible again
+	visibility_changed.connect(_on_visibility_changed)
 	# Wait for game_ready before setup
 	if UIManager.instance.game_is_ready:
 		_setup()
 	else:
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
+
+func _on_visibility_changed():
+	if visible and GameInfo.current_player:
+		_update_quest_display()
 
 func _setup():
 	if not GameInfo.current_player:

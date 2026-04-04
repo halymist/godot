@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CosmeticDatabase" load_steps=15 format=3 uid="uid://bxydlhvwotc0w"]
+[gd_resource type="Resource" script_class="CosmeticDatabase" format=3 uid="uid://bxydlhvwotc0w"]
 
 [ext_resource type="Script" uid="uid://dhultdeakr0nm" path="res://scripts/resources/CosmeticResource.gd" id="1_cosmetic"]
 [ext_resource type="Script" uid="uid://bokphu6bhophw" path="res://scripts/resources/CosmeticDatabase.gd" id="2_cosmeticdb"]
@@ -15,7 +15,6 @@ id = 1
 cosmetic_name = "Default Face"
 category = "Face"
 texture = ExtResource("2_rv8w6")
-cost = 0
 
 [sub_resource type="Resource" id="cosmetic_hair_1"]
 script = ExtResource("1_cosmetic")
@@ -23,7 +22,6 @@ id = 10
 cosmetic_name = "Hair Style 1"
 category = "Hair"
 texture = ExtResource("3_gw4r7")
-cost = 0
 
 [sub_resource type="Resource" id="cosmetic_hair_2"]
 script = ExtResource("1_cosmetic")
@@ -39,7 +37,6 @@ id = 20
 cosmetic_name = "Default Eyes"
 category = "Eyes"
 texture = ExtResource("5_yjofd")
-cost = 0
 
 [sub_resource type="Resource" id="Resource_ew2jr"]
 script = ExtResource("1_cosmetic")
@@ -47,7 +44,6 @@ id = 30
 cosmetic_name = "Default Nose"
 category = "Nose"
 texture = ExtResource("6_7clkc")
-cost = 0
 metadata/_custom_type_script = "uid://dhultdeakr0nm"
 
 [sub_resource type="Resource" id="Resource_unhin"]
@@ -56,7 +52,6 @@ id = 40
 cosmetic_name = "Default Mouth"
 category = "Mouth"
 texture = ExtResource("7_yjofd")
-cost = 0
 metadata/_custom_type_script = "uid://dhultdeakr0nm"
 
 [resource]
