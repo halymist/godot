@@ -50,26 +50,30 @@ func calculate_layout():
 		var adjusted_height = int(window_size.x / ASPECT_21_9)
 		target_base_resolution = Vector2i(PORTRAIT_BASE.x, adjusted_height)
 		print("Mode: PORTRAIT (narrower than 21:9) - Adjusted height: ", adjusted_height)
+		update_content_scale(target_base_resolution, false)
 	elif aspect_ratio <= ASPECT_16_9:
 		# Between 21:9 and 16:9: use base 21:9 resolution, content scales to fill
 		target_base_resolution = PORTRAIT_BASE
 		print("Mode: PORTRAIT (21:9 to 16:9 range) - Base resolution")
+		update_content_scale(target_base_resolution, false)
 	else:
-		# Wider than 16:9: cap at 16:9 width ratio, content will be centered with letterboxing
-		# Calculate the base resolution that would give 16:9 aspect at current height
+		# Wider than 16:9: cap at 16:9 width, add black bars on sides
 		var max_width = int(PORTRAIT_BASE.y * ASPECT_16_9)
 		target_base_resolution = Vector2i(max_width, PORTRAIT_BASE.y)
 		print("Mode: PORTRAIT (wider than 16:9) - Capped width: ", max_width)
-	
-	update_content_scale(target_base_resolution)
+		update_content_scale(target_base_resolution, true)
 
-func update_content_scale(base_resolution: Vector2i):
-	"""Update the window's content scale base resolution"""
+func update_content_scale(base_resolution: Vector2i, letterbox: bool = false):
+	"""Update the window's content scale base resolution.
+	letterbox=true uses KEEP aspect to add black bars on wider screens."""
 	var window = get_tree().root
 	window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP_HEIGHT
+	if letterbox:
+		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+	else:
+		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP_HEIGHT
 	window.content_scale_size = base_resolution
-	print("Content scale updated: ", base_resolution)
+	print("Content scale updated: ", base_resolution, " letterbox: ", letterbox)
 
 # user font scale preference - only scales Label fonts
 func set_user_font_scale(new_scale: float):

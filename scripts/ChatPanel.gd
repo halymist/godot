@@ -16,6 +16,8 @@ func _ready():
 	global_button.toggled.connect(_on_global_button_toggled)
 	local_button.toggled.connect(_on_local_button_toggled)
 	send_button.pressed.connect(_on_send_button_pressed)
+	chat_input.text_submitted.connect(_on_chat_input_submitted)
+	chat_input.focus_exited.connect(_on_chat_input_focus_exited)
 	
 	visibility_changed.connect(_on_visibility_changed)
 	
@@ -27,6 +29,13 @@ func _ready():
 func _setup():
 	_update_button_visuals()
 	display_chat_messages()
+
+func _input(event: InputEvent):
+	# Release chat input focus when clicking anywhere outside it
+	if event is InputEventMouseButton and event.pressed and chat_input.has_focus():
+		var input_rect = chat_input.get_global_rect()
+		if not input_rect.has_point(event.position):
+			chat_input.release_focus()
 
 func _on_visibility_changed():
 	# Scroll to bottom whenever chat becomes visible
@@ -71,6 +80,14 @@ func _on_local_button_toggled(toggled_on: bool):
 		current_filter = "local"
 		display_chat_messages()
 
+func _on_chat_input_submitted(_text: String):
+	_on_send_button_pressed()
+	chat_input.release_focus()
+
+func _on_chat_input_focus_exited():
+	# Ensure virtual keyboard closes on mobile / web
+	pass
+
 func _on_send_button_pressed():
 	var message_text = chat_input.text.strip_edges()
 	if message_text.is_empty():
@@ -80,6 +97,7 @@ func _on_send_button_pressed():
 	var chat_type = 1 if current_filter == "global" else 0
 	Websocket.send_chat(chat_type, message_text)
 	chat_input.text = ""
+	chat_input.release_focus()
 
 func _update_button_visuals():
 	"""Update button toggle state based on current filter"""
