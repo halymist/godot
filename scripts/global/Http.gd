@@ -122,6 +122,7 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 func _transform_auth_response(response: Dictionary) -> Dictionary:
 	"""Transform server AuthResponse to client lobby_data format"""
 	var lobby_data = {
+		"user_id": response.get("user_id", ""),
 		"account_created": response.get("account_created", ""),
 		"user_email": response.get("user_email", ""),
 		"email": response.get("user_email", ""),

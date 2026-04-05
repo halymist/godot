@@ -13,8 +13,8 @@ var current_filter: String = "local"  # "global", "local", or "all"
 
 func _ready():
 	# Connect toggle buttons with null checks
-	global_button.pressed.connect(_on_global_button_pressed)
-	local_button.pressed.connect(_on_local_button_pressed)
+	global_button.toggled.connect(_on_global_button_toggled)
+	local_button.toggled.connect(_on_local_button_toggled)
 	send_button.pressed.connect(_on_send_button_pressed)
 	
 	visibility_changed.connect(_on_visibility_changed)
@@ -61,15 +61,15 @@ func _should_show_message(chat_message: GameInfo.ChatMessage) -> bool:
 		_:
 			return true  # Default to showing all messages
 
-func _on_global_button_pressed():
-	current_filter = "global"
-	_update_button_visuals()
-	display_chat_messages()
+func _on_global_button_toggled(toggled_on: bool):
+	if toggled_on:
+		current_filter = "global"
+		display_chat_messages()
 
-func _on_local_button_pressed():
-	current_filter = "local"
-	_update_button_visuals()
-	display_chat_messages()
+func _on_local_button_toggled(toggled_on: bool):
+	if toggled_on:
+		current_filter = "local"
+		display_chat_messages()
 
 func _on_send_button_pressed():
 	var message_text = chat_input.text.strip_edges()
@@ -82,15 +82,9 @@ func _on_send_button_pressed():
 	chat_input.text = ""
 
 func _update_button_visuals():
-	"""Update button appearance based on current filter"""
-	if current_filter == "global":
-		# Global active, local inactive
-		global_button.modulate = Color.WHITE  # Full brightness
-		local_button.modulate = Color(0.5, 0.5, 0.5, 1.0)  # Dimmed
-	else:  # local
-		# Local active, global inactive
-		global_button.modulate = Color(0.5, 0.5, 0.5, 1.0)  # Dimmed
-		local_button.modulate = Color.WHITE  # Full brightness
+	"""Update button toggle state based on current filter"""
+	local_button.button_pressed = current_filter == "local"
+	global_button.button_pressed = current_filter == "global"
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
 	# Add timestamp separator if more than 10 minutes passed since last message
