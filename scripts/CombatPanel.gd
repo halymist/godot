@@ -125,7 +125,8 @@ func prepare_combat():
 	# Set initial health bars and labels
 	player_health_bar.max_value = combat.player_max_hp
 	enemy_health_bar.max_value = combat.enemy_max_hp
-	var starting_player_hp = max(0, int(round(combat.player_max_hp * (1.0 - combat.player_depleted_health / 100.0))))
+	var hp_lost = int(combat.player_depleted_health)
+	var starting_player_hp = max(0, combat.player_max_hp - hp_lost)
 	player_health_bar.value = starting_player_hp
 	enemy_health_bar.value = combat.enemy_max_hp
 	

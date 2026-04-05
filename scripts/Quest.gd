@@ -536,12 +536,17 @@ func _on_quest_option_pressed(option: QuestOption):
 	
 	# 3a. Apply effect if this option applies one
 	if option.effect_applied > 0 and option.effect_applied_factor != 0.0 and GameInfo.current_player:
-		# Effect 200 = health depletion (same convention as expeditions)
+		# Effect 200 = health depletion (now as HP lost)
 		if option.effect_applied == 200:
-			var percent = abs(option.effect_applied_factor)
-			GameInfo.current_player.depleted_health = clamp(GameInfo.current_player.depleted_health + percent, 0.0, 100.0)
-			print("Applied effect 200 (health depletion): ", percent, "%")
+			var hp_lost = abs(int(option.effect_applied_factor))
+			var max_health = GameInfo.current_player.get_total_stats().stamina * 10
+			GameInfo.current_player.depleted_health = clamp(GameInfo.current_player.depleted_health + hp_lost, 0, max_health)
+			print("Applied effect 200 (health depletion): ", hp_lost, "HP")
 			UIManager.instance.refresh_stats()
+			# Block/fail quest if health is depleted
+			if GameInfo.current_player.depleted_health >= max_health:
+				animate_quest_text("You are too injured to continue this quest!")
+				# Optionally, end quest or disable further options here
 	
 	# 3b. Apply and display reward for this option
 	apply_option_reward(option)

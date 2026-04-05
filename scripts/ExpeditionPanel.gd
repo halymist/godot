@@ -279,11 +279,17 @@ func _apply_slide_rewards(slide: Resource):
 
 	# Apply slide effect (e.g., effect_id 200 = health depletion)
 	if slide.effect_id == 200 and slide.effect_factor != 0:
-		var percent = abs(float(slide.effect_factor))
-		player.depleted_health = clamp(player.depleted_health + percent, 0.0, 100.0)
-		reward_texts.append("You lose %d%% of your health." % int(percent))
+		var hp_lost = abs(int(slide.effect_factor))
+		var max_health = player.get_total_stats().stamina * 10
+		player.depleted_health = clamp(player.depleted_health + hp_lost, 0, max_health)
+		reward_texts.append("You lose %d HP." % int(hp_lost))
 		if UIManager.instance:
 			UIManager.instance.refresh_stats()
+		# Block further expeditions if health is depleted
+		if player.depleted_health >= max_health:
+			reward_texts.append("You are too injured to continue! Expedition failed.")
+			if UIManager.instance:
+				UIManager.instance.handle_expedition_failed("You are too injured to continue!")
 	
 	# Show combined reward text
 	if reward_label and reward_texts.size() > 0:

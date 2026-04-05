@@ -122,7 +122,7 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 func _transform_auth_response(response: Dictionary) -> Dictionary:
 	"""Transform server AuthResponse to client lobby_data format"""
 	var uid = response.get("user_id", 0)
-	GameInfo.user_id = str(uid) if uid else ""
+	GameInfo.user_id = str(int(uid)) if uid else ""
 	var lobby_data = {
 		"user_id": uid,
 		"account_created": response.get("account_created", ""),

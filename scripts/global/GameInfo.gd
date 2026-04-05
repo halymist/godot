@@ -473,7 +473,7 @@ class GamePlayer:
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var elixir_day: int = 0  # Server day when elixir effect expires (0 = no expiration tracked)
 	var elixir_ingredients: Array[int] = []  # Ingredients for equipped elixir
-	var depleted_health: float = 0.0  # Percent of max HP depleted (0-100)
+	var depleted_health: int = 0  # Amount of HP lost (0 = full health)
 	var bag_slots: Array[Item] = []
 	var perks: Array[Perk] = []
 	var talents: Array[Talent] = []

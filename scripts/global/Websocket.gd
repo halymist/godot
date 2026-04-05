@@ -225,7 +225,8 @@ func _handle_expedition_option_response(message: Dictionary):
 	var data = message.data[0]
 	# Update depleted health if provided by server
 	if GameInfo.current_player and data.has("depleted_health"):
-		GameInfo.current_player.depleted_health = clamp(float(data.get("depleted_health", 0.0)), 0.0, 100.0)
+		var max_health = GameInfo.current_player.get_total_stats().stamina * 10
+		GameInfo.current_player.depleted_health = clamp(int(data.get("depleted_health", 0)), 0, max_health)
 		if UIManager.instance:
 			UIManager.instance.refresh_stats()
 	if not data.get("success", false):
@@ -234,7 +235,8 @@ func _handle_expedition_option_response(message: Dictionary):
 		if data.has("combat") and data.combat is Dictionary:
 			GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
 			if GameInfo.current_player and not data.has("depleted_health"):
-				GameInfo.current_player.depleted_health = clamp(GameInfo.current_combat_log.player_depleted_health, 0.0, 100.0)
+				var max_health = GameInfo.current_player.get_total_stats().stamina * 10
+				GameInfo.current_player.depleted_health = clamp(int(GameInfo.current_combat_log.player_depleted_health), 0, max_health)
 				if UIManager.instance:
 					UIManager.instance.refresh_stats()
 			GameInfo.pending_expedition_slide_id_after_combat = 0
@@ -264,7 +266,8 @@ func _handle_expedition_option_response(message: Dictionary):
 	if data.has("combat") and data.combat is Dictionary:
 		GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
 		if GameInfo.current_player and not data.has("depleted_health"):
-			GameInfo.current_player.depleted_health = clamp(GameInfo.current_combat_log.player_depleted_health, 0.0, 100.0)
+			var max_health = GameInfo.current_player.get_total_stats().stamina * 10
+			GameInfo.current_player.depleted_health = clamp(int(GameInfo.current_combat_log.player_depleted_health), 0, max_health)
 			if UIManager.instance:
 				UIManager.instance.refresh_stats()
 		GameInfo.pending_expedition_slide_id_after_combat = slide_id

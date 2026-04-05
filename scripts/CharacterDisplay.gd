@@ -108,10 +108,11 @@ func update_stats():
 	var max_health = total_stats.stamina * 10
 	health_bar.max_value = max_health
 	
-	# For current player, show depleted health (max - depleted) / max
+
+	# For current player, show depleted health (HP lost)
 	if display_mode == DisplayMode.PLAYER and displayed_character == GameInfo.current_player:
-		var depleted_percent = displayed_character.depleted_health
-		var current_health = max(0, int(round(max_health * (1.0 - depleted_percent / 100.0))))
+		var hp_lost = int(displayed_character.depleted_health)
+		var current_health = max(0, max_health - hp_lost)
 		health_bar.value = current_health
 		if health_bar.has_node("HealthLabel"):
 			health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
