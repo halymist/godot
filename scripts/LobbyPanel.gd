@@ -170,7 +170,11 @@ func populate_account_info():
 	account_created_label.text = "Account Created: " + _parse_iso_date(lobby_data.get("account_created", ""))
 	email_label.text = "Email: " + lobby_data.get("user_email", "")
 	mushroom_value_label.text = str(int(lobby_data.get("mushrooms", 0)))
-	new_server_date_label.text = "(" + _parse_iso_date(lobby_data.get("new_server_timestamp", "")) + ")"
+	var new_server_ts = lobby_data.get("new_server_timestamp", "")
+	if new_server_ts != null and new_server_ts != "":
+		new_server_date_label.text = "(" + _parse_iso_date(new_server_ts) + ")"
+	else:
+		new_server_date_label.text = ""
 
 func _parse_iso_date(iso_string: String) -> String:
 	"""Parse ISO 8601 date to readable format"""
@@ -199,7 +203,12 @@ func start_new_server_countdown():
 
 func _update_new_server_countdown():
 	"""Update the countdown label"""
-	var seconds_remaining = _calculate_seconds_until(GameInfo.lobby_data.get("new_server_timestamp", ""))
+	var timestamp = GameInfo.lobby_data.get("new_server_timestamp", "")
+	if timestamp == null or timestamp == "":
+		new_server_countdown_label.text = "No upcoming server"
+		return
+	
+	var seconds_remaining = _calculate_seconds_until(timestamp)
 	
 	if seconds_remaining <= 0:
 		new_server_countdown_label.text = "New Server Available!"

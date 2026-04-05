@@ -81,8 +81,7 @@ func _ready():
 		GameInfo.skip_auto_login_once = false
 		_prefill_saved_credentials()
 	else:
-		if _try_auto_login():
-			return
+		_try_auto_login()
 	
 	# Connect mode toggle buttons
 	login_mode_button.toggled.connect(_on_login_mode_toggled)
@@ -134,7 +133,8 @@ func _ready():
 	
 	# Start with login mode and email selected
 	_on_mode_toggle(false)
-	_on_method_selected("email")
+	# Defer so button layout is finalized before we calculate indicator position
+	call_deferred("_on_method_selected", "email")
 
 func _on_mode_toggle(register: bool):
 	"""Toggle between login and register mode"""
@@ -291,9 +291,11 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 		GameInfo.lobby_data = data
 		print("Login successful! Lobby data loaded.")
 		
-		# Save credentials if "stay logged in" is checked
+		# Save or clear credentials based on "stay logged in" checkbox
 		if stay_logged_in_checkbox and stay_logged_in_checkbox.button_pressed:
 			_save_credentials()
+		else:
+			_clear_credentials()
 		
 		# Switch to lobby panel and initialize it with server data
 		_show_lobby_after_init()

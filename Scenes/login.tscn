@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dtfwauux0ahsv"]
+[gd_scene format=3 uid="uid://dtfwauux0ahsv"]
 
 [ext_resource type="Script" uid="uid://dj001h3i008ri" path="res://scripts/LobbyPanel.gd" id="1_lobby"]
 [ext_resource type="Script" uid="uid://boa2f7b48n2ck" path="res://scripts/LoginPanel.gd" id="2_login"]
@@ -18,8 +18,8 @@
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="11_omeci"]
 [ext_resource type="Texture2D" uid="uid://degnepqymupsv" path="res://assets/images/ui/facebook.png" id="12_yly4b"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hover"]
-bg_color = Color(0.25, 0.25, 0.25, 0.8)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
+bg_color = Color(0.15, 0.15, 0.15, 0.6)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -32,8 +32,8 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
-bg_color = Color(0.15, 0.15, 0.15, 0.6)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hover"]
+bg_color = Color(0.25, 0.25, 0.25, 0.8)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -61,7 +61,7 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="Login" type="Panel"]
+[node name="Login" type="Panel" unique_id=846789486]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -69,14 +69,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_theme")
 
-[node name="TopPanel" type="Control" parent="."]
+[node name="TopPanel" type="Control" parent="." unique_id=552290289]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 100.0
 grow_horizontal = 2
 
-[node name="GameTitle" type="Label" parent="TopPanel"]
+[node name="GameTitle" type="Label" parent="TopPanel" unique_id=2073687658]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -95,7 +95,7 @@ text = "Wilds"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ContentContainer" type="Control" parent="."]
+[node name="ContentContainer" type="Control" parent="." unique_id=394160069]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -104,7 +104,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Login" type="Control" parent="ContentContainer" node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "method_indicator", "email_login_section", "google_login_section", "google_play_login_section", "apple_login_section", "discord_login_section", "facebook_login_section", "email_register_section", "email_login_button", "google_login_button", "google_play_login_button", "apple_login_button", "discord_login_button", "facebook_login_button", "email_register_button", "email_input", "password_input", "password_toggle", "stay_logged_in_checkbox", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
+[node name="Login" type="Control" parent="ContentContainer" unique_id=225530884 node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "method_indicator", "email_login_section", "google_login_section", "google_play_login_section", "apple_login_section", "discord_login_section", "facebook_login_section", "email_register_section", "email_login_button", "google_login_button", "google_play_login_button", "apple_login_button", "discord_login_button", "facebook_login_button", "email_register_button", "email_input", "password_input", "password_toggle", "stay_logged_in_checkbox", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
 layout_mode = 1
 anchor_top = 0.024
 anchor_right = 1.0
@@ -151,7 +151,7 @@ forgot_confirmation_panel = NodePath("ForgotPasswordPanel/ConfirmationPanel")
 forgot_confirmation_email = NodePath("ForgotPasswordPanel/ConfirmationPanel/ConfirmationText")
 forgot_confirmation_ok = NodePath("ForgotPasswordPanel/ConfirmationPanel/OkButton")
 
-[node name="ModeToggle" type="HBoxContainer" parent="ContentContainer/Login"]
+[node name="ModeToggle" type="HBoxContainer" parent="ContentContainer/Login" unique_id=1294594406]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -162,36 +162,36 @@ offset_right = 102.5
 offset_bottom = 196.0
 grow_horizontal = 2
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/ModeToggle"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/ModeToggle" unique_id=2091432069]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_login_mode")
 text = "LOGIN"
 
-[node name="RegisterButton" type="Button" parent="ContentContainer/Login/ModeToggle"]
+[node name="RegisterButton" type="Button" parent="ContentContainer/Login/ModeToggle" unique_id=1448337803]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_login_mode")
 text = "REGISTER"
 
-[node name="MethodButtons" type="HBoxContainer" parent="ContentContainer/Login"]
+[node name="MethodButtons" type="HBoxContainer" parent="ContentContainer/Login" unique_id=581281984]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -200,7 +200,7 @@ offset_bottom = 283.0
 grow_horizontal = 2
 alignment = 1
 
-[node name="EmailButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+[node name="EmailButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons" unique_id=313703941]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 focus_mode = 0
@@ -211,7 +211,7 @@ texture_normal = ExtResource("3_0apk8")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="GoogleButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+[node name="GoogleButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons" unique_id=952218242]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 focus_mode = 0
@@ -221,7 +221,7 @@ texture_normal = ExtResource("10_f13kh")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="GooglePlayButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+[node name="GooglePlayButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons" unique_id=664195605]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 focus_mode = 0
@@ -231,7 +231,7 @@ texture_normal = ExtResource("5_f13kh")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons" unique_id=371859535]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 focus_mode = 0
@@ -241,7 +241,7 @@ texture_normal = ExtResource("11_hcdb4")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons" unique_id=1941435156]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 focus_mode = 0
@@ -251,7 +251,7 @@ texture_normal = ExtResource("12_yly4b")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="AppleButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons"]
+[node name="AppleButton" type="TextureButton" parent="ContentContainer/Login/MethodButtons" unique_id=710872696]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 focus_mode = 0
@@ -261,16 +261,16 @@ texture_normal = ExtResource("7_hcdb4")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Indicator" type="Panel" parent="ContentContainer/Login"]
+[node name="Indicator" type="Panel" parent="ContentContainer/Login" unique_id=1986557666]
 custom_minimum_size = Vector2(8, 5)
-layout_mode = 2
+layout_mode = 0
 offset_left = 391.0
 offset_top = 290.0
 offset_right = 401.0
 offset_bottom = 300.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_tab_pressed")
 
-[node name="EmailLoginSection" type="Control" parent="ContentContainer/Login"]
+[node name="EmailLoginSection" type="Control" parent="ContentContainer/Login" unique_id=180854139]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -284,7 +284,7 @@ offset_bottom = 138.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="AccountLabel" type="Label" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="AccountLabel" type="Label" parent="ContentContainer/Login/EmailLoginSection" unique_id=764428562]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -296,7 +296,7 @@ offset_bottom = 35.0
 grow_horizontal = 2
 text = "Email"
 
-[node name="AccountInput" type="LineEdit" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="AccountInput" type="LineEdit" parent="ContentContainer/Login/EmailLoginSection" unique_id=1008861222]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -308,7 +308,7 @@ offset_bottom = 75.0
 grow_horizontal = 2
 placeholder_text = "your@email.com"
 
-[node name="PasswordLabel" type="Label" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="PasswordLabel" type="Label" parent="ContentContainer/Login/EmailLoginSection" unique_id=377373633]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -320,7 +320,7 @@ offset_bottom = 115.0
 grow_horizontal = 2
 text = "Password"
 
-[node name="PasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="PasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailLoginSection" unique_id=954983728]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -333,7 +333,7 @@ grow_horizontal = 2
 placeholder_text = "password"
 secret = true
 
-[node name="PasswordToggle" type="CheckBox" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="PasswordToggle" type="CheckBox" parent="ContentContainer/Login/EmailLoginSection" unique_id=535479483]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -347,20 +347,20 @@ offset_bottom = 43.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
-theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.4)
-theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_pressed_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_styles/focus = SubResource("StyleBoxEmpty_hcdb4")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_hcdb4")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.4)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hcdb4")
 
-[node name="ForgotPassword" type="Button" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="ForgotPassword" type="Button" parent="ContentContainer/Login/EmailLoginSection" unique_id=1388316605]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -371,16 +371,16 @@ offset_right = 80.0
 offset_bottom = 355.0
 grow_horizontal = 2
 mouse_default_cursor_shape = 2
-theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_colors/font_pressed_color = Color(0.9, 0.7, 0, 1)
-theme_override_styles/focus = SubResource("StyleBoxEmpty_hcdb4")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_hcdb4")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hcdb4")
 text = "Forgot password?"
 
-[node name="StayLogged" type="CheckBox" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="StayLogged" type="CheckBox" parent="ContentContainer/Login/EmailLoginSection" unique_id=211760144]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -391,21 +391,21 @@ offset_right = -12.0
 offset_bottom = 194.0
 grow_horizontal = 2
 mouse_default_cursor_shape = 2
-theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.4)
-theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_pressed_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_styles/focus = SubResource("StyleBoxEmpty_hcdb4")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_hcdb4")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.4)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_hcdb4")
-text = " Stay logged in"
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_hcdb4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hcdb4")
+text = " Remember me"
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/EmailLoginSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/EmailLoginSection" unique_id=621060010]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -417,7 +417,7 @@ offset_bottom = 309.0
 grow_horizontal = 2
 text = "LOGIN"
 
-[node name="FacebookLoginSection" type="Control" parent="ContentContainer/Login"]
+[node name="FacebookLoginSection" type="Control" parent="ContentContainer/Login" unique_id=1564309722]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -432,7 +432,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/FacebookLoginSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/FacebookLoginSection" unique_id=159390860]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -448,7 +448,7 @@ grow_vertical = 2
 text = "Login with Facebook"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/FacebookLoginSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/FacebookLoginSection" unique_id=1050668163]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -463,7 +463,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="GoogleLoginSection" type="Control" parent="ContentContainer/Login"]
+[node name="GoogleLoginSection" type="Control" parent="ContentContainer/Login" unique_id=579952243]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -478,7 +478,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/GoogleLoginSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/GoogleLoginSection" unique_id=50303617]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -494,7 +494,7 @@ grow_vertical = 2
 text = "Login with Google"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/GoogleLoginSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/GoogleLoginSection" unique_id=1527116756]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -509,7 +509,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="DiscordLoginSection" type="Control" parent="ContentContainer/Login"]
+[node name="DiscordLoginSection" type="Control" parent="ContentContainer/Login" unique_id=267719905]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -524,7 +524,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/DiscordLoginSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/DiscordLoginSection" unique_id=7327862]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -540,7 +540,7 @@ grow_vertical = 2
 text = "Login with Discord"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/DiscordLoginSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/DiscordLoginSection" unique_id=802504975]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -555,7 +555,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="GooglePlayLoginSection" type="Control" parent="ContentContainer/Login"]
+[node name="GooglePlayLoginSection" type="Control" parent="ContentContainer/Login" unique_id=227972036]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -570,7 +570,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/GooglePlayLoginSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/GooglePlayLoginSection" unique_id=2108587341]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -586,7 +586,7 @@ grow_vertical = 2
 text = "Login with Google Play"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/GooglePlayLoginSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/GooglePlayLoginSection" unique_id=434838706]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -601,7 +601,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="AppleLoginSection" type="Control" parent="ContentContainer/Login"]
+[node name="AppleLoginSection" type="Control" parent="ContentContainer/Login" unique_id=515697030]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -616,7 +616,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Message" type="Label" parent="ContentContainer/Login/AppleLoginSection"]
+[node name="Message" type="Label" parent="ContentContainer/Login/AppleLoginSection" unique_id=648194322]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -632,7 +632,7 @@ grow_vertical = 2
 text = "Login with Apple"
 horizontal_alignment = 1
 
-[node name="LoginButton" type="Button" parent="ContentContainer/Login/AppleLoginSection"]
+[node name="LoginButton" type="Button" parent="ContentContainer/Login/AppleLoginSection" unique_id=673318793]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -647,7 +647,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "LOGIN"
 
-[node name="EmailRegisterSection" type="Control" parent="ContentContainer/Login"]
+[node name="EmailRegisterSection" type="Control" parent="ContentContainer/Login" unique_id=1947222149]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -662,7 +662,7 @@ offset_bottom = 240.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="AccountLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection"]
+[node name="AccountLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection" unique_id=618598579]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -674,7 +674,7 @@ offset_bottom = 35.0
 grow_horizontal = 2
 text = "Email"
 
-[node name="AccountInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection"]
+[node name="AccountInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection" unique_id=1770199904]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -686,7 +686,7 @@ offset_bottom = 75.0
 grow_horizontal = 2
 placeholder_text = "your@email.com"
 
-[node name="PasswordLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection"]
+[node name="PasswordLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection" unique_id=35115778]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -698,7 +698,7 @@ offset_bottom = 115.0
 grow_horizontal = 2
 text = "Password"
 
-[node name="PasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection"]
+[node name="PasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection" unique_id=1085556285]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -711,7 +711,7 @@ grow_horizontal = 2
 placeholder_text = "password"
 secret = true
 
-[node name="ConfirmPasswordLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection"]
+[node name="ConfirmPasswordLabel" type="Label" parent="ContentContainer/Login/EmailRegisterSection" unique_id=1365389003]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -723,7 +723,7 @@ offset_bottom = 195.0
 grow_horizontal = 2
 text = "Confirm Password"
 
-[node name="ConfirmPasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection"]
+[node name="ConfirmPasswordInput" type="LineEdit" parent="ContentContainer/Login/EmailRegisterSection" unique_id=884466731]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -736,7 +736,7 @@ grow_horizontal = 2
 placeholder_text = "confirm password"
 secret = true
 
-[node name="RegisterButton" type="Button" parent="ContentContainer/Login/EmailRegisterSection"]
+[node name="RegisterButton" type="Button" parent="ContentContainer/Login/EmailRegisterSection" unique_id=1924929455]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -748,7 +748,7 @@ offset_bottom = 310.0
 grow_horizontal = 2
 text = "REGISTER"
 
-[node name="ForgotPasswordPanel" type="ColorRect" parent="ContentContainer/Login"]
+[node name="ForgotPasswordPanel" type="ColorRect" parent="ContentContainer/Login" unique_id=1667472897]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -760,7 +760,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="InputPanel" type="Panel" parent="ContentContainer/Login/ForgotPasswordPanel"]
+[node name="InputPanel" type="Panel" parent="ContentContainer/Login/ForgotPasswordPanel" unique_id=1030767221]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -774,8 +774,8 @@ offset_bottom = 274.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
-layout_mode = 2
+[node name="Title" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel" unique_id=130258449]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 4.0
 offset_right = 362.0
@@ -786,8 +786,8 @@ text = "WILDS ACCOUNT FORGOTTEN PASSWORD"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Description" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
-layout_mode = 2
+[node name="Description" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel" unique_id=1772807747]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 89.0
 offset_right = 362.0
@@ -797,9 +797,9 @@ text = "To have a new password sent to you for your WILDS Account, please enter 
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="EmailInput" type="LineEdit" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
+[node name="EmailInput" type="LineEdit" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel" unique_id=408464601]
 custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
+layout_mode = 0
 offset_left = 15.0
 offset_top = 177.0
 offset_right = 357.0
@@ -809,41 +809,41 @@ theme_override_font_sizes/font_size = 16
 placeholder_text = "Email address"
 alignment = 1
 
-[node name="ButtonContainer" type="HBoxContainer" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
-layout_mode = 2
+[node name="ButtonContainer" type="HBoxContainer" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel" unique_id=130119053]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 206.0
 offset_right = 362.0
 offset_bottom = 206.0
 alignment = 1
 
-[node name="OkButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
+[node name="OkButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel" unique_id=1351135644]
 custom_minimum_size = Vector2(140, 45)
-layout_mode = 2
+layout_mode = 0
 offset_left = 207.0
 offset_top = 236.0
 offset_right = 347.0
 offset_bottom = 281.0
 size_flags_horizontal = 4
-theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
 theme_override_font_sizes/font_size = 18
 text = "OK"
 
-[node name="CancelButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel"]
+[node name="CancelButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/InputPanel" unique_id=1383175093]
 custom_minimum_size = Vector2(140, 45)
-layout_mode = 2
+layout_mode = 0
 offset_left = 47.0
 offset_top = 237.0
 offset_right = 187.0
 offset_bottom = 282.0
 size_flags_horizontal = 4
-theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_colors/font_hover_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_font_sizes/font_size = 18
 text = "CANCEL"
 
-[node name="ConfirmationPanel" type="Panel" parent="ContentContainer/Login/ForgotPasswordPanel"]
+[node name="ConfirmationPanel" type="Panel" parent="ContentContainer/Login/ForgotPasswordPanel" unique_id=207457129]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -857,8 +857,8 @@ offset_bottom = 273.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ConfirmationText" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/ConfirmationPanel"]
-layout_mode = 2
+[node name="ConfirmationText" type="Label" parent="ContentContainer/Login/ForgotPasswordPanel/ConfirmationPanel" unique_id=1086327491]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 18.0
 offset_right = 370.0
@@ -872,20 +872,20 @@ The new password will be activated as soon as you log in with it for the first t
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="OkButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/ConfirmationPanel"]
+[node name="OkButton" type="Button" parent="ContentContainer/Login/ForgotPasswordPanel/ConfirmationPanel" unique_id=1394979450]
 custom_minimum_size = Vector2(140, 45)
-layout_mode = 2
+layout_mode = 0
 offset_left = 126.0
 offset_top = 234.0
 offset_right = 266.0
 offset_bottom = 279.0
 size_flags_horizontal = 4
-theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
 theme_override_font_sizes/font_size = 18
 text = "OK"
 
-[node name="Lobby" type="Control" parent="ContentContainer" node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "add_method_button", "add_method_panel", "social_discord_button", "social_instagram_button", "social_twitter_button", "social_facebook_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
+[node name="Lobby" type="Control" parent="ContentContainer" unique_id=947218947 node_paths=PackedStringArray("characters_container", "create_new_button", "logout_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "add_method_button", "add_method_panel", "social_discord_button", "social_instagram_button", "social_twitter_button", "social_facebook_button", "character_info_panel", "avatar_creation_panel", "account_created_label", "email_label", "mushroom_value_label", "new_server_countdown_label", "new_server_date_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -917,7 +917,7 @@ mushroom_value_label = NodePath("AccountInfo/MushroomContainer/MushroomValue")
 new_server_countdown_label = NodePath("HBoxContainer/NewStartsLabel")
 new_server_date_label = NodePath("HBoxContainer/NewServerDateLabel")
 
-[node name="AccountInfo" type="VBoxContainer" parent="ContentContainer/Lobby"]
+[node name="AccountInfo" type="VBoxContainer" parent="ContentContainer/Lobby" unique_id=784570295]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -931,45 +931,45 @@ offset_bottom = -194.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CreatedLabel" type="Label" parent="ContentContainer/Lobby/AccountInfo"]
+[node name="CreatedLabel" type="Label" parent="ContentContainer/Lobby/AccountInfo" unique_id=2022602906]
 layout_mode = 2
 text = "Account Created: January 1, 2026"
 
-[node name="EmailLabel" type="Label" parent="ContentContainer/Lobby/AccountInfo"]
+[node name="EmailLabel" type="Label" parent="ContentContainer/Lobby/AccountInfo" unique_id=1860322554]
 layout_mode = 2
 text = "Email: player@example.com"
 
-[node name="MushroomContainer" type="HBoxContainer" parent="ContentContainer/Lobby/AccountInfo"]
+[node name="MushroomContainer" type="HBoxContainer" parent="ContentContainer/Lobby/AccountInfo" unique_id=511512509]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="MushroomIcon" type="TextureRect" parent="ContentContainer/Lobby/AccountInfo/MushroomContainer"]
+[node name="MushroomIcon" type="TextureRect" parent="ContentContainer/Lobby/AccountInfo/MushroomContainer" unique_id=139029228]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("2_shroom")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MushroomValue" type="Label" parent="ContentContainer/Lobby/AccountInfo/MushroomContainer"]
+[node name="MushroomValue" type="Label" parent="ContentContainer/Lobby/AccountInfo/MushroomContainer" unique_id=128918334]
 layout_mode = 2
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="PaymentButton" type="Button" parent="ContentContainer/Lobby/AccountInfo/MushroomContainer"]
+[node name="PaymentButton" type="Button" parent="ContentContainer/Lobby/AccountInfo/MushroomContainer" unique_id=350598020]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 text = "+"
 
-[node name="LogoutButton" type="Button" parent="ContentContainer/Lobby"]
-layout_mode = 2
+[node name="LogoutButton" type="Button" parent="ContentContainer/Lobby" unique_id=953753159]
+layout_mode = 0
 offset_left = 63.0
 offset_top = 329.0
 offset_right = 363.0
 offset_bottom = 360.0
 text = "Logout"
 
-[node name="LoginMethodsLabel" type="Label" parent="ContentContainer/Lobby"]
+[node name="LoginMethodsLabel" type="Label" parent="ContentContainer/Lobby" unique_id=781949911]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -982,7 +982,7 @@ grow_horizontal = 2
 text = "Connected Login Methods"
 horizontal_alignment = 1
 
-[node name="LoginMethods" type="HBoxContainer" parent="ContentContainer/Lobby"]
+[node name="LoginMethods" type="HBoxContainer" parent="ContentContainer/Lobby" unique_id=1079966258]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -995,54 +995,54 @@ grow_horizontal = 2
 theme_override_constants/separation = 7
 alignment = 1
 
-[node name="EmailButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="EmailButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods" unique_id=1152896404]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("3_0apk8")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="GoogleButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="GoogleButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods" unique_id=2140796405]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("10_f13kh")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="GooglePlayButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="GooglePlayButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods" unique_id=1048903195]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("4_omeci")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="AppleButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="AppleButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods" unique_id=755168877]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("7_hcdb4")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods" unique_id=974722620]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("11_hcdb4")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Lobby/LoginMethods" unique_id=508338699]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("12_yly4b")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="AddMethodButton" type="Button" parent="ContentContainer/Lobby/LoginMethods"]
+[node name="AddMethodButton" type="Button" parent="ContentContainer/Lobby/LoginMethods" unique_id=1956817677]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 text = "+"
 
-[node name="SocialLinks" type="HBoxContainer" parent="ContentContainer/Lobby"]
+[node name="SocialLinks" type="HBoxContainer" parent="ContentContainer/Lobby" unique_id=198467861]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1054,54 +1054,54 @@ offset_bottom = 53.0
 grow_horizontal = 2
 alignment = 1
 
-[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks"]
+[node name="DiscordButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks" unique_id=1007510729]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 texture_normal = ExtResource("11_hcdb4")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="InstagramButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks"]
+[node name="InstagramButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks" unique_id=1202705847]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 texture_normal = ExtResource("4_omeci")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="TwitterButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks"]
+[node name="TwitterButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks" unique_id=254692915]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 texture_normal = ExtResource("5_twitter")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks"]
+[node name="FacebookButton" type="TextureButton" parent="ContentContainer/Lobby/SocialLinks" unique_id=358332241]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 texture_normal = ExtResource("12_yly4b")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ContentContainer/Lobby"]
-layout_mode = 2
+[node name="HBoxContainer" type="HBoxContainer" parent="ContentContainer/Lobby" unique_id=1963234713]
+layout_mode = 0
 offset_left = 22.0
 offset_top = 413.0
 offset_right = 390.0
 offset_bottom = 454.0
 alignment = 1
 
-[node name="NewStartsLabel" type="Label" parent="ContentContainer/Lobby/HBoxContainer"]
+[node name="NewStartsLabel" type="Label" parent="ContentContainer/Lobby/HBoxContainer" unique_id=1206900888]
 layout_mode = 2
 text = "New start in: 2d 15h 23m"
 horizontal_alignment = 1
 
-[node name="NewServerDateLabel" type="Label" parent="ContentContainer/Lobby/HBoxContainer"]
+[node name="NewServerDateLabel" type="Label" parent="ContentContainer/Lobby/HBoxContainer" unique_id=557243852]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "(January 20, 2026)"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="ContentContainer/Lobby"]
+[node name="ScrollContainer" type="ScrollContainer" parent="ContentContainer/Lobby" unique_id=1290159681]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1113,16 +1113,16 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CharactersContainer" type="VBoxContainer" parent="ContentContainer/Lobby/ScrollContainer"]
+[node name="CharactersContainer" type="VBoxContainer" parent="ContentContainer/Lobby/ScrollContainer" unique_id=753805666]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CreateNewButton" type="Button" parent="ContentContainer/Lobby/ScrollContainer/CharactersContainer"]
+[node name="CreateNewButton" type="Button" parent="ContentContainer/Lobby/ScrollContainer/CharactersContainer" unique_id=672870447]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 text = "Create New Character"
 
-[node name="AddMethodPanel" type="ColorRect" parent="ContentContainer/Lobby"]
+[node name="AddMethodPanel" type="ColorRect" parent="ContentContainer/Lobby" unique_id=693971084]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -1135,7 +1135,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.752941)
 
-[node name="Content" type="MarginContainer" parent="ContentContainer/Lobby/AddMethodPanel"]
+[node name="Content" type="MarginContainer" parent="ContentContainer/Lobby/AddMethodPanel" unique_id=70280053]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1149,56 +1149,56 @@ offset_bottom = 97.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MethodsGrid" type="GridContainer" parent="ContentContainer/Lobby/AddMethodPanel/Content"]
+[node name="MethodsGrid" type="GridContainer" parent="ContentContainer/Lobby/AddMethodPanel/Content" unique_id=1905465374]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 4
 
-[node name="EmailOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+[node name="EmailOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid" unique_id=1957117337]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("3_0apk8")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="GoogleOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+[node name="GoogleOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid" unique_id=972383111]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("10_f13kh")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="GooglePlayOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+[node name="GooglePlayOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid" unique_id=795706656]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("4_omeci")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="AppleOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+[node name="AppleOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid" unique_id=1272636328]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("7_hcdb4")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="DiscordOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+[node name="DiscordOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid" unique_id=534321791]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("11_hcdb4")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="FacebookOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid"]
+[node name="FacebookOptionButton" type="TextureButton" parent="ContentContainer/Lobby/AddMethodPanel/Content/MethodsGrid" unique_id=1234516362]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 texture_normal = ExtResource("12_yly4b")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="CharacterInfo" type="Control" parent="ContentContainer" node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "faction_desc_label", "vip_desc_label")]
+[node name="CharacterInfo" type="Control" parent="ContentContainer" unique_id=243258155 node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "faction_desc_label", "vip_desc_label", "name_error_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1217,6 +1217,7 @@ next_button = NodePath("ButtonsContainer/NextButton")
 back_button = NodePath("ButtonsContainer/BackButton")
 faction_desc_label = NodePath("FactionDesc")
 vip_desc_label = NodePath("VIPDesc")
+name_error_label = NodePath("NameSection/NameError")
 patron_description = "• No timers
 • Free premium cosmetics
 • Can share combat links in chat
@@ -1226,7 +1227,7 @@ commoner_description = "• Standard account
 • No actual disadvantage
 • Only one character per server"
 
-[node name="TitleLabel" type="Label" parent="ContentContainer/CharacterInfo"]
+[node name="TitleLabel" type="Label" parent="ContentContainer/CharacterInfo" unique_id=1423254008]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1240,7 +1241,7 @@ theme_override_font_sizes/font_size = 32
 text = "Create Character"
 horizontal_alignment = 1
 
-[node name="NameSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+[node name="NameSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo" unique_id=1765654920]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1251,101 +1252,111 @@ offset_right = 150.0
 offset_bottom = 155.0
 grow_horizontal = 2
 
-[node name="NameLabel" type="Label" parent="ContentContainer/CharacterInfo/NameSection"]
+[node name="NameLabel" type="Label" parent="ContentContainer/CharacterInfo/NameSection" unique_id=702845843]
 layout_mode = 2
 text = "Character Name:"
 
-[node name="NameInput" type="LineEdit" parent="ContentContainer/CharacterInfo/NameSection"]
+[node name="NameInput" type="LineEdit" parent="ContentContainer/CharacterInfo/NameSection" unique_id=1953593977]
 layout_mode = 2
 placeholder_text = "Enter your name..."
 max_length = 20
 
-[node name="Separator1" type="HSeparator" parent="ContentContainer/CharacterInfo"]
+[node name="NameError" type="Label" parent="ContentContainer/CharacterInfo/NameSection" unique_id=1957603341]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+theme_override_font_sizes/font_size = 12
+text = "Name is required"
+
+[node name="Separator1" type="HSeparator" parent="ContentContainer/CharacterInfo" unique_id=1227256024]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -200.0
-offset_top = 160.0
+offset_top = 169.0
 offset_right = 200.0
-offset_bottom = 170.0
+offset_bottom = 178.0
 grow_horizontal = 2
 
-[node name="FactionSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+[node name="FactionSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo" unique_id=160526936]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -199.5
-offset_top = 176.0
+offset_top = 180.0
 offset_right = 200.5
-offset_bottom = 255.0
+offset_bottom = 266.0
 grow_horizontal = 2
 
-[node name="FactionLabel" type="Label" parent="ContentContainer/CharacterInfo/FactionSection"]
+[node name="FactionLabel" type="Label" parent="ContentContainer/CharacterInfo/FactionSection" unique_id=138442140]
 layout_mode = 2
 text = "Choose Your Faction:"
 horizontal_alignment = 1
 
-[node name="FactionButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/FactionSection"]
+[node name="FactionButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/FactionSection" unique_id=1798140261]
 layout_mode = 2
 alignment = 1
 
-[node name="OrderButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+[node name="OrderButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons" unique_id=1610285968]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Order"
 
-[node name="GuildButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+[node name="GuildButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons" unique_id=1400831210]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Guild"
 
-[node name="CompanionsButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons"]
+[node name="CompanionsButton" type="Button" parent="ContentContainer/CharacterInfo/FactionSection/FactionButtons" unique_id=402464961]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vnpwx")
 text = "Companions"
 
-[node name="FactionDesc" type="Label" parent="ContentContainer/CharacterInfo"]
+[node name="FactionDesc" type="Label" parent="ContentContainer/CharacterInfo" unique_id=150780167]
 custom_minimum_size = Vector2(-1, 0)
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -189.5
-offset_top = 266.0
+offset_top = 273.0
 offset_right = 185.5
 offset_bottom = 412.0
 grow_horizontal = 2
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Separator2" type="HSeparator" parent="ContentContainer/CharacterInfo"]
+[node name="Separator2" type="HSeparator" parent="ContentContainer/CharacterInfo" unique_id=1967184091]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1356,7 +1367,7 @@ offset_right = 200.5
 offset_bottom = 418.0
 grow_horizontal = 2
 
-[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo"]
+[node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo" unique_id=1807445984]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1367,43 +1378,45 @@ offset_right = 189.5
 offset_bottom = 521.0
 grow_horizontal = 2
 
-[node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection"]
+[node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection" unique_id=874223807]
 layout_mode = 2
 text = "Patron Status:"
 horizontal_alignment = 1
 
-[node name="VIPButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VIPSection"]
+[node name="VIPButtons" type="HBoxContainer" parent="ContentContainer/CharacterInfo/VIPSection" unique_id=1970819195]
 layout_mode = 2
 alignment = 1
 
-[node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
+[node name="NoButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons" unique_id=1607745514]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_f13kh")
 text = "Commoner"
 
-[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons"]
+[node name="YesButton" type="Button" parent="ContentContainer/CharacterInfo/VIPSection/VIPButtons" unique_id=1035327555]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_f13kh")
 text = "Patron"
 
-[node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo"]
+[node name="VIPDesc" type="Label" parent="ContentContainer/CharacterInfo" unique_id=619864574]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 1
 anchors_preset = 5
@@ -1417,7 +1430,7 @@ grow_horizontal = 2
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/CharacterInfo"]
+[node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/CharacterInfo" unique_id=915214309]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -1432,17 +1445,17 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
 
-[node name="BackButton" type="Button" parent="ContentContainer/CharacterInfo/ButtonsContainer"]
+[node name="BackButton" type="Button" parent="ContentContainer/CharacterInfo/ButtonsContainer" unique_id=1537805214]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Back"
 
-[node name="NextButton" type="Button" parent="ContentContainer/CharacterInfo/ButtonsContainer"]
+[node name="NextButton" type="Button" parent="ContentContainer/CharacterInfo/ButtonsContainer" unique_id=474593422]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Next"
 
-[node name="Avatar" type="Panel" parent="ContentContainer" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button", "back_button")]
+[node name="Avatar" type="Panel" parent="ContentContainer" unique_id=645043450 node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button", "back_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1465,7 +1478,7 @@ change_button = NodePath("ButtonsContainer/ChangeButton")
 create_button = NodePath("ButtonsContainer/CreateButton")
 back_button = NodePath("ButtonsContainer/BackButton")
 
-[node name="PreviewPanel" type="Panel" parent="ContentContainer/Avatar"]
+[node name="PreviewPanel" type="Panel" parent="ContentContainer/Avatar" unique_id=1039881962]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1476,7 +1489,7 @@ offset_right = 110.0
 offset_bottom = 240.0
 grow_horizontal = 2
 
-[node name="AvatarPreview" type="TextureRect" parent="ContentContainer/Avatar/PreviewPanel"]
+[node name="AvatarPreview" type="TextureRect" parent="ContentContainer/Avatar/PreviewPanel" unique_id=1643158328]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1486,10 +1499,10 @@ grow_vertical = 2
 texture = ExtResource("10_0apk8")
 expand_mode = 1
 
-[node name="AvatarInstance" parent="ContentContainer/Avatar/PreviewPanel/AvatarPreview" instance=ExtResource("11_omeci")]
+[node name="AvatarInstance" parent="ContentContainer/Avatar/PreviewPanel/AvatarPreview" unique_id=1705611146 instance=ExtResource("11_omeci")]
 layout_mode = 1
 
-[node name="CategoryButtons" type="HBoxContainer" parent="ContentContainer/Avatar"]
+[node name="CategoryButtons" type="HBoxContainer" parent="ContentContainer/Avatar" unique_id=730354650]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1501,27 +1514,27 @@ offset_bottom = 290.0
 grow_horizontal = 2
 alignment = 1
 
-[node name="FaceButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+[node name="FaceButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons" unique_id=1446291481]
 layout_mode = 2
 text = "Face"
 
-[node name="HairButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+[node name="HairButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons" unique_id=797360909]
 layout_mode = 2
 text = "Hair"
 
-[node name="EyesButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+[node name="EyesButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons" unique_id=1354702298]
 layout_mode = 2
 text = "Eyes"
 
-[node name="NoseButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+[node name="NoseButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons" unique_id=1023866887]
 layout_mode = 2
 text = "Nose"
 
-[node name="MouthButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+[node name="MouthButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons" unique_id=6594084]
 layout_mode = 2
 text = "Mouth"
 
-[node name="SelectionPanel" type="Panel" parent="ContentContainer/Avatar"]
+[node name="SelectionPanel" type="Panel" parent="ContentContainer/Avatar" unique_id=288676286]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1533,7 +1546,7 @@ offset_bottom = 560.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_215e1")
 
-[node name="SelectionContainer" type="ScrollContainer" parent="ContentContainer/Avatar/SelectionPanel"]
+[node name="SelectionContainer" type="ScrollContainer" parent="ContentContainer/Avatar/SelectionPanel" unique_id=862056164]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1545,12 +1558,12 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SelectionGrid" type="GridContainer" parent="ContentContainer/Avatar/SelectionPanel/SelectionContainer"]
+[node name="SelectionGrid" type="GridContainer" parent="ContentContainer/Avatar/SelectionPanel/SelectionContainer" unique_id=2094034868]
 layout_mode = 2
 size_flags_horizontal = 3
 columns = 4
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/Avatar"]
+[node name="ButtonsContainer" type="HBoxContainer" parent="ContentContainer/Avatar" unique_id=1060727501]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -1565,12 +1578,12 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
 
-[node name="ChangeButton" type="Button" parent="ContentContainer/Avatar/ButtonsContainer"]
+[node name="ChangeButton" type="Button" parent="ContentContainer/Avatar/ButtonsContainer" unique_id=648814595]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "CHANGE"
 
-[node name="ButtonContent" type="HBoxContainer" parent="ContentContainer/Avatar/ButtonsContainer/ChangeButton"]
+[node name="ButtonContent" type="HBoxContainer" parent="ContentContainer/Avatar/ButtonsContainer/ChangeButton" unique_id=1540143683]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1586,14 +1599,14 @@ grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="CreateButton" type="Button" parent="ContentContainer/Avatar/ButtonsContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-text = "CREATE CHARACTER"
-
-[node name="BackButton" type="Button" parent="ContentContainer/Avatar/ButtonsContainer"]
+[node name="BackButton" type="Button" parent="ContentContainer/Avatar/ButtonsContainer" unique_id=1096194811]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "BACK"
+
+[node name="CreateButton" type="Button" parent="ContentContainer/Avatar/ButtonsContainer" unique_id=62997906]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CREATE"

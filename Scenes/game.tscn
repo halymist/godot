@@ -1376,7 +1376,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -190.0
+offset_top = -178.0
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0, 0, 0, 0.6)
@@ -5981,6 +5981,18 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_disable_ads_pressed")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_disable_ads_hover")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_disable_ads_disabled")
 
+[node name="SkipCombat" type="HBoxContainer" parent="Portrait/GameScene/Settings/Gameplay" unique_id=1545803544]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Settings/Gameplay/SkipCombat" unique_id=735779434]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Skip Combat"
+
+[node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/Gameplay/SkipCombat" unique_id=685514839]
+layout_mode = 2
+focus_mode = 0
+
 [node name="Language" type="HBoxContainer" parent="Portrait/GameScene/Settings/Gameplay" unique_id=241595299]
 layout_mode = 2
 
@@ -6000,18 +6012,6 @@ popup/item_1/text = "Czech"
 popup/item_1/id = 1
 popup/item_2/text = "German"
 popup/item_2/id = 2
-
-[node name="SkipCombat" type="HBoxContainer" parent="Portrait/GameScene/Settings/Gameplay" unique_id=1545803544]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Portrait/GameScene/Settings/Gameplay/SkipCombat" unique_id=735779434]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Skip Combat"
-
-[node name="CheckButton" type="CheckButton" parent="Portrait/GameScene/Settings/Gameplay/SkipCombat" unique_id=685514839]
-layout_mode = 2
-focus_mode = 0
 
 [node name="HSeparator2" type="HSeparator" parent="Portrait/GameScene/Settings" unique_id=2029570904]
 layout_mode = 1

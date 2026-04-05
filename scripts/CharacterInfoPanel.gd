@@ -13,6 +13,7 @@ extends Control
 # Description labels
 @export var faction_desc_label: Label
 @export var vip_desc_label: Label
+@export var name_error_label: Label
 
 # Descriptions
 @export_group("Faction Descriptions")
@@ -78,8 +79,12 @@ func _on_next_pressed():
 	character_name = name_input.text.strip_edges()
 	
 	if character_name == "":
-		print("Name is required!")
+		if name_error_label:
+			name_error_label.visible = true
 		return
+	
+	if name_error_label:
+		name_error_label.visible = false
 	
 	print("Character info complete: ", character_name, " Faction: ", faction, " VIP: ", is_vip)
 	next_pressed.emit()
