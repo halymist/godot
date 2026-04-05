@@ -2345,24 +2345,16 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -109.0
-offset_top = -71.0
-offset_right = -25.0
-offset_bottom = -10.0
-icon = ExtResource("39_umggo")
-flat = true
-expand_icon = true
-
-[node name="Label" type="Label" parent="Portrait/GameScene/Combat/SkipReplayButton" unique_id=774551041]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = -120.0
+offset_top = -70.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "Skip"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="Map" type="TextureRect" parent="Portrait/GameScene" unique_id=1422676398 node_paths=PackedStringArray("quest_name_label", "travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button")]
 visible = false

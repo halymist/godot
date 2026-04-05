@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dtcmv6gcik5pa"]
+[gd_scene load_steps=27 format=3 uid="uid://dtcmv6gcik5pa"]
 
 [ext_resource type="Script" uid="uid://c1uh5eg86eies" path="res://scripts/CharacterDisplay.gd" id="1_foq72"]
 [ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="2_knt7d"]
@@ -21,6 +21,29 @@
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="21_7574k"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_srvda"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
+bg_color = Color(0.15, 0.15, 0.15, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_pressed"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hover"]
+bg_color = Color(0.25, 0.25, 0.25, 0.8)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_char_tabs"]
+
 [node name="CharacterDisplay" type="Control" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display", "equipment_slots")]
 layout_mode = 3
 anchors_preset = 15
@@ -30,8 +53,8 @@ offset_bottom = -75.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_foq72")
-talents_button = NodePath("TalentsButton/Button")
-details_button = NodePath("DetailsButton/Button")
+talents_button = NodePath("TalentsButton")
+details_button = NodePath("DetailsButton")
 avatar_button = NodePath("Equip/Character/ChangeAvatar")
 player_name_label = NodePath("Stats/PlayerName")
 rank_label = NodePath("Stats/CharacterDetails/RankContainer/RankLabel")
@@ -207,7 +230,8 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="DetailsButton" type="TextureRect" parent="."]
+[node name="DetailsButton" type="Button" parent="."]
+custom_minimum_size = Vector2(60, 30)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -217,25 +241,18 @@ offset_top = 142.0
 offset_right = -86.0
 offset_bottom = 172.0
 grow_horizontal = 0
-texture = ExtResource("5_ur2r5")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="DetailsButton"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 10
-action_mode = 0
-text = "Details
-"
-flat = true
-expand_icon = true
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+text = "Details"
 
-[node name="TalentsButton" type="TextureRect" parent="."]
+[node name="TalentsButton" type="Button" parent="."]
+custom_minimum_size = Vector2(60, 30)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -245,21 +262,15 @@ offset_top = 143.0
 offset_right = -22.0
 offset_bottom = 171.0
 grow_horizontal = 0
-texture = ExtResource("5_ur2r5")
-expand_mode = 1
-
-[node name="Button" type="Button" parent="TalentsButton"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 10
-text = "TALENTS"
-flat = true
-expand_icon = true
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+text = "Talents"
 
 [node name="Equip" type="Control" parent="."]
 layout_mode = 1

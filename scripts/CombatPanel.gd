@@ -16,7 +16,6 @@ extends TextureRect
 @onready var message2 = $MessageOverlay/MessageContainer/Message2
 @onready var message3 = $MessageOverlay/MessageContainer/Message3
 @onready var skip_replay_button = $SkipReplayButton
-@onready var button_label = $SkipReplayButton/Label
 
 # Client-side victory message (will be generated based on combat results later)
 var victory_message = "Victory! You defeated your opponent!"
@@ -140,7 +139,7 @@ func prepare_combat():
 	# Reset state
 	current_action_index = 0
 	is_combat_finished = false
-	button_label.text = "Skip"
+	skip_replay_button.text = "Skip"
 	clear_messages()
 	
 	# Mark as prepared
@@ -153,7 +152,7 @@ func display_combat_log():
 
 func start_combat_playback():
 	"""Start the combat animation playback. Called after panel is visible."""
-	if not is_prepared or not GameInfo.current_combat_log:
+	if not GameInfo.current_combat_log:
 		return
 	
 	var combat = GameInfo.current_combat_log
@@ -219,7 +218,7 @@ func _display_next_action():
 	if current_action_index >= all_actions.size():
 		action_timer.stop()
 		is_combat_finished = true
-		button_label.text = "Continue"
+		skip_replay_button.text = "Continue"
 		# Wait a bit before allowing continue
 		await get_tree().create_timer(2.0).timeout
 		return
@@ -235,7 +234,7 @@ func _display_next_action():
 		# Change button immediately when final message shows
 		action_timer.stop()
 		is_combat_finished = true
-		button_label.text = "Next"
+		skip_replay_button.text = "Next"
 	
 	current_action_index += 1
 
@@ -419,41 +418,45 @@ func _on_visibility_changed():
 		# If skip combat is enabled, skip straight to result
 		if SettingsManager.get_setting("gameplay", "skip_combat", false):
 			_skip_to_end()
+			call_deferred("_navigate_after_combat")
 		else:
 			start_combat_playback()
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
-		# If combat came from expedition, continue to next slide
-		if GameInfo.pending_expedition_slide_id_after_combat > 0:
-			var next_slide_id = GameInfo.pending_expedition_slide_id_after_combat
-			GameInfo.pending_expedition_slide_id_after_combat = 0
-			if UIManager.instance and UIManager.instance.expedition_panel:
-				UIManager.instance.show_panel(UIManager.instance.expedition_panel)
-				UIManager.instance.expedition_panel.receive_next_slide(next_slide_id)
-			return
-
-		# If expedition failed after combat, show placeholder
-		if GameInfo.pending_expedition_failure_message != "":
-			var failure_message = GameInfo.pending_expedition_failure_message
-			GameInfo.pending_expedition_failure_message = ""
-			if UIManager.instance and UIManager.instance.expedition_panel:
-				UIManager.instance.show_panel(UIManager.instance.expedition_panel)
-				UIManager.instance.expedition_panel.handle_expedition_failed(failure_message)
-			return
-
-		# Navigate using UIManager
-		var on_quest = GameInfo.current_player.traveling_destination != null
-		
-		if on_quest:
-			# Show quest panel
-			UIManager.instance.show_panel(UIManager.instance.quest)
-		else:
-			# Toggle to home panel
-			UIManager.instance.handle_home_button()
+		_navigate_after_combat()
 	else:
 		# Skip to the end
 		_skip_to_end()
+
+func _navigate_after_combat():
+	# If combat came from expedition, continue to next slide
+	if GameInfo.pending_expedition_slide_id_after_combat > 0:
+		var next_slide_id = GameInfo.pending_expedition_slide_id_after_combat
+		GameInfo.pending_expedition_slide_id_after_combat = 0
+		if UIManager.instance and UIManager.instance.expedition_panel:
+			UIManager.instance.show_panel(UIManager.instance.expedition_panel)
+			UIManager.instance.expedition_panel.receive_next_slide(next_slide_id)
+		return
+
+	# If expedition failed after combat, show placeholder
+	if GameInfo.pending_expedition_failure_message != "":
+		var failure_message = GameInfo.pending_expedition_failure_message
+		GameInfo.pending_expedition_failure_message = ""
+		if UIManager.instance and UIManager.instance.expedition_panel:
+			UIManager.instance.show_panel(UIManager.instance.expedition_panel)
+			UIManager.instance.expedition_panel.handle_expedition_failed(failure_message)
+		return
+
+	# Navigate using UIManager
+	var on_quest = GameInfo.current_player.traveling_destination != null
+	
+	if on_quest:
+		# Show quest panel
+		UIManager.instance.show_panel(UIManager.instance.quest)
+	else:
+		# Toggle to home panel
+		UIManager.instance.handle_home_button()
 
 func _skip_to_end():
 	"""Skip all remaining combat actions and show the final result."""
@@ -494,4 +497,4 @@ func _skip_to_end():
 		current_action_index += 1
 	
 	is_combat_finished = true
-	button_label.text = "Continue"
+	skip_replay_button.text = "Continue"
