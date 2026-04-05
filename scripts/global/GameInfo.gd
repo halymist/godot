@@ -21,6 +21,7 @@ var talents_db: Resource = null  # TalentsDatabase
 # ============================================
 # Lobby data (account info, server list, character list)
 var lobby_data: Dictionary = {}
+var user_id: String = ""
 
 # Skip auto-login after explicit logout
 var skip_auto_login_once: bool = false
