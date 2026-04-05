@@ -30,6 +30,9 @@ var all_actions = []
 var current_message_tween: Tween
 
 var is_prepared: bool = false  # Track if combat is prepared and ready to show
+var combat_session_id: int = 0  # Incremented each prepare to invalidate stale coroutines
+var tracked_player_hp: int = 0  # Actual player HP (not tween-animated)
+var tracked_enemy_hp: int = 0   # Actual enemy HP (not tween-animated)
 
 func _ready():
 	# Create timer for displaying actions
@@ -122,6 +125,9 @@ func prepare_combat():
 		else:
 			enemy_avatar.refresh_avatar(1, 1, 1, 1, 0)  # Fallback to defaults
 	
+	# Invalidate any stale coroutines from previous combat
+	combat_session_id += 1
+	
 	# Set initial health bars and labels
 	player_health_bar.max_value = combat.player_max_hp
 	enemy_health_bar.max_value = combat.enemy_max_hp
@@ -129,6 +135,8 @@ func prepare_combat():
 	var starting_player_hp = max(0, combat.player_max_hp - hp_lost)
 	player_health_bar.value = starting_player_hp
 	enemy_health_bar.value = combat.enemy_max_hp
+	tracked_player_hp = starting_player_hp
+	tracked_enemy_hp = combat.enemy_max_hp
 	
 	# Update health labels
 	update_health_label(player_health_label, starting_player_hp)
@@ -186,8 +194,12 @@ func _legacy_display_combat_log():
 
 func _start_action_timer():
 	if is_inside_tree():
+		var my_session = combat_session_id
 		# Small delay to let user look around before combat starts
 		await get_tree().create_timer(0.5).timeout
+		# Bail out if a new combat was prepared or panel hidden
+		if combat_session_id != my_session:
+			return
 		# Display first action immediately (no delay)
 		_display_next_action()
 		# Start timer for subsequent actions
@@ -220,24 +232,24 @@ func _display_next_action():
 		action_timer.stop()
 		is_combat_finished = true
 		skip_replay_button.text = "Continue"
-		# Wait a bit before allowing continue
-		await get_tree().create_timer(2.0).timeout
 		return
 	
 	var action_data = all_actions[current_action_index]
+	current_action_index += 1
 	
 	if action_data.type == "combat_action":
 		var entry = action_data.entry
 		display_combat_message(entry)
 		apply_action_health_changes(entry)
+		# Check tracked HP (not tween-animated bar value) for instant 0-HP detection
+		if tracked_player_hp <= 0 or tracked_enemy_hp <= 0:
+			_skip_to_end()
+			return
 	elif action_data.type == "final_message":
 		show_final_message(action_data.message)
-		# Change button immediately when final message shows
 		action_timer.stop()
 		is_combat_finished = true
-		skip_replay_button.text = "Next"
-	
-	current_action_index += 1
+		skip_replay_button.text = "Continue"
 
 func display_combat_message(entry: GameInfo.CombatLogEntry):
 	var message_text = format_combat_entry(entry)
@@ -279,12 +291,17 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	# Apply the effect - damage is dealt TO the opponent of whoever is acting
 	# So if player attacks, enemy takes damage
 	if is_damage_action(action.action):
-		# Swap the health bar - attacker deals damage to opponent
 		if action.character_id == combat.player_id:
+			tracked_enemy_hp = max(0, tracked_enemy_hp - action.factor)
 			animate_health_decrease(enemy_health_bar, action.factor)
 		else:
+			tracked_player_hp = max(0, tracked_player_hp - action.factor)
 			animate_health_decrease(player_health_bar, action.factor)
 	elif action.action == "heal" and action.factor > 0:
+		if action.character_id == combat.player_id:
+			tracked_player_hp = min(int(player_health_bar.max_value), tracked_player_hp + action.factor)
+		else:
+			tracked_enemy_hp = min(int(enemy_health_bar.max_value), tracked_enemy_hp + action.factor)
 		animate_health_increase(health_bar, action.factor)
 
 
@@ -422,6 +439,12 @@ func _on_visibility_changed():
 			call_deferred("_navigate_after_combat")
 		else:
 			start_combat_playback()
+	elif not visible:
+		# Panel hidden — stop all playback so old combat doesn't leak
+		if action_timer:
+			action_timer.stop()
+		if fade_timer:
+			fade_timer.stop()
 
 func _on_skip_replay_pressed():
 	if is_combat_finished:
@@ -475,23 +498,24 @@ func _skip_to_end():
 			# Apply health changes instantly (no animation)
 			var combat = GameInfo.current_combat_log
 			if combat:
-				# Determine which health bar based on character_id
 				if entry.character_id == combat.player_id:
-					# Player is the attacker, so enemy takes damage
 					if is_damage_action(entry.action):
-						enemy_health_bar.value = max(0, enemy_health_bar.value - entry.factor)
-						update_health_label(enemy_health_label, enemy_health_bar.value)
+						tracked_enemy_hp = max(0, tracked_enemy_hp - entry.factor)
+						enemy_health_bar.value = tracked_enemy_hp
+						update_health_label(enemy_health_label, tracked_enemy_hp)
 					elif entry.action == "heal" and entry.factor > 0:
-						player_health_bar.value = min(player_health_bar.max_value, player_health_bar.value + entry.factor)
-						update_health_label(player_health_label, player_health_bar.value)
+						tracked_player_hp = min(int(player_health_bar.max_value), tracked_player_hp + entry.factor)
+						player_health_bar.value = tracked_player_hp
+						update_health_label(player_health_label, tracked_player_hp)
 				else:
-					# Enemy is the attacker, so player takes damage
 					if is_damage_action(entry.action):
-						player_health_bar.value = max(0, player_health_bar.value - entry.factor)
-						update_health_label(player_health_label, player_health_bar.value)
+						tracked_player_hp = max(0, tracked_player_hp - entry.factor)
+						player_health_bar.value = tracked_player_hp
+						update_health_label(player_health_label, tracked_player_hp)
 					elif entry.action == "heal" and entry.factor > 0:
-						enemy_health_bar.value = min(enemy_health_bar.max_value, enemy_health_bar.value + entry.factor)
-						update_health_label(enemy_health_label, enemy_health_bar.value)
+						tracked_enemy_hp = min(int(enemy_health_bar.max_value), tracked_enemy_hp + entry.factor)
+						enemy_health_bar.value = tracked_enemy_hp
+						update_health_label(enemy_health_label, tracked_enemy_hp)
 		elif action_data.type == "final_message":
 			show_final_message(action_data.message)
 		
@@ -499,3 +523,6 @@ func _skip_to_end():
 	
 	is_combat_finished = true
 	skip_replay_button.text = "Continue"
+	# Make sure final message is visible
+	if all_actions.size() > 0 and all_actions[-1].type == "final_message":
+		show_final_message(all_actions[-1].message)
