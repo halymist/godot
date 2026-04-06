@@ -12,7 +12,7 @@ const IMAGES_DIR = "user://images/"
 const DATA_DIR = "user://data/"
 
 # Asset base URL
-const ASSETS_BASE_URL = "https://gamedata-assets.s3.eu-north-1.amazonaws.com/images/"
+const ASSETS_BASE_URL = "https://pub-b959ac8ae579488bb4ed33c01a618ae2.r2.dev/images/"
 
 # JSON data file paths
 const EFFECTS_JSON = "user://data/effects.json"

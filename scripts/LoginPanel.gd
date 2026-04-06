@@ -103,6 +103,12 @@ func _ready():
 	discord_login_button.pressed.connect(_on_login_or_register)
 	facebook_login_button.pressed.connect(_on_login_or_register)
 	
+	# Submit on Enter in email/password fields
+	if email_input:
+		email_input.text_submitted.connect(_on_email_submitted)
+	if password_input:
+		password_input.text_submitted.connect(_on_password_submitted)
+	
 	# Connect register buttons
 	email_register_button.pressed.connect(_on_register)
 	
@@ -243,6 +249,14 @@ func _on_facebook_toggled(toggled_on: bool):
 	if toggled_on:
 		_on_method_selected("facebook")
 
+func _on_email_submitted(_text: String):
+	if not is_register_mode:
+		_on_login()
+
+func _on_password_submitted(_text: String):
+	if not is_register_mode:
+		_on_login()
+
 func _on_login():
 	"""Handle email/password login"""
 	if is_logging_in:
@@ -301,7 +315,8 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 		_show_lobby_after_init()
 	else:
 		# Show error message
-		_show_error(error if error != "" else "Login failed")
+		var msg = error if error != "" else "Email or password is incorrect"
+		_show_error(msg)
 
 # ============================================
 # Credential Storage Functions

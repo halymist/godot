@@ -1,15 +1,15 @@
 extends Node
 
-# Resolution scaling manager - Portrait only
+# Resolution scaling manager - Portrait only (Autoload)
 # Scales content up to 9:16 aspect ratio, then stops scaling width
 
 var current_scale_factor = 1.0
 
 # User preference scaling (can be changed via settings)
-@export var user_font_scale: float = 1.0  # 1.0 = normal, 1.2 = 20% bigger, 0.8 = 20% smaller
+var user_font_scale: float = 1.0  # 1.0 = normal, 1.2 = 20% bigger, 0.8 = 20% smaller
 
-@export var phone_ui_root: Control
-@export var base_theme: Theme
+# Set by game scene after loading
+var base_theme: Theme = null
 
 # Aspect ratio thresholds for portrait phone mode
 # 21:9 portrait = 9/21 = 0.4286 (base, tallest)
@@ -25,9 +25,6 @@ var last_window_size: Vector2i = Vector2i.ZERO
 signal user_font_scale_changed(new_scale)
 
 func _ready():
-	if phone_ui_root:
-		phone_ui_root.visible = true
-		phone_ui_root.process_mode = Node.PROCESS_MODE_INHERIT
 	calculate_layout()
 
 func _process(_delta):

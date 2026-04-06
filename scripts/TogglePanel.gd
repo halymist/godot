@@ -83,7 +83,6 @@ signal game_ready
 @export var enemy_character_display: CharacterDisplay
 @export var active_effects: Node
 @export var avatars: Array[Node] = []
-@export var resolution_manager: Node
 @export var top_ui: Control
 
 # ============================================================================
@@ -95,6 +94,10 @@ var chat_overlay_active: bool = false
 var overlay_stack: Array[Control] = []
 const BASE_Z_INDEX: int = 200
 const Z_INDEX_INCREMENT: int = 10
+
+# Inactivity timeout (returns to lobby after 5 minutes of no input)
+const INACTIVITY_TIMEOUT: float = 300.0
+var inactivity_timer: Timer
 
 # ============================================================================
 # INITIALIZATION
@@ -109,6 +112,24 @@ func _ready():
 	_initialize_starter_panel()
 	if GameInfo.current_player:
 		refresh_stats()
+	# Inactivity timer
+	inactivity_timer = Timer.new()
+	inactivity_timer.wait_time = INACTIVITY_TIMEOUT
+	inactivity_timer.one_shot = true
+	inactivity_timer.timeout.connect(_on_inactivity_timeout)
+	add_child(inactivity_timer)
+	inactivity_timer.start()
+
+func _input(_event: InputEvent):
+	# Reset inactivity timer on any input
+	if inactivity_timer:
+		inactivity_timer.start()
+
+func _on_inactivity_timeout():
+	print("[UIManager] 5 min inactivity — returning to lobby")
+	GameInfo.current_player = null
+	GameInfo.current_character_id = 0
+	get_tree().change_scene_to_file("res://Scenes/login.tscn")
 
 func _connect_buttons():
 	"""Connect all button signals"""
@@ -328,6 +349,11 @@ func toggle_overlay(overlay: Control):
 	if overlay == null:
 		print("ERROR: Attempted to toggle null overlay")
 		return
+	
+	# Close chat when opening an overlay
+	if chat_overlay_active:
+		chat_overlay_active = false
+		chat_panel.visible = false
 	
 	# Check if this overlay is already in the stack
 	var index = overlay_stack.find(overlay)

@@ -190,7 +190,7 @@ script = ExtResource("68_2cns2")
 [sub_resource type="Resource" id="Resource_w4j8i"]
 script = ExtResource("68_2cns2")
 
-[node name="Game" type="Control" unique_id=607242183 node_paths=PackedStringArray("phone_ui_root")]
+[node name="Game" type="Control" unique_id=607242183]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -200,11 +200,8 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_nb51f")
-script = ExtResource("1_1phco")
-phone_ui_root = NodePath("Portrait")
-base_theme = ExtResource("2_nb51f")
 
-[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "enemy", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "resolution_manager", "top_ui")]
+[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "enemy", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "top_ui")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -254,7 +251,6 @@ bag_views = [NodePath("../Portrait/GameScene/VendorPanel/Overlay/Bag"), NodePath
 character_display = NodePath("../Portrait/GameScene/Character/CharacterDisplay")
 enemy_character_display = NodePath("../Portrait/GameScene/Enemy/CharacterDisplay")
 avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), null, NodePath("../Portrait/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
-resolution_manager = NodePath("..")
 top_ui = NodePath("../Portrait/TopUI")
 
 [node name="Portrait" type="Control" parent="." unique_id=2021491709]
