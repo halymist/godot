@@ -28,6 +28,7 @@ GameInfo="*res://scripts/global/GameInfo.gd"
 TooltipManager="*res://scripts/global/TooltipManager.gd"
 SettingsManager="*res://scripts/global/SettingsManager.gd"
 ResolutionManager="*res://scripts/ResolutionManager.gd"
+SceneTransition="*res://scripts/global/SceneTransition.gd"
 
 [display]
 

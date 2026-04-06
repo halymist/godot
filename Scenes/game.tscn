@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://cggugbbbhxwry"]
 
-[ext_resource type="Script" uid="uid://b8180tgyihikt" path="res://scripts/ResolutionManager.gd" id="1_1phco"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Script" uid="uid://dfyxboavsidpe" path="res://scripts/TopUI.gd" id="4_2cns2"]
@@ -2375,14 +2374,10 @@ script = ExtResource("42_umggo")
 [node name="QuestNameLabel" type="Label" parent="Portrait/GameScene/Map/Overlay" unique_id=996405987]
 custom_minimum_size = Vector2(50, 30)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.123
-anchor_right = 0.84700006
-anchor_bottom = 0.19100001
-offset_left = 0.18499756
-offset_top = 6.0
-offset_right = -0.03503418
-offset_bottom = 0.091999054
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 29.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.7, 1)
 theme_override_font_sizes/font_size = 18
 text = "Quest name"
@@ -2393,14 +2388,11 @@ autowrap_mode = 3
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.052
-anchor_top = 0.19100001
-anchor_right = 0.95600003
-anchor_bottom = 0.72300005
-offset_left = -0.060001373
-offset_top = 0.091999054
-offset_right = -0.1800232
-offset_bottom = 0.07598877
+anchor_top = 0.202
+anchor_right = 1.0
+anchor_bottom = 0.76600003
+offset_top = 0.02399826
+offset_bottom = -0.008010864
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -2414,15 +2406,10 @@ autowrap_mode = 3
 [node name="TravelBarContainer" type="Control" parent="Portrait/GameScene/Map/Overlay" unique_id=1072325657]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -179.5
-offset_top = -45.0
-offset_right = 182.5
-offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
@@ -2432,10 +2419,10 @@ size_flags_vertical = 0
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.019000001
-anchor_right = 0.762
+anchor_right = 0.72300005
 anchor_bottom = 1.0
 offset_left = 0.12199974
-offset_right = 0.15600586
+offset_right = 0.18496704
 grow_horizontal = 2
 grow_vertical = 2
 max_value = 1000.0
@@ -2469,7 +2456,7 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -131.0
-offset_right = 119.0
+offset_right = 70.5
 grow_horizontal = 2
 grow_vertical = 2
 

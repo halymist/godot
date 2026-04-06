@@ -104,7 +104,7 @@ offset_top = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Login" type="Control" parent="ContentContainer" unique_id=225530884 node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "method_indicator", "email_login_section", "google_login_section", "google_play_login_section", "apple_login_section", "discord_login_section", "facebook_login_section", "email_register_section", "email_login_button", "google_login_button", "google_play_login_button", "apple_login_button", "discord_login_button", "facebook_login_button", "email_register_button", "email_input", "password_input", "password_toggle", "stay_logged_in_checkbox", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok")]
+[node name="Login" type="Control" parent="ContentContainer" unique_id=225530884 node_paths=PackedStringArray("lobby_panel", "login_mode_button", "register_mode_button", "email_button", "google_button", "google_play_button", "apple_button", "discord_button", "facebook_button", "method_indicator", "email_login_section", "google_login_section", "google_play_login_section", "apple_login_section", "discord_login_section", "facebook_login_section", "email_register_section", "email_login_button", "google_login_button", "google_play_login_button", "apple_login_button", "discord_login_button", "facebook_login_button", "email_register_button", "email_input", "password_input", "password_toggle", "stay_logged_in_checkbox", "forgot_password_panel", "forgot_password_button", "forgot_email_input", "forgot_submit_button", "forgot_cancel_button", "forgot_input_panel", "forgot_confirmation_panel", "forgot_confirmation_email", "forgot_confirmation_ok", "error_label")]
 layout_mode = 1
 anchor_top = 0.024
 anchor_right = 1.0
@@ -150,6 +150,7 @@ forgot_input_panel = NodePath("ForgotPasswordPanel/InputPanel")
 forgot_confirmation_panel = NodePath("ForgotPasswordPanel/ConfirmationPanel")
 forgot_confirmation_email = NodePath("ForgotPasswordPanel/ConfirmationPanel/ConfirmationText")
 forgot_confirmation_ok = NodePath("ForgotPasswordPanel/ConfirmationPanel/OkButton")
+error_label = NodePath("EmailLoginSection/ErrorLabel")
 
 [node name="ModeToggle" type="HBoxContainer" parent="ContentContainer/Login" unique_id=1294594406]
 layout_mode = 1
@@ -404,6 +405,22 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_hcdb4")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_hcdb4")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_hcdb4")
 text = " Remember me"
+
+[node name="ErrorLabel" type="Label" parent="ContentContainer/Login/EmailLoginSection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -185.0
+offset_top = 207.0
+offset_right = 185.0
+offset_bottom = 240.0
+grow_horizontal = 2
+visible = false
+theme_override_colors/font_color = Color(0.9, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="LoginButton" type="Button" parent="ContentContainer/Login/EmailLoginSection" unique_id=621060010]
 layout_mode = 1

@@ -129,7 +129,7 @@ func _on_inactivity_timeout():
 	print("[UIManager] 5 min inactivity — returning to lobby")
 	GameInfo.current_player = null
 	GameInfo.current_character_id = 0
-	get_tree().change_scene_to_file("res://Scenes/login.tscn")
+	SceneTransition.change_scene_to_file("res://Scenes/login.tscn")
 
 func _connect_buttons():
 	"""Connect all button signals"""
@@ -616,7 +616,7 @@ func handle_logout():
 	GameInfo.current_player = null
 	GameInfo.current_character_id = 0
 	
-	get_tree().change_scene_to_file("res://Scenes/login.tscn")
+	SceneTransition.change_scene_to_file("res://Scenes/login.tscn")
 
 # ============================================================================
 # UIManager Functions - Currency, Stats, Effects, Bags, Avatars

@@ -344,7 +344,7 @@ func _on_player_data_received(character_data: Dictionary):
 	
 	print("[Lobby] Character loaded, switching to game scene...")
 	# Switch to preloaded game scene
-	get_tree().change_scene_to_packed(game_scene)
+	SceneTransition.change_scene_to_packed(game_scene)
 
 func _show_login_with_method(method: String):
 	"""Show login screen to add/link another account with specified method"""
@@ -362,7 +362,7 @@ func _on_logout():
 	GameInfo.lobby_data.clear()
 	
 	# Return to login screen
-	get_tree().change_scene_to_file("res://Scenes/login.tscn")
+	SceneTransition.change_scene_to_file("res://Scenes/login.tscn")
 
 func _on_create_new_character():
 	"""Show character info panel to start creation flow"""
