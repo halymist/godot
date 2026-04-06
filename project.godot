@@ -15,9 +15,11 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="game"
-run/main_scene="res://Scenes/login.tscn"
+run/main_scene="res://Scenes/splash.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://assets/images/icon.svg"
+boot_splash/show_image=false
+boot_splash/bg_color=Color(0, 0, 0, 1)
 
 [autoload]
 
@@ -47,7 +49,7 @@ enabled=PackedStringArray("res://addons/GodotGooglePlayBilling/plugin.cfg", "res
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
-pointing/emulate_mouse_from_touch=false
+pointing/emulate_mouse_from_touch=true
 
 [internationalization]
 
