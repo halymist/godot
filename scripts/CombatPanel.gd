@@ -33,6 +33,8 @@ var is_prepared: bool = false  # Track if combat is prepared and ready to show
 var combat_session_id: int = 0  # Incremented each prepare to invalidate stale coroutines
 var tracked_player_hp: int = 0  # Actual player HP (not tween-animated)
 var tracked_enemy_hp: int = 0   # Actual enemy HP (not tween-animated)
+var player_hp_tween: Tween
+var enemy_hp_tween: Tween
 
 func _ready():
 	# Create timer for displaying actions
@@ -371,8 +373,20 @@ func animate_health_decrease(health_bar: TextureProgressBar, damage: int):
 		return
 	
 	var new_health = max(0, health_bar.value - damage)
+	
+	# Kill previous tween for this bar
+	if health_bar == player_health_bar and player_hp_tween:
+		player_hp_tween.kill()
+	elif health_bar == enemy_health_bar and enemy_hp_tween:
+		enemy_hp_tween.kill()
+	
 	var tween = create_tween()
 	tween.tween_property(health_bar, "value", new_health, 0.5)
+	
+	if health_bar == player_health_bar:
+		player_hp_tween = tween
+	elif health_bar == enemy_health_bar:
+		enemy_hp_tween = tween
 	
 	# Update health label
 	var health_label = health_bar.get_node_or_null("HealthLabel")
@@ -384,8 +398,20 @@ func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 		return
 	
 	var new_health = min(health_bar.max_value, health_bar.value + heal_amount)
+	
+	# Kill previous tween for this bar
+	if health_bar == player_health_bar and player_hp_tween:
+		player_hp_tween.kill()
+	elif health_bar == enemy_health_bar and enemy_hp_tween:
+		enemy_hp_tween.kill()
+	
 	var tween = create_tween()
 	tween.tween_property(health_bar, "value", new_health, 0.5)
+	
+	if health_bar == player_health_bar:
+		player_hp_tween = tween
+	elif health_bar == enemy_health_bar:
+		enemy_hp_tween = tween
 	
 	# Update health label
 	var health_label = health_bar.get_node_or_null("HealthLabel")
@@ -474,6 +500,14 @@ func _skip_to_end():
 	if fade_timer:
 		fade_timer.stop()
 	
+	# Kill any running health bar tweens
+	if player_hp_tween:
+		player_hp_tween.kill()
+		player_hp_tween = null
+	if enemy_hp_tween:
+		enemy_hp_tween.kill()
+		enemy_hp_tween = null
+	
 	# Apply all remaining actions instantly
 	while current_action_index < all_actions.size():
 		var action_data = all_actions[current_action_index]
@@ -515,6 +549,12 @@ func _skip_to_end():
 			show_final_message(action_data.message)
 		
 		current_action_index += 1
+	
+	# Set final health bar values explicitly
+	player_health_bar.value = tracked_player_hp
+	enemy_health_bar.value = tracked_enemy_hp
+	update_health_label(player_health_label, tracked_player_hp)
+	update_health_label(enemy_health_label, tracked_enemy_hp)
 	
 	is_combat_finished = true
 	skip_replay_button.text = "Continue"

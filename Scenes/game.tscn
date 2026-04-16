@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://ho4facjk62r8" path="res://assets/images/ui/settings.png" id="5_settings"]
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="6_itemslot"]
 [ext_resource type="Texture2D" uid="uid://cjgyacwkb877" path="res://assets/images/ui/sunny.png" id="8_e6ols"]
-[ext_resource type="Script" uid="uid://okly23jm43ke" path="res://scripts/Avatar.gd" id="8_q8b24"]
 [ext_resource type="Texture2D" uid="uid://814oroxowurk" path="res://assets/images/ui/rainy.png" id="9_2cns2"]
 [ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="9_sword"]
 [ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="9_w4j8i"]
@@ -162,6 +161,10 @@ script = ExtResource("68_2cns2")
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_disabled"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_tab_normal"]
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
 bg_color = Color(0.15, 0.15, 0.15, 0.6)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
@@ -169,6 +172,10 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_tab_pressed"]
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
 bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
@@ -176,6 +183,10 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_tab_hover"]
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
 bg_color = Color(0.25, 0.25, 0.25, 0.8)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
@@ -201,7 +212,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_nb51f")
 
-[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "enemy", "silver_labels", "mushrooms_labels", "bag_views", "character_display", "enemy_character_display", "avatars", "top_ui")]
+[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "character_display", "enemy_character_display", "top_ui")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -244,13 +255,8 @@ church_panel = NodePath("../Portrait/GameScene/ChurchPanel")
 alchemist_panel = NodePath("../Portrait/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("../Portrait/GameScene/EnchanterPanel")
 chat_panel = NodePath("../Portrait/GameScene/ChatOverlay")
-enemy = [null]
-silver_labels = [NodePath("../Portrait/TopUI/VBoxContainer/SilverContainer/SilverValue")]
-mushrooms_labels = [NodePath("../Portrait/TopUI/VBoxContainer/MushroomContainer/MushroomValue")]
-bag_views = [NodePath("../Portrait/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/EnchanterPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/Character/Bag")]
 character_display = NodePath("../Portrait/GameScene/Character/CharacterDisplay")
 enemy_character_display = NodePath("../Portrait/GameScene/Enemy/CharacterDisplay")
-avatars = [NodePath("../Portrait/TopUI/Character/Avatar"), null, NodePath("../Portrait/GameScene/Combat/PlayerContainer/PlayerIcon/PlayerAvatar")]
 top_ui = NodePath("../Portrait/TopUI")
 
 [node name="Portrait" type="Control" parent="." unique_id=2021491709]
@@ -304,28 +310,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
-[node name="Avatar" type="AspectRatioContainer" parent="Portrait/TopUI/Character" unique_id=2094168891 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
+[node name="Avatar" parent="Portrait/TopUI/Character" unique_id=2094168891 instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = -10.0
 offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("8_q8b24")
-face_rect = NodePath("AvatarControl/Face")
-ears_rect = NodePath("AvatarControl/Ears")
-nose_rect = NodePath("AvatarControl/Nose")
-mouth_rect = NodePath("AvatarControl/Mouth")
-eyes_rect = NodePath("AvatarControl/Eyes")
-brows_rect = NodePath("AvatarControl/Brows")
-beard_rect = NodePath("AvatarControl/Beard")
-special_rect = NodePath("AvatarControl/Special")
-hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="HealthBar" parent="Portrait/TopUI" unique_id=814523725 instance=ExtResource("22_healthbar")]
 custom_minimum_size = Vector2(100, 28)
@@ -468,10 +460,10 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("40_vendor")
+item_scene = ExtResource("17_aujhx")
 chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 vendor_grid = NodePath("Overlay/VendorSlots")
-item_scene = ExtResource("17_aujhx")
 
 [node name="ChatBubble" parent="Portrait/GameScene/VendorPanel" unique_id=1960592529 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -1245,12 +1237,12 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("31_enchanter")
+enchant_option_scene = ExtResource("26_lknxd")
 chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 enchanter_slot = NodePath("Overlay/ItemSlot")
 enchant_button = NodePath("Overlay/EnchantButton")
 effect_list = NodePath("Overlay/EffectsSection/EffectScrollContainer/EffectList")
-enchant_option_scene = ExtResource("26_lknxd")
 
 [node name="ChatBubble" parent="Portrait/GameScene/EnchanterPanel" unique_id=894459828 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -1694,24 +1686,10 @@ offset_bottom = 238.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="AvatarInstance" type="AspectRatioContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent/ImagePanel" unique_id=1305566195 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
+[node name="AvatarInstance" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent/ImagePanel" unique_id=1305566195 instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_q8b24")
-face_rect = NodePath("AvatarControl/Face")
-ears_rect = NodePath("AvatarControl/Ears")
-nose_rect = NodePath("AvatarControl/Nose")
-mouth_rect = NodePath("AvatarControl/Mouth")
-eyes_rect = NodePath("AvatarControl/Eyes")
-brows_rect = NodePath("AvatarControl/Brows")
-beard_rect = NodePath("AvatarControl/Beard")
-special_rect = NodePath("AvatarControl/Special")
-hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="StatsContainer" type="GridContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent" unique_id=502256608]
 layout_mode = 1
@@ -1883,24 +1861,10 @@ offset_bottom = 238.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="AvatarInstance" type="AspectRatioContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent2/ImagePanel" unique_id=1451727030 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
+[node name="AvatarInstance" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent2/ImagePanel" unique_id=1451727030 instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_q8b24")
-face_rect = NodePath("AvatarControl/Face")
-ears_rect = NodePath("AvatarControl/Ears")
-nose_rect = NodePath("AvatarControl/Nose")
-mouth_rect = NodePath("AvatarControl/Mouth")
-eyes_rect = NodePath("AvatarControl/Eyes")
-brows_rect = NodePath("AvatarControl/Brows")
-beard_rect = NodePath("AvatarControl/Beard")
-special_rect = NodePath("AvatarControl/Special")
-hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="StatsContainer" type="GridContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent2" unique_id=1300577069]
 layout_mode = 1
@@ -2072,24 +2036,10 @@ offset_bottom = 238.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="AvatarInstance" type="AspectRatioContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent3/ImagePanel" unique_id=1571622866 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
+[node name="AvatarInstance" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent3/ImagePanel" unique_id=1571622866 instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_q8b24")
-face_rect = NodePath("AvatarControl/Face")
-ears_rect = NodePath("AvatarControl/Ears")
-nose_rect = NodePath("AvatarControl/Nose")
-mouth_rect = NodePath("AvatarControl/Mouth")
-eyes_rect = NodePath("AvatarControl/Eyes")
-brows_rect = NodePath("AvatarControl/Brows")
-beard_rect = NodePath("AvatarControl/Beard")
-special_rect = NodePath("AvatarControl/Special")
-hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="StatsContainer" type="GridContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent3" unique_id=596535695]
 layout_mode = 1
@@ -2274,23 +2224,8 @@ offset_bottom = 130.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="PlayerAvatar" type="AspectRatioContainer" parent="Portrait/GameScene/Combat/PlayerContainer/PlayerIcon" unique_id=503488646 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
+[node name="PlayerAvatar" parent="Portrait/GameScene/Combat/PlayerContainer/PlayerIcon" unique_id=503488646 instance=ExtResource("22_avatar")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_q8b24")
-face_rect = NodePath("AvatarControl/Face")
-ears_rect = NodePath("AvatarControl/Ears")
-nose_rect = NodePath("AvatarControl/Nose")
-mouth_rect = NodePath("AvatarControl/Mouth")
-eyes_rect = NodePath("AvatarControl/Eyes")
-brows_rect = NodePath("AvatarControl/Brows")
-beard_rect = NodePath("AvatarControl/Beard")
-special_rect = NodePath("AvatarControl/Special")
-hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="PlayerHealthBar" parent="Portrait/GameScene/Combat/PlayerContainer" unique_id=352633224 instance=ExtResource("22_healthbar")]
 layout_mode = 0
@@ -2324,23 +2259,8 @@ offset_bottom = 130.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="EnemyAvatar" type="AspectRatioContainer" parent="Portrait/GameScene/Combat/EnemyContainer/EnemyIcon" unique_id=895169604 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
+[node name="EnemyAvatar" parent="Portrait/GameScene/Combat/EnemyContainer/EnemyIcon" unique_id=895169604 instance=ExtResource("22_avatar")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_q8b24")
-face_rect = NodePath("AvatarControl/Face")
-ears_rect = NodePath("AvatarControl/Ears")
-nose_rect = NodePath("AvatarControl/Nose")
-mouth_rect = NodePath("AvatarControl/Mouth")
-eyes_rect = NodePath("AvatarControl/Eyes")
-brows_rect = NodePath("AvatarControl/Brows")
-beard_rect = NodePath("AvatarControl/Beard")
-special_rect = NodePath("AvatarControl/Special")
-hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="EnemyTexture" type="TextureRect" parent="Portrait/GameScene/Combat/EnemyContainer/EnemyIcon" unique_id=1120258494]
 visible = false
@@ -2685,11 +2605,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("36_rankings_panel")
+ranking_row_scene = ExtResource("36_ranking_row")
 rankings_table = NodePath("MainContainer/TableScroll")
 table_content = NodePath("MainContainer/TableScroll/VBoxContainer")
 player_card = NodePath("MainContainer/PlayerCard")
 search_input = NodePath("MainContainer/SearchBar/SearchInput")
-ranking_row_scene = ExtResource("36_ranking_row")
 player_name_label = NodePath("MainContainer/PlayerCard/PlayerInfo/PlayerName")
 avatar_instance = NodePath("MainContainer/PlayerCard/Character/Avatar")
 character_button = NodePath("MainContainer/PlayerCard/Character/CharButton")
@@ -2706,9 +2626,11 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 5.0
+offset_right = -5.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 4
 
 [node name="TableHeader" type="Control" parent="Portrait/GameScene/Rankings/MainContainer" unique_id=638340236]
 custom_minimum_size = Vector2(0, 40)
@@ -2735,9 +2657,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="NameHeader" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/TableHeader/HeaderContent" unique_id=604494854]
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Name"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HonorHeader" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/TableHeader/HeaderContent" unique_id=81385133]
@@ -2763,6 +2687,7 @@ metadata/_custom_type_script = "uid://bgqglerkcylxx"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 0
 
 [node name="PlayerCard" type="Control" parent="Portrait/GameScene/Rankings/MainContainer" unique_id=350352814]
 custom_minimum_size = Vector2(0, 100)
@@ -2778,24 +2703,13 @@ offset_bottom = 100.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="Avatar" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/Character" unique_id=584301956 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
+[node name="Avatar" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/Character" unique_id=584301956 instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_q8b24")
-face_rect = NodePath("AvatarControl/Face")
-ears_rect = NodePath("AvatarControl/Ears")
-nose_rect = NodePath("AvatarControl/Nose")
-mouth_rect = NodePath("AvatarControl/Mouth")
-eyes_rect = NodePath("AvatarControl/Eyes")
-brows_rect = NodePath("AvatarControl/Brows")
-beard_rect = NodePath("AvatarControl/Beard")
-special_rect = NodePath("AvatarControl/Special")
-hair_rect = NodePath("AvatarControl/Hair")
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -5.0
 
 [node name="CharButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/Character" unique_id=1726898858]
 layout_mode = 1
@@ -2910,14 +2824,15 @@ text = "100"
 vertical_alignment = 1
 
 [node name="FightButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard" unique_id=1673580562]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.958
 anchor_top = 0.9
 anchor_right = 0.958
 anchor_bottom = 0.9
-offset_left = -81.99
-offset_top = -45.0
-offset_right = 0.00997925
+offset_left = -58.410004
+offset_top = -31.0
+offset_right = 8.589996
 text = "Fight"
 
 [node name="Label" type="Label" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard" unique_id=1329316662]
@@ -3042,7 +2957,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
-[node name="GridContainer" type="GridContainer" parent="Portrait/GameScene/TalentsPanel" unique_id=1871328179 node_paths=PackedStringArray("talents", "reset_button", "title_label")]
+[node name="GridContainer" type="GridContainer" parent="Portrait/GameScene/TalentsPanel" unique_id=1871328179 node_paths=PackedStringArray("reset_button", "title_label")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.042
@@ -3057,7 +2972,6 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 7
 script = ExtResource("14_vm72l")
-talents = [NodePath("Talent"), NodePath("Talent2"), NodePath("Talent3"), NodePath("Talent4"), NodePath("Talent5"), NodePath("Talent6"), NodePath("Talent7"), NodePath("Talent8"), NodePath("Talent9"), NodePath("Talent10"), NodePath("Talent11"), NodePath("Talent12"), NodePath("Talent13"), NodePath("Talent14"), NodePath("Talent15"), NodePath("Talent16"), NodePath("Talent17"), NodePath("Talent18"), NodePath("Talent19"), NodePath("Talent20"), NodePath("Talent21"), NodePath("Talent22"), NodePath("Talent23"), NodePath("Talent24"), NodePath("Talent25"), NodePath("Talent26"), NodePath("Talent27"), NodePath("Talent28"), NodePath("Talent29"), NodePath("Talent30"), NodePath("Talent31"), NodePath("Talent32"), NodePath("Talent33"), NodePath("Talent34"), NodePath("Talent35"), NodePath("Talent36"), NodePath("Talent37"), NodePath("Talent38"), NodePath("Talent39"), NodePath("Talent40"), NodePath("Talent41"), NodePath("Talent42"), NodePath("Talent43"), NodePath("Talent44"), NodePath("Talent45"), NodePath("Talent46"), NodePath("Talent47"), NodePath("Talent48"), NodePath("Talent49"), NodePath("Talent50"), NodePath("Talent51"), NodePath("Talent52"), NodePath("Talent53"), NodePath("Talent54"), NodePath("Talent55"), NodePath("Talent56")]
 reset_button = NodePath("../Title/ResetButton")
 title_label = NodePath("../Title/Label")
 
@@ -4381,7 +4295,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent36" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=684569779 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent36" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=684569779 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4395,7 +4309,6 @@ effect_id = 1
 factor = 4.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent43"), NodePath("../Talent29")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent36" unique_id=335306003]
 layout_mode = 2
@@ -4420,7 +4333,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent37" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=2072264611 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent37" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=2072264611 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4434,7 +4347,6 @@ effect_id = 1
 factor = 12.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent36"), NodePath("../Talent38"), NodePath("../Talent30"), NodePath("../Talent44")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent37" unique_id=552064011]
 layout_mode = 2
@@ -4459,7 +4371,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent38" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=242103894 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent38" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=242103894 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4472,7 +4384,6 @@ effect_id = 1
 factor = 10.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent37"), NodePath("../Talent39"), NodePath("../Talent31"), NodePath("../Talent45")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent38" unique_id=1954672812]
 layout_mode = 2
@@ -4497,7 +4408,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent39" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=713685143 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent39" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=713685143 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4511,7 +4422,6 @@ effect_id = 1
 factor = 15.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent38"), NodePath("../Talent40"), NodePath("../Talent32"), NodePath("../Talent46")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent39" unique_id=247519334]
 layout_mode = 2
@@ -4536,7 +4446,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent40" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=2136354189 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent40" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=2136354189 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4550,7 +4460,6 @@ effect_id = 1
 factor = 6.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent39"), NodePath("../Talent41"), NodePath("../Talent33"), NodePath("../Talent47")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent40" unique_id=1423042820]
 layout_mode = 2
@@ -4575,7 +4484,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent41" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=748806212 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent41" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=748806212 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4589,7 +4498,6 @@ effect_id = 1
 factor = 25.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent40"), NodePath("../Talent42"), NodePath("../Talent48"), NodePath("../Talent34")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent41" unique_id=340896623]
 layout_mode = 2
@@ -4614,7 +4522,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent42" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1449031366 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent42" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1449031366 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4628,7 +4536,6 @@ effect_id = 1
 factor = 5.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent41"), NodePath("../Talent48"), NodePath("../Talent36")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent42" unique_id=419257436]
 layout_mode = 2
@@ -4653,7 +4560,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent43" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1532924884 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent43" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1532924884 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4667,7 +4574,6 @@ effect_id = 1
 factor = 20.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent36"), NodePath("../Talent50")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent43" unique_id=16982942]
 layout_mode = 2
@@ -4692,7 +4598,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent44" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1975268202 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent44" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1975268202 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4705,7 +4611,6 @@ effect_id = 1
 factor = 4.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent43"), NodePath("../Talent45"), NodePath("../Talent37"), NodePath("../Talent51")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent44" unique_id=667842476]
 layout_mode = 2
@@ -4730,7 +4635,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent45" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=197587827 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent45" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=197587827 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4744,7 +4649,6 @@ effect_id = 1
 factor = 6.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent44"), NodePath("../Talent46"), NodePath("../Talent38"), NodePath("../Talent52")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent45" unique_id=1451437181]
 layout_mode = 2
@@ -4769,7 +4673,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=673904033 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent46" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=673904033 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4782,7 +4686,6 @@ maxPoints = 1
 effect_id = 1
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent45"), NodePath("../Talent47"), NodePath("../Talent39"), NodePath("../Talent53")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent46" unique_id=1443331084]
 layout_mode = 2
@@ -4807,7 +4710,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent47" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1247241589 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent47" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1247241589 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4821,7 +4724,6 @@ effect_id = 1
 factor = 25.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent46"), NodePath("../Talent48"), NodePath("../Talent40"), NodePath("../Talent54")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent47" unique_id=1696284535]
 layout_mode = 2
@@ -4846,7 +4748,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent48" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1955891519 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent48" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1955891519 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4860,7 +4762,6 @@ effect_id = 1
 factor = 3.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent47"), NodePath("../Talent49"), NodePath("../Talent41"), NodePath("../Talent55")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent48" unique_id=907384934]
 layout_mode = 2
@@ -4885,7 +4786,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent49" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=826170969 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent49" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=826170969 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4898,7 +4799,6 @@ effect_id = 1
 factor = 15.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent42"), NodePath("../Talent56"), NodePath("../Talent48")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent49" unique_id=961145639]
 layout_mode = 2
@@ -4923,7 +4823,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent50" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1733451201 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent50" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1733451201 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4937,7 +4837,6 @@ isStarter = true
 effect_id = 1
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent43")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent50" unique_id=628094917]
 layout_mode = 2
@@ -4962,7 +4861,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent51" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1826436440 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent51" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1826436440 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -4977,7 +4876,6 @@ effect_id = 1
 factor = 10.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent52"), NodePath("../Talent50"), NodePath("../Talent44")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent51" unique_id=1266421525]
 layout_mode = 2
@@ -5002,7 +4900,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent52" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=195196853 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent52" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=195196853 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -5017,7 +4915,6 @@ effect_id = 1
 factor = 8.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent51"), NodePath("../Talent53"), NodePath("../Talent45")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent52" unique_id=226665713]
 layout_mode = 2
@@ -5042,7 +4939,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent53" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1733739397 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent53" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1733739397 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -5056,7 +4953,6 @@ isStarter = true
 effect_id = 200
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent54"), NodePath("../Talent52"), NodePath("../Talent46")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent53" unique_id=1069687314]
 layout_mode = 2
@@ -5081,7 +4977,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent54" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=981520945 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent54" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=981520945 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -5095,7 +4991,6 @@ effect_id = 1
 factor = 20.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent53"), NodePath("../Talent47")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent54" unique_id=236432301]
 layout_mode = 2
@@ -5120,7 +5015,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent55" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1215237435 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent55" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=1215237435 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -5135,7 +5030,6 @@ effect_id = 1
 factor = 10.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent56"), NodePath("../Talent54"), NodePath("../Talent48")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent55" unique_id=189784103]
 layout_mode = 2
@@ -5160,7 +5054,7 @@ theme = ExtResource("14_7nbq1")
 texture = ExtResource("15_7nbq1")
 expand_mode = 1
 
-[node name="Talent56" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=70324629 node_paths=PackedStringArray("button", "pointsLabel", "neighbor_talents")]
+[node name="Talent56" type="AspectRatioContainer" parent="Portrait/GameScene/TalentsPanel/GridContainer" unique_id=70324629 node_paths=PackedStringArray("button", "pointsLabel")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -5175,7 +5069,6 @@ effect_id = 1
 factor = 15.0
 button = NodePath("Button")
 pointsLabel = NodePath("Label")
-neighbor_talents = [NodePath("../Talent55"), NodePath("../Talent49")]
 
 [node name="Background" type="TextureRect" parent="Portrait/GameScene/TalentsPanel/GridContainer/Talent56" unique_id=2138094990]
 layout_mode = 2
@@ -5293,13 +5186,13 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
 script = ExtResource("21_fkdbe")
+perk_scene = ExtResource("22_81klo")
 active_perk_display = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay")
 inactive_perks_grid = NodePath("PerkPanel/VBoxContainer/InactivePerksSection/ScrollContainer/GridContainer")
 bind_button = NodePath("PerkPanel/VBoxContainer/BindButton")
 effect1_label = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/Effect1Label")
 effect2_label = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/Effect2Label")
 perk_icon = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/IconContainer/TextureRect")
-perk_scene = ExtResource("22_81klo")
 
 [node name="PerkPanel" type="Panel" parent="Portrait/GameScene/TalentsPanel/PerkScreen" unique_id=340048066]
 layout_mode = 1
@@ -6700,20 +6593,18 @@ grow_vertical = 2
 [node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel" unique_id=504565811]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.08
-offset_left = 10.0
+anchor_bottom = 0.06
+offset_left = 5.0
 offset_top = 5.0
-offset_right = -10.0
-grow_horizontal = 2
+theme_override_constants/separation = 0
 
 [node name="LocalButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/HeaderContainer" unique_id=1828029808]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxFlat_chat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_chat_tab_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_chat_tab_hover")
@@ -6724,11 +6615,11 @@ text = "Local"
 
 [node name="GlobalButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/HeaderContainer" unique_id=2053964938]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxFlat_chat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_chat_tab_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_chat_tab_hover")
@@ -6791,14 +6682,11 @@ grow_horizontal = 2
 [node name="ChatButton" type="Button" parent="Portrait/BottomUI" unique_id=1217538730]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -393.0
-offset_top = 9.0
-offset_right = -323.0
-offset_bottom = -11.0
-grow_horizontal = 0
+anchor_left = 0.02
+anchor_top = 0.1
+anchor_right = 0.18
+anchor_bottom = 0.9
+grow_horizontal = 2
 grow_vertical = 2
 icon = ExtResource("11_vm72l")
 expand_icon = true
@@ -6806,29 +6694,36 @@ expand_icon = true
 [node name="ArenaButton" type="Button" parent="Portrait/BottomUI" unique_id=923181624]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -244.0
-offset_top = 9.0
-offset_right = -174.0
-offset_bottom = -11.0
-grow_horizontal = 0
+anchor_left = 0.22
+anchor_top = 0.1
+anchor_right = 0.38
+anchor_bottom = 0.9
+grow_horizontal = 2
 grow_vertical = 2
 icon = ExtResource("13_fkdbe")
+expand_icon = true
+
+[node name="RankingsButton" type="Button" parent="Portrait/BottomUI" unique_id=644370160]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.42
+anchor_top = 0.1
+anchor_right = 0.58
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
+icon = ExtResource("81_qj5kr")
 expand_icon = true
 
 [node name="MapButton" type="Button" parent="Portrait/BottomUI" unique_id=1883742143]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -158.0
-offset_top = 11.0
-offset_right = -88.0
-offset_bottom = -9.0
-grow_horizontal = 0
+anchor_left = 0.62
+anchor_top = 0.1
+anchor_right = 0.78
+anchor_bottom = 0.9
+grow_horizontal = 2
 grow_vertical = 2
 icon = ExtResource("12_22asu")
 expand_icon = true
@@ -6836,34 +6731,11 @@ expand_icon = true
 [node name="HomeButton" type="Button" parent="Portrait/BottomUI" unique_id=1149873076]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -77.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 0
+anchor_left = 0.82
+anchor_top = 0.1
+anchor_right = 0.98
+anchor_bottom = 0.9
+grow_horizontal = 2
 grow_vertical = 2
 icon = ExtResource("14_81klo")
-expand_icon = true
-
-[node name="RankingsButton" type="Button" parent="Portrait/BottomUI" unique_id=644370160]
-custom_minimum_size = Vector2(45, 45)
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -312.0
-offset_top = 11.0
-offset_right = -249.0
-offset_bottom = -12.0
-grow_horizontal = 0
-grow_vertical = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-icon = ExtResource("81_qj5kr")
-alignment = 0
-icon_alignment = 2
-vertical_icon_alignment = 0
 expand_icon = true

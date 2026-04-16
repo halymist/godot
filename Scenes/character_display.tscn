@@ -1,7 +1,6 @@
 [gd_scene load_steps=27 format=3 uid="uid://dtcmv6gcik5pa"]
 
 [ext_resource type="Script" uid="uid://c1uh5eg86eies" path="res://scripts/CharacterDisplay.gd" id="1_foq72"]
-[ext_resource type="Texture2D" uid="uid://fa8wxdwc4lr2" path="res://assets/images/ui/ehhh.png" id="2_knt7d"]
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="4_1svyq"]
 [ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="5_ur2r5"]
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="7_jhf1m"]
@@ -20,6 +19,17 @@
 [ext_resource type="Texture2D" uid="uid://mui2o1egfipm" path="res://assets/images/ui/ring_outline.png" id="20_1is51"]
 [ext_resource type="Texture2D" uid="uid://bwxksp08732h5" path="res://assets/images/ui/amulet_outline.png" id="21_7574k"]
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_srvda"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_active_perks_bg"]
+bg_color = Color(0.15, 0.15, 0.15, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
 bg_color = Color(0.15, 0.15, 0.15, 0.6)
@@ -84,26 +94,37 @@ grow_horizontal = 2
 [node name="PlayerName" type="Label" parent="Stats"]
 layout_mode = 0
 offset_right = 375.0
-offset_bottom = 39.0
+offset_bottom = 35.0
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.95, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 26
 text = "Halymist"
 vertical_alignment = 1
 
 [node name="CharacterDetails" type="HBoxContainer" parent="Stats"]
 layout_mode = 0
-offset_top = 39.0
+offset_top = 34.0
 offset_right = 375.0
-offset_bottom = 76.0
+offset_bottom = 56.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 8
 
 [node name="GuildContainer" type="HBoxContainer" parent="Stats/CharacterDetails"]
 layout_mode = 2
 
 [node name="GuildLabel" type="Label" parent="Stats/CharacterDetails/GuildContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 14
 text = "Mercantile"
+vertical_alignment = 1
+
+[node name="SepLabel" type="Label" parent="Stats/CharacterDetails"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 14
+text = "|"
 vertical_alignment = 1
 
 [node name="RankContainer" type="HBoxContainer" parent="Stats/CharacterDetails"]
@@ -111,12 +132,20 @@ layout_mode = 2
 
 [node name="RankLabel" type="Label" parent="Stats/CharacterDetails/RankContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 14
 text = "Novice (20165)"
 vertical_alignment = 1
 
+[node name="Separator" type="HSeparator" parent="Stats"]
+layout_mode = 0
+offset_top = 60.0
+offset_right = 375.0
+offset_bottom = 64.0
+
 [node name="StatsContainer" type="Control" parent="Stats"]
 anchors_preset = 0
-offset_top = 75.0
+offset_top = 68.0
 offset_right = 375.0
 offset_bottom = 173.0
 size_flags_horizontal = 3
@@ -205,7 +234,7 @@ layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="ActivePerksBackground" type="TextureRect" parent="."]
+[node name="ActivePerksBackground" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.03
@@ -218,8 +247,7 @@ offset_right = 0.125
 offset_bottom = -0.785019
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_knt7d")
-expand_mode = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_active_perks_bg")
 
 [node name="ActivePerks" type="HBoxContainer" parent="ActivePerksBackground"]
 layout_mode = 1
