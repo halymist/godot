@@ -78,6 +78,7 @@
 [ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="83_lrctp"]
 [ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="84_e6ols"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
+[ext_resource type="Texture2D" uid="uid://cfgx36yfxv1qf" path="res://assets/images/ui/send.png" id="87_send"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -160,6 +161,12 @@ script = ExtResource("68_2cns2")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_disabled"]
 
+[sub_resource type="Resource" id="Resource_umggo"]
+script = ExtResource("68_2cns2")
+
+[sub_resource type="Resource" id="Resource_w4j8i"]
+script = ExtResource("68_2cns2")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_tab_normal"]
 content_margin_left = 8.0
 content_margin_top = 2.0
@@ -170,6 +177,9 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_overlay_bg"]
+bg_color = Color(0.05, 0.05, 0.05, 0.75)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_tab_pressed"]
 content_margin_left = 8.0
@@ -192,14 +202,6 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_chat_filter"]
-
-[sub_resource type="Resource" id="Resource_umggo"]
-script = ExtResource("68_2cns2")
-
-[sub_resource type="Resource" id="Resource_w4j8i"]
-script = ExtResource("68_2cns2")
 
 [node name="Game" type="Control" unique_id=607242183]
 layout_mode = 3
@@ -6564,7 +6566,7 @@ offset_bottom = 174.0
 size_flags_horizontal = 3
 text = "No"
 
-[node name="ChatOverlay" type="Button" parent="Portrait/GameScene" unique_id=1451856404 node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "global_button", "local_button", "chat_input", "send_button")]
+[node name="ChatOverlay" type="Button" parent="Portrait/GameScene" unique_id=1451856404 node_paths=PackedStringArray("chat_panel", "chat_container", "scroll_container", "toggle_button", "chat_input", "send_button")]
 visible = false
 z_index = 200
 layout_mode = 1
@@ -6577,10 +6579,9 @@ script = ExtResource("28_chat_panel")
 chat_panel = NodePath("ChatPanel")
 chat_container = NodePath("ChatPanel/ScrollContainer/ChatContainer")
 scroll_container = NodePath("ChatPanel/ScrollContainer")
-global_button = NodePath("ChatPanel/HeaderContainer/GlobalButton")
-local_button = NodePath("ChatPanel/HeaderContainer/LocalButton")
-chat_input = NodePath("ChatPanel/InputContainer/ChatInput")
-send_button = NodePath("ChatPanel/InputContainer/SendButton")
+toggle_button = NodePath("ChatPanel/BottomBar/ToggleButton")
+chat_input = NodePath("ChatPanel/BottomBar/InputWrapper/ChatInput")
+send_button = NodePath("ChatPanel/BottomBar/InputWrapper/SendButton")
 
 [node name="ChatPanel" type="Panel" parent="Portrait/GameScene/ChatOverlay" unique_id=1259403415]
 layout_mode = 1
@@ -6589,54 +6590,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="HeaderContainer" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel" unique_id=504565811]
-layout_mode = 1
-anchors_preset = -1
-anchor_bottom = 0.06
-offset_left = 5.0
-offset_top = 5.0
-theme_override_constants/separation = 0
-
-[node name="LocalButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/HeaderContainer" unique_id=1828029808]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxFlat_chat_tab_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_chat_tab_pressed")
-theme_override_styles/hover = SubResource("StyleBoxFlat_chat_tab_hover")
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_chat_filter")
-text = "Local"
-
-[node name="GlobalButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/HeaderContainer" unique_id=2053964938]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxFlat_chat_tab_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_chat_tab_pressed")
-theme_override_styles/hover = SubResource("StyleBoxFlat_chat_tab_hover")
-toggle_mode = true
-button_group = SubResource("ButtonGroup_chat_filter")
-text = "Global"
+theme_override_styles/panel = SubResource("StyleBoxFlat_chat_overlay_bg")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel" unique_id=1344206113]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.08
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 5.0
 offset_right = -10.0
-offset_bottom = -60.0
+offset_bottom = -55.0
 grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
@@ -6651,26 +6615,48 @@ metadata/_custom_type_script = "uid://bgqglerkcylxx"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="InputContainer" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel" unique_id=154158826]
+[node name="BottomBar" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel" unique_id=572539083]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -50.0
+offset_top = -48.0
 offset_right = -10.0
-offset_bottom = -10.0
+offset_bottom = -6.0
 grow_horizontal = 2
+theme_override_constants/separation = 6
 
-[node name="ChatInput" type="LineEdit" parent="Portrait/GameScene/ChatOverlay/ChatPanel/InputContainer" unique_id=1909902081]
+[node name="InputWrapper" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar" unique_id=2065293907]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChatInput" type="LineEdit" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar/InputWrapper" unique_id=1909902081]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Type your message..."
 
-[node name="SendButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/InputContainer" unique_id=1749162426]
+[node name="SendButton" type="TextureButton" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar/InputWrapper" unique_id=1749162426]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-text = "Send"
+modulate = Color(1, 1, 1, 1)
+self_modulate = Color(1, 1, 1, 1)
+texture_normal = ExtResource("87_send")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="ToggleButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar" unique_id=1582031165]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_chat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_chat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_chat_tab_hover")
+text = "Global"
 
 [node name="BottomUI" type="Control" parent="Portrait" unique_id=1346257449]
 layout_mode = 1
