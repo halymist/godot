@@ -3,8 +3,8 @@ extends TextureRect
 # Arena slideshow for enemy cards
 @export var slide_duration: float = 0.3
 @export var card_container: Control
-@export var prev_button: Button
-@export var next_button: Button
+@export var prev_button: TextureButton
+@export var next_button: TextureButton
 @export var fight_button: Button
 @export var arena_opponent1: Control
 @export var arena_opponent2: Control
@@ -163,12 +163,6 @@ func _update_display():
 func _update_button_states():
 	prev_button.disabled = false
 	next_button.disabled = false
-	
-	var prev_index = (current_index - 1) % cards.size()
-	var next_index = (current_index + 1) % cards.size()
-	
-	prev_button.text = "< PREV (" + str(prev_index + 1) + ")"
-	next_button.text = "NEXT (" + str(next_index + 1) + ") >"
 
 func get_current_enemy_index() -> int:
 	return current_index

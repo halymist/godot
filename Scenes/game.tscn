@@ -49,6 +49,7 @@
 [ext_resource type="Script" uid="uid://cs0p7wujaki67" path="res://scripts/Rankings.gd" id="36_rankings_panel"]
 [ext_resource type="PackedScene" uid="uid://cnk4r8w2vplxk" path="res://Scenes/ranking_row.tscn" id="36_ranking_row"]
 [ext_resource type="Script" uid="uid://dwpj41m3wbv23" path="res://scripts/MapPanel.gd" id="37_map_panel"]
+[ext_resource type="Texture2D" uid="uid://bqfghdaby7y3f" path="res://assets/images/ui/prev5.svg" id="37_qj5kr"]
 [ext_resource type="Script" uid="uid://c1om17c3ebc2q" path="res://scripts/Settings.gd" id="37_settings"]
 [ext_resource type="Script" uid="uid://dsuuvbdj7d0sg" path="res://scripts/Quest.gd" id="38_dynamic_options"]
 [ext_resource type="Texture2D" uid="uid://cagmx7314xoes" path="res://assets/images/ui/shared_char_bg.png" id="38_ff75x"]
@@ -71,6 +72,7 @@
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="68_2cns2"]
 [ext_resource type="Script" uid="uid://bxpbd8qnmw5gs" path="res://scripts/CancelQuest.gd" id="75_ckj55"]
 [ext_resource type="Script" uid="uid://cy4jtgk41lei7" path="res://scripts/ExpeditionPanel.gd" id="76_expedition"]
+[ext_resource type="Texture2D" uid="uid://counistl281j2" path="res://assets/images/ui/send2.svg" id="77_aujhx"]
 [ext_resource type="Texture2D" uid="uid://cgcpygii1l82g" path="res://assets/images/ui/fight.png" id="79_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://c0byjvygn0ygi" path="res://assets/images/ui/luc.png" id="81_d5jaa"]
 [ext_resource type="Texture2D" uid="uid://datjv8o8jt88" path="res://assets/images/ui/rankings2.png" id="81_qj5kr"]
@@ -78,7 +80,8 @@
 [ext_resource type="Texture2D" uid="uid://clbbo2ighhvmg" path="res://assets/images/ui/merchant.png" id="83_lrctp"]
 [ext_resource type="Texture2D" uid="uid://d0ttyj4mqb64m" path="res://assets/images/ui/fighters.png" id="84_e6ols"]
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
-[ext_resource type="Texture2D" uid="uid://cfgx36yfxv1qf" path="res://assets/images/ui/send.png" id="87_send"]
+[ext_resource type="Shader" uid="uid://cclavbbw3hb88" path="res://assets/shaders/blur_background.gdshader" id="88_blur_shader"]
+[ext_resource type="Texture2D" uid="uid://b1irk00m26i55" path="res://assets/images/ui/next.svg" id="90_next"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -161,6 +164,13 @@ script = ExtResource("68_2cns2")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_disabled"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_chat_blur"]
+shader = ExtResource("88_blur_shader")
+shader_parameter/blur_amount = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_overlay_bg"]
+bg_color = Color(0.05, 0.05, 0.05, 0.55)
+
 [sub_resource type="Resource" id="Resource_umggo"]
 script = ExtResource("68_2cns2")
 
@@ -177,9 +187,6 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_overlay_bg"]
-bg_color = Color(0.05, 0.05, 0.05, 0.75)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_tab_pressed"]
 content_margin_left = 8.0
@@ -202,6 +209,38 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_input_normal"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.12, 0.12, 0.12, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.3, 0.3, 0.5)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat_input_focus"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.15, 0.15, 0.15, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9, 0.7, 0.4, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="Game" type="Control" unique_id=607242183]
 layout_mode = 3
@@ -2147,20 +2186,20 @@ text = "0 - 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PrevButton" type="Button" parent="Portrait/GameScene/Arena" unique_id=2085741829]
+[node name="PrevButton" type="TextureButton" parent="Portrait/GameScene/Arena" unique_id=2085741829]
+modulate = Color(1, 1, 1, 0.8)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
 offset_top = -70.0
-offset_right = 120.0
+offset_right = 70.0
 offset_bottom = -20.0
 grow_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-text = "< PREV"
+texture_normal = ExtResource("37_qj5kr")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="FightButton" type="Button" parent="Portrait/GameScene/Arena" unique_id=404987006]
 layout_mode = 1
@@ -2180,23 +2219,23 @@ theme_override_font_sizes/font_size = 18
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "FIGHT!"
 
-[node name="NextButton" type="Button" parent="Portrait/GameScene/Arena" unique_id=878886731]
+[node name="NextButton" type="TextureButton" parent="Portrait/GameScene/Arena" unique_id=878886731]
+modulate = Color(1, 1, 1, 0.8)
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -120.0
+offset_left = -70.0
 offset_top = -70.0
 offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-text = "NEXT >"
+texture_normal = ExtResource("90_next")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="Combat" type="TextureRect" parent="Portrait/GameScene" unique_id=668182386]
 visible = false
@@ -6583,6 +6622,15 @@ toggle_button = NodePath("ChatPanel/BottomBar/ToggleButton")
 chat_input = NodePath("ChatPanel/BottomBar/InputWrapper/ChatInput")
 send_button = NodePath("ChatPanel/BottomBar/InputWrapper/SendButton")
 
+[node name="BlurRect" type="ColorRect" parent="Portrait/GameScene/ChatOverlay" unique_id=2123570411]
+material = SubResource("ShaderMaterial_chat_blur")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="ChatPanel" type="Panel" parent="Portrait/GameScene/ChatOverlay" unique_id=1259403415]
 layout_mode = 1
 anchors_preset = 15
@@ -6600,7 +6648,7 @@ anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 5.0
 offset_right = -10.0
-offset_bottom = -55.0
+offset_bottom = -90.0
 grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
@@ -6615,40 +6663,23 @@ metadata/_custom_type_script = "uid://bgqglerkcylxx"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="BottomBar" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel" unique_id=572539083]
+[node name="BottomBar" type="VBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel" unique_id=572539083]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -48.0
+offset_top = -84.0
 offset_right = -10.0
 offset_bottom = -6.0
 grow_horizontal = 2
-theme_override_constants/separation = 6
-
-[node name="InputWrapper" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar" unique_id=2065293907]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ChatInput" type="LineEdit" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar/InputWrapper" unique_id=1909902081]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Type your message..."
-
-[node name="SendButton" type="TextureButton" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar/InputWrapper" unique_id=1749162426]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-modulate = Color(1, 1, 1, 1)
-self_modulate = Color(1, 1, 1, 1)
-texture_normal = ExtResource("87_send")
-ignore_texture_size = true
-stretch_mode = 0
+theme_override_constants/separation = 8
 
 [node name="ToggleButton" type="Button" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar" unique_id=1582031165]
-custom_minimum_size = Vector2(60, 0)
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
+size_flags_horizontal = 10
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
@@ -6657,6 +6688,27 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_chat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_chat_tab_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_chat_tab_hover")
 text = "Global"
+
+[node name="InputWrapper" type="HBoxContainer" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar" unique_id=2065293907]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ChatInput" type="LineEdit" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar/InputWrapper" unique_id=1909902081]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_chat_input_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_chat_input_focus")
+placeholder_text = "Type your message..."
+
+[node name="SendButton" type="TextureButton" parent="Portrait/GameScene/ChatOverlay/ChatPanel/BottomBar/InputWrapper" unique_id=1749162426]
+modulate = Color(0.9, 0.9, 0.9, 0.8)
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_vertical = 4
+texture_normal = ExtResource("77_aujhx")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="BottomUI" type="Control" parent="Portrait" unique_id=1346257449]
 layout_mode = 1
