@@ -289,15 +289,17 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	if not combat:
 		return
 	
-	# Determine which health bar to affect based on character_id
-	var health_bar = null
-	if action.character_id == combat.player_id:
-		health_bar = player_health_bar
-	else:
-		health_bar = enemy_health_bar
-	
-	# Apply the effect - damage is dealt TO the opponent of whoever is acting
-	# So if player attacks, enemy takes damage
+	# Bleed tick (no trigger_type) = self-damage
+	if action.action == "bleed" and action.trigger_type == "":
+		if action.character_id == combat.player_id:
+			tracked_player_hp = max(0, tracked_player_hp - action.factor)
+			animate_health_decrease(player_health_bar, action.factor)
+		else:
+			tracked_enemy_hp = max(0, tracked_enemy_hp - action.factor)
+			animate_health_decrease(enemy_health_bar, action.factor)
+		return
+
+	# Damage dealt to opponent
 	if is_damage_action(action.action):
 		if action.character_id == combat.player_id:
 			tracked_enemy_hp = max(0, tracked_enemy_hp - action.factor)
@@ -308,11 +310,10 @@ func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	elif action.action == "heal" and action.factor > 0:
 		if action.character_id == combat.player_id:
 			tracked_player_hp = min(int(player_health_bar.max_value), tracked_player_hp + action.factor)
+			animate_health_increase(player_health_bar, action.factor)
 		else:
 			tracked_enemy_hp = min(int(enemy_health_bar.max_value), tracked_enemy_hp + action.factor)
-		animate_health_increase(health_bar, action.factor)
-
-
+			animate_health_increase(enemy_health_bar, action.factor)
 
 func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	var text = ""
@@ -320,73 +321,49 @@ func format_combat_entry(entry: GameInfo.CombatLogEntry) -> String:
 	if not combat:
 		return ""
 	
-	# Get the actor name based on character_id
 	var actor_name = ""
 	if entry.character_id == combat.player_id:
 		actor_name = combat.player_name
 	else:
 		actor_name = combat.enemy_name
-	
+
+	var opponent_name = ""
+	if entry.character_id == combat.player_id:
+		opponent_name = combat.enemy_name
+	else:
+		opponent_name = combat.player_name
+
 	match entry.action:
-		"attacks":
-			if entry.factor > 0:
-				text += actor_name + " attacks for " + str(entry.factor) + " damage!"
-			else:
-				text += actor_name + " attacks!"
 		"attack":
-			text += actor_name + " attacks!"
+			text = actor_name + " attacks for " + str(entry.factor) + " damage!"
+		"crit":
+			text = actor_name + " crits for " + str(entry.factor) + " damage!"
 		"dodge":
-			text += actor_name + " dodges!"
-		"hit":
-			if entry.factor > 0:
-				text += actor_name + " takes " + str(entry.factor) + " damage!"
-			else:
-				text += actor_name + " is hit!"
-		"miss":
-			text += actor_name + " misses!"
-		"burn damage":
-			if entry.factor > 0:
-				text += actor_name + " suffers " + str(entry.factor) + " burn damage!"
-			else:
-				text += actor_name + " suffers burn damage!"
-		"fire damage":
-			if entry.factor > 0:
-				text += actor_name + " takes " + str(entry.factor) + " fire damage!"
-			else:
-				text += actor_name + " takes fire damage!"
-		"poison damage":
-			if entry.factor > 0:
-				text += actor_name + " takes " + str(entry.factor) + " poison damage!"
-			else:
-				text += actor_name + " takes poison damage!"
+			text = opponent_name + " dodges!"
+		"damage":
+			text = actor_name + " deals " + str(entry.factor) + " damage!"
 		"heal":
 			if entry.factor > 0:
-				text += actor_name + " heals for " + str(entry.factor) + " HP!"
+				text = actor_name + " heals for " + str(entry.factor) + " HP!"
 			else:
-				text += actor_name + " heals!"
-		"cast spell":
-			text += actor_name + " casts a spell!"
-		"shield":
-			text += actor_name + " raises a shield!"
-		"rage":
-			text += actor_name + " enters a rage!"
-		"fire breath":
-			if entry.factor > 0:
-				text += actor_name + " breathes fire for " + str(entry.factor) + " damage!"
+				text = actor_name + " heals!"
+		"stun":
+			text = actor_name + " stuns " + opponent_name + "!"
+		"stunned":
+			text = actor_name + " is stunned!"
+		"bleed":
+			if entry.trigger_type == "":
+				text = actor_name + " bleeds for " + str(entry.factor) + " damage!"
 			else:
-				text += actor_name + " breathes fire!"
-		"intimidate":
-			text += actor_name + " intimidates!"
-		"claw strike":
-			if entry.factor > 0:
-				text += actor_name + " strikes with claws for " + str(entry.factor) + " damage!"
-			else:
-				text += actor_name + " strikes with claws!"
+				text = actor_name + " applies " + str(entry.factor) + " bleed!"
+		"counterattack":
+			text = actor_name + " counterattacks for " + str(entry.factor) + " damage!"
+		"buff":
+			text = actor_name + " gains a buff!"
+		"buff_expire":
+			text = actor_name + "'s buff expires."
 		_:
-			text += actor_name + " " + entry.action
-			if entry.factor > 0:
-				text += " (" + str(entry.factor) + ")"
-	
+			text = actor_name + " " + entry.action
 	return text
 
 func animate_health_decrease(health_bar: TextureProgressBar, damage: int):
@@ -416,7 +393,7 @@ func animate_health_increase(health_bar: TextureProgressBar, heal_amount: int):
 		update_health_label(health_label, new_health)
 
 func is_damage_action(action: String) -> bool:
-	return action in ["attacks", "hit", "burn damage", "fire damage", "poison damage", "damage", "crit hit"]
+	return action in ["attack", "crit", "counterattack", "damage"]
 
 func update_health_label(label: Label, current: float):
 	"""Update health label to show current health value"""
@@ -506,7 +483,17 @@ func _skip_to_end():
 			# Apply health changes instantly (no animation)
 			var combat = GameInfo.current_combat_log
 			if combat:
-				if entry.character_id == combat.player_id:
+				# Bleed tick (self-damage)
+				if entry.action == "bleed" and entry.trigger_type == "":
+					if entry.character_id == combat.player_id:
+						tracked_player_hp = max(0, tracked_player_hp - entry.factor)
+						player_health_bar.value = tracked_player_hp
+						update_health_label(player_health_label, tracked_player_hp)
+					else:
+						tracked_enemy_hp = max(0, tracked_enemy_hp - entry.factor)
+						enemy_health_bar.value = tracked_enemy_hp
+						update_health_label(enemy_health_label, tracked_enemy_hp)
+				elif entry.character_id == combat.player_id:
 					if is_damage_action(entry.action):
 						tracked_enemy_hp = max(0, tracked_enemy_hp - entry.factor)
 						enemy_health_bar.value = tracked_enemy_hp

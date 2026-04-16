@@ -65,6 +65,9 @@ var current_method: String = "email"
 var is_register_mode: bool = false
 var indicator_tween: Tween
 var is_logging_in: bool = false  # Prevent double-clicks during login
+var _dot_timer: Timer
+var _dot_count: int = 0
+var _dot_base_text: String = ""
 
 func _ready():
 	# Check if we already have login data (returning from game)
@@ -286,24 +289,16 @@ func _on_login():
 	is_logging_in = true
 	if email_login_button:
 		email_login_button.disabled = true
-		email_login_button.text = "Logging in..."
+	_start_dot_animation("Logging in")
 	
 	# Send login request to server
 	Http.login(email, password)
 
 func _on_login_completed(success: bool, data: Dictionary, error: String):
 	"""Handle login response from server"""
-	is_logging_in = false
-	
-	# Re-enable button
-	if email_login_button:
-		email_login_button.disabled = false
-		email_login_button.text = "Login"
-	
 	if success:
 		# Store lobby data in GameInfo
 		GameInfo.lobby_data = data
-		print("Login successful! Lobby data loaded.")
 		
 		# Save or clear credentials based on "stay logged in" checkbox
 		if stay_logged_in_checkbox and stay_logged_in_checkbox.button_pressed:
@@ -311,10 +306,19 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 		else:
 			_clear_credentials()
 		
-		# Switch to lobby panel and initialize it with server data
+		# Keep button disabled, switch animation to "Loading"
+		_start_dot_animation("Loading")
+		
+		# Initialize lobby, wait until ready, then switch
 		_show_lobby_after_init()
 	else:
-		# Show error message
+		# Stop animation and re-enable button
+		_stop_dot_animation()
+		is_logging_in = false
+		if email_login_button:
+			email_login_button.disabled = false
+			email_login_button.text = "Login"
+		
 		var msg = error if error != "" else "Email or password is incorrect"
 		_show_error(msg)
 
@@ -392,17 +396,54 @@ func _show_error(message: String):
 		error_label.visible = true
 
 func _show_lobby_after_init():
-	"""Initialize lobby while hidden, then show to avoid flicker."""
+	"""Keep login visible until lobby is fully initialized, then switch."""
+	if not lobby_panel:
+		_stop_dot_animation()
+		is_logging_in = false
+		if email_login_button:
+			email_login_button.disabled = false
+			email_login_button.text = "Login"
+		return
+	
+	lobby_panel.visible = false
+	lobby_panel.initialize_lobby()
+	await lobby_panel.lobby_ready
+	
+	# Lobby is ready — switch panels
+	_stop_dot_animation()
 	visible = false
-	if lobby_panel:
-		lobby_panel.visible = false
-		lobby_panel.initialize_lobby()
-		lobby_panel.call_deferred("show")
+	lobby_panel.visible = true
+	
+	# Reset login button for potential future use
+	is_logging_in = false
+	if email_login_button:
+		email_login_button.disabled = false
+		email_login_button.text = "Login"
 
 func _hide_error():
 	"""Hide error message"""
 	if error_label:
 		error_label.visible = false
+
+func _start_dot_animation(base_text: String):
+	_dot_base_text = base_text
+	_dot_count = 0
+	if not _dot_timer:
+		_dot_timer = Timer.new()
+		_dot_timer.wait_time = 0.4
+		_dot_timer.timeout.connect(_on_dot_tick)
+		add_child(_dot_timer)
+	_dot_timer.start()
+	_on_dot_tick()
+
+func _on_dot_tick():
+	_dot_count = (_dot_count % 3) + 1
+	if email_login_button:
+		email_login_button.text = _dot_base_text + ".".repeat(_dot_count)
+
+func _stop_dot_animation():
+	if _dot_timer:
+		_dot_timer.stop()
 
 func _on_login_or_register():
 	"""Handle login or register for non-email methods (same flow)"""

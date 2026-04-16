@@ -367,19 +367,27 @@ class CombatLogEntry:
 	extends RefCounted
 	
 	var turn: int = 0
-	var character_id: int = 0  # character_id from server
+	var character_id: int = 0
 	var action: String = ""
-	var factor: int = 0  # Damage/heal amount
-	
+	var factor: int = 0
+	var effect_id: int = 0
+	var trigger_type: String = ""
+	var duration: int = 0
+	var buff_type: String = ""
+
 	func _init(data: Dictionary = {}):
-		# Simple direct assignment
-		for key in data:
-			if key in self:
-				set(key, data[key])
+		turn = int(data.get("turn", 0))
+		character_id = int(data.get("character_id", 0))
+		action = str(data.get("action", ""))
+		factor = int(data.get("factor", 0))
+		effect_id = int(data.get("effect_id", 0))
+		trigger_type = str(data.get("trigger_type", ""))
+		duration = int(data.get("duration", 0))
+		buff_type = str(data.get("buff_type", ""))
 
 class CombatResponse:
 	extends RefCounted
-	
+
 	# Player info (from header.player)
 	var player_id: int = 0
 	var player_name: String = ""
