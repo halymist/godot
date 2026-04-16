@@ -33,15 +33,18 @@ func setup(character: Dictionary, server_name: String = "", server_created_at: i
 	
 	# Setup avatar with character's cosmetic IDs
 	if avatar and character.has("avatar"):
-		var avatar_data = character.get("avatar", [1, 10, 20, 30, 40])  # [face, hair, eyes, nose, mouth]
-		if avatar_data.size() >= 5:
-			avatar.refresh_avatar(
-				avatar_data[0],  # face
-				avatar_data[1],  # hair
-				avatar_data[2],  # eyes
-				avatar_data[3],  # nose
-				avatar_data[4]   # mouth
-			)
+		var avatar_data = character.get("avatar", [40, 48, 33, 88, 80, 0, 0, 0])
+		var ids = {
+			"face": avatar_data[0] if avatar_data.size() > 0 else 40,
+			"hair": avatar_data[1] if avatar_data.size() > 1 else 48,
+			"eyes": avatar_data[2] if avatar_data.size() > 2 else 33,
+			"nose": avatar_data[3] if avatar_data.size() > 3 else 88,
+			"mouth": avatar_data[4] if avatar_data.size() > 4 else 80,
+			"brows": avatar_data[5] if avatar_data.size() > 5 else 0,
+			"ears": avatar_data[6] if avatar_data.size() > 6 else 0,
+			"special": avatar_data[7] if avatar_data.size() > 7 else 0
+		}
+		avatar.set_avatar_ids(ids)
 
 func _calculate_server_age_days(server_created_at: int) -> int:
 	"""Calculate number of days since server started from unix timestamp"""

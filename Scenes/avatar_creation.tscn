@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://dawdkje5hgcrr"]
+[gd_scene load_steps=6 format=3 uid="uid://dawdkje5hgcrr"]
 
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="1_d62af"]
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="1_vmn58"]
-[ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="2_vmn58"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="3_085b2"]
 [ext_resource type="PackedScene" uid="uid://q4xv2fnly1a0" path="res://Scenes/avatar.tscn" id="4_crdas"]
 
@@ -18,7 +17,7 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="Avatar" type="Panel" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button", "back_button")]
+[node name="Avatar" type="Panel" node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "brows_button", "ears_button", "special_button", "change_button", "create_button", "back_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -26,7 +25,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_vmn58")
 script = ExtResource("1_d62af")
-cosmetics_database = ExtResource("2_vmn58")
 avatar_instance = NodePath("PreviewPanel/AvatarPreview/AvatarInstance")
 selection_grid = NodePath("SelectionPanel/SelectionContainer/SelectionGrid")
 face_button = NodePath("CategoryButtons/FaceButton")
@@ -34,6 +32,9 @@ hair_button = NodePath("CategoryButtons/HairButton")
 eyes_button = NodePath("CategoryButtons/EyesButton")
 nose_button = NodePath("CategoryButtons/NoseButton")
 mouth_button = NodePath("CategoryButtons/MouthButton")
+brows_button = NodePath("CategoryButtons/BrowsButton")
+ears_button = NodePath("CategoryButtons/EarsButton")
+special_button = NodePath("CategoryButtons/SpecialButton")
 change_button = NodePath("ButtonsContainer/ChangeButton")
 create_button = NodePath("ButtonsContainer/CreateButton")
 back_button = NodePath("ButtonsContainer/BackButton")
@@ -93,6 +94,18 @@ text = "Nose"
 [node name="MouthButton" type="Button" parent="CategoryButtons"]
 layout_mode = 2
 text = "Mouth"
+
+[node name="BrowsButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Brows"
+
+[node name="EarsButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Ears"
+
+[node name="SpecialButton" type="Button" parent="CategoryButtons"]
+layout_mode = 2
+text = "Special"
 
 [node name="SelectionPanel" type="Panel" parent="."]
 layout_mode = 1

@@ -688,16 +688,9 @@ func refresh_perks():
 
 func refresh_avatars():
 	"""Update all avatar displays with current player data"""
-	print("UIManager.refresh_avatars avatars count: ", avatars.size())
-
 	for avatar in avatars:
-		avatar.refresh_avatar(
-			GameInfo.current_player.avatar_face,
-			GameInfo.current_player.avatar_hair,
-			GameInfo.current_player.avatar_eyes,
-			GameInfo.current_player.avatar_nose,
-			GameInfo.current_player.avatar_mouth
-		)
+		if avatar and avatar.has_method("set_avatar_from_player"):
+			avatar.set_avatar_from_player(GameInfo.current_player)
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot changes by calling their update methods directly"""

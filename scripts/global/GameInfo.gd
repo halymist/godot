@@ -63,9 +63,7 @@ var current_player: GameCurrentPlayer:
 var databases_loaded: bool = false
 
 func _ready():
-	# Load cosmetics immediately as it's needed for login/character creation
-	cosmetics_db = load("res://data/cosmetics.tres")
-	print("GameInfo initialized (cosmetics loaded, other databases not loaded yet)")
+	print("GameInfo initialized (databases not loaded yet)")
 
 func load_databases():
 	"""Call this from lobby scene to load all game databases"""
@@ -83,8 +81,7 @@ func load_databases():
 	settlements_db = DataManager.get_settlements_database()
 	talents_db = DataManager.get_talents_database()
 	quests_db = DataManager.get_quests_database()
-	
-	# cosmetics_db already loaded in _ready()
+	cosmetics_db = DataManager.get_cosmetics_database()
 	
 	databases_loaded = true
 	print("Databases loaded")
@@ -462,11 +459,14 @@ class GamePlayer:
 	var armor: int = 0
 	var damage_min: int = 0
 	var damage_max: int = 0
-	var avatar_face: int = 1
-	var avatar_hair: int = 10
-	var avatar_eyes: int = 20
-	var avatar_nose: int = 30
-	var avatar_mouth: int = 40
+	var avatar_face: int = 40
+	var avatar_hair: int = 48
+	var avatar_eyes: int = 33
+	var avatar_nose: int = 88
+	var avatar_mouth: int = 80
+	var avatar_brows: int = 0
+	var avatar_ears: int = 0
+	var avatar_special: int = 0
 	var blessing: int = 0  # Active blessing effect ID (0 = no blessing)
 	var potion: int = 0  # Equipped potion item ID (0 = no potion)
 	var potion_day: int = 0  # Server day when potion effect expires (0 = no expiration tracked)
@@ -502,13 +502,17 @@ class GamePlayer:
 			elif key in self and key not in ["avatar", "stats", "bag_slots", "perks", "talents"]:
 				set(key, data[key])
 		
-		# Handle avatar array [face, hair, eyes, nose, mouth]
+		# Handle avatar array [face, hair, eyes, nose, mouth, brows, ears, special]
 		if data.has("avatar") and data.avatar.size() >= 5:
 			avatar_face = data.avatar[0]
 			avatar_hair = data.avatar[1]
 			avatar_eyes = data.avatar[2]
 			avatar_nose = data.avatar[3]
 			avatar_mouth = data.avatar[4]
+			if data.avatar.size() >= 8:
+				avatar_brows = data.avatar[5]
+				avatar_ears = data.avatar[6]
+				avatar_special = data.avatar[7]
 		
 		# Handle stats array [strength, stamina, agility, luck, armor, damage_min, damage_max]
 		if data.has("stats") and data.stats.size() >= 5:
@@ -900,15 +904,18 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 		client_data["location"] = server_data["settlement_id"]
 		client_data.erase("settlement_id")
 	
-	# Handle avatar: server sends object {face, hair, eyes, nose, mouth}, client expects array
+	# Handle avatar: server sends object {face, hair, eyes, nose, mouth, brows, ears, special}, client expects array
 	if server_data.has("avatar") and server_data.avatar is Dictionary:
 		var avatar_obj = server_data.avatar
 		client_data["avatar"] = [
-			avatar_obj.get("face", 1),
-			avatar_obj.get("hair", 10),
-			avatar_obj.get("eyes", 20),
-			avatar_obj.get("nose", 30),
-			avatar_obj.get("mouth", 40)
+			avatar_obj.get("face", 40),
+			avatar_obj.get("hair", 48),
+			avatar_obj.get("eyes", 33),
+			avatar_obj.get("nose", 88),
+			avatar_obj.get("mouth", 80),
+			avatar_obj.get("brows", 0),
+			avatar_obj.get("ears", 0),
+			avatar_obj.get("special", 0)
 		]
 	
 	# Handle stats: server sends object, client expects array
@@ -1099,7 +1106,7 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 				"vip": ranking_entry.get("vip", false),
 				"rank": ranking_entry.get("rank", 0),  # Player rank from server
 				"profession": 0,
-				"avatar": [1, 10, 20, 30, 40],  # Default avatar
+				"avatar": [40, 48, 33, 88, 80, 0, 0, 0],  # Default avatar
 				"stats": [10, 10, 10, 10, 5, 1, 3],  # Default stats
 				"blessing": 0,
 				"potion": 0,
@@ -1131,13 +1138,16 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 				"faction": arena_entry.get("faction", 1),
 				"honor": arena_entry.get("honnor", 0),
 				"vip": arena_entry.get("vip", false),
-				# Convert avatar object to array [face, hair, eyes, nose, mouth]
+				# Convert avatar object to array [face, hair, eyes, nose, mouth, brows, ears, special]
 				"avatar": [
-					avatar_obj.get("face", 1),
-					avatar_obj.get("hair", 10),
-					avatar_obj.get("eyes", 20),
-					avatar_obj.get("nose", 30),
-					avatar_obj.get("mouth", 40)
+					avatar_obj.get("face", 40),
+					avatar_obj.get("hair", 48),
+					avatar_obj.get("eyes", 33),
+					avatar_obj.get("nose", 88),
+					avatar_obj.get("mouth", 80),
+					avatar_obj.get("brows", 0),
+					avatar_obj.get("ears", 0),
+					avatar_obj.get("special", 0)
 				],
 				# Convert stats object to array [strength, stamina, agility, luck, armor, damage_min, damage_max]
 				# Note: Server uses min_damage/max_damage field names

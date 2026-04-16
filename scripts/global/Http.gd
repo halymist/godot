@@ -259,7 +259,7 @@ func create_character(character_name: String, faction: int, avatar: Array, vip: 
 	Create a new character on the selected server
 	character_name: Character name
 	faction: Faction/guild ID
-	avatar: Array of avatar customization IDs [face, hair, eyes, nose, mouth]
+	avatar: Array of avatar customization IDs [face, hair, eyes, nose, mouth, brows, ears, special]
 	vip: VIP status (optional, default false)
 	
 	Emits create_character_completed signal with:

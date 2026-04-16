@@ -1,13 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://q4xv2fnly1a0"]
+[gd_scene format=3 uid="uid://q4xv2fnly1a0"]
 
 [ext_resource type="Script" uid="uid://okly23jm43ke" path="res://scripts/Avatar.gd" id="1_avatar"]
-[ext_resource type="Texture2D" uid="uid://roqhm3xxklug" path="res://assets/images/ui/avatar/face/face.png" id="2_angbi"]
-[ext_resource type="Texture2D" uid="uid://c1x08lo7w3san" path="res://assets/images/ui/avatar/eyes/eyes1.png" id="3_15rpn"]
-[ext_resource type="Texture2D" uid="uid://dvfbtclkhdp0f" path="res://assets/images/ui/avatar/hair/hair1.png" id="4_v4mrq"]
-[ext_resource type="Texture2D" uid="uid://jn54cq4lxnvd" path="res://assets/images/ui/avatar/nose/nose1.png" id="6_w3a18"]
-[ext_resource type="Texture2D" uid="uid://bttcj28xn4yan" path="res://assets/images/ui/avatar/mouth/mouth1.png" id="7_wuf14"]
+[ext_resource type="Texture2D" uid="uid://htf4ymx1m36b" path="res://assets/images/fallback/avatar_face.png" id="2_face"]
+[ext_resource type="Texture2D" uid="uid://bj38f6668reuv" path="res://assets/images/fallback/avatar_ears.png" id="3_ears"]
+[ext_resource type="Texture2D" uid="uid://fnf872x35cw4" path="res://assets/images/fallback/avatar_nose.png" id="4_nose"]
+[ext_resource type="Texture2D" uid="uid://dci70rd1w8fcs" path="res://assets/images/fallback/avatar_mouth.png" id="5_mouth"]
+[ext_resource type="Texture2D" uid="uid://bm8e40mf3pq8m" path="res://assets/images/fallback/avatar_eyes.png" id="6_eyes"]
+[ext_resource type="Texture2D" uid="uid://cw10swo4sif46" path="res://assets/images/fallback/avatar_brows.png" id="7_brows"]
+[ext_resource type="Texture2D" uid="uid://dto7t44jpbcdj" path="res://assets/images/fallback/avatar_special.png" id="8_special"]
+[ext_resource type="Texture2D" uid="uid://ccpufdotp8tqp" path="res://assets/images/fallback/avatar_hair.png" id="9_hair"]
 
-[node name="Avatar" type="AspectRatioContainer" node_paths=PackedStringArray("face_rect", "hair_rect", "eyes_rect", "nose_rect", "mouth_rect")]
+[node name="Avatar" type="AspectRatioContainer" unique_id=1521275624 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,87 +18,151 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_avatar")
 face_rect = NodePath("AvatarControl/Face")
-hair_rect = NodePath("AvatarControl/Hair")
-eyes_rect = NodePath("AvatarControl/Eyes")
+ears_rect = NodePath("AvatarControl/Ears")
 nose_rect = NodePath("AvatarControl/Nose")
 mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
-[node name="AvatarControl" type="Control" parent="."]
+[node name="AvatarControl" type="Control" parent="." unique_id=1743607912]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Face" type="TextureRect" parent="AvatarControl"]
+[node name="Face" type="TextureRect" parent="AvatarControl" unique_id=1671842337]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 2
-texture = ExtResource("2_angbi")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Eyes" type="TextureRect" parent="AvatarControl"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.185
-anchor_right = 0.809
-anchor_bottom = 0.802
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("3_15rpn")
+texture = ExtResource("2_face")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Hair" type="TextureRect" parent="AvatarControl"]
+[node name="Ears" type="TextureRect" parent="AvatarControl" unique_id=644643724]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = -0.116
-anchor_top = -0.191
-anchor_right = 1.1
-anchor_bottom = 1.051
-offset_left = 0.200001
-offset_top = -0.0499954
-offset_bottom = 0.0499878
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 225.0
+offset_top = 156.5
+offset_right = -91.0
+offset_bottom = -114.5
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("4_v4mrq")
+texture = ExtResource("3_ears")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Nose" type="TextureRect" parent="AvatarControl"]
+[node name="Nose" type="TextureRect" parent="AvatarControl" unique_id=1315454234]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.238
-anchor_top = 0.371
-anchor_right = 0.758
-anchor_bottom = 0.633
-offset_left = -0.100006
-offset_top = 0.0499878
-offset_right = -0.100006
-offset_bottom = 0.149994
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 155.0
+offset_top = 190.5
+offset_right = -208.0
+offset_bottom = -184.5
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("6_w3a18")
+texture = ExtResource("4_nose")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Mouth" type="TextureRect" parent="AvatarControl"]
+[node name="Mouth" type="TextureRect" parent="AvatarControl" unique_id=1141768559]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.087
-anchor_top = 0.429
-anchor_right = 0.911
-anchor_bottom = 0.88
-offset_left = -0.150002
-offset_top = -0.0500031
-offset_right = 0.0499573
-offset_bottom = -3.05176e-05
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 157.0
+offset_top = 225.5
+offset_right = -199.0
+offset_bottom = -154.5
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("7_wuf14")
+texture = ExtResource("5_mouth")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Eyes" type="TextureRect" parent="AvatarControl" unique_id=975240340]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 119.0
+offset_top = 120.5
+offset_right = -153.0
+offset_bottom = -225.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_eyes")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Brows" type="TextureRect" parent="AvatarControl" unique_id=1595200421]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 126.0
+offset_top = 106.5
+offset_right = -163.0
+offset_bottom = -262.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_brows")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Beard" type="TextureRect" parent="AvatarControl" unique_id=1654452098]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Special" type="TextureRect" parent="AvatarControl" unique_id=1955010853]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 110.0
+offset_top = 181.5
+offset_right = -228.0
+offset_bottom = -189.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("8_special")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Hair" type="TextureRect" parent="AvatarControl" unique_id=1648289544]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 61.0
+offset_top = 39.5
+offset_right = -39.0
+offset_bottom = -83.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_hair")
 expand_mode = 1
 stretch_mode = 5

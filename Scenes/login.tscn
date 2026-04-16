@@ -11,7 +11,6 @@
 [ext_resource type="Script" uid="uid://cewyy6eq1q28e" path="res://scripts/CharacterInfoPanel.gd" id="7_d8m4u"]
 [ext_resource type="Texture2D" uid="uid://dufw5i7kjpl3g" path="res://assets/images/ui/apple2.png" id="7_hcdb4"]
 [ext_resource type="Script" uid="uid://d2vdtui85svb7" path="res://scripts/AvatarPanel.gd" id="8_5ysxf"]
-[ext_resource type="Resource" uid="uid://bxydlhvwotc0w" path="res://data/cosmetics.tres" id="9_a5vrk"]
 [ext_resource type="Texture2D" uid="uid://ctxmgh4aub666" path="res://assets/images/ui/characterSlot2.png" id="10_0apk8"]
 [ext_resource type="Texture2D" uid="uid://blqerkdt70mlo" path="res://assets/images/ui/google1.png" id="10_f13kh"]
 [ext_resource type="Texture2D" uid="uid://4sqwevn2os21" path="res://assets/images/ui/discord3.png" id="11_hcdb4"]
@@ -1472,7 +1471,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Next"
 
-[node name="Avatar" type="Panel" parent="ContentContainer" unique_id=645043450 node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "change_button", "create_button", "back_button")]
+[node name="Avatar" type="Panel" parent="ContentContainer" unique_id=645043450 node_paths=PackedStringArray("avatar_instance", "selection_grid", "face_button", "hair_button", "eyes_button", "nose_button", "mouth_button", "brows_button", "ears_button", "special_button", "change_button", "create_button", "back_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1483,7 +1482,6 @@ grow_vertical = 2
 theme = ExtResource("6_theme")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hcdb4")
 script = ExtResource("8_5ysxf")
-cosmetics_database = ExtResource("9_a5vrk")
 avatar_instance = NodePath("PreviewPanel/AvatarPreview/AvatarInstance")
 selection_grid = NodePath("SelectionPanel/SelectionContainer/SelectionGrid")
 face_button = NodePath("CategoryButtons/FaceButton")
@@ -1491,6 +1489,9 @@ hair_button = NodePath("CategoryButtons/HairButton")
 eyes_button = NodePath("CategoryButtons/EyesButton")
 nose_button = NodePath("CategoryButtons/NoseButton")
 mouth_button = NodePath("CategoryButtons/MouthButton")
+brows_button = NodePath("CategoryButtons/BrowsButton")
+ears_button = NodePath("CategoryButtons/EarsButton")
+special_button = NodePath("CategoryButtons/SpecialButton")
 change_button = NodePath("ButtonsContainer/ChangeButton")
 create_button = NodePath("ButtonsContainer/CreateButton")
 back_button = NodePath("ButtonsContainer/BackButton")
@@ -1550,6 +1551,18 @@ text = "Nose"
 [node name="MouthButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons" unique_id=6594084]
 layout_mode = 2
 text = "Mouth"
+
+[node name="BrowsButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Brows"
+
+[node name="EarsButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Ears"
+
+[node name="SpecialButton" type="Button" parent="ContentContainer/Avatar/CategoryButtons"]
+layout_mode = 2
+text = "Special"
 
 [node name="SelectionPanel" type="Panel" parent="ContentContainer/Avatar" unique_id=288676286]
 layout_mode = 1

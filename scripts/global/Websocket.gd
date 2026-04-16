@@ -489,7 +489,7 @@ func _handle_rankings_data(message: Dictionary):
 			"vip": ranking_entry.get("vip", false),
 			"rank": ranking_entry.get("rank", 0),
 			"profession": 0,
-			"avatar": [1, 10, 20, 30, 40],
+			"avatar": [40, 48, 33, 88, 80, 0, 0, 0],
 			"stats": [10, 10, 10, 10, 5, 1, 3],
 			"blessing": 0,
 			"potion": 0,

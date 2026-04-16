@@ -23,6 +23,7 @@ const EXPEDITIONS_JSON = "user://data/expeditions.json"
 const SETTLEMENTS_JSON = "user://data/settlements.json"
 const TALENTS_JSON = "user://data/talents.json"
 const QUESTS_JSON = "user://data/quests.json"
+const COSMETICS_JSON = "user://data/cosmetics.json"
 
 # Signals
 signal data_sync_completed(success: bool)
@@ -37,6 +38,7 @@ var expeditions_db: ExpeditionsDatabase = null
 var settlements_db: SettlementsDatabase = null
 var talents_db: TalentsDatabase = null
 var quests_db: QuestsDatabase = null
+var cosmetics_db: CosmeticDatabase = null
 
 # Local version tracking
 var local_versions: Dictionary = {
@@ -47,7 +49,8 @@ var local_versions: Dictionary = {
 	"expeditions": 0,
 	"settlements": 0,
 	"talents": 0,
-	"quests": 0
+	"quests": 0,
+	"cosmetics": 0
 }
 
 # Server versions (populated from login response)
@@ -55,6 +58,8 @@ var server_versions: Dictionary = {}
 
 # Track pending asset downloads
 var _pending_downloads: int = 0
+# Track already-queued downloads to avoid duplicates (folder/asset_id -> true)
+var _queued_downloads: Dictionary = {}
 
 func _ready():
 	print("[DataManager] Ready")
@@ -68,6 +73,7 @@ func _ensure_cache_dirs():
 	DirAccess.make_dir_recursive_absolute("user://images/enemies")
 	DirAccess.make_dir_recursive_absolute("user://images/quests")
 	DirAccess.make_dir_recursive_absolute("user://images/settlements")
+	DirAccess.make_dir_recursive_absolute("user://images/cosmetics")
 	DirAccess.make_dir_recursive_absolute("user://data")
 	print("[DataManager] Created cache directories")
 
@@ -120,7 +126,7 @@ func clear_all_cache():
 	reset_all_versions()
 	
 	# Delete image folders
-	for folder in ["items", "perks", "enemies", "expedition", "settlements"]:
+	for folder in ["items", "perks", "enemies", "expedition", "settlements", "cosmetics"]:
 		var folder_path = IMAGES_DIR + folder
 		var dir = DirAccess.open(folder_path)
 		if dir:
@@ -133,7 +139,7 @@ func clear_all_cache():
 			dir.list_dir_end()
 	
 	# Delete JSON data files
-	for json_path in [EFFECTS_JSON, ITEMS_JSON, PERKS_JSON, ENEMIES_JSON, EXPEDITIONS_JSON, SETTLEMENTS_JSON, TALENTS_JSON, QUESTS_JSON]:
+	for json_path in [EFFECTS_JSON, ITEMS_JSON, PERKS_JSON, ENEMIES_JSON, EXPEDITIONS_JSON, SETTLEMENTS_JSON, TALENTS_JSON, QUESTS_JSON, COSMETICS_JSON]:
 		if FileAccess.file_exists(json_path):
 			DirAccess.remove_absolute(json_path)
 	
@@ -146,6 +152,7 @@ func clear_all_cache():
 	settlements_db = null
 	talents_db = null
 	quests_db = null
+	cosmetics_db = null
 	
 	print("[DataManager] Cleared all cache")
 
@@ -175,6 +182,7 @@ func _get_server_key(data_type: String) -> String:
 func sync_data(server_data_versions: Dictionary):
 	"""Download all data types and assets, waits until complete"""
 	server_versions = server_data_versions
+	_queued_downloads.clear()
 	print("[DataManager] Server versions: ", server_versions)
 	print("[DataManager] Local versions: ", local_versions)
 	
@@ -187,6 +195,7 @@ func sync_data(server_data_versions: Dictionary):
 	await _sync_data_type("settlements", "/download-world")
 	await _sync_data_type("talents", "/download-talents")
 	await _sync_data_type("quests", "/download-quests")
+	await _sync_data_type("cosmetics", "/download-cosmetics")
 	
 	print("[DataManager] Data sync completed!")
 	
@@ -281,6 +290,8 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 		_download_quest_assets(items_data)  # Quests also use quests folder
 	elif data_type == "settlements":
 		_download_settlement_assets(items_data)
+	elif data_type == "cosmetics":
+		_download_cosmetic_assets(items_data)
 
 func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, deleted_ids: Array = []):
 	"""Merge new data with existing JSON and save"""
@@ -325,6 +336,7 @@ func _get_json_path(data_type: String) -> String:
 		"settlements": return SETTLEMENTS_JSON
 		"talents": return TALENTS_JSON
 		"quests": return QUESTS_JSON
+		"cosmetics": return COSMETICS_JSON
 		_: return ""
 
 func _get_id_field(data_type: String) -> String:
@@ -338,6 +350,7 @@ func _get_id_field(data_type: String) -> String:
 		"settlements": return "settlement_id"
 		"talents": return "talent_id"
 		"quests": return "quest_id"
+		"cosmetics": return "id"
 		_: return "id"
 
 func _load_json_file(path: String) -> Array:
@@ -384,6 +397,7 @@ func load_databases():
 	settlements_db = _load_settlements_database()
 	talents_db = _load_talents_database()
 	quests_db = _load_quests_database()
+	cosmetics_db = _load_cosmetics_database()
 	print("[DataManager] All databases loaded from JSON")
 	
 	# Verify assets exist on disk and re-download any missing ones
@@ -743,6 +757,30 @@ func _load_quests_database() -> QuestsDatabase:
 	print("[DataManager] Loaded %d quests" % db.quests.size())
 	return db
 
+func _load_cosmetics_database() -> CosmeticDatabase:
+	"""Create CosmeticDatabase from JSON"""
+	var db = CosmeticDatabase.new()
+	var data = _load_json_file(COSMETICS_JSON)
+	
+	for item in data:
+		var cosmetic = CosmeticResource.new()
+		cosmetic.id = int(item.get("id", 0))
+		cosmetic.cosmetic_name = str(item.get("name", ""))
+		cosmetic.category = str(item.get("type", ""))
+		cosmetic.cost = int(item.get("price", 0))
+		cosmetic.offset_x = float(item.get("offset_x", 0.0))
+		cosmetic.offset_y = float(item.get("offset_y", 0.0))
+		cosmetic.scale = float(item.get("scale", 100.0))
+		
+		# Load texture from cache (cosmetic ID is the asset ID)
+		if cosmetic.id > 0:
+			cosmetic.texture = load_asset_texture("cosmetics", cosmetic.id)
+		
+		db.cosmetics.append(cosmetic)
+	
+	print("[DataManager] Loaded %d cosmetics" % db.cosmetics.size())
+	return db
+
 func _map_item_type_to_enum(item_type_string: String) -> int:
 	"""Map item type string to ItemResource.ItemType enum"""
 	# ItemType enum: HEAD=0, CHEST=1, HANDS=2, FOOT=3, BELT=4, LEGS=5, RING=6, AMULET=7, WEAPON=8, GEM=9, POTION=10, ELIXIR=11, SCROLL=12, HAMMER=13, RATION=14, INGREDIENT=15
@@ -834,6 +872,14 @@ func _verify_and_repair_assets():
 				_download_asset("settlements", asset_id)
 				missing_count += 1
 	
+	# Cosmetics (cosmetic ID is the asset ID)
+	var cosmetics_data = _load_json_file(COSMETICS_JSON)
+	for item in cosmetics_data:
+		var cosmetic_id = int(item.get("id", 0))
+		if cosmetic_id > 0 and not has_asset("cosmetics", cosmetic_id):
+			_download_asset("cosmetics", cosmetic_id)
+			missing_count += 1
+	
 	if missing_count > 0:
 		print("[DataManager] Asset integrity check: %d missing assets queued for download" % missing_count)
 	else:
@@ -861,6 +907,13 @@ func _download_quest_assets(data: Array):
 			_downloaded_quest_assets[asset_id] = true
 			_download_asset("quests", asset_id)
 
+func _download_cosmetic_assets(data: Array):
+	"""Download cosmetic images (each cosmetic's ID is its asset ID)"""
+	for item in data:
+		var cosmetic_id = int(item.get("id", 0))
+		if cosmetic_id > 0:
+			_download_asset("cosmetics", cosmetic_id)
+
 func _download_settlement_assets(settlements_data: Array):
 	"""Download settlement assets"""
 	var downloaded_ids = {}
@@ -887,10 +940,26 @@ func _download_settlement_assets(settlements_data: Array):
 				downloaded_ids[asset_id] = true
 				_download_asset("settlements", asset_id)
 
+func _get_asset_extension(folder: String) -> String:
+	"""Get file extension for asset type"""
+	if folder == "cosmetics":
+		return ".png"
+	return ".webp"
+
 func _download_asset(folder: String, asset_id: int):
-	"""Download an asset"""
+	"""Download an asset (skips if already queued or on disk)"""
+	var key = "%s/%d" % [folder, asset_id]
+	if _queued_downloads.has(key):
+		return
+	_queued_downloads[key] = true
+	
+	# Skip if already on disk
+	if has_asset(folder, asset_id):
+		return
+	
+	var ext = _get_asset_extension(folder)
 	var local_path = get_asset_path(folder, asset_id)
-	var remote_url = "%s%s/%d.webp" % [ASSETS_BASE_URL, folder, asset_id]
+	var remote_url = "%s%s/%d%s" % [ASSETS_BASE_URL, folder, asset_id, ext]
 	
 	print("[DataManager] Downloading asset: %s" % remote_url)
 	
@@ -926,7 +995,8 @@ func _on_asset_downloaded(_result: int, response_code: int, _headers: PackedStri
 
 func get_asset_path(folder: String, asset_id: int) -> String:
 	"""Get the local path for an asset"""
-	return "%s%s/%d.webp" % [IMAGES_DIR, folder, asset_id]
+	var ext = _get_asset_extension(folder)
+	return "%s%s/%d%s" % [IMAGES_DIR, folder, asset_id, ext]
 
 func load_asset_texture(folder: String, asset_id: int) -> ImageTexture:
 	"""Load an asset texture from cache, returns null if not found"""
@@ -990,3 +1060,8 @@ func get_quests_database() -> QuestsDatabase:
 	if not quests_db:
 		quests_db = _load_quests_database()
 	return quests_db
+
+func get_cosmetics_database() -> CosmeticDatabase:
+	if not cosmetics_db:
+		cosmetics_db = _load_cosmetics_database()
+	return cosmetics_db

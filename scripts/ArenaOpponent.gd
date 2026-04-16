@@ -19,13 +19,7 @@ func set_opponent_data(opponent: GameInfo.GamePlayer):
 	_update_display()
 	
 	# Set avatar appearance
-	avatar_instance.refresh_avatar(
-		opponent.avatar_face,
-		opponent.avatar_hair,
-		opponent.avatar_eyes,
-		opponent.avatar_nose,
-		opponent.avatar_mouth
-	)
+	avatar_instance.set_avatar_from_player(opponent)
 
 func _update_display():
 	if not opponent_data:

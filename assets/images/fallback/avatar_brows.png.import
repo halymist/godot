@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvfbtclkhdp0f"
-path="res://.godot/imported/hair1.png-fb7589e563322596d1cb86fa86cbca49.ctex"
+uid="uid://cw10swo4sif46"
+path="res://.godot/imported/avatar_brows.png-5e22a9142468a98e5479cc0934f3c096.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/ui/avatar/hair/hair1.png"
-dest_files=["res://.godot/imported/hair1.png-fb7589e563322596d1cb86fa86cbca49.ctex"]
+source_file="res://assets/images/fallback/avatar_brows.png"
+dest_files=["res://.godot/imported/avatar_brows.png-5e22a9142468a98e5479cc0934f3c096.ctex"]
 
 [params]
 

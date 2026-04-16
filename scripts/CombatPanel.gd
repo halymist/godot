@@ -82,15 +82,19 @@ func prepare_combat():
 	# Set up player info
 	player_label.text = combat.player_name
 	
-	# Update player avatar cosmetics from combat data (server sends 4 elements)
-	if combat.player_avatar.size() >= 4:
-		player_avatar.refresh_avatar(
-			combat.player_avatar[0],
-			combat.player_avatar[1],
-			combat.player_avatar[2],
-			combat.player_avatar[3],
-			0  # Default mouth if not provided
-		)
+	# Update player avatar cosmetics from combat data
+	if combat.player_avatar.size() >= 5:
+		var ids = {
+			"face": combat.player_avatar[0],
+			"hair": combat.player_avatar[1],
+			"eyes": combat.player_avatar[2],
+			"nose": combat.player_avatar[3],
+			"mouth": combat.player_avatar[4],
+			"brows": combat.player_avatar[5] if combat.player_avatar.size() > 5 else 0,
+			"ears": combat.player_avatar[6] if combat.player_avatar.size() > 6 else 0,
+			"special": combat.player_avatar[7] if combat.player_avatar.size() > 7 else 0
+		}
+		player_avatar.set_avatar_ids(ids)
 	
 	# Check if enemy is NPC or player
 	if combat.is_enemy_npc():
@@ -113,17 +117,21 @@ func prepare_combat():
 		# Show avatar, hide texture
 		enemy_avatar.visible = true
 		enemy_texture.visible = false
-		# Use enemy avatar from combat data (server sends 4 elements)
-		if combat.enemy_avatar.size() >= 4:
-			enemy_avatar.refresh_avatar(
-				combat.enemy_avatar[0],
-				combat.enemy_avatar[1],
-				combat.enemy_avatar[2],
-				combat.enemy_avatar[3],
-				0  # Default mouth if not provided
-			)
+		# Use enemy avatar from combat data
+		if combat.enemy_avatar.size() >= 5:
+			var ids = {
+				"face": combat.enemy_avatar[0],
+				"hair": combat.enemy_avatar[1],
+				"eyes": combat.enemy_avatar[2],
+				"nose": combat.enemy_avatar[3],
+				"mouth": combat.enemy_avatar[4],
+				"brows": combat.enemy_avatar[5] if combat.enemy_avatar.size() > 5 else 0,
+				"ears": combat.enemy_avatar[6] if combat.enemy_avatar.size() > 6 else 0,
+				"special": combat.enemy_avatar[7] if combat.enemy_avatar.size() > 7 else 0
+			}
+			enemy_avatar.set_avatar_ids(ids)
 		else:
-			enemy_avatar.refresh_avatar(1, 1, 1, 1, 0)  # Fallback to defaults
+			enemy_avatar.set_avatar_ids({"face": 40, "hair": 48, "eyes": 33, "nose": 88, "mouth": 80})
 	
 	# Invalidate any stale coroutines from previous combat
 	combat_session_id += 1

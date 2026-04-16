@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://roqhm3xxklug"
-path="res://.godot/imported/face.png-675de5fd1fda721b8b3e6d7fc7009c9f.ctex"
+uid="uid://htf4ymx1m36b"
+path="res://.godot/imported/avatar_face.png-da5f58308bd0833aa8e96eda0a75f6e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/ui/avatar/face/face.png"
-dest_files=["res://.godot/imported/face.png-675de5fd1fda721b8b3e6d7fc7009c9f.ctex"]
+source_file="res://assets/images/fallback/avatar_face.png"
+dest_files=["res://.godot/imported/avatar_face.png-da5f58308bd0833aa8e96eda0a75f6e8.ctex"]
 
 [params]
 

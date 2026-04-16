@@ -109,8 +109,9 @@ func initialize_lobby():
 	
 	# Populate UI with lobby data
 	populate_account_info()
-	# Wait a frame for UI nodes to be ready before adding character cards
-	add_character_list()
+	# Hide character cards until data/cosmetics are fully initialized
+	if characters_container:
+		characters_container.visible = false
 	
 	# Only do these once (first time initialization)
 	if not initialized:
@@ -121,6 +122,14 @@ func initialize_lobby():
 		_load_game_scene_async()
 		# Initialize databases (download if needed, then load)
 		_initialize_databases()
+		return
+
+	# Re-entry path: if already initialized and DBs are ready, render immediately
+	if databases_loaded:
+		add_character_list()
+		_refresh_character_avatars()
+		if characters_container:
+			characters_container.visible = true
 
 func _initialize_databases():
 	"""Download data if needed, then initialize databases"""
@@ -130,6 +139,12 @@ func _initialize_databases():
 		print("[Lobby] No data_versions, loading databases immediately")
 		GameInfo.load_databases()
 		databases_loaded = true
+		add_character_list()
+		_refresh_character_avatars()
+		if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
+			avatar_creation_panel.on_databases_loaded()
+		if characters_container:
+			characters_container.visible = true
 		return
 	
 	# Check if any downloads are needed
@@ -146,6 +161,20 @@ func _initialize_databases():
 		print("[Lobby] All data up to date, loading databases...")
 		GameInfo.load_databases()
 		databases_loaded = true
+	
+	# Re-refresh character card avatars now that cosmetics_db is available
+	add_character_list()
+	_refresh_character_avatars()
+	if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
+		avatar_creation_panel.on_databases_loaded()
+	if characters_container:
+		characters_container.visible = true
+
+func _refresh_character_avatars():
+	"""Re-trigger avatar rendering on all character cards after cosmetics DB loads"""
+	for child in characters_container.get_children():
+		if child != create_new_button and child.has_node("HBox/AvatarContainer/Avatar"):
+			child.get_node("HBox/AvatarContainer/Avatar").refresh_avatar()
 
 func _load_game_scene_async():
 	"""Load game scene in background"""
@@ -274,7 +303,9 @@ func add_character_list():
 	
 	var total_characters = 0
 	for server in server_list:
-		var characters = server.get("characters", [])
+		var characters = server.get("characters", null)
+		if characters == null or not (characters is Array):
+			characters = []
 		print("[Lobby] Server '", server.get("name", "?"), "' has ", characters.size(), " characters")
 		for character in characters:
 			total_characters += 1
@@ -373,6 +404,9 @@ func _on_character_info_next():
 	"""User completed character info, show avatar creation"""
 	character_info_panel.visible = false
 	avatar_creation_panel.visible = true
+	# Refresh preview now that cosmetics DB is available
+	if avatar_creation_panel.has_method("_refresh_preview"):
+		avatar_creation_panel._refresh_preview()
 
 func _on_character_info_back():
 	"""Go back from character info to lobby"""
@@ -389,13 +423,16 @@ func _on_create_character_complete():
 	var character_data = character_info_panel.get_character_data()
 	var avatar_data = avatar_creation_panel.get_avatar_data()
 	
-	# Build avatar array [face, hair, eyes, nose, mouth]
+	# Build avatar array [face, hair, eyes, nose, mouth, brows, ears, special]
 	var avatar_array = [
 		avatar_data["face"],
 		avatar_data["hair"],
 		avatar_data["eyes"],
 		avatar_data["nose"],
-		avatar_data["mouth"]
+		avatar_data["mouth"],
+		avatar_data["brows"],
+		avatar_data["ears"],
+		avatar_data["special"]
 	]
 	
 	# Send character creation request to server
@@ -428,7 +465,10 @@ func _on_character_created(success: bool, character_id: int, error: String):
 		avatar_data["hair"],
 		avatar_data["eyes"],
 		avatar_data["nose"],
-		avatar_data["mouth"]
+		avatar_data["mouth"],
+		avatar_data["brows"],
+		avatar_data["ears"],
+		avatar_data["special"]
 	]
 	
 	# Create character object
@@ -453,7 +493,9 @@ func _on_character_created(success: bool, character_id: int, error: String):
 	
 	# Add character to newest server
 	if newest_server:
-		var characters = newest_server.get("characters", [])
+		var characters = newest_server.get("characters", null)
+		if characters == null or not (characters is Array):
+			characters = []
 		characters.append(character_obj)
 		newest_server["characters"] = characters
 		print("[Lobby] Added character to server: ", newest_server.get("name", "Unknown"))

@@ -1,74 +1,114 @@
 extends AspectRatioContainer
 
+# Layer order matches cosmetics designer (z-order: first = back, last = front)
+const LAYER_ORDER = ["face", "ears", "nose", "mouth", "eyes", "brows", "beard", "special", "hair"]
+
+# Static TextureRect nodes in the scene (set via @export so visible in editor with fallback textures)
 @export var face_rect: TextureRect
-@export var hair_rect: TextureRect
-@export var eyes_rect: TextureRect
+@export var ears_rect: TextureRect
 @export var nose_rect: TextureRect
 @export var mouth_rect: TextureRect
+@export var eyes_rect: TextureRect
+@export var brows_rect: TextureRect
+@export var beard_rect: TextureRect
+@export var special_rect: TextureRect
+@export var hair_rect: TextureRect
+
+# Cosmetic IDs keyed by type
+var equipped: Dictionary = {}  # type -> cosmetic_id
+
+func _get_rect(layer_type: String) -> TextureRect:
+	match layer_type:
+		"face": return face_rect
+		"ears": return ears_rect
+		"nose": return nose_rect
+		"mouth": return mouth_rect
+		"eyes": return eyes_rect
+		"brows": return brows_rect
+		"beard": return beard_rect
+		"special": return special_rect
+		"hair": return hair_rect
+		_: return null
 
 func _ready():
-	print("=== AVATAR _ready() CALLED ===")
-	print("Avatar: GameInfo.current_player exists: ", GameInfo.current_player != null)
-	
-	# Load from GameInfo if player data exists
-	if GameInfo.current_player:
-		print("Avatar: Loading from GameInfo")
-		refresh_avatar(
-			GameInfo.current_player.avatar_face,
-			GameInfo.current_player.avatar_hair,
-			GameInfo.current_player.avatar_eyes,
-			GameInfo.current_player.avatar_nose,
-			GameInfo.current_player.avatar_mouth
-		)
-	else:
-		# Fallback to default cosmetic IDs
-		print("Avatar: No player data, using defaults")
-		refresh_avatar(1, 10, 20, 30, 40)
+	if GameInfo.cosmetics_db and GameInfo.current_player:
+		set_avatar_from_player(GameInfo.current_player)
+	# Otherwise the fallback textures from the scene are already visible
 
-func refresh_avatar(face_id: int, hair_id: int, eyes_id: int, nose_id: int = 30, mouth_id: int = 40):
-	"""Load textures from cosmetics database using IDs"""
-	print("Avatar: Loading cosmetic IDs - Face: ", face_id, " Hair: ", hair_id, " Eyes: ", eyes_id, " Nose: ", nose_id, " Mouth: ", mouth_id)
+func set_avatar_from_player(player):
+	set_avatar_ids({
+		"face": player.avatar_face,
+		"hair": player.avatar_hair,
+		"eyes": player.avatar_eyes,
+		"nose": player.avatar_nose,
+		"mouth": player.avatar_mouth,
+		"brows": player.avatar_brows,
+		"ears": player.avatar_ears,
+		"special": player.avatar_special
+	})
+
+func set_avatar_ids(ids: Dictionary):
+	equipped = ids
+	refresh_avatar()
+
+func refresh_avatar(face_id: int = -1, hair_id: int = -1, eyes_id: int = -1, nose_id: int = -1, mouth_id: int = -1):
+	if face_id >= 0:
+		equipped["face"] = face_id
+	if hair_id >= 0:
+		equipped["hair"] = hair_id
+	if eyes_id >= 0:
+		equipped["eyes"] = eyes_id
+	if nose_id >= 0:
+		equipped["nose"] = nose_id
+	if mouth_id >= 0:
+		equipped["mouth"] = mouth_id
 	
+	# If cosmetics DB isn't loaded yet, keep fallback textures as-is
 	if not GameInfo.cosmetics_db:
-		print("Avatar ERROR: Cosmetics database not loaded!")
 		return
 	
-	# Load face
-	var face_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(face_id)
-	if face_cosmetic and face_cosmetic.texture:
-		face_rect.texture = face_cosmetic.texture
-		print("Avatar: Loaded face cosmetic ID ", face_id)
-	else:
-		print("Avatar: Failed to load face cosmetic ID ", face_id)
-	
-	# Load hair
-	var hair_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(hair_id)
-	if hair_cosmetic and hair_cosmetic.texture:
-		hair_rect.texture = hair_cosmetic.texture
-		print("Avatar: Loaded hair cosmetic ID ", hair_id)
-	else:
-		print("Avatar: Failed to load hair cosmetic ID ", hair_id)
-	
-	# Load eyes
-	var eyes_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(eyes_id)
-	if eyes_cosmetic and eyes_cosmetic.texture:
-		eyes_rect.texture = eyes_cosmetic.texture
-		print("Avatar: Loaded eyes cosmetic ID ", eyes_id)
-	else:
-		print("Avatar: Failed to load eyes cosmetic ID ", eyes_id)
-	
-	# Load nose
-	var nose_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(nose_id)
-	if nose_cosmetic and nose_cosmetic.texture:
-		nose_rect.texture = nose_cosmetic.texture
-		print("Avatar: Loaded nose cosmetic ID ", nose_id)
-	else:
-		print("Avatar: Failed to load nose cosmetic ID ", nose_id)
-	
-	# Load mouth
-	var mouth_cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(mouth_id)
-	if mouth_cosmetic and mouth_cosmetic.texture:
-		mouth_rect.texture = mouth_cosmetic.texture
-		print("Avatar: Loaded mouth cosmetic ID ", mouth_id)
-	else:
-		print("Avatar: Failed to load mouth cosmetic ID ", mouth_id)
+	for layer_type in LAYER_ORDER:
+		var rect = _get_rect(layer_type)
+		if not rect:
+			continue
+		
+		if not equipped.has(layer_type) or equipped[layer_type] <= 0:
+			# No cosmetic equipped for this layer — hide only if no fallback texture
+			if not rect.texture:
+				rect.visible = false
+			continue
+		
+		var cosmetic = GameInfo.cosmetics_db.get_cosmetic_by_id(equipped[layer_type])
+		if not cosmetic:
+			# ID doesn't exist in DB — keep whatever texture/fallback is there
+			continue
+		
+		# Update texture from cosmetic data (keep fallback if cosmetic texture is null)
+		if cosmetic.texture:
+			rect.texture = cosmetic.texture
+		rect.visible = true
+		
+		# Apply positioning from cosmetic data (face always fills full space)
+		if layer_type != "face":
+			var sc = cosmetic.scale / 100.0
+			var ox = cosmetic.offset_x / 100.0
+			var oy = cosmetic.offset_y / 100.0
+			
+			var half_w = sc / 2.0
+			var half_h = sc / 2.0
+			var cx = 0.5 + ox
+			var cy = 0.5 + oy
+			
+			rect.anchor_left = cx - half_w
+			rect.anchor_top = cy - half_h
+			rect.anchor_right = cx + half_w
+			rect.anchor_bottom = cy + half_h
+			# Clear pixel offsets so anchors alone control position
+			rect.offset_left = 0
+			rect.offset_top = 0
+			rect.offset_right = 0
+			rect.offset_bottom = 0
+			rect.offset_left = 0
+			rect.offset_top = 0
+			rect.offset_right = 0
+			rect.offset_bottom = 0

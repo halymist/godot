@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ho4facjk62r8" path="res://assets/images/ui/settings.png" id="5_settings"]
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="6_itemslot"]
 [ext_resource type="Texture2D" uid="uid://cjgyacwkb877" path="res://assets/images/ui/sunny.png" id="8_e6ols"]
+[ext_resource type="Script" uid="uid://okly23jm43ke" path="res://scripts/Avatar.gd" id="8_q8b24"]
 [ext_resource type="Texture2D" uid="uid://814oroxowurk" path="res://assets/images/ui/rainy.png" id="9_2cns2"]
 [ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="9_sword"]
 [ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="9_w4j8i"]
@@ -303,11 +304,28 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 
-[node name="Avatar" parent="Portrait/TopUI/Character" unique_id=2094168891 instance=ExtResource("22_avatar")]
+[node name="Avatar" type="AspectRatioContainer" parent="Portrait/TopUI/Character" unique_id=2094168891 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("8_q8b24")
+face_rect = NodePath("AvatarControl/Face")
+ears_rect = NodePath("AvatarControl/Ears")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="HealthBar" parent="Portrait/TopUI" unique_id=814523725 instance=ExtResource("22_healthbar")]
 custom_minimum_size = Vector2(100, 28)
@@ -1676,10 +1694,24 @@ offset_bottom = 238.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="AvatarInstance" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent/ImagePanel" unique_id=1305566195 instance=ExtResource("22_avatar")]
+[node name="AvatarInstance" type="AspectRatioContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent/ImagePanel" unique_id=1305566195 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_q8b24")
+face_rect = NodePath("AvatarControl/Face")
+ears_rect = NodePath("AvatarControl/Ears")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="StatsContainer" type="GridContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent" unique_id=502256608]
 layout_mode = 1
@@ -1851,10 +1883,24 @@ offset_bottom = 238.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="AvatarInstance" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent2/ImagePanel" unique_id=1451727030 instance=ExtResource("22_avatar")]
+[node name="AvatarInstance" type="AspectRatioContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent2/ImagePanel" unique_id=1451727030 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_q8b24")
+face_rect = NodePath("AvatarControl/Face")
+ears_rect = NodePath("AvatarControl/Ears")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="StatsContainer" type="GridContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent2" unique_id=1300577069]
 layout_mode = 1
@@ -2026,10 +2072,24 @@ offset_bottom = 238.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="AvatarInstance" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent3/ImagePanel" unique_id=1571622866 instance=ExtResource("22_avatar")]
+[node name="AvatarInstance" type="AspectRatioContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent3/ImagePanel" unique_id=1571622866 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_q8b24")
+face_rect = NodePath("AvatarControl/Face")
+ears_rect = NodePath("AvatarControl/Ears")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="StatsContainer" type="GridContainer" parent="Portrait/GameScene/Arena/CardContainer/ArenaOpponent3" unique_id=596535695]
 layout_mode = 1
@@ -2214,8 +2274,23 @@ offset_bottom = 130.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="PlayerAvatar" parent="Portrait/GameScene/Combat/PlayerContainer/PlayerIcon" unique_id=503488646 instance=ExtResource("22_avatar")]
+[node name="PlayerAvatar" type="AspectRatioContainer" parent="Portrait/GameScene/Combat/PlayerContainer/PlayerIcon" unique_id=503488646 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_q8b24")
+face_rect = NodePath("AvatarControl/Face")
+ears_rect = NodePath("AvatarControl/Ears")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="PlayerHealthBar" parent="Portrait/GameScene/Combat/PlayerContainer" unique_id=352633224 instance=ExtResource("22_healthbar")]
 layout_mode = 0
@@ -2249,8 +2324,23 @@ offset_bottom = 130.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="EnemyAvatar" parent="Portrait/GameScene/Combat/EnemyContainer/EnemyIcon" unique_id=895169604 instance=ExtResource("22_avatar")]
+[node name="EnemyAvatar" type="AspectRatioContainer" parent="Portrait/GameScene/Combat/EnemyContainer/EnemyIcon" unique_id=895169604 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_q8b24")
+face_rect = NodePath("AvatarControl/Face")
+ears_rect = NodePath("AvatarControl/Ears")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="EnemyTexture" type="TextureRect" parent="Portrait/GameScene/Combat/EnemyContainer/EnemyIcon" unique_id=1120258494]
 visible = false
@@ -2688,10 +2778,24 @@ offset_bottom = 100.0
 texture = ExtResource("54_b1mpw")
 expand_mode = 1
 
-[node name="Avatar" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/Character" unique_id=584301956 instance=ExtResource("22_avatar")]
+[node name="Avatar" type="AspectRatioContainer" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/Character" unique_id=584301956 node_paths=PackedStringArray("face_rect", "ears_rect", "nose_rect", "mouth_rect", "eyes_rect", "brows_rect", "beard_rect", "special_rect", "hair_rect") instance=ExtResource("22_avatar")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_q8b24")
+face_rect = NodePath("AvatarControl/Face")
+ears_rect = NodePath("AvatarControl/Ears")
+nose_rect = NodePath("AvatarControl/Nose")
+mouth_rect = NodePath("AvatarControl/Mouth")
+eyes_rect = NodePath("AvatarControl/Eyes")
+brows_rect = NodePath("AvatarControl/Brows")
+beard_rect = NodePath("AvatarControl/Beard")
+special_rect = NodePath("AvatarControl/Special")
+hair_rect = NodePath("AvatarControl/Hair")
 
 [node name="CharButton" type="Button" parent="Portrait/GameScene/Rankings/MainContainer/PlayerCard/Character" unique_id=1726898858]
 layout_mode = 1

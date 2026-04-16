@@ -232,13 +232,7 @@ func _update_fight_button_state():
 func update_player_card():
 	player_name_label.text = selected_player.name
 	
-	avatar_instance.refresh_avatar(
-		selected_player.avatar_face,
-		selected_player.avatar_hair,
-		selected_player.avatar_eyes,
-		selected_player.avatar_nose,
-		selected_player.avatar_mouth
-	)
+	avatar_instance.set_avatar_from_player(selected_player)
 	
 	var total_stats = selected_player.get_total_stats()
 	strength.text = str(total_stats.strength)
