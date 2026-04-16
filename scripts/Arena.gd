@@ -5,7 +5,7 @@ extends TextureRect
 @export var card_container: Control
 @export var prev_button: TextureButton
 @export var next_button: TextureButton
-@export var fight_button: Button
+@export var fight_button: TextureButton
 @export var arena_opponent1: Control
 @export var arena_opponent2: Control
 @export var arena_opponent3: Control
@@ -25,6 +25,15 @@ func _ready():
 	next_button.pressed.connect(_on_next_pressed)
 	fight_button.pressed.connect(_on_fight_pressed)
 	visibility_changed.connect(_on_visibility_changed)
+	
+	# Hover/click feedback for arena buttons
+	var golden = Color(0.9, 0.7, 0.4, 1)
+	var default_color = Color(1, 1, 1, 1)
+	for btn in [prev_button, next_button, fight_button]:
+		btn.mouse_entered.connect(func(): btn.modulate = golden)
+		btn.mouse_exited.connect(func(): btn.modulate = default_color)
+		btn.button_down.connect(func(): btn.modulate = golden)
+		btn.button_up.connect(func(): btn.modulate = default_color)
 	
 	if UIManager.instance.game_is_ready:
 		_setup()
@@ -67,7 +76,6 @@ func _on_fight_pressed():
 		
 		# Show loading state on button
 		fight_button.disabled = true
-		fight_button.text = "..."
 		
 		# Send fight request to server - combat result will come via WebSocket response
 		Websocket.fight_player(opponent_id)
@@ -77,7 +85,6 @@ func _on_fight_pressed():
 func reset_fight_button():
 	"""Reset fight button to normal state (called after combat loads or on error)"""
 	fight_button.disabled = false
-	fight_button.text = "Fight"
 
 func _on_prev_pressed():
 	if is_animating:

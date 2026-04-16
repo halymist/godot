@@ -18,9 +18,10 @@ func _ready():
 	chat_input.focus_exited.connect(_on_chat_input_focus_exited)
 	
 	# Send button hover/click feedback
-	send_button.mouse_entered.connect(func(): send_button.modulate = Color(1, 1, 1, 1))
-	send_button.mouse_exited.connect(func(): send_button.modulate = Color(0.9, 0.9, 0.9, 0.8))
-	send_button.button_down.connect(func(): send_button.modulate = Color(0.9, 0.7, 0.4, 1))
+	var golden = Color(0.9, 0.7, 0.4, 1)
+	send_button.mouse_entered.connect(func(): send_button.modulate = golden)
+	send_button.mouse_exited.connect(func(): send_button.modulate = Color(1, 1, 1, 1))
+	send_button.button_down.connect(func(): send_button.modulate = golden)
 	send_button.button_up.connect(func(): send_button.modulate = Color(1, 1, 1, 1))
 	
 	visibility_changed.connect(_on_visibility_changed)
