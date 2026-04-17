@@ -10,6 +10,12 @@ var displayed_character: GameInfo.GamePlayer = null
 var is_read_only: bool = false
 
 func _ready():
+	# Auto-populate talents array from children if not set in scene
+	if talents.is_empty():
+		for child in get_children():
+			if child.has_method("update_button_appearance"):
+				talents.append(child)
+	
 	reset_button.pressed.connect(_on_reset_button_pressed)
 	
 	if UIManager.instance.game_is_ready:

@@ -429,11 +429,6 @@ func _handle_simple_response(message: Dictionary, action_name: String):
 	var msg = response.get("message", "")
 
 	if success:
-		# Server may provide authoritative silver total
-		if response.has("silver") and GameInfo.current_player:
-			GameInfo.current_player.silver = int(response.silver)
-			if UIManager.instance:
-				UIManager.instance.update_display()
 		print("[WebSocket] ", action_name, " success: ", msg)
 	else:
 		print("[WebSocket] ", action_name, " FAILED: ", msg)
@@ -449,11 +444,6 @@ func _handle_sell_item_response(message: Dictionary):
 	var msg = response.get("message", "")
 
 	if success:
-		# Server may provide authoritative silver total
-		if response.has("silver") and GameInfo.current_player:
-			GameInfo.current_player.silver = int(response.silver)
-			if UIManager.instance:
-				UIManager.instance.update_display()
 		print("[WebSocket] sellItem success: ", msg)
 	else:
 		print("[WebSocket] sellItem FAILED: ", msg)

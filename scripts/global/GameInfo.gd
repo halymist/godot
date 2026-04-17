@@ -763,6 +763,8 @@ class GameCurrentPlayer:
 			if key in self and key not in ["daily_quests", "avatar", "stats", "bag_slots", "perks", "talents", "vendor_items", "enchanter_effects"]:
 				set(key, data[key])
 		
+		print("[SILVER] initial load from server: ", silver, " (raw data value: ", data.get("silver", "MISSING"), ")")
+		
 		# Handle daily_quests array with type conversion
 		# Server sends "quests" field, client stores as "daily_quests"
 		var quests_data = data.get("daily_quests", data.get("quests", []))

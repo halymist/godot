@@ -634,10 +634,11 @@ func handle_logout():
 
 func update_silver(amount: int):
 	"""Add or subtract silver and update all displays"""
-	print("UIManager.update_silver called with amount: ", amount)
-	print("Current silver before: ", GameInfo.current_player.silver)
+	var stack = get_stack()
+	var caller = stack[1] if stack.size() > 1 else {}
+	var caller_info = "%s:%s in %s" % [caller.get("source", "?"), caller.get("line", "?"), caller.get("function", "?")]
+	print("[SILVER] %+d | before=%d after=%d | from %s" % [amount, GameInfo.current_player.silver, GameInfo.current_player.silver + amount, caller_info])
 	GameInfo.current_player.silver += amount
-	print("Current silver after: ", GameInfo.current_player.silver)
 	update_display()
 	if top_ui and top_ui.has_method("update_display"):
 		top_ui.update_display()
