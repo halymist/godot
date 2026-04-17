@@ -66,6 +66,10 @@ func update_display():
 		var mushrooms = int(GameInfo.lobby_data.mushrooms)
 		currency_label.text = str(mushrooms)
 	
+	# Update silver
+	if gold_label and GameInfo.current_player:
+		gold_label.text = str(GameInfo.current_player.silver)
+	
 	# Update location
 	var location_id = GameInfo.current_player.location
 	var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null

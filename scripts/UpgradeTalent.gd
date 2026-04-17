@@ -38,9 +38,9 @@ func set_talent_data(talent_name: String, description: String, factor: float, po
 	# Replace '*' with "current → next" where next is clamped to max points.
 	var processed_description = description
 	if factor != 0 and "*" in description:
-		var current_effect = points * factor
+		var current_effect = int(points * factor)
 		var next_points = min(points + 1, max_points)
-		var next_effect = next_points * factor
+		var next_effect = int(next_points * factor)
 		var effect_text = str(current_effect) + " → " + str(next_effect)
 		processed_description = description.replace("*", effect_text)
 	
