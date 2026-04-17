@@ -36,9 +36,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 		# Display price if available and > 0
 		if price_label and price_container:
 			if item_data.price > 0:
-				# Check if item is in vendor slots (105-112) - show 2x price for buying
+				# Check if item is in vendor slot (20) - show 2x price for buying
 				var display_price = item_data.price
-				if item_data.bag_slot_id >= 105 and item_data.bag_slot_id <= 112:
+				if item_data.bag_slot_id == 20:
 					display_price = item_data.price * 2
 				price_label.text = str(display_price)
 				if price_icon:

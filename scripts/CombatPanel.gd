@@ -343,12 +343,16 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 	var start_pos = _get_icon_local_center(attacker_icon)
 	var end_pos = _get_icon_local_center(defender_icon)
 	
-	var sword_size = Vector2(28, 28)
+	var sword_size = Vector2(64, 64)
 	var sword = _create_sword_sprite(sword_size, start_pos)
+	
+	# Point sword toward defender
+	var direction = (end_pos - start_pos).normalized()
+	sword.rotation = direction.angle() + PI / 2  # Offset so tip points forward
 	
 	# Straight line tween from attacker to defender
 	var tween = create_tween()
-	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.4).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 	
@@ -370,8 +374,12 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	var start_pos = _get_icon_local_center(attacker_icon)
 	var end_pos = _get_icon_local_center(defender_icon)
 	
-	var sword_size = Vector2(28, 28)
+	var sword_size = Vector2(64, 64)
 	var sword = _create_sword_sprite(sword_size, start_pos)
+	
+	# Point sword toward defender
+	var direction = (end_pos - start_pos).normalized()
+	sword.rotation = direction.angle() + PI / 2
 	
 	# Dodge slide: defender moves away from attacker
 	var swing_dir = sign(end_pos.x - start_pos.x)
@@ -380,12 +388,12 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	
 	# Start dodge slide partway through the sword flight
 	var dodge_tween = create_tween()
-	dodge_tween.tween_interval(0.2)
+	dodge_tween.tween_interval(0.15)
 	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
 	# Straight line sword flight
 	var tween = create_tween()
-	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.4).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 	

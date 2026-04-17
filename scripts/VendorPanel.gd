@@ -1,6 +1,6 @@
 extends TextureRect
 
-const VENDOR_DISPLAY_SLOT = 21
+const VENDOR_SLOT = 20
 
 @export var chat_bubble: ChatBubble
 @export var bag: Control
@@ -124,11 +124,11 @@ func populate_vendor_slots():
 	
 	for i in range(vendor_items.size()):
 		var item = vendor_items[i]
-		item.bag_slot_id = VENDOR_DISPLAY_SLOT + i
+		item.bag_slot_id = VENDOR_SLOT
 		
 		# Create a real ItemSlot so drag source_container has slot_id
 		var slot = _item_slot_scene.instantiate()
-		slot.slot_id = VENDOR_DISPLAY_SLOT + i
+		slot.slot_id = VENDOR_SLOT
 		slot.texture = null  # No slot background — items float in the big display
 		_vendor_grid.add_child(slot)
 		

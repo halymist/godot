@@ -10,8 +10,6 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	if is_bag and UIManager.instance and self not in UIManager.instance.bag_views:
-		UIManager.instance.bag_views.append(self)
 	update_equip_slots()
 
 

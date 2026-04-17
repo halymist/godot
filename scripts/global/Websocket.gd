@@ -419,7 +419,7 @@ func _handle_accept_quest_response(message: Dictionary):
 		print("[WebSocket] Quest accept failed: ", msg)
 
 func _handle_simple_response(message: Dictionary, action_name: String):
-	"""Generic handler for optimistic actions - log result, warn on failure"""
+	"""Generic handler for optimistic actions - log result, sync silver if provided"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
 		print("[WebSocket] Invalid ", action_name, "Response format")
 		return
@@ -429,6 +429,11 @@ func _handle_simple_response(message: Dictionary, action_name: String):
 	var msg = response.get("message", "")
 
 	if success:
+		# Server may provide authoritative silver total
+		if response.has("silver") and GameInfo.current_player:
+			GameInfo.current_player.silver = int(response.silver)
+			if UIManager.instance:
+				UIManager.instance.update_display()
 		print("[WebSocket] ", action_name, " success: ", msg)
 	else:
 		print("[WebSocket] ", action_name, " FAILED: ", msg)

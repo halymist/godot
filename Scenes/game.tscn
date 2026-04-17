@@ -253,7 +253,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_nb51f")
 
-[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "character_display", "enemy_character_display", "top_ui")]
+[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "character_display", "enemy_character_display", "top_ui", "bag_views")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -299,6 +299,7 @@ chat_panel = NodePath("../Portrait/GameScene/ChatOverlay")
 character_display = NodePath("../Portrait/GameScene/Character/CharacterDisplay")
 enemy_character_display = NodePath("../Portrait/GameScene/Enemy/CharacterDisplay")
 top_ui = NodePath("../Portrait/TopUI")
+bag_views = [NodePath("../Portrait/GameScene/Character/Bag"), NodePath("../Portrait/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/EnchanterPanel/Overlay/Bag")]
 
 [node name="Portrait" type="Control" parent="." unique_id=2021491709]
 layout_mode = 1

@@ -10,9 +10,7 @@ const BLACKSMITH_SLOT = 16
 const ALCHEMIST_SLOT_1 = 17
 const ALCHEMIST_SLOT_2 = 18
 const ALCHEMIST_SLOT_3 = 19
-const VENDOR_SELL_SLOT = 20
-const VENDOR_MIN = 21
-const VENDOR_MAX = 28
+const VENDOR_SLOT = 20
 const CONSUME_SLOT = 29
 
 @export var item_scene: PackedScene
@@ -48,18 +46,12 @@ func _can_drop_data(_pos, data):
 	
 	print("DEBUG _can_drop_data: Target slot_id=", slot_id, " slot_type=", slot_type, " | Source slot_id=", source_slot_id, " | Dragged item type=", item_type)
 	
-	# Vendor slots (21-28) accept drops from bag (10-14) for selling
-	if slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
-		# Only accept items from bag slots (10-14) for selling
-		return source_slot_id >= 10 and source_slot_id <= 14
-	
-	# Vendor display / sell slot (20) accepts items from bag or equipment for selling
-	if slot_id == VENDOR_SELL_SLOT:
+	# Vendor slot (20) accepts items from bag or equipment for selling
+	if slot_id == VENDOR_SLOT:
+		# Don't accept drops from other vendor items
+		if source_slot_id == VENDOR_SLOT:
+			return false
 		return (source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX) or (source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX)
-	
-	# Cannot drag between vendor slots
-	if source_slot_id >= VENDOR_MIN and source_slot_id <= VENDOR_MAX and slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
-		return false
 	
 	# Special case: Allow gems to be dropped on equipment slots (1-9) if item has a socket
 	if item_type == "Gem" and slot_id >= EQUIPMENT_MIN and slot_id <= EQUIPMENT_MAX:
@@ -71,14 +63,14 @@ func _can_drop_data(_pos, data):
 		# If slot is empty or item doesn't have a socket, reject
 		return false
 	
-	# Allow gems to be dropped on vendor sell slot for selling
-	if item_type == "Gem" and slot_id == VENDOR_SELL_SLOT:
+	# Allow gems to be dropped on vendor slot for selling
+	if item_type == "Gem" and slot_id == VENDOR_SLOT:
 		return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
 	
 	# Special case: Allow hammers to be dropped on any slot with a temperable item OR empty bag slots
 	if item_type == "Hammer":
 		# Allow selling hammers to vendor
-		if slot_id == VENDOR_SELL_SLOT:
+		if slot_id == VENDOR_SLOT:
 			return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
 		# Allow movement to empty bag slots (10-14)
 		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
@@ -94,7 +86,7 @@ func _can_drop_data(_pos, data):
 	# Special case: Allow scrolls to be dropped on any slot with an enchantable item OR empty bag slots
 	if item_type == "Scroll":
 		# Allow selling scrolls to vendor
-		if slot_id == VENDOR_SELL_SLOT:
+		if slot_id == VENDOR_SLOT:
 			return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
 		# Allow movement to empty bag slots (10-14)
 		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
@@ -180,13 +172,13 @@ func _drop_data(_pos, data):
 	var source_container = data["source_container"]
 	var source_slot_id = source_container.slot_id if source_container else -1
 	
-	# Special case: Purchasing from vendor (slots 21-28)
-	if source_slot_id >= VENDOR_MIN and source_slot_id <= VENDOR_MAX:
+	# Special case: Purchasing from vendor (slot 20)
+	if source_slot_id == VENDOR_SLOT:
 		handle_vendor_purchase(dragged_item, source_slot_id)
 		return
 	
-	# Special case: Selling to vendor (slot 20 OR vendor display slots 21-28)
-	if slot_id == VENDOR_SELL_SLOT or (slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX):
+	# Special case: Selling to vendor (slot 20)
+	if slot_id == VENDOR_SLOT:
 		handle_vendor_sell(dragged_item, source_slot_id, source_container)
 		return
 	
@@ -319,12 +311,14 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	})
 	GameInfo.current_player.bag_slots.append(purchased_item)
 	
-	# Remove item from vendor panel's local inventory (don't replenish)
-	var vendor_slot_index = _vendor_slot_id - VENDOR_MIN  # Convert slot_id to index
+	# Remove item from vendor panel's local inventory by matching item id
 	var vendor_panel = UIManager.instance.vendor_panel if UIManager.instance else null
-	if vendor_panel and vendor_slot_index >= 0 and vendor_slot_index < vendor_panel.vendor_items.size():
-		vendor_panel.vendor_items.remove_at(vendor_slot_index)
-		print("Removed item from vendor inventory at index ", vendor_slot_index)
+	if vendor_panel:
+		for i in range(vendor_panel.vendor_items.size()):
+			if vendor_panel.vendor_items[i].id == vendor_item.id:
+				vendor_panel.vendor_items.remove_at(i)
+				print("Removed item from vendor inventory at index ", i)
+				break
 	
 	# Place in visual slot
 	place_item_in_slot(purchased_item)
@@ -607,7 +601,7 @@ func update_slot_appearance():
 		item_outline.visible = (item_count == 0) and (outline_texture != null)
 
 func refresh_slot():
-	if slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
+	if slot_id == VENDOR_SLOT:
 		return
 	
 	for child in get_children():
@@ -697,7 +691,7 @@ func handle_double_click(item: GameInfo.Item):
 					break
 		return
 	
-	# Vendor: Sell if in bag/equipment, buy if in vendor slots
+	# Vendor: Sell if in bag/equipment, buy if in vendor slot
 	if current_utility and current_utility.name == "VendorPanel":
 		# Selling: item in equipment (0-8) or bag (10-14)
 		if (item.bag_slot_id >= EQUIPMENT_MIN and item.bag_slot_id <= EQUIPMENT_MAX) or (item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX):
@@ -708,8 +702,8 @@ func handle_double_click(item: GameInfo.Item):
 				clear_slot()
 				if UIManager.instance:
 					UIManager.instance.refresh_bags()
-		# Buying: item in vendor slots (21-29)
-		elif item.bag_slot_id >= VENDOR_MIN and item.bag_slot_id <= VENDOR_MAX:
+		# Buying: item in vendor slot (20)
+		elif item.bag_slot_id == VENDOR_SLOT:
 			var buy_price = item.price * 2
 			if GameInfo.current_player.silver >= buy_price:
 				# Find first empty bag slot
@@ -721,11 +715,13 @@ func handle_double_click(item: GameInfo.Item):
 						
 						Websocket.buy_item(item.id, bag_slot_id)
 						
-						# Remove item from vendor panel's local inventory
-						var vendor_slot_index = item.bag_slot_id - VENDOR_MIN
+						# Remove item from vendor panel's local inventory by id
 						var vendor_panel = UIManager.instance.vendor_panel if UIManager.instance else null
-						if vendor_panel and vendor_slot_index >= 0 and vendor_slot_index < vendor_panel.vendor_items.size():
-							vendor_panel.vendor_items.remove_at(vendor_slot_index)
+						if vendor_panel:
+							for vi in range(vendor_panel.vendor_items.size()):
+								if vendor_panel.vendor_items[vi].id == item.id:
+									vendor_panel.vendor_items.remove_at(vi)
+									break
 						
 						# Create simplified item (only id, bag_slot_id, and day)
 						var new_item = GameInfo.Item.new({
