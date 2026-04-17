@@ -47,15 +47,29 @@ func setup(character: Dictionary, server_name: String = "", server_created_at: i
 		avatar.set_avatar_ids(ids)
 
 func _calculate_server_age_days(server_created_at: int) -> int:
-	"""Calculate number of days since server started from unix timestamp"""
+	"""Calculate number of days since server started using midnight boundaries"""
 	if server_created_at == 0:
 		return 0
 	
-	var current_unix = Time.get_unix_time_from_system()
-	var seconds_passed = current_unix - server_created_at
-	var days_passed = int(seconds_passed / 86400.0)
+	var current_unix = int(Time.get_unix_time_from_system())
 	
-	return max(1, days_passed)  # At least 1 day
+	# Get date components for both timestamps (UTC)
+	var created_date = Time.get_date_dict_from_unix_time(server_created_at)
+	var current_date = Time.get_date_dict_from_unix_time(current_unix)
+	
+	# Convert both to day numbers for comparison
+	var created_days = _date_to_days(created_date["year"], created_date["month"], created_date["day"])
+	var current_days = _date_to_days(current_date["year"], current_date["month"], current_date["day"])
+	
+	return max(1, current_days - created_days + 1)
+
+func _date_to_days(year: int, month: int, day: int) -> int:
+	"""Convert a date to an absolute day number for comparison"""
+	# Simple Julian day approximation for day difference calculation
+	var a = (14 - month) / 12
+	var y = year + 4800 - a
+	var m = month + 12 * a - 3
+	return day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045
 
 func _on_pressed():
 	"""Handle button press"""

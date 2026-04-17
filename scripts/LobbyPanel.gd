@@ -42,6 +42,7 @@ var game_scene_loaded = false
 var game_scene: PackedScene = null
 var loading_in_progress = false  # Prevent multiple character selections while loading
 var initialized = false  # Track if we've initialized the lobby
+var _selected_server_day: int = 0  # Server day for selected character's server
 
 signal lobby_ready
 
@@ -325,6 +326,9 @@ func _on_character_selected(character_id: int, server_id: int):
 		print("Character selection already in progress, ignoring click")
 		return
 	
+	# Store the current_day from the server for this character
+	_selected_server_day = _get_server_day(server_id)
+	
 	loading_in_progress = true
 	print("Character selected in lobby: ", character_id, " on server: ", server_id)
 	
@@ -361,6 +365,10 @@ func _on_player_data_received(character_data: Dictionary):
 	# Disconnect signal to avoid multiple calls
 	if Websocket.player_data_received.is_connected(_on_player_data_received):
 		Websocket.player_data_received.disconnect(_on_player_data_received)
+	
+	# Inject server_day from lobby server list if not already in character data
+	if _selected_server_day > 0 and not character_data.has("server_day"):
+		character_data["server_day"] = _selected_server_day
 	
 	# Load character data into GameInfo (replaces mock data)
 	GameInfo.load_character_from_server(character_data)
@@ -496,6 +504,14 @@ func _on_character_created(success: bool, character_id: int, error: String):
 		add_character_list()
 	else:
 		print("[Lobby] Error: No server found to add character to")
+
+func _get_server_day(server_id: int) -> int:
+	"""Get current_day from server list for the given server_id"""
+	var server_list = GameInfo.lobby_data.get("server_list", [])
+	for server in server_list:
+		if server.get("id", 0) == server_id:
+			return server.get("current_day", 0)
+	return 0
 
 func _on_social_pressed(platform: String):
 	"""Open social media link"""

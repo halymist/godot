@@ -25,6 +25,7 @@ extends TextureRect
 @export var quest_slide_panel: Control
 @export var map_panel: Control
 @export var location_label: Label
+@export var location_description_label: Label
 
 # Current quest tracking
 var current_quest_index: int = 0
@@ -75,6 +76,10 @@ func _load_village_background():
 	# Update location name label in overlay
 	if location_label and settlement:
 		location_label.text = settlement.location_name if settlement.location_name else "Unknown"
+	
+	# Update location description (italic) in overlay
+	if location_description_label and settlement:
+		location_description_label.text = settlement.description if settlement.description else ""
 
 func _setup_buttons():
 	"""Configure vendor and utility buttons based on settlement"""

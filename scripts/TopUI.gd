@@ -106,4 +106,4 @@ func _get_server_time_string() -> String:
 	var current_unix = Time.get_unix_time_from_system()
 	var time_dict = Time.get_datetime_dict_from_unix_time(int(current_unix))
 	
-	return "%02d:%02d" % [time_dict.hour, time_dict.minute]
+	return "%d:%02d" % [time_dict.hour, time_dict.minute]

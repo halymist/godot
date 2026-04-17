@@ -65,9 +65,10 @@ var current_method: String = "email"
 var is_register_mode: bool = false
 var indicator_tween: Tween
 var is_logging_in: bool = false  # Prevent double-clicks during login
-var _dot_timer: Timer
 var _dot_count: int = 0
 var _dot_base_text: String = ""
+var _dot_animating: bool = false
+var _dot_elapsed: float = 0.0
 
 func _ready():
 	# Check if we already have login data (returning from game)
@@ -289,7 +290,7 @@ func _on_login():
 	is_logging_in = true
 	if email_login_button:
 		email_login_button.disabled = true
-	_start_dot_animation("Logging in")
+	_start_dot_animation("Loading")
 	
 	# Send login request to server
 	Http.login(email, password)
@@ -425,25 +426,25 @@ func _hide_error():
 	if error_label:
 		error_label.visible = false
 
+func _process(delta):
+	if _dot_animating:
+		_dot_elapsed += delta
+		if _dot_elapsed >= 0.3:
+			_dot_elapsed -= 0.3
+			_dot_count = (_dot_count % 3) + 1
+			if email_login_button:
+				email_login_button.text = _dot_base_text + ".".repeat(_dot_count)
+
 func _start_dot_animation(base_text: String):
 	_dot_base_text = base_text
 	_dot_count = 0
-	if not _dot_timer:
-		_dot_timer = Timer.new()
-		_dot_timer.wait_time = 0.4
-		_dot_timer.timeout.connect(_on_dot_tick)
-		add_child(_dot_timer)
-	_dot_timer.start()
-	_on_dot_tick()
-
-func _on_dot_tick():
-	_dot_count = (_dot_count % 3) + 1
+	_dot_elapsed = 0.0
+	_dot_animating = true
 	if email_login_button:
-		email_login_button.text = _dot_base_text + ".".repeat(_dot_count)
+		email_login_button.text = base_text + "."
 
 func _stop_dot_animation():
-	if _dot_timer:
-		_dot_timer.stop()
+	_dot_animating = false
 
 func _on_login_or_register():
 	"""Handle login or register for non-email methods (same flow)"""
