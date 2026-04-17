@@ -230,7 +230,7 @@ func _run_action_sequence():
 				return
 			
 			# Brief pause between actions
-			await get_tree().create_timer(0.3).timeout
+			await get_tree().create_timer(0.5).timeout
 			if combat_session_id != my_session or not visible:
 				break
 		elif action_data.type == "final_message":
@@ -340,56 +340,38 @@ func _animate_action(entry: GameInfo.CombatLogEntry, session_id: int):
 
 func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defender_container: Control, damage: int, is_crit: bool, session_id: int):
 	"""Animate a sword swing from attacker to defender, then shake + damage popup."""
-	var start_pos = _get_icon_center_global(attacker_icon)
-	var end_pos = _get_icon_center_global(defender_icon)
+	var start_pos = _get_icon_bottom_center(attacker_icon)
+	var end_pos = _get_icon_bottom_center(defender_icon)
 	
-	# Create sword sprite
-	var sword = TextureRect.new()
-	sword.texture = sword_texture
-	sword.custom_minimum_size = Vector2(40, 40) if not is_crit else Vector2(52, 52)
-	sword.size = sword.custom_minimum_size
-	sword.expand_mode = 1  # EXPAND_IGNORE_SIZE
-	sword.stretch_mode = 5  # KEEP_ASPECT_CENTERED
-	sword.pivot_offset = sword.size / 2
-	sword.z_index = 10
-	sword.position = start_pos - sword.size / 2
-	add_child(sword)
+	# Create sword sprite — same size for all hits
+	var sword_size = Vector2(28, 28)
+	var sword = _create_sword_sprite(sword_size, start_pos)
 	
 	# Calculate arc: midpoint raised upward
 	var mid = (start_pos + end_pos) / 2
-	mid.y -= 80  # Arc height
+	mid.y -= 50  # Arc height
 	
 	# Determine swing direction (left-to-right or right-to-left)
 	var swing_dir = sign(end_pos.x - start_pos.x)
 	var start_rotation = -PI / 4 * swing_dir  # Sword raised
 	var end_rotation = PI / 2 * swing_dir       # Sword swung down
-	
 	sword.rotation = start_rotation
 	
-	# Animate along arc using tween with method calls
-	var swing_duration = 0.35
+	# Animate along bezier arc
+	var swing_duration = 0.5
 	var tween = create_tween()
-	tween.set_parallel(true)
-	
-	# Position: bezier-like using two sequential tweens
-	# First half: start -> mid (rising)
-	# Second half: mid -> end (falling)
-	tween.set_parallel(false)
 	tween.tween_method(func(t: float):
 		if not is_instance_valid(sword):
 			return
-		# Quadratic bezier: P = (1-t)²·S + 2(1-t)t·M + t²·E
 		var p = (1.0 - t) * (1.0 - t) * start_pos + 2.0 * (1.0 - t) * t * mid + t * t * end_pos
-		sword.position = p - sword.size / 2
-		# Interpolate rotation
+		sword.position = p - sword_size / 2
 		sword.rotation = lerp(start_rotation, end_rotation, t)
 	, 0.0, 1.0, swing_duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 	
-	if not is_instance_valid(sword):
-		return
-	sword.queue_free()
+	if is_instance_valid(sword):
+		sword.queue_free()
 	
 	if combat_session_id != session_id or not visible:
 		return
@@ -399,60 +381,51 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 	var dmg_color = Color(1.0, 0.2, 0.2) if not is_crit else Color(1.0, 0.85, 0.0)
 	_spawn_floating_text(defender_icon, str(damage), dmg_color, is_crit)
 	
-	# Wait for shake to mostly finish
-	await get_tree().create_timer(0.3).timeout
+	# Wait for shake to finish
+	await get_tree().create_timer(0.4).timeout
 
 func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defender_container: Control, session_id: int):
 	"""Animate a sword swing, but the defender slides back to dodge."""
-	var start_pos = _get_icon_center_global(attacker_icon)
-	var end_pos = _get_icon_center_global(defender_icon)
+	var start_pos = _get_icon_bottom_center(attacker_icon)
+	var end_pos = _get_icon_bottom_center(defender_icon)
 	
 	# Create sword sprite
-	var sword = TextureRect.new()
-	sword.texture = sword_texture
-	sword.custom_minimum_size = Vector2(40, 40)
-	sword.size = sword.custom_minimum_size
-	sword.expand_mode = 1
-	sword.stretch_mode = 5
-	sword.pivot_offset = sword.size / 2
-	sword.z_index = 10
-	sword.position = start_pos - sword.size / 2
-	add_child(sword)
+	var sword_size = Vector2(28, 28)
+	var sword = _create_sword_sprite(sword_size, start_pos)
 	
 	var mid = (start_pos + end_pos) / 2
-	mid.y -= 80
+	mid.y -= 50
 	
 	var swing_dir = sign(end_pos.x - start_pos.x)
 	var start_rotation = -PI / 4 * swing_dir
 	var end_rotation = PI / 2 * swing_dir
 	sword.rotation = start_rotation
 	
-	# Start the dodge slide slightly before impact
-	var dodge_dir = -swing_dir  # Slide away from attacker
+	# Dodge slide: defender moves AWAY from attacker (same direction as swing)
+	var dodge_dir = swing_dir
 	var dodge_offset = Vector2(dodge_dir * 40, 0)
 	var original_pos = defender_container.position
 	
-	# Start dodge slide at ~60% of swing
+	# Start dodge slide partway through the swing
 	var dodge_tween = create_tween()
-	dodge_tween.tween_interval(0.2)  # Wait until sword is mid-flight
-	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	dodge_tween.tween_interval(0.25)  # Wait until sword is mid-flight
+	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
 	# Swing animation
-	var swing_duration = 0.35
+	var swing_duration = 0.5
 	var tween = create_tween()
 	tween.tween_method(func(t: float):
 		if not is_instance_valid(sword):
 			return
 		var p = (1.0 - t) * (1.0 - t) * start_pos + 2.0 * (1.0 - t) * t * mid + t * t * end_pos
-		sword.position = p - sword.size / 2
+		sword.position = p - sword_size / 2
 		sword.rotation = lerp(start_rotation, end_rotation, t)
 	, 0.0, 1.0, swing_duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 	
-	if not is_instance_valid(sword):
-		return
-	sword.queue_free()
+	if is_instance_valid(sword):
+		sword.queue_free()
 	
 	if combat_session_id != session_id or not visible:
 		defender_container.position = original_pos
@@ -463,9 +436,9 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	
 	# Slide back to original position
 	var return_tween = create_tween()
-	return_tween.tween_property(defender_container, "position", original_pos, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	return_tween.tween_property(defender_container, "position", original_pos, 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
-	await get_tree().create_timer(0.35).timeout
+	await get_tree().create_timer(0.45).timeout
 
 func _shake_icon(icon: Control, is_crit: bool = false):
 	"""Shake the icon briefly to indicate impact."""
@@ -508,10 +481,29 @@ func _spawn_floating_text(target_icon: Control, text: String, color: Color, larg
 
 func _get_icon_center_global(icon: Control) -> Vector2:
 	"""Get the center position of an icon relative to this combat panel."""
-	# icon is a child somewhere in our tree; get its rect in our coordinate space
 	var rect = icon.get_global_rect()
 	var my_global = global_position
 	return Vector2(rect.position.x - my_global.x + rect.size.x / 2, rect.position.y - my_global.y + rect.size.y / 2)
+
+func _get_icon_bottom_center(icon: Control) -> Vector2:
+	"""Get the bottom-center position of an icon relative to this combat panel."""
+	var rect = icon.get_global_rect()
+	var my_global = global_position
+	return Vector2(rect.position.x - my_global.x + rect.size.x / 2, rect.position.y - my_global.y + rect.size.y)
+
+func _create_sword_sprite(sword_size: Vector2, start_pos: Vector2) -> TextureRect:
+	"""Create and add a sword TextureRect for swing animations."""
+	var sword = TextureRect.new()
+	sword.texture = sword_texture
+	sword.custom_minimum_size = sword_size
+	sword.size = sword_size
+	sword.expand_mode = 1  # EXPAND_IGNORE_SIZE
+	sword.stretch_mode = 5  # KEEP_ASPECT_CENTERED
+	sword.pivot_offset = sword_size / 2
+	sword.z_index = 10
+	sword.position = start_pos - sword_size / 2
+	add_child(sword)
+	return sword
 
 func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	var combat = GameInfo.current_combat_log

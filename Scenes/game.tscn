@@ -506,7 +506,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1329693388 node_paths=PackedStringArray("chat_bubble", "bag", "vendor_grid")]
+[node name="VendorPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1329693388 node_paths=PackedStringArray("chat_bubble", "bag", "vendor_display")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -521,7 +521,7 @@ script = ExtResource("40_vendor")
 item_scene = ExtResource("17_aujhx")
 chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
-vendor_grid = NodePath("Overlay/VendorSlots")
+vendor_display = NodePath("Overlay/VendorDisplay")
 
 [node name="ChatBubble" parent="Portrait/GameScene/VendorPanel" unique_id=1960592529 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -545,55 +545,22 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="VendorSlots" type="GridContainer" parent="Portrait/GameScene/VendorPanel/Overlay" unique_id=1019072248]
+[node name="VendorDisplay" type="Control" parent="Portrait/GameScene/VendorPanel/Overlay"]
 layout_mode = 1
-anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 0.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -155.5
-offset_top = -119.0
-offset_right = 156.5
-offset_bottom = 35.0
+anchor_bottom = 0.0
+offset_left = -180.0
+offset_top = 8.0
+offset_right = 180.0
+offset_bottom = 158.0
 grow_horizontal = 2
-grow_vertical = 2
-columns = 4
+mouse_filter = 0
 script = ExtResource("16_q8b24")
 item_scene = ExtResource("17_aujhx")
-slot_id = 29
-
-[node name="Vendor1" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=636255692 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 21
-
-[node name="Vendor2" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=1339954701 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 22
-
-[node name="Vendor3" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=850482952 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 23
-
-[node name="Vendor4" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=1021392404 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 24
-
-[node name="Vendor5" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=1857543804 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 25
-
-[node name="Vendor6" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=422609604 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 26
-
-[node name="Vendor7" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=943869008 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 27
-
-[node name="Vendor8" parent="Portrait/GameScene/VendorPanel/Overlay/VendorSlots" unique_id=486260542 instance=ExtResource("6_itemslot")]
-texture = null
-slot_id = 28
+slot_type = "Sell"
+slot_id = 20
 
 [node name="Bag" parent="Portrait/GameScene/VendorPanel/Overlay" unique_id=1379890558 instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)

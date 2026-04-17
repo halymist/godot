@@ -1,13 +1,13 @@
 extends TextureRect
 
-const VENDOR_MIN = 21
-const VENDOR_MAX = 28
+const VENDOR_DISPLAY_SLOT = 21
 
 @export var chat_bubble: ChatBubble
 @export var bag: Control
-@export var vendor_grid: GridContainer
-@export var vendor_slots: Array[Control] = []
+@export var vendor_display: Control
 @export var item_scene: PackedScene
+
+var _item_slot_scene = preload("res://Scenes/ItemSlot.tscn")
 
 # Greeting arrays loaded from settlement
 var on_entered_greetings: Array[String] = []
@@ -15,9 +15,11 @@ var on_sold_greetings: Array[String] = []
 var on_bought_greetings: Array[String] = []
 var vendor_items: Array[GameInfo.Item] = []
 
+var _vendor_grid: GridContainer  # Dynamically created grid inside vendor_display
+
 func _ready():
 	visibility_changed.connect(_on_visibility_changed)
-	_cache_vendor_slots()
+	_create_vendor_grid()
 	
 	if UIManager.instance.game_is_ready:
 		_setup()
@@ -25,9 +27,19 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	_cache_vendor_slots()
 	_load_location_content()
 	populate_vendor_slots()
+
+func _create_vendor_grid():
+	if _vendor_grid:
+		return
+	_vendor_grid = GridContainer.new()
+	_vendor_grid.columns = 4
+	_vendor_grid.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vendor_grid.add_theme_constant_override("h_separation", 4)
+	_vendor_grid.add_theme_constant_override("v_separation", 4)
+	_vendor_grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vendor_display.add_child(_vendor_grid)
 
 func _on_visibility_changed():
 	if visible:
@@ -54,20 +66,9 @@ func _load_location_content():
 	on_sold_greetings = settlement.get_vendor_on_sold_lines()
 	on_bought_greetings = settlement.get_vendor_on_bought_lines()
 
-func _cache_vendor_slots():
-	if vendor_slots.size() > 0:
-		return
-	if not vendor_grid:
-		return
-	vendor_slots.clear()
-	for child in vendor_grid.get_children():
-		if child is Control:
-			vendor_slots.append(child)
-
 func _load_vendor_items():
 	vendor_items.clear()
 	
-	# Vendor items are now stored in current_player.vendor_items (loaded from server)
 	if not GameInfo.current_player:
 		print("[VendorPanel] No current player")
 		return
@@ -98,6 +99,7 @@ func _show_greeting(greetings: Array[String]):
 	chat_bubble.show_with_text(greeting, 4.0)
 
 func trigger_sell_greeting():
+	populate_vendor_slots()
 	_show_greeting(on_sold_greetings)
 
 func _on_bag_slots_changed():
@@ -105,15 +107,22 @@ func _on_bag_slots_changed():
 		populate_vendor_slots()
 
 func populate_vendor_slots():
-	for slot in vendor_slots:
-		slot.clear_slot()
-		slot.visible = false
+	if not _vendor_grid:
+		_create_vendor_grid()
 	
-	for i in range(min(vendor_items.size(), vendor_slots.size())):
+	# Clear existing item slots
+	for child in _vendor_grid.get_children():
+		child.queue_free()
+	
+	for i in range(vendor_items.size()):
 		var item = vendor_items[i]
-		var slot = vendor_slots[i]
-		slot.visible = true
-		item.bag_slot_id = VENDOR_MIN + i
+		item.bag_slot_id = VENDOR_DISPLAY_SLOT + i
+		
+		# Create a real ItemSlot so drag source_container has slot_id
+		var slot = _item_slot_scene.instantiate()
+		slot.slot_id = VENDOR_DISPLAY_SLOT + i
+		slot.texture = null  # No slot background — items float in the big display
+		_vendor_grid.add_child(slot)
 		
 		var icon = item_scene.instantiate()
 		icon.set_item_data(item)

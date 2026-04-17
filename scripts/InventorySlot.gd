@@ -53,6 +53,10 @@ func _can_drop_data(_pos, data):
 		# Only accept items from bag slots (10-14) for selling
 		return source_slot_id >= 10 and source_slot_id <= 14
 	
+	# Vendor display / sell slot (20) accepts items from bag or equipment for selling
+	if slot_id == VENDOR_SELL_SLOT:
+		return (source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX) or (source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX)
+	
 	# Cannot drag between vendor slots
 	if source_slot_id >= VENDOR_MIN and source_slot_id <= VENDOR_MAX and slot_id >= VENDOR_MIN and slot_id <= VENDOR_MAX:
 		return false
