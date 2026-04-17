@@ -329,6 +329,10 @@ func _on_character_selected(character_id: int, server_id: int):
 	# Store the current_day from the server for this character
 	_selected_server_day = _get_server_day(server_id)
 	
+	# Store server created_at for day calculation in TopUI
+	GameInfo.server_created_at = _get_server_created_at(server_id)
+	print("[Lobby] Selected server_created_at: ", GameInfo.server_created_at, ", server_day: ", _selected_server_day)
+	
 	loading_in_progress = true
 	print("Character selected in lobby: ", character_id, " on server: ", server_id)
 	
@@ -366,12 +370,15 @@ func _on_player_data_received(character_data: Dictionary):
 	if Websocket.player_data_received.is_connected(_on_player_data_received):
 		Websocket.player_data_received.disconnect(_on_player_data_received)
 	
-	# Inject server_day from lobby server list if not already in character data
-	if _selected_server_day > 0 and not character_data.has("server_day"):
+	# Keep UI day consistent with selected server list day.
+	# Some playerData payloads omit this field or return stale defaults.
+	if _selected_server_day > 0:
 		character_data["server_day"] = _selected_server_day
 	
 	# Load character data into GameInfo (replaces mock data)
 	GameInfo.load_character_from_server(character_data)
+	if GameInfo.current_player and _selected_server_day > 0:
+		GameInfo.current_player.server_day = _selected_server_day
 	
 	print("[Lobby] Character loaded, switching to game scene...")
 	# Switch to preloaded game scene
@@ -509,8 +516,16 @@ func _get_server_day(server_id: int) -> int:
 	"""Get current_day from server list for the given server_id"""
 	var server_list = GameInfo.lobby_data.get("server_list", [])
 	for server in server_list:
-		if server.get("id", 0) == server_id:
-			return server.get("current_day", 0)
+		if int(server.get("id", 0)) == int(server_id):
+			return int(server.get("current_day", 0))
+	return 0
+
+func _get_server_created_at(server_id: int) -> int:
+	"""Get created_at timestamp from server list for the given server_id"""
+	var server_list = GameInfo.lobby_data.get("server_list", [])
+	for server in server_list:
+		if int(server.get("id", 0)) == int(server_id):
+			return int(server.get("created_at", 0))
 	return 0
 
 func _on_social_pressed(platform: String):

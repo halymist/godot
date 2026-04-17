@@ -65,12 +65,11 @@ var current_method: String = "email"
 var is_register_mode: bool = false
 var indicator_tween: Tween
 var is_logging_in: bool = false  # Prevent double-clicks during login
-var _dot_count: int = 0
+var _dot_tween: Tween
 var _dot_base_text: String = ""
-var _dot_animating: bool = false
-var _dot_elapsed: float = 0.0
 
 func _ready():
+
 	# Check if we already have login data (returning from game)
 	if not GameInfo.lobby_data.is_empty():
 		_show_lobby_after_init()
@@ -286,10 +285,9 @@ func _on_login():
 	# Clear any previous error
 	_hide_error()
 	
-	# Disable button and show loading state
+	# Keep button visually updating for dot animation; clicks are guarded by is_logging_in
 	is_logging_in = true
-	if email_login_button:
-		email_login_button.disabled = true
+	print("[Login] Starting login, calling _start_dot_animation")
 	_start_dot_animation("Loading")
 	
 	# Send login request to server
@@ -307,8 +305,8 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 		else:
 			_clear_credentials()
 		
-		# Keep button disabled, switch animation to "Loading"
-		_start_dot_animation("Loading")
+		print("[Login] Login success, lobby init starting")
+		# DON'T restart animation - keep the existing one running
 		
 		# Initialize lobby, wait until ready, then switch
 		_show_lobby_after_init()
@@ -426,25 +424,35 @@ func _hide_error():
 	if error_label:
 		error_label.visible = false
 
-func _process(delta):
-	if _dot_animating:
-		_dot_elapsed += delta
-		if _dot_elapsed >= 0.3:
-			_dot_elapsed -= 0.3
-			_dot_count = (_dot_count % 3) + 1
-			if email_login_button:
-				email_login_button.text = _dot_base_text + ".".repeat(_dot_count)
-
 func _start_dot_animation(base_text: String):
+	print("[Login] _start_dot_animation called with: '", base_text, "'")
+	_stop_dot_animation()
 	_dot_base_text = base_text
-	_dot_count = 0
-	_dot_elapsed = 0.0
-	_dot_animating = true
+	if not email_login_button:
+		print("[Login] ERROR: email_login_button is null!")
+		return
+	email_login_button.text = base_text + "."
+	print("[Login] Creating tween, node in tree: ", is_inside_tree())
+	var tw = create_tween()
+	if tw == null:
+		print("[Login] ERROR: create_tween() returned null!")
+		return
+	_dot_tween = tw.set_loops()
+	_dot_tween.tween_callback(_set_dots.bind(1)).set_delay(0.3)
+	_dot_tween.tween_callback(_set_dots.bind(2)).set_delay(0.3)
+	_dot_tween.tween_callback(_set_dots.bind(3)).set_delay(0.3)
+	print("[Login] Tween created successfully, looping")
+
+func _set_dots(count: int):
 	if email_login_button:
-		email_login_button.text = base_text + "."
+		email_login_button.text = _dot_base_text + ".".repeat(count)
+		print("[Login] Dot tick: ", count, " -> '", email_login_button.text, "'")
 
 func _stop_dot_animation():
-	_dot_animating = false
+	print("[Login] _stop_dot_animation called")
+	if _dot_tween:
+		_dot_tween.kill()
+		_dot_tween = null
 
 func _on_login_or_register():
 	"""Handle login or register for non-email methods (same flow)"""

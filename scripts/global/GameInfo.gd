@@ -23,6 +23,9 @@ var talents_db: Resource = null  # TalentsDatabase
 var lobby_data: Dictionary = {}
 var user_id: String = ""
 
+# Timestamp when the currently selected server was created (for day calculation)
+var server_created_at: int = 0
+
 # Skip auto-login after explicit logout
 var skip_auto_login_once: bool = false
 
@@ -1066,13 +1069,22 @@ func load_all_characters(characters_data: Array):
 
 func load_character_from_server(character_data: Dictionary):
 	"""Load a single character from server data (WebSocket playerData response)"""
+	# Preserve server_day before transform (injected by LobbyPanel from server list)
+	var injected_server_day = int(character_data.get("server_day", 0))
+	
 	# Transform server data format to client format
 	var transformed_data = _transform_server_player_data(character_data)
 	
 	all_characters.clear()
 	var player = GameCurrentPlayer.new(transformed_data, self)
+	
+	# Force server_day from lobby server list — the transform/init loop may miss it
+	if injected_server_day > 0:
+		player.server_day = injected_server_day
+	
 	all_characters.append(player)
 	print("Loaded character from server: ", player.name, " (ID: ", player.character_id, ")")
+	print("  - server_day: ", player.server_day, " (injected: ", injected_server_day, ")")
 	print("  - Potion: ", player.potion, " (until: ", player.potion_until, ")")
 	print("  - Elixir: ", player.elixir, " (until: ", player.elixir_until, ")")
 	

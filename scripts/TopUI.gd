@@ -40,6 +40,8 @@ func _on_update_timer_timeout():
 	var server_time = _get_server_time_string()
 	if time_label:
 		time_label.text = server_time
+	if day_label:
+		day_label.text = "Day " + str(_calculate_server_day())
 
 func _on_location_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
@@ -73,8 +75,8 @@ func update_display():
 		time_label.text = server_time
 	
 	# Update day label
-	if day_label and GameInfo.current_player:
-		day_label.text = "Day " + str(GameInfo.current_player.server_day)
+	if day_label:
+		day_label.text = "Day " + str(_calculate_server_day())
 	
 	# Update location description
 	if location_description_label and location:
@@ -107,3 +109,25 @@ func _get_server_time_string() -> String:
 	var time_dict = Time.get_datetime_dict_from_unix_time(int(current_unix))
 	
 	return "%d:%02d" % [time_dict.hour, time_dict.minute]
+
+func _calculate_server_day() -> int:
+	"""Calculate current server day from server_created_at timestamp"""
+	var server_created_at = GameInfo.server_created_at
+	if server_created_at == 0:
+		return 1
+	
+	var current_unix = int(Time.get_unix_time_from_system())
+	var created_date = Time.get_date_dict_from_unix_time(server_created_at)
+	var current_date = Time.get_date_dict_from_unix_time(current_unix)
+	
+	var created_days = _date_to_days(created_date["year"], created_date["month"], created_date["day"])
+	var current_days = _date_to_days(current_date["year"], current_date["month"], current_date["day"])
+	
+	return max(1, current_days - created_days + 1)
+
+func _date_to_days(year: int, month: int, day: int) -> int:
+	"""Convert a date to an absolute day number for comparison"""
+	var a = (14 - month) / 12
+	var y = year + 4800 - a
+	var m = month + 12 * a - 3
+	return day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045

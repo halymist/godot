@@ -43,6 +43,7 @@ func _ready():
 
 func _on_visibility_changed():
 	if visible and GameInfo.current_player:
+		_load_village_background()
 		_update_quest_display()
 
 func _setup():
@@ -66,6 +67,9 @@ func _setup():
 
 func _load_village_background():
 	"""Load village background image from current location"""
+	if not GameInfo.current_player or not GameInfo.settlements_db:
+		return
+
 	var location_id = GameInfo.current_player.location
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
@@ -78,8 +82,8 @@ func _load_village_background():
 		location_label.text = settlement.location_name if settlement.location_name else "Unknown"
 	
 	# Update location description (italic) in overlay
-	if location_description_label and settlement:
-		location_description_label.text = settlement.description if settlement.description else ""
+	if location_description_label:
+		location_description_label.text = settlement.description if settlement and settlement.description else "No description available."
 
 func _setup_buttons():
 	"""Configure vendor and utility buttons based on settlement"""

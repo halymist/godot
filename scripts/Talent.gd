@@ -138,9 +138,6 @@ func _on_button_pressed():
 			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
 			if effect_data:
 				description = effect_data.description
-				var current_bonus = points * factor
-				if points > 0:
-					description += " " + str(int(current_bonus)) + "%"
 		
 		UIManager.instance.upgrade_talent.set_talent_data(talentName, description, factor, points, maxPoints, false, self)
 		return
@@ -163,13 +160,6 @@ func _on_button_pressed():
 			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
 			if effect_data:
 				description = effect_data.description
-				var current_bonus = points * factor
-				var next_bonus = (points + 1) * factor
-				
-				if points >= maxPoints:
-					description += " " + str(int(current_bonus)) + "%"
-				else:
-					description += " " + str(int(current_bonus)) + "% --> " + str(int(next_bonus)) + "%"
 		
 		UIManager.instance.upgrade_talent.set_talent_data(talentName, description, factor, points, maxPoints, eligible_for_upgrade, self)
 
