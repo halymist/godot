@@ -3,10 +3,14 @@ extends TextureRect
 # Combat panel that displays combat messages with fade in/out
 
 # Signal emitted when combat finishes and player clicks continue
+@onready var player_container = $PlayerContainer
+@onready var player_icon = $PlayerContainer/PlayerIcon
 @onready var player_avatar = $PlayerContainer/PlayerIcon/PlayerAvatar
 @onready var player_health_bar = $PlayerContainer/PlayerHealthBar
 @onready var player_health_label = $PlayerContainer/PlayerHealthBar/HealthLabel
 @onready var player_label = $PlayerContainer/PlayerLabel
+@onready var enemy_container = $EnemyContainer
+@onready var enemy_icon = $EnemyContainer/EnemyIcon
 @onready var enemy_avatar = $EnemyContainer/EnemyIcon/EnemyAvatar
 @onready var enemy_texture = $EnemyContainer/EnemyIcon/EnemyTexture
 @onready var enemy_health_bar = $EnemyContainer/EnemyHealthBar
@@ -16,6 +20,9 @@ extends TextureRect
 @onready var message2 = $MessageOverlay/MessageContainer/Message2
 @onready var message3 = $MessageOverlay/MessageContainer/Message3
 @onready var skip_replay_button = $SkipReplayButton
+
+# Preloaded attack swing texture
+var sword_texture = preload("res://assets/images/ui/sword_outline.png")
 
 # Client-side victory message (will be generated based on combat results later)
 var victory_message = "Victory! You defeated your opponent!"
@@ -28,6 +35,7 @@ var is_combat_finished = false
 var current_action_index = 0
 var all_actions = []
 var current_message_tween: Tween
+var _animating: bool = false  # True while action sequence coroutine is running
 
 var is_prepared: bool = false  # Track if combat is prepared and ready to show
 var combat_session_id: int = 0  # Incremented each prepare to invalidate stale coroutines
@@ -177,9 +185,8 @@ func start_combat_playback():
 	var combat = GameInfo.current_combat_log
 	
 	if all_actions.size() > 0:
-		call_deferred("_start_action_timer")
+		_run_action_sequence()
 	else:
-		# Build final message
 		var final_msg = ""
 		if combat.has_won():
 			final_msg = "Victory! You defeated " + combat.enemy_name + "!"
@@ -187,33 +194,55 @@ func start_combat_playback():
 			final_msg = "Defeat! " + combat.enemy_name + " has won."
 		show_final_message(final_msg)
 
-func _legacy_display_combat_log():
-	if not GameInfo.current_combat_log:
-		print("No current combat log to display")
+func _run_action_sequence():
+	"""Coroutine that plays each combat action with animations, awaiting each one."""
+	var my_session = combat_session_id
+	_animating = true
+	
+	# Small delay before combat starts
+	await get_tree().create_timer(0.5).timeout
+	if combat_session_id != my_session or not visible:
+		_animating = false
 		return
 	
-	var combat = GameInfo.current_combat_log
+	while current_action_index < all_actions.size():
+		if combat_session_id != my_session or not visible:
+			break
+		
+		var action_data = all_actions[current_action_index]
+		current_action_index += 1
+		
+		if action_data.type == "combat_action":
+			var entry = action_data.entry
+			display_combat_message(entry)
+			
+			# Play visual animation for this action
+			await _animate_action(entry, my_session)
+			if combat_session_id != my_session or not visible:
+				break
+			
+			# Apply health changes after animation
+			apply_action_health_changes(entry)
+			
+			if tracked_player_hp <= 0 or tracked_enemy_hp <= 0:
+				_skip_to_end()
+				_animating = false
+				return
+			
+			# Brief pause between actions
+			await get_tree().create_timer(0.3).timeout
+			if combat_session_id != my_session or not visible:
+				break
+		elif action_data.type == "final_message":
+			show_final_message(action_data.message)
+			is_combat_finished = true
+			skip_replay_button.text = "Continue"
 	
-	# Set combat background FIRST to reduce flicker
-	set_combat_background()
-	
-	# Set up player info
-	player_label.text = combat.player_name
-	
-
+	_animating = false
 
 func _start_action_timer():
-	if is_inside_tree():
-		var my_session = combat_session_id
-		# Small delay to let user look around before combat starts
-		await get_tree().create_timer(0.5).timeout
-		# Bail out if a new combat was prepared or panel hidden
-		if combat_session_id != my_session:
-			return
-		# Display first action immediately (no delay)
-		_display_next_action()
-		# Start timer for subsequent actions
-		action_timer.start()
+	# Legacy — no longer used; kept as stub for safety
+	pass
 
 func create_action_sequence(combat: GameInfo.CombatResponse):
 	all_actions.clear()
@@ -238,28 +267,8 @@ func create_action_sequence(combat: GameInfo.CombatResponse):
 	})
 
 func _display_next_action():
-	if current_action_index >= all_actions.size():
-		action_timer.stop()
-		is_combat_finished = true
-		skip_replay_button.text = "Continue"
-		return
-	
-	var action_data = all_actions[current_action_index]
-	current_action_index += 1
-	
-	if action_data.type == "combat_action":
-		var entry = action_data.entry
-		display_combat_message(entry)
-		apply_action_health_changes(entry)
-		# Check tracked HP (not tween-animated bar value) for instant 0-HP detection
-		if tracked_player_hp <= 0 or tracked_enemy_hp <= 0:
-			_skip_to_end()
-			return
-	elif action_data.type == "final_message":
-		show_final_message(action_data.message)
-		action_timer.stop()
-		is_combat_finished = true
-		skip_replay_button.text = "Continue"
+	# Legacy timer callback — no longer drives playback; kept for timer connection
+	pass
 
 func display_combat_message(entry: GameInfo.CombatLogEntry):
 	var message_text = format_combat_entry(entry)
@@ -285,6 +294,224 @@ func clear_messages():
 
 func _fade_current_message():
 	pass  # No longer needed
+
+# ============================================
+# COMBAT ANIMATIONS (Shakes & Fidget style)
+# ============================================
+
+func _animate_action(entry: GameInfo.CombatLogEntry, session_id: int):
+	"""Play the visual animation for a combat action. Awaitable."""
+	var combat = GameInfo.current_combat_log
+	if not combat:
+		return
+	
+	var is_player_acting = entry.character_id == combat.player_id
+	var attacker_icon = player_icon if is_player_acting else enemy_icon
+	var defender_icon = enemy_icon if is_player_acting else player_icon
+	var defender_container = enemy_container if is_player_acting else player_container
+	
+	match entry.action:
+		"attack", "crit", "counterattack", "damage":
+			# Swing sword from attacker to defender, shake defender, show damage
+			await _play_swing_and_hit(attacker_icon, defender_icon, defender_container, entry.factor, entry.action == "crit", session_id)
+		"dodge":
+			# The attacker swings, but the defender slides back to dodge
+			# For dodge, character_id is the attacker, the OPPONENT dodges
+			var dodge_defender_icon = enemy_icon if is_player_acting else player_icon
+			var dodge_defender_container = enemy_container if is_player_acting else player_container
+			await _play_swing_and_dodge(attacker_icon, dodge_defender_icon, dodge_defender_container, session_id)
+		"heal":
+			# Green floating text
+			var heal_target = player_icon if is_player_acting else enemy_icon
+			if entry.factor > 0:
+				_spawn_floating_text(heal_target, "+" + str(entry.factor), Color(0.3, 1.0, 0.3))
+			await get_tree().create_timer(0.4).timeout
+		"bleed":
+			if entry.trigger_type == "":
+				# Bleed tick — red pulse on the bleeding character
+				var bleed_icon = player_icon if is_player_acting else enemy_icon
+				_spawn_floating_text(bleed_icon, str(entry.factor), Color(0.8, 0.2, 0.2))
+				await get_tree().create_timer(0.4).timeout
+			else:
+				await get_tree().create_timer(0.3).timeout
+		_:
+			# Generic actions (stun, buff, etc.) — just a brief pause
+			await get_tree().create_timer(0.3).timeout
+
+func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defender_container: Control, damage: int, is_crit: bool, session_id: int):
+	"""Animate a sword swing from attacker to defender, then shake + damage popup."""
+	var start_pos = _get_icon_center_global(attacker_icon)
+	var end_pos = _get_icon_center_global(defender_icon)
+	
+	# Create sword sprite
+	var sword = TextureRect.new()
+	sword.texture = sword_texture
+	sword.custom_minimum_size = Vector2(40, 40) if not is_crit else Vector2(52, 52)
+	sword.size = sword.custom_minimum_size
+	sword.expand_mode = 1  # EXPAND_IGNORE_SIZE
+	sword.stretch_mode = 5  # KEEP_ASPECT_CENTERED
+	sword.pivot_offset = sword.size / 2
+	sword.z_index = 10
+	sword.position = start_pos - sword.size / 2
+	add_child(sword)
+	
+	# Calculate arc: midpoint raised upward
+	var mid = (start_pos + end_pos) / 2
+	mid.y -= 80  # Arc height
+	
+	# Determine swing direction (left-to-right or right-to-left)
+	var swing_dir = sign(end_pos.x - start_pos.x)
+	var start_rotation = -PI / 4 * swing_dir  # Sword raised
+	var end_rotation = PI / 2 * swing_dir       # Sword swung down
+	
+	sword.rotation = start_rotation
+	
+	# Animate along arc using tween with method calls
+	var swing_duration = 0.35
+	var tween = create_tween()
+	tween.set_parallel(true)
+	
+	# Position: bezier-like using two sequential tweens
+	# First half: start -> mid (rising)
+	# Second half: mid -> end (falling)
+	tween.set_parallel(false)
+	tween.tween_method(func(t: float):
+		if not is_instance_valid(sword):
+			return
+		# Quadratic bezier: P = (1-t)²·S + 2(1-t)t·M + t²·E
+		var p = (1.0 - t) * (1.0 - t) * start_pos + 2.0 * (1.0 - t) * t * mid + t * t * end_pos
+		sword.position = p - sword.size / 2
+		# Interpolate rotation
+		sword.rotation = lerp(start_rotation, end_rotation, t)
+	, 0.0, 1.0, swing_duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	
+	await tween.finished
+	
+	if not is_instance_valid(sword):
+		return
+	sword.queue_free()
+	
+	if combat_session_id != session_id or not visible:
+		return
+	
+	# Impact: shake defender and show damage
+	_shake_icon(defender_icon, is_crit)
+	var dmg_color = Color(1.0, 0.2, 0.2) if not is_crit else Color(1.0, 0.85, 0.0)
+	_spawn_floating_text(defender_icon, str(damage), dmg_color, is_crit)
+	
+	# Wait for shake to mostly finish
+	await get_tree().create_timer(0.3).timeout
+
+func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defender_container: Control, session_id: int):
+	"""Animate a sword swing, but the defender slides back to dodge."""
+	var start_pos = _get_icon_center_global(attacker_icon)
+	var end_pos = _get_icon_center_global(defender_icon)
+	
+	# Create sword sprite
+	var sword = TextureRect.new()
+	sword.texture = sword_texture
+	sword.custom_minimum_size = Vector2(40, 40)
+	sword.size = sword.custom_minimum_size
+	sword.expand_mode = 1
+	sword.stretch_mode = 5
+	sword.pivot_offset = sword.size / 2
+	sword.z_index = 10
+	sword.position = start_pos - sword.size / 2
+	add_child(sword)
+	
+	var mid = (start_pos + end_pos) / 2
+	mid.y -= 80
+	
+	var swing_dir = sign(end_pos.x - start_pos.x)
+	var start_rotation = -PI / 4 * swing_dir
+	var end_rotation = PI / 2 * swing_dir
+	sword.rotation = start_rotation
+	
+	# Start the dodge slide slightly before impact
+	var dodge_dir = -swing_dir  # Slide away from attacker
+	var dodge_offset = Vector2(dodge_dir * 40, 0)
+	var original_pos = defender_container.position
+	
+	# Start dodge slide at ~60% of swing
+	var dodge_tween = create_tween()
+	dodge_tween.tween_interval(0.2)  # Wait until sword is mid-flight
+	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	
+	# Swing animation
+	var swing_duration = 0.35
+	var tween = create_tween()
+	tween.tween_method(func(t: float):
+		if not is_instance_valid(sword):
+			return
+		var p = (1.0 - t) * (1.0 - t) * start_pos + 2.0 * (1.0 - t) * t * mid + t * t * end_pos
+		sword.position = p - sword.size / 2
+		sword.rotation = lerp(start_rotation, end_rotation, t)
+	, 0.0, 1.0, swing_duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	
+	await tween.finished
+	
+	if not is_instance_valid(sword):
+		return
+	sword.queue_free()
+	
+	if combat_session_id != session_id or not visible:
+		defender_container.position = original_pos
+		return
+	
+	# Show "Dodged!" text
+	_spawn_floating_text(defender_icon, "Dodged!", Color(0.7, 0.85, 1.0))
+	
+	# Slide back to original position
+	var return_tween = create_tween()
+	return_tween.tween_property(defender_container, "position", original_pos, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	
+	await get_tree().create_timer(0.35).timeout
+
+func _shake_icon(icon: Control, is_crit: bool = false):
+	"""Shake the icon briefly to indicate impact."""
+	var original_pos = icon.position
+	var intensity = 6.0 if not is_crit else 10.0
+	var shake_count = 3 if not is_crit else 5
+	
+	var tween = create_tween()
+	for i in range(shake_count):
+		var offset = Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
+		tween.tween_property(icon, "position", original_pos + offset, 0.04)
+	tween.tween_property(icon, "position", original_pos, 0.04)
+
+func _spawn_floating_text(target_icon: Control, text: String, color: Color, large: bool = false):
+	"""Spawn a floating damage/heal number that rises and fades out."""
+	var label = Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 22 if not large else 28)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	label.add_theme_constant_override("shadow_offset_x", 2)
+	label.add_theme_constant_override("shadow_offset_y", 2)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.z_index = 20
+	
+	# Position above the target icon center
+	var icon_center = _get_icon_center_global(target_icon)
+	add_child(label)
+	# Wait one frame so label gets its size
+	await get_tree().process_frame
+	label.position = icon_center - Vector2(label.size.x / 2, label.size.y + 10)
+	
+	# Animate: float up and fade out
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "position:y", label.position.y - 40, 0.8).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.8).set_delay(0.3)
+	tween.set_parallel(false)
+	tween.tween_callback(label.queue_free)
+
+func _get_icon_center_global(icon: Control) -> Vector2:
+	"""Get the center position of an icon relative to this combat panel."""
+	# icon is a child somewhere in our tree; get its rect in our coordinate space
+	var rect = icon.get_global_rect()
+	var my_global = global_position
+	return Vector2(rect.position.x - my_global.x + rect.size.x / 2, rect.position.y - my_global.y + rect.size.y / 2)
 
 func apply_action_health_changes(action: GameInfo.CombatLogEntry):
 	var combat = GameInfo.current_combat_log
