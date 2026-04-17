@@ -143,6 +143,15 @@ func _connect_buttons():
 	chat_button.pressed.connect(toggle_chat)
 	chat_panel.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
+	
+	# Back button hover/click feedback (golden tint like arena buttons)
+	var golden = Color(0.9, 0.7, 0.4, 1)
+	var default_color = Color(1, 1, 1, 1)
+	back_button.mouse_entered.connect(func(): back_button.modulate = golden)
+	back_button.mouse_exited.connect(func(): back_button.modulate = default_color)
+	back_button.button_down.connect(func(): back_button.modulate = golden)
+	back_button.button_up.connect(func(): back_button.modulate = default_color)
+	
 	# Fight button is handled by Arena.gd - it sends request to server, waits for response, then shows combat panel
 
 func _initialize_starter_panel():

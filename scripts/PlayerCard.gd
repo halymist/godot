@@ -16,7 +16,7 @@ func _ready():
 	# Connect button pressed signal
 	pressed.connect(_on_pressed)
 
-func setup(character: Dictionary, server_name: String = "", server_created_at: int = 0, srv_id: int = 0):
+func setup(character: Dictionary, server_name: String = "", server_created_at: int = 0, srv_id: int = 0, server_day: int = 0):
 	"""Setup the player card with character data and server info"""
 	character_data = character
 	character_id = character.get("character_id", 0)
@@ -28,8 +28,8 @@ func setup(character: Dictionary, server_name: String = "", server_created_at: i
 		name_label.text = character.get("name", "Unknown") + vip_badge
 	
 	if server_label and server_name != "":
-		var server_age_days = _calculate_server_age_days(server_created_at)
-		server_label.text = server_name + " (Day " + str(server_age_days) + ")"
+		var day = server_day if server_day > 0 else _calculate_server_age_days(server_created_at)
+		server_label.text = server_name + " (Day " + str(day) + ")"
 	
 	# Setup avatar with character's cosmetic IDs
 	if avatar and character.has("avatar"):

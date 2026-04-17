@@ -6,8 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
 [ext_resource type="Texture2D" uid="uid://ho4facjk62r8" path="res://assets/images/ui/settings.png" id="5_settings"]
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="6_itemslot"]
-[ext_resource type="Texture2D" uid="uid://cjgyacwkb877" path="res://assets/images/ui/sunny.png" id="8_e6ols"]
-[ext_resource type="Texture2D" uid="uid://814oroxowurk" path="res://assets/images/ui/rainy.png" id="9_2cns2"]
 [ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="9_sword"]
 [ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="9_w4j8i"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="11_vm72l"]
@@ -41,6 +39,7 @@
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
 [ext_resource type="Script" uid="uid://d13rdbsc5arag" path="res://scripts/ArenaOpponent.gd" id="31_a2m5q"]
 [ext_resource type="Script" uid="uid://1qtt6kuttw1i" path="res://scripts/EnchanterPanel.gd" id="31_enchanter"]
+[ext_resource type="Texture2D" uid="uid://cym5xd5l31nsq" path="res://assets/images/ui/vendor.svg" id="31_k8ojv"]
 [ext_resource type="Texture2D" uid="uid://fdesrxw8x4nm" path="res://assets/images/ui/abother_texture.png" id="31_lknxd"]
 [ext_resource type="Texture2D" uid="uid://d0du2rhqb1se6" path="res://assets/images/ui/silver.png" id="32_ccfo7"]
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="32_lknxd"]
@@ -311,7 +310,7 @@ offset_top = -900.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TopUI" type="Panel" parent="Portrait" unique_id=1288915121 node_paths=PackedStringArray("gold_label", "currency_label", "location_label", "location_description_label", "health_bar", "weather_icon_texture", "location_info_panel", "location_hover_area")]
+[node name="TopUI" type="Panel" parent="Portrait" unique_id=1288915121 node_paths=PackedStringArray("gold_label", "currency_label", "location_description_label", "health_bar", "time_label", "day_label", "location_info_panel", "location_hover_area")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -323,12 +322,10 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ifeo7")
 script = ExtResource("4_2cns2")
 gold_label = NodePath("VBoxContainer/SilverContainer/SilverValue")
 currency_label = NodePath("VBoxContainer/MushroomContainer/MushroomValue")
-location_label = NodePath("VBoxContainer/LocationPanel/HBoxContainer/LocationLabel")
 location_description_label = NodePath("../GameScene/LocationInfoPanel/InfoLabel")
 health_bar = NodePath("HealthBar")
-sunny_icon = ExtResource("8_e6ols")
-rainy_icon = ExtResource("9_2cns2")
-weather_icon_texture = NodePath("VBoxContainer/LocationPanel/HBoxContainer/WeatherIcon")
+time_label = NodePath("TimeLabel")
+day_label = NodePath("DayLabel")
 location_info_panel = NodePath("../GameScene/LocationInfoPanel")
 location_hover_area = NodePath("VBoxContainer/LocationPanel")
 
@@ -432,20 +429,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
 layout_mode = 0
 theme_override_constants/separation = 5
 
-[node name="LocationLabel" type="Label" parent="Portrait/TopUI/VBoxContainer/LocationPanel/HBoxContainer" unique_id=824740696]
-layout_mode = 2
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-text = "Krasna Ves - 14:35"
-vertical_alignment = 1
-
-[node name="WeatherIcon" type="TextureRect" parent="Portrait/TopUI/VBoxContainer/LocationPanel/HBoxContainer" unique_id=717887597]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-texture = ExtResource("9_2cns2")
-expand_mode = 1
-stretch_mode = 5
-
 [node name="SettingsButton" type="Button" parent="Portrait/TopUI" unique_id=1823209460]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 1
@@ -463,6 +446,32 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("5_settings")
 expand_icon = true
 
+[node name="TimeLabel" type="Label" parent="Portrait/TopUI" unique_id=1398734189]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.84000003
+anchor_top = 0.3
+anchor_right = 0.99
+anchor_bottom = 0.5
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.8)
+theme_override_font_sizes/font_size = 12
+text = "14:35"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DayLabel" type="Label" parent="Portrait/TopUI" unique_id=882881935]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.84000003
+anchor_top = 0.48
+anchor_right = 0.99
+anchor_bottom = 0.65
+theme_override_colors/font_color = Color(0.7, 0.65, 0.5, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "Day 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="BackButton" type="Button" parent="Portrait/TopUI" unique_id=1180159497]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 1
@@ -477,6 +486,9 @@ offset_right = -0.015014648
 offset_bottom = -0.020019531
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
+theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 icon = ExtResource("4_ewbju")
 expand_icon = true
@@ -1407,7 +1419,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 offset_top = -75.0
 
-[node name="Home" type="TextureRect" parent="Portrait/GameScene" unique_id=434203149 node_paths=PackedStringArray("vendor_button", "vendor_icon", "vendor_label", "utility_button", "utility_icon", "utility_label", "quest_button", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_slide_panel", "map_panel")]
+[node name="Home" type="TextureRect" parent="Portrait/GameScene" unique_id=434203149 node_paths=PackedStringArray("vendor_button", "vendor_icon", "vendor_label", "utility_button", "utility_icon", "utility_label", "quest_button", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_slide_panel", "map_panel", "location_label")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1425,11 +1437,12 @@ utility_button = NodePath("Overlay/ButtonRow/UtilityButton")
 utility_icon = NodePath("Overlay/ButtonRow/UtilityButton/VBox/Icon")
 utility_label = NodePath("Overlay/ButtonRow/UtilityButton/VBox/Label")
 quest_button = NodePath("Overlay/QuestButton")
-quest_name_label = NodePath("Overlay/QuestButton/HBox/QuestInfo/QuestName")
-quest_progress_label = NodePath("Overlay/QuestButton/HBox/QuestInfo/Progress")
-quest_arrow = NodePath("Overlay/QuestButton/HBox/Arrow")
+quest_name_label = NodePath("Overlay/QuestButton/HBox/QuestName")
+quest_progress_label = NodePath("Overlay/QuestButton/HBox/RightSide/Progress")
+quest_arrow = NodePath("Overlay/QuestButton/HBox/RightSide/Arrow")
 quest_slide_panel = NodePath("../Quest")
 map_panel = NodePath("../Map")
+location_label = NodePath("Overlay/LocationLabel")
 
 [node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Home" unique_id=1241192436]
 layout_mode = 1
@@ -1437,29 +1450,46 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -178.0
+offset_top = -155.0
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
+
+[node name="LocationLabel" type="Label" parent="Portrait/GameScene/Home/Overlay" unique_id=313789811]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 15.0
+offset_top = 8.0
+offset_right = -15.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Krasna Ves"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ButtonRow" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay" unique_id=1336968269]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 15.0
-offset_top = 10.0
+offset_top = 35.0
 offset_right = -15.0
-offset_bottom = 110.0
+offset_bottom = 85.0
 grow_horizontal = 2
 theme_override_constants/separation = 15
 
 [node name="VendorButton" type="Button" parent="Portrait/GameScene/Home/Overlay/ButtonRow" unique_id=602900717]
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBox" type="VBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton" unique_id=1212129687]
+[node name="VBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton" unique_id=1212129687]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1467,31 +1497,29 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/VBox" unique_id=554122923]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-size_flags_horizontal = 4
-texture = ExtResource("83_lrctp")
+size_flags_vertical = 4
+texture = ExtResource("31_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/VBox" unique_id=38230190]
 layout_mode = 2
-size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 16
 text = "Vendor"
-horizontal_alignment = 1
 
 [node name="UtilityButton" type="Button" parent="Portrait/GameScene/Home/Overlay/ButtonRow" unique_id=657420570]
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBox" type="VBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton" unique_id=1515647916]
+[node name="VBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton" unique_id=1515647916]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1499,23 +1527,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/VBox" unique_id=2019723696]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("31_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/VBox" unique_id=391820587]
 layout_mode = 2
-size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 16
 text = "Blacksmith"
-horizontal_alignment = 1
 
 [node name="QuestButton" type="Button" parent="Portrait/GameScene/Home/Overlay" unique_id=271981231]
 custom_minimum_size = Vector2(0, 60)
@@ -1541,27 +1568,30 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="QuestInfo" type="VBoxContainer" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox" unique_id=1582251437]
+[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox" unique_id=1394326782]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/QuestInfo" unique_id=1394326782]
-layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 18
 text = "Hunt for Herbs"
 
-[node name="Progress" type="Label" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/QuestInfo" unique_id=197425511]
+[node name="RightSide" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox" unique_id=2112414070]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="Progress" type="Label" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/RightSide" unique_id=197425511]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.58, 0.55, 1)
 theme_override_font_sizes/font_size = 14
 text = "1 / 8"
 
-[node name="Arrow" type="Button" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox" unique_id=767934568]
-custom_minimum_size = Vector2(40, 40)
+[node name="Arrow" type="Button" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/RightSide" unique_id=767934568]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_vertical = 4
-text = ">"
+icon = ExtResource("90_next")
+expand_icon = true
 
 [node name="LogoutPanel" type="Panel" parent="Portrait/GameScene/Home" unique_id=2030439010 node_paths=PackedStringArray("yes_button", "no_button", "background_button")]
 visible = false

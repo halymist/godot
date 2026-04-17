@@ -3,14 +3,12 @@ extends Control
 # Export the labels so they can be assigned in the scene
 @export var gold_label: Label
 @export var currency_label: Label
-@export var location_label: Label
 @export var location_description_label: Label
 @export var health_bar: TextureProgressBar
+@export var time_label: Label
+@export var day_label: Label
 
-# Location panel exports (from LocationPanel.gd)
-@export var sunny_icon: Texture2D
-@export var rainy_icon: Texture2D
-@export var weather_icon_texture: TextureRect
+# Location panel exports
 @export var location_info_panel: MarginContainer
 @export var location_hover_area: Control  # Optional control to detect hover on
 
@@ -39,11 +37,9 @@ func _ready():
 
 func _on_update_timer_timeout():
 	"""Called every second to update the time display"""
-	var location_id = GameInfo.current_player.location if GameInfo.current_player else 1
-	var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
-	var village_name = location.location_name if location else "Unknown Village"
 	var server_time = _get_server_time_string()
-	location_label.text = "%s - %s" % [village_name, server_time]
+	if time_label:
+		time_label.text = server_time
 
 func _on_location_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
@@ -68,22 +64,21 @@ func update_display():
 		var mushrooms = int(GameInfo.lobby_data.mushrooms)
 		currency_label.text = str(mushrooms)
 	
-	# Update location if label exists
-	if location_label:
-		var location_id = GameInfo.current_player.location
-		var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
-		var village_name = location.location_name if location else "Unknown Village"
-		var server_time = _get_server_time_string()
-		
-		# Format: "Krasna Ves - 14:35"
-		location_label.text = "%s - %s" % [village_name, server_time]
-		
-		# Update location description
-		if location_description_label and location:
-			location_description_label.text = location.description if location.description else "No description available."
+	# Update location
+	var location_id = GameInfo.current_player.location
+	var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
+	var server_time = _get_server_time_string()
 	
-	# Update weather icon
-	_update_weather_icon()
+	if time_label:
+		time_label.text = server_time
+	
+	# Update day label
+	if day_label and GameInfo.current_player:
+		day_label.text = "Day " + str(GameInfo.current_player.server_day)
+	
+	# Update location description
+	if location_description_label and location:
+		location_description_label.text = location.description if location.description else "No description available."
 
 	# Update health bar
 	update_health_bar()
@@ -112,15 +107,3 @@ func _get_server_time_string() -> String:
 	var time_dict = Time.get_datetime_dict_from_unix_time(int(current_unix))
 	
 	return "%02d:%02d" % [time_dict.hour, time_dict.minute]
-
-func _update_weather_icon():
-	if not weather_icon_texture or not GameInfo.current_player:
-		return
-	
-	match GameInfo.current_player.weather:
-		1:  # Sunny
-			weather_icon_texture.texture = sunny_icon
-		2:  # Rainy
-			weather_icon_texture.texture = rainy_icon
-		_:
-			weather_icon_texture.texture = null

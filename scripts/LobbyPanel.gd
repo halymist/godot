@@ -312,7 +312,7 @@ func add_character_list():
 			var card = PlayerCard.instantiate()
 			characters_container.add_child(card)
 			# Pass character data plus server info for display
-			card.setup(character, server.get("name", ""), server.get("created_at", 0), server.get("id", 0))
+			card.setup(character, server.get("name", ""), server.get("created_at", 0), server.get("id", 0), server.get("current_day", 0))
 			# Connect to card's signal with proper signature (character_id, server_id)
 			card.character_selected.connect(_on_character_selected)
 	

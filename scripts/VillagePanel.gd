@@ -24,6 +24,7 @@ extends TextureRect
 # Child panels that exist under Home (for compatibility)
 @export var quest_slide_panel: Control
 @export var map_panel: Control
+@export var location_label: Label
 
 # Current quest tracking
 var current_quest_index: int = 0
@@ -70,6 +71,10 @@ func _load_village_background():
 	# Apply settlement texture directly to self as village background
 	if settlement and settlement.settlement_texture:
 		texture = settlement.settlement_texture
+	
+	# Update location name label in overlay
+	if location_label and settlement:
+		location_label.text = settlement.location_name if settlement.location_name else "Unknown"
 
 func _setup_buttons():
 	"""Configure vendor and utility buttons based on settlement"""
