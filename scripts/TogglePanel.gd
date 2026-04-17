@@ -639,6 +639,8 @@ func update_silver(amount: int):
 	GameInfo.current_player.silver += amount
 	print("Current silver after: ", GameInfo.current_player.silver)
 	update_display()
+	if top_ui and top_ui.has_method("update_display"):
+		top_ui.update_display()
 
 func update_mushrooms(amount: int):
 	"""Add or subtract mushrooms and update all displays (account-level)"""
@@ -648,6 +650,8 @@ func update_mushrooms(amount: int):
 		GameInfo.lobby_data.mushrooms += amount
 		print("Current mushrooms after: ", GameInfo.lobby_data.mushrooms)
 	update_display()
+	if top_ui and top_ui.has_method("update_display"):
+		top_ui.update_display()
 
 func update_display():
 	"""Refresh all silver and mushroom label displays"""

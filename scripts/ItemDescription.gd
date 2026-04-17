@@ -76,8 +76,10 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id)
 				if effect_data:
 					var effect_line = effect_data.description
-					if effect_map[effect_id] > 0:
-						effect_line += " " + str(effect_map[effect_id]) + "%"
+					if "*" in effect_line and effect_map[effect_id] > 0:
+						effect_line = effect_line.replace("*", str(int(effect_map[effect_id])))
+					elif effect_map[effect_id] > 0:
+						effect_line += " " + str(int(effect_map[effect_id])) + "%"
 					effect_texts.append(effect_line)
 			
 			# Display combined effects
@@ -165,8 +167,9 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				var effect_data = GameInfo.effects_db.get_effect_by_id(display_effect_id)
 				if effect_data and effect_data.description != "":
 					var effect_text = effect_data.description
-					# Append factor to description as integer
-					if display_effect_factor != 0.0:
+					if "*" in effect_text and display_effect_factor != 0.0:
+						effect_text = effect_text.replace("*", str(int(display_effect_factor)))
+					elif display_effect_factor != 0.0:
 						effect_text += " " + str(int(display_effect_factor)) + "%"
 					
 					effect.text = effect_text

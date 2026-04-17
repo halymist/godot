@@ -339,34 +339,16 @@ func _animate_action(entry: GameInfo.CombatLogEntry, session_id: int):
 			await get_tree().create_timer(0.3).timeout
 
 func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defender_container: Control, damage: int, is_crit: bool, session_id: int):
-	"""Animate a sword swing from attacker to defender, then shake + damage popup."""
+	"""Animate sword moving in a straight line from attacker to defender, then shake + damage popup."""
 	var start_pos = _get_icon_local_center(attacker_icon)
 	var end_pos = _get_icon_local_center(defender_icon)
 	
-	# Create sword sprite — same size for all hits
 	var sword_size = Vector2(28, 28)
 	var sword = _create_sword_sprite(sword_size, start_pos)
 	
-	# Calculate arc: midpoint raised upward
-	var mid = (start_pos + end_pos) / 2
-	mid.y -= 30  # Arc height
-	
-	# Determine swing direction (left-to-right or right-to-left)
-	var swing_dir = sign(end_pos.x - start_pos.x)
-	var start_rotation = -PI / 4 * swing_dir  # Sword raised
-	var end_rotation = PI / 2 * swing_dir       # Sword swung down
-	sword.rotation = start_rotation
-	
-	# Animate along bezier arc
-	var swing_duration = 0.5
+	# Straight line tween from attacker to defender
 	var tween = create_tween()
-	tween.tween_method(func(t: float):
-		if not is_instance_valid(sword):
-			return
-		var p = (1.0 - t) * (1.0 - t) * start_pos + 2.0 * (1.0 - t) * t * mid + t * t * end_pos
-		sword.position = p - sword_size / 2
-		sword.rotation = lerp(start_rotation, end_rotation, t)
-	, 0.0, 1.0, swing_duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.4).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 	
@@ -381,46 +363,29 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 	var dmg_color = Color(1.0, 0.2, 0.2) if not is_crit else Color(1.0, 0.85, 0.0)
 	_spawn_floating_text(defender_icon, str(damage), dmg_color, is_crit)
 	
-	# Wait for shake to finish
 	await get_tree().create_timer(0.4).timeout
 
 func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defender_container: Control, session_id: int):
-	"""Animate a sword swing, but the defender slides back to dodge."""
+	"""Animate sword flying at defender, but defender slides back to dodge."""
 	var start_pos = _get_icon_local_center(attacker_icon)
 	var end_pos = _get_icon_local_center(defender_icon)
 	
-	# Create sword sprite
 	var sword_size = Vector2(28, 28)
 	var sword = _create_sword_sprite(sword_size, start_pos)
 	
-	var mid = (start_pos + end_pos) / 2
-	mid.y -= 30
-	
+	# Dodge slide: defender moves away from attacker
 	var swing_dir = sign(end_pos.x - start_pos.x)
-	var start_rotation = -PI / 4 * swing_dir
-	var end_rotation = PI / 2 * swing_dir
-	sword.rotation = start_rotation
-	
-	# Dodge slide: defender moves AWAY from attacker (same direction as swing)
-	var dodge_dir = swing_dir
-	var dodge_offset = Vector2(dodge_dir * 40, 0)
+	var dodge_offset = Vector2(swing_dir * 40, 0)
 	var original_pos = defender_container.position
 	
-	# Start dodge slide partway through the swing
+	# Start dodge slide partway through the sword flight
 	var dodge_tween = create_tween()
-	dodge_tween.tween_interval(0.25)  # Wait until sword is mid-flight
+	dodge_tween.tween_interval(0.2)
 	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
-	# Swing animation
-	var swing_duration = 0.5
+	# Straight line sword flight
 	var tween = create_tween()
-	tween.tween_method(func(t: float):
-		if not is_instance_valid(sword):
-			return
-		var p = (1.0 - t) * (1.0 - t) * start_pos + 2.0 * (1.0 - t) * t * mid + t * t * end_pos
-		sword.position = p - sword_size / 2
-		sword.rotation = lerp(start_rotation, end_rotation, t)
-	, 0.0, 1.0, swing_duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.4).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 	
@@ -438,7 +403,7 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	var return_tween = create_tween()
 	return_tween.tween_property(defender_container, "position", original_pos, 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
-	await get_tree().create_timer(0.45).timeout
+	await get_tree().create_timer(0.4).timeout
 
 func _shake_icon(icon: Control, is_crit: bool = false):
 	"""Shake the icon briefly to indicate impact."""
