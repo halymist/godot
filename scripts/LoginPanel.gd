@@ -72,6 +72,7 @@ func _ready():
 
 	# Check if we already have login data (returning from game)
 	if not GameInfo.lobby_data.is_empty():
+		_start_dot_animation("Loading")
 		_show_lobby_after_init()
 		return
 	
@@ -396,7 +397,9 @@ func _show_error(message: String):
 
 func _show_lobby_after_init():
 	"""Keep login visible until lobby is fully initialized, then switch."""
+	print("[Login] _show_lobby_after_init: waiting for lobby to be ready...")
 	if not lobby_panel:
+		print("[Login] ERROR: no lobby_panel!")
 		_stop_dot_animation()
 		is_logging_in = false
 		if email_login_button:
@@ -407,6 +410,7 @@ func _show_lobby_after_init():
 	lobby_panel.visible = false
 	lobby_panel.initialize_lobby()
 	await lobby_panel.lobby_ready
+	print("[Login] lobby_ready received, switching to lobby")
 	
 	# Lobby is ready — switch panels
 	_stop_dot_animation()

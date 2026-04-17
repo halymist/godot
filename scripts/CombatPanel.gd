@@ -447,7 +447,6 @@ func _on_visibility_changed():
 		# If skip combat is enabled, skip straight to result
 		if SettingsManager.get_setting("gameplay", "skip_combat", false):
 			_skip_to_end()
-			call_deferred("_navigate_after_combat")
 		else:
 			start_combat_playback()
 	elif not visible:

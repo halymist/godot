@@ -1435,11 +1435,11 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("20_village")
 vendor_button = NodePath("Overlay/ButtonRow/VendorButton")
-vendor_icon = NodePath("Overlay/ButtonRow/VendorButton/VBox/Icon")
-vendor_label = NodePath("Overlay/ButtonRow/VendorButton/VBox/Label")
+vendor_icon = NodePath("Overlay/ButtonRow/VendorButton/HBox/Icon")
+vendor_label = NodePath("Overlay/ButtonRow/VendorButton/HBox/Label")
 utility_button = NodePath("Overlay/ButtonRow/UtilityButton")
-utility_icon = NodePath("Overlay/ButtonRow/UtilityButton/VBox/Icon")
-utility_label = NodePath("Overlay/ButtonRow/UtilityButton/VBox/Label")
+utility_icon = NodePath("Overlay/ButtonRow/UtilityButton/HBox/Icon")
+utility_label = NodePath("Overlay/ButtonRow/UtilityButton/HBox/Label")
 quest_button = NodePath("Overlay/QuestButton")
 quest_name_label = NodePath("Overlay/QuestButton/HBox/QuestName")
 quest_progress_label = NodePath("Overlay/QuestButton/HBox/RightSide/Progress")
@@ -1455,7 +1455,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -210.0
+offset_top = -200.0
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0, 0, 0, 0.45)
@@ -1468,7 +1468,7 @@ anchor_right = 1.0
 offset_left = 15.0
 offset_top = 6.0
 offset_right = -15.0
-offset_bottom = 28.0
+offset_bottom = 26.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -1483,9 +1483,9 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 15.0
-offset_top = 28.0
+offset_top = 31.0
 offset_right = -15.0
-offset_bottom = 62.0
+offset_bottom = 84.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
 theme_override_font_sizes/font_size = 11
@@ -1497,18 +1497,18 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 15.0
-offset_top = 65.0
+offset_top = 95.0
 offset_right = -15.0
-offset_bottom = 115.0
+offset_bottom = 141.0
 grow_horizontal = 2
 theme_override_constants/separation = 15
 
 [node name="VendorButton" type="Button" parent="Portrait/GameScene/Home/Overlay/ButtonRow" unique_id=602900717]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton" unique_id=1212129687]
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton" unique_id=1212129687]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1519,26 +1519,26 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/VBox" unique_id=554122923]
-custom_minimum_size = Vector2(32, 32)
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/HBox" unique_id=554122923]
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("31_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/VBox" unique_id=38230190]
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/HBox" unique_id=38230190]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "Vendor"
 
 [node name="UtilityButton" type="Button" parent="Portrait/GameScene/Home/Overlay/ButtonRow" unique_id=657420570]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton" unique_id=1515647916]
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton" unique_id=1515647916]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1549,31 +1549,31 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/VBox" unique_id=2019723696]
-custom_minimum_size = Vector2(32, 32)
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/HBox" unique_id=2019723696]
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("31_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/VBox" unique_id=391820587]
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/HBox" unique_id=391820587]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "Blacksmith"
 
 [node name="QuestButton" type="Button" parent="Portrait/GameScene/Home/Overlay" unique_id=271981231]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 15.0
-offset_top = -70.0
+offset_top = -52.0
 offset_right = -15.0
-offset_bottom = -10.0
+offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -1591,7 +1591,7 @@ theme_override_constants/separation = 12
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 text = "Hunt for Herbs"
 vertical_alignment = 1
 
@@ -1603,12 +1603,12 @@ theme_override_constants/separation = 8
 [node name="Progress" type="Label" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/RightSide" unique_id=197425511]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.58, 0.55, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 text = "1 / 8"
 vertical_alignment = 1
 
 [node name="Arrow" type="Button" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/RightSide" unique_id=767934568]
-custom_minimum_size = Vector2(30, 30)
+custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
 size_flags_vertical = 4
 icon = ExtResource("90_next")
