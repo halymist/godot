@@ -311,18 +311,13 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	
 	Websocket.buy_item(vendor_item.id, slot_id)
 	
-	# Add item to player's bag using helper (automatically assigns to empty slot with server day)
-	var added = GameInfo.current_player.add_item_to_bag(vendor_item.id)
-	if not added:
-		print("ERROR: Failed to add purchased item to bag (this shouldn't happen since we checked slot was empty)")
-		return
-	
-	# Get the newly added item from bag_slots
-	var purchased_item: GameInfo.Item = null
-	for item in GameInfo.current_player.bag_slots:
-		if item.bag_slot_id == slot_id:
-			purchased_item = item
-			break
+	# Create the purchased item directly in the target bag slot
+	var purchased_item = GameInfo.Item.new({
+		"id": vendor_item.id,
+		"bag_slot_id": slot_id,
+		"day": GameInfo.current_player.server_day
+	})
+	GameInfo.current_player.bag_slots.append(purchased_item)
 	
 	# Remove item from vendor panel's local inventory (don't replenish)
 	var vendor_slot_index = _vendor_slot_id - VENDOR_MIN  # Convert slot_id to index

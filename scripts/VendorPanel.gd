@@ -33,6 +33,14 @@ func _setup():
 func _create_vendor_grid():
 	if _vendor_grid:
 		return
+	
+	# Add a semi-transparent background to show the vendor display area
+	var bg = ColorRect.new()
+	bg.color = Color(0.15, 0.12, 0.1, 0.6)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vendor_display.add_child(bg)
+	
 	_vendor_grid = GridContainer.new()
 	_vendor_grid.columns = 4
 	_vendor_grid.set_anchors_preset(Control.PRESET_FULL_RECT)

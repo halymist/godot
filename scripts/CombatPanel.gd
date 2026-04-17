@@ -340,8 +340,8 @@ func _animate_action(entry: GameInfo.CombatLogEntry, session_id: int):
 
 func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defender_container: Control, damage: int, is_crit: bool, session_id: int):
 	"""Animate a sword swing from attacker to defender, then shake + damage popup."""
-	var start_pos = _get_icon_bottom_center(attacker_icon)
-	var end_pos = _get_icon_bottom_center(defender_icon)
+	var start_pos = _get_icon_local_center(attacker_icon)
+	var end_pos = _get_icon_local_center(defender_icon)
 	
 	# Create sword sprite — same size for all hits
 	var sword_size = Vector2(28, 28)
@@ -349,7 +349,7 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 	
 	# Calculate arc: midpoint raised upward
 	var mid = (start_pos + end_pos) / 2
-	mid.y -= 50  # Arc height
+	mid.y -= 30  # Arc height
 	
 	# Determine swing direction (left-to-right or right-to-left)
 	var swing_dir = sign(end_pos.x - start_pos.x)
@@ -386,15 +386,15 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 
 func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defender_container: Control, session_id: int):
 	"""Animate a sword swing, but the defender slides back to dodge."""
-	var start_pos = _get_icon_bottom_center(attacker_icon)
-	var end_pos = _get_icon_bottom_center(defender_icon)
+	var start_pos = _get_icon_local_center(attacker_icon)
+	var end_pos = _get_icon_local_center(defender_icon)
 	
 	# Create sword sprite
 	var sword_size = Vector2(28, 28)
 	var sword = _create_sword_sprite(sword_size, start_pos)
 	
 	var mid = (start_pos + end_pos) / 2
-	mid.y -= 50
+	mid.y -= 30
 	
 	var swing_dir = sign(end_pos.x - start_pos.x)
 	var start_rotation = -PI / 4 * swing_dir
@@ -465,7 +465,7 @@ func _spawn_floating_text(target_icon: Control, text: String, color: Color, larg
 	label.z_index = 20
 	
 	# Position above the target icon center
-	var icon_center = _get_icon_center_global(target_icon)
+	var icon_center = _get_icon_local_center(target_icon)
 	add_child(label)
 	# Wait one frame so label gets its size
 	await get_tree().process_frame
@@ -479,17 +479,10 @@ func _spawn_floating_text(target_icon: Control, text: String, color: Color, larg
 	tween.set_parallel(false)
 	tween.tween_callback(label.queue_free)
 
-func _get_icon_center_global(icon: Control) -> Vector2:
-	"""Get the center position of an icon relative to this combat panel."""
-	var rect = icon.get_global_rect()
-	var my_global = global_position
-	return Vector2(rect.position.x - my_global.x + rect.size.x / 2, rect.position.y - my_global.y + rect.size.y / 2)
-
-func _get_icon_bottom_center(icon: Control) -> Vector2:
-	"""Get the bottom-center position of an icon relative to this combat panel."""
-	var rect = icon.get_global_rect()
-	var my_global = global_position
-	return Vector2(rect.position.x - my_global.x + rect.size.x / 2, rect.position.y - my_global.y + rect.size.y)
+func _get_icon_local_center(icon: Control) -> Vector2:
+	"""Get the center of an icon in this panel's local coordinate space."""
+	var icon_global_center = icon.global_position + icon.size / 2
+	return icon_global_center - global_position
 
 func _create_sword_sprite(sword_size: Vector2, start_pos: Vector2) -> TextureRect:
 	"""Create and add a sword TextureRect for swing animations."""
