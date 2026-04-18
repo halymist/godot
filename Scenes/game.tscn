@@ -253,7 +253,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_nb51f")
 
-[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "character_display", "enemy_character_display", "top_ui", "bag_views")]
+[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "details_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "bag_views", "character_display", "enemy_character_display", "top_ui")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -296,10 +296,10 @@ church_panel = NodePath("../Portrait/GameScene/ChurchPanel")
 alchemist_panel = NodePath("../Portrait/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("../Portrait/GameScene/EnchanterPanel")
 chat_panel = NodePath("../Portrait/GameScene/ChatOverlay")
+bag_views = [NodePath("../Portrait/GameScene/Character/Bag"), NodePath("../Portrait/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/EnchanterPanel/Overlay/Bag")]
 character_display = NodePath("../Portrait/GameScene/Character/CharacterDisplay")
 enemy_character_display = NodePath("../Portrait/GameScene/Enemy/CharacterDisplay")
 top_ui = NodePath("../Portrait/TopUI")
-bag_views = [NodePath("../Portrait/GameScene/Character/Bag"), NodePath("../Portrait/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/EnchanterPanel/Overlay/Bag")]
 
 [node name="Portrait" type="Control" parent="." unique_id=2021491709]
 layout_mode = 1
@@ -519,10 +519,10 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("40_vendor")
-item_scene = ExtResource("17_aujhx")
 chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 vendor_display = NodePath("Overlay/VendorDisplay")
+item_scene = ExtResource("17_aujhx")
 
 [node name="ChatBubble" parent="Portrait/GameScene/VendorPanel" unique_id=1960592529 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -546,18 +546,16 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="VendorDisplay" type="Control" parent="Portrait/GameScene/VendorPanel/Overlay"]
+[node name="VendorDisplay" type="Control" parent="Portrait/GameScene/VendorPanel/Overlay" unique_id=1224300029]
 layout_mode = 1
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.0
 anchor_right = 0.5
-anchor_bottom = 0.0
 offset_left = -180.0
 offset_top = 8.0
 offset_right = 180.0
 offset_bottom = 158.0
 grow_horizontal = 2
-mouse_filter = 0
 script = ExtResource("16_q8b24")
 item_scene = ExtResource("17_aujhx")
 slot_type = "Sell"
@@ -1457,7 +1455,9 @@ offset_bottom = 84.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
 theme_override_font_sizes/font_size = 11
+text = "some random description that indtoducees the village"
 horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="ButtonRow" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay" unique_id=1336968269]

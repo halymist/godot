@@ -182,13 +182,50 @@ func can_upgrade() -> bool:
 	# Check if it's a starter talent
 	if isStarter:
 		return true
-	
-	# Check if any neighbor is maxed out
-	for neighbor in neighbor_talents:
-		if neighbor.points == neighbor.maxPoints:
-			return true
+
+	# Unlock only from orthogonal neighbors (left/right/up/down), not diagonals.
+	if _has_maxed_orthogonal_neighbor():
+		return true
 	
 	return false
+
+func _has_maxed_orthogonal_neighbor() -> bool:
+	var grid = get_parent() as GridContainer
+	if grid == null:
+		return false
+
+	var siblings = grid.get_children()
+	var idx = get_index()
+	if idx < 0:
+		return false
+
+	var col_count = max(grid.columns, 1)
+	var col = idx % col_count
+
+	# Left
+	if col > 0 and _is_maxed_talent_node(siblings[idx - 1]):
+		return true
+	# Right
+	if col < col_count - 1 and idx + 1 < siblings.size() and _is_maxed_talent_node(siblings[idx + 1]):
+		return true
+	# Up
+	if idx - col_count >= 0 and _is_maxed_talent_node(siblings[idx - col_count]):
+		return true
+	# Down
+	if idx + col_count < siblings.size() and _is_maxed_talent_node(siblings[idx + col_count]):
+		return true
+
+	return false
+
+func _is_maxed_talent_node(node: Node) -> bool:
+	if node == null:
+		return false
+	if not node.has_method("update_button_appearance"):
+		return false
+
+	var neighbor_points = int(node.get("points"))
+	var neighbor_max = int(node.get("maxPoints"))
+	return neighbor_points == neighbor_max
 
 func upgrade_talent():
 	if points < maxPoints and GameInfo.current_player.talent_points > 0:

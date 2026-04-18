@@ -79,7 +79,10 @@ func _on_reset_button_pressed():
 		return
 	
 	Websocket.reset_talents()
-	UIManager.instance.update_silver(-RESET_COST)
+	if UIManager.instance:
+		UIManager.instance.update_silver(-RESET_COST)
+	else:
+		GameInfo.current_player.silver -= RESET_COST
 	
 	GameInfo.current_player.talents.clear()
 	for talent in talents:
@@ -93,9 +96,10 @@ func _on_reset_button_pressed():
 
 	print("Reset perks - deactivated all active perks")
 	
-	refresh_all_talents()
-	update_title_label()
+	refresh_talents()
+	update_reset_button_state()
 	
-	UIManager.instance.refresh_active_effects()
-	UIManager.instance.refresh_perks()
+	if UIManager.instance:
+		UIManager.instance.refresh_active_effects()
+		UIManager.instance.refresh_perks()
 	print("Reset complete - all talents reset to 0 points")
