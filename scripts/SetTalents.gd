@@ -23,31 +23,7 @@ func _ready():
 	else:
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
-func _reorder_talents_by_server_order():
-	if talents.is_empty():
-		return
-	if not GameInfo.talents_db:
-		return
-
-	var order_by_talent_id: Dictionary = {}
-	for i in range(GameInfo.talents_db.talents.size()):
-		var talent_res = GameInfo.talents_db.talents[i]
-		order_by_talent_id[talent_res.talent_id] = i
-
-	# Sort to match server-provided ordered list.
-	talents.sort_custom(func(a, b):
-		var a_id = int(a.get("talentID"))
-		var b_id = int(b.get("talentID"))
-		var a_order = int(order_by_talent_id.get(a_id, 999999))
-		var b_order = int(order_by_talent_id.get(b_id, 999999))
-		return a_order < b_order
-	)
-
-	for i in range(talents.size()):
-		move_child(talents[i], i)
-
 func _setup():
-	_reorder_talents_by_server_order()
 	display_player()
 	if not is_read_only:
 		UIManager.instance.refresh_stats()

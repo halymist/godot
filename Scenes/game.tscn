@@ -1343,12 +1343,12 @@ grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("31_enchanter")
-enchant_option_scene = ExtResource("26_lknxd")
 chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 enchanter_slot = NodePath("Overlay/ItemSlot")
 enchant_button = NodePath("Overlay/EnchantButton")
 effect_list = NodePath("Overlay/EffectsSection/EffectScrollContainer/EffectList")
+enchant_option_scene = ExtResource("26_lknxd")
 
 [node name="ChatBubble" parent="Portrait/GameScene/EnchanterPanel" unique_id=894459828 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -2736,11 +2736,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("36_rankings_panel")
-ranking_row_scene = ExtResource("36_ranking_row")
 rankings_table = NodePath("MainContainer/TableScroll")
 table_content = NodePath("MainContainer/TableScroll/VBoxContainer")
 player_card = NodePath("MainContainer/PlayerCard")
 search_input = NodePath("MainContainer/SearchBar/SearchInput")
+ranking_row_scene = ExtResource("36_ranking_row")
 player_name_label = NodePath("MainContainer/PlayerCard/PlayerInfo/PlayerName")
 avatar_instance = NodePath("MainContainer/PlayerCard/Character/Avatar")
 character_button = NodePath("MainContainer/PlayerCard/Character/CharButton")
@@ -5317,13 +5317,13 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_vm72l")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_fkdbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_22asu")
 script = ExtResource("21_fkdbe")
-perk_scene = ExtResource("22_81klo")
 active_perk_display = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay")
 inactive_perks_grid = NodePath("PerkPanel/VBoxContainer/InactivePerksSection/ScrollContainer/GridContainer")
 bind_button = NodePath("PerkPanel/VBoxContainer/BindButton")
 effect1_label = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/Effect1Label")
 effect2_label = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/Effect2Label")
 perk_icon = NodePath("PerkPanel/VBoxContainer/ActivePerkDisplay/VBox/IconContainer/TextureRect")
+perk_scene = ExtResource("22_81klo")
 
 [node name="PerkPanel" type="Panel" parent="Portrait/GameScene/TalentsPanel/PerkScreen" unique_id=340048066]
 layout_mode = 1

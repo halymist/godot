@@ -19,7 +19,14 @@ func get_talent_by_grid_index(index: int) -> TalentResource:
 
 func get_talents_for_row(row: int) -> Array[TalentResource]:
 	var result: Array[TalentResource] = []
-	for talent in talents:
-		if talent.row == row:
-			result.append(talent)
+	if row < 0:
+		return result
+
+	var start_index = row * GRID_COLUMNS
+	if start_index >= talents.size():
+		return result
+
+	var end_index = min(start_index + GRID_COLUMNS, talents.size())
+	for i in range(start_index, end_index):
+		result.append(talents[i])
 	return result

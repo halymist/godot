@@ -665,10 +665,8 @@ func _load_talents_database() -> TalentsDatabase:
 	"""Create TalentsDatabase from JSON"""
 	var db = TalentsDatabase.new()
 	var data = _load_json_file(TALENTS_JSON)
-	var talent_columns := 7
 	
-	for i in range(data.size()):
-		var item = data[i]
+	for item in data:
 		var talent = TalentResource.new()
 		talent.talent_id = item.get("talent_id", 0)
 		talent.name = item.get("name", "")
@@ -677,10 +675,6 @@ func _load_talents_database() -> TalentsDatabase:
 		talent.perk_slot = item.get("perk_slot", false)
 		talent.effect_id = item.get("effect_id", 0)
 		talent.factor = item.get("factor", 0.0)
-
-		# Server now sends talents pre-ordered (row, col). Reconstruct coordinates locally.
-		talent.row = int(floor(float(i) / float(talent_columns)))
-		talent.col = i % talent_columns
 		db.talents.append(talent)
 	
 	print("[DataManager] Loaded %d talents" % db.talents.size())
