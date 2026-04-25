@@ -8,6 +8,7 @@ extends Node
 # Assets are downloaded and stored in user:// then applied as textures
 
 const VERSIONS_FILE = "user://data_versions.cfg"
+const LOCAL_VERSIONS_SCHEMA = 1
 const IMAGES_DIR = "user://images/"
 const DATA_DIR = "user://data/"
 
@@ -93,6 +94,13 @@ func _load_local_versions():
 	
 	for key in local_versions.keys():
 		local_versions[key] = config.get_value("versions", key, 0)
+
+	# Force a one-time talents re-download after switching to ordered payload without row/col fields.
+	var schema_version = int(config.get_value("meta", "schema_version", 0))
+	if schema_version < LOCAL_VERSIONS_SCHEMA:
+		local_versions["talents"] = 0
+		print("[DataManager] Applying schema migration %d: reset talents version to 0" % LOCAL_VERSIONS_SCHEMA)
+		_save_local_versions()
 	
 	print("[DataManager] Loaded local versions: ", local_versions)
 
@@ -102,6 +110,8 @@ func _save_local_versions():
 	
 	for key in local_versions.keys():
 		config.set_value("versions", key, local_versions[key])
+
+	config.set_value("meta", "schema_version", LOCAL_VERSIONS_SCHEMA)
 	
 	var err = config.save(VERSIONS_FILE)
 	if err != OK:
@@ -300,23 +310,39 @@ func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, 
 	
 	# Load existing data
 	var existing_data = _load_json_file(json_path)
-	
-	# Merge: update existing items or add new ones
-	var existing_by_id = {}
+
+	# Deterministic merge that preserves array ordering.
+	var deleted_lookup: Dictionary = {}
+	for del_id in deleted_ids:
+		deleted_lookup[int(del_id)] = true
+
+	var incoming_by_id: Dictionary = {}
+	for new_item in new_data:
+		incoming_by_id[new_item.get(id_field, 0)] = new_item
+
+	var merged_data: Array = []
+	var existing_ids: Dictionary = {}
+
+	# Keep existing order, but overwrite entries that arrived in the delta.
 	for item in existing_data:
 		var item_id = item.get(id_field, 0)
-		existing_by_id[item_id] = item
-	
+		existing_ids[item_id] = true
+
+		if deleted_lookup.has(item_id):
+			continue
+
+		if incoming_by_id.has(item_id):
+			merged_data.append(incoming_by_id[item_id])
+		else:
+			merged_data.append(item)
+
+	# Append truly new IDs in server-provided order.
 	for new_item in new_data:
 		var item_id = new_item.get(id_field, 0)
-		existing_by_id[item_id] = new_item  # Overwrite or add
-	
-	# Remove deleted items (e.g. deleted_slide_ids for expeditions)
-	for del_id in deleted_ids:
-		existing_by_id.erase(int(del_id))
-	
-	# Convert back to array
-	var merged_data = existing_by_id.values()
+		if deleted_lookup.has(item_id):
+			continue
+		if not existing_ids.has(item_id):
+			merged_data.append(new_item)
 	
 	# Save merged data
 	_save_json_file(json_path, merged_data)
@@ -639,18 +665,22 @@ func _load_talents_database() -> TalentsDatabase:
 	"""Create TalentsDatabase from JSON"""
 	var db = TalentsDatabase.new()
 	var data = _load_json_file(TALENTS_JSON)
+	var talent_columns := 7
 	
-	for item in data:
+	for i in range(data.size()):
+		var item = data[i]
 		var talent = TalentResource.new()
 		talent.talent_id = item.get("talent_id", 0)
 		talent.name = item.get("name", "")
 		talent.description = item.get("description", "")
 		talent.max_points = item.get("max_points", 0)
-		talent.perk_slot = item.get("perk_slot", 0)
+		talent.perk_slot = item.get("perk_slot", false)
 		talent.effect_id = item.get("effect_id", 0)
 		talent.factor = item.get("factor", 0.0)
-		talent.row = item.get("row", 0)
-		talent.col = item.get("col", 0)
+
+		# Server now sends talents pre-ordered (row, col). Reconstruct coordinates locally.
+		talent.row = int(floor(float(i) / float(talent_columns)))
+		talent.col = i % talent_columns
 		db.talents.append(talent)
 	
 	print("[DataManager] Loaded %d talents" % db.talents.size())

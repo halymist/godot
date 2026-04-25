@@ -9,6 +9,8 @@ extends AspectRatioContainer
 
 @export var effect_id: int = 0  # Will be loaded from talents_db
 @export var factor: float = 1.0  # Will be loaded from talents_db
+@export var talent_row: int = -1  # Loaded from talents_db for server-matching adjacency
+@export var talent_col: int = -1  # Loaded from talents_db for server-matching adjacency
 
 @export var perk_slot: bool = false  # true if this talent unlocks a perk slot (talentID identifies the slot)
 
@@ -47,8 +49,10 @@ func _load_from_database():
 		maxPoints = talent_data.max_points
 		effect_id = talent_data.effect_id
 		factor = talent_data.factor
+		talent_row = talent_data.row
+		talent_col = talent_data.col
 		perk_slot = talent_data.perk_slot  # bool: true if this talent unlocks a perk slot
-		print("[Talent] Loaded from DB: ID=", talentID, " name=", talentName, " maxPoints=", maxPoints, " effect=", effect_id, " factor=", factor, " perk_slot=", perk_slot)
+		print("[Talent] Loaded from DB: ID=", talentID, " name=", talentName, " maxPoints=", maxPoints, " effect=", effect_id, " factor=", factor, " row=", talent_row, " col=", talent_col, " perk_slot=", perk_slot)
 	else:
 		print("[Talent] WARNING: Talent ID ", talentID, " not found in talents_db, using fallback values")
 
@@ -190,6 +194,34 @@ func can_upgrade() -> bool:
 	return false
 
 func _has_maxed_orthogonal_neighbor() -> bool:
+	if talent_row >= 0 and talent_col >= 0:
+		return _has_maxed_neighbor_by_db_coordinates()
+
+	return _has_maxed_neighbor_by_scene_index()
+
+func _has_maxed_neighbor_by_db_coordinates() -> bool:
+	var grid = get_parent() as GridContainer
+	if grid == null:
+		return false
+
+	for node in grid.get_children():
+		if node == self:
+			continue
+		if not node.has_method("update_button_appearance"):
+			continue
+
+		var node_row = int(node.get("talent_row"))
+		var node_col = int(node.get("talent_col"))
+		if node_row < 0 or node_col < 0:
+			continue
+
+		# Orthogonal adjacency only (Manhattan distance = 1)
+		if abs(node_row - talent_row) + abs(node_col - talent_col) == 1 and _is_maxed_talent_node(node):
+			return true
+
+	return false
+
+func _has_maxed_neighbor_by_scene_index() -> bool:
 	var grid = get_parent() as GridContainer
 	if grid == null:
 		return false

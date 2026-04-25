@@ -35,18 +35,28 @@ func set_talent_data(talent_name: String, description: String, factor: float, po
 	
 	name_label.text = talent_name + level_text
 	
-	# Replace '*' with "current → next" where next is clamped to max points.
+	# Replace '*' (or '*%') with current/next values from talent factor.
 	var processed_description = description
-	if factor != 0 and "*" in description:
+	if factor != 0 and "*%" in description:
 		var current_effect = int(points * factor)
 		var effect_text = ""
 		if points >= max_points:
-			effect_text = str(current_effect)
+			effect_text = str(current_effect) + "%"
 		else:
 			var next_points = min(points + 1, max_points)
 			var next_effect = int(next_points * factor)
-			effect_text = str(current_effect) + " → " + str(next_effect)
-		processed_description = description.replace("*", effect_text)
+			effect_text = str(current_effect) + "% ->" + str(next_effect) + "%"
+		processed_description = description.replace("*%", effect_text)
+	elif factor != 0 and "*" in description:
+		var current_effect_plain = int(points * factor)
+		var effect_text_plain = ""
+		if points >= max_points:
+			effect_text_plain = str(current_effect_plain)
+		else:
+			var next_points_plain = min(points + 1, max_points)
+			var next_effect_plain = int(next_points_plain * factor)
+			effect_text_plain = str(current_effect_plain) + " -> " + str(next_effect_plain)
+		processed_description = description.replace("*", effect_text_plain)
 	
 	description_label.text = processed_description
 	talent_ref = talent_reference
