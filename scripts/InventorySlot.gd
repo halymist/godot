@@ -645,11 +645,23 @@ func handle_double_click(item: GameInfo.Item):
 		if current_utility == null or (current_utility and current_utility.name == "Character"):
 			_consume_item(item)
 		return
+
+	# If double-clicked from a utility slot, return the item to its original bag slot.
+	# Utility items keep their original bag_slot_id, so source slot_id must drive this branch.
+	if slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3:
+		var return_slot = _find_slot_by_id(item.bag_slot_id)
+		if return_slot and return_slot != self and return_slot.is_slot_empty():
+			return_slot.place_item_in_slot(item)
+			clear_slot()
+			if UIManager.instance:
+				UIManager.instance.notify_utility_slot_item_removed(slot_id)
+				UIManager.instance.refresh_bags()
+		return
 	
 	# Blacksmith: Move temperable items to slot 16 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "BlacksmithPanel":
 		if item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
-			if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
 				var target_slot = _find_slot_by_id(BLACKSMITH_SLOT)
 				if target_slot and target_slot.is_slot_empty():
 					var source_slot_id = item.bag_slot_id  # Save original before placing
@@ -663,7 +675,7 @@ func handle_double_click(item: GameInfo.Item):
 	# Enchanter: Move equippable items to slot 15 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "EnchanterPanel":
 		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Elixir" and item.type != "Potion" and item.type != "Gem":
-			if item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
 				var target_slot = _find_slot_by_id(ENCHANTER_SLOT)
 				if target_slot and target_slot.is_slot_empty():
 					var source_slot_id = item.bag_slot_id  # Save original before placing
@@ -677,7 +689,7 @@ func handle_double_click(item: GameInfo.Item):
 	
 	# Alchemist: Move ingredients to slots 17-19 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "AlchemistPanel":
-		if item.type == "Ingredient" and item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+		if item.type == "Ingredient" and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
 			for target_slot_id in [ALCHEMIST_SLOT_1, ALCHEMIST_SLOT_2, ALCHEMIST_SLOT_3]:
 				var target_slot = _find_slot_by_id(target_slot_id)
 				if target_slot and target_slot.is_slot_empty():
