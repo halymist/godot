@@ -10,6 +10,7 @@ extends Button
 var last_message_time: String = ""
 var last_message_sender: String = ""
 var current_filter: String = "local"  # "global" or "local"
+const TIME_SEPARATOR_GAP_SECONDS := 30 * 60
 
 func _ready():
 	toggle_button.pressed.connect(_on_toggle_pressed)
@@ -58,10 +59,18 @@ func display_chat_messages():
 	last_message_time = ""
 	last_message_sender = ""
 	
-	# Add each chat message that matches the current filter
+	# Add each chat message that matches the current filter, ordered by timestamp (oldest -> newest)
+	var filtered_messages: Array = []
 	for message in GameInfo.chat_messages:
 		if _should_show_message(message):
-			add_chat_message(message)
+			filtered_messages.append(message)
+
+	filtered_messages.sort_custom(func(a, b):
+		return _message_timestamp_to_unix(a.timestamp) < _message_timestamp_to_unix(b.timestamp)
+	)
+
+	for message in filtered_messages:
+		add_chat_message(message)
 	
 	# Always scroll to newest messages
 	_scroll_to_bottom()
@@ -110,16 +119,12 @@ func _on_send_button_pressed():
 	chat_input.release_focus()
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
-	var message_time = Time.get_unix_time_from_datetime_string(chat_message.timestamp.replace("Z", "+00:00"))
+	var message_time = _message_timestamp_to_unix(chat_message.timestamp)
 	var should_show_separator = false
 	
-	if last_message_time == "":
-		var current_unix = Time.get_unix_time_from_system()
-		if current_unix - message_time >= 600:
-			should_show_separator = true
-	else:
-		var last_time = Time.get_unix_time_from_datetime_string(last_message_time.replace("Z", "+00:00"))
-		if message_time - last_time >= 600:
+	if last_message_time != "":
+		var last_time = _message_timestamp_to_unix(last_message_time)
+		if message_time - last_time >= TIME_SEPARATOR_GAP_SECONDS:
 			should_show_separator = true
 	
 	if should_show_separator:
@@ -199,6 +204,11 @@ func add_chat_message(chat_message: GameInfo.ChatMessage):
 	message_label.add_theme_font_size_override("bold_font_size", 12)
 	message_label.text = chat_message.message
 	chat_container.add_child(message_label)
+
+func _message_timestamp_to_unix(timestamp: String) -> int:
+	if timestamp.is_empty():
+		return 0
+	return int(Time.get_unix_time_from_datetime_string(timestamp.replace("Z", "+00:00")))
 
 func _scroll_to_bottom():
 	await get_tree().process_frame

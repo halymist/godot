@@ -3,11 +3,11 @@
 [ext_resource type="Theme" uid="uid://b1vu62hiyioch" path="res://assets/phone_theme.tres" id="2_nb51f"]
 [ext_resource type="Script" uid="uid://cn6ad2a1oi5ss" path="res://scripts/TogglePanel.gd" id="3_nnt18"]
 [ext_resource type="Script" uid="uid://dfyxboavsidpe" path="res://scripts/TopUI.gd" id="4_2cns2"]
-[ext_resource type="Texture2D" uid="uid://hoqqrtcqnlpm" path="res://assets/images/ui/cancel.png" id="4_ewbju"]
-[ext_resource type="Texture2D" uid="uid://ho4facjk62r8" path="res://assets/images/ui/settings.png" id="5_settings"]
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="6_itemslot"]
+[ext_resource type="Texture2D" uid="uid://c70mhel13b5sb" path="res://assets/images/ui/settings.svg" id="9_qj5kr"]
 [ext_resource type="Texture2D" uid="uid://b1uv3mbpi8x4t" path="res://assets/images/ui/sword_outline.png" id="9_sword"]
 [ext_resource type="Texture2D" uid="uid://cojte4j45mxku" path="res://assets/images/ui/shroom.png" id="9_w4j8i"]
+[ext_resource type="Texture2D" uid="uid://buvimiuat2bhj" path="res://assets/images/ui/cancel.svg" id="10_d5jaa"]
 [ext_resource type="Texture2D" uid="uid://b4atky465df5a" path="res://assets/images/ui/chat.png" id="11_vm72l"]
 [ext_resource type="Texture2D" uid="uid://dslllm3eu8erj" path="res://assets/images/ui/map.png" id="12_22asu"]
 [ext_resource type="Texture2D" uid="uid://busbwafdwvl0h" path="res://assets/images/ui/arena.png" id="13_fkdbe"]
@@ -82,6 +82,7 @@
 [ext_resource type="Texture2D" uid="uid://bd54ocv85jvkk" path="res://assets/images/ui/armo.png" id="86_w4j8i"]
 [ext_resource type="Shader" uid="uid://cclavbbw3hb88" path="res://assets/shaders/blur_background.gdshader" id="88_blur_shader"]
 [ext_resource type="Texture2D" uid="uid://b1irk00m26i55" path="res://assets/images/ui/next.svg" id="90_next"]
+[ext_resource type="Texture2D" uid="uid://chu5oqf20a3j2" path="res://assets/images/ui/plus.svg" id="91_plus"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -311,7 +312,7 @@ offset_top = -900.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TopUI" type="Panel" parent="Portrait" unique_id=1288915121 node_paths=PackedStringArray("gold_label", "currency_label", "location_description_label", "health_bar", "time_label", "day_label", "location_info_panel", "location_hover_area")]
+[node name="TopUI" type="Panel" parent="Portrait" unique_id=1288915121 node_paths=PackedStringArray("gold_label", "currency_label", "location_description_label", "health_bar", "time_label", "day_label", "location_info_panel")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -325,10 +326,9 @@ gold_label = NodePath("VBoxContainer/SilverContainer/SilverValue")
 currency_label = NodePath("VBoxContainer/MushroomContainer/MushroomValue")
 location_description_label = NodePath("../GameScene/LocationInfoPanel/InfoLabel")
 health_bar = NodePath("HealthBar")
-time_label = NodePath("TimeLabel")
-day_label = NodePath("DayLabel")
+time_label = NodePath("VBoxContainer/TimeLabel")
+day_label = NodePath("VBoxContainer/DayLabel")
 location_info_panel = NodePath("../GameScene/LocationInfoPanel")
-location_hover_area = NodePath("VBoxContainer/LocationPanel")
 
 [node name="Character" type="TextureRect" parent="Portrait/TopUI" unique_id=1976283536]
 layout_mode = 0
@@ -380,7 +380,7 @@ anchor_bottom = 0.633
 offset_left = 0.009994507
 offset_top = 10.0
 offset_right = 0.114990234
-offset_bottom = 0.05999756
+offset_bottom = -0.94000244
 size_flags_horizontal = 3
 
 [node name="MushroomContainer" type="HBoxContainer" parent="Portrait/TopUI/VBoxContainer" unique_id=1567183205]
@@ -403,7 +403,9 @@ text = "0"
 [node name="PaymentButton" type="Button" parent="Portrait/TopUI/VBoxContainer/MushroomContainer" unique_id=1922948992]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = "+"
+icon = ExtResource("91_plus")
+flat = true
+expand_icon = true
 
 [node name="SilverContainer" type="HBoxContainer" parent="Portrait/TopUI/VBoxContainer" unique_id=384917255]
 layout_mode = 2
@@ -422,13 +424,19 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 text = "0"
 
-[node name="LocationPanel" type="Panel" parent="Portrait/TopUI/VBoxContainer" unique_id=1268353028]
+[node name="TimeLabel" type="Label" parent="Portrait/TopUI/VBoxContainer" unique_id=1398734189]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_transparent")
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.8)
+theme_override_font_sizes/font_size = 12
+text = "14:35"
+vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Portrait/TopUI/VBoxContainer/LocationPanel" unique_id=125403638]
-layout_mode = 0
-theme_override_constants/separation = 5
+[node name="DayLabel" type="Label" parent="Portrait/TopUI/VBoxContainer" unique_id=882881935]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.65, 0.5, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "Day 1"
+vertical_alignment = 1
 
 [node name="SettingsButton" type="Button" parent="Portrait/TopUI" unique_id=1823209460]
 custom_minimum_size = Vector2(40, 40)
@@ -447,46 +455,20 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-icon = ExtResource("5_settings")
+icon = ExtResource("9_qj5kr")
 flat = true
 expand_icon = true
-
-[node name="TimeLabel" type="Label" parent="Portrait/TopUI" unique_id=1398734189]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.84000003
-anchor_top = 0.3
-anchor_right = 0.99
-anchor_bottom = 0.5
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.8)
-theme_override_font_sizes/font_size = 12
-text = "14:35"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DayLabel" type="Label" parent="Portrait/TopUI" unique_id=882881935]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.84000003
-anchor_top = 0.48
-anchor_right = 0.99
-anchor_bottom = 0.65
-theme_override_colors/font_color = Color(0.7, 0.65, 0.5, 0.8)
-theme_override_font_sizes/font_size = 11
-text = "Day 1"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="BackButton" type="Button" parent="Portrait/TopUI" unique_id=1180159497]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.84000003
-anchor_top = 0.661
+anchor_left = 0.864
+anchor_top = 0.717
 anchor_right = 0.96300006
 anchor_bottom = 0.93900007
-offset_left = -0.2000122
-offset_top = 0.019996643
+offset_left = 0.07998657
+offset_top = -0.05999756
 offset_right = -0.015014648
 offset_bottom = -0.020019531
 grow_horizontal = 0
@@ -495,7 +477,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/hover = SubResource("StyleBoxFlat_transparent")
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
-icon = ExtResource("4_ewbju")
+icon = ExtResource("10_d5jaa")
 expand_icon = true
 
 [node name="GameScene" type="Control" parent="Portrait" unique_id=1733709128]
@@ -762,16 +744,16 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("28_sjh24")
 chat_bubble = NodePath("ChatBubble")
-talent_points_label = NodePath("Overlay/TalentsRow/Label")
-strength_label = NodePath("Overlay/Strength/Label")
-stamina_label = NodePath("Overlay/Stamina/Label")
-agility_label = NodePath("Overlay/Agility/Label")
-luck_label = NodePath("Overlay/Luck/Label")
-talent_points_button = NodePath("Overlay/TalentsRow/PlusButton")
-strength_button = NodePath("Overlay/Strength/PlusButton")
-stamina_button = NodePath("Overlay/Stamina/PlusButton")
-agility_button = NodePath("Overlay/Agility/PlusButton")
-luck_button = NodePath("Overlay/Luck/PlusButton")
+talent_points_label = NodePath("Overlay/TalentsRow/Content/StatLabel")
+strength_label = NodePath("Overlay/Strength/Content/StatLabel")
+stamina_label = NodePath("Overlay/Stamina/Content/StatLabel")
+agility_label = NodePath("Overlay/Agility/Content/StatLabel")
+luck_label = NodePath("Overlay/Luck/Content/StatLabel")
+talent_points_button = NodePath("Overlay/TalentsRow")
+strength_button = NodePath("Overlay/Strength")
+stamina_button = NodePath("Overlay/Stamina")
+agility_button = NodePath("Overlay/Agility")
+luck_button = NodePath("Overlay/Luck")
 
 [node name="ChatBubble" parent="Portrait/GameScene/TrainerPanel" unique_id=247643261 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -789,151 +771,251 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 449.0
+offset_top = 450.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="Luck" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=1925057535]
+[node name="TalentsRow" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=826166365]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -179.5
-offset_top = -18.0
-offset_right = -12.5
-offset_bottom = 18.0
+offset_left = -90.0
+offset_top = -76.0
+offset_right = 90.0
+offset_bottom = -31.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
-alignment = 1
 
-[node name="Label" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck" unique_id=732985266]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Luck: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck" unique_id=670560229]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="Agility" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=203510681]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow" unique_id=624166365]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 29.5
-offset_top = -18.0
-offset_right = 192.5
-offset_bottom = 18.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 2.0
+offset_right = -12.0
+offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
-alignment = 1
 
-[node name="Label" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility" unique_id=188230]
-custom_minimum_size = Vector2(120, 0)
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content" unique_id=1106072954]
 layout_mode = 2
-text = "Agility: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility" unique_id=1299448692]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="Stamina" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=119844006]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -181.5
-offset_top = 33.0
-offset_right = -18.5
-offset_bottom = 77.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Label" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina" unique_id=512675581]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Stamina: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina" unique_id=1794893648]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="Strength" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=2040420223]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 20.5
-offset_top = 32.0
-offset_right = 191.5
-offset_bottom = 78.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Label" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength" unique_id=2138295080]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Strength: 0"
-vertical_alignment = 1
-
-[node name="PlusButton" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength" unique_id=214195196]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
-[node name="TalentsRow" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=826166365]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -81.5
-offset_top = -93.0
-offset_right = 81.5
-offset_bottom = -45.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow" unique_id=1146072954]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
+size_flags_horizontal = 3
 text = "Talents: 0"
 vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow" unique_id=882972991]
-custom_minimum_size = Vector2(35, 35)
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content" unique_id=264166365]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
+theme_override_constants/separation = 4
+
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content/Cost" unique_id=164166365]
+layout_mode = 2
+text = "100"
+vertical_alignment = 1
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content/Cost" unique_id=364166365]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamina" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=119844006]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -185.0
+offset_top = -18.0
+offset_right = -5.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina" unique_id=612675581]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 2.0
+offset_right = -12.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content" unique_id=512675581]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stamina: 0"
+vertical_alignment = 1
+
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content" unique_id=1794893648]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content/Cost" unique_id=-1500073648]
+layout_mode = 2
+text = "5"
+vertical_alignment = 1
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content/Cost" unique_id=-500073648]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Strength" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=2040420223]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 5.0
+offset_top = -18.0
+offset_right = 185.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength" unique_id=-1156672216]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 2.0
+offset_right = -12.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content" unique_id=2138295080]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Strength: 0"
+vertical_alignment = 1
+
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content" unique_id=214195196]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content/Cost" unique_id=314195196]
+layout_mode = 2
+text = "5"
+vertical_alignment = 1
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content/Cost" unique_id=414195196]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Agility" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=203510681]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -185.0
+offset_top = 42.0
+offset_right = -5.0
+offset_bottom = 84.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility" unique_id=2188230]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 2.0
+offset_right = -12.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content" unique_id=188230]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Agility: 0"
+vertical_alignment = 1
+
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content" unique_id=1299448692]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content/Cost" unique_id=-1995518604]
+layout_mode = 2
+text = "5"
+vertical_alignment = 1
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content/Cost" unique_id=-995518604]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Luck" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=1925057535]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 5.0
+offset_top = 42.0
+offset_right = 185.0
+offset_bottom = 85.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck" unique_id=1732985266]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 2.0
+offset_right = -12.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content" unique_id=732985266]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Luck: 0"
+vertical_alignment = 1
+
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content" unique_id=670560229]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content/Cost" unique_id=770560229]
+layout_mode = 2
+text = "5"
+vertical_alignment = 1
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content/Cost" unique_id=870560229]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="ChurchPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=530690828 node_paths=PackedStringArray("chat_bubble", "blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
 visible = false

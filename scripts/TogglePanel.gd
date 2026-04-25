@@ -147,7 +147,7 @@ func _connect_buttons():
 	# Back button hover/click feedback (golden tint like arena buttons)
 	var golden = Color(0.9, 0.7, 0.4, 1)
 	var default_color = Color(1, 1, 1, 1)
-	for btn in [back_button, chat_button, arena_button, rankings_button, map_button, home_button, settings_button]:
+	for btn in [back_button, chat_button, arena_button, rankings_button, map_button, home_button, settings_button, payment_button]:
 		btn.mouse_entered.connect(func(): btn.modulate = golden)
 		btn.mouse_exited.connect(func(): btn.modulate = default_color)
 		btn.button_down.connect(func(): btn.modulate = golden)

@@ -10,7 +10,7 @@ const STAT_COST = 5
 @export var stamina_label: Label
 @export var agility_label: Label
 @export var luck_label: Label
-# Plus buttons
+# Stat row buttons
 @export var talent_points_button: Button
 @export var strength_button: Button
 @export var stamina_button: Button
@@ -22,11 +22,11 @@ var on_placed_greetings: Array[String] = []
 var on_action_greetings: Array[String] = []
 
 func _ready():
-	talent_points_button.pressed.connect(_on_stat_plus_pressed.bind("talent_points", TALENT_POINT_COST))
-	strength_button.pressed.connect(_on_stat_plus_pressed.bind("strength", STAT_COST))
-	stamina_button.pressed.connect(_on_stat_plus_pressed.bind("stamina", STAT_COST))
-	agility_button.pressed.connect(_on_stat_plus_pressed.bind("agility", STAT_COST))
-	luck_button.pressed.connect(_on_stat_plus_pressed.bind("luck", STAT_COST))
+	talent_points_button.pressed.connect(_on_stat_row_pressed.bind("talent_points", TALENT_POINT_COST))
+	strength_button.pressed.connect(_on_stat_row_pressed.bind("strength", STAT_COST))
+	stamina_button.pressed.connect(_on_stat_row_pressed.bind("stamina", STAT_COST))
+	agility_button.pressed.connect(_on_stat_row_pressed.bind("agility", STAT_COST))
+	luck_button.pressed.connect(_on_stat_row_pressed.bind("luck", STAT_COST))
 	visibility_changed.connect(_on_visibility_changed)
 	
 	if UIManager.instance.game_is_ready:
@@ -82,7 +82,7 @@ func update_button_states():
 	agility_button.disabled = silver < STAT_COST
 	luck_button.disabled = silver < STAT_COST
 
-func _on_stat_plus_pressed(stat_name: String, cost: int):
+func _on_stat_row_pressed(stat_name: String, cost: int):
 	# Check if we have enough silver
 	if GameInfo.current_player.silver < cost:
 		return

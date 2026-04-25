@@ -123,7 +123,11 @@ func update_result_preview():
 		if effect:
 			var effect_text = effect.description
 			if effect_map[effect_id] > 0:
-				effect_text += " " + str(effect_map[effect_id])
+				var effect_value = int(effect_map[effect_id])
+				if "*" in effect_text:
+					effect_text = effect_text.replace("*", str(effect_value))
+				else:
+					effect_text += " " + str(effect_value)
 			effects.append(effect_text)
 	
 	# Update preview label
@@ -180,16 +184,21 @@ func _on_brew_button_pressed():
 		Websocket.brew_elixir(original_slots[0], original_slots[1])
 	else:
 		Websocket.brew_elixir(original_slots[0], original_slots[1], original_slots[2])
-	
-	# Client-side simulation
-	UIManager.instance.update_silver(-BREW_COST)
-	
+
 	var ingredient_ids = []
 	for item in items_to_brew:
 		ingredient_ids.append(item.id)
+
+	var elixir_template = _get_elixir_template()
+	if elixir_template == null:
+		print("ERROR: No elixir template found in items database")
+		return
+
+	# Client-side simulation
+	UIManager.instance.update_silver(-BREW_COST)
 	
 	var new_elixir = GameInfo.Item.new({
-		"id": 1000,
+		"id": elixir_template.id,
 		"bag_slot_id": find_empty_bag_slot(),
 		"ingredients": ingredient_ids
 	})
@@ -202,6 +211,8 @@ func _on_brew_button_pressed():
 	working_items.clear()
 	
 	clear_ingredient_slots()
+	update_result_preview()
+	update_brew_button_state()
 	_show_greeting(on_action_greetings)
 	UIManager.instance.refresh_bags()
 
@@ -209,6 +220,16 @@ func clear_ingredient_slots():
 	var slot_containers = [ingredient_slot1, ingredient_slot2, ingredient_slot3]
 	for container in slot_containers:
 		container.clear_slot()
+
+func _get_elixir_template() -> ItemResource:
+	if not GameInfo.items_db:
+		return null
+
+	for item_resource in GameInfo.items_db.items:
+		if item_resource and item_resource.type == ItemResource.ItemType.ELIXIR:
+			return item_resource
+
+	return null
 
 func find_empty_bag_slot() -> int:
 	# Find first empty slot in bag

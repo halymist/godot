@@ -47,7 +47,7 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 			else:
 				price_container.visible = false
 		
-		var is_elixir = item_data.id == 1000 and item_data.ingredients.size() > 0
+		var is_elixir = item_data.type == "Elixir" and item_data.ingredients.size() > 0
 		
 		if is_elixir:
 			strength_container.visible = false

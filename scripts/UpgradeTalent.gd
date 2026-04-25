@@ -39,9 +39,13 @@ func set_talent_data(talent_name: String, description: String, factor: float, po
 	var processed_description = description
 	if factor != 0 and "*" in description:
 		var current_effect = int(points * factor)
-		var next_points = min(points + 1, max_points)
-		var next_effect = int(next_points * factor)
-		var effect_text = str(current_effect) + " → " + str(next_effect)
+		var effect_text = ""
+		if points >= max_points:
+			effect_text = str(current_effect)
+		else:
+			var next_points = min(points + 1, max_points)
+			var next_effect = int(next_points * factor)
+			effect_text = str(current_effect) + " → " + str(next_effect)
 		processed_description = description.replace("*", effect_text)
 	
 	description_label.text = processed_description
