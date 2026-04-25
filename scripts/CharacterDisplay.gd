@@ -132,11 +132,14 @@ func refresh_active_effects():
 	
 	# Add equipped elixir first if any
 	if displayed_character.elixir > 0:
-		var elixir_res = GameInfo.items_db.get_item_by_id(1000)
-		var icon = perk_mini_scene.instantiate()
-		var elixir_until = displayed_character.elixir_until if "elixir_until" in displayed_character else 0.0
-		icon.setup(elixir_res.icon, {"type": "elixir", "id": displayed_character.elixir, "expire_until": elixir_until})
-		active_perks_display.add_child(icon)
+		var elixir_res = GameInfo.items_db.get_item_by_id(displayed_character.elixir)
+		if elixir_res == null:
+			elixir_res = GameInfo.items_db.get_item_by_id(1000)
+		if elixir_res and elixir_res.icon:
+			var icon = perk_mini_scene.instantiate()
+			var elixir_until = displayed_character.elixir_until if "elixir_until" in displayed_character else 0.0
+			icon.setup(elixir_res.icon, {"type": "elixir", "id": displayed_character.elixir, "expire_until": elixir_until})
+			active_perks_display.add_child(icon)
 	
 	# Add equipped potion second if any
 	if displayed_character.potion > 0:

@@ -24,10 +24,10 @@ func _format_time_remaining(expire_until: float) -> String:
 	
 	# Convert to hours and minutes
 	var hours_left = int(seconds_left / 3600)
-	var minutes_left = int((int(seconds_left) % 3600) / 60)
+	var minutes_left = int(float(int(seconds_left) % 3600) / 60.0)
 	
 	if hours_left >= 24:
-		var days_left = hours_left / 24
+		var days_left = int(float(hours_left) / 24.0)
 		hours_left = hours_left % 24
 		if days_left == 1:
 			return "[%dd %dh remaining]" % [days_left, hours_left]
@@ -89,11 +89,21 @@ func _on_hover():
 		"elixir":
 			content = "Elixir"
 			var effect_map = {}
-			for ingredient_id in GameInfo.current_player.elixir_ingredients:
-				if ingredient_id > 0:
-					var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
-					if ingredient and ingredient.effect_id > 0:
-						effect_map[ingredient.effect_id] = effect_map.get(ingredient.effect_id, 0.0) + ingredient.effect_factor
+
+			# Preferred path: direct active elixir effects from server.
+			if "elixir_effects" in GameInfo.current_player and GameInfo.current_player.elixir_effects.size() > 0:
+				for entry in GameInfo.current_player.elixir_effects:
+					var effect_id = int(entry.get("effect_id", 0))
+					var factor = float(entry.get("factor", 0.0))
+					if effect_id > 0:
+						effect_map[effect_id] = effect_map.get(effect_id, 0.0) + factor
+			else:
+				# Backward compatibility: derive effects from ingredient item IDs.
+				for ingredient_id in GameInfo.current_player.elixir_ingredients:
+					if ingredient_id > 0:
+						var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
+						if ingredient and ingredient.effect_id > 0:
+							effect_map[ingredient.effect_id] = effect_map.get(ingredient.effect_id, 0.0) + ingredient.effect_factor
 			
 			for effect_id in effect_map:
 				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)

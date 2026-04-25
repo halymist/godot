@@ -43,8 +43,15 @@ func _can_drop_data(_pos, data):
 	var item_type = item.type
 	var source_container = data.get("source_container")
 	var source_slot_id = source_container.slot_id if source_container else -1
+	var source_is_utility = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= ALCHEMIST_SLOT_3
+	var target_is_utility = slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3
 	
 	print("DEBUG _can_drop_data: Target slot_id=", slot_id, " slot_type=", slot_type, " | Source slot_id=", source_slot_id, " | Dragged item type=", item_type)
+
+	# Utility source safety: when dragging out of utility slots, target must be empty.
+	# This prevents hidden swaps/vanish cases when returning visual-only utility items.
+	if source_is_utility and not target_is_utility and not is_slot_empty():
+		return false
 	
 	# Vendor slot (20) accepts items from bag or equipment for selling
 	if slot_id == VENDOR_SLOT:
@@ -182,8 +189,8 @@ func _drop_data(_pos, data):
 		handle_vendor_sell(dragged_item, source_slot_id, source_container)
 		return
 	
-	# Special case: Consuming potion/elixir on avatar (slot 9)
-	if slot_id == CONSUME_SLOT:
+	# Special case: Consuming potion/elixir on avatar consume slot
+	if slot_type == "Consume" or slot_id == CONSUME_SLOT:
 		if dragged_item.type == "Potion" or dragged_item.type == "Elixir":
 			_consume_item(dragged_item)
 			if source_container:
@@ -229,6 +236,8 @@ func _drop_data(_pos, data):
 	if is_utility_target:
 		# Moving TO a utility slot - just update visuals, don't change bag_slot_id
 		# The panel will track the item reference via on_slot_changed
+		if is_utility_source and UIManager.instance:
+			UIManager.instance.notify_utility_slot_item_removed(source_slot_id)
 		place_item_in_slot(dragged_item)
 		if source_container:
 			source_container.clear_slot()
@@ -649,45 +658,19 @@ func handle_double_click(item: GameInfo.Item):
 	# If double-clicked from a utility slot, return the item to its original bag slot.
 	# Utility items keep their original bag_slot_id, so source slot_id must drive this branch.
 	if slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3:
-		var return_slot = _find_slot_by_id(item.bag_slot_id)
-		if return_slot and return_slot != self and return_slot.is_slot_empty():
-			return_slot.place_item_in_slot(item)
-			clear_slot()
-			if UIManager.instance:
-				UIManager.instance.notify_utility_slot_item_removed(slot_id)
-				UIManager.instance.refresh_bags()
+		var first_empty_bag_slot_id = _find_first_empty_bag_slot_id()
+		if first_empty_bag_slot_id != -1:
+			var return_slot = _find_slot_by_id(first_empty_bag_slot_id)
+			if return_slot and return_slot != self and return_slot.is_slot_empty():
+				return_slot.place_item_in_slot(item)
+				clear_slot()
+				if UIManager.instance:
+					UIManager.instance.notify_utility_slot_item_removed(slot_id)
+					UIManager.instance.refresh_bags()
 		return
-	
-	# Blacksmith: Move temperable items to slot 16 (visually only, don't change bag_slot_id)
-	if current_utility and current_utility.name == "BlacksmithPanel":
-		if item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
-			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
-				var target_slot = _find_slot_by_id(BLACKSMITH_SLOT)
-				if target_slot and target_slot.is_slot_empty():
-					var source_slot_id = item.bag_slot_id  # Save original before placing
-					# DON'T change bag_slot_id - this is a visual-only move
-					target_slot.place_item_in_slot(item)
-					# Notify panel about the item placement
-					UIManager.instance.notify_utility_slot_item_placed(BLACKSMITH_SLOT, item, source_slot_id)
-					UIManager.instance.refresh_bags()  # Will exclude item from bag display
-		return
-	
-	# Enchanter: Move equippable items to slot 15 (visually only, don't change bag_slot_id)
-	if current_utility and current_utility.name == "EnchanterPanel":
-		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Elixir" and item.type != "Potion" and item.type != "Gem":
-			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
-				var target_slot = _find_slot_by_id(ENCHANTER_SLOT)
-				if target_slot and target_slot.is_slot_empty():
-					var source_slot_id = item.bag_slot_id  # Save original before placing
-					# DON'T change bag_slot_id - this is a visual-only move
-					target_slot.place_item_in_slot(item)
-					# Notify panel about the item placement
-					if UIManager.instance:
-						UIManager.instance.notify_utility_slot_item_placed(ENCHANTER_SLOT, item, source_slot_id)
-						UIManager.instance.refresh_bags()  # Will exclude item from bag display
-		return
-	
-	# Alchemist: Move ingredients to slots 17-19 (visually only, don't change bag_slot_id)
+
+	# If item is in a regular slot while on utility panel, double-click can move it into utility slots.
+	# Keep this path only for actual bag source slots.
 	if current_utility and current_utility.name == "AlchemistPanel":
 		if item.type == "Ingredient" and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
 			for target_slot_id in [ALCHEMIST_SLOT_1, ALCHEMIST_SLOT_2, ALCHEMIST_SLOT_3]:
@@ -701,6 +684,35 @@ func handle_double_click(item: GameInfo.Item):
 						UIManager.instance.notify_utility_slot_item_placed(target_slot_id, item, source_slot_id)
 						UIManager.instance.refresh_bags()  # Will exclude item from bag display
 					break
+		return
+
+	# Blacksmith: Move temperable items to slot 16 (visually only, don't change bag_slot_id)
+	if current_utility and current_utility.name == "BlacksmithPanel":
+		if item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
+			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
+				var target_slot = _find_slot_by_id(BLACKSMITH_SLOT)
+				if target_slot and target_slot.is_slot_empty():
+					var source_slot_id = item.bag_slot_id  # Save original before placing
+					# DON'T change bag_slot_id - this is a visual-only move
+					target_slot.place_item_in_slot(item)
+					# Notify panel about the item placement
+					UIManager.instance.notify_utility_slot_item_placed(BLACKSMITH_SLOT, item, source_slot_id)
+					UIManager.instance.refresh_bags()  # Will exclude item from bag display
+		return
+
+	# Enchanter: Move equippable items to slot 15 (visually only, don't change bag_slot_id)
+	if current_utility and current_utility.name == "EnchanterPanel":
+		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Elixir" and item.type != "Potion" and item.type != "Gem":
+			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
+				var target_slot = _find_slot_by_id(ENCHANTER_SLOT)
+				if target_slot and target_slot.is_slot_empty():
+					var source_slot_id = item.bag_slot_id  # Save original before placing
+					# DON'T change bag_slot_id - this is a visual-only move
+					target_slot.place_item_in_slot(item)
+					# Notify panel about the item placement
+					if UIManager.instance:
+						UIManager.instance.notify_utility_slot_item_placed(ENCHANTER_SLOT, item, source_slot_id)
+						UIManager.instance.refresh_bags()  # Will exclude item from bag display
 		return
 	
 	# Vendor: Sell if in bag/equipment, buy if in vendor slot
@@ -781,6 +793,7 @@ func _consume_item(item: GameInfo.Item):
 		Websocket.use_elixir(item.bag_slot_id)
 		GameInfo.current_player.elixir = item.id
 		GameInfo.current_player.elixir_ingredients = item.ingredients.duplicate()
+		GameInfo.current_player.elixir_effects = item.elixir_effects.duplicate(true) if item.elixir_effects else []
 		GameInfo.current_player.bag_slots.erase(item)
 		clear_slot()
 	
@@ -868,3 +881,10 @@ func _find_slot_by_id(target_slot_id: int):
 			queue.append(child)
 	
 	return null
+
+func _find_first_empty_bag_slot_id() -> int:
+	for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
+		var target_slot = _find_slot_by_id(bag_slot_id)
+		if target_slot and target_slot.is_slot_empty():
+			return bag_slot_id
+	return -1

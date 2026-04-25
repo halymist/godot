@@ -47,7 +47,7 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 			else:
 				price_container.visible = false
 		
-		var is_elixir = item_data.type == "Elixir" and item_data.ingredients.size() > 0
+		var is_elixir = item_data.type == "Elixir" and (item_data.ingredients.size() > 0 or item_data.elixir_effects.size() > 0)
 		
 		if is_elixir:
 			strength_container.visible = false
@@ -59,16 +59,27 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 				damage_container.visible = false
 			
 			var effect_map = {}
-			for ingredient_id in item_data.ingredients:
-				if ingredient_id > 0:
-					var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
-					if ingredient_resource != null and ingredient_resource.effect_id > 0:
-						# Add factor to existing effect or create new entry
-						var factor = ingredient_resource.effect_factor
-						if effect_map.has(ingredient_resource.effect_id):
-							effect_map[ingredient_resource.effect_id] += factor
+
+			if item_data.elixir_effects.size() > 0:
+				for entry in item_data.elixir_effects:
+					var effect_id = int(entry.get("effect_id", 0))
+					var factor = float(entry.get("factor", 0.0))
+					if effect_id > 0:
+						if effect_map.has(effect_id):
+							effect_map[effect_id] += factor
 						else:
-							effect_map[ingredient_resource.effect_id] = factor
+							effect_map[effect_id] = factor
+			else:
+				for ingredient_id in item_data.ingredients:
+					if ingredient_id > 0:
+						var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id)
+						if ingredient_resource != null and ingredient_resource.effect_id > 0:
+							# Add factor to existing effect or create new entry
+							var factor = ingredient_resource.effect_factor
+							if effect_map.has(ingredient_resource.effect_id):
+								effect_map[ingredient_resource.effect_id] += factor
+							else:
+								effect_map[ingredient_resource.effect_id] = factor
 			
 			# Build effect text from combined effects
 			var effect_texts = []

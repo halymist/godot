@@ -1,8 +1,7 @@
-[gd_scene load_steps=27 format=3 uid="uid://dtcmv6gcik5pa"]
+[gd_scene format=3 uid="uid://dtcmv6gcik5pa"]
 
 [ext_resource type="Script" uid="uid://c1uh5eg86eies" path="res://scripts/CharacterDisplay.gd" id="1_foq72"]
 [ext_resource type="PackedScene" uid="uid://b8sq28m2fbaok" path="res://Scenes/perk_mini.tscn" id="4_1svyq"]
-[ext_resource type="Texture2D" uid="uid://b68xvgkj0o2f4" path="res://assets/images/ui/butt.png" id="5_ur2r5"]
 [ext_resource type="PackedScene" uid="uid://ce1c7j3wvxrs3" path="res://Scenes/item.tscn" id="7_jhf1m"]
 [ext_resource type="PackedScene" uid="uid://37e7otgaejq8" path="res://Scenes/ItemSlot.tscn" id="8_p188g"]
 [ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="9_c1b6y"]
@@ -21,15 +20,15 @@
 [ext_resource type="PackedScene" uid="uid://cfqdh24nwh6nc" path="res://Scenes/healthbar.tscn" id="22_srvda"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_active_perks_bg"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
 bg_color = Color(0.15, 0.15, 0.15, 0.6)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-content_margin_left = 4.0
-content_margin_top = 2.0
-content_margin_right = 4.0
-content_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
 bg_color = Color(0.15, 0.15, 0.15, 0.6)
@@ -52,9 +51,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_char_tabs"]
-
-[node name="CharacterDisplay" type="Control" node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display", "equipment_slots")]
+[node name="CharacterDisplay" type="Control" unique_id=696500672 node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display", "equipment_slots")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,7 +78,7 @@ perk_mini_scene = ExtResource("4_1svyq")
 equipment_slots = [NodePath("Equip/VBoxContainer/HeadSlot"), NodePath("Equip/VBoxContainer/ChestSlot"), NodePath("Equip/VBoxContainer/HandSlot"), NodePath("Equip/VBoxContainer/ShoeSlot"), NodePath("Equip/VBoxContainer2/BeltSlot"), NodePath("Equip/VBoxContainer2/LegSlot"), NodePath("Equip/VBoxContainer2/RingSlot"), NodePath("Equip/VBoxContainer2/AmuletSlot"), NodePath("Equip/Weapon1Slot")]
 item_prefab = ExtResource("7_jhf1m")
 
-[node name="Stats" type="Control" parent="."]
+[node name="Stats" type="Control" parent="." unique_id=1334730250]
 layout_mode = 1
 anchor_left = 0.037
 anchor_right = 0.958
@@ -91,7 +88,7 @@ offset_right = 1.00998
 offset_bottom = -1.16
 grow_horizontal = 2
 
-[node name="PlayerName" type="Label" parent="Stats"]
+[node name="PlayerName" type="Label" parent="Stats" unique_id=780466790]
 layout_mode = 0
 offset_right = 375.0
 offset_bottom = 35.0
@@ -101,7 +98,7 @@ theme_override_font_sizes/font_size = 26
 text = "Halymist"
 vertical_alignment = 1
 
-[node name="CharacterDetails" type="HBoxContainer" parent="Stats"]
+[node name="CharacterDetails" type="HBoxContainer" parent="Stats" unique_id=1872940108]
 layout_mode = 0
 offset_top = 34.0
 offset_right = 375.0
@@ -110,40 +107,40 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="GuildContainer" type="HBoxContainer" parent="Stats/CharacterDetails"]
+[node name="GuildContainer" type="HBoxContainer" parent="Stats/CharacterDetails" unique_id=1166347947]
 layout_mode = 2
 
-[node name="GuildLabel" type="Label" parent="Stats/CharacterDetails/GuildContainer"]
+[node name="GuildLabel" type="Label" parent="Stats/CharacterDetails/GuildContainer" unique_id=372383399]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 14
 text = "Mercantile"
 vertical_alignment = 1
 
-[node name="SepLabel" type="Label" parent="Stats/CharacterDetails"]
+[node name="SepLabel" type="Label" parent="Stats/CharacterDetails" unique_id=1405516701]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_font_sizes/font_size = 14
 text = "|"
 vertical_alignment = 1
 
-[node name="RankContainer" type="HBoxContainer" parent="Stats/CharacterDetails"]
+[node name="RankContainer" type="HBoxContainer" parent="Stats/CharacterDetails" unique_id=104190849]
 layout_mode = 2
 
-[node name="RankLabel" type="Label" parent="Stats/CharacterDetails/RankContainer"]
+[node name="RankLabel" type="Label" parent="Stats/CharacterDetails/RankContainer" unique_id=185070897]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.7, 0.4, 1)
 theme_override_font_sizes/font_size = 14
 text = "Novice (20165)"
 vertical_alignment = 1
 
-[node name="Separator" type="HSeparator" parent="Stats"]
+[node name="Separator" type="HSeparator" parent="Stats" unique_id=461238251]
 layout_mode = 0
 offset_top = 60.0
 offset_right = 375.0
 offset_bottom = 64.0
 
-[node name="StatsContainer" type="Control" parent="Stats"]
+[node name="StatsContainer" type="Control" parent="Stats" unique_id=1651659570]
 anchors_preset = 0
 offset_top = 68.0
 offset_right = 375.0
@@ -152,55 +149,55 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.67
 
-[node name="StrengthContainer" type="HBoxContainer" parent="Stats/StatsContainer"]
-layout_mode = 2
+[node name="StrengthContainer" type="HBoxContainer" parent="Stats/StatsContainer" unique_id=455661821]
+layout_mode = 0
 offset_right = 132.0
 offset_bottom = 29.0
 
-[node name="StrengthLabel" type="Label" parent="Stats/StatsContainer/StrengthContainer"]
+[node name="StrengthLabel" type="Label" parent="Stats/StatsContainer/StrengthContainer" unique_id=394631674]
 layout_mode = 2
 text = "Strength: "
 vertical_alignment = 1
 
-[node name="StrengthValue" type="Label" parent="Stats/StatsContainer/StrengthContainer"]
+[node name="StrengthValue" type="Label" parent="Stats/StatsContainer/StrengthContainer" unique_id=821118566]
 layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="StaminaContainer" type="HBoxContainer" parent="Stats/StatsContainer"]
+[node name="StaminaContainer" type="HBoxContainer" parent="Stats/StatsContainer" unique_id=962534147]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 180.0
 offset_right = 300.0
 offset_bottom = 29.0
 
-[node name="StaminaLabel" type="Label" parent="Stats/StatsContainer/StaminaContainer"]
+[node name="StaminaLabel" type="Label" parent="Stats/StatsContainer/StaminaContainer" unique_id=467508795]
 layout_mode = 2
 text = "Stamina: "
 vertical_alignment = 1
 
-[node name="StamValue" type="Label" parent="Stats/StatsContainer/StaminaContainer"]
+[node name="StamValue" type="Label" parent="Stats/StatsContainer/StaminaContainer" unique_id=2078374384]
 layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="AgilityContainer" type="HBoxContainer" parent="Stats/StatsContainer"]
-layout_mode = 2
+[node name="AgilityContainer" type="HBoxContainer" parent="Stats/StatsContainer" unique_id=1518314058]
+layout_mode = 0
 offset_top = 33.0
 offset_right = 132.0
 offset_bottom = 62.0
 
-[node name="AgilityLabel" type="Label" parent="Stats/StatsContainer/AgilityContainer"]
+[node name="AgilityLabel" type="Label" parent="Stats/StatsContainer/AgilityContainer" unique_id=932394969]
 layout_mode = 2
 text = "Agility: "
 vertical_alignment = 1
 
-[node name="AgilityValue" type="Label" parent="Stats/StatsContainer/AgilityContainer"]
+[node name="AgilityValue" type="Label" parent="Stats/StatsContainer/AgilityContainer" unique_id=417539004]
 layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="LuckContainer" type="HBoxContainer" parent="Stats/StatsContainer"]
+[node name="LuckContainer" type="HBoxContainer" parent="Stats/StatsContainer" unique_id=1925856128]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 180.0
@@ -208,33 +205,33 @@ offset_top = 33.0
 offset_right = 300.0
 offset_bottom = 62.0
 
-[node name="LuckLabel" type="Label" parent="Stats/StatsContainer/LuckContainer"]
+[node name="LuckLabel" type="Label" parent="Stats/StatsContainer/LuckContainer" unique_id=2038256825]
 layout_mode = 2
 text = "Luck: "
 vertical_alignment = 1
 
-[node name="LuckValue" type="Label" parent="Stats/StatsContainer/LuckContainer"]
+[node name="LuckValue" type="Label" parent="Stats/StatsContainer/LuckContainer" unique_id=1158019038]
 layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="ArmorContainer" type="HBoxContainer" parent="Stats/StatsContainer"]
-layout_mode = 2
+[node name="ArmorContainer" type="HBoxContainer" parent="Stats/StatsContainer" unique_id=2136816215]
+layout_mode = 0
 offset_top = 66.0
 offset_right = 132.0
 offset_bottom = 95.0
 
-[node name="ArmorLabel" type="Label" parent="Stats/StatsContainer/ArmorContainer"]
+[node name="ArmorLabel" type="Label" parent="Stats/StatsContainer/ArmorContainer" unique_id=2001467906]
 layout_mode = 2
 text = "Armor: "
 vertical_alignment = 1
 
-[node name="ArmorValue" type="Label" parent="Stats/StatsContainer/ArmorContainer"]
+[node name="ArmorValue" type="Label" parent="Stats/StatsContainer/ArmorContainer" unique_id=36442173]
 layout_mode = 2
 text = "10"
 vertical_alignment = 1
 
-[node name="ActivePerksBackground" type="Panel" parent="."]
+[node name="ActivePerksBackground" type="Panel" parent="." unique_id=1395170402]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.03
@@ -249,7 +246,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_active_perks_bg")
 
-[node name="ActivePerks" type="HBoxContainer" parent="ActivePerksBackground"]
+[node name="ActivePerks" type="HBoxContainer" parent="ActivePerksBackground" unique_id=1357081699]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -258,7 +255,7 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="DetailsButton" type="Button" parent="."]
+[node name="DetailsButton" type="Button" parent="." unique_id=94333691]
 custom_minimum_size = Vector2(60, 30)
 layout_mode = 1
 anchors_preset = 1
@@ -269,17 +266,17 @@ offset_top = 142.0
 offset_right = -86.0
 offset_bottom = 172.0
 grow_horizontal = 0
-theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 10
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 text = "Details"
 
-[node name="TalentsButton" type="Button" parent="."]
+[node name="TalentsButton" type="Button" parent="." unique_id=1353786863]
 custom_minimum_size = Vector2(60, 30)
 layout_mode = 1
 anchors_preset = 1
@@ -290,17 +287,17 @@ offset_top = 143.0
 offset_right = -22.0
 offset_bottom = 171.0
 grow_horizontal = 0
-theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 10
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
 text = "Talents"
 
-[node name="Equip" type="Control" parent="."]
+[node name="Equip" type="Control" parent="." unique_id=1785160564]
 layout_mode = 1
 anchor_top = 0.386
 anchor_right = 1.0
@@ -309,7 +306,7 @@ offset_top = -0.230011
 offset_bottom = 0.219971
 grow_horizontal = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Equip"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Equip" unique_id=689971992]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.003
@@ -319,27 +316,27 @@ offset_top = -1.017
 offset_right = -24.63
 grow_vertical = 2
 
-[node name="HeadSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
+[node name="HeadSlot" parent="Equip/VBoxContainer" unique_id=606876645 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("9_c1b6y")
 slot_type = "Head"
 slot_id = 1
 
-[node name="ChestSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
+[node name="ChestSlot" parent="Equip/VBoxContainer" unique_id=24352804 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("10_nsw37")
 slot_type = "Chest"
 slot_id = 2
 
-[node name="HandSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
+[node name="HandSlot" parent="Equip/VBoxContainer" unique_id=770495392 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("11_wxltd")
 slot_type = "Hand"
 slot_id = 3
 
-[node name="ShoeSlot" parent="Equip/VBoxContainer" instance=ExtResource("8_p188g")]
+[node name="ShoeSlot" parent="Equip/VBoxContainer" unique_id=1231757315 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("12_6mnrb")
 slot_type = "Foot"
 slot_id = 4
 
-[node name="Character" type="TextureRect" parent="Equip"]
+[node name="Character" type="TextureRect" parent="Equip" unique_id=984638927]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -354,12 +351,12 @@ expand_mode = 1
 stretch_mode = 5
 script = ExtResource("14_m2twj")
 
-[node name="Avatar" parent="Equip/Character" instance=ExtResource("15_sawem")]
+[node name="Avatar" parent="Equip/Character" unique_id=1766103850 instance=ExtResource("15_sawem")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
 
-[node name="ChangeAvatar" type="Button" parent="Equip/Character"]
+[node name="ChangeAvatar" type="Button" parent="Equip/Character" unique_id=326616126]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -368,7 +365,7 @@ grow_horizontal = 2
 grow_vertical = 2
 flat = true
 
-[node name="ConsumeSlot" type="Control" parent="Equip/Character"]
+[node name="ConsumeSlot" type="Control" parent="Equip/Character" unique_id=564370531]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -379,9 +376,9 @@ mouse_filter = 1
 script = ExtResource("16_tqjdd")
 item_scene = ExtResource("7_jhf1m")
 slot_type = "Consume"
-slot_id = 9
+slot_id = 10
 
-[node name="Weapon1Slot" parent="Equip" instance=ExtResource("8_p188g")]
+[node name="Weapon1Slot" parent="Equip" unique_id=759938900 instance=ExtResource("8_p188g")]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -395,7 +392,7 @@ outline_texture = ExtResource("17_kv01l")
 slot_type = "Weapon"
 slot_id = 9
 
-[node name="DamageSpreadLabel" type="Label" parent="Equip"]
+[node name="DamageSpreadLabel" type="Label" parent="Equip" unique_id=2119388064]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -410,7 +407,7 @@ text = "0 - 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Equip"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Equip" unique_id=1402485681]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -420,27 +417,27 @@ offset_left = -75.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="BeltSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
+[node name="BeltSlot" parent="Equip/VBoxContainer2" unique_id=825714327 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("18_h0hh0")
 slot_type = "Belt"
 slot_id = 5
 
-[node name="LegSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
+[node name="LegSlot" parent="Equip/VBoxContainer2" unique_id=1336216220 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("19_f1vnb")
 slot_type = "Legs"
 slot_id = 6
 
-[node name="RingSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
+[node name="RingSlot" parent="Equip/VBoxContainer2" unique_id=900116327 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("20_1is51")
 slot_type = "Ring"
 slot_id = 7
 
-[node name="AmuletSlot" parent="Equip/VBoxContainer2" instance=ExtResource("8_p188g")]
+[node name="AmuletSlot" parent="Equip/VBoxContainer2" unique_id=1220859727 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("21_7574k")
 slot_type = "Amulet"
 slot_id = 8
 
-[node name="HealthBar" parent="." instance=ExtResource("22_srvda")]
+[node name="HealthBar" parent="." unique_id=629663057 instance=ExtResource("22_srvda")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

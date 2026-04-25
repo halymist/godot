@@ -135,6 +135,7 @@ class Item:
 	var socket_id: int = -1  # ID of socketed gem (-1 = empty socket)
 	var socket_day: int = 0  # Day value of socketed gem for stat scaling
 	var ingredients: Array[int] = []  # Ingredient IDs for elixirs (id=1000)
+	var elixir_effects: Array[Dictionary] = []  # Direct elixir effects from server: [{effect_id, factor}]
 	
 	# Client-side cache (not serialized)
 	var texture: Texture2D = null
@@ -147,6 +148,14 @@ class Item:
 				for ingredient_id in data[key]:
 					if ingredient_id != null and ingredient_id is int:
 						ingredients.append(ingredient_id)
+			elif key == "elixir_effects":
+				elixir_effects.clear()
+				for entry in data[key]:
+					if entry is Dictionary:
+						var parsed_effect_id = int(entry.get("effect_id", 0))
+						var parsed_factor = float(entry.get("factor", 0.0))
+						if parsed_effect_id > 0:
+							elixir_effects.append({"effect_id": parsed_effect_id, "factor": parsed_factor})
 			elif key in self:
 				set(key, data[key])
 		
@@ -484,6 +493,7 @@ class GamePlayer:
 	var elixir: int = 0  # Equipped elixir item ID (0 = no elixir)
 	var elixir_day: int = 0  # Server day when elixir effect expires (0 = no expiration tracked)
 	var elixir_ingredients: Array[int] = []  # Ingredients for equipped elixir
+	var elixir_effects: Array[Dictionary] = []  # Direct active elixir effects [{effect_id, factor}]
 	var depleted_health: int = 0  # Amount of HP lost (0 = full health)
 	var bag_slots: Array[Item] = []
 	var perks: Array[Perk] = []
@@ -499,17 +509,27 @@ class GamePlayer:
 				if data[key] is Array and data[key].size() > 0:
 					elixir = 1000  # Elixir item ID is always 1000
 					elixir_ingredients.clear()
+					elixir_effects.clear()
 					for ingredient_id in data[key]:
 						if ingredient_id != null and ingredient_id is int:
 							elixir_ingredients.append(ingredient_id)
 				else:
 					elixir = 0
 					elixir_ingredients.clear()
+					elixir_effects.clear()
 			elif key == "elixir_ingredients":
 				elixir_ingredients.clear()
 				for ingredient_id in data[key]:
 					if ingredient_id != null and ingredient_id is int:
 						elixir_ingredients.append(ingredient_id)
+			elif key == "elixir_effects":
+				elixir_effects.clear()
+				for entry in data[key]:
+					if entry is Dictionary:
+						var parsed_effect_id = int(entry.get("effect_id", 0))
+						var parsed_factor = float(entry.get("factor", 0.0))
+						if parsed_effect_id > 0:
+							elixir_effects.append({"effect_id": parsed_effect_id, "factor": parsed_factor})
 			elif key in self and key not in ["avatar", "stats", "bag_slots", "perks", "talents"]:
 				set(key, data[key])
 		
@@ -666,6 +686,14 @@ class GamePlayer:
 					var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
 					if ingredient and ingredient.effect_id > 0 and ingredient.effect_id <= 20:
 						total_effects[ingredient.effect_id] += ingredient.effect_factor
+
+		# 5b. Add direct elixir effects from server (fallback when ingredient IDs are unavailable)
+		if "elixir_effects" in self and self.elixir_effects.size() > 0:
+			for entry in self.elixir_effects:
+				var effect_id = int(entry.get("effect_id", 0))
+				var factor = float(entry.get("factor", 0.0))
+				if effect_id > 0 and effect_id <= 20:
+					total_effects[effect_id] += factor
 		
 		# 6. Add talents effects (from runtime registry populated by Talent.gd nodes)
 		for talent in talents:
@@ -963,10 +991,31 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 			}
 			# Handle elixir ingredients if item is an elixir
 			if inv_item.has("elixir_effect") and inv_item.elixir_effect != null:
-				client_item["ingredients"] = [
-					inv_item.get("elixir_effect", 0),
-					inv_item.get("factor", 0) if inv_item.get("factor", null) != null else 0
-				]
+				var effects_payload: Array[Dictionary] = []
+				var elixir_effect = inv_item.elixir_effect
+				if elixir_effect is Dictionary:
+					if elixir_effect.has("effect1_id"):
+						var e1_id = int(elixir_effect.get("effect1_id", 0))
+						var f1 = float(elixir_effect.get("factor1", 0.0))
+						if e1_id > 0:
+							effects_payload.append({"effect_id": e1_id, "factor": f1})
+					if elixir_effect.has("effect2_id"):
+						var e2_id = int(elixir_effect.get("effect2_id", 0))
+						var f2 = float(elixir_effect.get("factor2", 0.0))
+						if e2_id > 0:
+							effects_payload.append({"effect_id": e2_id, "factor": f2})
+					if elixir_effect.has("effect3_id"):
+						var e3_id = int(elixir_effect.get("effect3_id", 0))
+						var f3 = float(elixir_effect.get("factor3", 0.0))
+						if e3_id > 0:
+							effects_payload.append({"effect_id": e3_id, "factor": f3})
+					if elixir_effect.has("effect_id"):
+						var eid = int(elixir_effect.get("effect_id", 0))
+						var ef = float(elixir_effect.get("factor", 0.0))
+						if eid > 0:
+							effects_payload.append({"effect_id": eid, "factor": ef})
+				if effects_payload.size() > 0:
+					client_item["elixir_effects"] = effects_payload
 			bag_slots_data.append(client_item)
 		client_data["bag_slots"] = bag_slots_data
 		client_data.erase("inventory")
@@ -1004,16 +1053,18 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	if server_data.has("expedition_slide") and server_data.expedition_slide != null:
 		client_data["expedition"] = [int(server_data.expedition_slide)]
 	
-	# Handle elixir (active elixir with 3 effects and 3 factors)
+	# Handle active elixir effects from server fields (effect/factor pairs)
 	if server_data.has("elixir_effect1") or server_data.has("elixir_effect2") or server_data.has("elixir_effect3"):
 		var elixir_effects = []
 		for i in range(1, 4):
-			var effect = server_data.get("elixir_effect" + str(i), null)
-			if effect != null and effect > 0:
-				elixir_effects.append(effect)
+			var effect_id = int(server_data.get("elixir_effect" + str(i), 0))
+			var factor = float(server_data.get("elixir_factor" + str(i), 0.0))
+			if effect_id > 0:
+				elixir_effects.append({"effect_id": effect_id, "factor": factor})
 		if elixir_effects.size() > 0:
-			client_data["elixir"] = 1000  # Elixir item ID
-			client_data["elixir_ingredients"] = elixir_effects
+			if not client_data.has("elixir"):
+				client_data["elixir"] = 1000  # Fallback item id for active elixir icon
+			client_data["elixir_effects"] = elixir_effects
 		# Clean up individual fields
 		for i in range(1, 4):
 			client_data.erase("elixir_effect" + str(i))
