@@ -1407,12 +1407,31 @@ func apply_combat_header_updates(combat: CombatResponse):
 			changed = true
 
 	if changed:
-		update_rankings()
+		# Recompute local ranks from honor so impacted players move in the leaderboard.
+		_reorder_rankings_by_honor()
 		if UIManager.instance:
 			if UIManager.instance.rankings_panel and UIManager.instance.rankings_panel.visible and UIManager.instance.rankings_panel.has_method("populate_rankings"):
 				UIManager.instance.rankings_panel.populate_rankings()
 			if UIManager.instance.arena_panel and UIManager.instance.arena_panel.visible and UIManager.instance.arena_panel.has_method("_load_opponent_data"):
 				UIManager.instance.arena_panel._load_opponent_data()
+
+func _reorder_rankings_by_honor():
+	"""Recompute rankings_players ordering by honor desc and reassign ranks
+	using the existing rank numbers in the local list, so impacted players
+	swap positions immediately after a combat result."""
+	update_rankings()
+	if rankings_players.is_empty():
+		return
+
+	var existing_ranks: Array = []
+	for p in rankings_players:
+		existing_ranks.append(p.rank)
+	existing_ranks.sort()
+
+	rankings_players.sort_custom(func(a, b): return a.honor > b.honor)
+
+	for i in range(rankings_players.size()):
+		rankings_players[i].rank = int(existing_ranks[i])
 
 # ============================================
 # QUEST MANAGEMENT

@@ -354,6 +354,10 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 		return
 	var start_pos := _icon_global_center(attacker_icon)
 	var end_pos := _icon_global_center(defender_icon)
+	# Force a strictly horizontal path so left->right and right->left look identical.
+	var mid_y := (start_pos.y + end_pos.y) * 0.5
+	start_pos.y = mid_y
+	end_pos.y = mid_y
 
 	var sword_size := Vector2(64, 64)
 	var sword := _create_sword_sprite(sword_size, start_pos)
@@ -388,6 +392,10 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 		return
 	var start_pos := _icon_global_center(attacker_icon)
 	var end_pos := _icon_global_center(defender_icon)
+	# Force a strictly horizontal path so direction is consistent.
+	var mid_y := (start_pos.y + end_pos.y) * 0.5
+	start_pos.y = mid_y
+	end_pos.y = mid_y
 
 	var sword_size := Vector2(64, 64)
 	var sword := _create_sword_sprite(sword_size, start_pos)
@@ -447,15 +455,18 @@ func _spawn_floating_text(target_icon: Control, text: String, color: Color, larg
 	label.add_theme_constant_override("shadow_offset_y", 2)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.z_index = 20
-	
-	# Position above the target icon center
+	# Hide until positioned to avoid a one-frame flash at (0,0).
+	label.modulate.a = 0.0
+
+	# Position above the target icon center.
 	var icon_center = _get_icon_local_center(target_icon)
 	add_child(label)
-	# Wait one frame so label gets its size
+	# Wait one frame so label gets its size.
 	await get_tree().process_frame
 	label.position = icon_center - Vector2(label.size.x / 2, label.size.y + 10)
-	
-	# Animate: float up and fade out
+	label.modulate.a = 1.0
+
+	# Animate: float up and fade out.
 	var tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(label, "position:y", label.position.y - 40, 0.8).set_ease(Tween.EASE_OUT)
