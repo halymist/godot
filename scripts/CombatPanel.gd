@@ -350,77 +350,78 @@ func _animate_action(entry: GameInfo.CombatLogEntry, session_id: int):
 
 func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defender_container: Control, damage: int, is_crit: bool, session_id: int):
 	"""Animate sword moving in a straight line from attacker to defender, then shake + damage popup."""
-	var start_pos = _get_icon_local_center(attacker_icon)
-	var end_pos = _get_icon_local_center(defender_icon)
-	
-	var sword_size = Vector2(64, 64)
-	var sword = _create_sword_sprite(sword_size, start_pos)
-	
-	# Point sword toward defender
-	var direction = (end_pos - start_pos).normalized()
-	sword.rotation = direction.angle() + PI / 2  # Offset so tip points forward
-	
-	# Straight line tween from attacker to defender
-	var tween = create_tween()
-	tween.tween_property(sword, "position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
-	
+	if not is_instance_valid(attacker_icon) or not is_instance_valid(defender_icon):
+		return
+	var start_pos := _icon_global_center(attacker_icon)
+	var end_pos := _icon_global_center(defender_icon)
+
+	var sword_size := Vector2(64, 64)
+	var sword := _create_sword_sprite(sword_size, start_pos)
+
+	# Point sword toward defender.
+	var direction := (end_pos - start_pos).normalized()
+	if direction.length() > 0.01:
+		sword.rotation = direction.angle() + PI / 2
+
+	# Straight line tween from attacker to defender (global coords).
+	var tween := create_tween()
+	tween.tween_property(sword, "global_position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
+
 	await tween.finished
-	
+
 	if is_instance_valid(sword):
 		sword.queue_free()
-	
+
 	if combat_session_id != session_id or not visible:
 		return
-	
-	# Impact: shake defender and show damage
+
+	# Impact: shake defender and show damage.
 	_shake_icon(defender_icon, is_crit)
 	var dmg_color = Color(1.0, 0.2, 0.2) if not is_crit else Color(1.0, 0.85, 0.0)
 	_spawn_floating_text(defender_icon, str(damage), dmg_color, is_crit)
-	
+
 	await get_tree().create_timer(impact_pause_duration).timeout
 
 func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defender_container: Control, session_id: int):
 	"""Animate sword flying at defender, but defender slides back to dodge."""
-	var start_pos = _get_icon_local_center(attacker_icon)
-	var end_pos = _get_icon_local_center(defender_icon)
-	
-	var sword_size = Vector2(64, 64)
-	var sword = _create_sword_sprite(sword_size, start_pos)
-	
-	# Point sword toward defender
-	var direction = (end_pos - start_pos).normalized()
-	sword.rotation = direction.angle() + PI / 2
-	
-	# Dodge slide: defender moves away from attacker
+	if not is_instance_valid(attacker_icon) or not is_instance_valid(defender_icon) or not is_instance_valid(defender_container):
+		return
+	var start_pos := _icon_global_center(attacker_icon)
+	var end_pos := _icon_global_center(defender_icon)
+
+	var sword_size := Vector2(64, 64)
+	var sword := _create_sword_sprite(sword_size, start_pos)
+
+	var direction := (end_pos - start_pos).normalized()
+	if direction.length() > 0.01:
+		sword.rotation = direction.angle() + PI / 2
+
+	# Dodge slide: defender moves away from attacker.
 	var swing_dir = sign(end_pos.x - start_pos.x)
 	var dodge_offset = Vector2(swing_dir * dodge_distance, 0)
 	var original_pos = defender_container.position
-	
-	# Start dodge slide partway through the sword flight
-	var dodge_tween = create_tween()
+
+	var dodge_tween := create_tween()
 	dodge_tween.tween_interval(dodge_start_delay)
 	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, dodge_slide_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
-	
-	# Straight line sword flight
-	var tween = create_tween()
-	tween.tween_property(sword, "position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
-	
+
+	var tween := create_tween()
+	tween.tween_property(sword, "global_position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
+
 	await tween.finished
-	
+
 	if is_instance_valid(sword):
 		sword.queue_free()
-	
+
 	if combat_session_id != session_id or not visible:
 		defender_container.position = original_pos
 		return
-	
-	# Show "Dodged!" text
+
 	_spawn_floating_text(defender_icon, "Dodged!", Color(0.7, 0.85, 1.0))
-	
-	# Slide back to original position
-	var return_tween = create_tween()
+
+	var return_tween := create_tween()
 	return_tween.tween_property(defender_container, "position", original_pos, dodge_return_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
-	
+
 	await get_tree().create_timer(impact_pause_duration).timeout
 
 func _shake_icon(icon: Control, is_crit: bool = false):
@@ -467,18 +468,26 @@ func _get_icon_local_center(icon: Control) -> Vector2:
 	var icon_global_center = icon.global_position + icon.size / 2
 	return icon_global_center - global_position
 
+func _icon_global_center(icon: Control) -> Vector2:
+	"""Center of icon in global (viewport) coordinates."""
+	return icon.global_position + icon.size / 2
+
 func _create_sword_sprite(sword_size: Vector2, start_pos: Vector2) -> TextureRect:
-	"""Create and add a sword TextureRect for swing animations."""
-	var sword = TextureRect.new()
+	"""Create a sword TextureRect rendered as a top-level sprite at global position.
+	Top-level avoids parent layout/anchors resizing the sword to the screen."""
+	var sword := TextureRect.new()
+	add_child(sword)
+	sword.top_level = true
+	sword.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_KEEP_SIZE)
+	sword.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sword.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sword.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	sword.texture = sword_texture
 	sword.custom_minimum_size = sword_size
 	sword.size = sword_size
-	sword.expand_mode = 1  # EXPAND_IGNORE_SIZE
-	sword.stretch_mode = 5  # KEEP_ASPECT_CENTERED
 	sword.pivot_offset = sword_size / 2
-	sword.z_index = 10
-	sword.position = start_pos - sword_size / 2
-	add_child(sword)
+	sword.z_index = 100
+	sword.global_position = start_pos - sword_size / 2
 	return sword
 
 func apply_action_health_changes(action: GameInfo.CombatLogEntry):

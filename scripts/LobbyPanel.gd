@@ -506,9 +506,15 @@ func _on_character_created(success: bool, character_id: int, error: String):
 		characters.append(character_obj)
 		newest_server["characters"] = characters
 		print("[Lobby] Added character to server: ", newest_server.get("name", "Unknown"))
-		
+
 		# Refresh character list
 		add_character_list()
+
+		# Auto-login into the freshly created character.
+		var server_id := int(newest_server.get("id", 0))
+		if server_id > 0:
+			print("[Lobby] Auto-logging into newly created character ", character_id, " on server ", server_id)
+			_on_character_selected(character_id, server_id)
 	else:
 		print("[Lobby] Error: No server found to add character to")
 
