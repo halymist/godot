@@ -27,6 +27,12 @@ func change_scene_to_packed(scene: PackedScene) -> void:
 	await get_tree().process_frame
 	await fade_in()
 
+func change_scene_to_packed_after_dark(scene: PackedScene) -> void:
+	"""Switch scene assuming the screen is already faded to black."""
+	get_tree().change_scene_to_packed(scene)
+	await get_tree().process_frame
+	await fade_in()
+
 func fade_out(duration: float = 0.35) -> void:
 	color_rect.mouse_filter = Control.MOUSE_FILTER_STOP
 	var tween = create_tween()

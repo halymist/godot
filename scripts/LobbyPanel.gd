@@ -43,6 +43,8 @@ var game_scene: PackedScene = null
 var loading_in_progress = false  # Prevent multiple character selections while loading
 var initialized = false  # Track if we've initialized the lobby
 var _selected_server_day: int = 0  # Server day for selected character's server
+var create_request_in_progress: bool = false
+var create_transition_started: bool = false
 
 signal lobby_ready
 
@@ -351,6 +353,8 @@ func _on_character_selected(character_id: int, server_id: int):
 	if not ws_connected:
 		print("ERROR: Failed to connect to WebSocket server")
 		loading_in_progress = false
+		if create_transition_started:
+			_cancel_create_transition_to_menu()
 		return
 	
 	# Connect to playerData signal
@@ -381,8 +385,15 @@ func _on_player_data_received(character_data: Dictionary):
 		GameInfo.current_player.server_day = _selected_server_day
 	
 	print("[Lobby] Character loaded, switching to game scene...")
-	# Switch to preloaded game scene
-	SceneTransition.change_scene_to_packed(game_scene)
+	# If create flow already started fade_out, avoid a second fade_out.
+	if create_transition_started:
+		create_transition_started = false
+		# Let SceneTransition (autoload) finish scene swap + fade in,
+		# so this flow survives LobbyPanel being freed.
+		SceneTransition.change_scene_to_packed_after_dark(game_scene)
+	else:
+		# Normal selection flow
+		SceneTransition.change_scene_to_packed(game_scene)
 
 func _show_login_with_method(method: String):
 	"""Show login screen to add/link another account with specified method"""
@@ -427,6 +438,15 @@ func _on_avatar_back():
 
 func _on_create_character_complete():
 	"""User completed avatar creation, create the character"""
+	if create_request_in_progress:
+		return
+	create_request_in_progress = true
+
+	# Optimistic UX: start transition immediately, before server response.
+	if not create_transition_started:
+		create_transition_started = true
+		SceneTransition.fade_out()
+
 	var character_data = character_info_panel.get_character_data()
 	var avatar_data = avatar_creation_panel.get_avatar_data()
 	
@@ -449,74 +469,63 @@ func _on_create_character_complete():
 		avatar_array,
 		character_data["vip"]
 	)
-	
-	avatar_creation_panel.visible = false
-	visible = true
 
 func _on_character_created(success: bool, character_id: int, error: String):
 	"""Handle character creation response from server"""
+	create_request_in_progress = false
+
 	if not success:
 		print("[Lobby] Character creation failed: ", error)
+		_cancel_create_transition_to_menu()
 		# TODO: Show error message to user
 		return
 	
 	print("[Lobby] Character created successfully with ID: ", character_id)
-	
-	# Get character data from the creation panels
-	var character_data = character_info_panel.get_character_data()
-	var avatar_data = avatar_creation_panel.get_avatar_data()
-	
-	# Build avatar array
-	var avatar_array = [
-		avatar_data["face"],
-		avatar_data["hair"],
-		avatar_data["eyes"],
-		avatar_data["nose"],
-		avatar_data["mouth"],
-		avatar_data["brows"],
-		avatar_data["ears"],
-		avatar_data["special"]
-	]
-	
-	# Create character object
-	var character_obj = {
-		"character_id": character_id,
-		"name": character_data["name"],
-		"vip": character_data["vip"],
-		"rank": 9999,  # New characters start at bottom rank
-		"avatar": avatar_array
-	}
-	
-	# Find the newest server (last in the list with most recent created_at timestamp)
-	var newest_server = null
-	var newest_timestamp = 0
-	
-	var server_list = GameInfo.lobby_data.get("server_list", [])
-	for server in server_list:
-		var created_at = server.get("created_at", 0)
-		if created_at > newest_timestamp:
-			newest_timestamp = created_at
-			newest_server = server
-	
-	# Add character to newest server
-	if newest_server:
-		var characters = newest_server.get("characters", null)
-		if characters == null or not (characters is Array):
-			characters = []
-		characters.append(character_obj)
-		newest_server["characters"] = characters
-		print("[Lobby] Added character to server: ", newest_server.get("name", "Unknown"))
 
-		# Refresh character list
-		add_character_list()
+	var create_response: Dictionary = Http.last_create_character_response
+	var server_id := _extract_server_id_from_create_response(create_response)
 
-		# Auto-login into the freshly created character.
-		var server_id := int(newest_server.get("id", 0))
-		if server_id > 0:
-			print("[Lobby] Auto-logging into newly created character ", character_id, " on server ", server_id)
-			_on_character_selected(character_id, server_id)
-	else:
-		print("[Lobby] Error: No server found to add character to")
+	if server_id <= 0:
+		print("[Lobby] Missing server_id in create-character response; cannot auto-login")
+		_cancel_create_transition_to_menu()
+		return
+
+	print("[Lobby] Auto-logging into newly created character ", character_id, " on server ", server_id)
+	_on_character_selected(character_id, server_id)
+
+func _cancel_create_transition_to_menu():
+	"""Fallback from optimistic create transition back to create menu UI."""
+	create_transition_started = false
+	character_info_panel.visible = false
+	avatar_creation_panel.visible = true
+	visible = false
+	SceneTransition.fade_in()
+
+func _extract_server_id_from_create_response(response: Dictionary) -> int:
+	"""Read server_id from backend create-character response in multiple shapes."""
+	if response.is_empty():
+		return 0
+
+	if response.has("server_id"):
+		return int(response.get("server_id", 0))
+	if response.has("serverId"):
+		return int(response.get("serverId", 0))
+
+	var server = response.get("server", null)
+	if server is Dictionary:
+		if server.has("id"):
+			return int(server.get("id", 0))
+		if server.has("server_id"):
+			return int(server.get("server_id", 0))
+
+	var character = response.get("character", null)
+	if character is Dictionary:
+		if character.has("server_id"):
+			return int(character.get("server_id", 0))
+		if character.has("serverId"):
+			return int(character.get("serverId", 0))
+
+	return 0
 
 func _get_server_day(server_id: int) -> int:
 	"""Get current_day from server list for the given server_id"""

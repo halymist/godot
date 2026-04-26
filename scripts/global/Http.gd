@@ -15,6 +15,8 @@ signal create_character_completed(success: bool, character_id: int, error: Strin
 
 # Session ID from successful login (used for authenticated requests)
 var session_id: String = ""
+# Last successful create-character raw response payload.
+var last_create_character_response: Dictionary = {}
 
 func _ready():
 	print("Http ready!")
@@ -269,6 +271,7 @@ func create_character(character_name: String, faction: int, avatar: Array, vip: 
 	"""
 	var http_request = _create_http_request()
 	http_request.request_completed.connect(_on_create_character_completed.bind(http_request))
+	last_create_character_response = {}
 	
 	var payload = {
 		"name": character_name,
@@ -286,6 +289,7 @@ func create_character(character_name: String, faction: int, avatar: Array, vip: 
 	if error != OK:
 		print("[HTTP] Failed to send create character request: ", error)
 		http_request.queue_free()
+		last_create_character_response = {}
 		create_character_completed.emit(false, 0, "Failed to send request")
 
 func _on_create_character_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
@@ -294,6 +298,7 @@ func _on_create_character_completed(result: int, response_code: int, _headers: P
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
 		print("[HTTP] Create character request failed with result: ", result)
+		last_create_character_response = {}
 		create_character_completed.emit(false, 0, "Connection failed")
 		return
 	
@@ -308,6 +313,7 @@ func _on_create_character_completed(result: int, response_code: int, _headers: P
 			var err_response = err_json.get_data()
 			if err_response is Dictionary and err_response.has("error"):
 				error_msg = err_response["error"]
+		last_create_character_response = {}
 		create_character_completed.emit(false, 0, error_msg)
 		return
 	
@@ -315,15 +321,18 @@ func _on_create_character_completed(result: int, response_code: int, _headers: P
 	var json = JSON.new()
 	if json.parse(body_text) != OK:
 		print("[HTTP] Failed to parse create character response")
+		last_create_character_response = {}
 		create_character_completed.emit(false, 0, "Invalid server response")
 		return
 	
 	var response = json.get_data()
 	if not response is Dictionary or not response.has("character_id"):
+		last_create_character_response = {}
 		create_character_completed.emit(false, 0, "Invalid server response format")
 		return
 	
 	var character_id = response["character_id"]
+	last_create_character_response = response.duplicate(true)
 	create_character_completed.emit(true, character_id, "")
 
 func delete_character(character_id: int):
