@@ -429,7 +429,7 @@ slot_id = 6
 
 [node name="RingSlot" parent="Equip/VBoxContainer2" unique_id=900116327 instance=ExtResource("8_p188g")]
 outline_texture = ExtResource("20_1is51")
-slot_type = "Ring"
+slot_type = "Back"
 slot_id = 7
 
 [node name="AmuletSlot" parent="Equip/VBoxContainer2" unique_id=1220859727 instance=ExtResource("8_p188g")]

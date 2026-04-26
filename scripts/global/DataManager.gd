@@ -879,11 +879,11 @@ func _map_item_type_to_enum(item_type_string: String) -> int:
 	match item_type_string.to_lower():
 		"head", "helmet": return 0  # HEAD
 		"chest": return 1  # CHEST
-		"hands", "gloves": return 2  # HANDS
-		"foot", "boots": return 3  # FOOT
+		"hand", "hands", "gloves": return 2  # HANDS
+		"foot", "feet", "boots": return 3  # FOOT
 		"belt": return 4  # BELT
 		"legs": return 5  # LEGS
-		"ring": return 6  # RING
+		"ring", "back": return 6  # RING/BACK
 		"amulet": return 7  # AMULET
 		"weapon": return 8  # WEAPON
 		"gem": return 9  # GEM

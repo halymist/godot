@@ -57,6 +57,8 @@ func _setup():
 
 func _on_visibility_changed():
 	if visible:
+		# Rebuild rows from latest runtime values each time panel is opened.
+		populate_rankings()
 		_select_current_player()
 		fight_button.visible = false
 

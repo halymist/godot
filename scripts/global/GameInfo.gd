@@ -417,6 +417,11 @@ class CombatResponse:
 	
 	# Result
 	var winner_id: int = 0  # character_id of winner
+	var combat_type: String = ""  # Optional header type: arena/rankings/quest/replay
+	var player_honor: int = -1
+	var enemy_honor: int = -1
+	var player_hp_end: int = -1
+	var enemy_hp_end: int = -1
 	var combat_log: Array[CombatLogEntry] = []
 	
 	func _init(data: Dictionary = {}):
@@ -425,27 +430,45 @@ class CombatResponse:
 		
 		# Parse player data
 		var player_data = header.get("player", {})
-		player_id = player_data.get("character_id", 0)
+		player_id = int(player_data.get("character_id", 0))
 		player_name = player_data.get("name", "")
-		player_max_hp = player_data.get("max_hp", 100)
+		player_max_hp = int(player_data.get("max_hp", 100))
 		player_depleted_health = float(player_data.get("depleted_health", 0.0))
 		if player_data.has("avatar") and player_data.avatar is Array:
 			player_avatar = player_data.avatar
 		
 		# Parse enemy data
 		var enemy_data = header.get("enemy", {})
-		enemy_id = enemy_data.get("character_id", 0)
+		enemy_id = int(enemy_data.get("character_id", 0))
 		enemy_npc_id = int(enemy_data.get("enemy_id", 0))
 		enemy_name = enemy_data.get("name", "")
-		enemy_max_hp = enemy_data.get("max_hp", 100)
+		enemy_max_hp = int(enemy_data.get("max_hp", 100))
 		if enemy_data.has("avatar") and enemy_data.avatar is Array:
 			enemy_avatar = enemy_data.avatar
 		var asset_id = enemy_data.get("asset_id", null)
-		if asset_id != null and asset_id is int:
-			enemy_asset_id = asset_id
+		if asset_id != null and (asset_id is int or asset_id is float):
+			enemy_asset_id = int(asset_id)
 		
 		# Parse winner
-		winner_id = header.get("winner", 0)
+		winner_id = int(header.get("winner", 0))
+		combat_type = str(header.get("type", ""))
+
+		# Parse optional end-of-combat HP values
+		if header.has("player_hp_end"):
+			player_hp_end = int(header.get("player_hp_end", -1))
+		if header.has("enemy_hp_end"):
+			enemy_hp_end = int(header.get("enemy_hp_end", -1))
+
+		# Parse optional honor updates (support both honor/honnor spellings).
+		if header.has("player_honnor"):
+			player_honor = int(header.get("player_honnor", -1))
+		elif header.has("player_honor"):
+			player_honor = int(header.get("player_honor", -1))
+
+		if header.has("enemy_honnor"):
+			enemy_honor = int(header.get("enemy_honnor", -1))
+		elif header.has("enemy_honor"):
+			enemy_honor = int(header.get("enemy_honor", -1))
 		
 		# Parse combat log
 		var log_data = data.get("log", [])
@@ -1360,6 +1383,36 @@ func update_rankings():
 	rankings_players.sort_custom(func(a, b): return a.rank < b.rank)
 	
 	print("Rankings updated: ", rankings_players.size(), " players (current player included)")
+
+func apply_combat_header_updates(combat: CombatResponse):
+	"""Apply optional header-level combat results (honor, etc.) to runtime player lists."""
+	if combat == null:
+		return
+
+	var changed := false
+
+	# Update current player honor when server sends it.
+	if current_player and combat.player_id == current_player.character_id and combat.player_honor >= 0:
+		if current_player.honor != combat.player_honor:
+			current_player.honor = combat.player_honor
+			changed = true
+
+	# Update enemy players honor for both combat participants when available.
+	for player in enemy_players:
+		if player.character_id == combat.player_id and combat.player_honor >= 0 and player.honor != combat.player_honor:
+			player.honor = combat.player_honor
+			changed = true
+		if player.character_id == combat.enemy_id and combat.enemy_honor >= 0 and player.honor != combat.enemy_honor:
+			player.honor = combat.enemy_honor
+			changed = true
+
+	if changed:
+		update_rankings()
+		if UIManager.instance:
+			if UIManager.instance.rankings_panel and UIManager.instance.rankings_panel.visible and UIManager.instance.rankings_panel.has_method("populate_rankings"):
+				UIManager.instance.rankings_panel.populate_rankings()
+			if UIManager.instance.arena_panel and UIManager.instance.arena_panel.visible and UIManager.instance.arena_panel.has_method("_load_opponent_data"):
+				UIManager.instance.arena_panel._load_opponent_data()
 
 # ============================================
 # QUEST MANAGEMENT

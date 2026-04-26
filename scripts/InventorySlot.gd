@@ -34,6 +34,76 @@ func _ready():
 func _is_item_child(child: Node) -> bool:
 	return child != item_outline and child.has_method("get_item_data")
 
+func _normalize_equipment_type(raw_type: String) -> String:
+	var t = raw_type.to_lower()
+	match t:
+		"head":
+			return "Head"
+		"chest":
+			return "Chest"
+		"hand", "hands":
+			return "Hands"
+		"foot", "feet":
+			return "Foot"
+		"belt":
+			return "Belt"
+		"leg", "legs":
+			return "Legs"
+		"ring", "back":
+			return "Ring"
+		"amulet":
+			return "Amulet"
+		"weapon":
+			return "Weapon"
+		_:
+			return raw_type
+
+func _required_equipment_type_for_slot(slot: int) -> String:
+	match slot:
+		1:
+			return "Head"
+		2:
+			return "Chest"
+		3:
+			return "Hands"
+		4:
+			return "Foot"
+		5:
+			return "Belt"
+		6:
+			return "Legs"
+		7:
+			return "Ring"
+		8:
+			return "Amulet"
+		9:
+			return "Weapon"
+		_:
+			return ""
+
+func _get_equipment_slot_for_item_type(item_type: String) -> int:
+	match _normalize_equipment_type(item_type):
+		"Head":
+			return 1
+		"Chest":
+			return 2
+		"Hands":
+			return 3
+		"Foot":
+			return 4
+		"Belt":
+			return 5
+		"Legs":
+			return 6
+		"Ring":
+			return 7
+		"Amulet":
+			return 8
+		"Weapon":
+			return 9
+		_:
+			return -1
+
 func _can_drop_data(_pos, data):
 	# Check if data is valid drag package
 	if not (data is Dictionary and data.has("item") and data["item"] is GameInfo.Item):
@@ -148,20 +218,12 @@ func _can_drop_data(_pos, data):
 		print("DEBUG: Dragged item type: ", item_type, " Existing item type: ", existing_item_type)
 		
 		# Get the required type for the source equipment slot
-		var required_type = ""
-		match source_slot_id:
-			1: required_type = "Head"
-			2: required_type = "Chest"
-			3: required_type = "Hands"
-			4: required_type = "Foot"
-			5: required_type = "Belt"
-			6: required_type = "Legs"
-			7: required_type = "Ring"
-			8: required_type = "Amulet"
-			9: required_type = "Weapon"
+		var required_type = _required_equipment_type_for_slot(source_slot_id)
+		var normalized_dragged_type = _normalize_equipment_type(item_type)
+		var normalized_existing_type = _normalize_equipment_type(existing_item_type)
 		
 		# Both items must match the equipment slot's required type
-		if item_type != required_type or existing_item_type != required_type:
+		if normalized_dragged_type != required_type or normalized_existing_type != required_type:
 			print("DEBUG: REJECTING - Types don't match required type: ", required_type)
 			return false
 		print("DEBUG: ALLOWING - Both items match required type: ", required_type)
@@ -526,25 +588,34 @@ func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.
 	print("Gem socketing complete")
 
 func is_valid_item_for_slot(item_type: String) -> bool:
+	var normalized_item_type = _normalize_equipment_type(item_type)
+	var normalized_slot_type = _normalize_equipment_type(slot_type)
+
 	match slot_type:
 		"Head":
-			return item_type == "Head"
+			return normalized_item_type == "Head"
 		"Chest":
-			return item_type == "Chest"
+			return normalized_item_type == "Chest"
 		"Hands":
-			return item_type == "Hands"
+			return normalized_item_type == "Hands"
+		"Hand":
+			return normalized_item_type == "Hands"
 		"Foot":
-			return item_type == "Foot"
+			return normalized_item_type == "Foot"
+		"Feet":
+			return normalized_item_type == "Foot"
 		"Belt":
-			return item_type == "Belt"		
+			return normalized_item_type == "Belt"		
 		"Legs":
-			return item_type == "Legs"
+			return normalized_item_type == "Legs"
 		"Ring":
-			return item_type == "Ring"
+			return normalized_item_type == "Ring"
+		"Back":
+			return normalized_item_type == "Ring"
 		"Amulet":
-			return item_type == "Amulet"
+			return normalized_item_type == "Amulet"
 		"Weapon":
-			return item_type == "Weapon"
+			return normalized_item_type == "Weapon"
 		"Ingredient":
 			return item_type == "Ingredient"
 		"Blacksmith":
@@ -558,6 +629,9 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 		"Consume":
 			return item_type == "Potion" or item_type == "Elixir"  # Only consumables
 		_:
+			# Handles unconventional slot labels by equipment-normalized matching.
+			if normalized_slot_type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]:
+				return normalized_item_type == normalized_slot_type
 			return false
 
 func is_slot_empty() -> bool:
@@ -823,21 +897,11 @@ func _consume_elixir_confirmed(item: GameInfo.Item):
 		UIManager.instance.refresh_stats()
 
 func _can_equip_to_character(item: GameInfo.Item) -> bool:
-	return item.type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]
+	return _get_equipment_slot_for_item_type(item.type) != -1
 
 func _equip_item_to_character(item: GameInfo.Item):
 	"""Equip item from bag to character equipment slot"""
-	var target_slot_id = -1
-	match item.type:
-		"Head": target_slot_id = 1
-		"Chest": target_slot_id = 2
-		"Hands": target_slot_id = 3
-		"Foot": target_slot_id = 4
-		"Belt": target_slot_id = 5
-		"Legs": target_slot_id = 6
-		"Ring": target_slot_id = 7
-		"Amulet": target_slot_id = 8
-		"Weapon": target_slot_id = 9
+	var target_slot_id = _get_equipment_slot_for_item_type(item.type)
 	
 	if target_slot_id == -1:
 		return

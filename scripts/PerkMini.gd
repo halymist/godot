@@ -31,6 +31,27 @@ func _format_time_remaining(expire_until: float) -> String:
 	minutes_left = max(minutes_left, 1)
 	return "[%dm remaining]" % [minutes_left]
 
+func _format_effect_line(effect: EffectResource, factor_value: float) -> String:
+	if not effect:
+		return ""
+
+	var effect_line = effect.description
+	var parsed_factor = int(factor_value)
+	if "*" in effect_line:
+		effect_line = effect_line.replace("*", str(parsed_factor))
+	elif parsed_factor > 0:
+		effect_line += " " + str(parsed_factor) + "%"
+	return effect_line
+
+func _append_effect_lines(content: String, effect_map: Dictionary) -> String:
+	for effect_id in effect_map:
+		var effect = GameInfo.effects_db.get_effect_by_id(int(effect_id)) if GameInfo and GameInfo.effects_db else null
+		if effect:
+			var effect_line = _format_effect_line(effect, float(effect_map[effect_id]))
+			if effect_line != "":
+				content += "\n" + effect_line
+	return content
+
 func _on_hover():
 	var content = ""
 	
@@ -57,22 +78,14 @@ func _on_hover():
 		"potion":
 			var item = GameInfo.items_db.get_item_by_id(meta_data.id)
 			if not item:
-				print("ERROR: Potion item not found in items_db: ", meta_data.id)
 				content = "Unknown Potion (ID: " + str(meta_data.id) + ")"
 			else:
 				content = item.item_name
-				print("Potion found: ", item.item_name, " (ID: ", meta_data.id, ")")
-				print("  - effect_id: ", item.effect_id, ", effect_factor: ", item.effect_factor)
-				# Show effect + factor from item database
+				# Use the same effect formatting behavior as elixirs.
+				var effect_map = {}
 				if item.effect_id > 0:
-					var effect = GameInfo.effects_db.get_effect_by_id(item.effect_id)
-					if effect:
-						print("  - Effect found: ", effect.description)
-						content += "\n" + effect.description + " " + str(int(item.effect_factor)) + "%"
-					else:
-						print("  - ERROR: Effect not found in effects_db: ", item.effect_id)
-				else:
-					print("  - No effect_id on this item")
+					effect_map[item.effect_id] = float(item.effect_factor)
+				content = _append_effect_lines(content, effect_map)
 			# Show expiration time if available
 			var expire_until = meta_data.get("expire_until", 0.0)
 			if expire_until > 0:
@@ -97,16 +110,7 @@ func _on_hover():
 						if ingredient and ingredient.effect_id > 0:
 							effect_map[ingredient.effect_id] = effect_map.get(ingredient.effect_id, 0.0) + ingredient.effect_factor
 			
-			for effect_id in effect_map:
-				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
-				if effect:
-					var effect_line = effect.description
-					var factor_value = int(effect_map[effect_id])
-					if "*" in effect_line:
-						effect_line = effect_line.replace("*", str(factor_value))
-					elif factor_value > 0:
-						effect_line += " " + str(factor_value) + "%"
-					content += "\n" + effect_line
+			content = _append_effect_lines(content, effect_map)
 			
 			# Show expiration time if available
 			var expire_until = meta_data.get("expire_until", 0.0)

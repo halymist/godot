@@ -234,6 +234,7 @@ func _handle_expedition_option_response(message: Dictionary):
 		# If combat data exists, show combat and defer failure handling
 		if data.has("combat") and data.combat is Dictionary:
 			GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
+			GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
 			if GameInfo.current_player and not data.has("depleted_health"):
 				var max_health = GameInfo.current_player.get_total_stats().stamina * 10
 				GameInfo.current_player.depleted_health = clamp(int(GameInfo.current_combat_log.player_depleted_health), 0, max_health)
@@ -265,6 +266,7 @@ func _handle_expedition_option_response(message: Dictionary):
 	# If combat data is included, show combat panel first and defer slide advance
 	if data.has("combat") and data.combat is Dictionary:
 		GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
+		GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
 		if GameInfo.current_player and not data.has("depleted_health"):
 			var max_health = GameInfo.current_player.get_total_stats().stamina * 10
 			GameInfo.current_player.depleted_health = clamp(int(GameInfo.current_combat_log.player_depleted_health), 0, max_health)
@@ -355,6 +357,7 @@ func _handle_combat_log(message: Dictionary):
 	
 	# Create CombatResponse from server data
 	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
+	GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
 	
 	# Reset the arena fight button
 	if UIManager.instance and UIManager.instance.arena_panel:
