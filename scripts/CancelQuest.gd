@@ -5,6 +5,8 @@ extends Control
 @export var background_button : Button
 @export var dialog_label : Label
 
+var _custom_confirm_callback: Callable = Callable()
+
 func _ready():
 	yes_button.pressed.connect(_on_yes_pressed)
 	no_button.pressed.connect(_on_no_pressed)
@@ -14,6 +16,7 @@ func show_dialog():
 	# Update dialog text based on what we're canceling
 	var expedition = GameInfo.current_player.expedition
 	var is_expedition_travel = UIManager.instance.map_panel.is_expedition_travel
+	_custom_confirm_callback = Callable()
 	if (expedition and expedition.size() > 0) or is_expedition_travel:
 		dialog_label.text = "Do you wish to abandon the expedition?"
 	else:
@@ -21,7 +24,20 @@ func show_dialog():
 	
 	UIManager.instance.show_overlay(self)
 
+func show_custom_dialog(message: String, on_yes_callback: Callable):
+	"""Show a generic yes/no dialog using the same overlay style."""
+	dialog_label.text = message
+	_custom_confirm_callback = on_yes_callback
+	UIManager.instance.show_overlay(self)
+
 func _on_yes_pressed():
+	if _custom_confirm_callback.is_valid():
+		var callback = _custom_confirm_callback
+		_custom_confirm_callback = Callable()
+		UIManager.instance.hide_current_overlay()
+		callback.call()
+		return
+
 	var quest_id = GameInfo.current_player.traveling_destination
 	var expedition = GameInfo.current_player.expedition
 	var map = UIManager.instance.map_panel
@@ -75,4 +91,5 @@ func _on_yes_pressed():
 	print("Quest canceled by user")
 
 func _on_no_pressed():
+	_custom_confirm_callback = Callable()
 	UIManager.instance.hide_current_overlay()

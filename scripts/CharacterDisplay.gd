@@ -127,6 +127,14 @@ func update_stats():
 
 func refresh_active_effects():
 	"""Refresh active effects display (blessings, potions, elixirs, perks)"""
+	if displayed_character:
+		var log_elixir_effects = displayed_character.get("elixir_effects") if "elixir_effects" in displayed_character else []
+		var log_elixir_ingredients = displayed_character.elixir_ingredients if "elixir_ingredients" in displayed_character else []
+		print("[CharacterDisplay] refresh_active_effects for ", displayed_character.name,
+			" elixir=", displayed_character.elixir,
+			" elixir_effects=", log_elixir_effects,
+			" elixir_ingredients=", log_elixir_ingredients)
+
 	for child in active_perks_display.get_children():
 		child.queue_free()
 	
@@ -135,11 +143,23 @@ func refresh_active_effects():
 		var elixir_res = GameInfo.items_db.get_item_by_id(displayed_character.elixir)
 		if elixir_res == null:
 			elixir_res = GameInfo.items_db.get_item_by_id(1000)
-		if elixir_res and elixir_res.icon:
+		if elixir_res == null and GameInfo.items_db:
+			for db_item in GameInfo.items_db.items:
+				if db_item and db_item.get_type_string() == "Elixir":
+					elixir_res = db_item
+					break
+
+		if elixir_res:
 			var icon = perk_mini_scene.instantiate()
 			var elixir_until = displayed_character.elixir_until if "elixir_until" in displayed_character else 0.0
+			print("[CharacterDisplay] Adding active elixir icon id=", displayed_character.elixir,
+				" using resource id=", elixir_res.id if elixir_res else -1,
+				" has_icon=", elixir_res.icon != null if elixir_res else false,
+				" until=", elixir_until)
 			icon.setup(elixir_res.icon, {"type": "elixir", "id": displayed_character.elixir, "expire_until": elixir_until})
 			active_perks_display.add_child(icon)
+		else:
+			print("[CharacterDisplay] WARNING: Unable to resolve elixir resource/icon for active elixir id=", displayed_character.elixir)
 	
 	# Add equipped potion second if any
 	if displayed_character.potion > 0:

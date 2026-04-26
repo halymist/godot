@@ -790,16 +790,37 @@ func _consume_item(item: GameInfo.Item):
 		GameInfo.current_player.bag_slots.erase(item)
 		clear_slot()
 	elif item.type == "Elixir":
-		Websocket.use_elixir(item.bag_slot_id)
-		GameInfo.current_player.elixir = item.id
-		GameInfo.current_player.elixir_ingredients = item.ingredients.duplicate()
-		GameInfo.current_player.elixir_effects = item.elixir_effects.duplicate(true) if item.elixir_effects else []
-		GameInfo.current_player.bag_slots.erase(item)
-		clear_slot()
+		if GameInfo.current_player.elixir > 0:
+			if UIManager.instance and UIManager.instance.cancel_quest and UIManager.instance.cancel_quest.has_method("show_custom_dialog"):
+				UIManager.instance.cancel_quest.show_custom_dialog(
+					"You already have an active elixir. Replace it?",
+					Callable(self, "_consume_elixir_confirmed").bind(item)
+				)
+				return
+		_consume_elixir_confirmed(item)
+		return
 	
 	UIManager.instance.refresh_active_effects()
 	UIManager.instance.refresh_bags()
 	UIManager.instance.refresh_stats()
+
+func _consume_elixir_confirmed(item: GameInfo.Item):
+	if item == null:
+		return
+	if not GameInfo.current_player.bag_slots.has(item):
+		return
+
+	Websocket.use_elixir(item.bag_slot_id)
+	GameInfo.current_player.elixir = item.id
+	GameInfo.current_player.elixir_ingredients = item.ingredients.duplicate()
+	GameInfo.current_player.elixir_effects = item.elixir_effects.duplicate(true) if item.elixir_effects else []
+	GameInfo.current_player.bag_slots.erase(item)
+	clear_slot()
+
+	if UIManager.instance:
+		UIManager.instance.refresh_active_effects()
+		UIManager.instance.refresh_bags()
+		UIManager.instance.refresh_stats()
 
 func _can_equip_to_character(item: GameInfo.Item) -> bool:
 	return item.type in ["Head", "Chest", "Hands", "Foot", "Belt", "Legs", "Ring", "Amulet", "Weapon"]

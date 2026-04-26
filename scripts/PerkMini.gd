@@ -108,7 +108,13 @@ func _on_hover():
 			for effect_id in effect_map:
 				var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
 				if effect:
-					content += "\n" + effect.description + " " + str(effect_map[effect_id]) + "%"
+					var effect_line = effect.description
+					var factor_value = int(effect_map[effect_id])
+					if "*" in effect_line:
+						effect_line = effect_line.replace("*", str(factor_value))
+					elif factor_value > 0:
+						effect_line += " " + str(factor_value) + "%"
+					content += "\n" + effect_line
 			
 			# Show expiration time if available
 			var expire_until = meta_data.get("expire_until", 0.0)

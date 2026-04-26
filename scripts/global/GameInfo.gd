@@ -505,14 +505,16 @@ class GamePlayer:
 		# Load simple properties (excluding arrays and special cases)
 		for key in data:
 			if key == "elixir":
-				# Elixir is now an array of ingredient IDs from server
+				# Elixir can be either ingredient ID array (legacy) or direct item id.
 				if data[key] is Array and data[key].size() > 0:
-					elixir = 1000  # Elixir item ID is always 1000
+					elixir = 1000  # Legacy: elixir represented by ingredient IDs only.
 					elixir_ingredients.clear()
 					elixir_effects.clear()
 					for ingredient_id in data[key]:
 						if ingredient_id != null and ingredient_id is int:
 							elixir_ingredients.append(ingredient_id)
+				elif (data[key] is int or data[key] is float) and int(data[key]) > 0:
+					elixir = int(data[key])
 				else:
 					elixir = 0
 					elixir_ingredients.clear()
@@ -530,6 +532,8 @@ class GamePlayer:
 						var parsed_factor = float(entry.get("factor", 0.0))
 						if parsed_effect_id > 0:
 							elixir_effects.append({"effect_id": parsed_effect_id, "factor": parsed_factor})
+				if elixir_effects.size() > 0 and elixir <= 0:
+					elixir = 1000
 			elif key in self and key not in ["avatar", "stats", "bag_slots", "perks", "talents"]:
 				set(key, data[key])
 		
@@ -1062,9 +1066,16 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 			if effect_id > 0:
 				elixir_effects.append({"effect_id": effect_id, "factor": factor})
 		if elixir_effects.size() > 0:
-			if not client_data.has("elixir"):
+			# Mark elixir as equipped when direct elixir effects are present.
+			# Some payloads include an empty legacy field "elixir": [], which still means no id.
+			var raw_elixir = client_data.get("elixir", null)
+			var has_valid_elixir_id = (raw_elixir is int and int(raw_elixir) > 0)
+			if not has_valid_elixir_id:
 				client_data["elixir"] = 1000  # Fallback item id for active elixir icon
 			client_data["elixir_effects"] = elixir_effects
+			print("[Transform] Active elixir from effect fields -> elixir=", client_data.get("elixir", 0),
+				" effects=", elixir_effects,
+				" until=", client_data.get("elixir_until", 0.0))
 		# Clean up individual fields
 		for i in range(1, 4):
 			client_data.erase("elixir_effect" + str(i))
@@ -1127,6 +1138,9 @@ func load_character_from_server(character_data: Dictionary):
 	
 	# Transform server data format to client format
 	var transformed_data = _transform_server_player_data(character_data)
+	print("[LoadCharacter] transformed elixir=", transformed_data.get("elixir", 0),
+		" elixir_effects=", transformed_data.get("elixir_effects", []),
+		" elixir_until=", transformed_data.get("elixir_until", 0.0))
 	
 	all_characters.clear()
 	var player = GameCurrentPlayer.new(transformed_data, self)
@@ -1140,6 +1154,7 @@ func load_character_from_server(character_data: Dictionary):
 	print("  - server_day: ", player.server_day, " (injected: ", injected_server_day, ")")
 	print("  - Potion: ", player.potion, " (until: ", player.potion_until, ")")
 	print("  - Elixir: ", player.elixir, " (until: ", player.elixir_until, ")")
+	print("  - Elixir effects: ", player.elixir_effects)
 	
 	# Check for expired effects based on timestamps
 	if player.check_expired_effects():
