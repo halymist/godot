@@ -499,23 +499,10 @@ func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.I
 	
 	Websocket.use_hammer(hammer_source_slot_id, slot_id)
 	
-	# Apply tempering: +10% to all stats (rounded up)
-	if target_item_in_array.get("strength") and target_item_in_array.strength > 0:
-		target_item_in_array.strength += ceil(target_item_in_array.strength * 0.1)
-	if target_item_in_array.get("stamina") and target_item_in_array.stamina > 0:
-		target_item_in_array.stamina += ceil(target_item_in_array.stamina * 0.1)
-	if target_item_in_array.get("agility") and target_item_in_array.agility > 0:
-		target_item_in_array.agility += ceil(target_item_in_array.agility * 0.1)
-	if target_item_in_array.get("luck") and target_item_in_array.luck > 0:
-		target_item_in_array.luck += ceil(target_item_in_array.luck * 0.1)
-	if target_item_in_array.get("armor") and target_item_in_array.armor > 0:
-		target_item_in_array.armor += ceil(target_item_in_array.armor * 0.1)
-	
-	# Increment tempered counter
-	if target_item_in_array.get("tempered"):
-		target_item_in_array.tempered += 1
-	else:
-		target_item_in_array.tempered = 1
+	# Apply tempering: increment tempered level. Stats are computed properties
+	# (base * 1.1^tempered, rounded each step) via Item.calculate_scaled_value,
+	# so we only need to bump the counter — the displayed stats follow automatically.
+	target_item_in_array.tempered += 1
 	
 	print("Tempered item to level ", target_item_in_array.tempered)
 	

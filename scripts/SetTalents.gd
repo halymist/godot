@@ -71,7 +71,10 @@ func update_title_label():
 
 func update_reset_button_state():
 	if not is_read_only:
-		reset_button.disabled = GameInfo.current_player.silver < RESET_COST
+		var spent_points = 0
+		for talent in GameInfo.current_player.talents:
+			spent_points += talent.points
+		reset_button.disabled = spent_points <= 0 or GameInfo.current_player.silver < RESET_COST
 
 func _on_reset_button_pressed():
 	# Check if we have enough silver

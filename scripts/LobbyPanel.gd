@@ -301,7 +301,11 @@ func add_character_list():
 	for child in characters_container.get_children():
 		if child != create_new_button:
 			child.queue_free()
-	
+
+	# Keep the create button pinned to the top of the list.
+	if create_new_button:
+		characters_container.move_child(create_new_button, 0)
+
 	var server_list = GameInfo.lobby_data.get("server_list", [])
 	print("[Lobby] server_list size: ", server_list.size())
 	
@@ -325,8 +329,6 @@ func add_character_list():
 				server.get("current_day", 0),
 				characters.size()
 			)
-		if create_new_button:
-			characters_container.move_child(create_new_button, characters_container.get_child_count() - 1)
 
 		for character in characters:
 			total_characters += 1
@@ -336,8 +338,6 @@ func add_character_list():
 			card.setup(character, server.get("id", 0))
 			# Connect to card's signal with proper signature (character_id, server_id)
 			card.character_selected.connect(_on_character_selected)
-			if create_new_button:
-				characters_container.move_child(create_new_button, characters_container.get_child_count() - 1)
 	
 	print("[Lobby] Added ", total_characters, " character cards")
 

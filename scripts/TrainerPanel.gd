@@ -2,7 +2,7 @@ extends TextureRect
 
 # Training costs
 const TALENT_POINT_COST = 100
-const STAT_COST = 5
+const STAT_COST = 10
 
 @export var chat_bubble: ChatBubble
 @export var talent_points_label: Label
