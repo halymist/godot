@@ -21,23 +21,15 @@ func _format_time_remaining(expire_until: float) -> String:
 	
 	if seconds_left <= 0:
 		return "[Expired]"
-	
-	# Convert to hours and minutes
-	var hours_left = int(seconds_left / 3600)
-	var minutes_left = int(float(int(seconds_left) % 3600) / 60.0)
-	
-	if hours_left >= 24:
-		var days_left = int(float(hours_left) / 24.0)
-		hours_left = hours_left % 24
-		if days_left == 1:
-			return "[%dd %dh remaining]" % [days_left, hours_left]
-		return "[%dd %dh remaining]" % [days_left, hours_left]
-	elif hours_left > 0:
-		return "[%dh %dm remaining]" % [hours_left, minutes_left]
-	elif minutes_left > 0:
-		return "[%dm remaining]" % [minutes_left]
-	else:
-		return "[< 1m remaining]"
+
+	# UX requirement: show rounded-up hours while >= 1h, then rounded-up minutes below 1h.
+	if seconds_left >= 3600.0:
+		var hours_left = int(ceil(seconds_left / 3600.0))
+		return "[%dh remaining]" % [hours_left]
+
+	var minutes_left = int(ceil(seconds_left / 60.0))
+	minutes_left = max(minutes_left, 1)
+	return "[%dm remaining]" % [minutes_left]
 
 func _on_hover():
 	var content = ""

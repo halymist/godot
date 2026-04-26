@@ -17,6 +17,9 @@ var cards: Array[Control] = []
 var is_animating: bool = false
 var slide_tween: Tween  # Reusable tween for card animations
 
+func _get_available_opponent_count() -> int:
+	return min(cards.size(), GameInfo.arena_opponents.size())
+
 func _ready():
 	# Build cards array from exports
 	cards = [arena_opponent1, arena_opponent2, arena_opponent3]
@@ -49,15 +52,34 @@ func _on_visibility_changed():
 		_load_opponent_data()
 
 func _load_opponent_data():
+	var available_count = _get_available_opponent_count()
+
+	# Hide all cards first so stale/default content is never shown.
+	for card in cards:
+		card.visible = false
+
 	# Look up arena opponents by character_id
-	for i in range(min(cards.size(), GameInfo.arena_opponents.size())):
+	for i in range(available_count):
 		var opponent_id = GameInfo.arena_opponents[i]
+		var found_player = null
 		
 		# Find opponent by character_id in enemy_players
 		for player in GameInfo.enemy_players:
 			if player.character_id == opponent_id:
-				cards[i].set_opponent_data(player)
+				found_player = player
 				break
+
+		if found_player:
+			cards[i].set_opponent_data(found_player)
+			cards[i].visible = true
+
+	# Clamp current index to available cards.
+	if available_count <= 0:
+		current_index = 0
+	elif current_index >= available_count:
+		current_index = 0
+
+	_update_display()
 
 func _load_arena_background():
 	"""Load arena background texture from settlements database"""
@@ -70,7 +92,8 @@ func _load_arena_background():
 		print("Warning: No arena background found for settlement ", settlement_id)
 
 func _on_fight_pressed():
-	if GameInfo.arena_opponents.size() > current_index:
+	var available_count = _get_available_opponent_count()
+	if available_count > current_index:
 		var opponent_id = GameInfo.arena_opponents[current_index]
 		print("Fighting opponent with character_id: ", opponent_id)
 		
@@ -89,19 +112,25 @@ func reset_fight_button():
 func _on_prev_pressed():
 	if is_animating:
 		return
+	var available_count = _get_available_opponent_count()
+	if available_count <= 1:
+		return
 	
 	var new_index = current_index - 1
 	if new_index < 0:
-		new_index = cards.size() - 1
+		new_index = available_count - 1
 	
 	_slide_to_card(new_index, true)
 
 func _on_next_pressed():
 	if is_animating:
 		return
+	var available_count = _get_available_opponent_count()
+	if available_count <= 1:
+		return
 	
 	var new_index = current_index + 1
-	if new_index >= cards.size():
+	if new_index >= available_count:
 		new_index = 0
 	
 	_slide_to_card(new_index, false)
@@ -156,9 +185,18 @@ func _slide_to_card(new_index: int, sliding_left: bool):
 	_update_button_states()
 
 func _update_display():
+	var available_count = _get_available_opponent_count()
+
+	if available_count <= 0:
+		for card in cards:
+			card.visible = false
+			card.position = Vector2.ZERO
+		_update_button_states()
+		return
+
 	# Hide all cards except current and reset their positions
 	for i in range(cards.size()):
-		if i == current_index:
+		if i < available_count and i == current_index:
 			cards[i].visible = true
 			cards[i].position = Vector2.ZERO
 		else:
@@ -168,8 +206,10 @@ func _update_display():
 	_update_button_states()
 
 func _update_button_states():
-	prev_button.disabled = false
-	next_button.disabled = false
+	var available_count = _get_available_opponent_count()
+	prev_button.disabled = available_count <= 1
+	next_button.disabled = available_count <= 1
+	fight_button.disabled = available_count <= 0
 
 func get_current_enemy_index() -> int:
 	return current_index

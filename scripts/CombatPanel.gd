@@ -24,6 +24,16 @@ extends TextureRect
 # Preloaded attack swing texture
 var sword_texture = preload("res://assets/images/ui/sword_outline.png")
 
+@export_group("Sword Attack Tween")
+@export var sword_travel_duration: float = 0.35
+@export var sword_travel_transition: Tween.TransitionType = Tween.TRANS_QUAD
+@export var sword_travel_ease: Tween.EaseType = Tween.EASE_OUT
+@export var impact_pause_duration: float = 0.4
+@export var dodge_start_delay: float = 0.15
+@export var dodge_slide_duration: float = 0.2
+@export var dodge_return_duration: float = 0.25
+@export var dodge_distance: float = 40.0
+
 # Client-side victory message (will be generated based on combat results later)
 var victory_message = "Victory! You defeated your opponent!"
 
@@ -352,7 +362,7 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 	
 	# Straight line tween from attacker to defender
 	var tween = create_tween()
-	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
 	
 	await tween.finished
 	
@@ -367,7 +377,7 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 	var dmg_color = Color(1.0, 0.2, 0.2) if not is_crit else Color(1.0, 0.85, 0.0)
 	_spawn_floating_text(defender_icon, str(damage), dmg_color, is_crit)
 	
-	await get_tree().create_timer(0.4).timeout
+	await get_tree().create_timer(impact_pause_duration).timeout
 
 func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defender_container: Control, session_id: int):
 	"""Animate sword flying at defender, but defender slides back to dodge."""
@@ -383,17 +393,17 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	
 	# Dodge slide: defender moves away from attacker
 	var swing_dir = sign(end_pos.x - start_pos.x)
-	var dodge_offset = Vector2(swing_dir * 40, 0)
+	var dodge_offset = Vector2(swing_dir * dodge_distance, 0)
 	var original_pos = defender_container.position
 	
 	# Start dodge slide partway through the sword flight
 	var dodge_tween = create_tween()
-	dodge_tween.tween_interval(0.15)
-	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	dodge_tween.tween_interval(dodge_start_delay)
+	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, dodge_slide_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
 	
 	# Straight line sword flight
 	var tween = create_tween()
-	tween.tween_property(sword, "position", end_pos - sword_size / 2, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
 	
 	await tween.finished
 	
@@ -409,9 +419,9 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	
 	# Slide back to original position
 	var return_tween = create_tween()
-	return_tween.tween_property(defender_container, "position", original_pos, 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	return_tween.tween_property(defender_container, "position", original_pos, dodge_return_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
 	
-	await get_tree().create_timer(0.4).timeout
+	await get_tree().create_timer(impact_pause_duration).timeout
 
 func _shake_icon(icon: Control, is_crit: bool = false):
 	"""Shake the icon briefly to indicate impact."""
