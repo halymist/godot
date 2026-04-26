@@ -20,6 +20,8 @@ extends Resource
 
 # Vendor
 @export var vendor_asset_id: int = 0
+@export var vendor_msg_bottom_left: Vector2 = Vector2.ZERO
+@export var vendor_msg_bottom_right: Vector2 = Vector2.ZERO
 # Settlement.gd
 @export var vendor_on_entered: Array[String] = []
 @export var vendor_on_sold: Array[String] = []
@@ -29,6 +31,8 @@ extends Resource
 # Utility (one per settlement: blacksmith/alchemist/enchanter/trainer/church)
 @export var utility_type: String = ""  # "blacksmith", "alchemist", "enchanter", "trainer", "church"
 @export var utility_asset_id: int = 0
+@export var utility_msg_bottom_left: Vector2 = Vector2.ZERO
+@export var utility_msg_bottom_right: Vector2 = Vector2.ZERO
 @export var utility_on_entered: Array[String] = []
 @export var utility_on_placed: Array[String] = []
 @export var utility_on_action: Array[String] = []
@@ -57,8 +61,14 @@ var expedition_text: String:
 func has_vendor() -> bool:
 	return vendor_asset_id > 0
 
+func has_vendor_msg_rect() -> bool:
+	return vendor_msg_bottom_left != vendor_msg_bottom_right
+
 func has_utility() -> bool:
 	return utility_type != "" and utility_asset_id > 0
+
+func has_utility_msg_rect() -> bool:
+	return utility_msg_bottom_left != utility_msg_bottom_right
 
 func has_blacksmith() -> bool:
 	return utility_type == "blacksmith"

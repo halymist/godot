@@ -85,6 +85,12 @@ func _load_location_content():
 	on_placed_greetings = settlement.get_utility_on_placed_lines()
 	on_action_greetings = settlement.get_utility_on_action_lines()
 
+	if chat_bubble:
+		if settlement.has_utility_msg_rect():
+			chat_bubble.set_message_bounds(settlement.utility_msg_bottom_left, settlement.utility_msg_bottom_right)
+		else:
+			chat_bubble.clear_message_bounds()
+
 func _show_greeting(greetings: Array[String]):
 	if not chat_bubble or greetings.is_empty():
 		return

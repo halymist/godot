@@ -8,7 +8,7 @@ extends Node
 # Assets are downloaded and stored in user:// then applied as textures
 
 const VERSIONS_FILE = "user://data_versions.cfg"
-const LOCAL_VERSIONS_SCHEMA = 1
+const LOCAL_VERSIONS_SCHEMA = 2
 const IMAGES_DIR = "user://images/"
 const DATA_DIR = "user://data/"
 
@@ -95,12 +95,29 @@ func _load_local_versions():
 	for key in local_versions.keys():
 		local_versions[key] = config.get_value("versions", key, 0)
 
-	# Force a one-time talents re-download after switching to ordered payload without row/col fields.
+	# One-time migrations for local cached version values.
 	var schema_version = int(config.get_value("meta", "schema_version", 0))
-	if schema_version < LOCAL_VERSIONS_SCHEMA:
+	var did_migrate = false
+
+	# Migration v1: talents payload switched to ordered entries without row/col fields.
+	if schema_version < 1:
 		local_versions["talents"] = 0
-		print("[DataManager] Applying schema migration %d: reset talents version to 0" % LOCAL_VERSIONS_SCHEMA)
+		did_migrate = true
+		print("[DataManager] Applying schema migration 1: reset talents version to 0")
+
+	# Migration v2: force items redownload.
+	if schema_version < 2:
+		local_versions["items"] = 0
+		did_migrate = true
+		print("[DataManager] Applying schema migration 2: reset items version to 0")
+
+	# Persist migrated schema + versions once.
+	if did_migrate:
 		_save_local_versions()
+
+	# Backward compatibility guard if constant is increased in future.
+	if schema_version < LOCAL_VERSIONS_SCHEMA:
+		print("[DataManager] Schema version updated from %d to %d" % [schema_version, LOCAL_VERSIONS_SCHEMA])
 	
 	print("[DataManager] Loaded local versions: ", local_versions)
 
@@ -613,6 +630,10 @@ func _load_settlements_database() -> SettlementsDatabase:
 		var vendor_data = item.get("vendor", {})
 		if vendor_data is Dictionary:
 			settlement.vendor_asset_id = int(vendor_data.get("vendor_asset_id", 0))
+			var vendor_msg_points = _extract_msg_rect_points(vendor_data.get("msg_rect", null))
+			if vendor_msg_points.size() == 2:
+				settlement.vendor_msg_bottom_left = vendor_msg_points[0]
+				settlement.vendor_msg_bottom_right = vendor_msg_points[1]
 			# Vendor on_entered, on_sold, on_bought arrays
 			if vendor_data.has("on_entered") and vendor_data.on_entered is Array:
 				for line in vendor_data.on_entered:
@@ -629,6 +650,10 @@ func _load_settlements_database() -> SettlementsDatabase:
 		if utility_data is Dictionary:
 			settlement.utility_type = utility_data.get("type", "")
 			settlement.utility_asset_id = int(utility_data.get("utility_asset_id", 0))
+			var utility_msg_points = _extract_msg_rect_points(utility_data.get("msg_rect", null))
+			if utility_msg_points.size() == 2:
+				settlement.utility_msg_bottom_left = utility_msg_points[0]
+				settlement.utility_msg_bottom_right = utility_msg_points[1]
 			# Utility on_entered, on_placed, on_action arrays
 			if utility_data.has("on_entered") and utility_data.on_entered is Array:
 				for line in utility_data.on_entered:
@@ -660,6 +685,49 @@ func _load_settlements_database() -> SettlementsDatabase:
 	
 	print("[DataManager] Loaded %d settlements" % db.settlements.size())
 	return db
+
+func _extract_msg_rect_points(raw_msg_rect: Variant) -> Array[Vector2]:
+	"""Parse msg_rect payload into [bottom_left, bottom_right] local points.
+	Accepts multiple payload shapes for server compatibility."""
+	var points: Array[Vector2] = []
+
+	if raw_msg_rect == null:
+		return points
+
+	# Shape 1: [{x,y},{x,y}] or [[x,y],[x,y]]
+	if raw_msg_rect is Array and raw_msg_rect.size() >= 2:
+		var p0 = raw_msg_rect[0]
+		var p1 = raw_msg_rect[1]
+
+		if p0 is Dictionary and p1 is Dictionary:
+			points.append(Vector2(float(p0.get("x", 0.0)), float(p0.get("y", 0.0))))
+			points.append(Vector2(float(p1.get("x", 0.0)), float(p1.get("y", 0.0))))
+			return points
+
+		if p0 is Array and p0.size() >= 2 and p1 is Array and p1.size() >= 2:
+			points.append(Vector2(float(p0[0]), float(p0[1])))
+			points.append(Vector2(float(p1[0]), float(p1[1])))
+			return points
+
+	# Shape 2: {x1,y1,x2,y2} or {left,bottom,right,bottom2}
+	if raw_msg_rect is Dictionary:
+		var d = raw_msg_rect
+		if d.has("x1") and d.has("y1") and d.has("x2") and d.has("y2"):
+			points.append(Vector2(float(d.get("x1", 0.0)), float(d.get("y1", 0.0))))
+			points.append(Vector2(float(d.get("x2", 0.0)), float(d.get("y2", 0.0))))
+			return points
+		if d.has("left") and d.has("bottom") and d.has("right"):
+			var bottom = float(d.get("bottom", 0.0))
+			points.append(Vector2(float(d.get("left", 0.0)), bottom))
+			points.append(Vector2(float(d.get("right", 0.0)), bottom))
+			return points
+
+	# Shape 3: [x1,y1,x2,y2]
+	if raw_msg_rect is Array and raw_msg_rect.size() >= 4:
+		points.append(Vector2(float(raw_msg_rect[0]), float(raw_msg_rect[1])))
+		points.append(Vector2(float(raw_msg_rect[2]), float(raw_msg_rect[3])))
+
+	return points
 
 func _load_talents_database() -> TalentsDatabase:
 	"""Create TalentsDatabase from JSON"""

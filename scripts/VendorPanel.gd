@@ -74,6 +74,12 @@ func _load_location_content():
 	on_sold_greetings = settlement.get_vendor_on_sold_lines()
 	on_bought_greetings = settlement.get_vendor_on_bought_lines()
 
+	if chat_bubble:
+		if settlement.has_vendor_msg_rect():
+			chat_bubble.set_message_bounds(settlement.vendor_msg_bottom_left, settlement.vendor_msg_bottom_right)
+		else:
+			chat_bubble.clear_message_bounds()
+
 func _load_vendor_items():
 	vendor_items.clear()
 	

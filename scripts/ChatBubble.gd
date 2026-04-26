@@ -2,9 +2,20 @@ extends Label
 class_name ChatBubble
 
 var timer_id: int = 0
+var _has_custom_bounds: bool = false
+var _bounds_bottom_left: Vector2 = Vector2.ZERO
+var _bounds_bottom_right: Vector2 = Vector2.ZERO
 
 func _ready():
 	visible = false
+
+func set_message_bounds(bottom_left: Vector2, bottom_right: Vector2):
+	_has_custom_bounds = true
+	_bounds_bottom_left = bottom_left
+	_bounds_bottom_right = bottom_right
+
+func clear_message_bounds():
+	_has_custom_bounds = false
 
 func show_with_text(bubble_text: String, duration: float = 4.0):
 	show_dialogue(bubble_text, duration)
@@ -14,7 +25,11 @@ func show_dialogue(dialogue_text: String, duration: float = 4.0, skip_animation:
 	
 	# Get parent container size as boundary
 	var max_width = 200  # Default fallback
-	if get_parent() is Control:
+	if _has_custom_bounds:
+		max_width = int(abs(_bounds_bottom_right.x - _bounds_bottom_left.x))
+		if max_width <= 0:
+			max_width = 200
+	elif get_parent() is Control:
 		var parent_size = get_parent().size
 		if parent_size.x > 10:
 			max_width = parent_size.x
@@ -34,6 +49,16 @@ func show_dialogue(dialogue_text: String, duration: float = 4.0, skip_animation:
 	
 	# Wait for layout to recalculate size
 	await get_tree().process_frame
+
+	# If custom bounds are configured, place bubble within those horizontal limits.
+	if _has_custom_bounds:
+		var left_x = min(_bounds_bottom_left.x, _bounds_bottom_right.x)
+		var right_x = max(_bounds_bottom_left.x, _bounds_bottom_right.x)
+		var bottom_y = max(_bounds_bottom_left.y, _bounds_bottom_right.y)
+
+		var centered_x = (left_x + right_x - size.x) * 0.5
+		position.x = clamp(centered_x, left_x, max(left_x, right_x - size.x))
+		position.y = bottom_y - size.y
 	
 	# Show with animation if not already visible
 	if not skip_animation:
