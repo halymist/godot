@@ -28,6 +28,7 @@ extends Control
 
 # Preload the player card scene
 const PlayerCard = preload("res://Scenes/playercard.tscn")
+const ServerHeader = preload("res://Scenes/server_header.tscn")
 
 # Social media URLs
 const SOCIAL_URLS = {
@@ -296,7 +297,7 @@ func add_character_list():
 	"""Add character panels from GameInfo.lobby_data"""
 	print("[Lobby] add_character_list called")
 	
-	# Clear existing character cards BUT NOT the create button
+	# Clear existing server headers and character cards, keep the create button.
 	for child in characters_container.get_children():
 		if child != create_new_button:
 			child.queue_free()
@@ -309,15 +310,34 @@ func add_character_list():
 		var characters = server.get("characters", null)
 		if characters == null or not (characters is Array):
 			characters = []
+		if characters.is_empty():
+			continue
+
 		print("[Lobby] Server '", server.get("name", "?"), "' has ", characters.size(), " characters")
+
+		# Add one header per server, followed by all characters on that server.
+		var header = ServerHeader.instantiate()
+		characters_container.add_child(header)
+		if header.has_method("setup"):
+			header.setup(
+				server.get("name", "Unknown"),
+				server.get("created_at", 0),
+				server.get("current_day", 0),
+				characters.size()
+			)
+		if create_new_button:
+			characters_container.move_child(create_new_button, characters_container.get_child_count() - 1)
+
 		for character in characters:
 			total_characters += 1
 			var card = PlayerCard.instantiate()
 			characters_container.add_child(card)
-			# Pass character data plus server info for display
-			card.setup(character, server.get("name", ""), server.get("created_at", 0), server.get("id", 0), server.get("current_day", 0))
+			# Pass character data; server context is now represented by grouped headers.
+			card.setup(character, server.get("id", 0))
 			# Connect to card's signal with proper signature (character_id, server_id)
 			card.character_selected.connect(_on_character_selected)
+			if create_new_button:
+				characters_container.move_child(create_new_button, characters_container.get_child_count() - 1)
 	
 	print("[Lobby] Added ", total_characters, " character cards")
 

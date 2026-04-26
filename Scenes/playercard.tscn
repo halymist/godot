@@ -31,6 +31,6 @@ mouse_filter = 2
 layout_mode = 2
 text = "Character Name (#15486)"
 
-[node name="ServerLabel" type="Label" parent="HBox/Info"]
+[node name="MetaLabel" type="Label" parent="HBox/Info"]
 layout_mode = 2
-text = "Server: Stockholm (Day 50)"
+text = "Order | Rank #1"
