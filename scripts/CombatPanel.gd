@@ -679,15 +679,6 @@ func _on_skip_replay_pressed():
 		_skip_to_end()
 
 func _navigate_after_combat():
-	# If combat came from expedition, continue to next slide
-	if GameInfo.pending_expedition_slide_id_after_combat > 0:
-		var next_slide_id = GameInfo.pending_expedition_slide_id_after_combat
-		GameInfo.pending_expedition_slide_id_after_combat = 0
-		if UIManager.instance and UIManager.instance.expedition_panel:
-			UIManager.instance.show_panel(UIManager.instance.expedition_panel)
-			UIManager.instance.expedition_panel.receive_next_slide(next_slide_id)
-		return
-
 	# If expedition failed after combat, show placeholder
 	if GameInfo.pending_expedition_failure_message != "":
 		var failure_message = GameInfo.pending_expedition_failure_message

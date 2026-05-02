@@ -39,7 +39,6 @@ var rankings_players: Array[GamePlayer] = []  # Unified list: enemy_players + cu
 var arena_opponents: Array[int] = []
 var chat_messages: Array[ChatMessage] = []
 var current_combat_log: CombatResponse = null
-var pending_expedition_slide_id_after_combat: int = 0
 var pending_expedition_failure_message: String = ""
 
 # Talent registry (populated by Talent.gd nodes on _ready)
@@ -1076,9 +1075,16 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 		# Convert arrival timestamp to unix time
 		client_data["traveling"] = _parse_iso_timestamp(server_data["arrival"])
 
-	# Handle expedition slide (single id)
+	# Handle active expedition id.
+	if server_data.has("expedition_id") and server_data.expedition_id != null:
+		client_data["expedition"] = [int(server_data.expedition_id)]
+	elif server_data.has("active_expedition_id") and server_data.active_expedition_id != null:
+		client_data["expedition"] = [int(server_data.active_expedition_id)]
+
+	# Temporary fallback for old backend field.
 	if server_data.has("expedition_slide") and server_data.expedition_slide != null:
-		client_data["expedition"] = [int(server_data.expedition_slide)]
+		if not client_data.has("expedition"):
+			client_data["expedition"] = [int(server_data.expedition_slide)]
 	
 	# Handle active elixir effects from server fields (effect/factor pairs)
 	if server_data.has("elixir_effect1") or server_data.has("elixir_effect2") or server_data.has("elixir_effect3"):
@@ -1436,12 +1442,13 @@ func _reorder_rankings_by_honor():
 # ============================================
 # QUEST MANAGEMENT
 # ============================================
-func complete_quest(quest_id: int, clicked_options: Array[int] = []):
+func complete_quest(quest_id: int, clicked_options: Array[int] = [], remove_from_daily: bool = true):
 	if not current_player:
 		return
 	
 	# Remove from daily quests so it no longer shows in the village
-	current_player.daily_quests.erase(quest_id)
+	if remove_from_daily:
+		current_player.daily_quests.erase(quest_id)
 	
 	for entry in current_player.quest_log:
 		if entry.get("quest_id") == quest_id:

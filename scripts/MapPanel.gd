@@ -30,7 +30,7 @@ var travel_duration: float
 
 # Expedition state
 var is_expedition_travel: bool = false  # True when traveling to expedition (not quest)
-var pending_expedition_slide_id: int = 0  # Slide ID received from server
+var pending_expedition_id: int = 0  # Expedition ID received from server
 var expedition_travel_end: float = 0.0  # When expedition travel ends
 
 # Arrival state - true when travel completed and waiting for user to click "Arrived"
@@ -79,8 +79,8 @@ func _sync_travel_state_from_player():
 		else:
 			is_expedition_travel = true
 			expedition_travel_end = arrival_ts
-			if expedition and expedition.size() > 0 and pending_expedition_slide_id <= 0:
-				pending_expedition_slide_id = expedition[0]
+			if expedition and expedition.size() > 0 and pending_expedition_id <= 0:
+				pending_expedition_id = expedition[0]
 		_ensure_travel_ui_from_player()
 		if travel_duration <= 0.0:
 			travel_duration = DEFAULT_TRAVEL_DURATION
@@ -97,8 +97,8 @@ func _sync_travel_state_from_player():
 	if expedition and expedition.size() > 0:
 		is_expedition_travel = true
 		has_arrived = true
-		if pending_expedition_slide_id <= 0:
-			pending_expedition_slide_id = expedition[0]
+		if pending_expedition_id <= 0:
+			pending_expedition_id = expedition[0]
 		return
 
 	# Idle
@@ -458,8 +458,8 @@ func _on_enter_dungeon_pressed():
 			# Expedition arrived - load expedition panel
 			print("Arrived pressed - loading expedition")
 			is_expedition_travel = false
-			if pending_expedition_slide_id > 0:
-				GameInfo.current_player.expedition = [pending_expedition_slide_id]
+			if pending_expedition_id > 0:
+				GameInfo.current_player.expedition = [pending_expedition_id]
 			_load_expedition()
 		else:
 			# Quest arrived - load quest panel
@@ -480,27 +480,38 @@ func _on_enter_dungeon_pressed():
 	start_expedition_travel()
 
 func start_expedition_travel():
-	"""Start traveling to an expedition (dungeon)"""
+	"""Open expedition graph from map entry (server is called when node is selected)."""
 	# Check if player can afford the expedition
 	if not _can_afford_expedition():
 		print("Not enough silver for expedition")
+		return
+
+	var expedition_data = GameInfo.expeditions_db.get_expedition_for_settlement(GameInfo.current_player.location) if GameInfo.expeditions_db else null
+	if not expedition_data:
+		print("No expedition found for settlement: ", GameInfo.current_player.location)
 		return
 	
 	# Deduct silver cost
 	UIManager.instance.update_silver(-EXPEDITION_COST)
 	print("Deducted ", EXPEDITION_COST, " silver for expedition")
-	
-	# Send start_expedition to server (server will respond with slide_id and arrival time)
-	Websocket.start_expedition()
-	
-	# Server will call receive_expedition_start() with the response
-	print("Expedition start request sent to server")
 
-func receive_expedition_start(slide_id: int, arrival_timestamp: String):
+	pending_expedition_id = int(expedition_data.expedition_id)
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = [pending_expedition_id]
+		GameInfo.current_player.traveling = 0.0
+		GameInfo.current_player.traveling_destination = null
+
+	has_arrived = false
+	is_expedition_travel = false
+	expedition_travel_end = 0.0
+	set_process(false)
+	_load_expedition()
+
+func receive_expedition_start(expedition_id: int, arrival_timestamp: String):
 	"""Called when server responds with expedition start data"""
-	print("Received expedition start - slide_id: ", slide_id, ", arrival: ", arrival_timestamp)
+	print("Received expedition start - expedition_id: ", expedition_id, ", arrival: ", arrival_timestamp)
 	
-	pending_expedition_slide_id = slide_id
+	pending_expedition_id = expedition_id
 	is_expedition_travel = true
 	
 	# Check if player is VIP
@@ -571,24 +582,23 @@ func _parse_iso8601_timestamp(timestamp: String) -> float:
 	return Time.get_unix_time_from_datetime_dict(datetime)
 
 func _load_expedition():
-	"""Load the expedition panel with the pending slide ID"""
-	if pending_expedition_slide_id <= 0:
-		print("Error: No expedition slide ID received from server")
+	"""Load the expedition panel with the pending expedition ID"""
+	if pending_expedition_id <= 0:
+		print("Error: No expedition ID received from server")
 		return
 	
-	print("Loading expedition with slide ID: ", pending_expedition_slide_id)
+	print("Loading expedition with ID: ", pending_expedition_id)
 	
-	# Show expedition panel - use expedition ID 1 for now (server could send this too)
-	UIManager.instance.expedition_panel.start_expedition(1, pending_expedition_slide_id)
+	UIManager.instance.expedition_panel.start_expedition(pending_expedition_id)
 	UIManager.instance.show_panel(UIManager.instance.expedition_panel)
 	
-	# Clear pending slide ID
-	pending_expedition_slide_id = 0
+	# Clear pending expedition ID
+	pending_expedition_id = 0
 
 func reset_expedition_state():
 	"""Clear expedition travel flags and refresh UI"""
 	is_expedition_travel = false
-	pending_expedition_slide_id = 0
+	pending_expedition_id = 0
 	expedition_travel_end = 0.0
 	has_arrived = false
 	refresh_travel_state()

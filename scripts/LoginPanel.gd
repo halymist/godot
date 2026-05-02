@@ -409,7 +409,10 @@ func _show_lobby_after_init():
 	
 	lobby_panel.visible = false
 	lobby_panel.initialize_lobby()
-	await lobby_panel.lobby_ready
+	if lobby_panel.has_method("is_lobby_ready") and lobby_panel.is_lobby_ready():
+		print("[Login] lobby already ready, switching immediately")
+	else:
+		await lobby_panel.lobby_ready
 	print("[Login] lobby_ready received, switching to lobby")
 	
 	# Lobby is ready — switch panels

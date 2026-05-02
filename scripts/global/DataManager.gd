@@ -8,7 +8,7 @@ extends Node
 # Assets are downloaded and stored in user:// then applied as textures
 
 const VERSIONS_FILE = "user://data_versions.cfg"
-const LOCAL_VERSIONS_SCHEMA = 2
+const LOCAL_VERSIONS_SCHEMA = 3
 const IMAGES_DIR = "user://images/"
 const DATA_DIR = "user://data/"
 
@@ -73,6 +73,7 @@ func _ensure_cache_dirs():
 	DirAccess.make_dir_recursive_absolute("user://images/perks")
 	DirAccess.make_dir_recursive_absolute("user://images/enemies")
 	DirAccess.make_dir_recursive_absolute("user://images/quests")
+	DirAccess.make_dir_recursive_absolute("user://images/expedition-maps")
 	DirAccess.make_dir_recursive_absolute("user://images/settlements")
 	DirAccess.make_dir_recursive_absolute("user://images/cosmetics")
 	DirAccess.make_dir_recursive_absolute("user://data")
@@ -110,6 +111,12 @@ func _load_local_versions():
 		local_versions["items"] = 0
 		did_migrate = true
 		print("[DataManager] Applying schema migration 2: reset items version to 0")
+
+	# Migration v3: expeditions switched from slides/options to graph map payloads.
+	if schema_version < 3:
+		local_versions["expeditions"] = 0
+		did_migrate = true
+		print("[DataManager] Applying schema migration 3: reset expeditions version to 0")
 
 	# Persist migrated schema + versions once.
 	if did_migrate:
@@ -287,14 +294,18 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	var new_version = 0
 	var items_data = []
 	var deleted_ids = []
+	var deleted_node_ids = []
+	var deleted_edge_ids = []
 	
 	if data is Dictionary:
 		new_version = data.get("version", 0)
 		# Different endpoints use different array keys
 		match data_type:
 			"expeditions":
-				items_data = data.get("slides", [])
-				deleted_ids = data.get("deleted_slide_ids", [])
+				items_data = data.get("expeditions", [])
+				deleted_ids = data.get("deleted_expedition_ids", [])
+				deleted_node_ids = data.get("deleted_node_ids", [])
+				deleted_edge_ids = data.get("deleted_edge_ids", [])
 			"settlements": items_data = data.get("settlements", [])
 			"talents": items_data = data.get("talents", [])
 			"quests": items_data = data.get("quests", [])
@@ -306,13 +317,13 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 			new_version = max(new_version, item.get("version", 0))
 	
 	# Merge with existing data and save
-	_merge_and_save_json(data_type, items_data, new_version, deleted_ids)
+	_merge_and_save_json(data_type, items_data, new_version, deleted_ids, deleted_node_ids, deleted_edge_ids)
 	
 	# Download assets for types that have images
 	if data_type in ["items", "perks", "enemies"]:
 		_download_assets_for_data(data_type, items_data)
 	elif data_type == "expeditions":
-		_download_quest_assets(items_data)  # Expeditions use quests folder
+		_download_expedition_map_assets(items_data)
 	elif data_type == "quests":
 		_download_quest_assets(items_data)  # Quests also use quests folder
 	elif data_type == "settlements":
@@ -320,7 +331,7 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	elif data_type == "cosmetics":
 		_download_cosmetic_assets(items_data)
 
-func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, deleted_ids: Array = []):
+func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, deleted_ids: Array = [], deleted_node_ids: Array = [], deleted_edge_ids: Array = []):
 	"""Merge new data with existing JSON and save"""
 	var json_path = _get_json_path(data_type)
 	var id_field = _get_id_field(data_type)
@@ -361,12 +372,48 @@ func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, 
 		if not existing_ids.has(item_id):
 			merged_data.append(new_item)
 	
+	if data_type == "expeditions":
+		_apply_expedition_child_deletions(merged_data, deleted_node_ids, deleted_edge_ids)
+
 	# Save merged data
 	_save_json_file(json_path, merged_data)
 	
 	# Update version
 	set_local_version(data_type, new_version)
 	print("[DataManager] %s saved (version %d, %d items)" % [data_type, new_version, merged_data.size()])
+
+func _apply_expedition_child_deletions(expeditions_data: Array, deleted_node_ids: Array, deleted_edge_ids: Array):
+	var deleted_node_lookup: Dictionary = {}
+	for node_id in deleted_node_ids:
+		deleted_node_lookup[int(node_id)] = true
+
+	var deleted_edge_lookup: Dictionary = {}
+	for edge_id in deleted_edge_ids:
+		deleted_edge_lookup[int(edge_id)] = true
+
+	if deleted_node_lookup.is_empty() and deleted_edge_lookup.is_empty():
+		return
+
+	for expedition in expeditions_data:
+		if not expedition is Dictionary:
+			continue
+
+		if expedition.has("nodes") and expedition.nodes is Array:
+			var kept_nodes: Array = []
+			for node in expedition.nodes:
+				if not deleted_node_lookup.has(int(node.get("node_id", 0))):
+					kept_nodes.append(node)
+			expedition["nodes"] = kept_nodes
+
+		if expedition.has("edges") and expedition.edges is Array:
+			var kept_edges: Array = []
+			for edge in expedition.edges:
+				if deleted_edge_lookup.has(int(edge.get("edge_id", 0))):
+					continue
+				if deleted_node_lookup.has(int(edge.get("node_a", 0))) or deleted_node_lookup.has(int(edge.get("node_b", 0))):
+					continue
+				kept_edges.append(edge)
+			expedition["edges"] = kept_edges
 
 func _get_json_path(data_type: String) -> String:
 	"""Get JSON file path for data type"""
@@ -389,7 +436,7 @@ func _get_id_field(data_type: String) -> String:
 		"items": return "item_id"
 		"perks": return "perk_id"
 		"enemies": return "enemy_id"
-		"expeditions": return "slide_id"
+		"expeditions": return "expedition_id"
 		"settlements": return "settlement_id"
 		"talents": return "talent_id"
 		"quests": return "quest_id"
@@ -543,65 +590,45 @@ func _load_enemies_database() -> EnemyDatabase:
 	return db
 
 func _load_expeditions_database() -> ExpeditionsDatabase:
-	"""Create ExpeditionsDatabase from JSON"""
+	"""Create graph ExpeditionsDatabase from JSON"""
 	var db = ExpeditionsDatabase.new()
 	var data = _load_json_file(EXPEDITIONS_JSON)
 	
 	for item in data:
-		var slide = ExpeditionSlide.new()
-		slide.slide_id = item.get("slide_id", 0)
-		slide.slide_text = item.get("slide_text", "")
-		slide.asset_id = int(item.get("asset_id", 0))
-		slide.is_start = item.get("is_start", false)
-		slide.settlement_id = item.get("settlement_id", 0)
-		slide.effect_id = item.get("effect_id", 0)
-		slide.effect_factor = item.get("effect_factor", 0.0)
-		
-		# Rewards - support nested "reward" object or flat fields
-		var reward_data = item.get("reward", {})
-		if reward_data is Dictionary and reward_data.size() > 0:
-			slide.reward_stat_type = reward_data.get("stat_type", 0)
-			slide.reward_stat_amount = reward_data.get("stat_amount", 0)
-			slide.reward_talent = reward_data.get("talent", 0)
-			slide.reward_item = reward_data.get("item", 0)
-			slide.reward_perk = reward_data.get("perk", 0)
-			slide.reward_blessing = reward_data.get("blessing", 0)
-			slide.reward_potion = reward_data.get("potion", 0)
-			slide.reward_silver = reward_data.get("silver", 0)
-		else:
-			# Fallback to flat fields
-			slide.reward_stat_type = item.get("reward_stat_type", 0)
-			slide.reward_stat_amount = item.get("reward_stat_amount", 0)
-			slide.reward_talent = item.get("reward_talent", 0)
-			slide.reward_item = item.get("reward_item", 0)
-			slide.reward_perk = item.get("reward_perk", 0)
-			slide.reward_blessing = item.get("reward_blessing", 0)
-			slide.reward_potion = item.get("reward_potion", 0)
-			slide.reward_silver = item.get("reward_silver", 0)
-		
-		# Load options
-		var options_data = item.get("options", [])
-		for opt in options_data:
-			var option = ExpeditionOption.new()
-			option.option_id = opt.get("option_id", 0)
-			option.option_text = opt.get("option_text", "")
-			# Server renamed fields: stat_type_required, effect_id_required, effect_amount_required
-			option.stat_type = opt.get("stat_type_required", opt.get("stat_type", ""))
-			option.stat_required = opt.get("stat_required", 0)
-			option.effect_id = opt.get("effect_id_required", opt.get("effect_id", 0))
-			option.effect_amount = opt.get("effect_amount_required", opt.get("effect_amount", 0.0))
-			option.silver_required = opt.get("silver_required", 0)
-			option.faction_required = opt.get("faction_required", 0)
-			option.enemy_id = opt.get("enemy_id", 0)
-			slide.options.append(option)
-		
-		# Load texture from cache (uses quests folder)
-		if slide.asset_id > 0:
-			slide.texture = load_asset_texture("quests", slide.asset_id)
-		
-		db.slides.append(slide)
+		var expedition = ExpeditionData.new()
+		expedition.expedition_id = int(item.get("expedition_id", 0))
+		expedition.settlement_id = int(item.get("settlement_id", 0))
+		expedition.map_asset_id = int(item.get("map_asset_id", 0))
+		expedition.version = int(item.get("version", 0))
+		db.version = max(db.version, expedition.version)
+
+		if expedition.map_asset_id > 0:
+			expedition.map_texture = load_asset_texture("expedition-maps", expedition.map_asset_id)
+
+		var nodes_data = item.get("nodes", [])
+		for node_data in nodes_data:
+			var node = load("res://scripts/resources/ExpeditionNode.gd").new()
+			node.node_id = int(node_data.get("node_id", 0))
+			node.quest_id = int(node_data.get("quest_id", 0))
+			node.is_start = bool(node_data.get("is_start", false))
+			node.pos_x = float(node_data.get("pos_x", 0.0))
+			node.pos_y = float(node_data.get("pos_y", 0.0))
+			node.label = str(node_data.get("label", ""))
+			node.version = int(node_data.get("version", 0))
+			expedition.nodes.append(node)
+
+		var edges_data = item.get("edges", [])
+		for edge_data in edges_data:
+			var edge = load("res://scripts/resources/ExpeditionEdge.gd").new()
+			edge.edge_id = int(edge_data.get("edge_id", 0))
+			edge.node_a = int(edge_data.get("node_a", 0))
+			edge.node_b = int(edge_data.get("node_b", 0))
+			edge.version = int(edge_data.get("version", 0))
+			expedition.edges.append(edge)
+
+		db.expeditions.append(expedition)
 	
-	print("[DataManager] Loaded %d expedition slides" % db.slides.size())
+	print("[DataManager] Loaded %d expeditions" % db.expeditions.size())
 	return db
 
 func _load_settlements_database() -> SettlementsDatabase:
@@ -748,6 +775,24 @@ func _load_talents_database() -> TalentsDatabase:
 	print("[DataManager] Loaded %d talents" % db.talents.size())
 	return db
 
+func _parse_quest_stat_type(value) -> int:
+	if value is int or value is float:
+		return int(value)
+	if value is String:
+		var normalized = String(value).strip_edges().to_lower()
+		match normalized:
+			"strength", "str":
+				return 1
+			"stamina", "sta":
+				return 2
+			"agility", "agi":
+				return 3
+			"luck", "lck":
+				return 4
+			"armor", "arm", "defense", "defence":
+				return 5
+	return 0
+
 func _load_quests_database() -> QuestsDatabase:
 	"""Create QuestsDatabase from JSON"""
 	var db = QuestsDatabase.new()
@@ -777,26 +822,26 @@ func _load_quests_database() -> QuestsDatabase:
 		var options_data = item.get("options", [])
 		for opt in options_data:
 			var option = QuestOption.new()
-			option.option_id = opt.get("option_id", 0)
-			option.option_text = opt.get("option_text", "")
-			option.node_text = opt.get("node_text", "")
-			option.response_text = opt.get("response_text", "")
-			option.on_lose_response_text = opt.get("on_lose_response_text", "")
+			option.option_id = int(opt.get("option_id", 0))
+			option.option_text = str(opt.get("option_text", ""))
+			option.node_text = str(opt.get("node_text", ""))
+			option.response_text = str(opt.get("response_text", ""))
+			option.on_lose_response_text = str(opt.get("on_lose_response_text", ""))
 			
 			# Requirements - server renamed fields
-			option.stat_type = opt.get("stat_type", 0)
-			option.stat_required = opt.get("stat_required", 0)
-			option.effect_id = opt.get("effect_id_required", opt.get("effect_id", 0))
-			option.effect_amount = opt.get("effect_amount_required", opt.get("effect_amount", 0))
-			option.silver_required = opt.get("silver_required", 0)
-			option.faction_required = opt.get("faction_required", 0)
-			option.enemy_id = opt.get("enemy_id", 0)
-			option.is_start = opt.get("start", false)
-			option.ends_quest = opt.get("quest_end", opt.get("ends_quest", false))
+			option.stat_type = _parse_quest_stat_type(opt.get("stat_type", 0))
+			option.stat_required = int(opt.get("stat_required", 0))
+			option.effect_id = int(opt.get("effect_id_required", opt.get("effect_id", 0)))
+			option.effect_amount = int(opt.get("effect_amount_required", opt.get("effect_amount", 0)))
+			option.silver_required = int(opt.get("silver_required", 0))
+			option.faction_required = int(opt.get("faction_required", 0))
+			option.enemy_id = int(opt.get("enemy_id", 0))
+			option.is_start = bool(opt.get("start", false))
+			option.ends_quest = bool(opt.get("quest_end", opt.get("ends_quest", false)))
 			
 			# Effect applied when option is chosen
-			option.effect_applied = opt.get("effect_applied", 0)
-			option.effect_applied_factor = opt.get("effect_applied_factor", 0.0)
+			option.effect_applied = int(opt.get("effect_applied", 0))
+			option.effect_applied_factor = float(opt.get("effect_applied_factor", 0.0))
 			
 			# Visibility control
 			var shows = opt.get("shows_option_ids", [])
@@ -815,23 +860,23 @@ func _load_quests_database() -> QuestsDatabase:
 			# Rewards - support nested "reward" object or flat fields
 			var reward_data = opt.get("reward", {})
 			if reward_data is Dictionary and reward_data.size() > 0:
-				option.reward_stat_type = reward_data.get("stat_type", 0)
-				option.reward_stat_amount = reward_data.get("stat_amount", 0)
-				option.reward_talent = reward_data.get("talent", 0)
-				option.reward_item = reward_data.get("item", 0)
-				option.reward_perk = reward_data.get("perk", 0)
-				option.reward_blessing = reward_data.get("blessing", 0)
-				option.reward_potion = reward_data.get("potion", 0)
-				option.reward_silver = reward_data.get("silver", 0)
+				option.reward_stat_type = int(reward_data.get("reward_stat_type", reward_data.get("stat_type", 0)))
+				option.reward_stat_amount = int(reward_data.get("reward_stat_amount", reward_data.get("stat_amount", 0)))
+				option.reward_talent = int(reward_data.get("talent", 0))
+				option.reward_item = int(reward_data.get("item", 0))
+				option.reward_perk = int(reward_data.get("perk", 0))
+				option.reward_blessing = int(reward_data.get("blessing", 0))
+				option.reward_potion = int(reward_data.get("potion", 0))
+				option.reward_silver = int(reward_data.get("silver", 0))
 			else:
-				option.reward_stat_type = opt.get("reward_stat_type", 0)
-				option.reward_stat_amount = opt.get("reward_stat_amount", 0)
-				option.reward_talent = opt.get("reward_talent", 0)
-				option.reward_item = opt.get("reward_item", 0)
-				option.reward_perk = opt.get("reward_perk", 0)
-				option.reward_blessing = opt.get("reward_blessing", 0)
-				option.reward_potion = opt.get("reward_potion", 0)
-				option.reward_silver = opt.get("reward_silver", 0)
+				option.reward_stat_type = int(opt.get("reward_stat_type", 0))
+				option.reward_stat_amount = int(opt.get("reward_stat_amount", 0))
+				option.reward_talent = int(opt.get("reward_talent", 0))
+				option.reward_item = int(opt.get("reward_item", 0))
+				option.reward_perk = int(opt.get("reward_perk", 0))
+				option.reward_blessing = int(opt.get("reward_blessing", 0))
+				option.reward_potion = int(opt.get("reward_potion", 0))
+				option.reward_silver = int(opt.get("reward_silver", 0))
 			
 			# Requirements (options that must be clicked first)
 			var requirements = opt.get("requirements", [])
@@ -927,12 +972,12 @@ func _verify_and_repair_assets():
 			_download_asset("enemies", asset_id)
 			missing_count += 1
 	
-	# Expeditions (use quests folder)
+	# Expedition maps
 	var expeditions_data = _load_json_file(EXPEDITIONS_JSON)
 	for item in expeditions_data:
-		var asset_id = int(item.get("asset_id", 0))
-		if asset_id > 0 and not has_asset("quests", asset_id):
-			_download_asset("quests", asset_id)
+		var asset_id = int(item.get("map_asset_id", 0))
+		if asset_id > 0 and not has_asset("expedition-maps", asset_id):
+			_download_asset("expedition-maps", asset_id)
 			missing_count += 1
 	
 	# Quests (use quests folder)
@@ -992,12 +1037,19 @@ func _download_assets_for_data(data_type: String, data: Array):
 var _downloaded_quest_assets: Dictionary = {}
 
 func _download_quest_assets(data: Array):
-	"""Download quest/expedition assets (both share the quests folder)"""
+	"""Download quest assets"""
 	for item in data:
 		var asset_id = int(item.get("asset_id", 0))
 		if asset_id > 0 and not _downloaded_quest_assets.has(asset_id):
 			_downloaded_quest_assets[asset_id] = true
 			_download_asset("quests", asset_id)
+
+func _download_expedition_map_assets(data: Array):
+	"""Download expedition map assets"""
+	for item in data:
+		var asset_id = int(item.get("map_asset_id", 0))
+		if asset_id > 0:
+			_download_asset("expedition-maps", asset_id)
 
 func _download_cosmetic_assets(data: Array):
 	"""Download cosmetic images (each cosmetic's ID is its asset ID)"""

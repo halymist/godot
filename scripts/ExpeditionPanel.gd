@@ -1,14 +1,12 @@
 extends TextureRect
 
-# Expedition panel - similar to Quest.gd but for expedition content
-@export var text_container: Node  # Center container for expedition text
-@export var options_container: VBoxContainer  # Buttons below text
-@export var reward_label: Label  # Label to display rewards
+@export var text_container: Node
+@export var options_container: VBoxContainer
+@export var reward_label: Label
 @export var expedition_text: Label
 @export var health_bar: TextureProgressBar
 @export var effects_container: Control
 
-# Icon textures for different option types
 @export_group("Option Icons")
 @export var dialogue_icon: Texture2D
 @export var combat_icon: Texture2D
@@ -27,358 +25,218 @@ extends TextureRect
 @export var guild_icon: Texture2D
 @export var companions_icon: Texture2D
 
-# Reference to portrait for navigation
 @export var portrait: Control
 
-# Expedition state
-var current_slide_id: int = 0
-
-# Preloaded option scene (reuse quest_option.tscn)
-const OptionScene = preload("res://Scenes/quest_option.tscn")
-
-# Stat type string -> icon mapping (server sends stat_type as string)
-var STAT_ICON_MAP = {
-	"strength": "strength_icon",
-	"stamina": "stamina_icon",
-	"agility": "agility_icon",
-	"luck": "luck_icon",
-	"armor": "armor_icon"
-}
+var current_expedition_id: int = 0
+var current_expedition: ExpeditionData = null
+var node_buttons: Dictionary = {}
+var pending_node_id: int = 0
 
 func _ready():
 	visible = false
 	visibility_changed.connect(_on_visibility_changed)
-
-	# Wait for game_ready before setup
 	if UIManager.instance.game_is_ready:
 		_setup()
 	else:
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	print("ExpeditionPanel: Setup complete")
+	print("ExpeditionPanel: Graph setup complete")
 
 func _on_visibility_changed():
-	"""Auto-load expedition slide when panel becomes visible"""
-	if visible:
-		_update_health_bar()
-		var expedition = GameInfo.current_player.expedition
-		if expedition and expedition.size() > 0:
-			var slide_id = expedition[0]
-			# Only load if we're not already showing this slide
-			if current_slide_id != slide_id:
-				print("ExpeditionPanel: Auto-loading slide ", slide_id)
-				start_expedition(1, slide_id)
-
-func start_expedition(_expedition_id: int, slide_id: int):
-	"""Start or resume an expedition at a specific slide"""
-	# expedition_id is ignored - we just use slides directly from database
-	current_slide_id = slide_id
-	show_slide(slide_id)
-	visible = true
-
-func show_slide(slide_id: int):
-	"""Display a specific slide and apply its rewards"""
-	var slide = GameInfo.expeditions_db.get_slide(slide_id)
-	if not slide:
-		print("Error: Slide not found: ", slide_id)
+	if not visible:
 		return
-	
-	current_slide_id = slide_id
-	
-	# Update text
-	_animate_expedition_text(slide.slide_text)
-	_update_health_bar()
-	
-	# Update background if slide has texture
-	if slide.texture:
-		texture = slide.texture
 
-	
-	# Clear existing options
-	_clear_options()
-	
-	# Clear reward label
+	_update_health_bar()
+	if GameInfo.current_player and GameInfo.current_player.expedition and GameInfo.current_player.expedition.size() > 0:
+		var expedition_id = int(GameInfo.current_player.expedition[0])
+		if current_expedition_id != expedition_id:
+			start_expedition(expedition_id)
+		else:
+			refresh_graph()
+
+func start_expedition(expedition_id: int):
+	current_expedition_id = expedition_id
+	current_expedition = GameInfo.expeditions_db.get_expedition(expedition_id) if GameInfo.expeditions_db else null
+	if not current_expedition:
+		print("ExpeditionPanel: Expedition not found: ", expedition_id)
+		return
+
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = [expedition_id]
+
+	texture = current_expedition.map_texture
+	visible = true
+	refresh_graph()
+
+func refresh_graph():
+	if not current_expedition:
+		return
+
+	_update_health_bar()
+	_clear_graph()
+
 	if reward_label:
 		reward_label.text = ""
-	
-	# Apply slide rewards
-	_apply_slide_rewards(slide)
+	if expedition_text:
+		expedition_text.text = "Choose a path."
 
-	# Add options
-	for option in slide.options:
-		_add_option_button(option)
+	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
+	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log)
+	var available_ids = current_expedition.get_available_node_ids(quest_log)
 
-func _add_option_button(option: Resource):
-	"""Create and add an option button"""
-	var option_button = OptionScene.instantiate()
-	options_container.add_child(option_button)
-	
-	# Set text
-	var label = option_button.get_node_or_null("Label")
-	if label:
-		label.text = option.option_text
-	
-	# Set icon based on requirement type
-	var icon = option_button.get_node_or_null("Icon")
-	if icon:
-		icon.texture = _get_option_icon(option)
-	
-	# Check if player meets requirements
-	var can_select = _check_requirements(option)
-	option_button.disabled = not can_select
-	option_button.modulate.a = 1.0 if can_select else 0.5
-	
-	# Connect signal
-	option_button.pressed.connect(_on_option_selected.bind(option))
+	_draw_edges(available_ids, completed_ids)
+	for node in current_expedition.nodes:
+		if node.node_id in available_ids:
+			_add_node_button(node, node.node_id in completed_ids)
 
-func _get_option_icon(option: Resource) -> Texture2D:
-	"""Get the appropriate icon for an option based on its stat_type or enemy_id"""
-	# Combat option (has enemy)
-	if option.enemy_id > 0:
-		return combat_icon
-	
-	# Silver requirement
-	if option.silver_required > 0:
-		return currency_check_icon
-	
-	# Faction requirement
-	if option.faction_required > 0:
-		var faction_icons = {1: order_icon, 2: guild_icon, 3: companions_icon}
-		return faction_icons.get(option.faction_required, dialogue_icon)
-	
-	# Effect requirement
-	if option.effect_id > 0 and option.effect_amount > 0:
-		return dialogue_icon  # No specific effect icon, use default
-	
-	# Stat check option
-	var stat = option.stat_type
-	match stat:
-		"strength":
-			return strength_icon
-		"stamina":
-			return stamina_icon
-		"agility":
-			return agility_icon
-		"luck":
-			return luck_icon
-		"armor":
-			return armor_icon
-		_:
-			# Default dialogue icon
-			return dialogue_icon
+func _clear_graph():
+	node_buttons.clear()
+	pending_node_id = 0
+	if options_container:
+		for child in options_container.get_children():
+			child.queue_free()
+	queue_redraw()
 
-func _check_requirements(option: Resource) -> bool:
-	"""Check if player meets the requirements for an option"""
-	var player = GameInfo.current_player
-	if not player:
-		return false
-	
-	var stats = player.get_total_stats()
-	
-	# Check stat requirement
-	var stat_type = option.stat_type
-	if stat_type != "" and option.stat_required > 0:
-		var stat_value = stats.get(stat_type, 0)
-		if stat_value < option.stat_required:
-			return false
-	
-	# Check silver requirement
-	if option.silver_required > 0:
-		if player.silver < option.silver_required:
-			return false
-	
-	# Check faction requirement
-	if option.faction_required > 0:
-		if player.faction != option.faction_required:
-			return false
-	
-	# Check effect requirement
-	if option.effect_id > 0 and option.effect_amount > 0:
-		var total_effects = player.get_total_effects()
-		var player_effect = total_effects.get(option.effect_id, 0.0)
-		if player_effect < option.effect_amount:
-			return false
-	
-	return true
+func _draw_edges(_available_ids: Array, _completed_ids: Array):
+	queue_redraw()
 
-func _on_option_selected(option: Resource):
-	"""Handle option selection"""
-	print("Expedition option selected: ", option.option_id)
-	
-	# Deduct silver cost if required
-	if option.silver_required > 0 and GameInfo.current_player:
-		UIManager.instance.update_silver(-option.silver_required)
-		GameInfo.current_player.silver -= option.silver_required
-		print("Deducted ", option.silver_required, " silver for expedition option")
-	
-	# Send to server - server will respond with next slide
-	Websocket.expedition_option(option.option_id)
-
-func _apply_slide_rewards(slide: Resource):
-	"""Apply rewards from the slide when it's shown"""
-	var player = GameInfo.current_player
-	if not player:
+func _draw():
+	if not current_expedition or not GameInfo.current_player:
 		return
-	
-	var reward_texts = []
-	
-	# Check each reward type (new individual fields)
-	if slide.reward_silver > 0:
-		UIManager.instance.update_silver(slide.reward_silver)
-		player.silver += slide.reward_silver
-		reward_texts.append("+%d silver" % slide.reward_silver)
-		print("REWARD: Awarded ", slide.reward_silver, " silver")
-	
-	if slide.reward_stat_type > 0 and slide.reward_stat_amount > 0:
-		var stat_name = _get_stat_name(slide.reward_stat_type)
-		if stat_name != "":
-			var current = player.get(stat_name)
-			player.set(stat_name, current + slide.reward_stat_amount)
-			reward_texts.append("+%d %s" % [slide.reward_stat_amount, stat_name.capitalize()])
-	
-	if slide.reward_talent > 0:
-		player.talent_points += slide.reward_talent
-		reward_texts.append("+%d Talent Point(s)" % slide.reward_talent)
-	
-	if slide.reward_item > 0:
-		var added = player.add_item_to_bag(slide.reward_item)
-		if added:
-			var item_resource = GameInfo.items_db.get_item_by_id(slide.reward_item) if GameInfo.items_db else null
-			if item_resource:
-				reward_texts.append("You receive " + item_resource.item_name + ".")
-			else:
-				reward_texts.append("Item received!")
-			print("REWARD: Added Item ID ", slide.reward_item, " to bag")
-			if UIManager.instance:
-				UIManager.instance.refresh_bags()
-		else:
-			reward_texts.append("Your bag is full!")
-	
-	if slide.reward_perk > 0:
-		var added_perk = player.add_perk_if_new(slide.reward_perk)
-		var perk_resource = GameInfo.perks_db.get_perk_by_id(slide.reward_perk) if GameInfo.perks_db else null
-		if added_perk:
-			reward_texts.append("You receive the perk: " + perk_resource.perk_name + "." if perk_resource else "Perk unlocked!")
-		else:
-			reward_texts.append("You already have this perk (" + perk_resource.perk_name + ")." if perk_resource else "Perk already owned!")
-	
-	if slide.reward_blessing > 0:
-		player.blessing = slide.reward_blessing
-		var blessing_res = GameInfo.perks_db.get_perk_by_id(slide.reward_blessing) if GameInfo.perks_db else null
-		reward_texts.append("You receive a blessing: " + blessing_res.perk_name + "." if blessing_res else "+%d Blessing" % slide.reward_blessing)
-		if UIManager.instance:
-			UIManager.instance.refresh_active_effects()
-	
-	if slide.reward_potion > 0:
-		player.potion = slide.reward_potion
-		var potion_res = GameInfo.items_db.get_item_by_id(slide.reward_potion) if GameInfo.items_db else null
-		reward_texts.append("You receive a potion: " + potion_res.item_name + "." if potion_res else "+%d Potion" % slide.reward_potion)
-		if UIManager.instance:
-			UIManager.instance.refresh_active_effects()
 
-	# Apply slide effect (e.g., effect_id 200 = health depletion)
-	if slide.effect_id == 200 and slide.effect_factor != 0:
-		var hp_lost = abs(int(slide.effect_factor))
-		var max_health = player.get_total_stats().stamina * 10
-		player.depleted_health = clamp(player.depleted_health + hp_lost, 0, max_health)
-		reward_texts.append("You lose %d HP." % int(hp_lost))
-		if UIManager.instance:
-			UIManager.instance.refresh_stats()
-		# Block further expeditions if health is depleted
-		if player.depleted_health >= max_health:
-			reward_texts.append("You are too injured to continue! Expedition failed.")
-			if UIManager.instance:
-				UIManager.instance.handle_expedition_failed("You are too injured to continue!")
-	
-	# Show combined reward text
-	if reward_label and reward_texts.size() > 0:
-		reward_label.text = ", ".join(reward_texts)
-		print("Applying slide rewards: ", reward_label.text)
-	elif reward_label:
-		reward_label.text = ""
+	var quest_log = GameInfo.current_player.quest_log
+	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log)
+	var available_ids = current_expedition.get_available_node_ids(quest_log)
+	for edge in current_expedition.edges:
+		if edge.node_a not in available_ids or edge.node_b not in available_ids:
+			continue
+		var node_a = current_expedition.get_node(edge.node_a)
+		var node_b = current_expedition.get_node(edge.node_b)
+		if not node_a or not node_b:
+			continue
+		var color = Color(0.88, 0.78, 0.48, 0.9) if edge.node_a in completed_ids and edge.node_b in completed_ids else Color(0.75, 0.75, 0.75, 0.55)
+		draw_line(_node_position(node_a), _node_position(node_b), color, 3.0, true)
 
-	_update_health_bar()
+func _add_node_button(node: Resource, completed: bool):
+	var button = Button.new()
+	button.custom_minimum_size = Vector2(42, 42)
+	button.size = Vector2(42, 42)
+	button.text = "✓" if completed else (node.label if node.label != "" else str(node.node_id))
+	button.tooltip_text = _get_node_tooltip(node, completed)
+	button.disabled = completed
+	button.modulate = Color(0.75, 0.95, 0.65, 1.0) if completed else Color(1.0, 0.86, 0.45, 1.0)
+	button.pressed.connect(_on_node_pressed.bind(node))
+	add_child(button)
+	node_buttons[node.node_id] = button
+	_position_node_button(button, node)
 
-func _get_stat_name(stat_type: int) -> String:
-	"""Convert stat type int to stat name"""
-	match stat_type:
-		1: return "strength"
-		2: return "stamina"
-		3: return "agility"
-		4: return "luck"
-		5: return "armor"
-		_: return ""
+func _get_node_tooltip(node: Resource, completed: bool) -> String:
+	if completed:
+		return "Completed"
+	if int(node.quest_id) > 0:
+		var quest = GameInfo.quests_db.get_quest_by_id(node.quest_id) if GameInfo.quests_db else null
+		if quest:
+			return quest.quest_name
+		return "Quest %d" % int(node.quest_id)
+	return node.label if node.label != "" else "Unknown node"
 
-func _show_reward_text(_slide: Resource):
-	"""Display reward text for the slide - handled in _apply_slide_rewards now"""
-	pass
+func _position_node_button(button: Button, node: Resource):
+	var center = _node_position(node)
+	button.position = center - button.size * 0.5
 
-func receive_next_slide(slide_id: int):
-	"""Called when server responds with next slide"""
-	if slide_id <= 0:
-		# Expedition ended
-		end_expedition()
-	else:
-		show_slide(slide_id)
-		# Update player's expedition state
-		GameInfo.current_player.expedition = [slide_id]
+func _node_position(node: Resource) -> Vector2:
+	var pos = Vector2(node.pos_x, node.pos_y)
+	if node.pos_x >= 0.0 and node.pos_x <= 1.0 and node.pos_y >= 0.0 and node.pos_y <= 1.0:
+		return Vector2(size.x * node.pos_x, size.y * node.pos_y)
+
+	var image_size = Vector2.ZERO
+	if texture:
+		image_size = texture.get_size()
+	if image_size.x <= 0.0 or image_size.y <= 0.0:
+		return pos
+	return Vector2((pos.x / image_size.x) * size.x, (pos.y / image_size.y) * size.y)
+
+func _notification(what):
+	if what == NOTIFICATION_RESIZED and current_expedition:
+		for node_id in node_buttons.keys():
+			var node = current_expedition.get_node(int(node_id))
+			if node:
+				_position_node_button(node_buttons[node_id], node)
+		queue_redraw()
+
+func _on_node_pressed(node: Resource):
+	if pending_node_id > 0:
+		return
+	if not UIManager.instance or not UIManager.instance.quest or not Websocket:
+		return
+
+	pending_node_id = int(node.node_id)
+	var button = node_buttons.get(pending_node_id, null)
+	if button:
+		button.disabled = true
+
+	if expedition_text:
+		expedition_text.text = "Starting node..."
+
+	print("ExpeditionPanel: Requesting node start from server: expedition=", current_expedition_id, " node=", pending_node_id)
+	Websocket.start_expedition_node(current_expedition_id, pending_node_id)
+
+func handle_node_start_response(success: bool, node_id: int, quest_id: int, message: String = "", expedition_id: int = 0):
+	if expedition_id > 0 and expedition_id != current_expedition_id:
+		return
+
+	if node_id <= 0:
+		node_id = pending_node_id
+
+	if pending_node_id == node_id:
+		pending_node_id = 0
+
+	var button = node_buttons.get(node_id, null)
+	if button:
+		button.disabled = false
+
+	if not success:
+		if expedition_text:
+			expedition_text.text = message if message != "" else "Unable to start this node."
+		print("ExpeditionPanel: Node start failed for node ", node_id, ": ", message)
+		return
+
+	if quest_id <= 0:
+		if expedition_text:
+			expedition_text.text = "Server returned invalid quest for this node."
+		print("ExpeditionPanel: Invalid quest_id from server for node ", node_id)
+		return
+
+	if expedition_text:
+		expedition_text.text = ""
+	UIManager.instance.quest.load_expedition_node(current_expedition_id, node_id, quest_id)
 
 func handle_expedition_failed(message: String):
-	"""Handle a failed expedition option by clearing state and showing a placeholder message"""
-	current_slide_id = 0
-	visible = true
-
-	_clear_options()
-	if reward_label:
-		reward_label.text = ""
-
-	var placeholder = message if message != "" else "Expedition ended. Return home."
-	_animate_expedition_text(placeholder)
-
+	if expedition_text:
+		expedition_text.text = message if message != "" else "Expedition ended. Return home."
 	if GameInfo.current_player:
 		GameInfo.current_player.expedition = []
 		GameInfo.current_player.traveling_destination = null
 		GameInfo.current_player.traveling = 0
-
 	if UIManager.instance and UIManager.instance.map_panel:
 		UIManager.instance.map_panel.reset_expedition_state()
 	_update_health_bar()
 
 func handle_expedition_end(message: String):
-	"""Handle a successful expedition end by showing a placeholder while keeping last texture"""
-	current_slide_id = 0
-	visible = true
-
-	_clear_options()
-	if reward_label:
-		reward_label.text = ""
-
-	var placeholder = message if message != "" else "Expedition ended. Return home."
-	_animate_expedition_text(placeholder)
-
-	if GameInfo.current_player:
-		GameInfo.current_player.expedition = []
-		GameInfo.current_player.traveling_destination = null
-		GameInfo.current_player.traveling = 0
-
-	if UIManager.instance and UIManager.instance.map_panel:
-		UIManager.instance.map_panel.reset_expedition_state()
-	_update_health_bar()
+	handle_expedition_failed(message)
 
 func end_expedition():
-	"""End the current expedition"""
-	current_slide_id = 0
+	current_expedition_id = 0
+	current_expedition = null
 	visible = false
-	
-	# Clear player's expedition state
-	GameInfo.current_player.expedition = []
-	
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = []
+	_clear_graph()
 	print("Expedition ended")
 
 func is_on_expedition() -> bool:
-	"""Check if player is currently on an expedition"""
-	return visible and current_slide_id > 0
+	return visible and current_expedition_id > 0
 
 func _update_health_bar():
 	if not health_bar or not GameInfo.current_player:
@@ -386,22 +244,8 @@ func _update_health_bar():
 
 	var total_stats = GameInfo.current_player.get_total_stats()
 	var max_health = total_stats.stamina * 10
-	var depleted_percent = GameInfo.current_player.depleted_health
-	var current_health = max(0, int(round(max_health * (1.0 - depleted_percent / 100.0))))
+	var current_health = max(0, max_health - int(GameInfo.current_player.depleted_health))
 	health_bar.max_value = max_health
 	health_bar.value = current_health
 	if health_bar.has_node("HealthLabel"):
 		health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
-
-func _clear_options():
-	for child in options_container.get_children():
-		child.queue_free()
-
-func _animate_expedition_text(text: String):
-	"""Animate expedition text with fade and slide effect (match quest style)"""
-	expedition_text.text = text
-	expedition_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	expedition_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	expedition_text.modulate.a = 0
-	var tween = create_tween()
-	tween.tween_property(expedition_text, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)

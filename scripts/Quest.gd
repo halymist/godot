@@ -33,6 +33,9 @@ var current_quest: QuestData = null
 var visible_option_ids: Array[int] = []  # Currently visible option IDs
 var clicked_option_ids: Array[int] = []  # Track which options were clicked during quest
 var pending_combat_option: QuestOption = null  # Store option for after combat
+var is_expedition_node: bool = false
+var expedition_context_id: int = 0
+var expedition_context_node_id: int = 0
 
 # Reference to portrait for navigation
 @export var portrait: Control
@@ -171,6 +174,13 @@ func display_quest_with_text(text: String):
 				add_option(option.option_text, _on_quest_option_pressed.bind(option), option)
 	else:
 		print("WARNING: current_quest.options is null or empty")
+
+func load_expedition_node(expedition_id: int, node_id: int, quest_id: int):
+	"""Load a quest launched from an expedition graph node."""
+	is_expedition_node = true
+	expedition_context_id = expedition_id
+	expedition_context_node_id = node_id
+	load_quest(quest_id)
 
 func _compute_visible_options() -> Array[int]:
 	"""Compute which options are visible based on the requirements tree.
@@ -326,8 +336,8 @@ func _update_health_bar():
 
 	var total_stats = GameInfo.current_player.get_total_stats()
 	var max_health = total_stats.stamina * 10
-	var depleted_percent = GameInfo.current_player.depleted_health
-	var current_health = max(0, int(round(max_health * (1.0 - depleted_percent / 100.0))))
+	var hp_lost = int(GameInfo.current_player.depleted_health)
+	var current_health = max(0, max_health - hp_lost)
 	health_bar.max_value = max_health
 	health_bar.value = current_health
 	if health_bar.has_node("HealthLabel"):
@@ -378,10 +388,14 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		
 		# Prerequisite options requirement
 		if option_data.requirements.size() > 0:
+			# Requirements represent parent links in the option graph.
+			# The option should be clickable if ANY parent was clicked.
+			var has_any_parent_clicked = false
 			for req_id in option_data.requirements:
-				if not clicked_option_ids.has(req_id):
-					meets_requirement = false
+				if clicked_option_ids.has(req_id):
+					has_any_parent_clicked = true
 					break
+			meets_requirement = meets_requirement and has_any_parent_clicked
 	
 	# Fallback: Check legacy unified requirement system
 	if option_data and option_data.required_type != QuestOption.RequirementType.NONE and GameInfo.current_player:
@@ -569,11 +583,11 @@ func _on_quest_option_pressed(option: QuestOption):
 
 func _start_combat():
 	"""Initialize combat - combat data will come from server response"""
-	# Send combat request to server via Websocket
-	# Combat result will come via WebSocket response and show combat panel automatically
-	print("Starting quest combat - waiting for server response")
-	# TODO: Call appropriate Websocket function for quest combat when server implements it
-	# For now, this is a placeholder - server will send combatLog which shows the combat panel
+	# Combat is executed by server during quest_option; wait for questOptionResponse.
+	print("Starting quest combat - waiting for questOptionResponse/combat payload")
+
+func has_pending_combat_option() -> bool:
+	return pending_combat_option != null
 
 func handle_combat_result():
 	"""Called after combat panel closes to handle quest continuation"""
@@ -582,7 +596,7 @@ func handle_combat_result():
 	
 	# Get combat result
 	var combat_log = GameInfo.current_combat_log
-	var player_won = combat_log.haswon
+	var player_won = combat_log != null and combat_log.has_won()
 	
 	print("Handling combat result: Player won = ", player_won)
 	
@@ -593,6 +607,9 @@ func handle_combat_result():
 		# Win: show node_text for the clicked option
 		if option.node_text != "":
 			animate_quest_text(option.node_text)
+
+		# Combat options should still grant their rewards on win.
+		apply_option_reward(option)
 		
 		# Recompute visible options from requirements tree
 		visible_option_ids = _compute_visible_options()
@@ -619,17 +636,25 @@ func _finish_quest():
 	print("Finishing quest ID: ", current_quest_id)
 	print("Clicked options during quest: ", clicked_option_ids)
 
-	GameInfo.complete_quest(current_quest_id, clicked_option_ids)
+	var completed_expedition_id = expedition_context_id
+	var completed_node_id = expedition_context_node_id
+	var completed_from_expedition = is_expedition_node
+
+	GameInfo.complete_quest(current_quest_id, clicked_option_ids, not completed_from_expedition)
 	GameInfo.current_player.traveling_destination = null
 	GameInfo.current_player.traveling = 0
 	current_quest_id = 0
 	current_quest = null
 	clicked_option_ids.clear()
+	is_expedition_node = false
+	expedition_context_id = 0
+	expedition_context_node_id = 0
 	
-	# Call handle_quest_completed on UIManager
-	# This will hide the panel and navigate home
 	print("UIManager exists: ", UIManager.instance != null)
-	UIManager.instance.handle_quest_completed()
+	if completed_from_expedition:
+		UIManager.instance.handle_expedition_node_completed(completed_expedition_id, completed_node_id)
+	else:
+		UIManager.instance.handle_quest_completed()
 
 func _get_stat_name_from_type(stat_type: int) -> String:
 	"""Convert stat type int to property name"""

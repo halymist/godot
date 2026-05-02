@@ -194,7 +194,7 @@ func _determine_starter_panel() -> Control:
 		return quest
 	if expedition and expedition.size() > 0:
 		print("-> Arrived at expedition, showing expedition panel")
-		call_deferred("_load_expedition_on_startup", expedition[0])
+		call_deferred("_load_expedition_on_startup", int(expedition[0]))
 		return expedition_panel
 	else:
 		# No quest active - show home panel
@@ -245,11 +245,10 @@ func is_navigation_blocked() -> bool:
 		return true
 	return is_on_active_quest() or is_on_expedition() or is_traveling()
 
-func _load_expedition_on_startup(slide_id: int):
+func _load_expedition_on_startup(expedition_id: int):
 	"""Load expedition panel on game startup"""
 	if expedition_panel and expedition_panel.has_method("start_expedition"):
-		# For now, use expedition ID 1 (the only one we have)
-		expedition_panel.start_expedition(1, slide_id)
+		expedition_panel.start_expedition(expedition_id)
 
 func show_enemy_panel(enemy_name: String):
 	"""Show enemy panel with the specified enemy's data"""
@@ -611,6 +610,15 @@ func handle_quest_completed():
 	"""Called when quest is finished - return to home"""
 	quest.visible = false
 	show_panel(home_panel)
+
+func handle_expedition_node_completed(expedition_id: int, _node_id: int):
+	"""Called when an expedition node quest is finished - return to graph"""
+	quest.visible = false
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = [expedition_id]
+	if expedition_panel and expedition_panel.has_method("start_expedition"):
+		expedition_panel.start_expedition(expedition_id)
+	show_panel(expedition_panel)
 
 func handle_quest_arrived():
 	"""Called when travel is completed - show quest panel"""

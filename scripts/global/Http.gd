@@ -256,6 +256,17 @@ func send_request(endpoint: String, method: String, payload: Dictionary):
 # Character Management Actions
 # ============================================
 
+func _faction_id_to_name(faction: int) -> String:
+	match faction:
+		1:
+			return "order"
+		2:
+			return "guild"
+		3:
+			return "companions"
+		_:
+			return "unknown"
+
 func create_character(character_name: String, faction: int, avatar: Array, vip: bool = false):
 	"""
 	Create a new character on the selected server
@@ -279,6 +290,9 @@ func create_character(character_name: String, faction: int, avatar: Array, vip: 
 		"avatar": avatar,
 		"vip": vip
 	}
+	var faction_name = _faction_id_to_name(faction)
+	print("[HTTP] Create-character payload faction: ", faction, " (", faction_name, ")")
+	print("[HTTP] Create-character payload body: ", payload)
 	
 	var json_payload = JSON.stringify(payload)
 	var url = base_url + "/create-character"

@@ -46,8 +46,12 @@ var initialized = false  # Track if we've initialized the lobby
 var _selected_server_day: int = 0  # Server day for selected character's server
 var create_request_in_progress: bool = false
 var create_transition_started: bool = false
+var _lobby_ready_state: bool = false
 
 signal lobby_ready
+
+func is_lobby_ready() -> bool:
+	return _lobby_ready_state
 
 func _ready():
 	print("LobbyPanel: _ready() called")
@@ -102,6 +106,7 @@ func _ready():
 
 func initialize_lobby():
 	"""Initialize lobby with server data - called by LoginPanel after successful login or when returning from game"""
+	_lobby_ready_state = false
 	if GameInfo.lobby_data.is_empty():
 		print("Error: initialize_lobby called but no lobby data available")
 		return
@@ -131,6 +136,7 @@ func initialize_lobby():
 		_refresh_character_avatars()
 		if characters_container:
 			characters_container.visible = true
+		_lobby_ready_state = true
 		lobby_ready.emit.call_deferred()
 
 func _initialize_databases():
@@ -147,6 +153,7 @@ func _initialize_databases():
 			avatar_creation_panel.on_databases_loaded()
 		if characters_container:
 			characters_container.visible = true
+		_lobby_ready_state = true
 		lobby_ready.emit.call_deferred()
 		return
 	
@@ -172,7 +179,8 @@ func _initialize_databases():
 		avatar_creation_panel.on_databases_loaded()
 	if characters_container:
 		characters_container.visible = true
-	lobby_ready.emit()
+	_lobby_ready_state = true
+	lobby_ready.emit.call_deferred()
 
 func _refresh_character_avatars():
 	"""Re-trigger avatar rendering on all character cards after cosmetics DB loads"""

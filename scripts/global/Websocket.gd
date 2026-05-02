@@ -122,6 +122,8 @@ func _handle_message(message: String):
 			_handle_player_data(data)
 		"startExpeditionResponse":
 			_handle_start_expedition_response(data)
+		"startExpeditionNodeResponse", "expeditionNodeResponse":
+			_handle_start_expedition_node_response(data)
 		"expeditionOptionResponse":
 			_handle_expedition_option_response(data)
 		"expeditionCancelResponse":
@@ -196,7 +198,7 @@ func _handle_player_data(message: Dictionary):
 	player_data_received.emit(character_data)
 
 func _handle_start_expedition_response(message: Dictionary):
-	"""Handle startExpeditionResponse - server returns {data: [{started: true, slide_id: X, arrival: timestamp}]}"""
+	"""Handle startExpeditionResponse - server returns {data: [{started: true, expedition_id: X, arrival: timestamp}]}"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
 		print("[WebSocket] Invalid startExpeditionResponse format")
 		return
@@ -207,82 +209,40 @@ func _handle_start_expedition_response(message: Dictionary):
 		print("[WebSocket] Expedition start failed")
 		return
 	
-	var slide_id = data.get("slide_id", 0)
+	var expedition_id = int(data.get("expedition_id", data.get("active_expedition_id", 0)))
+	if expedition_id <= 0 and GameInfo.current_player and GameInfo.expeditions_db:
+		var expedition = GameInfo.expeditions_db.get_expedition_for_settlement(GameInfo.current_player.location)
+		if expedition:
+			expedition_id = expedition.expedition_id
 	var arrival = data.get("arrival", "")
 	
-	print("[WebSocket] Expedition started - slide_id: ", slide_id, ", arrival: ", arrival)
+	print("[WebSocket] Expedition started - expedition_id: ", expedition_id, ", arrival: ", arrival)
 	
 	# Pass to MapPanel to handle the travel timer with server-provided arrival time
 	if UIManager.instance and UIManager.instance.map_panel:
-		UIManager.instance.map_panel.receive_expedition_start(slide_id, arrival)
+		UIManager.instance.map_panel.receive_expedition_start(expedition_id, arrival)
 
-func _handle_expedition_option_response(message: Dictionary):
-	"""Handle expeditionOptionResponse - server returns {data: [{success: true, slide_id: X, message: "..."}]}"""
+func _handle_start_expedition_node_response(message: Dictionary):
+	"""Handle node start response - server resolves quest_id for a selected expedition node."""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid expeditionOptionResponse format")
+		print("[WebSocket] Invalid startExpeditionNodeResponse format")
 		return
 
 	var data = message.data[0]
-	# Update depleted health if provided by server
-	if GameInfo.current_player and data.has("depleted_health"):
-		var max_health = GameInfo.current_player.get_total_stats().stamina * 10
-		GameInfo.current_player.depleted_health = clamp(int(data.get("depleted_health", 0)), 0, max_health)
-		if UIManager.instance:
-			UIManager.instance.refresh_stats()
-	if not data.get("success", false):
-		print("[WebSocket] Expedition option failed: ", data.get("message", ""))
-		# If combat data exists, show combat and defer failure handling
-		if data.has("combat") and data.combat is Dictionary:
-			GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
-			GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
-			if GameInfo.current_player and not data.has("depleted_health"):
-				var max_health = GameInfo.current_player.get_total_stats().stamina * 10
-				GameInfo.current_player.depleted_health = clamp(int(GameInfo.current_combat_log.player_depleted_health), 0, max_health)
-				if UIManager.instance:
-					UIManager.instance.refresh_stats()
-			GameInfo.pending_expedition_slide_id_after_combat = 0
-			GameInfo.pending_expedition_failure_message = data.get("message", "")
+	var success = bool(data.get("success", false))
+	var expedition_id = int(data.get("expedition_id", data.get("active_expedition_id", 0)))
+	var node_id = int(data.get("node_id", data.get("expedition_node_id", data.get("node", data.get("int_argument1", 0)))))
+	var quest_id = int(data.get("quest_id", data.get("quest", data.get("int_argument2", 0))))
+	var msg = str(data.get("message", ""))
 
-			if UIManager.instance and UIManager.instance.combat_panel:
-				var combat_panel = UIManager.instance.combat_panel
-				combat_panel.prepare_combat()
-				await Engine.get_main_loop().process_frame
-				UIManager.instance.show_panel(combat_panel)
-			return
+	print("[WebSocket] Expedition node response: success=", success, " expedition_id=", expedition_id, " node_id=", node_id, " quest_id=", quest_id)
 
-		if UIManager.instance and UIManager.instance.expedition_panel:
-			UIManager.instance.expedition_panel.handle_expedition_failed(data.get("message", ""))
-		return
+	if UIManager.instance and UIManager.instance.expedition_panel and UIManager.instance.expedition_panel.has_method("handle_node_start_response"):
+		UIManager.instance.expedition_panel.handle_node_start_response(success, node_id, quest_id, msg, expedition_id)
 
-	# Handle expedition end response (keep panel visible with placeholder text)
-	if data.get("end", false):
-		if UIManager.instance and UIManager.instance.expedition_panel:
-			UIManager.instance.expedition_panel.handle_expedition_end(data.get("message", ""))
-		return
-
-	var slide_id = int(data.get("slide_id", 0))
-	print("[WebSocket] Expedition option processed - slide_id: ", slide_id)
-
-	# If combat data is included, show combat panel first and defer slide advance
-	if data.has("combat") and data.combat is Dictionary:
-		GameInfo.current_combat_log = GameInfo.CombatResponse.new(data.combat)
-		GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
-		if GameInfo.current_player and not data.has("depleted_health"):
-			var max_health = GameInfo.current_player.get_total_stats().stamina * 10
-			GameInfo.current_player.depleted_health = clamp(int(GameInfo.current_combat_log.player_depleted_health), 0, max_health)
-			if UIManager.instance:
-				UIManager.instance.refresh_stats()
-		GameInfo.pending_expedition_slide_id_after_combat = slide_id
-
-		if UIManager.instance and UIManager.instance.combat_panel:
-			var combat_panel = UIManager.instance.combat_panel
-			combat_panel.prepare_combat()
-			await Engine.get_main_loop().process_frame
-			UIManager.instance.show_panel(combat_panel)
-		return
-
-	if UIManager.instance and UIManager.instance.expedition_panel:
-		UIManager.instance.expedition_panel.receive_next_slide(slide_id)
+func _handle_expedition_option_response(message: Dictionary):
+	"""Legacy expedition slide responses are no longer used by the graph flow."""
+	print("[WebSocket] Ignoring legacy expeditionOptionResponse: ", message)
 
 func _handle_chat_message(message: Dictionary, chat_type: String):
 	"""Handle incoming chat messages (localChat or globalChat)"""
@@ -353,28 +313,25 @@ func _handle_combat_log(message: Dictionary):
 		return
 	
 	var combat_data = message.data[0]
-	print("[WebSocket] Combat log received")
-	
+	_present_combat_log(combat_data, "combatLog")
+
+func _present_combat_log(combat_data: Dictionary, source: String):
+	"""Load combat payload into GameInfo and show the combat panel."""
+	print("[WebSocket] Combat payload received from ", source)
+
 	# Create CombatResponse from server data
 	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
 	GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
-	
+
 	# Reset the arena fight button
 	if UIManager.instance and UIManager.instance.arena_panel:
 		UIManager.instance.arena_panel.reset_fight_button()
-	
+
 	# Prepare and show combat panel
 	if UIManager.instance and UIManager.instance.combat_panel:
 		var combat_panel = UIManager.instance.combat_panel
-		
-		# Prepare all visuals while panel is still hidden
 		combat_panel.prepare_combat()
-		
-		# Wait one frame for Godot to process UI updates before showing
-		await Engine.get_main_loop().process_frame
-		
-		# Now show the panel - playback starts via visibility_changed
-		UIManager.instance.show_panel(combat_panel)
+		UIManager.instance.call_deferred("show_panel", combat_panel)
 
 func _handle_quest_option_response(message: Dictionary):
 	"""Handle questOptionResponse from server"""
@@ -385,14 +342,30 @@ func _handle_quest_option_response(message: Dictionary):
 	var response = message.data[0]
 	var success = response.get("success", false)
 	var msg = response.get("message", "")
+	var quest_panel = UIManager.instance.quest if UIManager.instance else null
 	
 	if not success:
 		print("[WebSocket] Quest option failed: ", msg)
 		# If server says we're not on a quest, could be a desync
 		return
 	
-	print("[WebSocket] Quest option success: ", msg)
-	# Server confirmed the option - client already applied it optimistically
+	print("[WebSocket] Quest option success: ", msg, " | combat_won=", response.get("combat_won", null), " quest_end=", response.get("quest_end", null))
+
+	if response.has("depleted_health") and GameInfo.current_player:
+		GameInfo.current_player.depleted_health = int(response.get("depleted_health", GameInfo.current_player.depleted_health))
+		if UIManager.instance and UIManager.instance.top_ui and UIManager.instance.top_ui.has_method("update_health_bar"):
+			UIManager.instance.top_ui.update_health_bar()
+		if quest_panel and quest_panel.has_method("_update_health_bar"):
+			quest_panel._update_health_bar()
+
+	var combat_payload = response.get("combat", null)
+	if combat_payload is Dictionary and combat_payload.size() > 0:
+		_present_combat_log(combat_payload, "questOptionResponse")
+		return
+
+	if quest_panel and quest_panel.has_method("has_pending_combat_option") and quest_panel.has_pending_combat_option():
+		push_error("[WebSocket] questOptionResponse is missing required combat payload for a pending combat option")
+		print("[WebSocket] Full response: ", response)
 
 func _handle_quest_cancel_response(message: Dictionary):
 	"""Handle questCancelResponse from server"""
@@ -727,12 +700,15 @@ func start_expedition():
 	"""Start an expedition - server knows which one based on player location"""
 	send("start_expedition", {})
 
+func start_expedition_node(expedition_id: int, node_id: int):
+	"""Request to start a specific expedition node; server returns the quest_id."""
+	send("start_expedition_node", {
+		"int_argument1": expedition_id,
+		"int_argument2": node_id,
+		"expedition_id": expedition_id,
+		"node_id": node_id
+	})
+
 func expedition_cancel():
 	"""Cancel current expedition"""
 	send("expedition_cancel", {})
-
-func expedition_option(option_id: int):
-	"""Choose an expedition option (server will respond with next slide)"""
-	send("expedition_option", {
-		"int_argument1": option_id
-	})
