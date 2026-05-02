@@ -12,6 +12,13 @@ var current_slot: int = 0  # Which active perk slot (1-3) we're binding to
 var selected_perk: GameInfo.Perk = null
 var selected_perk_button: Button = null
 
+func _format_perk_description(desc_text: String, factor: float) -> String:
+	if desc_text == "":
+		return ""
+	if "*" in desc_text:
+		return desc_text.replace("*", str(int(factor)))
+	return desc_text
+
 func _ready():
 	pressed.connect(_on_button_pressed)
 	bind_button.pressed.connect(_on_bind_pressed)
@@ -125,9 +132,7 @@ func _update_active_display(perk: GameInfo.Perk):
 	perk_icon.texture = perk.texture
 	
 	if perk.effect1_description != "":
-		var effect1_text = perk.effect1_description
-		if perk.factor1 != 0.0:
-			effect1_text += " " + str(int(perk.factor1)) + "%"
+		var effect1_text = _format_perk_description(perk.effect1_description, perk.factor1)
 		effect1_label.text = effect1_text
 		effect1_label.visible = true
 	else:
@@ -135,9 +140,7 @@ func _update_active_display(perk: GameInfo.Perk):
 		effect1_label.visible = false
 	
 	if perk.effect2_description != "":
-		var effect2_text = perk.effect2_description
-		if perk.factor2 != 0.0:
-			effect2_text += " " + str(int(perk.factor2)) + "%"
+		var effect2_text = _format_perk_description(perk.effect2_description, perk.factor2)
 		effect2_label.text = effect2_text
 		effect2_label.visible = true
 	else:

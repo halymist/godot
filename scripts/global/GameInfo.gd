@@ -787,7 +787,7 @@ class GameCurrentPlayer:
 	var slide: Variant = null
 	var slides: Array = []
 	var talent_points: int = 0
-	var quest_log: Array = []  # Array of {quest_id: int, status: String} to track quest completion
+	var quest_log: Array = []  # Ordered action log: {quest_id: int, option_id: int, finished: bool}
 	var daily_quests: Array[int] = []  # Array of quest IDs available today
 	var expedition: Array = []  # Array: [current_slide] when active, empty when not on expedition
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
@@ -814,7 +814,7 @@ class GameCurrentPlayer:
 		
 		# Load current player specific fields (excluding special cases)
 		for key in data:
-			if key in self and key not in ["daily_quests", "avatar", "stats", "bag_slots", "perks", "talents", "vendor_items", "enchanter_effects"]:
+			if key in self and key not in ["daily_quests", "quest_log", "avatar", "stats", "bag_slots", "perks", "talents", "vendor_items", "enchanter_effects"]:
 				set(key, data[key])
 		
 		print("[SILVER] initial load from server: ", silver, " (raw data value: ", data.get("silver", "MISSING"), ")")
@@ -957,6 +957,13 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	Server uses different field names and formats than the client expects."""
 	
 	var client_data = server_data.duplicate(true)
+	var normalized_quest_log = _extract_server_quest_log(server_data)
+	if normalized_quest_log.size() > 0:
+		client_data["quest_log"] = normalized_quest_log
+		print("[QuestResume] transform normalized quest_log entries: ", normalized_quest_log.size())
+		print("[QuestResume] transform normalized quest_log: ", normalized_quest_log)
+	else:
+		print("[QuestResume] transform found no usable quest_log in playerData")
 	
 	# Field name mappings
 	if server_data.has("character_name"):
@@ -1137,6 +1144,51 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	
 	return client_data
 
+func _normalize_quest_log_entries(raw_entries: Variant) -> Array:
+	var result: Array = []
+	if not (raw_entries is Array):
+		return result
+
+	for raw_entry in raw_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var quest_id = int(raw_entry.get("quest_id", raw_entry.get("questId", 0)))
+		var option_id = int(raw_entry.get("option_id", raw_entry.get("optionId", 0)))
+		if quest_id <= 0 or option_id <= 0:
+			continue
+		result.append({
+			"quest_id": quest_id,
+			"option_id": option_id,
+			"finished": bool(raw_entry.get("finished", false))
+		})
+
+	return result
+
+func _extract_quest_log_from_container(container: Dictionary) -> Array:
+	# Try common key variants first.
+	var direct = container.get("quest_log", container.get("questLog", container.get("questlog", null)))
+	if direct is Array:
+		return _normalize_quest_log_entries(direct)
+	if direct is String:
+		var parsed = JSON.new()
+		if parsed.parse(direct) == OK:
+			return _normalize_quest_log_entries(parsed.get_data())
+
+	# Try nested wrappers used by some backends.
+	for nested_key in ["character", "player", "data"]:
+		var nested = container.get(nested_key, null)
+		if nested is Dictionary:
+			var nested_result = _extract_quest_log_from_container(nested)
+			if nested_result.size() > 0:
+				return nested_result
+
+	return []
+
+func _extract_server_quest_log(server_data: Dictionary) -> Array:
+	if not (server_data is Dictionary):
+		return []
+	return _extract_quest_log_from_container(server_data)
+
 func _parse_iso_timestamp(iso_string: Variant) -> float:
 	"""Parse ISO 8601 timestamp string to Unix timestamp. Returns 0.0 if invalid."""
 	if iso_string == null or not iso_string is String or iso_string.is_empty():
@@ -1164,15 +1216,28 @@ func load_character_from_server(character_data: Dictionary):
 	"""Load a single character from server data (WebSocket playerData response)"""
 	# Preserve server_day before transform (injected by LobbyPanel from server list)
 	var injected_server_day = int(character_data.get("server_day", 0))
+	var raw_quest_log = _extract_server_quest_log(character_data)
+	print("[QuestResume] load_character raw keys: ", character_data.keys())
+	print("[QuestResume] load_character raw quest_log entries: ", raw_quest_log.size())
 	
 	# Transform server data format to client format
 	var transformed_data = _transform_server_player_data(character_data)
+	var transformed_quest_log = transformed_data.get("quest_log", [])
+	print("[QuestResume] load_character transformed quest_log entries: ", transformed_quest_log.size() if transformed_quest_log is Array else 0)
+	if transformed_quest_log is Array and transformed_quest_log.size() > 0:
+		print("[QuestResume] load_character transformed quest_log: ", transformed_quest_log)
 	print("[LoadCharacter] transformed elixir=", transformed_data.get("elixir", 0),
 		" elixir_effects=", transformed_data.get("elixir_effects", []),
 		" elixir_until=", transformed_data.get("elixir_until", 0.0))
 	
 	all_characters.clear()
 	var player = GameCurrentPlayer.new(transformed_data, self)
+
+	# Single quest-log owner: GameInfo hydrates current_player.quest_log at load time.
+	player.quest_log = transformed_quest_log.duplicate(true) if transformed_quest_log is Array else []
+	print("[QuestResume] assigned player.quest_log entries: ", player.quest_log.size())
+	if player.quest_log.size() > 0:
+		print("[QuestResume] assigned player.quest_log: ", player.quest_log)
 	
 	# Force server_day from lobby server list — the transform/init loop may miss it
 	if injected_server_day > 0:
@@ -1442,6 +1507,57 @@ func _reorder_rankings_by_honor():
 # ============================================
 # QUEST MANAGEMENT
 # ============================================
+func get_quest_clicked_options(quest_id: int) -> Array[int]:
+	var clicked_options: Array[int] = []
+	if not current_player:
+		return clicked_options
+
+	for entry in current_player.quest_log:
+		if not (entry is Dictionary):
+			continue
+		if int(entry.get("quest_id", 0)) != quest_id:
+			continue
+		var option_id = int(entry.get("option_id", 0))
+		if option_id <= 0:
+			continue
+		clicked_options.append(option_id)
+
+	print("[QuestResume] get_quest_clicked_options quest_id=", quest_id, " -> ", clicked_options)
+
+	return clicked_options
+
+func get_last_quest_option_id(quest_id: int) -> int:
+	if not current_player:
+		return 0
+
+	for i in range(current_player.quest_log.size() - 1, -1, -1):
+		var entry = current_player.quest_log[i]
+		if not (entry is Dictionary):
+			continue
+		if int(entry.get("quest_id", 0)) != quest_id:
+			continue
+		var option_id = int(entry.get("option_id", 0))
+		if option_id > 0:
+			print("[QuestResume] get_last_quest_option_id quest_id=", quest_id, " -> ", option_id)
+			return option_id
+
+	print("[QuestResume] get_last_quest_option_id quest_id=", quest_id, " -> 0")
+	return 0
+
+func append_quest_log_action(quest_id: int, option_id: int, finished: bool = false):
+	if not current_player or quest_id <= 0:
+		return
+	if option_id <= 0 and not finished:
+		return
+
+	var entry = {
+		"quest_id": int(quest_id),
+		"option_id": int(option_id),
+		"finished": bool(finished)
+	}
+	current_player.quest_log.append(entry)
+	print("[QuestLog] append: ", entry, " | total=", current_player.quest_log.size())
+
 func complete_quest(quest_id: int, clicked_options: Array[int] = [], remove_from_daily: bool = true):
 	if not current_player:
 		return
@@ -1449,17 +1565,12 @@ func complete_quest(quest_id: int, clicked_options: Array[int] = [], remove_from
 	# Remove from daily quests so it no longer shows in the village
 	if remove_from_daily:
 		current_player.daily_quests.erase(quest_id)
-	
-	for entry in current_player.quest_log:
-		if entry.get("quest_id") == quest_id:
-			entry["finished"] = true
-			entry["clicked_options"] = clicked_options
-			quest_completed.emit(quest_id)
-			return
-	
-	current_player.quest_log.append({
-		"quest_id": quest_id,
-		"clicked_options": clicked_options,
-		"finished": true
-	})
+
+	var last_option_id = 0
+	if clicked_options.size() > 0:
+		last_option_id = int(clicked_options[clicked_options.size() - 1])
+	else:
+		last_option_id = get_last_quest_option_id(quest_id)
+
+	append_quest_log_action(quest_id, last_option_id, true)
 	quest_completed.emit(quest_id)

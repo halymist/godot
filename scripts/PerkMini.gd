@@ -39,8 +39,6 @@ func _format_effect_line(effect: EffectResource, factor_value: float) -> String:
 	var parsed_factor = int(factor_value)
 	if "*" in effect_line:
 		effect_line = effect_line.replace("*", str(parsed_factor))
-	elif parsed_factor > 0:
-		effect_line += " " + str(parsed_factor) + "%"
 	return effect_line
 
 func _append_effect_lines(content: String, effect_map: Dictionary) -> String:
@@ -60,20 +58,22 @@ func _on_hover():
 			var perk = meta_data.perk
 			content = perk.perk_name
 			if perk.effect1_description != "":
-				content += "\n" + perk.effect1_description
-				if perk.factor1 != 0.0:
-					content += " " + str(int(perk.factor1)) + "%"
+				var line1 = perk.effect1_description
+				if "*" in line1:
+					line1 = line1.replace("*", str(int(perk.factor1)))
+				content += "\n" + line1
 			if perk.effect2_description != "":
-				content += "\n" + perk.effect2_description
-				if perk.factor2 != 0.0:
-					content += " " + str(int(perk.factor2)) + "%"
+				var line2 = perk.effect2_description
+				if "*" in line2:
+					line2 = line2.replace("*", str(int(perk.factor2)))
+				content += "\n" + line2
 		
 		"blessing":
 			var perk = meta_data.perk
 			var effect = GameInfo.effects_db.get_effect_by_id(perk.effect1_id)
 			content = perk.perk_name
 			if effect:
-				content += "\n" + effect.description + " " + str(int(perk.factor1)) + "%"
+				content += "\n" + _format_effect_line(effect, perk.factor1)
 		
 		"potion":
 			var item = GameInfo.items_db.get_item_by_id(meta_data.id)
@@ -122,8 +122,6 @@ func _on_hover():
 			var factor = meta_data.get("factor", 0.0)
 			content = effect.name
 			if effect.description != "":
-				content += "\n" + effect.description
-				if factor > 0:
-					content += " " + str(int(factor)) + "%"
+				content += "\n" + _format_effect_line(effect, factor)
 	
 	TooltipManager.show_perk_tooltip(content, self)

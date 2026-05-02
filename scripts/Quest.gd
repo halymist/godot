@@ -95,10 +95,11 @@ func _on_visibility_changed():
 	
 	print("Quest panel is now visible")
 	var destination = GameInfo.current_player.traveling_destination
-	# Only load if there's a destination and it's not already loaded
-	if destination != null and current_quest_id != destination:
-		print("Quest panel became visible, loading quest ", destination)
-		load_quest(destination)
+	# Always reload from authoritative quest_log when quest panel becomes visible.
+	# This guarantees resume state is reapplied after login/startup transitions.
+	if destination != null:
+		print("Quest panel became visible, loading quest ", destination, " (authoritative resume)")
+		load_quest(int(destination))
 
 func load_quest(quest_id: int):
 	"""Load a quest and display initial state"""
@@ -125,23 +126,24 @@ func load_quest(quest_id: int):
 	
 	# Restore quest state from quest_log if exists
 	var last_node_text: String = ""
-	if GameInfo.current_player:
-		for quest_log_entry in GameInfo.current_player.quest_log:
-			if quest_log_entry.get("quest_id", 0) == quest_id:
-				var clicked_options = quest_log_entry.get("clicked_options", [])
-				if clicked_options.size() > 0:
-					print("Restoring quest state with clicked_options: ", clicked_options)
-					for option_id in clicked_options:
-						clicked_option_ids.append(option_id)
-					# Find the last clicked option's node_text
-					var last_clicked_id = clicked_options[clicked_options.size() - 1]
-					for option in current_quest.options:
-						if option.option_id == last_clicked_id and option.node_text != "":
-							last_node_text = option.node_text
+	var clicked_options = GameInfo.get_quest_clicked_options(quest_id)
+	var last_clicked_id = GameInfo.get_last_quest_option_id(quest_id)
+	print("[QuestResume] load quest_id=", quest_id, " is_new=", is_new_quest, " clicked=", clicked_options, " last=", last_clicked_id)
+	if clicked_options.size() > 0:
+		print("Restoring quest state with clicked_options: ", clicked_options)
+		for option_id in clicked_options:
+			clicked_option_ids.append(option_id)
+		if last_clicked_id <= 0:
+			last_clicked_id = clicked_options[clicked_options.size() - 1]
+		print("[QuestResume] quest_id=", quest_id, " last_option_id=", last_clicked_id, " log_size=", GameInfo.current_player.quest_log.size())
+		for option in current_quest.options:
+			if option.option_id == last_clicked_id and option.node_text != "":
+				last_node_text = option.node_text
 				break
 	
 	# Compute visible options based on requirements tree
 	visible_option_ids = _compute_visible_options()
+	print("[QuestResume] visible options for quest ", quest_id, ": ", visible_option_ids)
 	
 	# Display quest with the correct text
 	if last_node_text != "":
@@ -519,6 +521,7 @@ func _on_quest_option_pressed(option: QuestOption):
 	if not clicked_option_ids.has(option.option_id):
 		clicked_option_ids.append(option.option_id)
 		print("Tracked clicked option: ", option.option_id, " Total clicked: ", clicked_option_ids)
+		GameInfo.append_quest_log_action(current_quest_id, option.option_id, false)
 	
 	# 1. Handle silver cost (new server field)
 	if option.silver_required > 0:

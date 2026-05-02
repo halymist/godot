@@ -626,6 +626,7 @@ func handle_quest_arrived():
 	show_panel(quest)
 
 func _load_quest_on_startup(quest_id: int):
+	print("[QuestResume] _load_quest_on_startup quest_id=", quest_id, " current_destination=", GameInfo.current_player.traveling_destination if GameInfo.current_player else null)
 	quest.load_quest(quest_id)
 
 func handle_logout():
