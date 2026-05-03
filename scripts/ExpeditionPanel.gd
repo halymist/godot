@@ -61,6 +61,7 @@ func _on_visibility_changed():
 			refresh_graph()
 
 func start_expedition(expedition_id: int):
+	var is_same_expedition = current_expedition != null and current_expedition_id == expedition_id
 	current_expedition_id = expedition_id
 	current_expedition = GameInfo.expeditions_db.get_expedition(expedition_id) if GameInfo.expeditions_db else null
 	if not current_expedition:
@@ -73,10 +74,12 @@ func start_expedition(expedition_id: int):
 	_ensure_map_view()
 	_setup_node_overlay()
 	texture = null
-	_reset_camera_to_map_center()
+	if not is_same_expedition:
+		_reset_camera_to_map_center()
 	_update_map_view_transform()
-	selected_node_id = 0
-	selected_node_completed = false
+	if not is_same_expedition:
+		selected_node_id = 0
+		selected_node_completed = false
 	_set_node_overlay_text("Loading...")
 	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 	visible = true

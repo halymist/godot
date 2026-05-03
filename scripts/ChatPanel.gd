@@ -120,22 +120,16 @@ func _on_send_button_pressed():
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
 	var message_time = _message_timestamp_to_unix(chat_message.timestamp)
-	var should_show_separator = false
-	
-	if last_message_time != "":
+	var should_show_separator = (last_message_time == "")
+
+	if last_message_time != "" and not should_show_separator:
 		var last_time = _message_timestamp_to_unix(last_message_time)
 		if message_time - last_time >= TIME_SEPARATOR_GAP_SECONDS:
 			should_show_separator = true
 	
 	if should_show_separator:
 		last_message_sender = ""  # Reset grouping after time separator
-		
-		var parts = chat_message.timestamp.split("T")
-		var time_display = chat_message.timestamp
-		if parts.size() >= 2:
-			var time_part = parts[1].split(":")
-			if time_part.size() >= 2:
-				time_display = time_part[0] + ":" + time_part[1]
+		var time_display = _format_separator_timestamp(message_time)
 		
 		# Create separator row: ── 20:14 ──
 		var sep_row = HBoxContainer.new()
@@ -204,6 +198,26 @@ func add_chat_message(chat_message: GameInfo.ChatMessage):
 	message_label.add_theme_font_size_override("bold_font_size", 12)
 	message_label.text = chat_message.message
 	chat_container.add_child(message_label)
+
+func _format_separator_timestamp(message_time_unix: int) -> String:
+	if message_time_unix <= 0:
+		return "Unknown"
+
+	var dt = Time.get_datetime_dict_from_unix_time(message_time_unix)
+	if dt.is_empty():
+		return "Unknown"
+
+	var hours = int(dt.get("hour", 0))
+	var minutes = int(dt.get("minute", 0))
+	var time_display = "%02d:%02d" % [hours, minutes]
+
+	var now_unix = int(Time.get_unix_time_from_system())
+	if now_unix - message_time_unix >= 86400:
+		var day = int(dt.get("day", 0))
+		var month = int(dt.get("month", 0))
+		time_display += " (%02d.%02d)" % [day, month]
+
+	return time_display
 
 func _message_timestamp_to_unix(timestamp: String) -> int:
 	if timestamp.is_empty():
