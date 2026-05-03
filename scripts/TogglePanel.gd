@@ -243,7 +243,7 @@ func is_navigation_blocked() -> bool:
 	# Block if arrived on map but not yet entered
 	if map_panel.has_arrived or map_panel.is_expedition_travel:
 		return true
-	return is_on_active_quest() or is_on_expedition() or is_traveling()
+	return is_on_active_quest() or is_traveling()
 
 func _load_expedition_on_startup(expedition_id: int):
 	"""Load expedition panel on game startup"""

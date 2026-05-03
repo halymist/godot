@@ -185,7 +185,11 @@ func _initialize_databases():
 func _refresh_character_avatars():
 	"""Re-trigger avatar rendering on all character cards after cosmetics DB loads"""
 	for child in characters_container.get_children():
-		if child != create_new_button and child.has_node("HBox/AvatarContainer/Avatar"):
+		if child == create_new_button:
+			continue
+		if child.has_method("refresh_card_avatar"):
+			child.refresh_card_avatar()
+		elif child.has_node("HBox/AvatarContainer/Avatar"):
 			child.get_node("HBox/AvatarContainer/Avatar").refresh_avatar()
 
 func _load_game_scene_async():

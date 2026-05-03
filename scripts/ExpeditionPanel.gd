@@ -3,7 +3,15 @@ extends TextureRect
 const EXPEDITION_QUEST_START_COST: int = 30
 const LOW_HEALTH_WARNING_RATIO: float = 0.10
 const NODE_BUTTON_SIZE: Vector2 = Vector2(42, 42)
-const NODE_OVERLAY_HEIGHT: float = 120.0
+const CAMERA_MOVE_DURATION: float = 0.28
+const MAP_PAN_ZOOM: float = 1.12
+const EMBARK_ACTION_TEXT: String = "Embark ("
+const NODE_BORDER_WIDTH: int = 2
+const NODE_AVAILABLE_FILL: Color = Color(0.89, 0.70, 0.28, 0.98)
+const NODE_AVAILABLE_BORDER: Color = Color(1.00, 0.90, 0.55, 1.0)
+const NODE_COMPLETED_FILL: Color = Color(0.34, 0.38, 0.42, 0.98)
+const NODE_COMPLETED_BORDER: Color = Color(0.54, 0.58, 0.62, 1.0)
+const NODE_SELECTED_BORDER: Color = Color(0.98, 0.98, 0.98, 1.0)
 
 @export var text_container: Node
 @export var options_container: VBoxContainer
@@ -11,6 +19,9 @@ const NODE_OVERLAY_HEIGHT: float = 120.0
 @export var expedition_text: Label
 @export var health_bar: TextureProgressBar
 @export var effects_container: Control
+@export var node_overlay_panel: PanelContainer
+@export var node_description_label: Label
+@export var node_action_button: Button
 
 @export_group("Option Icons")
 @export var dialogue_icon: Texture2D
@@ -41,14 +52,18 @@ var map_view: TextureRect = null
 var map_image_size: Vector2 = Vector2.ZERO
 var map_base_scale: float = 1.0
 var camera_center_px: Vector2 = Vector2.ZERO
+var camera_tween: Tween = null
 var selected_node_id: int = 0
 var selected_node_completed: bool = false
-var node_overlay_panel: PanelContainer = null
-var node_description_label: Label = null
-var embark_button: Button = null
+var rng := RandomNumberGenerator.new()
+var node_action_label: Label = null
+var node_price_label: Label = null
+var node_currency_icon: TextureRect = null
+var node_closing_paren: Label = null
 
 func _ready():
 	visible = false
+	rng.randomize()
 	visibility_changed.connect(_on_visibility_changed)
 	if UIManager.instance.game_is_ready:
 		_setup()
@@ -62,7 +77,7 @@ func _setup():
 		overlay.z_index = 10
 
 	_ensure_map_view()
-	_ensure_node_overlay()
+	_setup_node_overlay()
 
 	if text_container:
 		text_container.visible = false
@@ -100,14 +115,14 @@ func start_expedition(expedition_id: int):
 		GameInfo.current_player.expedition = [expedition_id]
 
 	_ensure_map_view()
-	_ensure_node_overlay()
+	_setup_node_overlay()
 	texture = null
 	_reset_camera_to_map_center()
 	_update_map_view_transform()
 	selected_node_id = 0
 	selected_node_completed = false
-	_set_node_overlay_text("Select a node to inspect it.")
-	_set_embark_button_enabled(false)
+	_set_node_overlay_text("Loading...")
+	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 	visible = true
 	refresh_graph()
 
@@ -122,8 +137,8 @@ func refresh_graph():
 		reward_label.text = ""
 	if expedition_text:
 		expedition_text.text = ""
-	_set_node_overlay_text("Select a node to inspect it.")
-	_set_embark_button_enabled(false)
+	_set_node_overlay_text("Loading...")
+	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 
 	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
 	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log)
@@ -136,6 +151,7 @@ func refresh_graph():
 			_add_node_button(node, node.node_id in completed_ids)
 
 	_refresh_node_positions()
+	_restore_or_pick_selection(available_ids, completed_ids)
 
 func _clear_graph():
 	for button in node_buttons.values():
@@ -172,28 +188,55 @@ func _add_node_button(node: Resource, completed: bool):
 	var button = Button.new()
 	button.custom_minimum_size = NODE_BUTTON_SIZE
 	button.size = NODE_BUTTON_SIZE
-	button.text = "" if completed else (node.label if node.label != "" else str(node.node_id))
-	button.tooltip_text = _get_node_tooltip(node, completed)
-	button.modulate = Color(0.45, 0.45, 0.45, 0.95) if completed else Color(1.0, 0.86, 0.45, 1.0)
+	button.text = ""
+	button.tooltip_text = ""
 	button.focus_mode = Control.FOCUS_NONE
+	button.set_meta("completed", completed)
+	_apply_node_visual(button, completed, false)
 	button.pressed.connect(_on_node_pressed.bind(node, completed))
 	add_child(button)
 	node_buttons[node.node_id] = button
 	_position_node_button(button, node)
 
-func _get_node_tooltip(node: Resource, completed: bool) -> String:
-	if completed:
-		return "Completed"
-	if int(node.quest_id) > 0:
-		var quest = GameInfo.quests_db.get_quest_by_id(node.quest_id) if GameInfo.quests_db else null
-		if quest:
-			return quest.quest_name
-		return "Quest %d" % int(node.quest_id)
-	return node.label if node.label != "" else "Unknown node"
-
 func _position_node_button(button: Button, node: Resource):
 	var center = _node_position(node)
 	button.position = center - button.size * 0.5
+
+func _make_node_style(fill_color: Color, border_color: Color) -> StyleBoxFlat:
+	var style = StyleBoxFlat.new()
+	style.bg_color = fill_color
+	style.border_color = border_color
+	style.border_width_left = NODE_BORDER_WIDTH
+	style.border_width_top = NODE_BORDER_WIDTH
+	style.border_width_right = NODE_BORDER_WIDTH
+	style.border_width_bottom = NODE_BORDER_WIDTH
+	style.corner_radius_top_left = int(NODE_BUTTON_SIZE.x / 2.0)
+	style.corner_radius_top_right = int(NODE_BUTTON_SIZE.x / 2.0)
+	style.corner_radius_bottom_left = int(NODE_BUTTON_SIZE.x / 2.0)
+	style.corner_radius_bottom_right = int(NODE_BUTTON_SIZE.x / 2.0)
+	return style
+
+func _apply_node_visual(button: Button, completed: bool, selected: bool):
+	if not button:
+		return
+	var fill = NODE_COMPLETED_FILL if completed else NODE_AVAILABLE_FILL
+	var border = NODE_COMPLETED_BORDER if completed else NODE_AVAILABLE_BORDER
+	if selected:
+		border = NODE_SELECTED_BORDER
+
+	button.add_theme_stylebox_override("normal", _make_node_style(fill, border))
+	button.add_theme_stylebox_override("hover", _make_node_style(fill.lightened(0.08), border))
+	button.add_theme_stylebox_override("pressed", _make_node_style(fill.darkened(0.08), border))
+	button.add_theme_stylebox_override("disabled", _make_node_style(fill.darkened(0.12), border))
+
+func _refresh_node_visual_states():
+	for node_id in node_buttons.keys():
+		var button = node_buttons.get(node_id, null)
+		if not button or not is_instance_valid(button):
+			continue
+		var completed = bool(button.get_meta("completed", false))
+		var is_selected = int(node_id) == selected_node_id
+		_apply_node_visual(button, completed, is_selected)
 
 func _node_position(node: Resource) -> Vector2:
 	return _world_to_screen(_node_world_position(node))
@@ -205,20 +248,7 @@ func _notification(what):
 		queue_redraw()
 
 func _on_node_pressed(node: Resource, completed: bool = false):
-	_center_camera_on_node(node)
-	selected_node_id = int(node.node_id)
-	selected_node_completed = completed
-	_set_node_overlay_text(_build_node_overlay_text(node, completed))
-
-	if completed:
-		_set_embark_button_enabled(false)
-		return
-
-	if pending_node_id > 0:
-		_set_embark_button_enabled(false)
-		return
-
-	_set_embark_button_enabled(true)
+	_apply_node_selection(node, completed, true)
 
 func _on_embark_button_pressed():
 	if selected_node_id <= 0 or selected_node_completed:
@@ -261,7 +291,7 @@ func _confirm_node_start(node_id: int):
 	var button = node_buttons.get(pending_node_id, null)
 	if button:
 		button.disabled = true
-	_set_embark_button_enabled(false)
+	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 
 	pending_node_start_cost = EXPEDITION_QUEST_START_COST
 	UIManager.instance.update_silver(-EXPEDITION_QUEST_START_COST)
@@ -299,20 +329,27 @@ func handle_node_start_response(success: bool, node_id: int, quest_id: int, arri
 	if not success:
 		_refund_pending_node_start_cost()
 		_set_node_overlay_text(message if message != "" else "Unable to start this node.")
-		_set_embark_button_enabled(not selected_node_completed and selected_node_id > 0)
+		if selected_node_completed:
+			_set_action_button_state("Completed", false, false)
+		else:
+			_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0, true)
 		print("ExpeditionPanel: Node start failed for node ", node_id, ": ", message)
 		return
 
 	if quest_id <= 0:
 		_refund_pending_node_start_cost()
 		_set_node_overlay_text("Server returned invalid quest for this node.")
-		_set_embark_button_enabled(not selected_node_completed and selected_node_id > 0)
+		if selected_node_completed:
+			_set_action_button_state("Completed", false, false)
+		else:
+			_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0, true)
 		print("ExpeditionPanel: Invalid quest_id from server for node ", node_id)
 		return
 
 	pending_node_start_cost = 0
 
 	_set_node_overlay_text("Travel started...")
+	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 
 	if UIManager.instance and UIManager.instance.map_panel and UIManager.instance.map_panel.has_method("start_expedition_node_travel"):
 		UIManager.instance.map_panel.start_expedition_node_travel(current_expedition_id, node_id, quest_id, arrival_timestamp)
@@ -324,7 +361,7 @@ func handle_expedition_failed(message: String):
 	if expedition_text:
 		expedition_text.text = message if message != "" else "Expedition ended. Return home."
 	_set_node_overlay_text(message if message != "" else "Expedition ended. Return home.")
-	_set_embark_button_enabled(false)
+	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 	if GameInfo.current_player:
 		GameInfo.current_player.expedition = []
 		GameInfo.current_player.traveling_destination = null
@@ -345,7 +382,7 @@ func end_expedition():
 	selected_node_id = 0
 	selected_node_completed = false
 	_set_node_overlay_text("Select a node to inspect it.")
-	_set_embark_button_enabled(false)
+	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 	if GameInfo.current_player:
 		GameInfo.current_player.expedition = []
 	_clear_graph()
@@ -364,74 +401,98 @@ func _ensure_map_view():
 	move_child(map_view, 0)
 	clip_contents = true
 
-func _ensure_node_overlay():
+func _setup_node_overlay():
+	if node_action_button and not node_action_button.pressed.is_connected(_on_embark_button_pressed):
+		node_action_button.pressed.connect(_on_embark_button_pressed)
 	if node_overlay_panel and is_instance_valid(node_overlay_panel):
-		return
+		node_overlay_panel.visible = true
 
-	var overlay = get_node_or_null("Overlay")
-	if not overlay:
-		return
-
-	node_overlay_panel = PanelContainer.new()
-	node_overlay_panel.name = "NodeOverlay"
-	node_overlay_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	node_overlay_panel.anchor_left = 0.04
-	node_overlay_panel.anchor_top = 1.0
-	node_overlay_panel.anchor_right = 0.96
-	node_overlay_panel.anchor_bottom = 1.0
-	node_overlay_panel.offset_top = -NODE_OVERLAY_HEIGHT
-	node_overlay_panel.offset_bottom = -14.0
-	overlay.add_child(node_overlay_panel)
-
-	var inner = MarginContainer.new()
-	inner.add_theme_constant_override("margin_left", 12)
-	inner.add_theme_constant_override("margin_top", 10)
-	inner.add_theme_constant_override("margin_right", 12)
-	inner.add_theme_constant_override("margin_bottom", 10)
-	node_overlay_panel.add_child(inner)
-
-	var row = HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
-	inner.add_child(row)
-
-	node_description_label = Label.new()
-	node_description_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	node_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	node_description_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	node_description_label.text = "Select a node to inspect it."
-	row.add_child(node_description_label)
-
-	embark_button = Button.new()
-	embark_button.custom_minimum_size = Vector2(140, 44)
-	embark_button.text = "Embark (30 Silver)"
-	embark_button.disabled = true
-	embark_button.focus_mode = Control.FOCUS_NONE
-	embark_button.pressed.connect(_on_embark_button_pressed)
-	row.add_child(embark_button)
+	if node_action_button and is_instance_valid(node_action_button):
+		node_action_label = node_action_button.get_node_or_null("Content/ActionLabel")
+		node_price_label = node_action_button.get_node_or_null("Content/PriceLabel")
+		node_currency_icon = node_action_button.get_node_or_null("Content/CurrencyIcon")
+		node_closing_paren = node_action_button.get_node_or_null("Content/ClosingParen")
+		if node_price_label:
+			node_price_label.text = str(EXPEDITION_QUEST_START_COST)
 
 func _set_node_overlay_text(text_value: String):
 	if node_description_label and is_instance_valid(node_description_label):
 		node_description_label.text = text_value
 
-func _set_embark_button_enabled(enabled: bool):
-	if embark_button and is_instance_valid(embark_button):
-		embark_button.disabled = not enabled
+func _set_action_button_state(text_value: String, enabled: bool, show_price: bool):
+	if node_action_button and is_instance_valid(node_action_button):
+		node_action_button.text = ""
+		node_action_button.disabled = not enabled
+
+	if node_action_label and is_instance_valid(node_action_label):
+		node_action_label.text = text_value
+	if node_price_label and is_instance_valid(node_price_label):
+		node_price_label.visible = show_price
+	if node_currency_icon and is_instance_valid(node_currency_icon):
+		node_currency_icon.visible = show_price
+	if node_closing_paren and is_instance_valid(node_closing_paren):
+		node_closing_paren.visible = show_price
 
 func _build_node_overlay_text(node: Resource, completed: bool) -> String:
+	if node.label != "":
+		return node.label
 	if completed:
-		var title = node.label if node.label != "" else ("Node %d" % int(node.node_id))
-		return "%s\nCompleted" % title
+		return "Completed node"
+	return "Unknown node"
 
-	var quest_id = int(node.quest_id)
-	if quest_id > 0 and GameInfo.quests_db:
-		var quest = GameInfo.quests_db.get_quest_by_id(quest_id)
-		if quest:
-			var title = quest.quest_name if quest.quest_name != "" else ("Quest %d" % quest_id)
-			var details = quest.initial_text if quest.initial_text != "" else (quest.travel_text if quest.travel_text != "" else "No description available.")
-			return "%s\n%s" % [title, details]
+func _restore_or_pick_selection(available_ids: Array, completed_ids: Array):
+	if not current_expedition:
+		return
 
-	var node_title = node.label if node.label != "" else ("Node %d" % int(node.node_id))
-	return "%s\nEmbark to begin this node quest." % node_title
+	if selected_node_id > 0 and selected_node_id in available_ids:
+		var selected_node = current_expedition.get_node(selected_node_id)
+		if selected_node:
+			_apply_node_selection(selected_node, selected_node_id in completed_ids, false)
+			return
+
+	var embarkable_ids: Array[int] = []
+	for node_id in available_ids:
+		if node_id not in completed_ids:
+			embarkable_ids.append(int(node_id))
+
+	var pick_id: int = 0
+	var pick_completed: bool = false
+	if embarkable_ids.size() > 0:
+		pick_id = int(embarkable_ids[rng.randi() % embarkable_ids.size()])
+	elif completed_ids.size() > 0:
+		pick_id = int(completed_ids[rng.randi() % completed_ids.size()])
+		pick_completed = true
+	elif available_ids.size() > 0:
+		pick_id = int(available_ids[rng.randi() % available_ids.size()])
+
+	if pick_id <= 0:
+		selected_node_id = 0
+		selected_node_completed = false
+		_set_node_overlay_text("No nodes available.")
+		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
+		return
+
+	var pick_node = current_expedition.get_node(pick_id)
+	if pick_node:
+		_apply_node_selection(pick_node, pick_completed, true)
+
+func _apply_node_selection(node: Resource, completed: bool, center_camera: bool):
+	if center_camera:
+		_center_camera_on_node(node)
+	selected_node_id = int(node.node_id)
+	selected_node_completed = completed
+	_set_node_overlay_text(_build_node_overlay_text(node, completed))
+	_refresh_node_visual_states()
+
+	if completed:
+		_set_action_button_state("Completed", false, false)
+		return
+
+	if pending_node_id > 0:
+		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
+		return
+
+	_set_action_button_state(EMBARK_ACTION_TEXT, true, true)
 
 func _reset_camera_to_map_center():
 	map_image_size = _get_map_image_size()
@@ -465,6 +526,7 @@ func _update_map_view_transform():
 	map_base_scale = max(viewport_size.x / map_image_size.x, viewport_size.y / map_image_size.y)
 	if map_base_scale <= 0.0:
 		map_base_scale = 1.0
+	map_base_scale *= MAP_PAN_ZOOM
 
 	camera_center_px = _clamp_camera_center(camera_center_px)
 	var top_left = viewport_size * 0.5 - camera_center_px * map_base_scale
@@ -506,7 +568,16 @@ func _world_to_screen(world_pos: Vector2) -> Vector2:
 	return (world_pos - camera_center_px) * map_base_scale + size * 0.5
 
 func _center_camera_on_node(node: Resource):
-	camera_center_px = _clamp_camera_center(_node_world_position(node))
+	var target_center = _clamp_camera_center(_node_world_position(node))
+	if camera_tween:
+		camera_tween.kill()
+	camera_tween = create_tween()
+	camera_tween.set_trans(Tween.TRANS_CUBIC)
+	camera_tween.set_ease(Tween.EASE_OUT)
+	camera_tween.tween_method(Callable(self, "_set_camera_center_interpolated"), camera_center_px, target_center, CAMERA_MOVE_DURATION)
+
+func _set_camera_center_interpolated(value: Vector2):
+	camera_center_px = value
 	_update_map_view_transform()
 	_refresh_node_positions()
 	queue_redraw()
