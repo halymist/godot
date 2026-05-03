@@ -131,12 +131,12 @@ func _update_quest_display():
 		var quest_log = GameInfo.current_player.quest_log
 		
 		for quest_id in daily_quests:
-			var is_finished = false
+			var was_attempted = false
 			for entry in quest_log:
-				if entry.get("quest_id", 0) == quest_id and entry.get("finished", false):
-					is_finished = true
+				if int(entry.get("quest_id", 0)) == int(quest_id):
+					was_attempted = true
 					break
-			if not is_finished:
+			if not was_attempted:
 				available_quests.append(quest_id)
 	
 	if not quest_button:

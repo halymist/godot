@@ -343,13 +343,13 @@ func _handle_quest_option_response(message: Dictionary):
 	var success = response.get("success", false)
 	var msg = response.get("message", "")
 	var quest_panel = UIManager.instance.quest if UIManager.instance else null
+	var combat_won = response.get("combat_won", null)
+	var quest_end = bool(response.get("quest_end", false))
 	
-	if not success:
-		print("[WebSocket] Quest option failed: ", msg)
-		# If server says we're not on a quest, could be a desync
-		return
-	
-	print("[WebSocket] Quest option success: ", msg, " | combat_won=", response.get("combat_won", null), " quest_end=", response.get("quest_end", null))
+	if success:
+		print("[WebSocket] Quest option success: ", msg, " | combat_won=", combat_won, " quest_end=", quest_end)
+	else:
+		print("[WebSocket] Quest option failed: ", msg, " | combat_won=", combat_won, " quest_end=", quest_end)
 
 	if response.has("depleted_health") and GameInfo.current_player:
 		GameInfo.current_player.depleted_health = int(response.get("depleted_health", GameInfo.current_player.depleted_health))
@@ -358,14 +358,46 @@ func _handle_quest_option_response(message: Dictionary):
 		if quest_panel and quest_panel.has_method("_update_health_bar"):
 			quest_panel._update_health_bar()
 
+	# Server-authoritative combat loss that ends the quest.
+	var is_failed_combat_end = false
+	if quest_end:
+		if combat_won is bool:
+			is_failed_combat_end = not bool(combat_won)
+		elif not success:
+			is_failed_combat_end = true
+
+	if is_failed_combat_end:
+		var failure_text = _resolve_current_quest_failure_text(msg)
+		GameInfo.pending_quest_failure_message = failure_text
+
 	var combat_payload = response.get("combat", null)
 	if combat_payload is Dictionary and combat_payload.size() > 0:
 		_present_combat_log(combat_payload, "questOptionResponse")
 		return
 
 	if quest_panel and quest_panel.has_method("has_pending_combat_option") and quest_panel.has_pending_combat_option():
-		push_error("[WebSocket] questOptionResponse is missing required combat payload for a pending combat option")
-		print("[WebSocket] Full response: ", response)
+		if is_failed_combat_end and quest_panel.has_method("show_quest_failure"):
+			print("[WebSocket] Missing combat payload on failed combat end; showing failure directly")
+			quest_panel.show_quest_failure(GameInfo.pending_quest_failure_message)
+			GameInfo.pending_quest_failure_message = ""
+		else:
+			push_error("[WebSocket] questOptionResponse is missing required combat payload for a pending combat option")
+			print("[WebSocket] Full response: ", response)
+
+func _resolve_current_quest_failure_text(default_message: String) -> String:
+	var fallback = default_message if String(default_message) != "" else "Combat lost."
+	if not GameInfo.current_player or not GameInfo.quests_db:
+		return fallback
+
+	var quest_id = int(GameInfo.current_player.traveling_destination)
+	if quest_id <= 0:
+		return fallback
+
+	var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id)
+	if quest_data and String(quest_data.failure_text) != "":
+		return String(quest_data.failure_text)
+
+	return fallback
 
 func _handle_quest_cancel_response(message: Dictionary):
 	"""Handle questCancelResponse from server"""

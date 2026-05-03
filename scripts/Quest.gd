@@ -86,6 +86,13 @@ func _on_visibility_changed():
 		return
 
 	_update_health_bar()
+
+	# Quest combat loss flow takes precedence over normal resume.
+	if GameInfo.pending_quest_failure_message != "":
+		var failure_text = GameInfo.pending_quest_failure_message
+		GameInfo.pending_quest_failure_message = ""
+		show_quest_failure(failure_text)
+		return
 	
 	# Check if we're returning from combat
 	if pending_combat_option != null:
@@ -191,6 +198,44 @@ func load_expedition_node(expedition_id: int, node_id: int, quest_id: int):
 	expedition_context_id = expedition_id
 	expedition_context_node_id = node_id
 	load_quest(quest_id)
+
+func show_quest_failure(failure_text: String):
+	"""Show quest failure text with a single Continue action back home."""
+	if UIManager.instance and UIManager.instance.current_panel != self:
+		UIManager.instance.show_panel(self)
+
+	pending_combat_option = null
+	reward_label.text = ""
+
+	var text_to_show = failure_text if failure_text != "" else "Combat lost."
+	animate_quest_text(text_to_show)
+
+	clear_options()
+	add_option("Continue", _on_quest_failure_continue_pressed)
+
+func _on_quest_failure_continue_pressed():
+	var failed_quest_id = current_quest_id
+	if failed_quest_id <= 0 and GameInfo.current_player:
+		failed_quest_id = int(GameInfo.current_player.traveling_destination)
+
+	if failed_quest_id > 0:
+		GameInfo.complete_quest(failed_quest_id, clicked_option_ids, true)
+
+	if GameInfo.current_player:
+		GameInfo.current_player.traveling_destination = null
+		GameInfo.current_player.traveling = 0
+
+	current_quest_id = 0
+	current_quest = null
+	clicked_option_ids.clear()
+	visible_option_ids.clear()
+	pending_combat_option = null
+	is_expedition_node = false
+	expedition_context_id = 0
+	expedition_context_node_id = 0
+
+	if UIManager.instance:
+		UIManager.instance.handle_quest_completed()
 
 func _compute_visible_options() -> Array[int]:
 	"""Compute which options are visible based on the requirements tree.

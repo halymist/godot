@@ -8,7 +8,7 @@ extends Node
 # Assets are downloaded and stored in user:// then applied as textures
 
 const VERSIONS_FILE = "user://data_versions.cfg"
-const LOCAL_VERSIONS_SCHEMA = 3
+const LOCAL_VERSIONS_SCHEMA = 4
 const IMAGES_DIR = "user://images/"
 const DATA_DIR = "user://data/"
 
@@ -117,6 +117,12 @@ func _load_local_versions():
 		local_versions["expeditions"] = 0
 		did_migrate = true
 		print("[DataManager] Applying schema migration 3: reset expeditions version to 0")
+
+	# Migration v4: force quest redownload to include expedition-node quest additions.
+	if schema_version < 4:
+		local_versions["quests"] = 0
+		did_migrate = true
+		print("[DataManager] Applying schema migration 4: reset quests version to 0")
 
 	# Persist migrated schema + versions once.
 	if did_migrate:

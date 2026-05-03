@@ -688,6 +688,17 @@ func _navigate_after_combat():
 			UIManager.instance.expedition_panel.handle_expedition_failed(failure_message)
 		return
 
+	# Quest combat loss flow: show quest failure screen with Continue button.
+	if GameInfo.pending_quest_failure_message != "":
+		var quest_failure_message = GameInfo.pending_quest_failure_message
+		GameInfo.pending_quest_failure_message = ""
+		if UIManager.instance and UIManager.instance.quest and UIManager.instance.quest.has_method("show_quest_failure"):
+			UIManager.instance.show_panel(UIManager.instance.quest)
+			UIManager.instance.quest.show_quest_failure(quest_failure_message)
+		else:
+			UIManager.instance.handle_home_button()
+		return
+
 	# Navigate using UIManager
 	var on_quest = GameInfo.current_player.traveling_destination != null
 	

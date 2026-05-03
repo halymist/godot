@@ -615,8 +615,8 @@ func _handle_panel_back() -> bool:
 	
 	# Expedition panel -> show cancel dialog
 	if panel == expedition_panel:
-		print("-> Expedition: showing cancel dialog")
-		cancel_quest.show_dialog()
+		print("-> Expedition: canceling without confirmation")
+		_cancel_expedition_without_confirmation()
 		return true
 	
 	# Home panel -> interior navigation or logout
@@ -633,6 +633,22 @@ func _handle_panel_back() -> bool:
 	
 	# Character/Rankings panels don't need special handling - fall through to default
 	return false
+
+func _cancel_expedition_without_confirmation():
+	"""Cancel active expedition immediately (legacy confirm dialog removed)."""
+	if Websocket:
+		Websocket.expedition_cancel()
+
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = []
+
+	if map_panel and map_panel.has_method("reset_expedition_state"):
+		map_panel.reset_expedition_state()
+
+	if expedition_panel and expedition_panel.has_method("end_expedition"):
+		expedition_panel.end_expedition()
+
+	show_panel(home_panel)
 
 func _go_to_default_panel():
 	"""Navigate to the appropriate default panel based on player state"""
