@@ -219,7 +219,6 @@ func _run_action_sequence():
 			break
 		
 		var action_data = all_actions[current_action_index]
-		current_action_index += 1
 		
 		if action_data.type == "combat_action":
 			var entry = action_data.entry
@@ -232,6 +231,7 @@ func _run_action_sequence():
 			
 			# Apply health changes after animation
 			apply_action_health_changes(entry)
+			current_action_index += 1
 			
 			if tracked_player_hp <= 0 or tracked_enemy_hp <= 0:
 				_skip_to_end()
@@ -246,6 +246,9 @@ func _run_action_sequence():
 			show_final_message(action_data.message)
 			is_combat_finished = true
 			skip_replay_button.text = "Continue"
+			current_action_index += 1
+		else:
+			current_action_index += 1
 	
 	_animating = false
 
@@ -710,6 +713,11 @@ func _navigate_after_combat():
 
 func _skip_to_end():
 	"""Skip all remaining combat actions and show the final result."""
+	# Invalidate current playback session so any in-flight awaited action exits cleanly
+	# without applying a delayed extra HP change after skip completes.
+	combat_session_id += 1
+	_animating = false
+
 	if action_timer:
 		action_timer.stop()
 	if fade_timer:
