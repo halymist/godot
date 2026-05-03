@@ -113,13 +113,21 @@ func load_quest(quest_id: int):
 	# Only switch panels if we're not already the active panel
 	if UIManager.instance.current_panel != self:
 		UIManager.instance.show_panel(self)
-	
-	if is_new_quest:
-		# Set quest background
-		var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
-		if quest_data:
-			texture = quest_data.background_texture
-			current_quest = quest_data
+
+	# Always resolve current quest data for the requested id.
+	var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
+	if not quest_data:
+		print("ERROR: Quest not found for quest_id=", quest_id)
+		current_quest = null
+		visible_option_ids.clear()
+		clear_options()
+		if quest_text:
+			quest_text.text = "Quest data missing (ID %d)." % quest_id
+		return
+
+	current_quest = quest_data
+	if is_new_quest and quest_data.background_texture:
+		texture = quest_data.background_texture
 	
 	# Reset clicked options tracking for new quest
 	clicked_option_ids.clear()
@@ -170,7 +178,7 @@ func display_quest_with_text(text: String):
 	_update_health_bar()
 	
 	clear_options()
-	if current_quest.options:
+	if current_quest and current_quest.options:
 		for option in current_quest.options:
 			if option and visible_option_ids.has(option.option_id):
 				add_option(option.option_text, _on_quest_option_pressed.bind(option), option)
@@ -193,6 +201,9 @@ func _compute_visible_options() -> Array[int]:
 	  - Its requirements contain the last clicked option AND it hasn't been clicked
 	"""
 	var result: Array[int] = []
+	if not current_quest:
+		return result
+
 	var last_clicked: int = clicked_option_ids[clicked_option_ids.size() - 1] if clicked_option_ids.size() > 0 else -1
 	
 	for option in current_quest.options:

@@ -434,17 +434,69 @@ func handle_home_button():
 	show_panel(home_panel)
 
 func handle_map_button():
-	"""Navigate to map panel"""
-	# Block if traveling/quest/expedition active
-	if is_navigation_blocked():
+	"""Route map button by state: travel timer, active quest, or expedition graph."""
+	if not GameInfo.current_player:
 		return
-	
-	# Toggle off if already on map
-	if current_panel == map_panel:
-		show_panel(home_panel)
+
+	var now = Time.get_unix_time_from_system()
+	var destination = GameInfo.current_player.traveling_destination
+	var traveling = GameInfo.current_player.traveling
+	var arrival_ts = float(traveling) if traveling != null else 0.0
+	var expedition = GameInfo.current_player.expedition
+
+	# Traveling state always opens the timer UI.
+	if arrival_ts > now or (map_panel and map_panel.is_expedition_travel):
+		show_panel(map_panel)
 		return
-	
-	show_panel(map_panel)
+
+	# Active quest state opens quest directly.
+	if destination != null:
+		if map_panel and map_panel.has_method("load_arrived_quest"):
+			map_panel.load_arrived_quest()
+		else:
+			quest.load_quest(int(destination))
+			show_panel(quest)
+		return
+
+	# Active expedition state opens the graph directly.
+	if expedition and expedition.size() > 0:
+		_open_expedition_graph(int(expedition[0]))
+		return
+
+	# Idle state opens the expedition graph for current settlement.
+	_open_settlement_expedition_graph()
+
+func _open_settlement_expedition_graph():
+	if not GameInfo.current_player:
+		return
+	if not GameInfo.expeditions_db:
+		print("UIManager: Expeditions database not loaded")
+		return
+
+	var settlement_id = int(GameInfo.current_player.location)
+	var expedition_data = GameInfo.expeditions_db.get_expedition_for_settlement(settlement_id)
+	if not expedition_data:
+		print("UIManager: No expedition for settlement ", settlement_id)
+		return
+
+	_open_expedition_graph(int(expedition_data.expedition_id))
+
+func _open_expedition_graph(expedition_id: int):
+	if expedition_id <= 0:
+		print("UIManager: Invalid expedition id: ", expedition_id)
+		return
+
+	if map_panel and map_panel.has_method("reset_expedition_state"):
+		map_panel.reset_expedition_state()
+
+	if GameInfo.current_player:
+		GameInfo.current_player.expedition = [expedition_id]
+
+	if expedition_panel and expedition_panel.has_method("start_expedition"):
+		expedition_panel.start_expedition(expedition_id)
+		show_panel(expedition_panel)
+	else:
+		print("UIManager: Expedition panel missing start_expedition")
 
 func handle_arena_button():
 	"""Toggle arena panel"""

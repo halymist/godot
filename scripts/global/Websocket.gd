@@ -122,7 +122,7 @@ func _handle_message(message: String):
 			_handle_player_data(data)
 		"startExpeditionResponse":
 			_handle_start_expedition_response(data)
-		"startExpeditionNodeResponse", "expeditionNodeResponse":
+		"startExpeditionNodeResponse", "expeditionNodeResponse", "start_expedition_node_response":
 			_handle_start_expedition_node_response(data)
 		"expeditionOptionResponse":
 			_handle_expedition_option_response(data)
@@ -223,22 +223,22 @@ func _handle_start_expedition_response(message: Dictionary):
 		UIManager.instance.map_panel.receive_expedition_start(expedition_id, arrival)
 
 func _handle_start_expedition_node_response(message: Dictionary):
-	"""Handle node start response - server resolves quest_id for a selected expedition node."""
+	"""Handle node start response - server resolves quest_id and arrival for selected node."""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
 		print("[WebSocket] Invalid startExpeditionNodeResponse format")
 		return
 
 	var data = message.data[0]
 	var success = bool(data.get("success", false))
-	var expedition_id = int(data.get("expedition_id", data.get("active_expedition_id", 0)))
 	var node_id = int(data.get("node_id", data.get("expedition_node_id", data.get("node", data.get("int_argument1", 0)))))
 	var quest_id = int(data.get("quest_id", data.get("quest", data.get("int_argument2", 0))))
+	var arrival = str(data.get("arrival", ""))
 	var msg = str(data.get("message", ""))
 
-	print("[WebSocket] Expedition node response: success=", success, " expedition_id=", expedition_id, " node_id=", node_id, " quest_id=", quest_id)
+	print("[WebSocket] Expedition node response: success=", success, " node_id=", node_id, " quest_id=", quest_id, " arrival=", arrival)
 
 	if UIManager.instance and UIManager.instance.expedition_panel and UIManager.instance.expedition_panel.has_method("handle_node_start_response"):
-		UIManager.instance.expedition_panel.handle_node_start_response(success, node_id, quest_id, msg, expedition_id)
+		UIManager.instance.expedition_panel.handle_node_start_response(success, node_id, quest_id, arrival, msg)
 
 func _handle_expedition_option_response(message: Dictionary):
 	"""Legacy expedition slide responses are no longer used by the graph flow."""
@@ -700,13 +700,10 @@ func start_expedition():
 	"""Start an expedition - server knows which one based on player location"""
 	send("start_expedition", {})
 
-func start_expedition_node(expedition_id: int, node_id: int):
-	"""Request to start a specific expedition node; server returns the quest_id."""
+func start_expedition_node(node_id: int):
+	"""Request to start a specific expedition node; server returns node_id + quest_id."""
 	send("start_expedition_node", {
-		"int_argument1": expedition_id,
-		"int_argument2": node_id,
-		"expedition_id": expedition_id,
-		"node_id": node_id
+		"int_argument1": node_id
 	})
 
 func expedition_cancel():

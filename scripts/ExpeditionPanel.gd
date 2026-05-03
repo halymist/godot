@@ -41,6 +41,8 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
+	if effects_container:
+		effects_container.visible = false
 	print("ExpeditionPanel: Graph setup complete")
 
 func _on_visibility_changed():
@@ -79,7 +81,7 @@ func refresh_graph():
 	if reward_label:
 		reward_label.text = ""
 	if expedition_text:
-		expedition_text.text = "Choose a path."
+		expedition_text.text = ""
 
 	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
 	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log)
@@ -176,15 +178,10 @@ func _on_node_pressed(node: Resource):
 	if button:
 		button.disabled = true
 
-	if expedition_text:
-		expedition_text.text = "Starting node..."
+	print("ExpeditionPanel: Requesting node start from server: node=", pending_node_id)
+	Websocket.start_expedition_node(pending_node_id)
 
-	print("ExpeditionPanel: Requesting node start from server: expedition=", current_expedition_id, " node=", pending_node_id)
-	Websocket.start_expedition_node(current_expedition_id, pending_node_id)
-
-func handle_node_start_response(success: bool, node_id: int, quest_id: int, message: String = "", expedition_id: int = 0):
-	if expedition_id > 0 and expedition_id != current_expedition_id:
-		return
+func handle_node_start_response(success: bool, node_id: int, quest_id: int, arrival_timestamp: String = "", message: String = ""):
 
 	if node_id <= 0:
 		node_id = pending_node_id
@@ -210,7 +207,12 @@ func handle_node_start_response(success: bool, node_id: int, quest_id: int, mess
 
 	if expedition_text:
 		expedition_text.text = ""
-	UIManager.instance.quest.load_expedition_node(current_expedition_id, node_id, quest_id)
+
+	if UIManager.instance and UIManager.instance.map_panel and UIManager.instance.map_panel.has_method("start_expedition_node_travel"):
+		UIManager.instance.map_panel.start_expedition_node_travel(current_expedition_id, node_id, quest_id, arrival_timestamp)
+	else:
+		# Fallback to old behavior if map travel method is unavailable.
+		UIManager.instance.quest.load_expedition_node(current_expedition_id, node_id, quest_id)
 
 func handle_expedition_failed(message: String):
 	if expedition_text:

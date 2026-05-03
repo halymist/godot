@@ -54,6 +54,8 @@ func _on_yes_pressed():
 		map.expedition_travel_end = 0.0
 		map.has_arrived = false
 		map.pending_expedition_id = 0
+		map.pending_expedition_node_id = 0
+		map.pending_expedition_quest_id = 0
 		map.set_process(false)
 		
 		if expedition and expedition.size() > 0:

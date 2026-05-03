@@ -1,7 +1,6 @@
 extends TextureRect
 
 const SKIP_COST: int = 1  # Mushroom cost to skip travel
-const EXPEDITION_COST: int = 100  # Silver cost to enter dungeon
 const DEFAULT_TRAVEL_DURATION: float = 10.0
 
 @export var quest_name_label: Label
@@ -31,6 +30,8 @@ var travel_duration: float
 # Expedition state
 var is_expedition_travel: bool = false  # True when traveling to expedition (not quest)
 var pending_expedition_id: int = 0  # Expedition ID received from server
+var pending_expedition_node_id: int = 0  # Node ID for expedition quest travel context
+var pending_expedition_quest_id: int = 0  # Quest ID tied to pending expedition node
 var expedition_travel_end: float = 0.0  # When expedition travel ends
 
 # Arrival state - true when travel completed and waiting for user to click "Arrived"
@@ -127,32 +128,37 @@ func _ensure_travel_ui_from_player():
 
 	# If a quest destination exists, hydrate from quest data
 	if GameInfo.current_player.traveling_destination != null:
-		var quest_data = GameInfo.quests_db.get_quest_by_id(GameInfo.current_player.traveling_destination) if GameInfo.quests_db else null
+		var quest_id = int(GameInfo.current_player.traveling_destination)
+		var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
+		var is_expedition_node_quest = pending_expedition_node_id > 0 and pending_expedition_quest_id == quest_id
+
+		# Expedition-node quests should keep the expedition settlement image while traveling.
+		if is_expedition_node_quest:
+			var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
+			if location_data and location_data.expedition_texture:
+				texture = location_data.expedition_texture
+		elif quest_data and quest_data.background_texture:
+			texture = quest_data.background_texture
+
 		if quest_data:
-			if quest_data.background_texture:
-				texture = quest_data.background_texture
 			if quest_name_label:
 				quest_name_label.text = quest_data.quest_name
-			if travel_text == "" or travel_text == null:
-				travel_text = quest_data.travel_text if quest_data.travel_text else "Traveling..."
-			if travel_text_label:
-				travel_text_label.text = travel_text
+			travel_text = quest_data.travel_text if quest_data.travel_text else "Traveling..."
+		else:
+			if quest_name_label:
+				quest_name_label.text = "Quest %d" % quest_id
+			travel_text = "Traveling..."
+
+		if travel_text_label:
+			travel_text_label.text = travel_text
 		return
 
 	# Otherwise hydrate expedition idle state
-	var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location)
-	if location_data:
-		if quest_name_label:
-			quest_name_label.text = "Expedition"
-		if location_data.expedition_texture:
-			texture = location_data.expedition_texture
-		travel_text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
-		if travel_text_label:
-			travel_text_label.text = travel_text
-	else:
-		travel_text = "No active travel"
-		if travel_text_label:
-			travel_text_label.text = travel_text
+	if quest_name_label:
+		quest_name_label.text = "Travel"
+	travel_text = "No active travel"
+	if travel_text_label:
+		travel_text_label.text = travel_text
 
 
 
@@ -263,30 +269,19 @@ func refresh_travel_state():
 		_set_enter_price_visible(false)
 		return
 	
-	# ── State 4: Idle - show Embark button (expedition) ──
-	print("No active travel detected")
-	var location_data = GameInfo.settlements_db.get_location_by_id(current_player.location)
-	if location_data:
-		if quest_name_label:
-			quest_name_label.text = "Expedition"
-		if location_data.expedition_texture:
-			texture = location_data.expedition_texture
-		if travel_text_label:
-			travel_text_label.text = location_data.expedition_text if location_data.expedition_text != "" else "No active travel"
-	elif travel_text_label:
-		travel_text_label.text = "No active travel"
-	
+	# ── State 4: Idle (map should not be used as expedition entry anymore) ──
+	print("MapPanel idle state - no active travel")
 	travel_progress.visible = false
+	if travel_time_label:
+		travel_time_label.text = ""
 	is_skipping = false
 	skip_button.visible = false
-	enter_dungeon_button.visible = true
-	var enter_disabled = not _can_afford_expedition()
-	enter_dungeon_button.disabled = enter_disabled
-	_update_button_label_colors(enter_dungeon_button, enter_disabled)
-	# Show Embark with price
-	if enter_action_label:
-		enter_action_label.text = "Embark ("
-	_set_enter_price_visible(true)
+	enter_dungeon_button.visible = false
+	_set_enter_price_visible(false)
+	if quest_name_label:
+		quest_name_label.text = "Travel"
+	if travel_text_label:
+		travel_text_label.text = "No active travel"
 
 func _process(_delta):
 	"""Update progress bar every frame for smooth 60fps animation"""
@@ -380,10 +375,6 @@ func _can_afford_skip() -> bool:
 	"""Check if player has enough mushrooms to skip"""
 	return GameInfo.lobby_data.has("mushrooms") and GameInfo.lobby_data.mushrooms >= SKIP_COST
 
-func _can_afford_expedition() -> bool:
-	"""Check if player has enough silver for expedition"""
-	return GameInfo.current_player.silver >= EXPEDITION_COST
-
 func _update_button_label_colors(button: Button, disabled: bool):
 	"""Update all label colors in a button based on disabled state"""
 	var color = COLOR_DISABLED if disabled else COLOR_NORMAL
@@ -464,48 +455,73 @@ func _on_enter_dungeon_pressed():
 		else:
 			# Quest arrived - load quest panel
 			print("Arrived pressed - loading quest")
-			var quest_id = GameInfo.current_player.traveling_destination
-			UIManager.instance.quest.load_quest(quest_id)
+			_load_arrived_quest()
 		return
 	
 	# ── VIP instant arrival for quest ──
 	if GameInfo.current_player.traveling_destination != null:
 		print("Arrived pressed (VIP) - loading quest")
-		var quest_id = GameInfo.current_player.traveling_destination
-		UIManager.instance.quest.load_quest(quest_id)
-		return
-	
-	# ── Embark: start expedition travel ──
-	print("Embark button pressed - starting expedition")
-	start_expedition_travel()
-
-func start_expedition_travel():
-	"""Open expedition graph from map entry (server is called when node is selected)."""
-	# Check if player can afford the expedition
-	if not _can_afford_expedition():
-		print("Not enough silver for expedition")
+		_load_arrived_quest()
 		return
 
-	var expedition_data = GameInfo.expeditions_db.get_expedition_for_settlement(GameInfo.current_player.location) if GameInfo.expeditions_db else null
-	if not expedition_data:
-		print("No expedition found for settlement: ", GameInfo.current_player.location)
-		return
-	
-	# Deduct silver cost
-	UIManager.instance.update_silver(-EXPEDITION_COST)
-	print("Deducted ", EXPEDITION_COST, " silver for expedition")
+	print("MapPanel enter ignored: no active travel or arrival state")
 
-	pending_expedition_id = int(expedition_data.expedition_id)
-	if GameInfo.current_player:
-		GameInfo.current_player.expedition = [pending_expedition_id]
+func _load_arrived_quest():
+	if not GameInfo.current_player:
+		return
+
+	var quest_id = int(GameInfo.current_player.traveling_destination)
+	if quest_id <= 0:
+		print("MapPanel: No arrived quest to load")
+		return
+
+	# Preserve expedition-node return context when this quest came from expedition graph.
+	if pending_expedition_node_id > 0 and pending_expedition_quest_id == quest_id and pending_expedition_id > 0:
+		UIManager.instance.quest.load_expedition_node(pending_expedition_id, pending_expedition_node_id, quest_id)
+		_clear_pending_expedition_node_context()
+		return
+
+	UIManager.instance.quest.load_quest(quest_id)
+
+func load_arrived_quest():
+	"""Public wrapper for loading the current arrived quest with proper context."""
+	_load_arrived_quest()
+
+func start_expedition_node_travel(expedition_id: int, node_id: int, quest_id: int, arrival_timestamp: String):
+	"""Start quest travel for a selected expedition node using server-provided arrival."""
+	if not GameInfo.current_player:
+		return
+
+	pending_expedition_id = expedition_id
+	pending_expedition_node_id = node_id
+	pending_expedition_quest_id = quest_id
+
+	if expedition_id > 0:
+		GameInfo.current_player.expedition = [expedition_id]
+	GameInfo.current_player.traveling_destination = quest_id
+
+	var now = Time.get_unix_time_from_system()
+	var arrival_ts = _parse_iso8601_timestamp(arrival_timestamp)
+	if arrival_ts > now:
+		GameInfo.current_player.traveling = arrival_ts
+		travel_duration = max(1.0, arrival_ts - now)
+		has_arrived = false
+		set_process(true)
+	else:
+		# If arrival is now/past, treat as instant arrival.
 		GameInfo.current_player.traveling = 0.0
-		GameInfo.current_player.traveling_destination = null
+		travel_duration = DEFAULT_TRAVEL_DURATION
+		has_arrived = true
+		set_process(false)
 
-	has_arrived = false
 	is_expedition_travel = false
 	expedition_travel_end = 0.0
-	set_process(false)
-	_load_expedition()
+	_ensure_travel_ui_from_player()
+	refresh_travel_state()
+
+	print("MapPanel: Expedition node travel started node=", node_id, " quest=", quest_id, " arrival_ts=", GameInfo.current_player.traveling)
+	if UIManager.instance:
+		UIManager.instance.show_panel(self)
 
 func receive_expedition_start(expedition_id: int, arrival_timestamp: String):
 	"""Called when server responds with expedition start data"""
@@ -555,6 +571,9 @@ func receive_expedition_start(expedition_id: int, arrival_timestamp: String):
 
 func _parse_iso8601_timestamp(timestamp: String) -> float:
 	"""Parse ISO8601 timestamp to Unix time"""
+	if timestamp == null or timestamp == "":
+		return Time.get_unix_time_from_system()
+
 	# Format: "2026-01-29T17:48:16Z"
 	# We'll use Time.get_datetime_dict_from_datetime_string() for Godot 4.x
 	var parts = timestamp.split("T")
@@ -601,4 +620,9 @@ func reset_expedition_state():
 	pending_expedition_id = 0
 	expedition_travel_end = 0.0
 	has_arrived = false
+	_clear_pending_expedition_node_context()
 	refresh_travel_state()
+
+func _clear_pending_expedition_node_context():
+	pending_expedition_node_id = 0
+	pending_expedition_quest_id = 0
