@@ -374,6 +374,7 @@ func _begin_character_entry(character_id: int, server_id: int, flow_state: Chara
 	if flow_state == CharacterFlowState.IDLE:
 		return
 	_character_flow_state = flow_state
+	GameInfo.current_server_id = int(server_id)
 
 	# Store the current_day from the server for this character
 	_selected_server_day = _get_server_day(server_id)
@@ -434,6 +435,7 @@ func _on_player_data_received(character_data: Dictionary):
 	GameInfo.load_character_from_server(character_data)
 	if GameInfo.current_player and _selected_server_day > 0:
 		GameInfo.current_player.server_day = _selected_server_day
+	GameInfo.sync_current_player_to_lobby(GameInfo.current_server_id)
 	
 	print("[Lobby] Character loaded, switching to game scene...")
 	var use_dark_transition = _character_flow_state == CharacterFlowState.ENTERING_CREATED

@@ -127,6 +127,7 @@ func _input(_event: InputEvent):
 
 func _on_inactivity_timeout():
 	print("[UIManager] 5 min inactivity — returning to lobby")
+	GameInfo.sync_current_player_to_lobby()
 	GameInfo.current_player = null
 	GameInfo.current_character_id = 0
 	SceneTransition.change_scene_to_file("res://Scenes/login.tscn")
@@ -696,6 +697,7 @@ func _load_quest_on_startup(quest_id: int):
 
 func handle_logout():
 	print("Logging out and returning to login scene...")
+	GameInfo.sync_current_player_to_lobby()
 	
 	GameInfo.current_player = null
 	GameInfo.current_character_id = 0

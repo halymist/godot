@@ -26,6 +26,7 @@ var user_id: String = ""
 
 # Timestamp when the currently selected server was created (for day calculation)
 var server_created_at: int = 0
+var current_server_id: int = 0
 
 # Skip auto-login after explicit logout
 var skip_auto_login_once: bool = false
@@ -123,6 +124,119 @@ func clear_lobby_data():
 	"""Clear the current lobby/auth payload on explicit account logout."""
 	lobby_data.clear()
 	last_auth_response.clear()
+	current_server_id = 0
+
+func _find_server_index(server_id: int) -> int:
+	var servers = get_server_list()
+	for i in range(servers.size()):
+		var server = servers[i]
+		if server is Dictionary and int(server.get("id", 0)) == int(server_id):
+			return i
+	return -1
+
+func _find_server_index_by_character(character_id: int) -> int:
+	var servers = get_server_list()
+	for i in range(servers.size()):
+		var server = servers[i]
+		if not (server is Dictionary):
+			continue
+		var chars = server.get("characters", [])
+		if not (chars is Array):
+			continue
+		for c in chars:
+			if c is Dictionary and int(c.get("character_id", 0)) == int(character_id):
+				return i
+	return -1
+
+func _build_lobby_character_from_player(player: GameCurrentPlayer) -> Dictionary:
+	return {
+		"character_id": int(player.character_id),
+		"name": player.name,
+		"vip": bool(player.vip),
+		"faction": int(player.faction),
+		"rank": int(player.rank),
+		"honnor": int(player.honor),
+		"avatar": [
+			int(player.avatar_face),
+			int(player.avatar_hair),
+			int(player.avatar_eyes),
+			int(player.avatar_nose),
+			int(player.avatar_mouth),
+			int(player.avatar_brows),
+			int(player.avatar_ears),
+			int(player.avatar_special)
+		]
+	}
+
+func upsert_lobby_character(server_id: int, character: Dictionary):
+	if lobby_data.is_empty() or not (lobby_data.get("server_list", []) is Array):
+		return
+	if not (character is Dictionary):
+		return
+
+	var char_id = int(character.get("character_id", 0))
+	if char_id <= 0:
+		return
+
+	var server_list = lobby_data.get("server_list", [])
+	var target_server_index = _find_server_index(server_id)
+	if target_server_index < 0:
+		target_server_index = _find_server_index_by_character(char_id)
+
+	if target_server_index < 0:
+		var fallback_server = {
+			"id": int(server_id),
+			"name": "Server " + str(server_id),
+			"created_at": int(server_created_at),
+			"current_day": int(current_player.server_day) if current_player else 0,
+			"characters": []
+		}
+		server_list.append(fallback_server)
+		target_server_index = server_list.size() - 1
+
+	var server = server_list[target_server_index]
+	if not (server is Dictionary):
+		return
+
+	var chars = server.get("characters", [])
+	if not (chars is Array):
+		chars = []
+
+	var replaced = false
+	for i in range(chars.size()):
+		var existing = chars[i]
+		if existing is Dictionary and int(existing.get("character_id", 0)) == char_id:
+			chars[i] = character.duplicate(true)
+			replaced = true
+			break
+
+	if not replaced:
+		chars.append(character.duplicate(true))
+
+	server["characters"] = chars
+	server_list[target_server_index] = server
+	lobby_data["server_list"] = server_list
+
+func sync_current_player_to_lobby(server_id_override: int = 0):
+	var player = current_player
+	if not player:
+		return
+
+	var server_id = int(server_id_override)
+	if server_id <= 0:
+		server_id = int(current_server_id)
+	if server_id <= 0:
+		var idx = _find_server_index_by_character(int(player.character_id))
+		if idx >= 0:
+			var servers = get_server_list()
+			if idx < servers.size() and servers[idx] is Dictionary:
+				server_id = int(servers[idx].get("id", 0))
+
+	if server_id <= 0:
+		return
+
+	upsert_lobby_character(server_id, _build_lobby_character_from_player(player))
+	current_server_id = server_id
 
 # ============================================
 # PERK DATA REFRESH
