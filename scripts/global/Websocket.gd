@@ -737,7 +737,3 @@ func start_expedition_node(node_id: int):
 	send("start_expedition_node", {
 		"int_argument1": node_id
 	})
-
-func expedition_cancel():
-	"""Cancel current expedition"""
-	send("expedition_cancel", {})

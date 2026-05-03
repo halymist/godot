@@ -46,7 +46,6 @@ func _on_yes_pressed():
 	# Check if we're canceling an expedition (active or traveling/arrived to one)
 	if (expedition and expedition.size() > 0) or is_expedition_travel:
 		print("Expedition canceled by user")
-		Websocket.expedition_cancel()
 		GameInfo.current_player.expedition = []
 		
 		# Reset map panel expedition state

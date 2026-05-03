@@ -636,9 +636,6 @@ func _handle_panel_back() -> bool:
 
 func _cancel_expedition_without_confirmation():
 	"""Cancel active expedition immediately (legacy confirm dialog removed)."""
-	if Websocket:
-		Websocket.expedition_cancel()
-
 	if GameInfo.current_player:
 		GameInfo.current_player.expedition = []
 

@@ -6517,7 +6517,7 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="Expedition" type="TextureRect" parent="Portrait/GameScene" unique_id=1756063950 node_paths=PackedStringArray("text_container", "options_container", "reward_label", "expedition_text", "health_bar", "effects_container", "node_overlay_panel", "node_description_label", "node_action_button", "portrait")]
+[node name="Expedition" type="TextureRect" parent="Portrait/GameScene" unique_id=1756063950 node_paths=PackedStringArray("health_bar", "node_overlay_panel", "node_description_label", "node_action_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -6528,140 +6528,53 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
 script = ExtResource("76_expedition")
-text_container = NodePath("Overlay/TextContainer")
-options_container = NodePath("Overlay/BottomContainer/OptionsContainer")
-reward_label = NodePath("Overlay/BottomContainer/Reward")
-expedition_text = NodePath("Overlay/TextContainer/ExpeditionLabel")
 health_bar = NodePath("../../TopUI/HealthBar")
-effects_container = NodePath("Overlay/TopBar/EffectsPanel")
-node_overlay_panel = NodePath("Overlay/NodeActionBar")
-node_description_label = NodePath("Overlay/NodeActionBar/Margin/Row/NodeDescription")
-node_action_button = NodePath("Overlay/NodeActionBar/Margin/Row/NodeActionButton")
-dialogue_icon = ExtResource("11_vm72l")
-combat_icon = ExtResource("79_qj5kr")
+node_overlay_panel = NodePath("Overlay")
+node_description_label = NodePath("Overlay/NodeText")
+node_action_button = NodePath("Overlay/embarkbutton")
 currency_check_icon = ExtResource("32_ccfo7")
-end_icon = ExtResource("14_81klo")
-strength_icon = ExtResource("44_k8ojv")
-stamina_icon = ExtResource("46_gsm33")
-agility_icon = ExtResource("66_7sqp1")
-luck_icon = ExtResource("81_d5jaa")
-armor_icon = ExtResource("86_w4j8i")
-order_icon = ExtResource("82_gsm33")
-guild_icon = ExtResource("83_lrctp")
-companions_icon = ExtResource("84_e6ols")
-portrait = NodePath("../..")
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Expedition" unique_id=7145906]
+[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Expedition" unique_id=741179801]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -99.0
 grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0.6)
+grow_vertical = 0
+color = Color(0, 0, 0, 0.45)
 script = ExtResource("42_umggo")
 
-[node name="TopBar" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay" unique_id=1260702927]
+[node name="NodeText" type="Label" parent="Portrait/GameScene/Expedition/Overlay" unique_id=198877445]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.03
-anchor_right = 0.97
-offset_bottom = 52.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 12
-
-[node name="EffectsPanel" type="PanelContainer" parent="Portrait/GameScene/Expedition/Overlay/TopBar" unique_id=1140388003]
-custom_minimum_size = Vector2(220, 28)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="EffectsLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/TopBar/EffectsPanel" unique_id=1622177654]
-layout_mode = 2
-text = "Effects: (placeholder)"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="TextContainer" type="MarginContainer" parent="Portrait/GameScene/Expedition/Overlay" unique_id=1482609361]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.03
-anchor_top = 0.079
-anchor_right = 0.968
-anchor_bottom = 1.0
-offset_left = -2.15
-offset_top = 0.23
-offset_right = 2.95999
-offset_bottom = -329.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ExpeditionLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/TextContainer" unique_id=590849673]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-text = "Expedition text goes here..."
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="BottomContainer" type="VBoxContainer" parent="Portrait/GameScene/Expedition/Overlay" unique_id=649917779]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 19.0
-offset_top = -231.0
-offset_right = -14.0
-offset_bottom = -10.0
+offset_left = 14.0
+offset_top = 12.0
+offset_right = -162.0
+offset_bottom = 50.0
 grow_horizontal = 2
-grow_vertical = 0
-alignment = 2
-
-[node name="Reward" type="Label" parent="Portrait/GameScene/Expedition/Overlay/BottomContainer" unique_id=42377628]
-layout_mode = 2
-theme_override_constants/line_spacing = 10
-
-[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameScene/Expedition/Overlay/BottomContainer" unique_id=1559009715]
-layout_mode = 2
-size_flags_vertical = 8
-alignment = 2
-
-[node name="NodeActionBar" type="PanelContainer" parent="Portrait/GameScene/Expedition/Overlay" unique_id=53169849]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -94.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="Margin" type="MarginContainer" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar" unique_id=1831897216]
-layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 10
-
-[node name="Row" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin" unique_id=768519763]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="NodeDescription" type="Label" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin/Row" unique_id=90342357]
-layout_mode = 2
-size_flags_horizontal = 3
 text = "Select a node to inspect it."
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="NodeActionButton" type="Button" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin/Row" unique_id=388682296]
-custom_minimum_size = Vector2(132, 34)
-layout_mode = 2
-disabled = true
+[node name="embarkbutton" type="Button" parent="Portrait/GameScene/Expedition/Overlay" unique_id=1357070796]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.632
+anchor_top = 0.75500005
+anchor_right = 0.632
+anchor_bottom = 0.75500005
+offset_left = 0.039993286
+offset_top = -26.74501
+offset_right = 138.04
+offset_bottom = 12.25499
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin/Row/NodeActionButton" unique_id=170356931]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton" unique_id=1556665808]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -6670,29 +6583,26 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin/Row/NodeActionButton/Content" unique_id=1552657469]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=1827860520]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "Embark ("
+text = "Embark("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin/Row/NodeActionButton/Content" unique_id=1271688287]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=1330085669]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "30"
+text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin/Row/NodeActionButton/Content" unique_id=363102247]
-custom_minimum_size = Vector2(14, 14)
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=857057769]
+custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Expedition/Overlay/NodeActionBar/Margin/Row/NodeActionButton/Content" unique_id=1389107182]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=1213253294]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-theme_override_font_sizes/font_size = 14
 text = ")"
 
 [node name="CancelQuest" type="Panel" parent="Portrait/GameScene" unique_id=803735793 node_paths=PackedStringArray("yes_button", "no_button", "background_button", "dialog_label")]

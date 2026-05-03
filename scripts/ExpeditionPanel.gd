@@ -5,7 +5,7 @@ const LOW_HEALTH_WARNING_RATIO: float = 0.10
 const NODE_BUTTON_SIZE: Vector2 = Vector2(42, 42)
 const CAMERA_MOVE_DURATION: float = 0.28
 const MAP_PAN_ZOOM: float = 1.12
-const EMBARK_ACTION_TEXT: String = "Embark ("
+const EMBARK_ACTION_TEXT: String = "Embark"
 const NODE_BORDER_WIDTH: int = 2
 const NODE_AVAILABLE_FILL: Color = Color(0.89, 0.70, 0.28, 0.98)
 const NODE_AVAILABLE_BORDER: Color = Color(1.00, 0.90, 0.55, 1.0)
@@ -13,35 +13,12 @@ const NODE_COMPLETED_FILL: Color = Color(0.34, 0.38, 0.42, 0.98)
 const NODE_COMPLETED_BORDER: Color = Color(0.54, 0.58, 0.62, 1.0)
 const NODE_SELECTED_BORDER: Color = Color(0.98, 0.98, 0.98, 1.0)
 
-@export var text_container: Node
-@export var options_container: VBoxContainer
-@export var reward_label: Label
-@export var expedition_text: Label
 @export var health_bar: TextureProgressBar
-@export var effects_container: Control
-@export var node_overlay_panel: PanelContainer
+@export var node_overlay_panel: Control
 @export var node_description_label: Label
 @export var node_action_button: Button
 
-@export_group("Option Icons")
-@export var dialogue_icon: Texture2D
-@export var combat_icon: Texture2D
 @export var currency_check_icon: Texture2D
-@export var end_icon: Texture2D
-
-@export_group("Stat Check Icons")
-@export var strength_icon: Texture2D
-@export var stamina_icon: Texture2D
-@export var agility_icon: Texture2D
-@export var luck_icon: Texture2D
-@export var armor_icon: Texture2D
-
-@export_group("Faction Check Icons")
-@export var order_icon: Texture2D
-@export var guild_icon: Texture2D
-@export var companions_icon: Texture2D
-
-@export var portrait: Control
 
 var current_expedition_id: int = 0
 var current_expedition: ExpeditionData = null
@@ -56,10 +33,6 @@ var camera_tween: Tween = null
 var selected_node_id: int = 0
 var selected_node_completed: bool = false
 var rng := RandomNumberGenerator.new()
-var node_action_label: Label = null
-var node_price_label: Label = null
-var node_currency_icon: TextureRect = null
-var node_closing_paren: Label = null
 
 func _ready():
 	visible = false
@@ -71,25 +44,8 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	var overlay = get_node_or_null("Overlay")
-	if overlay and overlay is ColorRect:
-		overlay.color = Color(0, 0, 0, 0)
-		overlay.z_index = 10
-
 	_ensure_map_view()
 	_setup_node_overlay()
-
-	if text_container:
-		text_container.visible = false
-	if options_container:
-		options_container.visible = false
-	if reward_label:
-		reward_label.visible = false
-	if expedition_text:
-		expedition_text.visible = false
-
-	if effects_container:
-		effects_container.visible = false
 	print("ExpeditionPanel: Graph setup complete")
 
 func _on_visibility_changed():
@@ -133,10 +89,6 @@ func refresh_graph():
 	_update_health_bar()
 	_clear_graph()
 
-	if reward_label:
-		reward_label.text = ""
-	if expedition_text:
-		expedition_text.text = ""
 	_set_node_overlay_text("Loading...")
 	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 
@@ -159,9 +111,6 @@ func _clear_graph():
 			button.queue_free()
 	node_buttons.clear()
 	pending_node_id = 0
-	if options_container:
-		for child in options_container.get_children():
-			child.queue_free()
 	queue_redraw()
 
 func _draw_edges(_available_ids: Array, _completed_ids: Array):
@@ -280,8 +229,7 @@ func _confirm_node_start(node_id: int):
 	if not GameInfo.current_player or not Websocket:
 		return
 	if not Websocket.connected:
-		if expedition_text:
-			expedition_text.text = "Connection lost. Please try again."
+		_set_node_overlay_text("Connection lost. Please try again.")
 		return
 	if GameInfo.current_player.silver < EXPEDITION_QUEST_START_COST:
 		_set_node_overlay_text("You need %d silver to embark." % EXPEDITION_QUEST_START_COST)
@@ -358,8 +306,6 @@ func handle_node_start_response(success: bool, node_id: int, quest_id: int, arri
 		UIManager.instance.quest.load_expedition_node(current_expedition_id, node_id, quest_id)
 
 func handle_expedition_failed(message: String):
-	if expedition_text:
-		expedition_text.text = message if message != "" else "Expedition ended. Return home."
 	_set_node_overlay_text(message if message != "" else "Expedition ended. Return home.")
 	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 	if GameInfo.current_player:
@@ -407,31 +353,30 @@ func _setup_node_overlay():
 	if node_overlay_panel and is_instance_valid(node_overlay_panel):
 		node_overlay_panel.visible = true
 
-	if node_action_button and is_instance_valid(node_action_button):
-		node_action_label = node_action_button.get_node_or_null("Content/ActionLabel")
-		node_price_label = node_action_button.get_node_or_null("Content/PriceLabel")
-		node_currency_icon = node_action_button.get_node_or_null("Content/CurrencyIcon")
-		node_closing_paren = node_action_button.get_node_or_null("Content/ClosingParen")
-		if node_price_label:
-			node_price_label.text = str(EXPEDITION_QUEST_START_COST)
-
 func _set_node_overlay_text(text_value: String):
 	if node_description_label and is_instance_valid(node_description_label):
 		node_description_label.text = text_value
 
 func _set_action_button_state(text_value: String, enabled: bool, show_price: bool):
 	if node_action_button and is_instance_valid(node_action_button):
-		node_action_button.text = ""
 		node_action_button.disabled = not enabled
 
-	if node_action_label and is_instance_valid(node_action_label):
-		node_action_label.text = text_value
-	if node_price_label and is_instance_valid(node_price_label):
-		node_price_label.visible = show_price
-	if node_currency_icon and is_instance_valid(node_currency_icon):
-		node_currency_icon.visible = show_price
-	if node_closing_paren and is_instance_valid(node_closing_paren):
-		node_closing_paren.visible = show_price
+		var action_label = node_action_button.get_node_or_null("Content/ActionLabel") as Label
+		var price_label = node_action_button.get_node_or_null("Content/PriceLabel") as Label
+		var currency_icon = node_action_button.get_node_or_null("Content/CurrencyIcon") as TextureRect
+		var closing_paren = node_action_button.get_node_or_null("Content/ClosingParen") as Label
+
+		if action_label and price_label and currency_icon and closing_paren:
+			node_action_button.text = ""
+			node_action_button.icon = null
+			action_label.text = "%s(" % text_value if show_price else text_value
+			price_label.text = str(EXPEDITION_QUEST_START_COST)
+			price_label.visible = show_price
+			currency_icon.visible = show_price
+			closing_paren.visible = show_price
+		else:
+			node_action_button.text = "%s (%d)" % [text_value, EXPEDITION_QUEST_START_COST] if show_price else text_value
+			node_action_button.icon = currency_check_icon if show_price else null
 
 func _build_node_overlay_text(node: Resource, completed: bool) -> String:
 	if node.label != "":
