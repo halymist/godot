@@ -225,10 +225,6 @@ func _on_cosmetic_selected(cosmetic: CosmeticResource):
 func _calculate_total_cost() -> int:
 	var total_cost = 0
 	
-	print("=== Calculating Cost ===")
-	print("Selected cosmetics: ", selected_cosmetics)
-	print("Original IDs - Face:", original_face_id, " Hair:", original_hair_id, " Eyes:", original_eyes_id, " Nose:", original_nose_id, " Mouth:", original_mouth_id)
-	print("Preview IDs - Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id, " Nose:", preview_nose_id, " Mouth:", preview_mouth_id)
 	
 	# Only count cost for changed cosmetics
 	for category in selected_cosmetics:
@@ -253,12 +249,10 @@ func _calculate_total_cost() -> int:
 			"special":
 				is_changed = (preview_special_id != original_special_id)
 		
-		print("Category:", category, " Changed:", is_changed, " Cost:", cosmetic.cost)
 		
 		if is_changed:
 			total_cost += cosmetic.cost
 	
-	print("Total cost:", total_cost)
 	return total_cost
 
 func _has_changes() -> bool:
@@ -292,7 +286,6 @@ func _on_change_pressed():
 	# Check if player can afford
 	if total_cost > 0 and GameInfo.current_player:
 		if GameInfo.current_player.mushrooms < total_cost:
-			print("Not enough mushrooms!")
 			return
 
 		UIManager.instance.update_mushrooms(-total_cost)
@@ -324,11 +317,9 @@ func _on_change_pressed():
 		visible = false
 		
 		# TODO: Send to server to save
-		print("Avatar updated! Face:", preview_face_id, " Hair:", preview_hair_id, " Eyes:", preview_eyes_id, " Nose:", preview_nose_id, " Mouth:", preview_mouth_id)
 
 func _on_create_pressed():
 	"""Handle create character button press during character creation"""
-	print("Create character pressed with avatar: ", preview_face_id, preview_hair_id, preview_eyes_id, preview_nose_id, preview_mouth_id)
 	create_character_pressed.emit()
 
 func _on_back_pressed():

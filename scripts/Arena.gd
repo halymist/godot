@@ -89,13 +89,12 @@ func _load_arena_background():
 	if settlement and settlement.arena_background:
 		texture = settlement.arena_background
 	else:
-		print("Warning: No arena background found for settlement ", settlement_id)
+		pass
 
 func _on_fight_pressed():
 	var available_count = _get_available_opponent_count()
 	if available_count > current_index:
 		var opponent_id = GameInfo.arena_opponents[current_index]
-		print("Fighting opponent with character_id: ", opponent_id)
 		
 		# Show loading state on button
 		fight_button.disabled = true
@@ -103,7 +102,7 @@ func _on_fight_pressed():
 		# Send fight request to server - combat result will come via WebSocket response
 		Websocket.fight_player(opponent_id)
 	else:
-		print("No opponent data available")
+		pass
 
 func reset_fight_button():
 	"""Reset fight button to normal state (called after combat loads or on error)"""

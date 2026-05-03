@@ -1,5 +1,7 @@
 extends TextureRect
 
+const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+
 const BLESSING_COST = 10
 
 @export var chat_bubble: ChatBubble
@@ -46,7 +48,6 @@ func _on_visibility_changed():
 func _load_location_content():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
 	if not settlement:
-		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
 	# Apply utility texture directly to self
@@ -75,7 +76,6 @@ func load_blessings():
 	blessing_data.clear()
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
 	if not settlement:
-		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
 	# Load the 3 blessing perks from settlement's blessing IDs
@@ -112,7 +112,6 @@ func load_blessings():
 		else:
 			slot.modulate = Color(1, 1, 1)  # Normal
 	
-	print("Loaded ", blessing_data.size(), " blessings into 3 slots")
 
 func _on_blessing_slot_clicked(event: InputEvent, slot_index: int, perk: PerkResource):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -136,13 +135,10 @@ func _on_blessing_selected(slot_index: int, perk: PerkResource):
 	if perk.effect1_id > 0:
 		var effect = GameInfo.effects_db.get_effect_by_id(perk.effect1_id)
 		if effect:
-			var description_with_factor = effect.description
-			if perk.factor1 != 0:
-				description_with_factor += " " + str(perk.factor1) + "%"
+			var description_with_factor = EFFECT_FORMATTER.format_with_factor(effect.description, perk.factor1, true)
 			effect_text = perk.perk_name + "\n" + description_with_factor
 	effect_description_label.text = effect_text
 	
-	print("Selected blessing: ", perk.perk_name, " (ID: ", perk.id, ")")
 	
 	update_bless_button_state()
 
@@ -157,7 +153,6 @@ func _on_bless_button_pressed():
 	Websocket.choose_blessing(selected_blessing_id)
 	UIManager.instance.update_silver(-BLESSING_COST)
 	GameInfo.current_player.blessing = selected_blessing_id
-	print("Received blessing ID: ", selected_blessing_id, " - cost: ", BLESSING_COST, " gold")
 	
 	_show_greeting(on_action_greetings)
 	UIManager.instance.refresh_active_effects()

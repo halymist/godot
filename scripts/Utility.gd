@@ -24,7 +24,7 @@ func _ready():
 	target = _get_panel_for_type(panel_type)
 	
 	if not target:
-		print("[Utility] Warning: Could not find panel for type: ", PanelType.keys()[panel_type])
+		pass
 	
 	click_button.button_up.connect(_on_button_pressed)
 	click_button.mouse_entered.connect(_on_mouse_entered)
@@ -54,7 +54,6 @@ func _on_mouse_exited():
 
 func _on_button_pressed():
 	if target:
-		print("[Utility] Button pressed for: ", target.name)
 		
 		# Hide current panel if it's not the target
 		var current_panel = UIManager.instance.current_panel

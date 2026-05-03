@@ -125,7 +125,6 @@ func _input(_event: InputEvent):
 		inactivity_timer.start()
 
 func _on_inactivity_timeout():
-	print("[UIManager] 5 min inactivity — returning to lobby")
 	GameInfo.sync_current_player_to_lobby()
 	GameInfo.current_player = null
 	GameInfo.current_character_id = 0
@@ -160,7 +159,6 @@ func _initialize_starter_panel():
 	var start_panel = _determine_starter_panel()
 	starter_panel = start_panel
 	show_panel(start_panel)
-	print("UIManager: Starter panel determined: ", starter_panel.name)
 	if not game_is_ready:
 		if start_panel and start_panel.has_method("_setup"):
 			start_panel.call("_setup")
@@ -175,37 +173,21 @@ func _determine_starter_panel() -> Control:
 	var now = Time.get_unix_time_from_system()
 	var arrival_ts = float(traveling) if traveling != null else 0.0
 	
-	print("=== STARTUP QUEST STATE DEBUG ===")
-	print("destination: ", destination, " (type: ", typeof(destination), ")")
-	print("traveling: ", traveling, " (type: ", typeof(traveling), ")")
-	print("expedition: ", expedition)
-	print("arrival_ts: ", arrival_ts, " now: ", now, " (diff: ", arrival_ts - now, ")")
-	print("================================")
-	
 	# If arrival time is in the future, show map (traveling)
 	if arrival_ts > now:
-		print("-> Traveling, showing map panel")
 		return map_panel
 
 	# Arrived: show quest or expedition if active
 	if destination != null:
-		print("-> Arrived at quest, showing quest panel")
 		call_deferred("_load_quest_on_startup", destination)
 		return quest
 	if expedition and expedition.size() > 0:
-		print("-> Arrived at expedition, showing expedition panel")
 		call_deferred("_load_expedition_on_startup", int(expedition[0]))
 		return expedition_panel
-	else:
-		# No quest active - show home panel
-		print("-> No quest active, showing home panel")
-		return home_panel
+	return home_panel
 
 func is_on_active_quest() -> bool:
 	"""Check if player is on an active quest (arrived at destination, not traveling)"""
-	if not GameInfo.current_player:
-		return false
-	
 	var traveling = GameInfo.current_player.traveling
 	var destination = GameInfo.current_player.traveling_destination
 	var arrival_ts = float(traveling) if traveling != null else 0.0
@@ -215,17 +197,10 @@ func is_on_active_quest() -> bool:
 
 func is_on_expedition() -> bool:
 	"""Check if player is currently on an expedition"""
-	if not GameInfo.current_player:
-		return false
-	
-	var expedition = GameInfo.current_player.expedition
-	return expedition and expedition.size() > 0
+	return GameInfo.current_player.expedition.size() > 0
 
 func is_traveling() -> bool:
 	"""Check if player is currently traveling (quest or expedition timer running)"""
-	if not GameInfo.current_player:
-		return false
-	
 	# Check quest travel
 	var traveling = GameInfo.current_player.traveling
 	var arrival_ts = float(traveling) if traveling != null else 0.0
@@ -233,7 +208,7 @@ func is_traveling() -> bool:
 		return true
 	
 	# Check expedition travel (timer running on map panel)
-	if map_panel and map_panel.is_expedition_travel:
+	if map_panel.is_expedition_travel:
 		return true
 	
 	return false
@@ -247,61 +222,44 @@ func is_navigation_blocked() -> bool:
 
 func _load_expedition_on_startup(expedition_id: int):
 	"""Load expedition panel on game startup"""
-	if expedition_panel and expedition_panel.has_method("start_expedition"):
-		expedition_panel.start_expedition(expedition_id)
+	expedition_panel.start_expedition(expedition_id)
 
 func show_enemy_panel(enemy_name: String):
 	"""Show enemy panel with the specified enemy's data"""
-	print("UIManager: Showing enemy panel for: ", enemy_name)
-	print("UIManager: enemy_character_display = ", enemy_character_display)
-	print("UIManager: enemy_panel = ", enemy_panel)
-	
 	enemy_character_display.display_enemy(enemy_name)
 	show_overlay(enemy_panel)
 
 func show_talents_panel(character: GameInfo.GamePlayer, read_only: bool = false):
 	"""Show talents panel for any character (player or enemy)"""
-	print("UIManager: Showing talents for: ", character.name, " read_only=", read_only)
-	if talents_panel:
-		var set_talents = talents_panel.get_node("GridContainer")
-		if set_talents and set_talents.has_method("display_character"):
-			if read_only:
-				set_talents.display_character(character, true)
-			else:
-				set_talents.display_player()
-			show_overlay(talents_panel)  # Push onto stack
-		else:
-			print("ERROR: GridContainer node not found or missing methods in talents_panel")
+	var set_talents = talents_panel.get_node("GridContainer")
+	if read_only:
+		set_talents.display_character(character, true)
 	else:
-		print("ERROR: talents_panel not assigned in UIManager")
+		set_talents.display_player()
+	show_overlay(talents_panel)
+
+func toggle_avatar_overlay():
+	toggle_overlay(avatar_panel)
 
 func toggle_chat():
 	"""Toggle chat overlay - independent of overlay stack"""
+	chat_overlay_active = not chat_overlay_active
 	if chat_overlay_active:
-		# Hide chat
-		chat_overlay_active = false
-		chat_panel.visible = false
-		print("UIManager: Chat hidden")
-	else:
-		# Show chat above everything
-		chat_overlay_active = true
 		chat_panel.z_index = 500  # Always above overlay stack (BASE_Z_INDEX=200)
-		chat_panel.visible = true
-		print("UIManager: Chat shown with z-index 500")
+	chat_panel.visible = chat_overlay_active
+
+func _close_chat_if_open():
+	if not chat_overlay_active:
+		return
+	chat_overlay_active = false
+	chat_panel.visible = false
 
 func show_overlay(overlay: Control):
 	"""Push an overlay onto the stack"""
-	if overlay == null:
-		print("ERROR: Attempted to show null overlay")
-		return
-	
-	print("UIManager: Pushing overlay onto stack: ", overlay.name)
-	
 	# Hide current top overlay (if any) but keep it in stack
 	if overlay_stack.size() > 0:
 		var current_top = overlay_stack[-1]
 		current_top.visible = false
-		print("UIManager: Hiding previous overlay: ", current_top.name)
 	
 	# Add new overlay to stack
 	overlay_stack.push_back(overlay)
@@ -312,64 +270,42 @@ func show_overlay(overlay: Control):
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.visible = true
 	
-	print("UIManager: Overlay stack depth: ", overlay_stack.size(), " z-index: ", overlay_z_index)
-	
 	# Update GameInfo tracking (use top of stack)
 	current_panel_overlay = overlay
 	
 func hide_current_overlay():
 	"""Pop the top overlay from the stack"""
 	if overlay_stack.size() == 0:
-		print("UIManager: No overlay to hide")
 		return
 	
 	# Remove and hide top overlay
 	var top_overlay = overlay_stack.pop_back()
 	top_overlay.visible = false
-	print("UIManager: Popped overlay: ", top_overlay.name)
 	
 	# Show the previous overlay (if any)
 	if overlay_stack.size() > 0:
 		var previous_overlay = overlay_stack[-1]
 		previous_overlay.visible = true
-		print("UIManager: Showing previous overlay: ", previous_overlay.name)
 		current_panel_overlay = previous_overlay
 	else:
-		print("UIManager: Returned to base panel")
 		current_panel_overlay = null
-	
-	print("UIManager: Overlay stack depth: ", overlay_stack.size())
-
-func hide_overlay(_overlay: Control):
-	"""Legacy function - now just calls hide_current_overlay"""
-	hide_current_overlay()
 
 func toggle_overlay(overlay: Control):
 	"""Toggle an overlay - if it's on the stack, pop back to it; otherwise push it"""
-	if overlay == null:
-		print("ERROR: Attempted to toggle null overlay")
-		return
-	
-	# Close chat when opening an overlay
-	if chat_overlay_active:
-		chat_overlay_active = false
-		chat_panel.visible = false
+	_close_chat_if_open()
 	
 	# Check if this overlay is already in the stack
 	var index = overlay_stack.find(overlay)
 	
 	if index >= 0:
-		print("UIManager: Overlay already in stack at index ", index, ", popping back to it")
 		# Overlay is in stack - pop everything above it
 		while overlay_stack.size() > index + 1:
 			var top = overlay_stack.pop_back()
 			top.visible = false
-			print("UIManager: Popped overlay while navigating back: ", top.name)
 		
 		# Now hide this overlay too
 		hide_current_overlay()
 	else:
-		print("UIManager: Overlay not in stack, pushing it")
 		# Overlay not in stack - push it
 		show_overlay(overlay)
 
@@ -379,16 +315,11 @@ func toggle_overlay(overlay: Control):
 
 func show_panel(panel: Control):
 	"""Show main panel - hides chat, all overlays, and current panel"""
-	# Close chat when switching panels
-	if chat_overlay_active:
-		chat_overlay_active = false
-		chat_panel.visible = false
+	_close_chat_if_open()
 	
 	# Hide sub-overlays (these sit outside the main stack)
-	if upgrade_talent:
-		upgrade_talent.visible = false
-	if perk_screen:
-		perk_screen.visible = false
+	upgrade_talent.visible = false
+	perk_screen.visible = false
 	
 	# Hide current panel
 	var old_panel = current_panel
@@ -407,7 +338,6 @@ func show_panel(panel: Control):
 	# Show new panel
 	panel.visible = true
 	current_panel = panel
-	print("UIManager: Switched to panel: ", panel.name)
 
 # ============================================================================
 # BUTTON HANDLERS
@@ -448,11 +378,7 @@ func handle_map_button():
 	if destination != null:
 		if current_panel == quest:
 			return
-		if map_panel and map_panel.has_method("load_arrived_quest"):
-			map_panel.load_arrived_quest()
-		else:
-			quest.load_quest(int(destination))
-			show_panel(quest)
+		map_panel.load_arrived_quest()
 		return
 
 	# Active expedition state opens the graph directly.
@@ -468,36 +394,18 @@ func handle_map_button():
 	_open_settlement_expedition_graph()
 
 func _open_settlement_expedition_graph():
-	if not GameInfo.current_player:
-		return
-	if not GameInfo.expeditions_db:
-		print("UIManager: Expeditions database not loaded")
-		return
-
 	var settlement_id = int(GameInfo.current_player.location)
 	var expedition_data = GameInfo.expeditions_db.get_expedition_for_settlement(settlement_id)
-	if not expedition_data:
-		print("UIManager: No expedition for settlement ", settlement_id)
-		return
-
 	_open_expedition_graph(int(expedition_data.expedition_id))
 
 func _open_expedition_graph(expedition_id: int):
 	if expedition_id <= 0:
-		print("UIManager: Invalid expedition id: ", expedition_id)
 		return
 
-	if map_panel and map_panel.has_method("reset_expedition_state"):
-		map_panel.reset_expedition_state()
+	map_panel.reset_expedition_state()
 
-	if GameInfo.current_player:
-		GameInfo.current_player.expedition = [expedition_id]
-
-	if expedition_panel and expedition_panel.has_method("start_expedition"):
-		expedition_panel.start_expedition(expedition_id)
-		show_panel(expedition_panel)
-	else:
-		print("UIManager: Expedition panel missing start_expedition")
+	expedition_panel.start_expedition(expedition_id)
+	show_panel(expedition_panel)
 
 func handle_arena_button():
 	"""Open arena panel"""
@@ -511,11 +419,8 @@ func handle_arena_button():
 func handle_character_button():
 	"""Open character panel - always accessible"""
 	if current_panel == character_panel:
-		if _close_overlay_if_present(talents_panel):
-			if upgrade_talent:
-				upgrade_talent.visible = false
-			if perk_screen:
-				perk_screen.visible = false
+		_close_overlay_if_present(talents_panel)
+		_close_sub_overlays()
 		return
 	show_panel(character_panel)
 
@@ -550,15 +455,9 @@ func toggle_talents_bookmark():
 
 func go_back():
 	"""Back button - unified priority system"""
-	var panel_name := "null"
-	if current_panel:
-		panel_name = current_panel.name
-	print("=== BACK BUTTON === Panel: ", panel_name, " Overlays: ", overlay_stack.size())
-	
 	# Priority 1: Close chat
 	if chat_overlay_active:
-		print("-> Closing chat")
-		toggle_chat()
+		_close_chat_if_open()
 		return
 	
 	# Priority 2: Close sub-overlays (these sit outside the stack)
@@ -567,7 +466,6 @@ func go_back():
 	
 	# Priority 3: Pop overlay stack
 	if overlay_stack.size() > 0:
-		print("-> Popping overlay")
 		hide_current_overlay()
 		return
 	
@@ -576,18 +474,15 @@ func go_back():
 		return
 	
 	# Priority 5: Return to default panel
-	print("-> Going to default panel")
 	_go_to_default_panel()
 
 func _close_sub_overlays() -> bool:
 	"""Close sub-overlays that sit outside the main stack. Returns true if something was closed."""
-	if upgrade_talent and upgrade_talent.visible:
-		print("-> Closing upgrade_talent sub-overlay")
+	if upgrade_talent.visible:
 		upgrade_talent.visible = false
 		return true
 	
-	if perk_screen and perk_screen.visible:
-		print("-> Closing perk_screen sub-overlay")
+	if perk_screen.visible:
 		perk_screen.visible = false
 		return true
 	
@@ -601,19 +496,16 @@ func _handle_panel_back() -> bool:
 	if panel == map_panel:
 		# Cancel if traveling, arrived, has destination, or expedition pending
 		if is_traveling() or map_panel.has_arrived or GameInfo.current_player.traveling_destination != null or map_panel.is_expedition_travel:
-			print("-> Map: showing cancel dialog")
 			cancel_quest.show_dialog()
 			return true
 	
 	# Quest panel (arrived at destination) -> show cancel dialog
 	if panel == quest and is_on_active_quest():
-		print("-> Quest: showing cancel dialog")
 		cancel_quest.show_dialog()
 		return true
 	
 	# Expedition panel -> show cancel dialog
 	if panel == expedition_panel:
-		print("-> Expedition: canceling without confirmation")
 		_cancel_expedition_without_confirmation()
 		return true
 	
@@ -621,11 +513,9 @@ func _handle_panel_back() -> bool:
 	if panel == home_panel:
 		# Interior navigation
 		if home_panel.handle_back_navigation():
-			print("-> Home: exited interior")
 			return true
 		
 		# Third: show logout (already at exterior)
-		print("-> Home: showing logout")
 		show_overlay(logout_panel)
 		return true
 	
@@ -634,14 +524,9 @@ func _handle_panel_back() -> bool:
 
 func _cancel_expedition_without_confirmation():
 	"""Cancel active expedition immediately (legacy confirm dialog removed)."""
-	if GameInfo.current_player:
-		GameInfo.current_player.expedition = []
-
-	if map_panel and map_panel.has_method("reset_expedition_state"):
-		map_panel.reset_expedition_state()
-
-	if expedition_panel and expedition_panel.has_method("end_expedition"):
-		expedition_panel.end_expedition()
+	GameInfo.current_player.expedition = []
+	map_panel.reset_expedition_state()
+	expedition_panel.end_expedition()
 
 	show_panel(home_panel)
 
@@ -662,9 +547,6 @@ func _go_to_default_panel():
 
 func _close_overlay_if_present(overlay: Control) -> bool:
 	"""Close the given overlay if present anywhere in the stack."""
-	if overlay == null:
-		return false
-
 	var index := overlay_stack.find(overlay)
 	if index < 0:
 		return false
@@ -683,11 +565,7 @@ func _close_overlay_if_present(overlay: Control) -> bool:
 
 func show_combat():
 	"""Show combat panel"""
-	var old_panel = current_panel
-	if old_panel:
-		old_panel.visible = false
-	combat_panel.visible = true
-	current_panel = combat_panel
+	show_panel(combat_panel)
 
 func handle_quest_completed():
 	"""Called when quest is finished - return to home"""
@@ -697,10 +575,8 @@ func handle_quest_completed():
 func handle_expedition_node_completed(expedition_id: int, _node_id: int):
 	"""Called when an expedition node quest is finished - return to graph"""
 	quest.visible = false
-	if GameInfo.current_player:
-		GameInfo.current_player.expedition = [expedition_id]
-	if expedition_panel and expedition_panel.has_method("start_expedition"):
-		expedition_panel.start_expedition(expedition_id)
+	GameInfo.current_player.expedition = [expedition_id]
+	expedition_panel.start_expedition(expedition_id)
 	show_panel(expedition_panel)
 
 func handle_quest_arrived():
@@ -709,11 +585,9 @@ func handle_quest_arrived():
 	show_panel(quest)
 
 func _load_quest_on_startup(quest_id: int):
-	print("[QuestResume] _load_quest_on_startup quest_id=", quest_id, " current_destination=", GameInfo.current_player.traveling_destination if GameInfo.current_player else null)
 	quest.load_quest(quest_id)
 
 func handle_logout():
-	print("Logging out and returning to login scene...")
 	GameInfo.sync_current_player_to_lobby()
 	
 	GameInfo.current_player = null
@@ -727,55 +601,34 @@ func handle_logout():
 
 func update_silver(amount: int):
 	"""Add or subtract silver and update all displays"""
-	if not GameInfo.current_player:
-		print("[SILVER] Ignored update_silver because current_player is null")
-		return
-
-	var stack = get_stack()
-	var caller = stack[1] if stack.size() > 1 else {}
-	var caller_info = "%s:%s in %s" % [caller.get("source", "?"), caller.get("line", "?"), caller.get("function", "?")]
-	print("[SILVER] %+d | before=%d after=%d | from %s" % [amount, GameInfo.current_player.silver, GameInfo.current_player.silver + amount, caller_info])
 	GameInfo.current_player.silver += amount
 	update_display()
-	if top_ui and top_ui.has_method("update_display"):
-		top_ui.update_display()
+	top_ui.update_display()
 
 func update_mushrooms(amount: int):
 	"""Add or subtract mushrooms and update all displays (account-level)"""
-	print("UIManager.update_mushrooms called with amount: ", amount)
 	if GameInfo.lobby_data.has("mushrooms"):
-		print("Current mushrooms before: ", GameInfo.lobby_data.mushrooms)
 		GameInfo.lobby_data.mushrooms += amount
-		print("Current mushrooms after: ", GameInfo.lobby_data.mushrooms)
 	update_display()
-	if top_ui and top_ui.has_method("update_display"):
-		top_ui.update_display()
+	top_ui.update_display()
 
 func update_display():
 	"""Refresh all silver and mushroom label displays"""
-	print("UIManager.update_display called, silver_labels count: ", silver_labels.size())
 	var silver_text = "0"
 	if GameInfo.current_player:
 		silver_text = str(GameInfo.current_player.silver)
 
 	for label in silver_labels:
-		if label and is_instance_valid(label):
-			print("Updating label to: ", silver_text)
-			label.text = silver_text
-		else:
-			print("Warning: null label in silver_labels array")
+		label.text = silver_text
 
 	# Refresh mushrooms label displays (account-level)
-	print("UIManager.update_display mushrooms_labels count: ", mushrooms_labels.size())
 	if GameInfo.lobby_data.has("mushrooms"):
 		var mushrooms_text = str(int(GameInfo.lobby_data.mushrooms))
 		for m_label in mushrooms_labels:
-			if m_label and is_instance_valid(m_label):
-				m_label.text = mushrooms_text
+			m_label.text = mushrooms_text
 
 func refresh_bags():
 	"""Ask all registered bag views to refresh from GameInfo state"""
-	print("UIManager.refresh_bags bag_views count: ", bag_views.size())
 	for view in bag_views:
 		view.update_equip_slots()
 
@@ -783,12 +636,10 @@ func refresh_stats():
 	"""Recalculate and display stats for current player"""
 	
 	character_display.stats_changed(GameInfo.current_player.get_player_stats())
-	if top_ui and top_ui.has_method("update_health_bar"):
-		top_ui.call("update_health_bar")
+	top_ui.update_health_bar()
 	
 	# Refresh quest options if currently on a quest
-	if GameInfo.current_player and GameInfo.current_player.traveling_destination:
-		print("UIManager.refresh_stats refreshing quest options")
+	if GameInfo.current_player.traveling_destination:
 		quest.refresh_quest_options_internal()
 
 func refresh_active_effects():
@@ -798,79 +649,51 @@ func refresh_active_effects():
 
 func refresh_perks():
 	"""Refresh perks grid when new perks are added"""
-	if perk_screen and perk_screen.has_method("refresh_perks"):
-		perk_screen.refresh_perks()
+	perk_screen.refresh_perks()
 
 func refresh_avatars():
 	"""Update all avatar displays with current player data"""
 	for avatar in avatars:
-		if avatar and avatar.has_method("set_avatar_from_player"):
-			avatar.set_avatar_from_player(GameInfo.current_player)
+		avatar.set_avatar_from_player(GameInfo.current_player)
 
 func notify_slot_changed(slot_id: int):
 	"""Notify panels when a utility slot changes by calling their update methods directly"""
-	var panel = current_panel
-	if not panel:
-		return
-	
-	# Call the appropriate panel's update method
-	if panel.name == "BlacksmithPanel" and panel.has_method("on_slot_changed"):
-		panel.on_slot_changed(slot_id)
-	elif panel.name == "AlchemistPanel" and panel.has_method("on_slot_changed"):
-		panel.on_slot_changed(slot_id)
-	elif panel.name == "EnchanterPanel" and panel.has_method("on_slot_changed"):
-		panel.on_slot_changed(slot_id)
+	match current_panel:
+		blacksmith_panel:
+			blacksmith_panel.on_slot_changed(slot_id)
+		alchemist_panel:
+			alchemist_panel.on_slot_changed(slot_id)
+		enchanter_panel:
+			enchanter_panel.on_slot_changed(slot_id)
 
 func notify_utility_slot_item_placed(slot_id: int, item: GameInfo.Item, source_slot_id: int):
 	"""Notify panels when an item is placed in a utility slot (without changing bag_slot_id)"""
-	var panel = current_panel
-	if not panel:
-		return
-	
-	print("DEBUG notify_utility_slot_item_placed: slot_id=", slot_id, " item=", item.item_name, " source_slot_id=", source_slot_id)
-	
-	if panel.name == "BlacksmithPanel" and panel.has_method("on_item_placed"):
-		panel.on_item_placed(item, source_slot_id)
-	elif panel.name == "AlchemistPanel" and panel.has_method("on_item_placed_in_slot"):
-		panel.on_item_placed_in_slot(slot_id, item, source_slot_id)
-	elif panel.name == "EnchanterPanel" and panel.has_method("on_item_placed"):
-		panel.on_item_placed(item, source_slot_id)
+	match current_panel:
+		blacksmith_panel:
+			blacksmith_panel.on_item_placed(item, source_slot_id)
+		alchemist_panel:
+			alchemist_panel.on_item_placed_in_slot(slot_id, item, source_slot_id)
+		enchanter_panel:
+			enchanter_panel.on_item_placed(item, source_slot_id)
 
 func notify_utility_slot_item_removed(slot_id: int):
 	"""Notify panels when an item is removed from a utility slot"""
-	var panel = current_panel
-	if not panel:
-		return
-	
-	print("DEBUG notify_utility_slot_item_removed: slot_id=", slot_id)
-	
-	if panel.name == "BlacksmithPanel" and panel.has_method("on_item_removed"):
-		panel.on_item_removed()
-	elif panel.name == "AlchemistPanel" and panel.has_method("on_item_removed_from_slot"):
-		panel.on_item_removed_from_slot(slot_id)
-	elif panel.name == "EnchanterPanel" and panel.has_method("on_item_removed"):
-		panel.on_item_removed()
+	match current_panel:
+		blacksmith_panel:
+			blacksmith_panel.on_item_removed()
+		alchemist_panel:
+			alchemist_panel.on_item_removed_from_slot(slot_id)
+		enchanter_panel:
+			enchanter_panel.on_item_removed()
 
 func get_items_in_utility_slots() -> Array[GameInfo.Item]:
 	"""Get all items currently placed in utility slots (to exclude from bag refresh)"""
 	var items: Array[GameInfo.Item] = []
-	
-	# Check BlacksmithPanel
-	if blacksmith_panel and blacksmith_panel.has_method("get_working_item"):
-		var item = blacksmith_panel.get_working_item()
-		if item:
-			items.append(item)
-	
-	# Check EnchanterPanel
-	if enchanter_panel and enchanter_panel.has_method("get_working_item"):
-		var item = enchanter_panel.get_working_item()
-		if item:
-			items.append(item)
-	
-	# Check AlchemistPanel
-	if alchemist_panel and alchemist_panel.has_method("get_working_items"):
-		var alch_items = alchemist_panel.get_working_items()
-		for item in alch_items:
-			items.append(item)
+
+	for working_item in [blacksmith_panel.get_working_item(), enchanter_panel.get_working_item()]:
+		if working_item:
+			items.append(working_item)
+
+	items.append_array(alchemist_panel.get_working_items())
 	
 	return items

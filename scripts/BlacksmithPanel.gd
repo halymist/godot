@@ -37,7 +37,6 @@ func _setup():
 
 func on_item_placed(item: GameInfo.Item, _source_slot_id: int):
 	"""Called when an item is placed in the blacksmith slot (item keeps its original bag_slot_id)"""
-	print("DEBUG BlacksmithPanel.on_item_placed: item=", item.item_name, " bag_slot_id=", item.bag_slot_id)
 	working_item = item
 	update_stats_display()
 	update_temper_button_state()
@@ -45,14 +44,12 @@ func on_item_placed(item: GameInfo.Item, _source_slot_id: int):
 
 func on_item_removed():
 	"""Called when an item is removed from the blacksmith slot"""
-	print("DEBUG BlacksmithPanel.on_item_removed")
 	working_item = null
 	update_stats_display()
 	update_temper_button_state()
 
-func on_slot_changed(slot_id: int):
+func on_slot_changed(_slot_id: int):
 	"""Legacy - Called by UIManager when a utility slot changes (for compatibility)"""
-	print("DEBUG BlacksmithPanel.on_slot_changed called with slot_id=", slot_id)
 	# This is now handled by on_item_placed/on_item_removed
 	pass
 
@@ -67,7 +64,6 @@ func _on_visibility_changed():
 func _load_location_content():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
 	if not settlement:
-		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
 	# Apply utility texture directly to self
@@ -152,29 +148,23 @@ func return_blacksmith_item_to_bag():
 	# Just clear the visual slot and reset working_item
 	# The item never actually moved - it keeps its original bag_slot_id
 	if working_item:
-		print("DEBUG return_blacksmith_item_to_bag: clearing working_item")
 		working_item = null
 		blacksmith_slot.clear_slot()
 		UIManager.instance.refresh_bags()
 
 func update_temper_button_state():
 	# Check if there's a working item
-	print("DEBUG update_temper_button_state: working_item=", working_item)
 	
 	# Button is enabled only if there's an item and player has enough gold
 	var has_item = working_item != null
 	var has_silver = GameInfo.current_player.silver >= TEMPER_COST
-	print("DEBUG: has_item=", has_item, " has_silver=", has_silver, " (silver=", GameInfo.current_player.silver, ")")
 	temper_button.disabled = not (has_item and has_silver)
-	print("DEBUG: temper_button.disabled=", temper_button.disabled)
 
 func _on_temper_pressed():
 	if not working_item:
-		print("No working item to temper")
 		return
 	
 	# Send temper request to server with the item's actual bag_slot_id
-	print("DEBUG: Sending temper_item for slot ", working_item.bag_slot_id)
 	Websocket.temper_item(working_item.bag_slot_id)
 	
 	# Apply temper instantly on client (rollback later if server rejects)

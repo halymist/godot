@@ -48,7 +48,6 @@ func _on_visibility_changed():
 func _load_location_content():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
 	if not settlement:
-		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
 	# Apply utility texture directly to self
@@ -120,5 +119,4 @@ func _on_stat_row_pressed(stat_name: String, cost: int):
 	UIManager.instance.refresh_stats()
 	update_stats_display()
 	update_button_states()
-	print("Trained ", stat_name, " - cost: ", cost, " silver")
 	_show_greeting(on_action_greetings)

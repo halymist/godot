@@ -35,7 +35,6 @@ func save_settings(character_id: String, settings_dict: Dictionary) -> void:
 	if err != OK:
 		push_error("Failed to save settings for character %s: %s" % [character_id, err])
 	else:
-		print("Settings saved for character: ", character_id)
 		current_settings = settings_dict.duplicate(true)
 
 func load_settings(character_id: String) -> Dictionary:
@@ -46,7 +45,6 @@ func load_settings(character_id: String) -> Dictionary:
 	var err = config.load(file_path)
 	
 	if err != OK:
-		print("No saved settings found for character %s, using defaults" % character_id)
 		var defaults = _get_default_settings()
 		current_settings = defaults.duplicate(true)
 		return defaults
@@ -58,7 +56,6 @@ func load_settings(character_id: String) -> Dictionary:
 		for key in config.get_section_keys(section):
 			settings[section][key] = config.get_value(section, key)
 	
-	print("Settings loaded for character: ", character_id)
 	current_settings = settings.duplicate(true)
 	return settings
 

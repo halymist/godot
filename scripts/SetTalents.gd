@@ -36,21 +36,18 @@ func refresh_all_talents():
 		talent.update_button_appearance()
 
 func display_player():
-	print("SetTalents: display_player called")
 	displayed_character = GameInfo.current_player
 	is_read_only = false
 	reset_button.visible = true
 	refresh_talents()
 
 func display_character(character: GameInfo.GamePlayer, read_only: bool = true):
-	print("SetTalents: display_character called for: ", character.name, " read_only=", read_only)
 	displayed_character = character
 	is_read_only = read_only
 	reset_button.visible = not read_only
 	refresh_talents()
 
 func refresh_talents():
-	print("SetTalents: Refreshing talents for: ", displayed_character.name)
 	
 	for talent_node in talents:
 		if talent_node.has_method("update_from_character"):
@@ -91,13 +88,11 @@ func _on_reset_button_pressed():
 	for talent in talents:
 		talent.points = 0
 		
-	print("Reset all talents - cleared GameInfo talent data")
 	
 	for perk in GameInfo.current_player.perks:
 		if perk.active:
 			perk.active = false
 
-	print("Reset perks - deactivated all active perks")
 	
 	refresh_talents()
 	update_reset_button_state()
@@ -105,4 +100,3 @@ func _on_reset_button_pressed():
 	if UIManager.instance:
 		UIManager.instance.refresh_active_effects()
 		UIManager.instance.refresh_perks()
-	print("Reset complete - all talents reset to 0 points")

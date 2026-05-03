@@ -290,7 +290,6 @@ func _on_login():
 	
 	# Keep button visually updating for dot animation; clicks are guarded by is_logging_in
 	is_logging_in = true
-	print("[Login] Starting login, calling _start_dot_animation")
 	_start_dot_animation("Loading")
 	
 	# Send login request to server
@@ -308,7 +307,6 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 		else:
 			_clear_credentials()
 		
-		print("[Login] Login success, lobby init starting")
 		# DON'T restart animation - keep the existing one running
 		
 		# Initialize lobby, wait until ready, then switch
@@ -360,7 +358,6 @@ func _prefill_saved_credentials():
 	var password = config.get_value("auth", "password", "")
 	if email.is_empty() or password.is_empty():
 		return
-	print("[Login] Found saved credentials, pre-filling login form...")
 	if email_input:
 		email_input.text = email
 	if password_input:
@@ -379,29 +376,25 @@ func _save_credentials():
 	
 	var err = config.save(CREDENTIALS_PATH)
 	if err == OK:
-		print("[Login] Credentials saved for auto-login")
+		pass
 	else:
-		print("[Login] Failed to save credentials: ", err)
+		pass
 
 func _clear_credentials():
 	"""Clear saved credentials"""
 	var dir = DirAccess.open("user://")
 	if dir and dir.file_exists("credentials.cfg"):
 		dir.remove("credentials.cfg")
-		print("[Login] Saved credentials cleared")
 
 func _show_error(message: String):
 	"""Display error message to user"""
-	print("[Login] Error: ", message)
 	if error_label:
 		error_label.text = message
 		error_label.visible = true
 
 func _show_lobby_after_init():
 	"""Keep login visible until the lobby has rebuilt cards and avatars, then switch."""
-	print("[Login] _show_lobby_after_init: waiting for lobby to be ready...")
 	if not lobby_panel:
-		print("[Login] ERROR: no lobby_panel!")
 		_stop_dot_animation()
 		is_logging_in = false
 		if email_login_button:
@@ -412,10 +405,9 @@ func _show_lobby_after_init():
 	lobby_panel.visible = false
 	lobby_panel.initialize_lobby()
 	if lobby_panel.has_method("is_lobby_ready") and lobby_panel.is_lobby_ready():
-		print("[Login] lobby already ready, switching immediately")
+		pass
 	else:
 		await lobby_panel.lobby_ready
-	print("[Login] lobby_ready received, switching to lobby")
 	
 	# Lobby is ready — switch panels
 	_stop_dot_animation()
@@ -434,11 +426,9 @@ func _hide_error():
 		error_label.visible = false
 
 func _start_dot_animation(base_text: String):
-	print("[Login] _start_dot_animation called with: '", base_text, "'")
 	_stop_dot_animation()
 	_loading_button = _get_active_loading_button()
 	if not _loading_button:
-		print("[Login] ERROR: no loading button available!")
 		return
 	_loading_button_default_text = _loading_button.text
 	_loading_button.text = base_text
@@ -450,10 +440,8 @@ func _start_dot_animation(base_text: String):
 		_loading_indicator_default_modulate = method_indicator.modulate
 		method_indicator.scale = Vector2.ONE
 		method_indicator.modulate = _loading_indicator_default_modulate
-	print("[Login] Creating tween, node in tree: ", is_inside_tree())
 	var tw = create_tween()
 	if tw == null:
-		print("[Login] ERROR: create_tween() returned null!")
 		return
 	_loading_tween = tw.set_loops()
 	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 0)).set_delay(0.08)
@@ -462,7 +450,6 @@ func _start_dot_animation(base_text: String):
 	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 3)).set_delay(0.12)
 	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 2)).set_delay(0.12)
 	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 1)).set_delay(0.12)
-	print("[Login] Tween created successfully, looping")
 
 func _apply_loading_frame(base_text: String, frame: int):
 	if _loading_button:
@@ -478,7 +465,6 @@ func _apply_loading_frame(base_text: String, frame: int):
 		method_indicator.modulate = Color(_loading_indicator_default_modulate.r, _loading_indicator_default_modulate.g, _loading_indicator_default_modulate.b, alpha)
 
 func _stop_dot_animation():
-	print("[Login] _stop_dot_animation called")
 	if _loading_tween:
 		_loading_tween.kill()
 		_loading_tween = null
@@ -543,7 +529,6 @@ func _on_forgot_submit():
 	if forgot_email_input and forgot_email_input.text != "":
 		var email = forgot_email_input.text
 		Http.reset_password(email)
-		print("Password reset email sent to: ", email)
 		
 		# Show confirmation panel
 		if forgot_input_panel:

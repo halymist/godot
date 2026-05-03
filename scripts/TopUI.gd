@@ -135,7 +135,7 @@ func _calculate_server_day() -> int:
 
 func _date_to_days(year: int, month: int, day: int) -> int:
 	"""Convert a date to an absolute day number for comparison"""
-	var a = (14 - month) / 12
+	var a = int((14 - month) / 12.0)
 	var y = year + 4800 - a
 	var m = month + 12 * a - 3
-	return day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045
+	return day + int((153 * m + 2) / 5.0) + 365 * y + int(y / 4.0) - int(y / 100.0) + int(y / 400.0) - 32045

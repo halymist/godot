@@ -78,7 +78,7 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
-	print("DynamicOptionsPanel: Setup complete")
+	pass
 
 func _on_visibility_changed():
 	"""Load quest when panel becomes visible"""
@@ -96,21 +96,17 @@ func _on_visibility_changed():
 	
 	# Check if we're returning from combat
 	if pending_combat_option != null:
-		print("Returning from combat, handling result")
 		handle_combat_result()
 		return
 	
-	print("Quest panel is now visible")
 	var destination = GameInfo.current_player.traveling_destination
 	# Always reload from authoritative quest_log when quest panel becomes visible.
 	# This guarantees resume state is reapplied after login/startup transitions.
 	if destination != null:
-		print("Quest panel became visible, loading quest ", destination, " (authoritative resume)")
 		load_quest(int(destination))
 
 func load_quest(quest_id: int):
 	"""Load a quest and display initial state"""
-	print("Loading quest ", quest_id)
 	
 	# Capture whether this is a new quest before setting the guard
 	var is_new_quest = current_quest_id != quest_id
@@ -124,7 +120,6 @@ func load_quest(quest_id: int):
 	# Always resolve current quest data for the requested id.
 	var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 	if not quest_data:
-		print("ERROR: Quest not found for quest_id=", quest_id)
 		current_quest = null
 		visible_option_ids.clear()
 		clear_options()
@@ -143,14 +138,11 @@ func load_quest(quest_id: int):
 	var last_node_text: String = ""
 	var clicked_options = GameInfo.get_quest_clicked_options(quest_id)
 	var last_clicked_id = GameInfo.get_last_quest_option_id(quest_id)
-	print("[QuestResume] load quest_id=", quest_id, " is_new=", is_new_quest, " clicked=", clicked_options, " last=", last_clicked_id)
 	if clicked_options.size() > 0:
-		print("Restoring quest state with clicked_options: ", clicked_options)
 		for option_id in clicked_options:
 			clicked_option_ids.append(option_id)
 		if last_clicked_id <= 0:
 			last_clicked_id = clicked_options[clicked_options.size() - 1]
-		print("[QuestResume] quest_id=", quest_id, " last_option_id=", last_clicked_id, " log_size=", GameInfo.current_player.quest_log.size())
 		for option in current_quest.options:
 			if option.option_id == last_clicked_id and option.node_text != "":
 				last_node_text = option.node_text
@@ -158,7 +150,6 @@ func load_quest(quest_id: int):
 	
 	# Compute visible options based on requirements tree
 	visible_option_ids = _compute_visible_options()
-	print("[QuestResume] visible options for quest ", quest_id, ": ", visible_option_ids)
 	
 	# Display quest with the correct text
 	if last_node_text != "":
@@ -190,7 +181,7 @@ func display_quest_with_text(text: String):
 			if option and visible_option_ids.has(option.option_id):
 				add_option(option.option_text, _on_quest_option_pressed.bind(option), option)
 	else:
-		print("WARNING: current_quest.options is null or empty")
+		pass
 
 func load_expedition_node(expedition_id: int, node_id: int, quest_id: int):
 	"""Load a quest launched from an expedition graph node."""
@@ -279,7 +270,6 @@ func apply_option_reward(option: QuestOption):
 		UIManager.instance.update_silver(option.reward_silver)
 		GameInfo.current_player.silver += option.reward_silver
 		reward_text = "You receive " + str(option.reward_silver) + " silver."
-		print("REWARD: Awarded ", option.reward_silver, " silver")
 	
 	if option.reward_stat_type > 0 and option.reward_stat_amount > 0:
 		var stat_name = _get_stat_name_from_type(option.reward_stat_type)
@@ -287,13 +277,11 @@ func apply_option_reward(option: QuestOption):
 			var scaled_amount = int(option.reward_stat_amount * pow(1.02, server_day - 1))
 			GameInfo.current_player.set(stat_name, GameInfo.current_player.get(stat_name) + scaled_amount)
 			reward_text = "You receive " + str(scaled_amount) + " " + stat_name + "."
-			print("REWARD: Awarded ", scaled_amount, " ", stat_name)
 			UIManager.instance.refresh_stats()
 	
 	if option.reward_talent > 0:
 		GameInfo.current_player.talent_points += option.reward_talent
 		reward_text = "You receive " + str(option.reward_talent) + " talent point" + ("s" if option.reward_talent > 1 else "") + "."
-		print("REWARD: Awarded ", option.reward_talent, " Talent Points")
 		UIManager.instance.refresh_stats()
 	
 	if option.reward_item > 0:
@@ -301,7 +289,6 @@ func apply_option_reward(option: QuestOption):
 		if added:
 			var item_resource = GameInfo.items_db.get_item_by_id(option.reward_item)
 			reward_text = "You receive " + item_resource.item_name + "."
-			print("REWARD: Added Item ID ", option.reward_item, " to bag")
 			UIManager.instance.refresh_bags()
 		else:
 			reward_text = "Your bag is full!"
@@ -554,17 +541,13 @@ func clear_options():
 
 func refresh_quest_options_internal():
 	"""Refresh quest options when stats/requirements change"""
-	print("refresh_quest_options_internal called. current_quest_id: ", current_quest_id)
 	if current_quest_id == 0:
-		print("No quest loaded, returning")
 		return
 	
 	# Recompute and rebuild visible options
 	visible_option_ids = _compute_visible_options()
-	print("Clearing options...")
 	clear_options()
 	if current_quest and current_quest.options:
-		print("Rebuilding ", current_quest.options.size(), " options")
 		for option in current_quest.options:
 			if option and visible_option_ids.has(option.option_id):
 				add_option(option.option_text, _on_quest_option_pressed.bind(option), option)
@@ -576,25 +559,20 @@ func _on_quest_option_pressed(option: QuestOption):
 	
 	if not clicked_option_ids.has(option.option_id):
 		clicked_option_ids.append(option.option_id)
-		print("Tracked clicked option: ", option.option_id, " Total clicked: ", clicked_option_ids)
 		GameInfo.append_quest_log_action(current_quest_id, option.option_id, false)
 	
 	# 1. Handle silver cost (new server field)
 	if option.silver_required > 0:
 		if GameInfo.current_player and GameInfo.current_player.silver >= option.silver_required:
 			UIManager.instance.update_silver(-option.silver_required)
-			print("Deducted ", option.silver_required, " silver (silver_required)")
 		else:
-			print("Not enough silver for option: ", option.option_text)
 			return
 	
 	# 1b. Handle legacy currency cost (silver requirement via enum)
 	if option.required_type == QuestOption.RequirementType.SILVER and option.required_amount > 0:
 		if GameInfo.current_player and GameInfo.current_player.silver >= option.required_amount:
 			UIManager.instance.update_silver(-option.required_amount)
-			print("Deducted ", option.required_amount, " silver (legacy)")
 		else:
-			print("Not enough silver for option: ", option.option_text)
 			return
 	
 	# 2. Handle combat requirement (enemy_id or legacy enum)
@@ -614,7 +592,6 @@ func _on_quest_option_pressed(option: QuestOption):
 			var hp_lost = abs(int(option.effect_applied_factor))
 			var max_health = GameInfo.current_player.get_total_stats().stamina * 10
 			GameInfo.current_player.depleted_health = clamp(GameInfo.current_player.depleted_health + hp_lost, 0, max_health)
-			print("Applied effect 200 (health depletion): ", hp_lost, "HP")
 			UIManager.instance.refresh_stats()
 			# Block/fail quest if health is depleted
 			if GameInfo.current_player.depleted_health >= max_health:
@@ -626,7 +603,6 @@ func _on_quest_option_pressed(option: QuestOption):
 	
 	# 4. Recompute visible options from requirements tree
 	visible_option_ids = _compute_visible_options()
-	print("After clicking option ", option.option_id, ", visible_option_ids: ", visible_option_ids)
 	
 	# 5. Check if quest ends
 	if option.ends_quest:
@@ -643,7 +619,6 @@ func _on_quest_option_pressed(option: QuestOption):
 func _start_combat():
 	"""Initialize combat - combat data will come from server response"""
 	# Combat is executed by server during quest_option; wait for questOptionResponse.
-	print("Starting quest combat - waiting for questOptionResponse/combat payload")
 
 func has_pending_combat_option() -> bool:
 	return pending_combat_option != null
@@ -657,7 +632,6 @@ func handle_combat_result():
 	var combat_log = GameInfo.current_combat_log
 	var player_won = combat_log != null and combat_log.has_won()
 	
-	print("Handling combat result: Player won = ", player_won)
 	
 	var option = pending_combat_option
 	pending_combat_option = null
@@ -692,8 +666,6 @@ func handle_combat_result():
 func _finish_quest():
 	"""End quest and return home"""
 	# Mark quest as completed in quest log
-	print("Finishing quest ID: ", current_quest_id)
-	print("Clicked options during quest: ", clicked_option_ids)
 
 	var completed_expedition_id = expedition_context_id
 	var completed_node_id = expedition_context_node_id
@@ -709,7 +681,6 @@ func _finish_quest():
 	expedition_context_id = 0
 	expedition_context_node_id = 0
 	
-	print("UIManager exists: ", UIManager.instance != null)
 	if completed_from_expedition:
 		UIManager.instance.handle_expedition_node_completed(completed_expedition_id, completed_node_id)
 	else:

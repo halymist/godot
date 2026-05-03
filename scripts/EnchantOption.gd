@@ -1,13 +1,15 @@
 extends Button
 class_name EnchantOption
 
+const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+
 var effect_id: int = 0
 var effect_factor: float = 0.0
 
 func setup(effect: EffectResource):
 	effect_id = effect.id
 	effect_factor = effect.factor
-	text = "%s %s%%" % [effect.description, str(effect.factor)]
+	text = EFFECT_FORMATTER.format_with_factor(effect.description, effect.factor, true)
 	
 	# Style the button
 	var normal_style = StyleBoxFlat.new()

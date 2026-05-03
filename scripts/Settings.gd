@@ -78,17 +78,14 @@ func _save_setting(section: String, key: String, value):
 # Gameplay callbacks
 func _on_disable_ads_toggled(enabled: bool):
 	_save_setting("gameplay", "disable_ads", enabled)
-	print("Disable ads: ", enabled)
 
 func _on_skip_combat_toggled(enabled: bool):
 	_save_setting("gameplay", "skip_combat", enabled)
-	print("Skip combat: ", enabled)
 
 func _on_language_selected(index: int):
 	var languages = ["English", "Czech", "German"]
 	var language = languages[index] if index < languages.size() else "English"
 	_save_setting("gameplay", "language", language)
-	print("Language changed to: ", language)
 
 # Audio callbacks
 func _on_master_volume_changed(value: float):
@@ -102,7 +99,6 @@ func _on_music_volume_changed(value: float):
 # Video callbacks
 func _on_ui_size_selected(index: int):
 	var sizes = ["Small", "Medium", "Large"]
-	var size = sizes[index] if index < sizes.size() else "Medium"
-	_save_setting("video", "ui_size", size)
-	print("UI size changed to: ", size)
+	var ui_size = sizes[index] if index < sizes.size() else "Medium"
+	_save_setting("video", "ui_size", ui_size)
 	# TODO: Apply UI size changes

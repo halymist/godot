@@ -144,5 +144,4 @@ func _faction_to_name(faction: int) -> String:
 
 func _on_pressed():
 	"""Handle button press"""
-	print("Player card pressed for character ID: ", character_id, " on server: ", server_id)
 	character_selected.emit(character_id, server_id)

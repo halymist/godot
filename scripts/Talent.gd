@@ -38,7 +38,6 @@ func _ready():
 func _load_from_database():
 	"""Load talent properties from talents_db based on talentID"""
 	if not GameInfo.talents_db:
-		print("[Talent] WARNING: talents_db not loaded, using fallback values for talent ", talentID)
 		return
 	
 	var talent_data = GameInfo.talents_db.get_talent_by_id(talentID)
@@ -48,9 +47,8 @@ func _load_from_database():
 		effect_id = talent_data.effect_id
 		factor = talent_data.factor
 		perk_slot = talent_data.perk_slot  # bool: true if this talent unlocks a perk slot
-		print("[Talent] Loaded from DB: ID=", talentID, " name=", talentName, " maxPoints=", maxPoints, " effect=", effect_id, " factor=", factor, " perk_slot=", perk_slot)
 	else:
-		print("[Talent] WARNING: Talent ID ", talentID, " not found in talents_db, using fallback values")
+		pass
 
 func _setup():
 	if GameInfo.current_player != null:

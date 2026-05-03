@@ -19,7 +19,7 @@ var session_id: String = ""
 var last_create_character_response: Dictionary = {}
 
 func _ready():
-	print("Http ready!")
+	pass
 
 # ============================================
 # HTTP API - Helper Functions
@@ -64,11 +64,9 @@ func login(email: String, password: String):
 	var json_payload = JSON.stringify(payload)
 	var url = base_url + "/login"
 	
-	print("[HTTP] POST ", url)
 	var error = http_request.request(url, _get_headers(), HTTPClient.METHOD_POST, json_payload)
 	
 	if error != OK:
-		print("[HTTP] Failed to send login request: ", error)
 		http_request.queue_free()
 		login_completed.emit(false, {}, "Failed to send request")
 
@@ -77,12 +75,10 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 	http_request.queue_free()
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
-		print("[HTTP] Login request failed with result: ", result)
 		login_completed.emit(false, {}, "Connection failed")
 		return
 	
 	var body_text = body.get_string_from_utf8()
-	print("[HTTP] Login response (", response_code, "): ", body_text)
 	
 	if response_code != 200:
 		var error_msg = "Login failed (HTTP " + str(response_code) + ")"
@@ -98,7 +94,6 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 	# Parse successful response
 	var json = JSON.new()
 	if json.parse(body_text) != OK:
-		print("[HTTP] Failed to parse login response")
 		login_completed.emit(false, {}, "Invalid server response")
 		return
 	
@@ -151,10 +146,8 @@ func fetch_lobby():
 	var http_request = _create_http_request()
 	http_request.request_completed.connect(_on_lobby_completed.bind(http_request))
 	var url = base_url + "/lobby"
-	print("[HTTP] GET ", url)
 	var error = http_request.request(url, _get_headers(true), HTTPClient.METHOD_GET, "")
 	if error != OK:
-		print("[HTTP] Failed to send lobby request: ", error)
 		http_request.queue_free()
 		login_completed.emit(false, {}, "Failed to request lobby data")
 
@@ -163,19 +156,16 @@ func _on_lobby_completed(result: int, response_code: int, _headers: PackedString
 	http_request.queue_free()
 
 	if result != HTTPRequest.RESULT_SUCCESS:
-		print("[HTTP] Lobby request failed with result: ", result)
 		login_completed.emit(false, {}, "Connection failed")
 		return
 
 	var body_text = body.get_string_from_utf8()
-	print("[HTTP] Lobby response (", response_code, "): ", body_text)
 	if response_code != 200:
 		login_completed.emit(false, {}, "Lobby load failed (HTTP " + str(response_code) + ")")
 		return
 
 	var json = JSON.new()
 	if json.parse(body_text) != OK:
-		print("[HTTP] Failed to parse lobby response")
 		login_completed.emit(false, {}, "Invalid lobby response")
 		return
 
@@ -187,7 +177,7 @@ func _on_lobby_completed(result: int, response_code: int, _headers: PackedString
 	var lobby_data = _transform_auth_response(response)
 	login_completed.emit(true, lobby_data, "")
 
-func register(auth_type: String, _username: String = "", _password: String = ""):
+func register(_auth_type: String, _username: String = "", _password: String = ""):
 	"""
 	Register new account (placeholder - will be implemented later)
 	auth_type: Authentication method (e.g., "google", "mail", "facebook")
@@ -197,7 +187,6 @@ func register(auth_type: String, _username: String = "", _password: String = "")
 	Response: success/failure message
 	"""
 	# TODO: Implement actual register endpoint
-	print("[HTTP] Register not yet implemented - auth_type: ", auth_type)
 
 func logout():
 	"""
@@ -206,7 +195,6 @@ func logout():
 	Response: success confirmation
 	"""
 	if session_id.is_empty():
-		print("[HTTP] No session to logout")
 		return
 	
 	var http_request = _create_http_request()
@@ -214,29 +202,25 @@ func logout():
 	
 	var url = base_url + "/logout"
 	
-	print("[HTTP] POST ", url)
 	var error = http_request.request(url, _get_headers(true), HTTPClient.METHOD_POST, "")
 	
 	if error != OK:
-		print("[HTTP] Failed to send logout request: ", error)
 		http_request.queue_free()
 		session_id = ""
 
-func _on_logout_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
+func _on_logout_completed(result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
 	"""Handle logout response from server"""
 	http_request.queue_free()
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
-		print("[HTTP] Logout request failed with result: ", result)
+		pass
 	else:
-		var body_text = body.get_string_from_utf8()
-		print("[HTTP] Logout response (", response_code, "): ", body_text)
+		var _body_text = body.get_string_from_utf8()
 	
 	# Clear session regardless of response
 	session_id = ""
-	print("[HTTP] Session cleared")
 
-func reset_password(email: String):
+func reset_password(_email: String):
 	"""
 	Send password reset email to the provided email address (placeholder)
 	email: Email address to send password reset link to
@@ -244,15 +228,13 @@ func reset_password(email: String):
 	Response: success/failure confirmation
 	"""
 	# TODO: Implement actual password reset endpoint
-	print("[HTTP] Password reset requested for: ", email)
 
 # ============================================
 # Generic Request (for not-yet-implemented endpoints)
 # ============================================
 
-func send_request(endpoint: String, method: String, payload: Dictionary):
+func send_request(_endpoint: String, _method: String, _payload: Dictionary):
 	"""Send an HTTP request to the server (placeholder for unimplemented endpoints)"""
-	print("[HTTP] ", method, " ", endpoint, " | Payload: ", payload)
 	# TODO: Implement actual HTTP request when endpoint is ready
 
 # ============================================
@@ -293,18 +275,14 @@ func create_character(character_name: String, faction: int, avatar: Array, vip: 
 		"avatar": avatar,
 		"vip": vip
 	}
-	var faction_name = _faction_id_to_name(faction)
-	print("[HTTP] Create-character payload faction: ", faction, " (", faction_name, ")")
-	print("[HTTP] Create-character payload body: ", payload)
+	var _faction_name = _faction_id_to_name(faction)
 	
 	var json_payload = JSON.stringify(payload)
 	var url = base_url + "/create-character"
 	
-	print("[HTTP] POST ", url)
 	var error = http_request.request(url, _get_headers(true), HTTPClient.METHOD_POST, json_payload)
 	
 	if error != OK:
-		print("[HTTP] Failed to send create character request: ", error)
 		http_request.queue_free()
 		last_create_character_response = {}
 		create_character_completed.emit(false, 0, "Failed to send request")
@@ -314,13 +292,11 @@ func _on_create_character_completed(result: int, response_code: int, _headers: P
 	http_request.queue_free()
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
-		print("[HTTP] Create character request failed with result: ", result)
 		last_create_character_response = {}
 		create_character_completed.emit(false, 0, "Connection failed")
 		return
 	
 	var body_text = body.get_string_from_utf8()
-	print("[HTTP] Create character response (", response_code, "): ", body_text)
 	
 	if response_code != 200:
 		var error_msg = "Character creation failed (HTTP " + str(response_code) + ")"
@@ -337,7 +313,6 @@ func _on_create_character_completed(result: int, response_code: int, _headers: P
 	# Parse successful response
 	var json = JSON.new()
 	if json.parse(body_text) != OK:
-		print("[HTTP] Failed to parse create character response")
 		last_create_character_response = {}
 		create_character_completed.emit(false, 0, "Invalid server response")
 		return

@@ -67,15 +67,11 @@ var current_player: GameCurrentPlayer:
 # ============================================
 var databases_loaded: bool = false
 
-func _ready():
-	print("GameInfo initialized (databases not loaded yet)")
-
 func load_databases():
 	"""Call this from lobby scene to load all game databases"""
 	if databases_loaded:
 		return  # Already loaded
 	
-	print("Loading databases...")
 	
 	# Get databases from DataManager (loaded from JSON)
 	effects_db = DataManager.get_effects_database()
@@ -89,14 +85,12 @@ func load_databases():
 	cosmetics_db = DataManager.get_cosmetics_database()
 	
 	databases_loaded = true
-	print("Databases loaded")
 
 func load_lobby_data():
 	"""Load lobby data - deprecated, lobby_data is now set directly from login response"""
 	# This function is kept for backwards compatibility but should not be used
 	# Lobby data is now set directly by LoginPanel._on_login_completed()
-	print("Warning: load_lobby_data() called but lobby data should come from server")
-	pass
+	return
 
 func set_lobby_data(data: Dictionary):
 	"""Persist the current lobby payload from auth/lobby responses."""
@@ -485,8 +479,6 @@ class Perk:
 					if effect2_res:
 						effect2 = effect2_res.name
 						effect2_description = effect2_res.description
-		else:
-			print("[GameInfo.Perk] WARNING: Perk ID ", id, " not found in perks_db")
 
 class Talent:
 	extends RefCounted
@@ -724,9 +716,6 @@ class GamePlayer:
 			if data.stats.size() >= 7:
 				damage_min = data.stats[5]
 				damage_max = data.stats[6]
-				print("Loaded damage stats: min=", damage_min, " max=", damage_max)
-			else:
-				print("WARNING: Stats array size < 7, damage not loaded. Size: ", data.stats.size())
 		
 		# Load arrays
 		load_bag_slots(data)
@@ -762,37 +751,31 @@ class GamePlayer:
 			"damage_min": damage_min,
 			"damage_max": damage_max
 		}
+
+	func _add_item_stats(total_stats: Dictionary, item: Item):
+		total_stats.strength += item.strength
+		total_stats.stamina += item.stamina
+		total_stats.agility += item.agility
+		total_stats.luck += item.luck
+		total_stats.armor += item.armor
+		total_stats.damage_min += item.damage_min
+		total_stats.damage_max += item.damage_max
+
+	func _add_effect_if_valid(total_effects: Dictionary, effect_id: int, factor: float):
+		if effect_id > 0 and effect_id <= 20:
+			total_effects[effect_id] += factor
 	
 	func get_total_stats() -> Dictionary:
 		"""Calculate total stats: base + equipped items (including gems) + effect bonuses"""
 		var total_stats = get_base_stats()
-		
-		print("  get_total_stats for ", name, " - Base strength: ", total_stats.strength, ", bag_slots.size: ", bag_slots.size())
-		
+
 		# Add stats from equipped items (slots 1-9)
 		for item in bag_slots:
-			print("    Checking item: id=", item.id, " bag_slot_id=", item.bag_slot_id, " day=", item.day)
 			if item.bag_slot_id >= 1 and item.bag_slot_id <= 9:
-				print("      Item IS equipped - strength=", item.strength)
-				# Item stats (already scaled by day/tempered)
-				total_stats.strength += item.strength
-				total_stats.stamina += item.stamina
-				total_stats.agility += item.agility
-				total_stats.luck += item.luck
-				total_stats.armor += item.armor
-				total_stats.damage_min += item.damage_min
-				total_stats.damage_max += item.damage_max
-				
-				# Add socketed gem stats (gem is just another item!)
+				_add_item_stats(total_stats, item)
 				var gem = item.get_socketed_gem()
 				if gem:
-					total_stats.strength += gem.strength
-					total_stats.stamina += gem.stamina
-					total_stats.agility += gem.agility
-					total_stats.luck += gem.luck
-					total_stats.armor += gem.armor
-					total_stats.damage_min += gem.damage_min
-					total_stats.damage_max += gem.damage_max
+					_add_item_stats(total_stats, gem)
 		
 		# Apply effect bonuses to stats (effects 1-4 boost stats by percentage)
 		var total_effects = get_total_effects()
@@ -806,13 +789,10 @@ class GamePlayer:
 	func get_damage_range() -> Dictionary:
 		"""Calculate final damage range (total damage stats * strength)"""
 		var total_stats = get_total_stats()
-		print("get_damage_range: total_stats.damage_min=", total_stats.damage_min, " damage_max=", total_stats.damage_max, " strength=", total_stats.strength)
-		var result = {
+		return {
 			"min": total_stats.damage_min * total_stats.strength,
 			"max": total_stats.damage_max * total_stats.strength
 		}
-		print("get_damage_range result: min=", result.min, " max=", result.max)
-		return result
 	
 	func get_total_effects() -> Dictionary:
 		# Initialize effect totals for all 20 effects (IDs 1-20)
@@ -823,46 +803,40 @@ class GamePlayer:
 		# 1. Sum effects from equipped items (slots 1-9)
 		for item in bag_slots:
 			if item.bag_slot_id >= 1 and item.bag_slot_id <= 9:
-				if item.effect_id > 0 and item.effect_id <= 20:
-					total_effects[item.effect_id] += item.effect_factor
+				_add_effect_if_valid(total_effects, item.effect_id, item.effect_factor)
 		
 		# 2. Add potion effect (if property exists in subclass)
 		if "potion" in self and self.potion > 0 and GameInfo and GameInfo.items_db:
 			var potion_item = GameInfo.items_db.get_item_by_id(self.potion)
-			if potion_item and potion_item.effect_id > 0 and potion_item.effect_id <= 20:
-				total_effects[potion_item.effect_id] += potion_item.effect_factor
+			if potion_item:
+				_add_effect_if_valid(total_effects, potion_item.effect_id, potion_item.effect_factor)
 		
 		# 3. Add blessing effect (if property exists in subclass)
 		if "blessing" in self and self.blessing > 0 and GameInfo and GameInfo.perks_db:
 			var blessing_perk = GameInfo.perks_db.get_perk_by_id(self.blessing)
-			if blessing_perk and blessing_perk.effect1_id > 0 and blessing_perk.effect1_id <= 20:
-				total_effects[blessing_perk.effect1_id] += blessing_perk.factor1
+			if blessing_perk:
+				_add_effect_if_valid(total_effects, blessing_perk.effect1_id, blessing_perk.factor1)
 		
 		# 4. Add active perks effects
 		var active_perks = get_active_perks()
 		for perk in active_perks:
-			# Effect 1
-			if perk.effect1_id > 0 and perk.effect1_id <= 20:
-				total_effects[perk.effect1_id] += perk.factor1
-			# Effect 2
-			if perk.effect2_id > 0 and perk.effect2_id <= 20:
-				total_effects[perk.effect2_id] += perk.factor2
+			_add_effect_if_valid(total_effects, perk.effect1_id, perk.factor1)
+			_add_effect_if_valid(total_effects, perk.effect2_id, perk.factor2)
 		
 		# 5. Add elixir effects from elixir_ingredients (if property exists in subclass)
 		if "elixir_ingredients" in self and self.elixir_ingredients.size() > 0 and GameInfo and GameInfo.items_db:
 			for ingredient_id in self.elixir_ingredients:
 				if ingredient_id > 0:
 					var ingredient = GameInfo.items_db.get_item_by_id(ingredient_id)
-					if ingredient and ingredient.effect_id > 0 and ingredient.effect_id <= 20:
-						total_effects[ingredient.effect_id] += ingredient.effect_factor
+					if ingredient:
+						_add_effect_if_valid(total_effects, ingredient.effect_id, ingredient.effect_factor)
 
 		# 5b. Add direct elixir effects from server (fallback when ingredient IDs are unavailable)
 		if "elixir_effects" in self and self.elixir_effects.size() > 0:
 			for entry in self.elixir_effects:
 				var effect_id = int(entry.get("effect_id", 0))
 				var factor = float(entry.get("factor", 0.0))
-				if effect_id > 0 and effect_id <= 20:
-					total_effects[effect_id] += factor
+				_add_effect_if_valid(total_effects, effect_id, factor)
 		
 		# 6. Add talents effects (from runtime registry populated by Talent.gd nodes)
 		for talent in talents:
@@ -878,9 +852,7 @@ class GamePlayer:
 					continue
 				
 				# Calculate talent contribution
-				if talent_meta.effect_id > 0 and talent_meta.effect_id <= 20:
-					var talent_effect = points_spent * talent_meta.factor
-					total_effects[talent_meta.effect_id] += talent_effect
+				_add_effect_if_valid(total_effects, int(talent_meta.effect_id), points_spent * float(talent_meta.factor))
 		
 		return total_effects
 	
@@ -926,9 +898,6 @@ class GameCurrentPlayer:
 	var traveling: float = 0.0  # Unix timestamp when travel ends, 0 if not traveling
 	var traveling_destination: Variant = null
 	var dungeon: bool = false
-	var destination: Variant = null
-	var slide: Variant = null
-	var slides: Array = []
 	var talent_points: int = 0
 	var quest_log: Array = []  # Ordered action log: {quest_id: int, option_id: int, finished: bool}
 	var daily_quests: Array[int] = []  # Array of quest IDs available today
@@ -960,7 +929,6 @@ class GameCurrentPlayer:
 			if key in self and key not in ["daily_quests", "quest_log", "avatar", "stats", "bag_slots", "perks", "talents", "vendor_items", "enchanter_effects"]:
 				set(key, data[key])
 		
-		print("[SILVER] initial load from server: ", silver, " (raw data value: ", data.get("silver", "MISSING"), ")")
 		
 		# Handle daily_quests array with type conversion
 		# Server sends "quests" field, client stores as "daily_quests"
@@ -971,24 +939,16 @@ class GameCurrentPlayer:
 				daily_quests.append(quest_id as int)
 		
 		# Handle vendor_items array (item IDs from server)
-		print("[GameCurrentPlayer] data.has('vendor_items') = ", data.has("vendor_items"))
-		if data.has("vendor_items"):
-			print("[GameCurrentPlayer] data.vendor_items = ", data.vendor_items, " is Array: ", data.vendor_items is Array)
 		if data.has("vendor_items") and data.vendor_items is Array:
 			vendor_items = []  # Reset to new array instead of clear()
 			for item_id in data.vendor_items:
-				print("[GameCurrentPlayer] Appending item_id: ", item_id, " type: ", typeof(item_id))
 				vendor_items.append(int(item_id))  # Convert to int
-			print("[GameCurrentPlayer] Loaded vendor_items: ", vendor_items)
-		else:
-			print("[GameCurrentPlayer] No vendor_items in data or not an Array")
 		
 		# Handle enchanter_effects array
 		if data.has("enchanter_effects") and data.enchanter_effects is Array:
 			enchanter_effects.clear()
 			for effect_id in data.enchanter_effects:
 				enchanter_effects.append(effect_id)
-			print("[GameCurrentPlayer] Loaded enchanter_effects: ", enchanter_effects)
 		
 		# Handle expedition array
 		if data.has("expedition"):
@@ -1011,7 +971,6 @@ class GameCurrentPlayer:
 		# Check if perk already exists
 		for existing_perk in perks:
 			if existing_perk.id == perk_id:
-				print("Player already has perk ID: ", perk_id)
 				return false
 		
 		# Perk doesn't exist, add it
@@ -1021,7 +980,6 @@ class GameCurrentPlayer:
 			"slot": 0
 		})
 		perks.append(new_perk)
-		print("Added new perk ID: ", perk_id, " (", new_perk.perk_name, ")")
 		return true
 	
 	func add_item_to_bag(item_id: int) -> bool:
@@ -1043,11 +1001,9 @@ class GameCurrentPlayer:
 					"day": server_day
 				})
 				bag_slots.append(new_item)
-				print("Added item ID ", item_id, " to bag slot ", slot_id, " with day ", server_day)
 				return true
 		
 		# No empty slots found
-		print("Bag is full, cannot add item ID ", item_id)
 		return false
 	
 	func check_expired_effects() -> bool:
@@ -1057,7 +1013,6 @@ class GameCurrentPlayer:
 		
 		# Check potion expiration (timestamp-based)
 		if potion > 0 and potion_until > 0 and current_time > potion_until:
-			print("Potion effect expired (until ", potion_until, " < current ", current_time, ")")
 			potion = 0
 			potion_until = 0.0
 			potion_day = 0
@@ -1065,7 +1020,6 @@ class GameCurrentPlayer:
 		
 		# Check potion expiration (day-based fallback)
 		if potion > 0 and potion_day > 0 and server_day > potion_day:
-			print("Potion effect expired (day ", potion_day, " < current day ", server_day, ")")
 			potion = 0
 			potion_until = 0.0
 			potion_day = 0
@@ -1073,7 +1027,6 @@ class GameCurrentPlayer:
 		
 		# Check elixir expiration (timestamp-based)
 		if elixir > 0 and elixir_until > 0 and current_time > elixir_until:
-			print("Elixir effect expired (until ", elixir_until, " < current ", current_time, ")")
 			elixir = 0
 			elixir_until = 0.0
 			elixir_day = 0
@@ -1082,7 +1035,6 @@ class GameCurrentPlayer:
 		
 		# Check elixir expiration (day-based fallback)
 		if elixir > 0 and elixir_day > 0 and server_day > elixir_day:
-			print("Elixir effect expired (day ", elixir_day, " < current day ", server_day, ")")
 			elixir = 0
 			elixir_until = 0.0
 			elixir_day = 0
@@ -1103,10 +1055,6 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	var normalized_quest_log = _extract_server_quest_log(server_data)
 	if normalized_quest_log.size() > 0:
 		client_data["quest_log"] = normalized_quest_log
-		print("[QuestResume] transform normalized quest_log entries: ", normalized_quest_log.size())
-		print("[QuestResume] transform normalized quest_log: ", normalized_quest_log)
-	else:
-		print("[QuestResume] transform found no usable quest_log in playerData")
 	
 	# Field name mappings
 	if server_data.has("character_name"):
@@ -1218,23 +1166,28 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 			})
 		client_data["talents"] = talents_data
 	
-	# Handle travel fields
-	if server_data.has("destination") and server_data.destination != null:
-		client_data["traveling_destination"] = server_data["destination"]
-	if server_data.has("arrival") and server_data.arrival != null:
-		# Convert arrival timestamp to unix time
-		client_data["traveling"] = _parse_iso_timestamp(server_data["arrival"])
+	# Handle travel fields. Explicitly clear stale state when backend omits or nulls them.
+	if server_data.has("destination"):
+		client_data["traveling_destination"] = server_data["destination"] if server_data.destination != null else null
+	else:
+		client_data["traveling_destination"] = null
 
-	# Handle active expedition id.
+	if server_data.has("arrival"):
+		if server_data.arrival != null:
+			# Convert arrival timestamp to unix time
+			client_data["traveling"] = _parse_iso_timestamp(server_data["arrival"])
+		else:
+			client_data["traveling"] = 0.0
+	else:
+		client_data["traveling"] = 0.0
+
+	# Handle active expedition id and clear legacy state when missing.
 	if server_data.has("expedition_id") and server_data.expedition_id != null:
 		client_data["expedition"] = [int(server_data.expedition_id)]
 	elif server_data.has("active_expedition_id") and server_data.active_expedition_id != null:
 		client_data["expedition"] = [int(server_data.active_expedition_id)]
-
-	# Temporary fallback for old backend field.
-	if server_data.has("expedition_slide") and server_data.expedition_slide != null:
-		if not client_data.has("expedition"):
-			client_data["expedition"] = [int(server_data.expedition_slide)]
+	else:
+		client_data["expedition"] = []
 	
 	# Handle active elixir effects from server fields (effect/factor pairs)
 	if server_data.has("elixir_effect1") or server_data.has("elixir_effect2") or server_data.has("elixir_effect3"):
@@ -1252,9 +1205,6 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 			if not has_valid_elixir_id:
 				client_data["elixir"] = 1000  # Fallback item id for active elixir icon
 			client_data["elixir_effects"] = elixir_effects
-			print("[Transform] Active elixir from effect fields -> elixir=", client_data.get("elixir", 0),
-				" effects=", elixir_effects,
-				" until=", client_data.get("elixir_until", 0.0))
 		# Clean up individual fields
 		for i in range(1, 4):
 			client_data.erase("elixir_effect" + str(i))
@@ -1264,12 +1214,10 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	if server_data.has("enchanter") and server_data.enchanter is Array:
 		client_data["enchanter_effects"] = server_data.enchanter
 		client_data.erase("enchanter")
-		print("[Transform] enchanter -> enchanter_effects: ", client_data["enchanter_effects"])
 	
 	if server_data.has("vendor") and server_data.vendor is Array:
 		client_data["vendor_items"] = server_data.vendor
 		client_data.erase("vendor")
-		print("[Transform] vendor -> vendor_items: ", client_data["vendor_items"])
 	
 	# Handle timestamps (potion_until, elixir_until) - ISO 8601 strings from server
 	if server_data.has("potion_until") and server_data.potion_until != null:
@@ -1341,11 +1289,9 @@ func _parse_iso_timestamp(iso_string: Variant) -> float:
 	# Format: "2026-02-01T12:00:00+00:00"
 	var datetime_dict = Time.get_datetime_dict_from_datetime_string(iso_string, true)
 	if datetime_dict.is_empty():
-		print("Failed to parse ISO timestamp: ", iso_string)
 		return 0.0
 	
 	var unix_time = Time.get_unix_time_from_datetime_dict(datetime_dict)
-	print("Parsed ISO timestamp '", iso_string, "' -> ", unix_time)
 	return unix_time
 
 func load_all_characters(characters_data: Array):
@@ -1353,49 +1299,30 @@ func load_all_characters(characters_data: Array):
 	for char_data in characters_data:
 		var player = GameCurrentPlayer.new(char_data, self)
 		all_characters.append(player)
-	print("Loaded ", all_characters.size(), " characters")
 
 func load_character_from_server(character_data: Dictionary):
 	"""Load a single character from server data (WebSocket playerData response)"""
 	# Preserve server_day before transform (injected by LobbyPanel from server list)
 	var injected_server_day = int(character_data.get("server_day", 0))
-	var raw_quest_log = _extract_server_quest_log(character_data)
-	print("[QuestResume] load_character raw keys: ", character_data.keys())
-	print("[QuestResume] load_character raw quest_log entries: ", raw_quest_log.size())
 	
 	# Transform server data format to client format
 	var transformed_data = _transform_server_player_data(character_data)
 	var transformed_quest_log = transformed_data.get("quest_log", [])
-	print("[QuestResume] load_character transformed quest_log entries: ", transformed_quest_log.size() if transformed_quest_log is Array else 0)
-	if transformed_quest_log is Array and transformed_quest_log.size() > 0:
-		print("[QuestResume] load_character transformed quest_log: ", transformed_quest_log)
-	print("[LoadCharacter] transformed elixir=", transformed_data.get("elixir", 0),
-		" elixir_effects=", transformed_data.get("elixir_effects", []),
-		" elixir_until=", transformed_data.get("elixir_until", 0.0))
 	
 	all_characters.clear()
 	var player = GameCurrentPlayer.new(transformed_data, self)
 
 	# Single quest-log owner: GameInfo hydrates current_player.quest_log at load time.
 	player.quest_log = transformed_quest_log.duplicate(true) if transformed_quest_log is Array else []
-	print("[QuestResume] assigned player.quest_log entries: ", player.quest_log.size())
-	if player.quest_log.size() > 0:
-		print("[QuestResume] assigned player.quest_log: ", player.quest_log)
 	
 	# Force server_day from lobby server list — the transform/init loop may miss it
 	if injected_server_day > 0:
 		player.server_day = injected_server_day
 	
 	all_characters.append(player)
-	print("Loaded character from server: ", player.name, " (ID: ", player.character_id, ")")
-	print("  - server_day: ", player.server_day, " (injected: ", injected_server_day, ")")
-	print("  - Potion: ", player.potion, " (until: ", player.potion_until, ")")
-	print("  - Elixir: ", player.elixir, " (until: ", player.elixir_until, ")")
-	print("  - Elixir effects: ", player.elixir_effects)
 	
 	# Check for expired effects based on timestamps
-	if player.check_expired_effects():
-		print("  - Removed expired effects")
+	player.check_expired_effects()
 	
 	# Automatically select this character
 	current_character_id = player.character_id
@@ -1403,18 +1330,10 @@ func load_character_from_server(character_data: Dictionary):
 
 func select_character(character_id: int):
 	current_character_id = character_id
-	
-	if current_player:
-		print("Selected character: ", current_player.name, " (ID: ", character_id, ")")
-		# World data is now loaded from server via _load_character_world_data_from_server()
-		# called from load_character_from_server()
-	else:
-		print("ERROR: Character ID ", character_id, " not found!")
 
 func _load_character_world_data_from_server(char_data: Dictionary):
 	"""Load world data from server response (no need to search mock data)"""
 	if char_data.is_empty():
-		print("ERROR: Empty character data from server")
 		return
 	
 	# Load rankings if available - transform minimal ranking data to GamePlayer format
@@ -1498,7 +1417,6 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 		
 		# Merge arena opponents into enemy_players (overwrite duplicates)
 		_merge_arena_into_enemies(arena_data)
-		print("Loaded ", arena_opponents.size(), " arena opponents")
 	
 	# Load chat messages if available (new format: local_chat and global_chat arrays)
 	chat_messages.clear()
@@ -1506,7 +1424,6 @@ func _load_character_world_data_from_server(char_data: Dictionary):
 		_load_chat_array(char_data.local_chat, "local")
 	if char_data.has("global_chat") and char_data.global_chat is Array:
 		_load_chat_array(char_data.global_chat, "global")
-	print("Loaded ", chat_messages.size(), " chat messages")
 
 func _merge_arena_into_enemies(arena_data: Array):
 	"""Merge arena opponents into enemy_players, overwriting any duplicates"""
@@ -1540,7 +1457,6 @@ func load_enemy_players_data(players_data: Array):
 	for player_data in players_data:
 		var player = GamePlayer.new(player_data, self)
 		enemy_players.append(player)
-	print("Loaded ", enemy_players.size(), " enemy players")
 	update_rankings()
 
 func _load_chat_array(messages_data: Array, chat_type: String):
@@ -1573,7 +1489,6 @@ func load_chat_messages_data(messages_data: Array):
 	chat_messages.clear()
 	for message_data in messages_data:
 		chat_messages.append(ChatMessage.new(message_data))
-	print("Loaded ", chat_messages.size(), " chat messages")
 
 func update_rankings():
 	"""Build unified rankings list: enemy_players + current_player"""
@@ -1596,7 +1511,6 @@ func update_rankings():
 	# Sort by rank (ascending - rank 1 first)
 	rankings_players.sort_custom(func(a, b): return a.rank < b.rank)
 	
-	print("Rankings updated: ", rankings_players.size(), " players (current player included)")
 
 func apply_combat_header_updates(combat: CombatResponse):
 	"""Apply optional header-level combat results (honor, etc.) to runtime player lists."""
@@ -1665,7 +1579,6 @@ func get_quest_clicked_options(quest_id: int) -> Array[int]:
 			continue
 		clicked_options.append(option_id)
 
-	print("[QuestResume] get_quest_clicked_options quest_id=", quest_id, " -> ", clicked_options)
 
 	return clicked_options
 
@@ -1681,10 +1594,8 @@ func get_last_quest_option_id(quest_id: int) -> int:
 			continue
 		var option_id = int(entry.get("option_id", 0))
 		if option_id > 0:
-			print("[QuestResume] get_last_quest_option_id quest_id=", quest_id, " -> ", option_id)
 			return option_id
 
-	print("[QuestResume] get_last_quest_option_id quest_id=", quest_id, " -> 0")
 	return 0
 
 func append_quest_log_action(quest_id: int, option_id: int, finished: bool = false):
@@ -1699,7 +1610,6 @@ func append_quest_log_action(quest_id: int, option_id: int, finished: bool = fal
 		"finished": bool(finished)
 	}
 	current_player.quest_log.append(entry)
-	print("[QuestLog] append: ", entry, " | total=", current_player.quest_log.size())
 
 func complete_quest(quest_id: int, clicked_options: Array[int] = [], remove_from_daily: bool = true):
 	if not current_player:

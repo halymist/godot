@@ -39,17 +39,13 @@ func _ready():
 	if display_mode == DisplayMode.PLAYER:
 		avatar_button.pressed.connect(_on_avatar_pressed)
 		# Wait for game_ready before displaying player
-		print("CharacterDisplay: _ready() called")
 		if UIManager.instance:
 			# Check if game is already ready
 			if UIManager.instance.game_is_ready:
-				print("CharacterDisplay: Game already ready, calling setup immediately")
 				call_deferred("_setup")
 			else:
-				print("CharacterDisplay: Connecting to game_ready signal")
 				UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 		else:
-			print("CharacterDisplay: ERROR - UIManager.instance is null!")
 			call_deferred("_setup")
 	else:
 		avatar_button.visible = false
@@ -59,7 +55,6 @@ func _setup():
 	GameInfo.refresh_all_perks()
 	if GameInfo.current_player:
 		display_player()
-	print("CharacterDisplay: Setup complete")
 
 func display_player():
 	"""Display the current player"""
@@ -157,7 +152,7 @@ func refresh_active_effects():
 			icon.setup(elixir_res.icon, {"type": "elixir", "id": displayed_character.elixir, "expire_until": elixir_until})
 			active_perks_display.add_child(icon)
 		else:
-			print("[CharacterDisplay] WARNING: Unable to resolve elixir resource/icon for active elixir id=", displayed_character.elixir)
+			pass
 	
 	# Add equipped potion second if any
 	if displayed_character.potion > 0:

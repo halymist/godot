@@ -1,5 +1,7 @@
 extends Button
 
+const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+
 @export var name_label: Label
 @export var description_label: Label
 @export var upgrade_button: Button
@@ -37,26 +39,14 @@ func set_talent_data(talent_name: String, description: String, factor: float, po
 	
 	# Replace '*' (or '*%') with current/next values from talent factor.
 	var processed_description = description
-	if factor != 0 and "*%" in description:
+	if factor != 0 and ("*%" in description or "*" in description):
 		var current_effect = int(points * factor)
-		var effect_text = ""
 		if points >= max_points:
-			effect_text = str(current_effect) + "%"
+			processed_description = EFFECT_FORMATTER.format_with_factor(description, current_effect)
 		else:
 			var next_points = min(points + 1, max_points)
 			var next_effect = int(next_points * factor)
-			effect_text = str(current_effect) + "% ->" + str(next_effect) + "%"
-		processed_description = description.replace("*%", effect_text)
-	elif factor != 0 and "*" in description:
-		var current_effect_plain = int(points * factor)
-		var effect_text_plain = ""
-		if points >= max_points:
-			effect_text_plain = str(current_effect_plain)
-		else:
-			var next_points_plain = min(points + 1, max_points)
-			var next_effect_plain = int(next_points_plain * factor)
-			effect_text_plain = str(current_effect_plain) + " -> " + str(next_effect_plain)
-		processed_description = description.replace("*", effect_text_plain)
+			processed_description = EFFECT_FORMATTER.format_with_progress(description, current_effect, next_effect)
 	
 	description_label.text = processed_description
 	talent_ref = talent_reference
@@ -71,7 +61,6 @@ func _on_button_pressed():
 	visible = false
 
 func _on_upgrade_button_pressed():
-	print("Upgrade button pressed for talent: ", name_label.text)
 	Websocket.add_talent(talent_ref.talentID)
 	talent_ref.upgrade_talent()
 	talents_container.update_title_label()

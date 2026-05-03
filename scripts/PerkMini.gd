@@ -1,5 +1,7 @@
 extends Control
 
+const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+
 @export var icon_texture: TextureRect
 
 var meta_data: Dictionary
@@ -34,12 +36,7 @@ func _format_time_remaining(expire_until: float) -> String:
 func _format_effect_line(effect: EffectResource, factor_value: float) -> String:
 	if not effect:
 		return ""
-
-	var effect_line = effect.description
-	var parsed_factor = int(factor_value)
-	if "*" in effect_line:
-		effect_line = effect_line.replace("*", str(parsed_factor))
-	return effect_line
+	return EFFECT_FORMATTER.format_with_factor(effect.description, factor_value)
 
 func _append_effect_lines(content: String, effect_map: Dictionary) -> String:
 	for effect_id in effect_map:
@@ -58,14 +55,10 @@ func _on_hover():
 			var perk = meta_data.perk
 			content = perk.perk_name
 			if perk.effect1_description != "":
-				var line1 = perk.effect1_description
-				if "*" in line1:
-					line1 = line1.replace("*", str(int(perk.factor1)))
+				var line1 = EFFECT_FORMATTER.format_with_factor(perk.effect1_description, perk.factor1)
 				content += "\n" + line1
 			if perk.effect2_description != "":
-				var line2 = perk.effect2_description
-				if "*" in line2:
-					line2 = line2.replace("*", str(int(perk.factor2)))
+				var line2 = EFFECT_FORMATTER.format_with_factor(perk.effect2_description, perk.factor2)
 				content += "\n" + line2
 		
 		"blessing":

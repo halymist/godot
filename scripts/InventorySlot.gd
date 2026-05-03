@@ -116,7 +116,6 @@ func _can_drop_data(_pos, data):
 	var source_is_utility = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= ALCHEMIST_SLOT_3
 	var target_is_utility = slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3
 	
-	print("DEBUG _can_drop_data: Target slot_id=", slot_id, " slot_type=", slot_type, " | Source slot_id=", source_slot_id, " | Dragged item type=", item_type)
 
 	# Utility source safety: when dragging out of utility slots, target must be empty.
 	# This prevents hidden swaps/vanish cases when returning visual-only utility items.
@@ -190,18 +189,14 @@ func _can_drop_data(_pos, data):
 	
 	# If slot is empty, we're good
 	if is_slot_empty():
-		print("DEBUG: Target slot is empty, allowing drop")
 		return true
 	
 	# If slot has an item, check if that item can go back to source
 	var existing_item_data = get_item_data()
-	print("DEBUG: Target slot has item, existing_item_data = ", existing_item_data)
 	if not existing_item_data:
-		print("DEBUG: No existing item data found, allowing drop")
 		return true
 		
 	var existing_item_type = existing_item_data.type
-	print("DEBUG: Existing item type = ", existing_item_type)
 	
 	# Special case: Don't allow swapping equipment items of different types
 	# Equipment slots are 1-9, and each has a specific type requirement
@@ -214,8 +209,6 @@ func _can_drop_data(_pos, data):
 	# If source is equipment (1-9) and target has an item, types must match
 	if source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX:
 		# Source is equipment slot - the item types must match for a swap
-		print("DEBUG: Equipment->bag swap check. Source slot: ", source_slot_id, " Target slot: ", slot_id)
-		print("DEBUG: Dragged item type: ", item_type, " Existing item type: ", existing_item_type)
 		
 		# Get the required type for the source equipment slot
 		var required_type = _required_equipment_type_for_slot(source_slot_id)
@@ -224,9 +217,7 @@ func _can_drop_data(_pos, data):
 		
 		# Both items must match the equipment slot's required type
 		if normalized_dragged_type != required_type or normalized_existing_type != required_type:
-			print("DEBUG: REJECTING - Types don't match required type: ", required_type)
 			return false
-		print("DEBUG: ALLOWING - Both items match required type: ", required_type)
 	
 	# For all other swaps (bag to bag, utility slots, etc.), check if existing item can go to source
 	if source_container and source_container.has_method("is_valid_item_for_slot"):
@@ -346,7 +337,6 @@ func _drop_data(_pos, data):
 		if source_container:
 			source_container.clear_slot()
 
-	print("Updated GameInfo: item moved to slot ", slot_id)
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
 		# Refresh stats if equipment slots (1-9) are involved
@@ -360,17 +350,14 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 	
 	# Check if player has enough gold
 	if GameInfo.current_player.silver < purchase_price:
-		print("Not enough gold to purchase item! Need ", purchase_price, " but have ", GameInfo.current_player.silver)
 		return
 	
 	# Check if target slot is empty
 	if not is_slot_empty():
-		print("Target slot must be empty to purchase item")
 		return
 	
 	# Deduct silver
 	UIManager.instance.update_silver(-purchase_price)
-	print("Purchased ", vendor_item.item_name, " for ", purchase_price, " silver. Remaining silver: ", GameInfo.current_player.silver)
 	
 	Websocket.buy_item(vendor_item.id, slot_id)
 	
@@ -388,7 +375,6 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 		for i in range(vendor_panel.vendor_items.size()):
 			if vendor_panel.vendor_items[i].id == vendor_item.id:
 				vendor_panel.vendor_items.remove_at(i)
-				print("Removed item from vendor inventory at index ", i)
 				break
 	
 	# Place in visual slot
@@ -401,12 +387,10 @@ func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
 		var current_panel = UIManager.instance.current_panel
 		if current_panel and current_panel.name == "VendorPanel" and current_panel.has_method("trigger_purchase_greeting"):
 			current_panel.trigger_purchase_greeting()
-	print("Item purchased and added to slot ", slot_id)
 
 func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_container):
 	# Only accept items from equipment (0-9) or bag (10-14) slots
 	if source_slot_id < 0 or source_slot_id > 14:
-		print("Can only sell items from equipment or bag slots")
 		return
 	
 	# Find the item in bag_slots by its bag_slot_id
@@ -417,12 +401,10 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 			break
 	
 	if not item_in_bag:
-		print("Item not found in bag_slots")
 		return
 	
 	# Add silver for selling the item
 	UIManager.instance.update_silver(item_in_bag.price)
-	print("Sold ", item_in_bag.item_name, " for ", item_in_bag.price, " silver. Total silver: ", GameInfo.current_player.silver)
 	
 	Websocket.sell_item(source_slot_id)
 	
@@ -440,10 +422,8 @@ func handle_vendor_sell(_item: GameInfo.Item, source_slot_id: int, source_contai
 		var current_panel = UIManager.instance.current_panel
 		if current_panel and current_panel.name == "VendorPanel" and current_panel.has_method("trigger_sell_greeting"):
 			current_panel.trigger_sell_greeting()
-	print("Item sold and removed from inventory")
 
-func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, gem_source_slot_id: int, gem_source_container):
-	print("Socketing gem ", gem_item.item_name, " into ", target_item.item_name)
+func handle_gem_socketing(gem_item: GameInfo.Item, _target_item: GameInfo.Item, gem_source_slot_id: int, gem_source_container):
 	
 	var target_item_in_array = null
 	for game_item in GameInfo.current_player.bag_slots:
@@ -452,7 +432,6 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 			break
 	
 	if not target_item_in_array:
-		print("Error: Target item not found in bag_slots")
 		return
 	
 	Websocket.socket_item(gem_source_slot_id, slot_id)
@@ -460,14 +439,12 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 	# Socket the gem (store gem's item ID and day value)
 	target_item_in_array.socket_id = gem_item.id
 	target_item_in_array.socket_day = gem_item.day
-	print("Socketed gem ID ", gem_item.id, " with day ", gem_item.day, " into item")
 	
 	# Remove the gem from the player's inventory
 	for i in range(GameInfo.current_player.bag_slots.size()):
 		var game_item = GameInfo.current_player.bag_slots[i]
 		if game_item.bag_slot_id == gem_source_slot_id:
 			GameInfo.current_player.bag_slots.remove_at(i)
-			print("Removed gem from slot ", gem_source_slot_id)
 			break
 	
 	# Clear the source slot visually
@@ -484,8 +461,7 @@ func handle_gem_socketing(gem_item: GameInfo.Item, target_item: GameInfo.Item, g
 		if slot_id <= 8:
 			UIManager.instance.refresh_stats()
 
-func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.Item, hammer_source_slot_id: int, hammer_source_container):
-	print("Tempering ", target_item.item_name, " with ", hammer_item.item_name)
+func handle_hammer_tempering(_hammer_item: GameInfo.Item, _target_item: GameInfo.Item, hammer_source_slot_id: int, hammer_source_container):
 	
 	var target_item_in_array = null
 	for game_item in GameInfo.current_player.bag_slots:
@@ -494,7 +470,6 @@ func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.I
 			break
 	
 	if not target_item_in_array:
-		print("Error: Target item not found in bag_slots")
 		return
 	
 	Websocket.use_hammer(hammer_source_slot_id, slot_id)
@@ -504,14 +479,12 @@ func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.I
 	# so we only need to bump the counter — the displayed stats follow automatically.
 	target_item_in_array.tempered += 1
 	
-	print("Tempered item to level ", target_item_in_array.tempered)
 	
 	# Remove the hammer from the player's inventory
 	for i in range(GameInfo.current_player.bag_slots.size()):
 		var game_item = GameInfo.current_player.bag_slots[i]
 		if game_item.bag_slot_id == hammer_source_slot_id:
 			GameInfo.current_player.bag_slots.remove_at(i)
-			print("Removed hammer from slot ", hammer_source_slot_id)
 			break
 	
 	# Clear the source slot visually
@@ -528,8 +501,7 @@ func handle_hammer_tempering(hammer_item: GameInfo.Item, target_item: GameInfo.I
 		if slot_id <= 8:
 			UIManager.instance.refresh_stats()
 
-func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.Item, scroll_source_slot_id: int, scroll_source_container):
-	print("Enchanting ", target_item.item_name, " with ", scroll_item.item_name)
+func handle_scroll_enchanting(scroll_item: GameInfo.Item, _target_item: GameInfo.Item, scroll_source_slot_id: int, scroll_source_container):
 	
 	var target_item_in_array = null
 	for game_item in GameInfo.current_player.bag_slots:
@@ -538,7 +510,6 @@ func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.
 			break
 	
 	if not target_item_in_array:
-		print("Error: Target item not found in bag_slots")
 		return
 	
 	Websocket.use_scroll(scroll_source_slot_id, slot_id)
@@ -546,9 +517,7 @@ func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.
 	# Apply enchantment: set effect_overdrive to the scroll's effect_id
 	if scroll_item.effect_id > 0:
 		target_item_in_array.effect_overdrive = scroll_item.effect_id
-		print("Applied enchantment effect_overdrive: ", scroll_item.effect_id)
 	else:
-		print("Warning: Scroll has no effect_id")
 		return
 	
 	# Remove the scroll from the player's inventory
@@ -556,7 +525,6 @@ func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.
 		var game_item = GameInfo.current_player.bag_slots[i]
 		if game_item.bag_slot_id == scroll_source_slot_id:
 			GameInfo.current_player.bag_slots.remove_at(i)
-			print("Removed scroll from slot ", scroll_source_slot_id)
 			break
 	
 	# Clear the source slot visually
@@ -572,7 +540,6 @@ func handle_scroll_enchanting(scroll_item: GameInfo.Item, target_item: GameInfo.
 		# Refresh stats if the target item is equipped (slots 0-8)
 		if slot_id <= 8:
 			UIManager.instance.refresh_stats()
-	print("Gem socketing complete")
 
 func is_valid_item_for_slot(item_type: String) -> bool:
 	var normalized_item_type = _normalize_equipment_type(item_type)
@@ -704,10 +671,6 @@ func handle_double_click(item: GameInfo.Item):
 	"""Handle double-click on item - unified with drag-and-drop visual updates"""
 	var current_utility = UIManager.instance.current_panel
 	
-	print("\n=== DOUBLE CLICK DEBUG ===")
-	print("Item: ", item.item_name, " (Type: ", item.type, ", Slot: ", item.bag_slot_id, ")")
-	print("Current Panel: ", current_utility.name if current_utility else "null")
-	print("==========================\n")
 	
 	# Check if item is a consumable (Potion or Elixir) in bag - consume it
 	# Only consume on Character panel (not utility panels like Vendor, Blacksmith, etc.)
@@ -796,7 +759,6 @@ func handle_double_click(item: GameInfo.Item):
 					var target_slot = _find_slot_by_id(bag_slot_id)
 					if target_slot and target_slot.is_slot_empty():
 						UIManager.instance.update_silver(-buy_price)
-						print("VENDOR: Purchased item ID ", item.id, " for ", buy_price, " silver")
 						
 						Websocket.buy_item(item.id, bag_slot_id)
 						
@@ -817,7 +779,6 @@ func handle_double_click(item: GameInfo.Item):
 						
 						GameInfo.current_player.bag_slots.append(new_item)
 						target_slot.place_item_in_slot(new_item)
-						print("VENDOR: Item added to bag slot ", bag_slot_id)
 						
 						UIManager.instance.refresh_bags()
 						
@@ -844,7 +805,6 @@ func handle_double_click(item: GameInfo.Item):
 				return
 
 func _consume_item(item: GameInfo.Item):
-	print("Consuming item: ", item.item_name, " (Type: ", item.type, ")")
 	if item.type == "Potion":
 		Websocket.use_potion(item.bag_slot_id)
 		GameInfo.current_player.potion = item.id

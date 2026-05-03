@@ -48,7 +48,6 @@ func _on_visibility_changed():
 
 func _setup():
 	if not GameInfo.current_player:
-		print("VillagePanel: No character selected yet")
 		return
 	
 	_load_village_background()

@@ -14,7 +14,6 @@ var connected: bool = false
 signal player_data_received(character_data: Dictionary)
 
 func _ready():
-	print("Websocket ready!")
 	set_process(false)  # Only process when connected
 
 func _process(_delta):
@@ -33,9 +32,8 @@ func _process(_delta):
 	elif state == WebSocketPeer.STATE_CLOSING:
 		pass
 	elif state == WebSocketPeer.STATE_CLOSED:
-		var code = ws.get_close_code()
-		var reason = ws.get_close_reason()
-		print("[WebSocket] Closed with code: %d, reason: %s" % [code, reason])
+		var _code = ws.get_close_code()
+		var _reason = ws.get_close_reason()
 		connected = false
 		set_process(false)
 
@@ -45,10 +43,8 @@ func connect_to_server():
 	var err = ws.connect_to_url(ws_url)
 	
 	if err != OK:
-		print("[WebSocket] Failed to connect: ", err)
 		return false
 	
-	print("[WebSocket] Connecting to ", ws_url)
 	set_process(true)
 	
 	# Wait for connection
@@ -58,14 +54,11 @@ func connect_to_server():
 		var state = ws.get_ready_state()
 		if state == WebSocketPeer.STATE_OPEN:
 			connected = true
-			print("[WebSocket] Connected!")
 			return true
 		elif state == WebSocketPeer.STATE_CLOSED:
-			print("[WebSocket] Connection failed")
 			return false
 		await get_tree().create_timer(0.1).timeout
 	
-	print("[WebSocket] Connection timeout")
 	return false
 
 func disconnect_from_server():
@@ -75,12 +68,10 @@ func disconnect_from_server():
 		ws = null
 		connected = false
 		set_process(false)
-		print("[WebSocket] Disconnected")
 
 func join_lobby(server_id: int, character_id: int, token: String):
 	"""Send joinLobby message to server"""
 	if not connected:
-		print("[WebSocket] Not connected! Cannot send joinLobby")
 		return
 	
 	var payload = {
@@ -95,24 +86,20 @@ func join_lobby(server_id: int, character_id: int, token: String):
 	}
 	
 	var json = JSON.stringify(message)
-	print("[WebSocket] Sending joinLobby: ", json)
 	ws.send_text(json)
 
 func _handle_message(message: String):
 	"""Handle incoming WebSocket messages"""
-	print("[WebSocket] Received: ", message)
 	
 	var json = JSON.new()
 	var error = json.parse(message)
 	
 	if error != OK:
-		print("[WebSocket] Failed to parse JSON: ", json.get_error_message())
 		return
 	
 	var data = json.get_data()
 	
 	if typeof(data) != TYPE_DICTIONARY:
-		print("[WebSocket] Invalid message format")
 		return
 	
 	var function_name = data.get("function", "")
@@ -183,16 +170,14 @@ func _handle_message(message: String):
 		"error":
 			_handle_error(data)
 		_:
-			print("[WebSocket] Unknown function: ", function_name)
+			pass
 
 func _handle_player_data(message: Dictionary):
 	"""Handle playerData response"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid playerData format")
 		return
 	
 	var character_data = message.data[0]
-	print("[WebSocket] Player data received for character: ", character_data.get("character_id", "unknown"))
 	
 	# Emit signal with character data
 	player_data_received.emit(character_data)
@@ -200,13 +185,11 @@ func _handle_player_data(message: Dictionary):
 func _handle_start_expedition_response(message: Dictionary):
 	"""Handle startExpeditionResponse - server returns {data: [{started: true, expedition_id: X, arrival: timestamp}]}"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid startExpeditionResponse format")
 		return
 	
 	var data = message.data[0]
 	
 	if not data.get("started", false):
-		print("[WebSocket] Expedition start failed")
 		return
 	
 	var expedition_id = int(data.get("expedition_id", data.get("active_expedition_id", 0)))
@@ -216,7 +199,6 @@ func _handle_start_expedition_response(message: Dictionary):
 			expedition_id = expedition.expedition_id
 	var arrival = data.get("arrival", "")
 	
-	print("[WebSocket] Expedition started - expedition_id: ", expedition_id, ", arrival: ", arrival)
 	
 	# Pass to MapPanel to handle the travel timer with server-provided arrival time
 	if UIManager.instance and UIManager.instance.map_panel:
@@ -225,7 +207,6 @@ func _handle_start_expedition_response(message: Dictionary):
 func _handle_start_expedition_node_response(message: Dictionary):
 	"""Handle node start response - server resolves quest_id and arrival for selected node."""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid startExpeditionNodeResponse format")
 		return
 
 	var data = message.data[0]
@@ -235,19 +216,16 @@ func _handle_start_expedition_node_response(message: Dictionary):
 	var arrival = str(data.get("arrival", ""))
 	var msg = str(data.get("message", ""))
 
-	print("[WebSocket] Expedition node response: success=", success, " node_id=", node_id, " quest_id=", quest_id, " arrival=", arrival)
 
 	if UIManager.instance and UIManager.instance.expedition_panel and UIManager.instance.expedition_panel.has_method("handle_node_start_response"):
 		UIManager.instance.expedition_panel.handle_node_start_response(success, node_id, quest_id, arrival, msg)
 
-func _handle_expedition_option_response(message: Dictionary):
+func _handle_expedition_option_response(_message: Dictionary):
 	"""Legacy expedition slide responses are no longer used by the graph flow."""
-	print("[WebSocket] Ignoring legacy expeditionOptionResponse: ", message)
 
 func _handle_chat_message(message: Dictionary, chat_type: String):
 	"""Handle incoming chat messages (localChat or globalChat)"""
 	if not message.has("data") or not message.data is Array:
-		print("[WebSocket] Invalid chat message format")
 		return
 	
 	for chat_data in message.data:
@@ -265,7 +243,6 @@ func _handle_chat_message(message: Dictionary, chat_type: String):
 		# Add to GameInfo chat messages
 		var chat_message = GameInfo.ChatMessage.new(chat_message_data)
 		GameInfo.chat_messages.append(chat_message)
-		print("[WebSocket] Chat message added: ", sender_name, ": ", chat_data.get("message", ""))
 	
 	# Notify ChatPanel (ChatOverlay) to refresh display
 	if UIManager.instance and UIManager.instance.chat_panel:
@@ -306,7 +283,6 @@ func _unix_to_iso(unix_timestamp: int) -> String:
 func _handle_combat_log(message: Dictionary):
 	"""Handle combatLog response from server"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid combatLog format")
 		# Reset fight button on error
 		if UIManager.instance and UIManager.instance.arena_panel:
 			UIManager.instance.arena_panel.reset_fight_button()
@@ -315,9 +291,8 @@ func _handle_combat_log(message: Dictionary):
 	var combat_data = message.data[0]
 	_present_combat_log(combat_data, "combatLog")
 
-func _present_combat_log(combat_data: Dictionary, source: String):
+func _present_combat_log(combat_data: Dictionary, _source: String):
 	"""Load combat payload into GameInfo and show the combat panel."""
-	print("[WebSocket] Combat payload received from ", source)
 
 	# Create CombatResponse from server data
 	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
@@ -336,7 +311,6 @@ func _present_combat_log(combat_data: Dictionary, source: String):
 func _handle_quest_option_response(message: Dictionary):
 	"""Handle questOptionResponse from server"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid questOptionResponse format")
 		return
 	
 	var response = message.data[0]
@@ -347,9 +321,9 @@ func _handle_quest_option_response(message: Dictionary):
 	var quest_end = bool(response.get("quest_end", false))
 	
 	if success:
-		print("[WebSocket] Quest option success: ", msg, " | combat_won=", combat_won, " quest_end=", quest_end)
+		pass
 	else:
-		print("[WebSocket] Quest option failed: ", msg, " | combat_won=", combat_won, " quest_end=", quest_end)
+		pass
 
 	if response.has("depleted_health") and GameInfo.current_player:
 		GameInfo.current_player.depleted_health = int(response.get("depleted_health", GameInfo.current_player.depleted_health))
@@ -377,12 +351,10 @@ func _handle_quest_option_response(message: Dictionary):
 
 	if quest_panel and quest_panel.has_method("has_pending_combat_option") and quest_panel.has_pending_combat_option():
 		if is_failed_combat_end and quest_panel.has_method("show_quest_failure"):
-			print("[WebSocket] Missing combat payload on failed combat end; showing failure directly")
 			quest_panel.show_quest_failure(GameInfo.pending_quest_failure_message)
 			GameInfo.pending_quest_failure_message = ""
 		else:
 			push_error("[WebSocket] questOptionResponse is missing required combat payload for a pending combat option")
-			print("[WebSocket] Full response: ", response)
 
 func _resolve_current_quest_failure_text(default_message: String) -> String:
 	var fallback = default_message if String(default_message) != "" else "Combat lost."
@@ -402,68 +374,61 @@ func _resolve_current_quest_failure_text(default_message: String) -> String:
 func _handle_quest_cancel_response(message: Dictionary):
 	"""Handle questCancelResponse from server"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid questCancelResponse format")
 		return
 	
 	var response = message.data[0]
-	var success = response.get("success", false)
-	var msg = response.get("message", "")
+	var _success = response.get("success", false)
+	var _msg = response.get("message", "")
 	
-	print("[WebSocket] Quest cancel response: success=", success, " message=", msg)
 
 func _handle_accept_quest_response(message: Dictionary):
 	"""Handle acceptQuestResponse from server"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid acceptQuestResponse format")
 		return
 	
 	var response = message.data[0]
 	var success = response.get("success", false)
-	var msg = response.get("message", "")
+	var _msg = response.get("message", "")
 	
 	if success:
-		print("[WebSocket] Quest accepted: ", msg)
+		pass
 	else:
-		print("[WebSocket] Quest accept failed: ", msg)
+		pass
 
-func _handle_simple_response(message: Dictionary, action_name: String):
+func _handle_simple_response(message: Dictionary, _action_name: String):
 	"""Generic handler for optimistic actions - log result, sync silver if provided"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid ", action_name, "Response format")
 		return
 
 	var response = message.data[0]
 	var success = response.get("success", false)
-	var msg = response.get("message", "")
+	var _msg = response.get("message", "")
 
 	if success:
-		print("[WebSocket] ", action_name, " success: ", msg)
+		pass
 	else:
-		print("[WebSocket] ", action_name, " FAILED: ", msg)
+		pass
 
 func _handle_sell_item_response(message: Dictionary):
 	"""Handle sellItemResponse - server may return authoritative silver"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid sellItemResponse format")
 		return
 
 	var response = message.data[0]
 	var success = response.get("success", false)
-	var msg = response.get("message", "")
+	var _msg = response.get("message", "")
 
 	if success:
-		print("[WebSocket] sellItem success: ", msg)
+		pass
 	else:
-		print("[WebSocket] sellItem FAILED: ", msg)
+		pass
 
 func _handle_load_enemy_response(message: Dictionary):
 	"""Handle loadEnemyResponse - server returns enemy character data"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Invalid loadEnemyResponse format")
 		return
 
 	var enemy_data = message.data[0]
-	print("[WebSocket] Enemy data received: ", enemy_data.get("name", "unknown"))
 
 	# Create enemy player object and show enemy panel
 	var enemy = GameInfo.GamePlayer.new(enemy_data, GameInfo)
@@ -474,7 +439,6 @@ func _handle_load_enemy_response(message: Dictionary):
 func _handle_rankings_data(message: Dictionary):
 	"""Handle rankingsData - server returns array of minimal ranking entries"""
 	if not message.has("data") or not message.data is Array:
-		print("[WebSocket] Invalid rankingsData format")
 		return
 
 	var players_data = message.data
@@ -526,12 +490,10 @@ func _handle_rankings_data(message: Dictionary):
 func _handle_error(message: Dictionary):
 	"""Handle server error messages"""
 	if not message.has("data") or not message.data is Array or message.data.size() == 0:
-		print("[WebSocket] Error with no data")
 		return
 
 	var error_data = message.data[0]
-	var msg = error_data.get("message", "Unknown error")
-	print("[WebSocket] Server error: ", msg)
+	var _msg = error_data.get("message", "Unknown error")
 
 # ============================================
 # WEBSOCKET API - Game Actions
@@ -540,7 +502,6 @@ func _handle_error(message: Dictionary):
 func send(action: String, payload: Dictionary):
 	"""Send a WebSocket action to the server"""
 	if not connected or not ws:
-		print("[WS] Not connected! Cannot send action: ", action)
 		return
 	
 	# Build message with action as function name
@@ -551,7 +512,6 @@ func send(action: String, payload: Dictionary):
 		message[key] = payload[key]
 	
 	var json = JSON.stringify(message)
-	print("[WS] Sending ", action, ": ", json)
 	ws.send_text(json)
 
 # ============================================

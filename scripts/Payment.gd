@@ -55,12 +55,12 @@ func _ready():
 # =============================================================================
 
 func _init_stripe_payment():
+	pass
 	# Placeholder for Stripe setup (e.g., load JS, set up bridge)
-	print("[Billing] Stripe payment initialized (stub)")
 
 func _on_stripe_button_pressed():
+	pass
 	# Placeholder for Stripe payment logic
-	print("[Billing] Stripe payment button pressed (stub)")
 	# In production, use JavaScript.eval() to call Stripe.js or your backend
 
 # =============================================================================
@@ -73,7 +73,6 @@ func _init_google_billing():
 		# It registers a class_name so we can instantiate it dynamically.
 		var script = load("res://addons/GodotGooglePlayBilling/BillingClient.gd")
 		if script == null:
-			print("[Billing] GodotGooglePlayBilling plugin not found")
 			return
 		billing = script.new()
 	else:
@@ -87,64 +86,57 @@ func _init_google_billing():
 	billing.consume_purchase_response.connect(_on_consume_purchase_response)
 	add_child(billing)
 	billing.start_connection()
-	print("[Billing] Google Play — starting connection...")
 
 func _on_billing_connected():
-	print("[Billing] Connected! Querying product details...")
 	billing_ready = true
 	# ProductType.INAPP = 0
 	billing.query_product_details(PackedStringArray(PRODUCT_IDS), 0)
 
 func _on_billing_disconnected():
-	print("[Billing] Disconnected")
 	billing_ready = false
 
-func _on_billing_connect_error(response_code: int, debug_message: String):
-	print("[Billing] Connection error: ", response_code, " - ", debug_message)
+func _on_billing_connect_error(_response_code: int, _debug_message: String):
 	billing_ready = false
 
 func _on_query_product_details_response(query_result: Dictionary):
 	# BillingResponseCode.OK = 0
 	if query_result.get("response_code", -1) == 0:
-		print("[Billing] Product details loaded: ", query_result.get("product_details", []).size(), " products")
+		pass
 	else:
-		print("[Billing] Product details query failed: ", query_result.get("response_code", -1), " - ", query_result.get("debug_message", ""))
+		pass
 
 func _on_purchase_updated(result: Dictionary):
 	if result.get("response_code", -1) == 0:
-		print("[Billing] Purchase updated")
 		for purchase in result.get("purchases", []):
 			_process_purchase(purchase)
 	else:
-		print("[Billing] Purchase error: ", result.get("response_code", -1), " - ", result.get("debug_message", ""))
+		pass
 
 func _process_purchase(purchase: Dictionary):
 	# PurchaseState.PURCHASED = 1
 	if purchase.get("purchase_state", 0) == 1:
-		print("[Billing] Consuming purchase token: ", purchase.get("purchase_token", ""))
 		billing.consume_purchase(purchase.purchase_token)
 	# PurchaseState.PENDING = 2
 	elif purchase.get("purchase_state", 0) == 2:
-		print("[Billing] Purchase pending, waiting for completion...")
+		pass
 
 func _on_consume_purchase_response(result: Dictionary):
 	if result.get("response_code", -1) == 0:
-		print("[Billing] Purchase consumed, token: ", result.get("token", ""))
+		pass
 		# TODO: Send purchase token to server for verification & mushroom grant
 	else:
-		print("[Billing] Consume failed: ", result.get("response_code", -1), " - ", result.get("debug_message", ""))
+		pass
 
 func _purchase_google(product_id: String):
 	if not billing_ready:
-		print("[Billing] Not connected, retrying...")
 		if billing:
 			billing.start_connection()
 		return
 	var result = billing.purchase(product_id)
 	if result.get("response_code", -1) == 0:
-		print("[Billing] Purchase flow launched for: ", product_id)
+		pass
 	else:
-		print("[Billing] Failed to launch: ", result.get("response_code", -1), " - ", result.get("debug_message", ""))
+		pass
 
 # =============================================================================
 # APPLE IN-APP PURCHASES (iOS)
@@ -152,28 +144,24 @@ func _purchase_google(product_id: String):
 
 func _init_apple_billing():
 	if not Engine.has_singleton("InAppStore"):
-		print("[Billing] InAppStore singleton not found — iOS IAP unavailable")
 		return
 
 	var store = Engine.get_singleton("InAppStore")
 	# Request product info from App Store
 	var result = store.request_product_info({"product_ids": PRODUCT_IDS})
 	if result != OK:
-		print("[Billing] iOS product info request failed")
 		return
 	billing_ready = true
-	print("[Billing] Apple IAP — requesting product info...")
 
 func _purchase_apple(product_id: String):
 	if not Engine.has_singleton("InAppStore"):
-		print("[Billing] InAppStore not available")
 		return
 	var store = Engine.get_singleton("InAppStore")
 	var result = store.purchase({"product_id": product_id})
 	if result != OK:
-		print("[Billing] iOS purchase failed to launch for: ", product_id)
+		pass
 	else:
-		print("[Billing] iOS purchase flow launched for: ", product_id)
+		pass
 
 func _process_apple():
 	"""Call this from _process or a timer to poll iOS purchase results."""
@@ -182,13 +170,12 @@ func _process_apple():
 	var store = Engine.get_singleton("InAppStore")
 	while store.get_pending_event_count() > 0:
 		var event = store.pop_pending_event()
-		print("[Billing] iOS event: ", event)
 		if event.type == "purchase":
 			if event.result == "ok":
-				print("[Billing] iOS purchase OK: ", event.product_id)
+				pass
 				# TODO: Send receipt to server for verification & mushroom grant
 			else:
-				print("[Billing] iOS purchase failed: ", event.get("result", ""))
+				pass
 
 # =============================================================================
 # COMMON
@@ -197,9 +184,7 @@ func _process_apple():
 func _on_redeem_button_pressed():
 	var code = coupon_input.text.strip_edges()
 	if code.is_empty():
-		print("Please enter a coupon code")
 		return
-	print("Attempting to redeem coupon code: ", code)
 	# TODO: Send code to server for validation
 	coupon_input.text = ""
 
@@ -217,10 +202,8 @@ func _generate_invite_link():
 func _on_copy_link_pressed():
 	var link_text = invite_link.text
 	if link_text.is_empty():
-		print("No invite link to copy")
 		return
 	DisplayServer.clipboard_set(link_text)
-	print("Invite link copied to clipboard!")
 
 func _on_purchase_option(product_id: String):
 	match platform:
@@ -229,5 +212,4 @@ func _on_purchase_option(product_id: String):
 		"iOS":
 			_purchase_apple(product_id)
 		_:
-			var mushrooms = PRODUCT_MUSHROOMS.get(product_id, 0)
-			print("[Payment] ", product_id, " (", mushrooms, " mushrooms) — billing only on mobile")
+			var _mushrooms = PRODUCT_MUSHROOMS.get(product_id, 0)

@@ -45,7 +45,6 @@ func _on_yes_pressed():
 	
 	# Check if we're canceling an expedition (active or traveling/arrived to one)
 	if (expedition and expedition.size() > 0) or is_expedition_travel:
-		print("Expedition canceled by user")
 		GameInfo.current_player.expedition = []
 		
 		# Reset map panel expedition state
@@ -71,9 +70,8 @@ func _on_yes_pressed():
 		var clicked = UIManager.instance.quest.clicked_option_ids
 		if clicked.size() > 0:
 			GameInfo.complete_quest(int(quest_id))
-			print("Quest ", quest_id, " abandoned (options clicked) and removed from daily quests")
 		else:
-			print("Quest ", quest_id, " canceled before any options clicked, keeping in daily quests")
+			pass
 	
 	GameInfo.current_player.traveling = 0
 	GameInfo.current_player.traveling_destination = null
@@ -89,7 +87,6 @@ func _on_yes_pressed():
 	
 	UIManager.instance.hide_current_overlay()
 	UIManager.instance.show_panel(UIManager.instance.home_panel)
-	print("Quest canceled by user")
 
 func _on_no_pressed():
 	_custom_confirm_callback = Callable()

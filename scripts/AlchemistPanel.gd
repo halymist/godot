@@ -1,5 +1,7 @@
 extends TextureRect
 
+const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+
 const BREW_COST = 10
 
 # Ingredient slot IDs
@@ -38,7 +40,6 @@ func _setup():
 
 func on_item_placed_in_slot(slot_id: int, item: GameInfo.Item, _source_slot_id: int):
 	"""Called when an item is placed in a specific alchemist slot (item keeps its original bag_slot_id)"""
-	print("DEBUG AlchemistPanel.on_item_placed_in_slot: slot=", slot_id, " item=", item.item_name, " bag_slot_id=", item.bag_slot_id)
 	working_items[slot_id] = item
 	update_result_preview()
 	update_brew_button_state()
@@ -46,14 +47,12 @@ func on_item_placed_in_slot(slot_id: int, item: GameInfo.Item, _source_slot_id: 
 
 func on_item_removed_from_slot(slot_id: int):
 	"""Called when an item is removed from a specific alchemist slot"""
-	print("DEBUG AlchemistPanel.on_item_removed_from_slot: slot=", slot_id)
 	working_items.erase(slot_id)
 	update_result_preview()
 	update_brew_button_state()
 
-func on_slot_changed(slot_id: int):
+func on_slot_changed(_slot_id: int):
 	"""Legacy - Called by UIManager when a utility slot changes (for compatibility)"""
-	print("DEBUG AlchemistPanel.on_slot_changed called with slot_id=", slot_id)
 	# This is now handled by on_item_placed_in_slot/on_item_removed_from_slot
 	pass
 
@@ -68,7 +67,6 @@ func _on_visibility_changed():
 func _load_location_content():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
 	if not settlement:
-		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
 	# Apply utility texture directly to self
@@ -127,13 +125,9 @@ func update_result_preview():
 	for effect_id in effect_map.keys():
 		var effect = GameInfo.effects_db.get_effect_by_id(effect_id)
 		if effect:
-			var effect_text = effect.description
-			if effect_map[effect_id] > 0:
-				var effect_value = int(effect_map[effect_id])
-				if "*" in effect_text:
-					effect_text = effect_text.replace("*", str(effect_value))
-				else:
-					effect_text += " " + str(effect_value)
+			var effect_text = EFFECT_FORMATTER.format_with_factor(effect.description, float(effect_map[effect_id]))
+			if effect_map[effect_id] > 0 and effect_text == effect.description:
+				effect_text += " " + str(int(effect_map[effect_id]))
 			effects.append(effect_text)
 	
 	# Update preview label
@@ -197,7 +191,6 @@ func _on_brew_button_pressed():
 
 	var elixir_template = _get_elixir_template()
 	if elixir_template == null:
-		print("ERROR: No elixir template found in items database")
 		return
 
 	# Client-side simulation

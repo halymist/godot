@@ -26,4 +26,4 @@ func _process(_delta: float):
 			var scene = ResourceLoader.load_threaded_get(NEXT_SCENE)
 			get_tree().change_scene_to_packed(scene)
 		ResourceLoader.THREAD_LOAD_FAILED:
-			print("[Splash] Failed to load scene: ", NEXT_SCENE)
+			pass

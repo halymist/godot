@@ -35,5 +35,4 @@ func remove_item_from_bag(item: GameInfo.Item) -> void:
 		if slot.id == item.id and slot.bag_slot_id == item.bag_slot_id:
 			GameInfo.current_player.bag_slots.remove_at(i)
 			GameInfo.bag_slots_changed.emit()
-			print("Removed consumed item from bag: ", item.item_name)
 			return

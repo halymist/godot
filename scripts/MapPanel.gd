@@ -54,7 +54,6 @@ func _setup():
 	# Initialize if character is already selected
 	_sync_travel_state_from_player()
 	refresh_travel_state()
-	print("MapPanel: Setup complete")
 
 func _on_visibility_changed():
 	# Refresh state when panel becomes visible
@@ -169,8 +168,6 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	if duration_seconds > 0:
 		duration_seconds = 10
 	travel_duration = float(duration_seconds)
-	print("Started travel: '", travel_text, "' for ", duration_seconds, " seconds (VIP=instant)" if duration_seconds == 0 else " seconds")
-	print("Travel duration in seconds: ", travel_duration)
 	set_process(true)  # Enable frame-by-frame updates for smooth progress
 	
 	# Set player travel state so refresh_travel_state() enters the correct branch
@@ -189,12 +186,10 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	if quest_data:
 		if quest_data.background_texture:
 			texture = quest_data.background_texture
-			print("Applied quest background texture")
 		if quest_name_label:
 			quest_name_label.text = quest_data.quest_name
 	
 	refresh_travel_state()
-	print("Travel UI update triggered")
 
 func refresh_travel_state():
 	"""Update UI state based on current travel status - call this when state changes"""
@@ -270,7 +265,6 @@ func refresh_travel_state():
 		return
 	
 	# ── State 4: Idle (map should not be used as expedition entry anymore) ──
-	print("MapPanel idle state - no active travel")
 	travel_progress.visible = false
 	if travel_time_label:
 		travel_time_label.text = ""
@@ -302,7 +296,6 @@ func _process(_delta):
 		has_arrived = true
 		current_player.traveling = 0
 		set_process(false)
-		print("Quest travel completed - showing Arrived button")
 		refresh_travel_state()
 		return
 	
@@ -346,10 +339,8 @@ func _process(_delta):
 		has_arrived = true
 		
 		if is_expedition_travel:
-			print("Expedition travel completed - showing Arrived button")
 			expedition_travel_end = 0.0
 		else:
-			print("Quest travel completed - showing Arrived button")
 			current_player.traveling = 0
 		
 		refresh_travel_state()
@@ -404,12 +395,10 @@ func _on_skip_button_pressed():
 	if is_traveling and not is_skipping:
 		# Check if player has enough mushrooms
 		if not _can_afford_skip():
-			print("Not enough mushrooms to skip travel")
 			return
 		
 		# Deduct mushroom cost
 		UIManager.instance.update_mushrooms(-SKIP_COST)
-		print("Deducted ", SKIP_COST, " mushroom for skip")
 		
 		# Calculate remaining time
 		var current_time = Time.get_unix_time_from_system()
@@ -435,7 +424,6 @@ func _on_skip_button_pressed():
 		else:
 			original_travel_end = current_player.traveling
 		
-		print("Travel skip started - skip duration: ", skip_duration_target, " seconds")
 		
 		# Disable the skip button during animation
 		skip_button.disabled = true
@@ -447,24 +435,20 @@ func _on_enter_dungeon_pressed():
 		
 		if is_expedition_travel:
 			# Expedition arrived - load expedition panel
-			print("Arrived pressed - loading expedition")
 			is_expedition_travel = false
 			if pending_expedition_id > 0:
 				GameInfo.current_player.expedition = [pending_expedition_id]
 			_load_expedition()
 		else:
 			# Quest arrived - load quest panel
-			print("Arrived pressed - loading quest")
 			_load_arrived_quest()
 		return
 	
 	# ── VIP instant arrival for quest ──
 	if GameInfo.current_player.traveling_destination != null:
-		print("Arrived pressed (VIP) - loading quest")
 		_load_arrived_quest()
 		return
 
-	print("MapPanel enter ignored: no active travel or arrival state")
 
 func _load_arrived_quest():
 	if not GameInfo.current_player:
@@ -472,7 +456,6 @@ func _load_arrived_quest():
 
 	var quest_id = int(GameInfo.current_player.traveling_destination)
 	if quest_id <= 0:
-		print("MapPanel: No arrived quest to load")
 		return
 
 	# Preserve expedition-node return context when this quest came from expedition graph.
@@ -519,13 +502,11 @@ func start_expedition_node_travel(expedition_id: int, node_id: int, quest_id: in
 	_ensure_travel_ui_from_player()
 	refresh_travel_state()
 
-	print("MapPanel: Expedition node travel started node=", node_id, " quest=", quest_id, " arrival_ts=", GameInfo.current_player.traveling)
 	if UIManager.instance:
 		UIManager.instance.show_panel(self)
 
-func receive_expedition_start(expedition_id: int, arrival_timestamp: String):
+func receive_expedition_start(expedition_id: int, _arrival_timestamp: String):
 	"""Called when server responds with expedition start data"""
-	print("Received expedition start - expedition_id: ", expedition_id, ", arrival: ", arrival_timestamp)
 	
 	pending_expedition_id = expedition_id
 	is_expedition_travel = true
@@ -535,7 +516,6 @@ func receive_expedition_start(expedition_id: int, arrival_timestamp: String):
 	
 	# VIP: Show Arrived button immediately (no timer)
 	if is_vip:
-		print("VIP - showing Arrived button immediately")
 		has_arrived = true
 		expedition_travel_end = 0.0
 		refresh_travel_state()
@@ -567,7 +547,6 @@ func receive_expedition_start(expedition_id: int, arrival_timestamp: String):
 	enter_dungeon_button.visible = false
 	
 	set_process(true)  # Enable frame updates
-	print("Expedition travel started - Duration: ", travel_time, " seconds (synced with server)")
 
 func _parse_iso8601_timestamp(timestamp: String) -> float:
 	"""Parse ISO8601 timestamp to Unix time"""
@@ -578,7 +557,6 @@ func _parse_iso8601_timestamp(timestamp: String) -> float:
 	# We'll use Time.get_datetime_dict_from_datetime_string() for Godot 4.x
 	var parts = timestamp.split("T")
 	if parts.size() != 2:
-		print("Invalid timestamp format: ", timestamp)
 		return Time.get_unix_time_from_system() + 10.0  # Fallback to 10 seconds
 	
 	var date_parts = parts[0].split("-")
@@ -586,7 +564,6 @@ func _parse_iso8601_timestamp(timestamp: String) -> float:
 	var time_parts = time_str.split(":")
 	
 	if date_parts.size() != 3 or time_parts.size() != 3:
-		print("Invalid timestamp format: ", timestamp)
 		return Time.get_unix_time_from_system() + 10.0
 	
 	var datetime = {
@@ -603,10 +580,8 @@ func _parse_iso8601_timestamp(timestamp: String) -> float:
 func _load_expedition():
 	"""Load the expedition panel with the pending expedition ID"""
 	if pending_expedition_id <= 0:
-		print("Error: No expedition ID received from server")
 		return
 	
-	print("Loading expedition with ID: ", pending_expedition_id)
 	
 	UIManager.instance.expedition_panel.start_expedition(pending_expedition_id)
 	UIManager.instance.show_panel(UIManager.instance.expedition_panel)

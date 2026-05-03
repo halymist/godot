@@ -50,7 +50,6 @@ func _on_visibility_changed():
 
 func display_chat_messages():
 	if not chat_container:
-		print("ERROR: chat_container not assigned!")
 		return
 	
 	# Clear existing messages and reset tracking

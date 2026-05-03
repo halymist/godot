@@ -62,7 +62,6 @@ func _load_location_content():
 		
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
 	if not settlement:
-		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
 	# Apply vendor texture directly to self
@@ -84,22 +83,17 @@ func _load_vendor_items():
 	vendor_items.clear()
 	
 	if not GameInfo.current_player:
-		print("[VendorPanel] No current player")
 		return
 	
-	print("[VendorPanel] Loading vendor items. current_player.vendor_items = ", GameInfo.current_player.vendor_items)
 	
 	if GameInfo.current_player.vendor_items.is_empty():
-		print("[VendorPanel] No vendor items available")
 		return
 	
 	for item_id in GameInfo.current_player.vendor_items:
-		print("[VendorPanel] Creating vendor item with id: ", item_id)
 		var item = GameInfo.Item.new({
 			"id": item_id,
 			"day": GameInfo.current_player.server_day
 		})
-		print("[VendorPanel] Created item: ", item.item_name, " (id=", item.id, ")")
 		vendor_items.append(item)
 
 func trigger_purchase_greeting():

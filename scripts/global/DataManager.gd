@@ -63,7 +63,6 @@ var _pending_downloads: int = 0
 var _queued_downloads: Dictionary = {}
 
 func _ready():
-	print("[DataManager] Ready")
 	_ensure_cache_dirs()
 	_load_local_versions()
 
@@ -77,7 +76,6 @@ func _ensure_cache_dirs():
 	DirAccess.make_dir_recursive_absolute("user://images/settlements")
 	DirAccess.make_dir_recursive_absolute("user://images/cosmetics")
 	DirAccess.make_dir_recursive_absolute("user://data")
-	print("[DataManager] Created cache directories")
 
 # ============================================
 # VERSION MANAGEMENT
@@ -89,7 +87,6 @@ func _load_local_versions():
 	var err = config.load(VERSIONS_FILE)
 	
 	if err != OK:
-		print("[DataManager] No local versions file, using defaults (all 0)")
 		_save_local_versions()
 		return
 	
@@ -104,25 +101,21 @@ func _load_local_versions():
 	if schema_version < 1:
 		local_versions["talents"] = 0
 		did_migrate = true
-		print("[DataManager] Applying schema migration 1: reset talents version to 0")
 
 	# Migration v2: force items redownload.
 	if schema_version < 2:
 		local_versions["items"] = 0
 		did_migrate = true
-		print("[DataManager] Applying schema migration 2: reset items version to 0")
 
 	# Migration v3: expeditions switched from slides/options to graph map payloads.
 	if schema_version < 3:
 		local_versions["expeditions"] = 0
 		did_migrate = true
-		print("[DataManager] Applying schema migration 3: reset expeditions version to 0")
 
 	# Migration v4: force quest redownload to include expedition-node quest additions.
 	if schema_version < 4:
 		local_versions["quests"] = 0
 		did_migrate = true
-		print("[DataManager] Applying schema migration 4: reset quests version to 0")
 
 	# Persist migrated schema + versions once.
 	if did_migrate:
@@ -130,9 +123,8 @@ func _load_local_versions():
 
 	# Backward compatibility guard if constant is increased in future.
 	if schema_version < LOCAL_VERSIONS_SCHEMA:
-		print("[DataManager] Schema version updated from %d to %d" % [schema_version, LOCAL_VERSIONS_SCHEMA])
+		pass
 	
-	print("[DataManager] Loaded local versions: ", local_versions)
 
 func _save_local_versions():
 	"""Save local data versions to config file"""
@@ -145,9 +137,9 @@ func _save_local_versions():
 	
 	var err = config.save(VERSIONS_FILE)
 	if err != OK:
-		print("[DataManager] Failed to save versions: ", err)
+		pass
 	else:
-		print("[DataManager] Saved local versions: ", local_versions)
+		pass
 
 func set_local_version(data_type: String, version: int):
 	"""Set local version for a data type and save"""
@@ -159,7 +151,6 @@ func reset_all_versions():
 	for key in local_versions.keys():
 		local_versions[key] = 0
 	_save_local_versions()
-	print("[DataManager] Reset all versions to 0")
 
 func clear_all_cache():
 	"""Clear all cached images, JSON data, and reset versions"""
@@ -194,7 +185,6 @@ func clear_all_cache():
 	quests_db = null
 	cosmetics_db = null
 	
-	print("[DataManager] Cleared all cache")
 
 # ============================================
 # DATA SYNC
@@ -223,8 +213,6 @@ func sync_data(server_data_versions: Dictionary):
 	"""Download all data types and assets, waits until complete"""
 	server_versions = server_data_versions
 	_queued_downloads.clear()
-	print("[DataManager] Server versions: ", server_versions)
-	print("[DataManager] Local versions: ", local_versions)
 	
 	# Sync each data type
 	await _sync_data_type("effects", "/download-effects")
@@ -237,14 +225,11 @@ func sync_data(server_data_versions: Dictionary):
 	await _sync_data_type("quests", "/download-quests")
 	await _sync_data_type("cosmetics", "/download-cosmetics")
 	
-	print("[DataManager] Data sync completed!")
 	
 	# Wait for all asset downloads to complete
 	while _pending_downloads > 0:
-		print("[DataManager] Waiting for %d asset downloads..." % _pending_downloads)
 		await get_tree().create_timer(0.1).timeout
 	
-	print("[DataManager] All downloads (data + assets) completed!")
 	data_sync_completed.emit(true)
 
 func _sync_data_type(data_type: String, endpoint: String):
@@ -254,25 +239,21 @@ func _sync_data_type(data_type: String, endpoint: String):
 	var local_version = local_versions.get(data_type, 0)
 	
 	if server_version > local_version:
-		print("[DataManager] %s out of date (local: %d, server: %d)" % [data_type, local_version, server_version])
 		await _download_data(data_type, endpoint, local_version)
 	else:
-		print("[DataManager] %s is up to date (version: %d)" % [data_type, local_version])
+		pass
 
 func _download_data(data_type: String, endpoint: String, local_version: int):
 	"""Download data from server and save as JSON"""
-	print("[DataManager] Downloading %s (version > %d)..." % [data_type, local_version])
 	
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
 	
 	var url = Http.base_url + endpoint + "?version=" + str(local_version)
-	print("[DataManager] GET ", url)
 	
 	var error = http_request.request(url, Http._get_headers(true), HTTPClient.METHOD_GET)
 	
 	if error != OK:
-		print("[DataManager] Failed to send %s download request: %d" % [data_type, error])
 		http_request.queue_free()
 		return
 	
@@ -283,15 +264,12 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	var body = result[3]
 	
 	if response_code != 200:
-		print("[DataManager] %s download failed (HTTP %d)" % [data_type, response_code])
 		return
 	
 	var body_text = body.get_string_from_utf8()
-	print("[DataManager] %s response: %s..." % [data_type, body_text.substr(0, 200)])
 	
 	var json = JSON.new()
 	if json.parse(body_text) != OK:
-		print("[DataManager] Failed to parse %s JSON" % data_type)
 		return
 	
 	var data = json.get_data()
@@ -386,7 +364,6 @@ func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, 
 	
 	# Update version
 	set_local_version(data_type, new_version)
-	print("[DataManager] %s saved (version %d, %d items)" % [data_type, new_version, merged_data.size()])
 
 func _apply_expedition_child_deletions(expeditions_data: Array, deleted_node_ids: Array, deleted_edge_ids: Array):
 	var deleted_node_lookup: Dictionary = {}
@@ -463,7 +440,6 @@ func _load_json_file(path: String) -> Array:
 	
 	var json = JSON.new()
 	if json.parse(content) != OK:
-		print("[DataManager] Failed to parse JSON: %s" % path)
 		return []
 	
 	var data = json.get_data()
@@ -473,7 +449,6 @@ func _save_json_file(path: String, data: Array):
 	"""Save array as JSON file"""
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	if not file:
-		print("[DataManager] Failed to open for writing: %s" % path)
 		return
 	
 	file.store_string(JSON.stringify(data, "\t"))
@@ -494,7 +469,6 @@ func load_databases():
 	talents_db = _load_talents_database()
 	quests_db = _load_quests_database()
 	cosmetics_db = _load_cosmetics_database()
-	print("[DataManager] All databases loaded from JSON")
 	
 	# Verify assets exist on disk and re-download any missing ones
 	_verify_and_repair_assets()
@@ -513,7 +487,6 @@ func _load_effects_database() -> EffectDatabase:
 		effect.factor = item.get("factor", 0)
 		db.effects.append(effect)
 	
-	print("[DataManager] Loaded %d effects" % db.effects.size())
 	return db
 
 func _load_items_database() -> ItemDatabase:
@@ -545,7 +518,6 @@ func _load_items_database() -> ItemDatabase:
 		
 		db.items.append(res)
 	
-	print("[DataManager] Loaded %d items" % db.items.size())
 	return db
 
 func _load_perks_database() -> PerkDatabase:
@@ -571,7 +543,6 @@ func _load_perks_database() -> PerkDatabase:
 		
 		db.perks.append(perk)
 	
-	print("[DataManager] Loaded %d perks" % db.perks.size())
 	return db
 
 func _load_enemies_database() -> EnemyDatabase:
@@ -592,7 +563,6 @@ func _load_enemies_database() -> EnemyDatabase:
 		
 		db.enemies.append(enemy)
 	
-	print("[DataManager] Loaded %d enemies" % db.enemies.size())
 	return db
 
 func _load_expeditions_database() -> ExpeditionsDatabase:
@@ -634,7 +604,6 @@ func _load_expeditions_database() -> ExpeditionsDatabase:
 
 		db.expeditions.append(expedition)
 	
-	print("[DataManager] Loaded %d expeditions" % db.expeditions.size())
 	return db
 
 func _load_settlements_database() -> SettlementsDatabase:
@@ -716,7 +685,6 @@ func _load_settlements_database() -> SettlementsDatabase:
 		
 		db.settlements.append(settlement)
 	
-	print("[DataManager] Loaded %d settlements" % db.settlements.size())
 	return db
 
 func _extract_msg_rect_points(raw_msg_rect: Variant) -> Array[Vector2]:
@@ -778,7 +746,6 @@ func _load_talents_database() -> TalentsDatabase:
 		talent.factor = item.get("factor", 0.0)
 		db.talents.append(talent)
 	
-	print("[DataManager] Loaded %d talents" % db.talents.size())
 	return db
 
 func _parse_quest_stat_type(value) -> int:
@@ -897,7 +864,6 @@ func _load_quests_database() -> QuestsDatabase:
 		
 		db.quests.append(quest)
 	
-	print("[DataManager] Loaded %d quests" % db.quests.size())
 	return db
 
 func _load_cosmetics_database() -> CosmeticDatabase:
@@ -921,7 +887,6 @@ func _load_cosmetics_database() -> CosmeticDatabase:
 		
 		db.cosmetics.append(cosmetic)
 	
-	print("[DataManager] Loaded %d cosmetics" % db.cosmetics.size())
 	return db
 
 func _map_item_type_to_enum(item_type_string: String) -> int:
@@ -1024,9 +989,9 @@ func _verify_and_repair_assets():
 			missing_count += 1
 	
 	if missing_count > 0:
-		print("[DataManager] Asset integrity check: %d missing assets queued for download" % missing_count)
+		pass
 	else:
-		print("[DataManager] Asset integrity check: all assets present")
+		pass
 
 # ============================================
 # ASSET DOWNLOADING
@@ -1111,7 +1076,6 @@ func _download_asset(folder: String, asset_id: int):
 	var local_path = get_asset_path(folder, asset_id)
 	var remote_url = "%s%s/%d%s" % [ASSETS_BASE_URL, folder, asset_id, ext]
 	
-	print("[DataManager] Downloading asset: %s" % remote_url)
 	
 	_pending_downloads += 1
 	
@@ -1121,7 +1085,6 @@ func _download_asset(folder: String, asset_id: int):
 	
 	var error = http.request(remote_url)
 	if error != OK:
-		print("[DataManager] Failed to request asset %s/%d: %d" % [folder, asset_id, error])
 		http.queue_free()
 		_pending_downloads -= 1
 
@@ -1131,17 +1094,15 @@ func _on_asset_downloaded(_result: int, response_code: int, _headers: PackedStri
 	_pending_downloads -= 1
 	
 	if response_code != 200:
-		print("[DataManager] Asset download failed %s/%d (HTTP %d)" % [folder, asset_id, response_code])
 		return
 	
 	var file = FileAccess.open(local_path, FileAccess.WRITE)
 	if file:
 		file.store_buffer(body)
 		file.close()
-		print("[DataManager] Saved asset: %s" % local_path)
 		asset_downloaded.emit(folder, asset_id)
 	else:
-		print("[DataManager] Failed to save asset: %s" % local_path)
+		pass
 
 func get_asset_path(folder: String, asset_id: int) -> String:
 	"""Get the local path for an asset"""
@@ -1158,7 +1119,6 @@ func load_asset_texture(folder: String, asset_id: int) -> ImageTexture:
 	var img = Image.new()
 	var err = img.load(local_path)
 	if err != OK:
-		print("[DataManager] Failed to load image: %s (error %d)" % [local_path, err])
 		return null
 	
 	return ImageTexture.create_from_image(img)

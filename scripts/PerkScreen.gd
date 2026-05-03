@@ -1,5 +1,7 @@
 extends Button
 
+const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+
 @export var active_perk_display: Control
 @export var inactive_perks_grid: GridContainer
 @export var bind_button: Button
@@ -13,11 +15,7 @@ var selected_perk: GameInfo.Perk = null
 var selected_perk_button: Button = null
 
 func _format_perk_description(desc_text: String, factor: float) -> String:
-	if desc_text == "":
-		return ""
-	if "*" in desc_text:
-		return desc_text.replace("*", str(int(factor)))
-	return desc_text
+	return EFFECT_FORMATTER.format_with_factor(desc_text, factor)
 
 func _ready():
 	pressed.connect(_on_button_pressed)
@@ -36,7 +34,6 @@ func _setup():
 	refresh_perks()
 
 func refresh_perks():
-	print("Refreshing perks grid...")
 	
 	for child in inactive_perks_grid.get_children():
 		child.queue_free()
@@ -67,11 +64,9 @@ func refresh_perks():
 		perk_button.pressed.connect(_on_perk_clicked.bind(perk_button, perk))
 		inactive_perks_grid.add_child(perk_button)
 	
-	print("Loaded ", all_perks.size(), " perks")
 
 func load_active_perks_for_slot(talent_id: int):
 	"""Called when opening the perk screen for a specific perk slot talent (talent_id identifies the slot)"""
-	print("Loading perks for talent_id (perk slot): ", talent_id)
 	current_slot = talent_id  # current_slot now stores the talent_id
 	
 	# Ensure perk data is refreshed from databases
@@ -82,7 +77,6 @@ func load_active_perks_for_slot(talent_id: int):
 	
 	# Check if there's already an active perk in this slot (slot = talent_id)
 	var active_perk = _get_active_perk_for_slot(talent_id)
-	print("Active perk for talent_id ", talent_id, ": ", active_perk.perk_name if active_perk else "None")
 	if active_perk:
 		# Show the currently active perk in the display
 		_update_active_display(active_perk)
@@ -92,16 +86,12 @@ func load_active_perks_for_slot(talent_id: int):
 
 func _get_active_perk_for_slot(talent_id: int) -> GameInfo.Perk:
 	"""Find the active perk for the given slot (slot = talent_id that unlocks the perk slot)"""
-	print("[PerkScreen] Looking for active perk with slot (talent_id) = ", talent_id)
-	print("[PerkScreen] Total perks: ", GameInfo.current_player.perks.size())
 	for perk in GameInfo.current_player.perks:
-		print("[PerkScreen]   Perk: ", perk.perk_name, " active=", perk.active, " slot=", perk.slot)
 		if perk.active and perk.slot == talent_id:
 			return perk
 	return null
 
 func _on_perk_clicked(perk_button: Button, perk: GameInfo.Perk):
-	print("Perk clicked:", perk.perk_name)
 	
 	selected_perk = perk
 	selected_perk_button = perk_button
@@ -156,19 +146,16 @@ func _clear_active_display():
 
 func _on_bind_pressed():
 	if not selected_perk:
-		print("No perk selected to bind")
 		return
 	
 	# current_slot is now the talent_id that unlocks this perk slot
 	var talent_id = current_slot
-	print("Binding perk '", selected_perk.perk_name, "' to talent_id ", talent_id)
 	
 	var existing_perk = _get_active_perk_for_slot(talent_id)
 	
 	if existing_perk:
 		existing_perk.active = false
 		existing_perk.slot = _get_next_inactive_slot()
-		print("Deactivated perk '", existing_perk.perk_name, "' from talent_id ", talent_id)
 	
 	selected_perk.active = true
 	selected_perk.slot = talent_id  # slot stores the talent_id
@@ -184,7 +171,6 @@ func _on_bind_pressed():
 	selected_perk_button = null
 	bind_button.disabled = true
 	
-	print("Perk bound successfully")
 
 func _get_next_inactive_slot() -> int:
 	"""Find the next available slot number for inactive perks"""

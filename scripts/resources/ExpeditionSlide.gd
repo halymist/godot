@@ -1,11 +1,10 @@
 class_name ExpeditionSlide
 extends Resource
 
-# Matches server JSON: slide_id, slide_text, asset_id, effect_id, effect_factor,
+# Matches server JSON: slide_text, asset_id, effect_id, effect_factor,
 # reward_stat_type, reward_stat_amount, reward_talent, reward_item, reward_perk, reward_blessing, reward_potion
 # options: array of ExpeditionOption
 
-@export var slide_id: int = 0
 @export_multiline var slide_text: String = ""
 @export var asset_id: int = 0
 @export var is_start: bool = false  # Whether this is a starting slide

@@ -46,7 +46,6 @@ func _ready():
 func _setup():
 	_ensure_map_view()
 	_setup_node_overlay()
-	print("ExpeditionPanel: Graph setup complete")
 
 func _on_visibility_changed():
 	if not visible:
@@ -65,7 +64,6 @@ func start_expedition(expedition_id: int):
 	current_expedition_id = expedition_id
 	current_expedition = GameInfo.expeditions_db.get_expedition(expedition_id) if GameInfo.expeditions_db else null
 	if not current_expedition:
-		print("ExpeditionPanel: Expedition not found: ", expedition_id)
 		return
 
 	if GameInfo.current_player:
@@ -247,7 +245,6 @@ func _confirm_node_start(node_id: int):
 	pending_node_start_cost = EXPEDITION_QUEST_START_COST
 	UIManager.instance.update_silver(-EXPEDITION_QUEST_START_COST)
 
-	print("ExpeditionPanel: Requesting node start from server: node=", pending_node_id)
 	Websocket.start_expedition_node(pending_node_id)
 
 func _refund_pending_node_start_cost():
@@ -284,7 +281,6 @@ func handle_node_start_response(success: bool, node_id: int, quest_id: int, arri
 			_set_completed_node_action_state()
 		else:
 			_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0, true)
-		print("ExpeditionPanel: Node start failed for node ", node_id, ": ", message)
 		return
 
 	if quest_id <= 0:
@@ -294,7 +290,6 @@ func handle_node_start_response(success: bool, node_id: int, quest_id: int, arri
 			_set_completed_node_action_state()
 		else:
 			_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0, true)
-		print("ExpeditionPanel: Invalid quest_id from server for node ", node_id)
 		return
 
 	pending_node_start_cost = 0
@@ -335,7 +330,6 @@ func end_expedition():
 	if GameInfo.current_player:
 		GameInfo.current_player.expedition = []
 	_clear_graph()
-	print("Expedition ended")
 
 func _ensure_map_view():
 	if map_view and is_instance_valid(map_view):

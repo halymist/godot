@@ -55,7 +55,6 @@ func is_lobby_ready() -> bool:
 	return _lobby_prepare_state == LobbyPrepareState.READY
 
 func _ready():
-	print("LobbyPanel: _ready() called")
 	# Connect buttons in _ready (they exist when scene loads)
 	create_new_button.pressed.connect(_on_create_new_character)
 	logout_button.pressed.connect(_on_logout)
@@ -108,11 +107,9 @@ func _ready():
 func initialize_lobby():
 	"""Initialize lobby with server data - called by LoginPanel after successful login or when returning from game"""
 	if GameInfo.get_lobby_data().is_empty():
-		print("Error: initialize_lobby called but no lobby data available")
 		_lobby_prepare_state = LobbyPrepareState.FAILED
 		return
 	
-	print("Initializing lobby with server data...")
 	
 	# Populate UI with lobby data
 	populate_account_info()
@@ -150,7 +147,6 @@ func _ensure_databases_ready() -> bool:
 	var data_versions = GameInfo.get_lobby_data().get("data_versions", {})
 
 	if data_versions.is_empty():
-		print("[Lobby] No data_versions, loading databases immediately")
 		GameInfo.load_databases()
 		if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
 			avatar_creation_panel.on_databases_loaded()
@@ -160,13 +156,10 @@ func _ensure_databases_ready() -> bool:
 	var needs_download = DataManager.needs_download(data_versions)
 
 	if needs_download:
-		print("[Lobby] Downloads needed, syncing data first...")
 		# Download data + assets, then load databases
 		await DataManager.sync_data(data_versions)
-		print("[Lobby] Downloads complete, loading databases...")
 		GameInfo.load_databases()
 	else:
-		print("[Lobby] All data up to date, loading databases...")
 		GameInfo.load_databases()
 
 	if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
@@ -316,7 +309,6 @@ func setup_character_creation():
 
 func add_character_list():
 	"""Add character panels from GameInfo.lobby_data"""
-	print("[Lobby] add_character_list called")
 	
 	# Clear existing server headers and character cards, keep the create button.
 	for child in characters_container.get_children():
@@ -328,9 +320,8 @@ func add_character_list():
 		characters_container.move_child(create_new_button, 0)
 
 	var server_list = GameInfo.get_server_list()
-	print("[Lobby] server_list size: ", server_list.size())
 	
-	var total_characters = 0
+	var _total_characters = 0
 	for server in server_list:
 		var characters = server.get("characters", null)
 		if characters == null or not (characters is Array):
@@ -338,7 +329,6 @@ func add_character_list():
 		if characters.is_empty():
 			continue
 
-		print("[Lobby] Server '", server.get("name", "?"), "' has ", characters.size(), " characters")
 
 		# Add one header per server, followed by all characters on that server.
 		var header = ServerHeader.instantiate()
@@ -352,7 +342,7 @@ func add_character_list():
 			)
 
 		for character in characters:
-			total_characters += 1
+			_total_characters += 1
 			var card = PlayerCard.instantiate()
 			characters_container.add_child(card)
 			var card_data = character.duplicate(true) if character is Dictionary else {}
@@ -361,12 +351,10 @@ func add_character_list():
 			# Connect to card's signal with proper signature (character_id, server_id)
 			card.character_selected.connect(_on_character_selected)
 	
-	print("[Lobby] Added ", total_characters, " character cards")
 
 func _on_character_selected(character_id: int, server_id: int):
 	"""Handle character selection from player card"""
 	if _character_flow_state != CharacterFlowState.IDLE:
-		print("Character flow already in progress, ignoring selection")
 		return
 	await _begin_character_entry(character_id, server_id, CharacterFlowState.ENTERING_EXISTING)
 
@@ -381,20 +369,16 @@ func _begin_character_entry(character_id: int, server_id: int, flow_state: Chara
 	
 	# Store server created_at for day calculation in TopUI
 	GameInfo.server_created_at = _get_server_created_at(server_id)
-	print("[Lobby] Selected server_created_at: ", GameInfo.server_created_at, ", server_day: ", _selected_server_day)
 	
-	print("Character selected in lobby: ", character_id, " on server: ", server_id)
 	var resources_ready = await _ensure_ready_for_character_entry()
 	if not resources_ready:
 		_abort_character_flow()
 		return
 	
 	# Connect to WebSocket and send joinLobby
-	print("Connecting to WebSocket...")
 	var ws_connected = await Websocket.connect_to_server()
 	
 	if not ws_connected:
-		print("ERROR: Failed to connect to WebSocket server")
 		_abort_character_flow()
 		return
 	
@@ -406,21 +390,19 @@ func _begin_character_entry(character_id: int, server_id: int, flow_state: Chara
 	Websocket.join_lobby(server_id, character_id, Http.session_id)
 	
 	# Wait for playerData response (handled in _on_player_data_received)
-	print("Waiting for player data from server...")
 
 func _ensure_ready_for_character_entry() -> bool:
 	_ensure_game_scene_preload_started()
 	while not GameInfo.databases_loaded or not game_scene_loaded:
 		if not GameInfo.databases_loaded:
-			print("Waiting for databases to finish loading...")
+			pass
 		if not game_scene_loaded:
-			print("Waiting for game scene to finish loading...")
+			pass
 		await get_tree().process_frame
 	return true
 
 func _on_player_data_received(character_data: Dictionary):
 	"""Handle playerData response from WebSocket"""
-	print("[Lobby] Received player data, loading character...")
 	
 	# Disconnect signal to avoid multiple calls
 	if Websocket.player_data_received.is_connected(_on_player_data_received):
@@ -437,7 +419,6 @@ func _on_player_data_received(character_data: Dictionary):
 		GameInfo.current_player.server_day = _selected_server_day
 	GameInfo.sync_current_player_to_lobby(GameInfo.current_server_id)
 	
-	print("[Lobby] Character loaded, switching to game scene...")
 	var use_dark_transition = _character_flow_state == CharacterFlowState.ENTERING_CREATED
 	_character_flow_state = CharacterFlowState.IDLE
 	# If create flow already started fade_out, avoid a second fade_out.
@@ -449,9 +430,8 @@ func _on_player_data_received(character_data: Dictionary):
 		# Normal selection flow
 		SceneTransition.change_scene_to_packed(game_scene)
 
-func _show_login_with_method(method: String):
+func _show_login_with_method(_method: String):
 	"""Show login screen to add/link another account with specified method"""
-	print("Link account with: ", method)
 	# TODO: Open login panel with specific method pre-selected
 	# For now, just show which method was clicked
 
@@ -524,28 +504,24 @@ func _on_create_character_complete():
 		character_data["vip"]
 	)
 
-func _on_character_created(success: bool, character_id: int, error: String):
+func _on_character_created(success: bool, character_id: int, _error: String):
 	"""Handle character creation response from server"""
 	if _character_flow_state != CharacterFlowState.CREATING:
 		return
 
 	if not success:
-		print("[Lobby] Character creation failed: ", error)
 		_abort_character_flow()
 		# TODO: Show error message to user
 		return
 	
-	print("[Lobby] Character created successfully with ID: ", character_id)
 
 	var create_response: Dictionary = Http.last_create_character_response
 	var server_id := _extract_server_id_from_create_response(create_response)
 
 	if server_id <= 0:
-		print("[Lobby] Missing server_id in create-character response; cannot auto-login")
 		_abort_character_flow()
 		return
 
-	print("[Lobby] Auto-logging into newly created character ", character_id, " on server ", server_id)
 	await _begin_character_entry(character_id, server_id, CharacterFlowState.ENTERING_CREATED)
 
 func _abort_character_flow():
@@ -643,7 +619,6 @@ func _on_add_method_pressed():
 	var methods_grid = add_method_panel.get_node_or_null("Content/MethodsGrid")
 	
 	if not methods_grid:
-		print("Error: MethodsGrid not found")
 		return
 	
 	# Map method names to option buttons
@@ -687,9 +662,8 @@ func _on_add_panel_overlay_click(event: InputEvent):
 		if add_method_panel:
 			add_method_panel.visible = false
 
-func _on_add_method_option(method: String):
+func _on_add_method_option(_method: String):
 	"""Handle adding a new login method (placeholder)"""
-	print("Add login method: ", method)
 	if add_method_panel:
 		add_method_panel.visible = false
 	# TODO: Implement actual method linking

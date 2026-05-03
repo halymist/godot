@@ -84,7 +84,6 @@ func _ready():
 func prepare_combat():
 	"""Prepare all combat visuals BEFORE showing the panel. Call this before making panel visible."""
 	if not GameInfo.current_combat_log:
-		print("No current combat log to prepare")
 		is_prepared = false
 		return
 	

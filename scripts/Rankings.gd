@@ -44,10 +44,8 @@ func _ready():
 	rankings_table.get_v_scroll_bar().value_changed.connect(_on_scroll_changed)
 	
 	if UIManager.instance.game_is_ready:
-		print("Rankings: Game already ready, calling setup immediately")
 		_setup()
 	else:
-		print("Rankings: Connecting to game_ready signal")
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():

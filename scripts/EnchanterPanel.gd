@@ -39,7 +39,6 @@ func _setup():
 
 func on_item_placed(item: GameInfo.Item, _source_slot_id: int):
 	"""Called when an item is placed in the enchanter slot (item keeps its original bag_slot_id)"""
-	print("DEBUG EnchanterPanel.on_item_placed: item=", item.item_name, " bag_slot_id=", item.bag_slot_id)
 	working_item = item
 	_show_greeting(on_placed_greetings)
 	update_enchant_button_state()
@@ -47,7 +46,6 @@ func on_item_placed(item: GameInfo.Item, _source_slot_id: int):
 
 func on_item_removed():
 	"""Called when an item is removed from the enchanter slot"""
-	print("DEBUG EnchanterPanel.on_item_removed")
 	working_item = null
 	update_enchant_button_state()
 	populate_effect_list()
@@ -56,9 +54,8 @@ func get_working_item() -> GameInfo.Item:
 	"""Return the item currently being worked on (for excluding from bag refresh)"""
 	return working_item
 
-func on_slot_changed(slot_id: int):
+func on_slot_changed(_slot_id: int):
 	"""Legacy - Called by UIManager when a utility slot changes (for compatibility)"""
-	print("DEBUG EnchanterPanel.on_slot_changed called with slot_id=", slot_id)
 	# This is now handled by on_item_placed/on_item_removed
 	pass
 
@@ -73,7 +70,6 @@ func _on_visibility_changed():
 func _load_location_content():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
 	if not settlement:
-		print("Error: No settlement found for location ", GameInfo.current_player.location)
 		return
 	
 	# Apply utility texture directly to self
@@ -101,7 +97,6 @@ func return_enchanter_item_to_bag():
 	# Just clear the visual slot and reset working_item
 	# The item never actually moved - it keeps its original bag_slot_id
 	if working_item:
-		print("DEBUG return_enchanter_item_to_bag: clearing working_item")
 		working_item = null
 		if enchanter_slot.has_method("clear_slot"):
 			enchanter_slot.clear_slot()
@@ -155,11 +150,9 @@ func _on_effect_selected(effect_id: int, factor: float, option):
 
 func _on_enchant_pressed():
 	if not working_item or selected_effect_id == 0:
-		print("No working item or no effect selected")
 		return
 	
 	# Send enchant request to server with the item's actual bag_slot_id
-	print("DEBUG: Sending enchant_item for slot ", working_item.bag_slot_id, " with effect ", selected_effect_id)
 	Websocket.enchant_item(working_item.bag_slot_id, selected_effect_id)
 	
 	# Apply enchant instantly on client (rollback later if server rejects)

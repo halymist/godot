@@ -47,12 +47,10 @@ func _ready():
 
 func _on_faction_selected(faction_id: int):
 	faction = faction_id
-	print("Faction selected: ", faction_id)
 	_update_descriptions()
 
 func _on_vip_selected(vip: bool):
 	is_vip = vip
-	print("VIP selected: ", vip)
 	_update_descriptions()
 
 func _update_descriptions():
@@ -86,7 +84,6 @@ func _on_next_pressed():
 	if name_error_label:
 		name_error_label.visible = false
 	
-	print("Character info complete: ", character_name, " Faction: ", faction, " VIP: ", is_vip)
 	next_pressed.emit()
 
 func _on_back_pressed():
