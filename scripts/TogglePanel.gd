@@ -711,6 +711,10 @@ func handle_logout():
 
 func update_silver(amount: int):
 	"""Add or subtract silver and update all displays"""
+	if not GameInfo.current_player:
+		print("[SILVER] Ignored update_silver because current_player is null")
+		return
+
 	var stack = get_stack()
 	var caller = stack[1] if stack.size() > 1 else {}
 	var caller_info = "%s:%s in %s" % [caller.get("source", "?"), caller.get("line", "?"), caller.get("function", "?")]
@@ -734,9 +738,12 @@ func update_mushrooms(amount: int):
 func update_display():
 	"""Refresh all silver and mushroom label displays"""
 	print("UIManager.update_display called, silver_labels count: ", silver_labels.size())
-	var silver_text = str(GameInfo.current_player.silver)
+	var silver_text = "0"
+	if GameInfo.current_player:
+		silver_text = str(GameInfo.current_player.silver)
+
 	for label in silver_labels:
-		if label:
+		if label and is_instance_valid(label):
 			print("Updating label to: ", silver_text)
 			label.text = silver_text
 		else:
@@ -747,7 +754,8 @@ func update_display():
 	if GameInfo.lobby_data.has("mushrooms"):
 		var mushrooms_text = str(int(GameInfo.lobby_data.mushrooms))
 		for m_label in mushrooms_labels:
-			m_label.text = mushrooms_text
+			if m_label and is_instance_valid(m_label):
+				m_label.text = mushrooms_text
 
 func refresh_bags():
 	"""Ask all registered bag views to refresh from GameInfo state"""

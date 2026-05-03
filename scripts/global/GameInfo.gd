@@ -21,6 +21,9 @@ var talents_db: Resource = null  # TalentsDatabase
 # ============================================
 # Lobby data (account info, server list, character list)
 var lobby_data: Dictionary = {}
+var lobby_data_cache: Dictionary = {}
+var server_list_cache: Array = []
+var last_auth_response: Dictionary = {}
 var user_id: String = ""
 
 # Timestamp when the currently selected server was created (for day calculation)
@@ -95,6 +98,36 @@ func load_lobby_data():
 	# Lobby data is now set directly by LoginPanel._on_login_completed()
 	print("Warning: load_lobby_data() called but lobby data should come from server")
 	pass
+
+func set_lobby_data(data: Dictionary):
+	"""Persist lobby payload from auth/lobby responses for reliable UI rebuilds."""
+	lobby_data = data.duplicate(true)
+	lobby_data_cache = lobby_data.duplicate(true)
+	var servers = lobby_data.get("server_list", [])
+	server_list_cache = servers.duplicate(true) if servers is Array else []
+
+func get_lobby_data() -> Dictionary:
+	"""Get active lobby data, falling back to the last cached payload."""
+	if not lobby_data.is_empty():
+		return lobby_data
+	return lobby_data_cache
+
+func get_server_list() -> Array:
+	"""Get server list with cache fallback for lobby re-entry flows."""
+	var active_servers = lobby_data.get("server_list", null)
+	if active_servers is Array:
+		return active_servers
+	if not server_list_cache.is_empty():
+		return server_list_cache
+	var cached_servers = lobby_data_cache.get("server_list", [])
+	return cached_servers if cached_servers is Array else []
+
+func clear_lobby_data():
+	"""Clear all lobby/auth caches on logout."""
+	lobby_data.clear()
+	lobby_data_cache.clear()
+	server_list_cache.clear()
+	last_auth_response.clear()
 
 # ============================================
 # PERK DATA REFRESH

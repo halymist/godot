@@ -71,7 +71,7 @@ var _dot_base_text: String = ""
 func _ready():
 
 	# Check if we already have login data (returning from game)
-	if not GameInfo.lobby_data.is_empty():
+	if not GameInfo.get_lobby_data().is_empty():
 		_start_dot_animation("Loading")
 		_show_lobby_after_init()
 		return
@@ -298,7 +298,7 @@ func _on_login_completed(success: bool, data: Dictionary, error: String):
 	"""Handle login response from server"""
 	if success:
 		# Store lobby data in GameInfo
-		GameInfo.lobby_data = data
+		GameInfo.set_lobby_data(data)
 		
 		# Save or clear credentials based on "stay logged in" checkbox
 		if stay_logged_in_checkbox and stay_logged_in_checkbox.button_pressed:

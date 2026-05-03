@@ -107,7 +107,7 @@ func _ready():
 func initialize_lobby():
 	"""Initialize lobby with server data - called by LoginPanel after successful login or when returning from game"""
 	_lobby_ready_state = false
-	if GameInfo.lobby_data.is_empty():
+	if GameInfo.get_lobby_data().is_empty():
 		print("Error: initialize_lobby called but no lobby data available")
 		return
 	
@@ -141,7 +141,7 @@ func initialize_lobby():
 
 func _initialize_databases():
 	"""Download data if needed, then initialize databases"""
-	var data_versions = GameInfo.lobby_data.get("data_versions", {})
+	var data_versions = GameInfo.get_lobby_data().get("data_versions", {})
 	
 	if data_versions.is_empty():
 		print("[Lobby] No data_versions, loading databases immediately")
@@ -207,7 +207,7 @@ func _load_game_scene_async():
 
 func populate_account_info():
 	"""Populate account information from lobby data"""
-	var lobby_data = GameInfo.lobby_data
+	var lobby_data = GameInfo.get_lobby_data()
 	account_created_label.text = "Account Created: " + _parse_iso_date(lobby_data.get("account_created", ""))
 	email_label.text = "Email: " + lobby_data.get("user_email", "")
 	mushroom_value_label.text = str(int(lobby_data.get("mushrooms", 0)))
@@ -244,7 +244,7 @@ func start_new_server_countdown():
 
 func _update_new_server_countdown():
 	"""Update the countdown label"""
-	var timestamp = GameInfo.lobby_data.get("new_server_timestamp", "")
+	var timestamp = GameInfo.get_lobby_data().get("new_server_timestamp", "")
 	if timestamp == null or timestamp == "":
 		new_server_countdown_label.text = "No upcoming server"
 		return
@@ -314,7 +314,7 @@ func add_character_list():
 	if create_new_button:
 		characters_container.move_child(create_new_button, 0)
 
-	var server_list = GameInfo.lobby_data.get("server_list", [])
+	var server_list = GameInfo.get_server_list()
 	print("[Lobby] server_list size: ", server_list.size())
 	
 	var total_characters = 0
@@ -436,7 +436,7 @@ func _on_logout():
 	GameInfo.skip_auto_login_once = true
 	
 	# Clear lobby data
-	GameInfo.lobby_data.clear()
+	GameInfo.clear_lobby_data()
 	
 	# Return to login screen
 	SceneTransition.change_scene_to_file("res://Scenes/login.tscn")
@@ -557,7 +557,7 @@ func _extract_server_id_from_create_response(response: Dictionary) -> int:
 
 func _get_server_day(server_id: int) -> int:
 	"""Get current_day from server list for the given server_id"""
-	var server_list = GameInfo.lobby_data.get("server_list", [])
+	var server_list = GameInfo.get_server_list()
 	for server in server_list:
 		if int(server.get("id", 0)) == int(server_id):
 			return int(server.get("current_day", 0))
@@ -565,7 +565,7 @@ func _get_server_day(server_id: int) -> int:
 
 func _get_server_created_at(server_id: int) -> int:
 	"""Get created_at timestamp from server list for the given server_id"""
-	var server_list = GameInfo.lobby_data.get("server_list", [])
+	var server_list = GameInfo.get_server_list()
 	for server in server_list:
 		if int(server.get("id", 0)) == int(server_id):
 			return int(server.get("created_at", 0))
@@ -578,7 +578,7 @@ func _on_social_pressed(platform: String):
 
 func setup_login_methods():
 	"""Show only connected login methods"""
-	var connected_methods = GameInfo.lobby_data.get("user_connected_methods", [])
+	var connected_methods = GameInfo.get_lobby_data().get("user_connected_methods", [])
 	
 	# Map method names to buttons
 	var method_buttons = {
@@ -606,7 +606,7 @@ func _on_add_method_pressed():
 	if not add_method_panel:
 		return
 	
-	var connected_methods = GameInfo.lobby_data.get("user_connected_methods", [])
+	var connected_methods = GameInfo.get_lobby_data().get("user_connected_methods", [])
 	var methods_grid = add_method_panel.get_node_or_null("Content/MethodsGrid")
 	
 	if not methods_grid:

@@ -125,13 +125,16 @@ func _transform_auth_response(response: Dictionary) -> Dictionary:
 	"""Transform server AuthResponse to client lobby_data format"""
 	var uid = response.get("user_id", 0)
 	GameInfo.user_id = str(int(uid)) if uid else ""
+	GameInfo.last_auth_response = response.duplicate(true)
+	var connected_methods = response.get("user_connected_methods", [])
 	var lobby_data = {
 		"user_id": uid,
 		"account_created": response.get("account_created", ""),
 		"user_email": response.get("user_email", ""),
 		"email": response.get("user_email", ""),
 		"mushrooms": response.get("mushrooms", 0),
-		"connected_methods": response.get("user_connected_methods", []),
+		"connected_methods": connected_methods,
+		"user_connected_methods": connected_methods,
 		"new_server_timestamp": response.get("new_server_timestamp", null),
 		"server_list": response.get("server_list", []),
 		"data_versions": response.get("data_versions", {})

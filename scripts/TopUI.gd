@@ -38,9 +38,9 @@ func _ready():
 func _on_update_timer_timeout():
 	"""Called every second to update the time display"""
 	var server_time = _get_server_time_string()
-	if time_label:
+	if time_label and is_instance_valid(time_label):
 		time_label.text = server_time
-	if day_label:
+	if day_label and is_instance_valid(day_label):
 		day_label.text = "Day " + str(_calculate_server_day())
 
 func _on_location_gui_input(event: InputEvent):
@@ -63,11 +63,13 @@ func update_display():
 	
 	# Update mushrooms (account-level, from lobby data) - ensure displayed as integer
 	if currency_label and GameInfo.lobby_data.has("mushrooms"):
+		if not is_instance_valid(currency_label):
+			return
 		var mushrooms = int(GameInfo.lobby_data.mushrooms)
 		currency_label.text = str(mushrooms)
 	
 	# Update silver
-	if gold_label and GameInfo.current_player:
+	if gold_label and is_instance_valid(gold_label) and GameInfo.current_player:
 		gold_label.text = str(GameInfo.current_player.silver)
 	
 	# Update location
@@ -75,15 +77,15 @@ func update_display():
 	var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
 	var server_time = _get_server_time_string()
 	
-	if time_label:
+	if time_label and is_instance_valid(time_label):
 		time_label.text = server_time
 	
 	# Update day label
-	if day_label:
+	if day_label and is_instance_valid(day_label):
 		day_label.text = "Day " + str(_calculate_server_day())
 	
 	# Update location description
-	if location_description_label and location:
+	if location_description_label and is_instance_valid(location_description_label) and location:
 		location_description_label.text = location.description if location.description else "No description available."
 
 	# Update health bar
@@ -102,7 +104,9 @@ func update_health_bar():
 	health_bar.max_value = max_health
 	health_bar.value = current_health
 	if health_bar.has_node("HealthLabel"):
-		health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
+		var health_label = health_bar.get_node("HealthLabel")
+		if health_label and is_instance_valid(health_label):
+			health_label.text = str(current_health) + " / " + str(max_health)
 
 func _get_server_time_string() -> String:
 	if not GameInfo.current_player:
