@@ -355,8 +355,9 @@ func add_character_list():
 			total_characters += 1
 			var card = PlayerCard.instantiate()
 			characters_container.add_child(card)
+			var card_data = character.duplicate(true) if character is Dictionary else {}
 			# Pass character data; server context is now represented by grouped headers.
-			card.setup(character, server.get("id", 0))
+			card.setup(card_data, server.get("id", 0))
 			# Connect to card's signal with proper signature (character_id, server_id)
 			card.character_selected.connect(_on_character_selected)
 	

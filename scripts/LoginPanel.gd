@@ -65,8 +65,10 @@ var current_method: String = "email"
 var is_register_mode: bool = false
 var indicator_tween: Tween
 var is_logging_in: bool = false  # Prevent double-clicks during login
-var _dot_tween: Tween
-var _dot_base_text: String = ""
+var _loading_tween: Tween
+var _loading_button: Button = null
+var _loading_button_default_text: String = ""
+var _loading_indicator_default_modulate: Color = Color(1, 1, 1, 1)
 
 func _ready():
 
@@ -434,32 +436,79 @@ func _hide_error():
 func _start_dot_animation(base_text: String):
 	print("[Login] _start_dot_animation called with: '", base_text, "'")
 	_stop_dot_animation()
-	_dot_base_text = base_text
-	if not email_login_button:
-		print("[Login] ERROR: email_login_button is null!")
+	_loading_button = _get_active_loading_button()
+	if not _loading_button:
+		print("[Login] ERROR: no loading button available!")
 		return
-	email_login_button.text = base_text + "."
+	_loading_button_default_text = _loading_button.text
+	_loading_button.text = base_text
+	_loading_button.pivot_offset = _loading_button.size * 0.5
+	_loading_button.scale = Vector2.ONE
+	_loading_button.modulate = Color(1, 1, 1, 1)
+	if method_indicator:
+		method_indicator.pivot_offset = method_indicator.size * 0.5
+		_loading_indicator_default_modulate = method_indicator.modulate
+		method_indicator.scale = Vector2.ONE
+		method_indicator.modulate = _loading_indicator_default_modulate
 	print("[Login] Creating tween, node in tree: ", is_inside_tree())
 	var tw = create_tween()
 	if tw == null:
 		print("[Login] ERROR: create_tween() returned null!")
 		return
-	_dot_tween = tw.set_loops()
-	_dot_tween.tween_callback(_set_dots.bind(1)).set_delay(0.3)
-	_dot_tween.tween_callback(_set_dots.bind(2)).set_delay(0.3)
-	_dot_tween.tween_callback(_set_dots.bind(3)).set_delay(0.3)
+	_loading_tween = tw.set_loops()
+	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 0)).set_delay(0.08)
+	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 1)).set_delay(0.12)
+	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 2)).set_delay(0.12)
+	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 3)).set_delay(0.12)
+	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 2)).set_delay(0.12)
+	_loading_tween.tween_callback(_apply_loading_frame.bind(base_text, 1)).set_delay(0.12)
 	print("[Login] Tween created successfully, looping")
 
-func _set_dots(count: int):
-	if email_login_button:
-		email_login_button.text = _dot_base_text + ".".repeat(count)
-		print("[Login] Dot tick: ", count, " -> '", email_login_button.text, "'")
+func _apply_loading_frame(base_text: String, frame: int):
+	if _loading_button:
+		_loading_button.text = base_text + ".".repeat(frame)
+		var pulse_strength = 1.0 + float(frame) * 0.025
+		_loading_button.scale = Vector2(pulse_strength, pulse_strength)
+		var tint = 1.0 - float(frame) * 0.06
+		_loading_button.modulate = Color(1.0, tint, tint, 1.0)
+	if method_indicator:
+		var indicator_scale = 1.0 + float(frame) * 0.35
+		method_indicator.scale = Vector2(indicator_scale, 1.0)
+		var alpha = 0.55 + float(frame) * 0.1
+		method_indicator.modulate = Color(_loading_indicator_default_modulate.r, _loading_indicator_default_modulate.g, _loading_indicator_default_modulate.b, alpha)
 
 func _stop_dot_animation():
 	print("[Login] _stop_dot_animation called")
-	if _dot_tween:
-		_dot_tween.kill()
-		_dot_tween = null
+	if _loading_tween:
+		_loading_tween.kill()
+		_loading_tween = null
+	if _loading_button:
+		_loading_button.text = _loading_button_default_text if _loading_button_default_text != "" else _loading_button.text
+		_loading_button.scale = Vector2.ONE
+		_loading_button.modulate = Color(1, 1, 1, 1)
+		_loading_button = null
+	if method_indicator:
+		method_indicator.scale = Vector2.ONE
+		method_indicator.modulate = _loading_indicator_default_modulate
+
+func _get_active_loading_button() -> Button:
+	if is_register_mode:
+		return email_register_button
+	match current_method:
+		"email":
+			return email_login_button
+		"google":
+			return google_login_button
+		"google_play":
+			return google_play_login_button
+		"apple":
+			return apple_login_button
+		"discord":
+			return discord_login_button
+		"facebook":
+			return facebook_login_button
+		_:
+			return email_login_button
 
 func _on_login_or_register():
 	"""Handle login or register for non-email methods (same flow)"""

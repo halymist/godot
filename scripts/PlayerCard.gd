@@ -7,6 +7,7 @@ signal character_selected(character_id: int, server_id: int)
 var character_id: int = 0
 var server_id: int = 0
 var character_data: Dictionary = {}
+var _is_ready: bool = false
 
 @onready var name_label = $HBox/Info/NameLabel
 @onready var meta_label = $HBox/Info/MetaLabel
@@ -15,29 +16,36 @@ var character_data: Dictionary = {}
 func _ready():
 	# Connect button pressed signal
 	pressed.connect(_on_pressed)
+	_is_ready = true
+	_apply_character_data()
 
 func setup(character: Dictionary, srv_id: int = 0):
 	"""Setup the player card with character data."""
-	character_data = character
-	character_id = character.get("character_id", 0)
+	character_data = character.duplicate(true)
+	character_id = character_data.get("character_id", 0)
 	server_id = srv_id
-	
-	# Set labels
-	if name_label:
-		var vip_badge = " [VIP]" if character.get("vip", false) else ""
-		name_label.text = character.get("name", "Unknown") + vip_badge
-
-	if meta_label:
-		var faction_name = _faction_to_name(int(character.get("faction", 0)))
-		var rank = int(character.get("rank", 0))
-		var rank_text = "#" + str(rank) if rank > 0 else "Unranked"
-		meta_label.text = faction_name + " | Rank " + rank_text
-	
-	# Setup avatar with character's cosmetic IDs. Supports both array and dictionary server shapes.
-	if avatar:
-		avatar.set_avatar_ids(_extract_avatar_ids(character))
+	_apply_character_data()
 
 func refresh_card_avatar():
+	if avatar:
+		avatar.set_avatar_ids(_extract_avatar_ids(character_data))
+
+func _apply_character_data():
+	if not _is_ready:
+		return
+
+	# Set labels
+	if name_label:
+		var vip_badge = " [VIP]" if character_data.get("vip", false) else ""
+		name_label.text = character_data.get("name", "Unknown") + vip_badge
+
+	if meta_label:
+		var faction_name = _faction_to_name(int(character_data.get("faction", 0)))
+		var rank = int(character_data.get("rank", 0))
+		var rank_text = "#" + str(rank) if rank > 0 else "Unranked"
+		meta_label.text = faction_name + " | Rank " + rank_text
+
+	# Setup avatar with character's cosmetic IDs. Supports both array and dictionary server shapes.
 	if avatar:
 		avatar.set_avatar_ids(_extract_avatar_ids(character_data))
 
