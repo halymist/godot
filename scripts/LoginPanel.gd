@@ -71,7 +71,7 @@ var _dot_base_text: String = ""
 func _ready():
 
 	# Check if we already have login data (returning from game)
-	if not GameInfo.get_lobby_data().is_empty():
+	if GameInfo.has_lobby_data():
 		_start_dot_animation("Loading")
 		_show_lobby_after_init()
 		return
@@ -396,7 +396,7 @@ func _show_error(message: String):
 		error_label.visible = true
 
 func _show_lobby_after_init():
-	"""Keep login visible until lobby is fully initialized, then switch."""
+	"""Keep login visible until the lobby has rebuilt cards and avatars, then switch."""
 	print("[Login] _show_lobby_after_init: waiting for lobby to be ready...")
 	if not lobby_panel:
 		print("[Login] ERROR: no lobby_panel!")

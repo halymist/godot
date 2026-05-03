@@ -38,20 +38,21 @@ const SOCIAL_URLS = {
 	"facebook": "https://facebook.com/yourgame"
 }
 
-var databases_loaded = false
+enum LobbyPrepareState { IDLE, PREPARING, READY, FAILED }
+enum CharacterFlowState { IDLE, CREATING, ENTERING_EXISTING, ENTERING_CREATED }
+
 var game_scene_loaded = false
+var game_scene_preload_started = false
 var game_scene: PackedScene = null
-var loading_in_progress = false  # Prevent multiple character selections while loading
-var initialized = false  # Track if we've initialized the lobby
 var _selected_server_day: int = 0  # Server day for selected character's server
-var create_request_in_progress: bool = false
-var create_transition_started: bool = false
-var _lobby_ready_state: bool = false
+var _lobby_prepare_state: LobbyPrepareState = LobbyPrepareState.IDLE
+var _character_flow_state: CharacterFlowState = CharacterFlowState.IDLE
+var _countdown_timer: Timer = null
 
 signal lobby_ready
 
 func is_lobby_ready() -> bool:
-	return _lobby_ready_state
+	return _lobby_prepare_state == LobbyPrepareState.READY
 
 func _ready():
 	print("LobbyPanel: _ready() called")
@@ -106,91 +107,86 @@ func _ready():
 
 func initialize_lobby():
 	"""Initialize lobby with server data - called by LoginPanel after successful login or when returning from game"""
-	_lobby_ready_state = false
 	if GameInfo.get_lobby_data().is_empty():
 		print("Error: initialize_lobby called but no lobby data available")
+		_lobby_prepare_state = LobbyPrepareState.FAILED
 		return
 	
 	print("Initializing lobby with server data...")
 	
 	# Populate UI with lobby data
 	populate_account_info()
+	setup_login_methods()
+	start_new_server_countdown()
 	# Hide character cards until data/cosmetics are fully initialized
 	if characters_container:
 		characters_container.visible = false
-	
-	# Only do these once (first time initialization)
-	if not initialized:
-		initialized = true
-		start_new_server_countdown()
-		setup_login_methods()
-		# Preload game scene in background
-		_load_game_scene_async()
-		# Initialize databases (download if needed, then load)
-		_initialize_databases()
+
+	if _lobby_prepare_state == LobbyPrepareState.PREPARING:
 		return
 
-	# Re-entry path: if already initialized and DBs are ready, render immediately
-	if databases_loaded:
-		add_character_list()
-		_refresh_character_avatars()
-		if characters_container:
-			characters_container.visible = true
-		_lobby_ready_state = true
-		lobby_ready.emit.call_deferred()
+	if _lobby_prepare_state == LobbyPrepareState.READY and GameInfo.databases_loaded:
+		_finalize_lobby_ready()
+		return
 
-func _initialize_databases():
-	"""Download data if needed, then initialize databases"""
+	_prepare_lobby()
+
+func _prepare_lobby():
+	_lobby_prepare_state = LobbyPrepareState.PREPARING
+	_ensure_game_scene_preload_started()
+	var databases_ready = await _ensure_databases_ready()
+	if not databases_ready:
+		_lobby_prepare_state = LobbyPrepareState.FAILED
+		return
+	_finalize_lobby_ready()
+
+func _ensure_databases_ready() -> bool:
+	"""Download data if needed, then initialize databases."""
+	if GameInfo.databases_loaded:
+		if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
+			avatar_creation_panel.on_databases_loaded()
+		return true
+
 	var data_versions = GameInfo.get_lobby_data().get("data_versions", {})
-	
+
 	if data_versions.is_empty():
 		print("[Lobby] No data_versions, loading databases immediately")
 		GameInfo.load_databases()
-		databases_loaded = true
-		add_character_list()
-		_refresh_character_avatars()
 		if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
 			avatar_creation_panel.on_databases_loaded()
-		if characters_container:
-			characters_container.visible = true
-		_lobby_ready_state = true
-		lobby_ready.emit.call_deferred()
-		return
+		return GameInfo.databases_loaded
 	
 	# Check if any downloads are needed
 	var needs_download = DataManager.needs_download(data_versions)
-	
+
 	if needs_download:
 		print("[Lobby] Downloads needed, syncing data first...")
 		# Download data + assets, then load databases
 		await DataManager.sync_data(data_versions)
 		print("[Lobby] Downloads complete, loading databases...")
 		GameInfo.load_databases()
-		databases_loaded = true
 	else:
 		print("[Lobby] All data up to date, loading databases...")
 		GameInfo.load_databases()
-		databases_loaded = true
-	
+
+	if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
+		avatar_creation_panel.on_databases_loaded()
+	return GameInfo.databases_loaded
+
+func _finalize_lobby_ready():
 	# Re-refresh character card avatars now that cosmetics_db is available
 	add_character_list()
 	_refresh_character_avatars()
-	if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
-		avatar_creation_panel.on_databases_loaded()
 	if characters_container:
 		characters_container.visible = true
-	_lobby_ready_state = true
+	_lobby_prepare_state = LobbyPrepareState.READY
 	lobby_ready.emit.call_deferred()
 
-func _refresh_character_avatars():
-	"""Re-trigger avatar rendering on all character cards after cosmetics DB loads"""
-	for child in characters_container.get_children():
-		if child == create_new_button:
-			continue
-		if child.has_method("refresh_card_avatar"):
-			child.refresh_card_avatar()
-		elif child.has_node("HBox/AvatarContainer/Avatar"):
-			child.get_node("HBox/AvatarContainer/Avatar").refresh_avatar()
+func _ensure_game_scene_preload_started():
+	if game_scene_loaded or game_scene_preload_started:
+		return
+	game_scene_preload_started = true
+	_load_game_scene_async()
 
 func _load_game_scene_async():
 	"""Load game scene in background"""
@@ -206,8 +202,19 @@ func _load_game_scene_async():
 			game_scene_loaded = true
 			break
 		elif status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE or status == ResourceLoader.THREAD_LOAD_FAILED:
+			game_scene_preload_started = false
 			break
 		await get_tree().process_frame
+
+func _refresh_character_avatars():
+	"""Re-trigger avatar rendering on all character cards after cosmetics DB loads"""
+	for child in characters_container.get_children():
+		if child == create_new_button:
+			continue
+		if child.has_method("refresh_card_avatar"):
+			child.refresh_card_avatar()
+		elif child.has_node("HBox/AvatarContainer/Avatar"):
+			child.get_node("HBox/AvatarContainer/Avatar").refresh_avatar()
 
 func populate_account_info():
 	"""Populate account information from lobby data"""
@@ -240,11 +247,13 @@ func _parse_iso_date(iso_string: String) -> String:
 func start_new_server_countdown():
 	"""Start countdown timer for new server"""
 	_update_new_server_countdown()
-	var timer = Timer.new()
-	timer.wait_time = 1.0
-	timer.timeout.connect(_update_new_server_countdown)
-	add_child(timer)
-	timer.start()
+	if _countdown_timer and is_instance_valid(_countdown_timer):
+		return
+	_countdown_timer = Timer.new()
+	_countdown_timer.wait_time = 1.0
+	_countdown_timer.timeout.connect(_update_new_server_countdown)
+	add_child(_countdown_timer)
+	_countdown_timer.start()
 
 func _update_new_server_countdown():
 	"""Update the countdown label"""
@@ -261,10 +270,10 @@ func _update_new_server_countdown():
 	
 	var total: int = seconds_remaining
 	
-	var days := total / 86400
+	var days := int(total / 86400.0)
 	total %= 86400
 	
-	var hours := total / 3600
+	var hours := int(total / 3600.0)
 	
 	new_server_countdown_label.text = "New start in: " + str(days) + "d " + str(hours) + "h"
 
@@ -355,11 +364,16 @@ func add_character_list():
 
 func _on_character_selected(character_id: int, server_id: int):
 	"""Handle character selection from player card"""
-	# Ignore if already loading a character
-	if loading_in_progress:
-		print("Character selection already in progress, ignoring click")
+	if _character_flow_state != CharacterFlowState.IDLE:
+		print("Character flow already in progress, ignoring selection")
 		return
-	
+	await _begin_character_entry(character_id, server_id, CharacterFlowState.ENTERING_EXISTING)
+
+func _begin_character_entry(character_id: int, server_id: int, flow_state: CharacterFlowState):
+	if flow_state == CharacterFlowState.IDLE:
+		return
+	_character_flow_state = flow_state
+
 	# Store the current_day from the server for this character
 	_selected_server_day = _get_server_day(server_id)
 	
@@ -367,16 +381,11 @@ func _on_character_selected(character_id: int, server_id: int):
 	GameInfo.server_created_at = _get_server_created_at(server_id)
 	print("[Lobby] Selected server_created_at: ", GameInfo.server_created_at, ", server_day: ", _selected_server_day)
 	
-	loading_in_progress = true
 	print("Character selected in lobby: ", character_id, " on server: ", server_id)
-	
-	# Wait for both databases and game scene if they're still loading
-	while not databases_loaded or not game_scene_loaded:
-		if not databases_loaded:
-			print("Waiting for databases to finish loading...")
-		if not game_scene_loaded:
-			print("Waiting for game scene to finish loading...")
-		await get_tree().process_frame
+	var resources_ready = await _ensure_ready_for_character_entry()
+	if not resources_ready:
+		_abort_character_flow()
+		return
 	
 	# Connect to WebSocket and send joinLobby
 	print("Connecting to WebSocket...")
@@ -384,19 +393,28 @@ func _on_character_selected(character_id: int, server_id: int):
 	
 	if not ws_connected:
 		print("ERROR: Failed to connect to WebSocket server")
-		loading_in_progress = false
-		if create_transition_started:
-			_cancel_create_transition_to_menu()
+		_abort_character_flow()
 		return
 	
 	# Connect to playerData signal
-	Websocket.player_data_received.connect(_on_player_data_received)
+	if not Websocket.player_data_received.is_connected(_on_player_data_received):
+		Websocket.player_data_received.connect(_on_player_data_received)
 	
 	# Send joinLobby request
 	Websocket.join_lobby(server_id, character_id, Http.session_id)
 	
 	# Wait for playerData response (handled in _on_player_data_received)
 	print("Waiting for player data from server...")
+
+func _ensure_ready_for_character_entry() -> bool:
+	_ensure_game_scene_preload_started()
+	while not GameInfo.databases_loaded or not game_scene_loaded:
+		if not GameInfo.databases_loaded:
+			print("Waiting for databases to finish loading...")
+		if not game_scene_loaded:
+			print("Waiting for game scene to finish loading...")
+		await get_tree().process_frame
+	return true
 
 func _on_player_data_received(character_data: Dictionary):
 	"""Handle playerData response from WebSocket"""
@@ -417,9 +435,10 @@ func _on_player_data_received(character_data: Dictionary):
 		GameInfo.current_player.server_day = _selected_server_day
 	
 	print("[Lobby] Character loaded, switching to game scene...")
+	var use_dark_transition = _character_flow_state == CharacterFlowState.ENTERING_CREATED
+	_character_flow_state = CharacterFlowState.IDLE
 	# If create flow already started fade_out, avoid a second fade_out.
-	if create_transition_started:
-		create_transition_started = false
+	if use_dark_transition:
 		# Let SceneTransition (autoload) finish scene swap + fade in,
 		# so this flow survives LobbyPanel being freed.
 		SceneTransition.change_scene_to_packed_after_dark(game_scene)
@@ -447,6 +466,8 @@ func _on_logout():
 
 func _on_create_new_character():
 	"""Show character info panel to start creation flow"""
+	if _character_flow_state != CharacterFlowState.IDLE:
+		return
 	visible = false
 	character_info_panel.visible = true
 
@@ -470,14 +491,12 @@ func _on_avatar_back():
 
 func _on_create_character_complete():
 	"""User completed avatar creation, create the character"""
-	if create_request_in_progress:
+	if _character_flow_state != CharacterFlowState.IDLE:
 		return
-	create_request_in_progress = true
+	_character_flow_state = CharacterFlowState.CREATING
 
 	# Optimistic UX: start transition immediately, before server response.
-	if not create_transition_started:
-		create_transition_started = true
-		SceneTransition.fade_out()
+	SceneTransition.fade_out()
 
 	var character_data = character_info_panel.get_character_data()
 	var avatar_data = avatar_creation_panel.get_avatar_data()
@@ -504,11 +523,12 @@ func _on_create_character_complete():
 
 func _on_character_created(success: bool, character_id: int, error: String):
 	"""Handle character creation response from server"""
-	create_request_in_progress = false
+	if _character_flow_state != CharacterFlowState.CREATING:
+		return
 
 	if not success:
 		print("[Lobby] Character creation failed: ", error)
-		_cancel_create_transition_to_menu()
+		_abort_character_flow()
 		# TODO: Show error message to user
 		return
 	
@@ -519,15 +539,21 @@ func _on_character_created(success: bool, character_id: int, error: String):
 
 	if server_id <= 0:
 		print("[Lobby] Missing server_id in create-character response; cannot auto-login")
-		_cancel_create_transition_to_menu()
+		_abort_character_flow()
 		return
 
 	print("[Lobby] Auto-logging into newly created character ", character_id, " on server ", server_id)
-	_on_character_selected(character_id, server_id)
+	await _begin_character_entry(character_id, server_id, CharacterFlowState.ENTERING_CREATED)
 
-func _cancel_create_transition_to_menu():
+func _abort_character_flow():
+	"""Reset lobby UI after a failed or canceled character flow."""
+	var was_create_flow = _character_flow_state == CharacterFlowState.CREATING or _character_flow_state == CharacterFlowState.ENTERING_CREATED
+	_character_flow_state = CharacterFlowState.IDLE
+	if was_create_flow:
+		_cancel_character_transition_to_menu()
+
+func _cancel_character_transition_to_menu():
 	"""Fallback from optimistic create transition back to create menu UI."""
-	create_transition_started = false
 	character_info_panel.visible = false
 	avatar_creation_panel.visible = true
 	visible = false

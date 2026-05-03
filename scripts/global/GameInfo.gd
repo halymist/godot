@@ -21,8 +21,6 @@ var talents_db: Resource = null  # TalentsDatabase
 # ============================================
 # Lobby data (account info, server list, character list)
 var lobby_data: Dictionary = {}
-var lobby_data_cache: Dictionary = {}
-var server_list_cache: Array = []
 var last_auth_response: Dictionary = {}
 var user_id: String = ""
 
@@ -100,33 +98,30 @@ func load_lobby_data():
 	pass
 
 func set_lobby_data(data: Dictionary):
-	"""Persist lobby payload from auth/lobby responses for reliable UI rebuilds."""
+	"""Persist the current lobby payload from auth/lobby responses."""
 	lobby_data = data.duplicate(true)
-	lobby_data_cache = lobby_data.duplicate(true)
-	var servers = lobby_data.get("server_list", [])
-	server_list_cache = servers.duplicate(true) if servers is Array else []
+	if not (lobby_data.get("server_list", []) is Array):
+		lobby_data["server_list"] = []
+	if not lobby_data.has("connected_methods") and lobby_data.has("user_connected_methods"):
+		lobby_data["connected_methods"] = lobby_data.get("user_connected_methods", [])
+	if not lobby_data.has("user_connected_methods") and lobby_data.has("connected_methods"):
+		lobby_data["user_connected_methods"] = lobby_data.get("connected_methods", [])
+
+func has_lobby_data() -> bool:
+	return not lobby_data.is_empty()
 
 func get_lobby_data() -> Dictionary:
-	"""Get active lobby data, falling back to the last cached payload."""
-	if not lobby_data.is_empty():
-		return lobby_data
-	return lobby_data_cache
+	"""Get the authoritative lobby payload for login/lobby rendering."""
+	return lobby_data
 
 func get_server_list() -> Array:
-	"""Get server list with cache fallback for lobby re-entry flows."""
-	var active_servers = lobby_data.get("server_list", null)
-	if active_servers is Array:
-		return active_servers
-	if not server_list_cache.is_empty():
-		return server_list_cache
-	var cached_servers = lobby_data_cache.get("server_list", [])
-	return cached_servers if cached_servers is Array else []
+	"""Get server list from the current lobby payload."""
+	var servers = lobby_data.get("server_list", [])
+	return servers if servers is Array else []
 
 func clear_lobby_data():
-	"""Clear all lobby/auth caches on logout."""
+	"""Clear the current lobby/auth payload on explicit account logout."""
 	lobby_data.clear()
-	lobby_data_cache.clear()
-	server_list_cache.clear()
 	last_auth_response.clear()
 
 # ============================================
