@@ -7,7 +7,6 @@ enum DisplayMode { PLAYER, ENEMY }
 
 # Button references (only used in PLAYER mode)
 @export var talents_button: Button
-@export var details_button: Button
 @export var avatar_button: Button
 
 # Stats display references
@@ -35,7 +34,6 @@ var displayed_character: GameInfo.GamePlayer = null
 
 func _ready():
 	# Always connect buttons
-	details_button.pressed.connect(_on_details_pressed)
 	talents_button.pressed.connect(_on_talents_pressed)
 	
 	if display_mode == DisplayMode.PLAYER:
@@ -200,15 +198,6 @@ func _on_talents_pressed():
 		# Show enemy talents (read-only)
 		if displayed_character:
 			UIManager.instance.show_talents_panel(displayed_character, true)
-
-func _on_details_pressed():
-	if display_mode == DisplayMode.PLAYER:
-		# Show details for current player
-		UIManager.instance.show_details_panel(GameInfo.current_player)
-	else:  # ENEMY mode
-		# Show details for displayed enemy
-		if displayed_character:
-			UIManager.instance.show_details_panel(displayed_character)
 
 func _on_avatar_pressed():
 	UIManager.instance.toggle_avatar_overlay()

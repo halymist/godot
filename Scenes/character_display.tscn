@@ -51,7 +51,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="CharacterDisplay" type="Control" unique_id=696500672 node_paths=PackedStringArray("talents_button", "details_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display", "equipment_slots")]
+[node name="CharacterDisplay" type="Control" unique_id=696500672 node_paths=PackedStringArray("talents_button", "avatar_button", "player_name_label", "rank_label", "faction_label", "strength_label", "stamina_label", "agility_label", "luck_label", "armor_label", "health_bar", "damage_spread_label", "active_perks_display", "equipment_slots")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,7 +61,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_foq72")
 talents_button = NodePath("TalentsButton")
-details_button = NodePath("DetailsButton")
 avatar_button = NodePath("Equip/Character/ChangeAvatar")
 player_name_label = NodePath("Stats/PlayerName")
 rank_label = NodePath("Stats/CharacterDetails/RankContainer/RankLabel")
@@ -254,27 +253,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
-
-[node name="DetailsButton" type="Button" parent="." unique_id=94333691]
-custom_minimum_size = Vector2(60, 30)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -147.0
-offset_top = 142.0
-offset_right = -86.0
-offset_bottom = 172.0
-grow_horizontal = 0
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 10
-theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_pressed")
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_hover")
-text = "Details"
 
 [node name="TalentsButton" type="Button" parent="." unique_id=1353786863]
 custom_minimum_size = Vector2(60, 30)

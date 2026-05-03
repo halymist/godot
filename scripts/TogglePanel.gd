@@ -7,7 +7,7 @@ static var instance: UIManager
 # PANEL CATEGORIES
 # ============================================================================
 # Main Panels: home, arena, quest, expedition, character, rankings, map, combat
-# Overlays: settings, payment, enemy, details, talents, upgrade_talent, perk_screen, 
+# Overlays: settings, payment, enemy, talents, upgrade_talent, perk_screen, 
 #           cancel_quest, quest_panel, logout, avatar_panel
 # Chat: Independent toggle, always on top
 # ============================================================================
@@ -49,7 +49,6 @@ signal game_ready
 @export var settings_panel: Control
 @export var payment: Control
 @export var talents_panel: Control
-@export var details_panel: Control
 @export var upgrade_talent: Control
 @export var perk_screen: Control
 @export var cancel_quest: Control
@@ -260,15 +259,6 @@ func show_enemy_panel(enemy_name: String):
 	enemy_character_display.display_enemy(enemy_name)
 	show_overlay(enemy_panel)
 
-func show_details_panel(character: GameInfo.GamePlayer):
-	"""Show details panel for any character (player or enemy)"""
-	print("UIManager: Showing details for: ", character.name)
-	if details_panel:
-		details_panel.display_effects(character)
-		show_overlay(details_panel)  # Push onto stack
-	else:
-		print("ERROR: details_panel not assigned in UIManager")
-
 func show_talents_panel(character: GameInfo.GamePlayer, read_only: bool = false):
 	"""Show talents panel for any character (player or enemy)"""
 	print("UIManager: Showing talents for: ", character.name, " read_only=", read_only)
@@ -425,6 +415,8 @@ func show_panel(panel: Control):
 
 func handle_home_button():
 	"""Navigate to home panel"""
+	if current_panel == home_panel:
+		return
 	# Block if traveling/quest/expedition active
 	if is_navigation_blocked():
 		_go_to_default_panel()
@@ -447,11 +439,15 @@ func handle_map_button():
 
 	# Traveling state always opens the timer UI.
 	if arrival_ts > now or (map_panel and map_panel.is_expedition_travel):
+		if current_panel == map_panel:
+			return
 		show_panel(map_panel)
 		return
 
 	# Active quest state opens quest directly.
 	if destination != null:
+		if current_panel == quest:
+			return
 		if map_panel and map_panel.has_method("load_arrived_quest"):
 			map_panel.load_arrived_quest()
 		else:
@@ -461,10 +457,14 @@ func handle_map_button():
 
 	# Active expedition state opens the graph directly.
 	if expedition and expedition.size() > 0:
+		if current_panel == expedition_panel:
+			return
 		_open_expedition_graph(int(expedition[0]))
 		return
 
 	# Idle state opens the expedition graph for current settlement.
+	if current_panel == expedition_panel:
+		return
 	_open_settlement_expedition_graph()
 
 func _open_settlement_expedition_graph():
@@ -500,29 +500,30 @@ func _open_expedition_graph(expedition_id: int):
 		print("UIManager: Expedition panel missing start_expedition")
 
 func handle_arena_button():
-	"""Toggle arena panel"""
+	"""Open arena panel"""
 	# Block if traveling/quest/expedition active
 	if is_navigation_blocked():
 		return
-	
 	if current_panel == arena_panel:
-		show_panel(home_panel)
-	else:
-		show_panel(arena_panel)
+		return
+	show_panel(arena_panel)
 
 func handle_character_button():
-	"""Toggle character panel - always accessible"""
+	"""Open character panel - always accessible"""
 	if current_panel == character_panel:
-		_go_to_default_panel()
-	else:
-		show_panel(character_panel)
+		if _close_overlay_if_present(talents_panel):
+			if upgrade_talent:
+				upgrade_talent.visible = false
+			if perk_screen:
+				perk_screen.visible = false
+		return
+	show_panel(character_panel)
 
 func handle_rankings_button():
-	"""Toggle rankings panel - always accessible"""
+	"""Open rankings panel - always accessible"""
 	if current_panel == rankings_panel:
-		_go_to_default_panel()
-	else:
-		show_panel(rankings_panel)
+		return
+	show_panel(rankings_panel)
 
 func toggle_talents_bookmark():
 	"""Toggle talents panel overlay (for current player)"""
@@ -535,10 +536,6 @@ func toggle_talents_bookmark():
 	else:
 		# Show player talents
 		show_talents_panel(GameInfo.current_player, false)
-
-func toggle_details_bookmark():
-	"""Toggle details panel overlay"""
-	toggle_overlay(details_panel)
 
 # ============================================================================
 # BACK BUTTON - SIMPLIFIED PRIORITY SYSTEM
@@ -663,6 +660,26 @@ func _go_to_default_panel():
 	else:
 		show_panel(home_panel)
 
+func _close_overlay_if_present(overlay: Control) -> bool:
+	"""Close the given overlay if present anywhere in the stack."""
+	if overlay == null:
+		return false
+
+	var index := overlay_stack.find(overlay)
+	if index < 0:
+		return false
+
+	while overlay_stack.size() > index:
+		var top_overlay: Control = overlay_stack.pop_back()
+		top_overlay.visible = false
+
+	if overlay_stack.size() > 0:
+		current_panel_overlay = overlay_stack[-1]
+	else:
+		current_panel_overlay = null
+
+	return true
+
 
 func show_combat():
 	"""Show combat panel"""
@@ -766,7 +783,6 @@ func refresh_stats():
 	"""Recalculate and display stats for current player"""
 	
 	character_display.stats_changed(GameInfo.current_player.get_player_stats())
-	details_panel.display_effects(GameInfo.current_player)
 	if top_ui and top_ui.has_method("update_health_bar"):
 		top_ui.call("update_health_bar")
 	

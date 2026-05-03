@@ -281,7 +281,7 @@ func handle_node_start_response(success: bool, node_id: int, quest_id: int, arri
 		_refund_pending_node_start_cost()
 		_set_node_overlay_text(message if message != "" else "Unable to start this node.")
 		if selected_node_completed:
-			_set_action_button_state("Completed", false, false)
+			_set_completed_node_action_state()
 		else:
 			_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0, true)
 		print("ExpeditionPanel: Node start failed for node ", node_id, ": ", message)
@@ -291,7 +291,7 @@ func handle_node_start_response(success: bool, node_id: int, quest_id: int, arri
 		_refund_pending_node_start_cost()
 		_set_node_overlay_text("Server returned invalid quest for this node.")
 		if selected_node_completed:
-			_set_action_button_state("Completed", false, false)
+			_set_completed_node_action_state()
 		else:
 			_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0, true)
 		print("ExpeditionPanel: Invalid quest_id from server for node ", node_id)
@@ -362,6 +362,7 @@ func _set_node_overlay_text(text_value: String):
 
 func _set_action_button_state(text_value: String, enabled: bool, show_price: bool):
 	if node_action_button and is_instance_valid(node_action_button):
+		node_action_button.visible = true
 		node_action_button.disabled = not enabled
 
 		var action_label = node_action_button.get_node_or_null("Content/ActionLabel") as Label
@@ -380,6 +381,11 @@ func _set_action_button_state(text_value: String, enabled: bool, show_price: boo
 		else:
 			node_action_button.text = "%s (%d)" % [text_value, EXPEDITION_QUEST_START_COST] if show_price else text_value
 			node_action_button.icon = currency_check_icon if show_price else null
+
+func _set_completed_node_action_state():
+	if node_action_button and is_instance_valid(node_action_button):
+		node_action_button.disabled = true
+		node_action_button.visible = false
 
 func _build_node_overlay_text(node: Resource, completed: bool) -> String:
 	if node.label != "":
@@ -433,7 +439,7 @@ func _apply_node_selection(node: Resource, completed: bool, center_camera: bool)
 	_refresh_node_visual_states()
 
 	if completed:
-		_set_action_button_state("Completed", false, false)
+		_set_completed_node_action_state()
 		return
 
 	if pending_node_id > 0:
