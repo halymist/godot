@@ -4,12 +4,25 @@ extends Panel
 
 @export var coupon_input: LineEdit
 @export var redeem_button: Button
+@export var redeem_result_label: Label
+@export var coupon_title_label: Label
 @export var invite_link: Label
 @export var copy_link_button: Button
 @export var purchase_option1: Button
 @export var purchase_option2: Button
 @export var purchase_option3: Button
 @export var purchase_option4: Button
+
+var is_redeeming_coupon: bool = false
+var _coupon_title_default_text: String = "Redeem Coupon Code"
+var _coupon_title_default_color: Color = Color(0.9, 0.7, 0.4, 1.0)
+var _coupon_message_id: int = 0
+var _redeem_spinner_id: int = 0
+
+const REDEEM_BUTTON_TEXT = "Redeem"
+const REDEEM_SPINNER_FRAMES: Array[String] = ["|", "/", "-", "\\"]
+const REDEEM_SPINNER_INTERVAL := 0.06
+const COUPON_MESSAGE_DURATION := 3.0
 
 # Billing (Android / iOS)
 var billing: Node = null
@@ -29,6 +42,15 @@ const PRODUCT_MUSHROOMS = {
 func _ready():
 	redeem_button.pressed.connect(_on_redeem_button_pressed)
 	copy_link_button.pressed.connect(_on_copy_link_pressed)
+	if coupon_input:
+		coupon_input.text_submitted.connect(_on_coupon_submitted)
+	if not Http.redeem_coupon_completed.is_connected(_on_redeem_coupon_completed):
+		Http.redeem_coupon_completed.connect(_on_redeem_coupon_completed)
+	if coupon_title_label:
+		_coupon_title_default_text = coupon_title_label.text
+		_coupon_title_default_color = coupon_title_label.modulate
+	if redeem_result_label:
+		redeem_result_label.visible = false
 	purchase_option1.pressed.connect(_on_purchase_option.bind("mushrooms_250"))
 	purchase_option2.pressed.connect(_on_purchase_option.bind("mushrooms_500"))
 	purchase_option3.pressed.connect(_on_purchase_option.bind("mushrooms_1000"))
@@ -182,11 +204,87 @@ func _process_apple():
 # =============================================================================
 
 func _on_redeem_button_pressed():
+	if is_redeeming_coupon:
+		return
+
 	var code = coupon_input.text.strip_edges()
 	if code.is_empty():
+		_show_coupon_title_message("Enter a coupon code.", Color(1.0, 0.65, 0.4, 1.0))
 		return
-	# TODO: Send code to server for validation
-	coupon_input.text = ""
+
+	is_redeeming_coupon = true
+	redeem_button.disabled = true
+	_start_redeem_spinner()
+	Http.redeem_coupon(code)
+
+func _on_coupon_submitted(_text: String):
+	_on_redeem_button_pressed()
+
+func _on_redeem_coupon_completed(success: bool, mushrooms: int, status: String, error: String):
+	if not is_redeeming_coupon:
+		return
+
+	is_redeeming_coupon = false
+	redeem_button.disabled = false
+	_stop_redeem_spinner()
+
+	if success:
+		var reward = max(mushrooms, 0)
+		if reward > 0:
+			if UIManager.instance:
+				UIManager.instance.update_mushrooms(reward)
+			else:
+				GameInfo.add_lobby_mushrooms(reward)
+		_show_coupon_title_message("Coupon redeemed! +" + str(reward) + " mushrooms.", Color(0.55, 1.0, 0.55, 1.0))
+		coupon_input.text = ""
+		return
+
+	match status:
+		"already_used":
+			_show_coupon_title_message("Coupon already used.", Color(1.0, 0.75, 0.45, 1.0))
+		"expired":
+			_show_coupon_title_message("Coupon expired.", Color(1.0, 0.75, 0.45, 1.0))
+		"invalid":
+			_show_coupon_title_message("Invalid coupon.", Color(1.0, 0.75, 0.45, 1.0))
+		_:
+			var fallback = error if error != "" else "Coupon redeem failed."
+			_show_coupon_title_message(fallback, Color(1.0, 0.65, 0.65, 1.0))
+
+func _set_coupon_result(message: String, color: Color):
+	if redeem_result_label:
+		redeem_result_label.text = message
+		redeem_result_label.modulate = color
+
+func _start_redeem_spinner():
+	_redeem_spinner_id += 1
+	var spinner_id = _redeem_spinner_id
+	redeem_button.text = REDEEM_BUTTON_TEXT + " " + REDEEM_SPINNER_FRAMES[0]
+	_call_redeem_spinner(spinner_id)
+
+func _call_redeem_spinner(spinner_id: int):
+	var frame_index = 0
+	while is_redeeming_coupon and spinner_id == _redeem_spinner_id:
+		redeem_button.text = REDEEM_BUTTON_TEXT + " " + REDEEM_SPINNER_FRAMES[frame_index]
+		frame_index = (frame_index + 1) % REDEEM_SPINNER_FRAMES.size()
+		await get_tree().create_timer(REDEEM_SPINNER_INTERVAL).timeout
+
+func _stop_redeem_spinner():
+	_redeem_spinner_id += 1
+	redeem_button.text = REDEEM_BUTTON_TEXT
+
+func _show_coupon_title_message(message: String, color: Color):
+	if not coupon_title_label:
+		return
+
+	_coupon_message_id += 1
+	var message_id = _coupon_message_id
+	coupon_title_label.text = message
+	coupon_title_label.modulate = color
+	await get_tree().create_timer(COUPON_MESSAGE_DURATION).timeout
+	if message_id != _coupon_message_id:
+		return
+	coupon_title_label.text = _coupon_title_default_text
+	coupon_title_label.modulate = _coupon_title_default_color
 
 func _on_visibility_changed():
 	if visible:

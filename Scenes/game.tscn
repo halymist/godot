@@ -5628,7 +5628,7 @@ popup/item_1/id = 1
 popup/item_2/text = "Large"
 popup/item_2/id = 2
 
-[node name="Payment" type="Panel" parent="Portrait/GameScene" unique_id=1019201429 node_paths=PackedStringArray("coupon_input", "redeem_button", "invite_link", "copy_link_button", "purchase_option1", "purchase_option2", "purchase_option3", "purchase_option4")]
+[node name="Payment" type="Panel" parent="Portrait/GameScene" unique_id=1019201429 node_paths=PackedStringArray("coupon_input", "redeem_button", "redeem_result_label", "coupon_title_label", "invite_link", "copy_link_button", "purchase_option1", "purchase_option2", "purchase_option3", "purchase_option4")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5639,6 +5639,8 @@ grow_vertical = 2
 script = ExtResource("67_payment")
 coupon_input = NodePath("CouponSection/CouponContainer/CouponInput")
 redeem_button = NodePath("CouponSection/CouponContainer/RedeemButton")
+redeem_result_label = NodePath("CouponSection/RedeemResultLabel")
+coupon_title_label = NodePath("CouponSection/CategoryLabel")
 invite_link = NodePath("InviteSection/InviteContainer/InviteLinkLabel")
 copy_link_button = NodePath("InviteSection/InviteContainer/CopyLinkButton")
 purchase_option1 = NodePath("PurchaseSection/PurchaseOptions/Option1")
@@ -5700,6 +5702,11 @@ placeholder_text = "Enter coupon code..."
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "Redeem"
+
+[node name="RedeemResultLabel" type="Label" parent="Portrait/GameScene/Payment/CouponSection" unique_id=1400164428]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = ""
 
 [node name="HSeparator2" type="HSeparator" parent="Portrait/GameScene/Payment" unique_id=770176394]
 layout_mode = 1

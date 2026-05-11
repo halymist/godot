@@ -120,6 +120,20 @@ func clear_lobby_data():
 	last_auth_response.clear()
 	current_server_id = 0
 
+func add_lobby_mushrooms(amount: int) -> int:
+	"""Add/subtract account-level mushrooms and keep all lobby auth mirrors in sync."""
+	if not lobby_data.has("mushrooms"):
+		lobby_data["mushrooms"] = 0
+
+	var current_value = int(lobby_data.get("mushrooms", 0))
+	var new_value = max(0, current_value + amount)
+	lobby_data["mushrooms"] = new_value
+
+	if not last_auth_response.is_empty():
+		last_auth_response["mushrooms"] = new_value
+
+	return new_value
+
 func _find_server_index(server_id: int) -> int:
 	var servers = get_server_list()
 	for i in range(servers.size()):

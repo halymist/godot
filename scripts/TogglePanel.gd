@@ -607,8 +607,7 @@ func update_silver(amount: int):
 
 func update_mushrooms(amount: int):
 	"""Add or subtract mushrooms and update all displays (account-level)"""
-	if GameInfo.lobby_data.has("mushrooms"):
-		GameInfo.lobby_data.mushrooms += amount
+	GameInfo.add_lobby_mushrooms(amount)
 	update_display()
 	top_ui.update_display()
 

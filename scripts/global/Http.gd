@@ -12,6 +12,7 @@ var base_url = "http://localhost:8080"
 # Signals for async responses
 signal login_completed(success: bool, data: Dictionary, error: String)
 signal create_character_completed(success: bool, character_id: int, error: String)
+signal redeem_coupon_completed(success: bool, mushrooms: int, status: String, error: String)
 
 # Session ID from successful login (used for authenticated requests)
 var session_id: String = ""
@@ -236,6 +237,74 @@ func reset_password(_email: String):
 func send_request(_endpoint: String, _method: String, _payload: Dictionary):
 	"""Send an HTTP request to the server (placeholder for unimplemented endpoints)"""
 	# TODO: Implement actual HTTP request when endpoint is ready
+
+# ============================================
+# Coupon Actions
+# ============================================
+
+func redeem_coupon(coupon_code: String):
+	"""Redeem a coupon code for account rewards."""
+	if session_id.is_empty():
+		redeem_coupon_completed.emit(false, 0, "", "Not authenticated")
+		return
+
+	var cleaned_code = coupon_code.strip_edges()
+	if cleaned_code.is_empty():
+		redeem_coupon_completed.emit(false, 0, "invalid", "Coupon code is empty")
+		return
+
+	var http_request = _create_http_request()
+	http_request.request_completed.connect(_on_redeem_coupon_completed.bind(http_request))
+
+	var payload = {
+		"coupon": cleaned_code
+	}
+	var json_payload = JSON.stringify(payload)
+	var url = base_url + "/redeem-coupon"
+
+	var error = http_request.request(url, _get_headers(true), HTTPClient.METHOD_POST, json_payload)
+	if error != OK:
+		http_request.queue_free()
+		redeem_coupon_completed.emit(false, 0, "", "Failed to send request")
+
+func _on_redeem_coupon_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest):
+	"""Handle coupon redeem response from server."""
+	http_request.queue_free()
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		redeem_coupon_completed.emit(false, 0, "", "Connection failed")
+		return
+
+	var body_text = body.get_string_from_utf8()
+	var json = JSON.new()
+	if json.parse(body_text) != OK:
+		redeem_coupon_completed.emit(false, 0, "", "Invalid server response")
+		return
+
+	var response = json.get_data()
+	if not response is Dictionary:
+		redeem_coupon_completed.emit(false, 0, "", "Invalid server response format")
+		return
+
+	if response.has("mushrooms"):
+		var mushrooms = int(response.get("mushrooms", 0))
+		redeem_coupon_completed.emit(true, mushrooms, "success", "")
+		return
+
+	var status = str(response.get("status", ""))
+	if status != "":
+		redeem_coupon_completed.emit(false, 0, status, "")
+		return
+
+	if response.has("error"):
+		redeem_coupon_completed.emit(false, 0, "", str(response.get("error", "Unknown error")))
+		return
+
+	if response_code >= 400:
+		redeem_coupon_completed.emit(false, 0, "", "Redeem failed (HTTP " + str(response_code) + ")")
+		return
+
+	redeem_coupon_completed.emit(false, 0, "", "Unexpected server response")
 
 # ============================================
 # Character Management Actions
