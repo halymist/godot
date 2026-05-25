@@ -103,7 +103,10 @@ func _handle_message(message: String):
 		return
 	
 	var function_name = data.get("function", "")
-	_cache_enchanter_payload(data)
+	if function_name != "playerData" and _looks_like_player_data_message(data):
+		print("[Websocket] treating function=%s as playerData" % [function_name])
+		_handle_player_data(data)
+		return
 	
 	match function_name:
 		"playerData":
@@ -182,42 +185,19 @@ func _handle_player_data(message: Dictionary):
 	
 	var character_data = message.data[0]
 	if character_data is Dictionary:
-		GameInfo.last_player_data_payload = character_data.duplicate(true)
 		var enchanter_payload = character_data.get("enchanter", [])
 		print("[Websocket] playerData enchanter=%s" % [str(enchanter_payload)])
-		if _payload_has_entries(enchanter_payload):
-			GameInfo.apply_enchanter_payload(enchanter_payload)
 	
 	# Emit signal with character data
 	player_data_received.emit(character_data)
 
-func _cache_enchanter_payload(value: Variant):
-	var payload = _find_enchanter_payload(value)
-	if _payload_has_entries(payload):
-		print("[Websocket] cached enchanter payload=%s" % [str(payload)])
-		GameInfo.apply_enchanter_payload(payload)
-
-func _find_enchanter_payload(value: Variant) -> Variant:
-	if value is Dictionary:
-		if value.has("enchanter"):
-			return value.enchanter
-		for key in value.keys():
-			var found = _find_enchanter_payload(value[key])
-			if _payload_has_entries(found):
-				return found
-	elif value is Array:
-		for entry in value:
-			var found = _find_enchanter_payload(entry)
-			if _payload_has_entries(found):
-				return found
-	return []
-
-func _payload_has_entries(payload: Variant) -> bool:
-	if payload is Array:
-		return not payload.is_empty()
-	if payload is Dictionary:
-		return not payload.is_empty()
-	return false
+func _looks_like_player_data_message(message: Dictionary) -> bool:
+	if not message.has("data") or not message.data is Array or message.data.is_empty():
+		return false
+	var payload = message.data[0]
+	if not payload is Dictionary:
+		return false
+	return payload.has("character_id") and (payload.has("enchanter") or payload.has("inventory") or payload.has("stats"))
 
 func _handle_new_day_response(message: Dictionary):
 	"""Handle two-phase new day payloads (start/finish)."""

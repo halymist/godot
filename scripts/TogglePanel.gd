@@ -480,7 +480,9 @@ func handle_map_button():
 
 func _open_settlement_expedition_graph():
 	var settlement_id = int(GameInfo.current_player.location)
-	var expedition_data = GameInfo.expeditions_db.get_expedition_for_settlement(settlement_id)
+	var expedition_data = GameInfo.expeditions_db.get_expedition_for_settlement(settlement_id) if GameInfo.expeditions_db else null
+	if not expedition_data:
+		return
 	_open_expedition_graph(int(expedition_data.expedition_id))
 
 func _open_expedition_graph(expedition_id: int):

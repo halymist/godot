@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://scripts/EnchantOption.gd" id="1_script"]
 
 [node name="EnchantOption" type="Button"]
-custom_minimum_size = Vector2(0, 30)
+custom_minimum_size = Vector2(0, 24)
 offset_right = 200.0
-offset_bottom = 30.0
+offset_bottom = 24.0
 size_flags_horizontal = 3
 theme_type_variation = &"FlatButton"
 text = "Effect Description 10%"
 clip_text = true
+toggle_mode = true
 script = ExtResource("1_script")

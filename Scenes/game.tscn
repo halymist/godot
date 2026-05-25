@@ -1307,6 +1307,7 @@ layout_mode = 1
 offset_top = -75.0
 
 [node name="EnchanterPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1607244945 node_paths=PackedStringArray("chat_bubble", "bag", "enchanter_slot", "enchant_button", "slot_type_button_1", "slot_type_button_2", "slot_type_button_3", "slot_type_button_4", "effect_list", "effect_description")]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15

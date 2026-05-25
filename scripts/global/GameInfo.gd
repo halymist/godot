@@ -1414,6 +1414,10 @@ func load_all_characters(characters_data: Array):
 
 func load_character_from_server(character_data: Dictionary):
 	"""Load a single character from server data (WebSocket playerData response)"""
+	last_player_data_payload = character_data.duplicate(true)
+	var raw_enchanter_payload: Variant = character_data.get("enchanter", character_data.get("enchanter_effects", []))
+	if _payload_has_entries(raw_enchanter_payload):
+		_set_last_player_enchanter_payload(raw_enchanter_payload)
 	_log_enchanter_load("load_character_from_server raw enchanter=%s" % [str(character_data.get("enchanter", null))])
 	# Preserve server_day before transform (injected by LobbyPanel from server list)
 	var injected_server_day = int(character_data.get("server_day", 0))
@@ -1424,7 +1428,7 @@ func load_character_from_server(character_data: Dictionary):
 	
 	# Transform server data format to client format
 	var transformed_data = _transform_server_player_data(character_data)
-	if not transformed_data.has("enchanter_effects") and _payload_has_entries(last_player_enchanter_payload):
+	if not _payload_has_entries(transformed_data.get("enchanter_effects", [])) and _payload_has_entries(last_player_enchanter_payload):
 		transformed_data["enchanter_effects"] = last_player_enchanter_payload
 	_log_enchanter_load("load_character_from_server transformed enchanter_effects=%s" % [str(transformed_data.get("enchanter_effects", null))])
 	var transformed_quest_log = transformed_data.get("quest_log", [])
@@ -1455,12 +1459,18 @@ func load_character_from_server(character_data: Dictionary):
 	_refresh_loaded_player_ui()
 
 func apply_enchanter_payload(payload: Variant):
-	last_player_enchanter_payload = payload
+	_set_last_player_enchanter_payload(payload)
 	_log_enchanter_load("apply_enchanter_payload payload=%s current_player=%s" % [str(payload), str(current_player != null)])
 	if current_player and _payload_has_entries(payload):
-		current_player._load_enchanter_effects(payload)
+		current_player._load_enchanter_effects(last_player_enchanter_payload)
 	enchanter_inventory_updated.emit()
 	_refresh_loaded_player_ui()
+
+func _set_last_player_enchanter_payload(payload: Variant):
+	if payload is Array or payload is Dictionary:
+		last_player_enchanter_payload = payload.duplicate(true)
+	else:
+		last_player_enchanter_payload = []
 
 func _payload_has_entries(payload: Variant) -> bool:
 	if payload is Array:

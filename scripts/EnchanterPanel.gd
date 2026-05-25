@@ -45,6 +45,7 @@ var effect_groups: Dictionary = {}
 var slot_type_order: Array[String] = []
 var working_item: GameInfo.Item = null  # Reference to item being worked on (doesn't change bag_slot_id)
 var _did_refresh_effects_db: bool = false
+var _slot_type_button_styles: Dictionary = {}
 
 func _ready():
 	visibility_changed.connect(_on_visibility_changed)
@@ -55,6 +56,9 @@ func _ready():
 		button.visible = true
 		button.toggle_mode = true
 		button.text = ""
+		button.flat = false
+		button.expand_icon = true
+		_apply_slot_type_button_style(button, false)
 		if not button.pressed.is_connected(_on_slot_type_button_pressed.bind(button)):
 			button.pressed.connect(_on_slot_type_button_pressed.bind(button))
 	
@@ -172,12 +176,14 @@ func populate_slot_type_toggles():
 	_log_debug("populate_slot_type_toggles button_count=%d slot_type_order=%s" % [buttons.size(), str(slot_type_order)])
 	for index in range(buttons.size()):
 		var button = buttons[index]
+		button.visible = true
 		if index < slot_type_order.size():
 			var slot_type_name = slot_type_order[index]
 			button.text = ""
 			button.icon = SLOT_TYPE_ICONS.get(slot_type_name, null)
 			button.disabled = false
 			button.button_pressed = slot_type_name == selected_slot_type
+			_apply_slot_type_button_style(button, button.button_pressed)
 			button.set_meta("slot_type_name", slot_type_name)
 			_log_debug("toggle[%d] visible slot=%s pressed=%s" % [index, slot_type_name, str(button.button_pressed)])
 		else:
@@ -185,6 +191,7 @@ func populate_slot_type_toggles():
 			button.icon = _get_default_toggle_icon(index)
 			button.disabled = false
 			button.button_pressed = false
+			_apply_slot_type_button_style(button, false)
 			button.remove_meta("slot_type_name")
 
 func populate_effect_options():
@@ -196,7 +203,8 @@ func populate_effect_options():
 	_set_effect_description(null)
 
 	var effects = effect_groups.get(selected_slot_type, [])
-	for effect in effects:
+	for index in range(effects.size()):
+		var effect = effects[index]
 		
 		var option = enchant_option_scene.instantiate()
 		option.setup(effect)
@@ -204,6 +212,8 @@ func populate_effect_options():
 		option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		option.pressed.connect(_on_effect_selected.bind(effect.id, effect.factor, option))
 		effect_list.add_child(option)
+		if index == 0:
+			_on_effect_selected(effect.id, effect.factor, option)
 
 func can_accept_item(item: GameInfo.Item) -> bool:
 	if not item:
@@ -282,7 +292,11 @@ func _select_default_slot_type_if_needed():
 	selected_slot_type = slot_type_order[0] if not slot_type_order.is_empty() else ""
 
 func _on_slot_type_selected(slot_type_name: String):
+	if slot_type_name == selected_slot_type:
+		populate_slot_type_toggles()
+		return
 	selected_slot_type = slot_type_name
+	_return_item_if_type_mismatch()
 	populate_slot_type_toggles()
 	populate_effect_options()
 	update_enchant_button_state()
@@ -298,8 +312,17 @@ func _on_slot_type_button_pressed(button: Button):
 	var slot_type_name = str(button.get_meta("slot_type_name", ""))
 	_log_debug("toggle pressed text=%s meta=%s" % [button.text, slot_type_name])
 	if slot_type_name == "":
+		populate_slot_type_toggles()
 		return
 	_on_slot_type_selected(slot_type_name)
+
+func _return_item_if_type_mismatch():
+	if not working_item:
+		return
+	var item_slot_type = _normalize_equipment_type(working_item.type)
+	if selected_slot_type == "Any" or selected_slot_type == item_slot_type:
+		return
+	return_enchanter_item_to_bag()
 
 func _get_enchanter_payload() -> Variant:
 	if GameInfo.current_player and _payload_has_effect_entries(GameInfo.current_player.enchanter_effects):
@@ -325,6 +348,38 @@ func _payload_has_effect_entries(payload: Variant) -> bool:
 	if payload is Dictionary:
 		return not payload.is_empty()
 	return false
+
+func _apply_slot_type_button_style(button: Button, is_selected: bool):
+	if not _slot_type_button_styles.has("normal"):
+		_slot_type_button_styles = {
+			"normal": _make_slot_type_style(Color(0.10, 0.09, 0.08, 0.86), Color(0.55, 0.43, 0.22, 0.95), 2),
+			"hover": _make_slot_type_style(Color(0.18, 0.16, 0.13, 0.96), Color(0.84, 0.70, 0.38, 1.0), 2),
+			"pressed": _make_slot_type_style(Color(0.22, 0.18, 0.12, 1.0), Color(1.0, 0.78, 0.32, 1.0), 3),
+			"disabled": _make_slot_type_style(Color(0.06, 0.055, 0.05, 0.58), Color(0.34, 0.28, 0.18, 0.75), 1)
+		}
+	button.add_theme_stylebox_override("normal", _slot_type_button_styles["pressed"] if is_selected else _slot_type_button_styles["normal"])
+	button.add_theme_stylebox_override("hover", _slot_type_button_styles["hover"])
+	button.add_theme_stylebox_override("pressed", _slot_type_button_styles["pressed"])
+	button.add_theme_stylebox_override("disabled", _slot_type_button_styles["disabled"])
+	button.modulate = Color(1.0, 0.92, 0.68, 1.0) if is_selected else Color(0.82, 0.78, 0.70, 1.0)
+
+func _make_slot_type_style(bg_color: Color, border_color: Color, border_width: int) -> StyleBoxFlat:
+	var style = StyleBoxFlat.new()
+	style.bg_color = bg_color
+	style.border_color = border_color
+	style.border_width_left = border_width
+	style.border_width_top = border_width
+	style.border_width_right = border_width
+	style.border_width_bottom = border_width
+	style.corner_radius_top_left = 2
+	style.corner_radius_top_right = 2
+	style.corner_radius_bottom_right = 2
+	style.corner_radius_bottom_left = 2
+	style.content_margin_left = 4.0
+	style.content_margin_top = 4.0
+	style.content_margin_right = 4.0
+	style.content_margin_bottom = 4.0
+	return style
 
 func _reload_effects_db():
 	_did_refresh_effects_db = true
