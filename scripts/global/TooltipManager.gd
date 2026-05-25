@@ -22,7 +22,7 @@ func make_text_tooltip(tooltip_text: String) -> Control:
 	panel.add_child(margin)
 
 	var label = Label.new()
-	label.text = tooltip_text.strip_edges()
+	label.text = _bulletize_multiline_text(tooltip_text.strip_edges())
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
 	label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -93,7 +93,7 @@ func _make_item_tooltip_panel(item: GameInfo.Item) -> Control:
 	var body_text = _build_item_tooltip_text(item)
 	if not body_text.is_empty():
 		var body_label = Label.new()
-		body_label.text = body_text
+		body_label.text = _bulletize_multiline_text(body_text)
 		body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		body_label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
 		body_label.add_theme_color_override("font_color", TEXT_COLOR)
@@ -117,7 +117,7 @@ func _get_item_display_price(item: GameInfo.Item) -> int:
 
 func _make_price_row(price: int) -> Control:
 	var row = HBoxContainer.new()
-	row.alignment = BoxContainer.ALIGNMENT_END
+	row.alignment = BoxContainer.ALIGNMENT_BEGIN
 	row.add_theme_constant_override("separation", 4)
 	var price_label = Label.new()
 	price_label.text = str(price)
@@ -130,6 +130,20 @@ func _make_price_row(price: int) -> Control:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	row.add_child(icon)
 	return row
+
+func _bulletize_multiline_text(text: String) -> String:
+	if text.is_empty():
+		return ""
+	var lines = text.split("\n")
+	if lines.size() <= 1:
+		return text
+	var result: Array[String] = [lines[0]]
+	for i in range(1, lines.size()):
+		var line = String(lines[i]).strip_edges()
+		if line.is_empty():
+			continue
+		result.append("- " + line)
+	return "\n".join(result)
 
 func _append_stat_line(lines: Array[String], stat_name: String, base_value: int, gem_value: int):
 	if base_value == 0 and gem_value == 0:
