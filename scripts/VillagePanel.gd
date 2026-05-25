@@ -44,6 +44,7 @@ func _ready():
 func _on_visibility_changed():
 	if visible and GameInfo.current_player:
 		_load_village_background()
+		_setup_buttons()
 		_update_quest_display()
 
 func _setup():
@@ -91,6 +92,13 @@ func _setup_buttons():
 	
 	if not settlement:
 		return
+
+	# Reset utility state before selecting the active one for this settlement.
+	_utility_type = ""
+	if utility_label:
+		utility_label.text = ""
+	if utility_icon:
+		utility_icon.texture = null
 	
 	# Vendor button - always show if available
 	if vendor_button:

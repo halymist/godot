@@ -9,7 +9,7 @@ const ENCHANTER_SLOT = 15
 const BLACKSMITH_SLOT = 16
 const ALCHEMIST_SLOT_1 = 17
 const ALCHEMIST_SLOT_2 = 18
-const ALCHEMIST_SLOT_3 = 19
+const LAST_UTILITY_SLOT = ALCHEMIST_SLOT_2
 const VENDOR_SLOT = 20
 const CONSUME_SLOT = 29
 
@@ -113,8 +113,8 @@ func _can_drop_data(_pos, data):
 	var item_type = item.type
 	var source_container = data.get("source_container")
 	var source_slot_id = source_container.slot_id if source_container else -1
-	var source_is_utility = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= ALCHEMIST_SLOT_3
-	var target_is_utility = slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3
+	var source_is_utility = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= LAST_UTILITY_SLOT
+	var target_is_utility = slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT
 	
 
 	# Utility source safety: when dragging out of utility slots, target must be empty.
@@ -184,6 +184,12 @@ func _can_drop_data(_pos, data):
 		return false
 	
 	# Check if dragged item can go into this slot
+	if slot_id == ENCHANTER_SLOT:
+		var enchanter_panel = UIManager.instance.enchanter_panel if UIManager.instance else null
+		if enchanter_panel and enchanter_panel.has_method("can_accept_item"):
+			if not enchanter_panel.can_accept_item(item):
+				return false
+
 	if not is_valid_item_for_slot(item_type):
 		return false
 	
@@ -282,9 +288,9 @@ func _drop_data(_pos, data):
 					return
 	
 	# Update GameInfo directly based on the operation
-	# SPECIAL: For utility slots (15-19), DON'T change bag_slot_id - they're visual only
-	var is_utility_target = slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3
-	var is_utility_source = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= ALCHEMIST_SLOT_3
+	# SPECIAL: For utility slots (15-18), DON'T change bag_slot_id - they're visual only
+	var is_utility_target = slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT
+	var is_utility_source = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= LAST_UTILITY_SLOT
 	
 	if is_utility_target:
 		# Moving TO a utility slot - just update visuals, don't change bag_slot_id
@@ -575,6 +581,9 @@ func is_valid_item_for_slot(item_type: String) -> bool:
 		"Blacksmith":
 			return item_type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]
 		"Enchanter":
+			var enchanter_panel = UIManager.instance.enchanter_panel if UIManager.instance else null
+			if enchanter_panel and enchanter_panel.has_method("can_accept_item_type"):
+				return enchanter_panel.can_accept_item_type(item_type)
 			return item_type != "Ingredient" and item_type != "Consumable" and item_type != "Elixir" and item_type != "Potion" and item_type != "Gem"
 		"Bag":
 			return true  # Bag accepts everything
@@ -606,8 +615,8 @@ func place_item_in_slot(item_data: GameInfo.Item):
 	# Auto-update appearance (hide outline)
 	update_slot_appearance()
 	
-	# Notify UIManager if this is a utility slot (15-19)
-	if slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3:
+	# Notify UIManager if this is a utility slot (15-18)
+	if slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT:
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func clear_slot():
@@ -622,8 +631,8 @@ func clear_slot():
 	# Auto-update appearance (deferred so queue_free completes first)
 	call_deferred("update_slot_appearance")
 	
-	# Notify UIManager if this is a utility slot (15-19)
-	if slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3:
+	# Notify UIManager if this is a utility slot (15-18)
+	if slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT:
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func update_slot_appearance():
@@ -681,7 +690,7 @@ func handle_double_click(item: GameInfo.Item):
 
 	# If double-clicked from a utility slot, return the item to its original bag slot.
 	# Utility items keep their original bag_slot_id, so source slot_id must drive this branch.
-	if slot_id >= ENCHANTER_SLOT and slot_id <= ALCHEMIST_SLOT_3:
+	if slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT:
 		var first_empty_bag_slot_id = _find_first_empty_bag_slot_id()
 		if first_empty_bag_slot_id != -1:
 			var return_slot = _find_slot_by_id(first_empty_bag_slot_id)
@@ -697,7 +706,7 @@ func handle_double_click(item: GameInfo.Item):
 	# Keep this path only for actual bag source slots.
 	if current_utility and current_utility.name == "AlchemistPanel":
 		if item.type == "Ingredient" and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
-			for target_slot_id in [ALCHEMIST_SLOT_1, ALCHEMIST_SLOT_2, ALCHEMIST_SLOT_3]:
+			for target_slot_id in [ALCHEMIST_SLOT_1, ALCHEMIST_SLOT_2]:
 				var target_slot = _find_slot_by_id(target_slot_id)
 				if target_slot and target_slot.is_slot_empty():
 					var source_slot_id = item.bag_slot_id  # Save original before placing
@@ -726,7 +735,7 @@ func handle_double_click(item: GameInfo.Item):
 
 	# Enchanter: Move equippable items to slot 15 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "EnchanterPanel":
-		if item.type != "Ingredient" and item.type != "Consumable" and item.type != "Elixir" and item.type != "Potion" and item.type != "Gem":
+		if current_utility.has_method("can_accept_item") and current_utility.can_accept_item(item):
 			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
 				var target_slot = _find_slot_by_id(ENCHANTER_SLOT)
 				if target_slot and target_slot.is_slot_empty():
@@ -833,8 +842,13 @@ func _consume_elixir_confirmed(item: GameInfo.Item):
 
 	Websocket.use_elixir(item.bag_slot_id)
 	GameInfo.current_player.elixir = item.id
-	GameInfo.current_player.elixir_ingredients = item.ingredients.duplicate()
-	GameInfo.current_player.elixir_effects = item.elixir_effects.duplicate(true) if item.elixir_effects else []
+	GameInfo.current_player.elixir_ingredients.clear()
+	for ingredient_id in item.ingredients:
+		GameInfo.current_player.elixir_ingredients.append(int(ingredient_id))
+	GameInfo.current_player.elixir_effects.clear()
+	for entry in item.elixir_effects:
+		if entry is Dictionary:
+			GameInfo.current_player.elixir_effects.append(entry.duplicate(true))
 	GameInfo.current_player.bag_slots.erase(item)
 	clear_slot()
 

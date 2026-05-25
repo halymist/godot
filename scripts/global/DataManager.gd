@@ -483,11 +483,40 @@ func _load_effects_database() -> EffectDatabase:
 		effect.id = item.get("effect_id", 0)
 		effect.name = item.get("name", "")
 		effect.description = item.get("description", "")
-		effect.slot = item.get("slot", 0)
+		effect.slot = _map_effect_slot(item.get("slot", 0))
 		effect.factor = item.get("factor", 0)
 		db.effects.append(effect)
 	
 	return db
+
+func _map_effect_slot(raw_slot: Variant) -> int:
+	if raw_slot is int:
+		return int(raw_slot)
+	if raw_slot is float:
+		return int(raw_slot)
+	if raw_slot is String:
+		match raw_slot.to_lower():
+			"", "any":
+				return EffectResource.EffectSlot.ANY
+			"head":
+				return EffectResource.EffectSlot.HEAD
+			"chest":
+				return EffectResource.EffectSlot.CHEST
+			"hand", "hands":
+				return EffectResource.EffectSlot.HANDS
+			"foot", "feet":
+				return EffectResource.EffectSlot.FOOT
+			"belt":
+				return EffectResource.EffectSlot.BELT
+			"leg", "legs":
+				return EffectResource.EffectSlot.LEGS
+			"ring", "back":
+				return EffectResource.EffectSlot.RING
+			"amulet":
+				return EffectResource.EffectSlot.AMULET
+			"weapon":
+				return EffectResource.EffectSlot.WEAPON
+	return EffectResource.EffectSlot.ANY
 
 func _load_items_database() -> ItemDatabase:
 	"""Create ItemDatabase from JSON"""

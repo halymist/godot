@@ -25,7 +25,7 @@ const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
 @onready var armor_container = armor.get_parent()
 @onready var damage_container = damage_label.get_parent() if damage_label else null
 
-func show_description(item_data: GameInfo.Item, slot_node: Control = null):
+func show_description(item_data: GameInfo.Item, _slot_node: Control = null):
 	# Reset size to allow panel to resize for new content
 	reset_size()
 	
@@ -218,20 +218,8 @@ func show_description(item_data: GameInfo.Item, slot_node: Control = null):
 		# Show the panel
 		visible = true
 		
-		# Position the panel relative to the slot if provided
-		if slot_node:
-			call_deferred("position_near_slot", slot_node)
 	else:
 		visible = false
-
-func position_near_slot(_slot_node: Control):
-	# Wait for panel to auto-size
-	await get_tree().process_frame
-	await get_tree().process_frame  # Wait extra frame to ensure size is stable
-	
-	# Use the center preset to properly center the panel
-	set_anchors_preset(Control.PRESET_CENTER)
-	set_offsets_preset(Control.PRESET_CENTER)
 
 func hide_description():
 	visible = false

@@ -103,10 +103,13 @@ func _handle_message(message: String):
 		return
 	
 	var function_name = data.get("function", "")
+	_cache_enchanter_payload(data)
 	
 	match function_name:
 		"playerData":
 			_handle_player_data(data)
+		"newDayResponse":
+			_handle_new_day_response(data)
 		"startExpeditionResponse":
 			_handle_start_expedition_response(data)
 		"startExpeditionNodeResponse", "expeditionNodeResponse", "start_expedition_node_response":
@@ -178,9 +181,66 @@ func _handle_player_data(message: Dictionary):
 		return
 	
 	var character_data = message.data[0]
+	if character_data is Dictionary:
+		GameInfo.last_player_data_payload = character_data.duplicate(true)
+		var enchanter_payload = character_data.get("enchanter", [])
+		print("[Websocket] playerData enchanter=%s" % [str(enchanter_payload)])
+		if _payload_has_entries(enchanter_payload):
+			GameInfo.apply_enchanter_payload(enchanter_payload)
 	
 	# Emit signal with character data
 	player_data_received.emit(character_data)
+
+func _cache_enchanter_payload(value: Variant):
+	var payload = _find_enchanter_payload(value)
+	if _payload_has_entries(payload):
+		print("[Websocket] cached enchanter payload=%s" % [str(payload)])
+		GameInfo.apply_enchanter_payload(payload)
+
+func _find_enchanter_payload(value: Variant) -> Variant:
+	if value is Dictionary:
+		if value.has("enchanter"):
+			return value.enchanter
+		for key in value.keys():
+			var found = _find_enchanter_payload(value[key])
+			if _payload_has_entries(found):
+				return found
+	elif value is Array:
+		for entry in value:
+			var found = _find_enchanter_payload(entry)
+			if _payload_has_entries(found):
+				return found
+	return []
+
+func _payload_has_entries(payload: Variant) -> bool:
+	if payload is Array:
+		return not payload.is_empty()
+	if payload is Dictionary:
+		return not payload.is_empty()
+	return false
+
+func _handle_new_day_response(message: Dictionary):
+	"""Handle two-phase new day payloads (start/finish)."""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		return
+
+	var payload = message.data[0]
+	if not (payload is Dictionary):
+		return
+
+	var phase = str(payload.get("phase", "")).to_lower()
+	match phase:
+		"start":
+			if UIManager.instance and UIManager.instance.has_method("begin_new_day_transition"):
+				UIManager.instance.begin_new_day_transition()
+		"finish":
+			var character_data = payload.get("characterData", payload.get("character_data", {}))
+			if character_data is Dictionary and not character_data.is_empty():
+				GameInfo.apply_new_day_character_data(character_data)
+			if UIManager.instance and UIManager.instance.has_method("finish_new_day_transition"):
+				UIManager.instance.finish_new_day_transition()
+		_:
+			pass
 
 func _handle_start_expedition_response(message: Dictionary):
 	"""Handle startExpeditionResponse - server returns {data: [{started: true, expedition_id: X, arrival: timestamp}]}"""

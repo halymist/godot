@@ -34,6 +34,7 @@
 [ext_resource type="Script" uid="uid://b4m0pxusl8lna" path="res://scripts/LogoutPanel.gd" id="28_a2m5q"]
 [ext_resource type="Script" uid="uid://dqiop7smt61ha" path="res://scripts/ChatPanel.gd" id="28_chat_panel"]
 [ext_resource type="Texture2D" uid="uid://blrul78fplyhb" path="res://assets/images/test2.png" id="28_d5jaa"]
+[ext_resource type="Texture2D" uid="uid://cs0x3yjeqc1h7" path="res://assets/images/ui/helmet_outline.png" id="28_k8ojv"]
 [ext_resource type="Script" uid="uid://crplqw6porhep" path="res://scripts/TrainerPanel.gd" id="28_sjh24"]
 [ext_resource type="Script" uid="uid://xghs46b6nq1a" path="res://scripts/ChurchPanel.gd" id="29_k5jl5"]
 [ext_resource type="Script" uid="uid://cji6wmmqbpkf2" path="res://scripts/AlchemistPanel.gd" id="30_nqk4g"]
@@ -146,13 +147,6 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ff75x"]
-
-
-[sub_resource type="Resource" id="Resource_e6ols"]
-script = ExtResource("68_2cns2")
-
-[sub_resource type="Resource" id="Resource_2cns2"]
-script = ExtResource("68_2cns2")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disable_ads_normal"]
 
@@ -1174,7 +1168,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1693280253 node_paths=PackedStringArray("chat_bubble", "bag", "result_preview", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_slot3")]
+[node name="AlchemistPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1693280253 node_paths=PackedStringArray("chat_bubble", "bag", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_description1", "ingredient_description2")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1188,11 +1182,11 @@ stretch_mode = 6
 script = ExtResource("30_nqk4g")
 chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
-result_preview = NodePath("Overlay/ResultPreview")
 brew_button = NodePath("Overlay/BrewButton")
-ingredient_slot1 = NodePath("Overlay/IngredientsRow/Slot1")
-ingredient_slot2 = NodePath("Overlay/IngredientsRow/Slot2")
-ingredient_slot3 = NodePath("Overlay/IngredientsRow/Slot3")
+ingredient_slot1 = NodePath("Overlay/IngredientsColumn/Row1/Slot1")
+ingredient_slot2 = NodePath("Overlay/IngredientsColumn/Row2/Slot2")
+ingredient_description1 = NodePath("Overlay/IngredientsColumn/Row1/Desc1")
+ingredient_description2 = NodePath("Overlay/IngredientsColumn/Row2/Desc2")
 
 [node name="ChatBubble" parent="Portrait/GameScene/AlchemistPanel" unique_id=1105123988 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -1216,70 +1210,54 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("42_umggo")
 
-[node name="ResultPreview" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=2051934715]
-custom_minimum_size = Vector2(0, 60)
+[node name="IngredientsColumn" type="VBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=1706005716]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1.0
-offset_top = -273.0
-offset_right = -1.0
-offset_bottom = -174.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 3
-text = "Elixir Effects: None"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="IngredientsRow" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=1706005716]
-layout_mode = 0
+anchors_preset = -1
 anchor_left = 0.353
 anchor_top = 0.5
 anchor_right = 0.353
 anchor_bottom = 0.5
 offset_left = -125.965
-offset_top = -46.0
+offset_top = -94.0
 offset_right = 140.035
-offset_bottom = 24.0
+offset_bottom = 54.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Slot1" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsRow" unique_id=369589875 instance=ExtResource("6_itemslot")]
+[node name="Row1" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn" unique_id=1302715345]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Slot1" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row1" unique_id=369589875 instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 17
 
-[node name="Plus1" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsRow" unique_id=232932127]
+[node name="Desc1" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row1" unique_id=1835552525]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 24
-text = "+"
+theme_override_font_sizes/font_size = 20
+text = "Ingredient 1"
 vertical_alignment = 1
 
-[node name="Slot2" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsRow" unique_id=973394186 instance=ExtResource("6_itemslot")]
+[node name="Row2" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn" unique_id=1478069806]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Slot2" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row2" unique_id=973394186 instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 18
 
-[node name="Plus2" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsRow" unique_id=2078612508]
+[node name="Desc2" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row2" unique_id=1501691357]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
-theme_override_font_sizes/font_size = 24
-text = "+"
+theme_override_font_sizes/font_size = 20
+text = "Ingredient 2"
 vertical_alignment = 1
-
-[node name="Slot3" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsRow" unique_id=1831244968 instance=ExtResource("6_itemslot")]
-custom_minimum_size = Vector2(70, 70)
-outline_texture = ExtResource("35_p5qon")
-slot_type = "Ingredient"
-slot_id = 19
 
 [node name="BrewButton" type="Button" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=1652052982]
 custom_minimum_size = Vector2(100, 50)
@@ -1328,8 +1306,7 @@ custom_minimum_size = Vector2(350, 70)
 layout_mode = 1
 offset_top = -75.0
 
-[node name="EnchanterPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1607244945 node_paths=PackedStringArray("chat_bubble", "bag", "enchanter_slot", "enchant_button", "effect_list")]
-visible = false
+[node name="EnchanterPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1607244945 node_paths=PackedStringArray("chat_bubble", "bag", "enchanter_slot", "enchant_button", "slot_type_button_1", "slot_type_button_2", "slot_type_button_3", "slot_type_button_4", "effect_list", "effect_description")]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -1344,7 +1321,12 @@ chat_bubble = NodePath("ChatBubble")
 bag = NodePath("Overlay/Bag")
 enchanter_slot = NodePath("Overlay/ItemSlot")
 enchant_button = NodePath("Overlay/EnchantButton")
-effect_list = NodePath("Overlay/EffectsSection/EffectScrollContainer/EffectList")
+slot_type_button_1 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton1")
+slot_type_button_2 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton2")
+slot_type_button_3 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton3")
+slot_type_button_4 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton4")
+effect_list = NodePath("Overlay/EffectList")
+effect_description = NodePath("Overlay/EffectDescription")
 enchant_option_scene = ExtResource("26_lknxd")
 
 [node name="ChatBubble" parent="Portrait/GameScene/EnchanterPanel" unique_id=894459828 instance=ExtResource("14_k8ojv")]
@@ -1367,7 +1349,6 @@ offset_top = 388.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
-script = ExtResource("42_umggo")
 
 [node name="ItemSlot" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1870472802 instance=ExtResource("6_itemslot")]
 layout_mode = 1
@@ -1432,36 +1413,72 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
-[node name="EffectsSection" type="VBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1954114232]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -26.5
-offset_top = -115.0
-offset_right = 189.5
-offset_bottom = 42.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="EffectList" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1455234135]
+layout_mode = 0
+offset_left = 171.0
+offset_top = 47.0
+offset_right = 396.0
+offset_bottom = 99.0
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.6
+theme_override_constants/separation = 6
 
-[node name="EffectLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EffectsSection" unique_id=1698047466]
-layout_mode = 2
-text = "Available Enchantments"
-horizontal_alignment = 1
-
-[node name="EffectScrollContainer" type="ScrollContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay/EffectsSection" unique_id=55755625]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="EffectList" type="VBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay/EffectsSection/EffectScrollContainer" unique_id=1455234135]
-layout_mode = 2
+[node name="EffectDescription" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1926135081]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 0
+offset_left = 171.0
+offset_top = 102.0
+offset_right = 396.0
+offset_bottom = 164.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 3
+
+[node name="SlotTypeToggles" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=55755625]
+layout_mode = 0
+offset_left = 171.0
+offset_right = 396.0
+offset_bottom = 46.0
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="SlotTypeButton1" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030001]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+icon = ExtResource("28_k8ojv")
+flat = true
+expand_icon = true
+
+[node name="SlotTypeButton2" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030002]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+icon = ExtResource("28_k8ojv")
+flat = true
+expand_icon = true
+
+[node name="SlotTypeButton3" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030003]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+icon = ExtResource("28_k8ojv")
+flat = true
+expand_icon = true
+
+[node name="SlotTypeButton4" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030004]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+icon = ExtResource("28_k8ojv")
+flat = true
+expand_icon = true
 
 [node name="Bag" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1280399627 instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
@@ -5426,6 +5443,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 16
 disabled = true
 text = "BIND PERK"
+
 [node name="Settings" type="Panel" parent="Portrait/GameScene" unique_id=1819568224 node_paths=PackedStringArray("ui_size_dropdown", "disable_ads_checkbox", "master_volume_slider", "music_volume_slider", "language_dropdown", "skip_combat_checkbox")]
 visible = false
 layout_mode = 1
@@ -5706,7 +5724,6 @@ text = "Redeem"
 [node name="RedeemResultLabel" type="Label" parent="Portrait/GameScene/Payment/CouponSection" unique_id=1400164428]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = ""
 
 [node name="HSeparator2" type="HSeparator" parent="Portrait/GameScene/Payment" unique_id=770176394]
 layout_mode = 1

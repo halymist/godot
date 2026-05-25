@@ -91,6 +91,9 @@ var current_panel: Control = null
 var current_panel_overlay: Control = null
 var chat_overlay_active: bool = false
 var overlay_stack: Array[Control] = []
+var is_new_day_transitioning: bool = false
+var _new_day_transition_started_at_ms: int = 0
+const NEW_DAY_MIN_TRANSITION_SECONDS: float = 1.5
 const BASE_Z_INDEX: int = 200
 const Z_INDEX_INCREMENT: int = 10
 
@@ -243,6 +246,8 @@ func toggle_avatar_overlay():
 
 func toggle_chat():
 	"""Toggle chat overlay - independent of overlay stack"""
+	if is_new_day_transitioning:
+		return
 	chat_overlay_active = not chat_overlay_active
 	if chat_overlay_active:
 		chat_panel.z_index = 500  # Always above overlay stack (BASE_Z_INDEX=200)
@@ -292,6 +297,8 @@ func hide_current_overlay():
 
 func toggle_overlay(overlay: Control):
 	"""Toggle an overlay - if it's on the stack, pop back to it; otherwise push it"""
+	if is_new_day_transitioning:
+		return
 	_close_chat_if_open()
 	
 	# Check if this overlay is already in the stack
@@ -313,8 +320,80 @@ func toggle_overlay(overlay: Control):
 # PANEL NAVIGATION
 # ============================================================================
 
+func begin_new_day_transition():
+	"""Begin new day transition: close overlays, route to home, and fade to black."""
+	if is_new_day_transitioning:
+		return
+
+	is_new_day_transitioning = true
+	_new_day_transition_started_at_ms = Time.get_ticks_msec()
+	_close_chat_if_open()
+	_close_sub_overlays()
+
+	while overlay_stack.size() > 0:
+		var overlay = overlay_stack.pop_back()
+		overlay.visible = false
+	current_panel_overlay = null
+
+	if map_panel and map_panel.has_method("reset_expedition_state"):
+		map_panel.reset_expedition_state()
+
+	if expedition_panel and expedition_panel.has_method("end_expedition"):
+		expedition_panel.end_expedition()
+
+	show_panel(home_panel)
+	SceneTransition.fade_out()
+
+func finish_new_day_transition():
+	"""Finalize new day transition after GameInfo has been refreshed."""
+	if is_new_day_transitioning:
+		var elapsed_seconds = float(max(0, Time.get_ticks_msec() - _new_day_transition_started_at_ms)) / 1000.0
+		if elapsed_seconds < NEW_DAY_MIN_TRANSITION_SECONDS:
+			await get_tree().create_timer(NEW_DAY_MIN_TRANSITION_SECONDS - elapsed_seconds).timeout
+
+	if not GameInfo.current_player:
+		SceneTransition.fade_in()
+		is_new_day_transitioning = false
+		_new_day_transition_started_at_ms = 0
+		return
+
+	if map_panel and map_panel.has_method("reset_expedition_state"):
+		map_panel.reset_expedition_state()
+
+	if expedition_panel and expedition_panel.has_method("end_expedition"):
+		expedition_panel.end_expedition()
+
+	show_panel(home_panel)
+
+	update_display()
+	if top_ui and top_ui.has_method("update_display"):
+		top_ui.update_display()
+
+	refresh_bags()
+	refresh_active_effects()
+	refresh_perks()
+	refresh_avatars()
+
+	if vendor_panel:
+		if vendor_panel.has_method("_setup"):
+			vendor_panel._setup()
+		elif vendor_panel.has_method("populate_vendor_slots"):
+			vendor_panel.populate_vendor_slots()
+
+	if enchanter_panel:
+		if enchanter_panel.has_method("_setup"):
+			enchanter_panel._setup()
+		elif enchanter_panel.has_method("populate_effect_list"):
+			enchanter_panel.populate_effect_list()
+
+	SceneTransition.fade_in()
+	is_new_day_transitioning = false
+	_new_day_transition_started_at_ms = 0
+
 func show_panel(panel: Control):
 	"""Show main panel - hides chat, all overlays, and current panel"""
+	if is_new_day_transitioning and panel != home_panel:
+		return
 	_close_chat_if_open()
 	
 	# Hide sub-overlays (these sit outside the main stack)
@@ -338,6 +417,12 @@ func show_panel(panel: Control):
 	# Show new panel
 	panel.visible = true
 	current_panel = panel
+
+	if panel == enchanter_panel:
+		if enchanter_panel.has_method("_setup"):
+			enchanter_panel._setup()
+		elif enchanter_panel.has_method("populate_effect_list"):
+			enchanter_panel.populate_effect_list()
 
 # ============================================================================
 # BUTTON HANDLERS
@@ -455,6 +540,8 @@ func toggle_talents_bookmark():
 
 func go_back():
 	"""Back button - unified priority system"""
+	if is_new_day_transitioning:
+		return
 	# Priority 1: Close chat
 	if chat_overlay_active:
 		_close_chat_if_open()

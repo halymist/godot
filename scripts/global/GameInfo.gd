@@ -15,6 +15,7 @@ var quests_db: QuestsDatabase = null
 var enemies_db: EnemyDatabase = null
 var expeditions_db: Resource = null  # ExpeditionsDatabase
 var talents_db: Resource = null  # TalentsDatabase
+const DEBUG_ENCHANTER_LOAD := true
 
 # ============================================
 # RUNTIME DATA
@@ -23,6 +24,8 @@ var talents_db: Resource = null  # TalentsDatabase
 var lobby_data: Dictionary = {}
 var last_auth_response: Dictionary = {}
 var user_id: String = ""
+var last_player_data_payload: Dictionary = {}
+var last_player_enchanter_payload: Variant = []
 
 # Timestamp when the currently selected server was created (for day calculation)
 var server_created_at: int = 0
@@ -51,6 +54,7 @@ var talent_registry: Dictionary = {}
 # SIGNALS
 # ============================================
 signal quest_completed(quest_id)
+signal enchanter_inventory_updated
 
 # ============================================
 # COMPUTED PROPERTIES
@@ -113,6 +117,85 @@ func get_server_list() -> Array:
 	"""Get server list from the current lobby payload."""
 	var servers = lobby_data.get("server_list", [])
 	return servers if servers is Array else []
+
+func get_server_day(server_id: int) -> int:
+	"""Get current_day for a server, falling back to lobby header day inference."""
+	if server_id <= 0:
+		return 0
+	var servers = get_server_list()
+	for server in servers:
+		if server is Dictionary and int(server.get("id", 0)) == int(server_id):
+			var current_day = int(server.get("current_day", 0))
+			if current_day > 0:
+				return current_day
+			return _calculate_server_age_days(int(server.get("created_at", 0)))
+	return 0
+
+func get_server_created_at(server_id: int) -> int:
+	"""Get created_at timestamp for a server from lobby server_list."""
+	if server_id <= 0:
+		return 0
+	var servers = get_server_list()
+	for server in servers:
+		if server is Dictionary and int(server.get("id", 0)) == int(server_id):
+			return int(server.get("created_at", 0))
+	return 0
+
+func _calculate_server_age_days(server_created_at_unix: int) -> int:
+	"""Match lobby ServerHeader day inference from server start timestamp."""
+	if server_created_at_unix <= 0:
+		return 0
+	var current_unix = int(Time.get_unix_time_from_system())
+	var elapsed_days = int(floor((current_unix - server_created_at_unix) / 86400.0))
+	return max(1, elapsed_days + 1)
+
+func _set_server_day(server_id: int, day: int):
+	"""Persist current_day for a server in lobby server_list."""
+	if server_id <= 0 or day <= 0:
+		return
+	if not (lobby_data.get("server_list", []) is Array):
+		return
+
+	var server_list = lobby_data.get("server_list", [])
+	for i in range(server_list.size()):
+		var server = server_list[i]
+		if not (server is Dictionary):
+			continue
+		if int(server.get("id", 0)) != int(server_id):
+			continue
+		server["current_day"] = int(day)
+		server_list[i] = server
+		lobby_data["server_list"] = server_list
+		return
+
+func get_active_server_day() -> int:
+	"""Get day value for gameplay using the same inference strategy as lobby headers."""
+	if current_server_id > 0:
+		var lobby_day = get_server_day(current_server_id)
+		if lobby_day > 0:
+			return lobby_day
+
+	if current_player:
+		var server_index = _find_server_index_by_character(int(current_player.character_id))
+		if server_index >= 0:
+			var servers = get_server_list()
+			if server_index < servers.size() and servers[server_index] is Dictionary:
+				var server = servers[server_index]
+				var server_day = int(server.get("current_day", 0))
+				if server_day > 0:
+					return server_day
+				var inferred_server_day = _calculate_server_age_days(int(server.get("created_at", 0)))
+				if inferred_server_day > 0:
+					return inferred_server_day
+
+	var inferred_from_selected = _calculate_server_age_days(server_created_at)
+	if inferred_from_selected > 0:
+		return inferred_from_selected
+
+	if current_player and int(current_player.server_day) > 0:
+		return int(current_player.server_day)
+
+	return 1
 
 func clear_lobby_data():
 	"""Clear the current lobby/auth payload on explicit account logout."""
@@ -243,7 +326,11 @@ func sync_current_player_to_lobby(server_id_override: int = 0):
 	if server_id <= 0:
 		return
 
+	var resolved_day = max(int(player.server_day), get_server_day(server_id))
+	player.server_day = resolved_day
+
 	upsert_lobby_character(server_id, _build_lobby_character_from_player(player))
+	_set_server_day(server_id, resolved_day)
 	current_server_id = server_id
 
 # ============================================
@@ -958,11 +1045,9 @@ class GameCurrentPlayer:
 			for item_id in data.vendor_items:
 				vendor_items.append(int(item_id))  # Convert to int
 		
-		# Handle enchanter_effects array
-		if data.has("enchanter_effects") and data.enchanter_effects is Array:
-			enchanter_effects.clear()
-			for effect_id in data.enchanter_effects:
-				enchanter_effects.append(effect_id)
+		# Handle enchanter_effects array or grouped slot-type dictionary
+		if data.has("enchanter_effects"):
+			_load_enchanter_effects(data.enchanter_effects)
 		
 		# Handle expedition array
 		if data.has("expedition"):
@@ -972,6 +1057,15 @@ class GameCurrentPlayer:
 		# Convert null traveling to 0
 		if traveling == null:
 			traveling = 0
+		
+	func _load_enchanter_effects(payload: Variant):
+		enchanter_effects.clear()
+		if payload is Array:
+			for entry in payload:
+				enchanter_effects.append(entry)
+		elif payload is Dictionary:
+			for slot_type_name in payload.keys():
+				enchanter_effects.append({"slot_type": str(slot_type_name), "effects": payload[slot_type_name]})
 		
 	
 	func get_player_stats() -> Dictionary:
@@ -1082,6 +1176,10 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	if server_data.has("settlement_id"):
 		client_data["location"] = server_data["settlement_id"]
 		client_data.erase("settlement_id")
+		client_data.erase("location_id")
+	elif server_data.has("location_id"):
+		client_data["location"] = server_data["location_id"]
+		client_data.erase("location_id")
 	
 	# Handle avatar: server sends object {face, hair, eyes, nose, mouth, brows, ears, special}, client expects array
 	if server_data.has("avatar") and server_data.avatar is Dictionary:
@@ -1225,7 +1323,7 @@ func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 			client_data.erase("elixir_factor" + str(i))
 	
 	# Handle enchanter and vendor arrays (store for later use)
-	if server_data.has("enchanter") and server_data.enchanter is Array:
+	if server_data.has("enchanter") and (server_data.enchanter is Array or server_data.enchanter is Dictionary):
 		client_data["enchanter_effects"] = server_data.enchanter
 		client_data.erase("enchanter")
 	
@@ -1316,11 +1414,19 @@ func load_all_characters(characters_data: Array):
 
 func load_character_from_server(character_data: Dictionary):
 	"""Load a single character from server data (WebSocket playerData response)"""
+	_log_enchanter_load("load_character_from_server raw enchanter=%s" % [str(character_data.get("enchanter", null))])
 	# Preserve server_day before transform (injected by LobbyPanel from server list)
 	var injected_server_day = int(character_data.get("server_day", 0))
+	if injected_server_day <= 0 and current_server_id > 0:
+		injected_server_day = get_server_day(current_server_id)
+	if injected_server_day <= 0:
+		injected_server_day = get_active_server_day()
 	
 	# Transform server data format to client format
 	var transformed_data = _transform_server_player_data(character_data)
+	if not transformed_data.has("enchanter_effects") and _payload_has_entries(last_player_enchanter_payload):
+		transformed_data["enchanter_effects"] = last_player_enchanter_payload
+	_log_enchanter_load("load_character_from_server transformed enchanter_effects=%s" % [str(transformed_data.get("enchanter_effects", null))])
 	var transformed_quest_log = transformed_data.get("quest_log", [])
 	
 	all_characters.clear()
@@ -1332,8 +1438,12 @@ func load_character_from_server(character_data: Dictionary):
 	# Force server_day from lobby server list — the transform/init loop may miss it
 	if injected_server_day > 0:
 		player.server_day = injected_server_day
+		_set_server_day(current_server_id, injected_server_day)
 	
 	all_characters.append(player)
+	if player.enchanter_effects.is_empty() and _payload_has_entries(last_player_enchanter_payload):
+		player._load_enchanter_effects(last_player_enchanter_payload)
+	_log_enchanter_load("current_player.enchanter_effects after init=%s" % [str(player.enchanter_effects)])
 	
 	# Check for expired effects based on timestamps
 	player.check_expired_effects()
@@ -1341,6 +1451,105 @@ func load_character_from_server(character_data: Dictionary):
 	# Automatically select this character
 	current_character_id = player.character_id
 	_load_character_world_data_from_server(transformed_data)
+	enchanter_inventory_updated.emit()
+	_refresh_loaded_player_ui()
+
+func apply_enchanter_payload(payload: Variant):
+	last_player_enchanter_payload = payload
+	_log_enchanter_load("apply_enchanter_payload payload=%s current_player=%s" % [str(payload), str(current_player != null)])
+	if current_player and _payload_has_entries(payload):
+		current_player._load_enchanter_effects(payload)
+	enchanter_inventory_updated.emit()
+	_refresh_loaded_player_ui()
+
+func _payload_has_entries(payload: Variant) -> bool:
+	if payload is Array:
+		return not payload.is_empty()
+	if payload is Dictionary:
+		return not payload.is_empty()
+	return false
+
+func apply_new_day_character_data(character_data: Dictionary) -> bool:
+	"""Apply partial character refresh from new day finish payload to the current player."""
+	var player = current_player
+	if not player or not (character_data is Dictionary):
+		return false
+
+	var transformed_data = _transform_server_player_data(character_data)
+
+	if transformed_data.has("location"):
+		player.location = int(transformed_data.get("location", player.location))
+
+	if transformed_data.has("quest_log") and transformed_data.quest_log is Array:
+		player.quest_log = transformed_data.quest_log.duplicate(true)
+	else:
+		player.quest_log = []
+
+	var quests_payload = transformed_data.get("daily_quests", transformed_data.get("quests", null))
+	if quests_payload is Array:
+		player.daily_quests.clear()
+		for quest_id in quests_payload:
+			player.daily_quests.append(int(quest_id))
+
+	if transformed_data.has("vendor_items") and transformed_data.vendor_items is Array:
+		player.vendor_items.clear()
+		for item_id in transformed_data.vendor_items:
+			player.vendor_items.append(int(item_id))
+
+	if transformed_data.has("enchanter_effects"):
+		player.enchanter_effects.clear()
+		var enchanter_payload = transformed_data.enchanter_effects
+		if enchanter_payload is Array:
+			for entry in enchanter_payload:
+				player.enchanter_effects.append(entry)
+		elif enchanter_payload is Dictionary:
+			for slot_type_name in enchanter_payload.keys():
+				player.enchanter_effects.append({"slot_type": str(slot_type_name), "effects": enchanter_payload[slot_type_name]})
+
+	if transformed_data.has("server_day"):
+		player.server_day = int(transformed_data.get("server_day", player.server_day))
+	else:
+		player.server_day = max(1, int(player.server_day) + 1)
+
+	if transformed_data.has("weather"):
+		player.weather = int(transformed_data.get("weather", player.weather))
+
+	# Daily reset state.
+	player.depleted_health = 0
+	player.potion = 0
+	player.potion_until = 0.0
+	player.potion_day = 0
+	player.elixir = 0
+	player.elixir_until = 0.0
+	player.elixir_day = 0
+	player.elixir_ingredients.clear()
+	player.elixir_effects.clear()
+	player.blessing = 0
+
+	# Clear stale travel/expedition progress on day rollover.
+	player.traveling = 0.0
+	player.traveling_destination = null
+	player.expedition.clear()
+
+	pending_expedition_failure_message = ""
+	pending_quest_failure_message = ""
+
+	sync_current_player_to_lobby(current_server_id)
+	_refresh_loaded_player_ui()
+	return true
+
+func _refresh_loaded_player_ui():
+	if not UIManager.instance:
+		return
+	if UIManager.instance.enchanter_panel:
+		if UIManager.instance.enchanter_panel.has_method("_setup"):
+			UIManager.instance.enchanter_panel.call_deferred("_setup")
+		elif UIManager.instance.enchanter_panel.has_method("populate_effect_list"):
+			UIManager.instance.enchanter_panel.call_deferred("populate_effect_list")
+
+func _log_enchanter_load(message: String):
+	if DEBUG_ENCHANTER_LOAD:
+		print("[GameInfo] %s" % message)
 
 func select_character(character_id: int):
 	current_character_id = character_id

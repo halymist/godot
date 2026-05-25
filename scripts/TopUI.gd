@@ -41,7 +41,7 @@ func _on_update_timer_timeout():
 	if time_label and is_instance_valid(time_label):
 		time_label.text = server_time
 	if day_label and is_instance_valid(day_label):
-		day_label.text = "Day " + str(_calculate_server_day())
+		day_label.text = "Day " + str(max(1, int(GameInfo.get_active_server_day())))
 
 func _on_location_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
@@ -58,6 +58,12 @@ func _on_mouse_exited():
 		location_info_panel.visible = false
 
 func update_display():
+	var server_time = _get_server_time_string()
+	if time_label and is_instance_valid(time_label):
+		time_label.text = server_time
+	if day_label and is_instance_valid(day_label):
+		day_label.text = "Day " + str(max(1, int(GameInfo.get_active_server_day())))
+
 	if not GameInfo.current_player:
 		return
 	
@@ -75,14 +81,6 @@ func update_display():
 	# Update location
 	var location_id = GameInfo.current_player.location
 	var location = GameInfo.settlements_db.get_location_by_id(location_id) if GameInfo.settlements_db else null
-	var server_time = _get_server_time_string()
-	
-	if time_label and is_instance_valid(time_label):
-		time_label.text = server_time
-	
-	# Update day label
-	if day_label and is_instance_valid(day_label):
-		day_label.text = "Day " + str(_calculate_server_day())
 	
 	# Update location description
 	if location_description_label and is_instance_valid(location_description_label) and location:
@@ -109,33 +107,9 @@ func update_health_bar():
 			health_label.text = str(current_health) + " / " + str(max_health)
 
 func _get_server_time_string() -> String:
-	if not GameInfo.current_player:
-		return "00:00"
-	
 	# Get current time (we could add timezone conversion here if needed)
 	var current_unix = Time.get_unix_time_from_system()
 	var time_dict = Time.get_datetime_dict_from_unix_time(int(current_unix))
 	
 	return "%d:%02d" % [time_dict.hour, time_dict.minute]
 
-func _calculate_server_day() -> int:
-	"""Calculate current server day from server_created_at timestamp"""
-	var server_created_at = GameInfo.server_created_at
-	if server_created_at == 0:
-		return 1
-	
-	var current_unix = int(Time.get_unix_time_from_system())
-	var created_date = Time.get_date_dict_from_unix_time(server_created_at)
-	var current_date = Time.get_date_dict_from_unix_time(current_unix)
-	
-	var created_days = _date_to_days(created_date["year"], created_date["month"], created_date["day"])
-	var current_days = _date_to_days(current_date["year"], current_date["month"], current_date["day"])
-	
-	return max(1, current_days - created_days + 1)
-
-func _date_to_days(year: int, month: int, day: int) -> int:
-	"""Convert a date to an absolute day number for comparison"""
-	var a = int((14 - month) / 12.0)
-	var y = year + 4800 - a
-	var m = month + 12 * a - 3
-	return day + int((153 * m + 2) / 5.0) + 365 * y + int(y / 4.0) - int(y / 100.0) + int(y / 400.0) - 32045
