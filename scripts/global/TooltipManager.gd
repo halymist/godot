@@ -1,195 +1,207 @@
-extends CanvasLayer
+extends Node
 
-var tooltip_panel: Control
-var perk_tooltip_panel: Control
-var _item_tooltip_request_id: int = 0
-var _perk_tooltip_request_id: int = 0
+const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+const SILVER_ICON = preload("res://assets/images/ui/silver.png")
+const MAX_TOOLTIP_WIDTH := 260.0
+const NAME_COLOR := Color(0.90, 0.70, 0.40, 1.0)
+const TEXT_COLOR := Color(0.95, 0.90, 0.82, 1.0)
 
-const TOOLTIP_MARGIN := 10.0
-const ITEM_TOOLTIP_MAX_WIDTH := 420.0
-const ITEM_TOOLTIP_WIDTH_RATIO := 0.72
-const PERK_TOOLTIP_MAX_WIDTH := 560.0
-const PERK_TOOLTIP_WIDTH_RATIO := 0.60
+func make_item_tooltip(item: GameInfo.Item) -> Control:
+	return _make_item_tooltip_panel(item)
 
-func _ready():
-	# Create item tooltip panel
-	var tooltip_scene = preload("res://Scenes/item_description.tscn")
-	tooltip_panel = tooltip_scene.instantiate()
-	add_child(tooltip_panel)
-	tooltip_panel.visible = false
-	
-	# Create perk tooltip panel
-	var perk_tooltip_scene = preload("res://Scenes/perk_tooltip.tscn")
-	perk_tooltip_panel = perk_tooltip_scene.instantiate()
-	add_child(perk_tooltip_panel)
-	perk_tooltip_panel.visible = false
-	
-	# Ensure this layer is on top of everything
-	layer = 100
+func make_text_tooltip(tooltip_text: String) -> Control:
+	var panel = PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _make_tooltip_style())
 
-func show_tooltip(item: GameInfo.Item, slot_node: Control = null):
-	if not tooltip_panel:
+	var margin = MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 8)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_right", 8)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	panel.add_child(margin)
+
+	var label = Label.new()
+	label.text = tooltip_text.strip_edges()
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
+	label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	label.add_theme_color_override("font_color", TEXT_COLOR)
+	margin.add_child(label)
+	return panel
+
+func get_item_tooltip_text(item: GameInfo.Item) -> String:
+	if not item:
+		return ""
+	var lines: Array[String] = [_get_item_display_name(item)]
+	var body_text = _build_item_tooltip_text(item)
+	if not body_text.is_empty():
+		lines.append(body_text)
+	if item.price > 0:
+		lines.append(str(_get_item_display_price(item)) + " silver")
+	return "\n".join(lines)
+
+func _build_item_tooltip_text(item: GameInfo.Item) -> String:
+	if not item:
+		return ""
+	var lines: Array[String] = []
+	var gem = item.get_socketed_gem()
+	if item.type == "Weapon" and (item.damage_min > 0 or item.damage_max > 0):
+		lines.append("Damage: %d - %d" % [item.damage_min, item.damage_max])
+
+	_append_stat_line(lines, "Strength", item.strength, gem.strength if gem else 0)
+	_append_stat_line(lines, "Stamina", item.stamina, gem.stamina if gem else 0)
+	_append_stat_line(lines, "Agility", item.agility, gem.agility if gem else 0)
+	_append_stat_line(lines, "Luck", item.luck, gem.luck if gem else 0)
+	_append_stat_line(lines, "Armor", item.armor, gem.armor if gem else 0)
+
+	for effect_line in _get_item_effect_lines(item):
+		lines.append(effect_line)
+
+	if item.has_socket:
+		if item.socket_id > 0:
+			var gem_item = GameInfo.items_db.get_item_by_id(item.socket_id) if GameInfo.items_db else null
+			lines.append("Socket: " + (gem_item.item_name if gem_item else "Unknown Gem"))
+		else:
+			lines.append("Socket: Empty")
+
+	return "\n".join(lines)
+
+func _make_item_tooltip_panel(item: GameInfo.Item) -> Control:
+	var panel = PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _make_tooltip_style())
+
+	var margin = MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 8)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_right", 8)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	panel.add_child(margin)
+
+	var layout = VBoxContainer.new()
+	layout.add_theme_constant_override("separation", 4)
+	margin.add_child(layout)
+
+	var name_label = Label.new()
+	name_label.text = _get_item_display_name(item)
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
+	name_label.add_theme_color_override("font_color", NAME_COLOR)
+	layout.add_child(name_label)
+
+	var body_text = _build_item_tooltip_text(item)
+	if not body_text.is_empty():
+		var body_label = Label.new()
+		body_label.text = body_text
+		body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		body_label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
+		body_label.add_theme_color_override("font_color", TEXT_COLOR)
+		layout.add_child(body_label)
+
+	if item and item.price > 0:
+		layout.add_child(_make_price_row(_get_item_display_price(item)))
+
+	return panel
+
+func _get_item_display_name(item: GameInfo.Item) -> String:
+	if not item:
+		return ""
+	var display_name = item.item_name
+	if item.tempered > 0:
+		display_name += " +" + str(item.tempered)
+	return display_name
+
+func _get_item_display_price(item: GameInfo.Item) -> int:
+	return item.price * 2 if item.bag_slot_id == 20 else item.price
+
+func _make_price_row(price: int) -> Control:
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_END
+	row.add_theme_constant_override("separation", 4)
+	var price_label = Label.new()
+	price_label.text = str(price)
+	price_label.add_theme_color_override("font_color", TEXT_COLOR)
+	row.add_child(price_label)
+	var icon = TextureRect.new()
+	icon.texture = SILVER_ICON
+	icon.custom_minimum_size = Vector2(16, 16)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	row.add_child(icon)
+	return row
+
+func _append_stat_line(lines: Array[String], stat_name: String, base_value: int, gem_value: int):
+	if base_value == 0 and gem_value == 0:
 		return
-
-	_item_tooltip_request_id += 1
-	var request_id = _item_tooltip_request_id
-	tooltip_panel.visible = false
-	tooltip_panel.global_position = Vector2(-10000, -10000)
-	tooltip_panel.show_description(item, null)
-	_prepare_item_tooltip_size()
-	tooltip_panel.visible = false
-
-	if slot_node:
-		call_deferred("_position_tooltip", slot_node, request_id)
+	if gem_value > 0:
+		lines.append("%s: %d + %d" % [stat_name, base_value, gem_value])
 	else:
-		call_deferred("_center_tooltip", request_id)
+		lines.append("%s: %d" % [stat_name, base_value])
+
+func _get_item_effect_lines(item: GameInfo.Item) -> Array[String]:
+	var lines: Array[String] = []
+	if item.type == "Elixir" and (item.ingredients.size() > 0 or item.elixir_effects.size() > 0):
+		var effect_map = {}
+		if item.elixir_effects.size() > 0:
+			for entry in item.elixir_effects:
+				var effect_id = int(entry.get("effect_id", 0))
+				var factor = float(entry.get("factor", 0.0))
+				if effect_id > 0:
+					effect_map[effect_id] = effect_map.get(effect_id, 0.0) + factor
+		else:
+			for ingredient_id in item.ingredients:
+				var ingredient_resource = GameInfo.items_db.get_item_by_id(ingredient_id) if GameInfo.items_db else null
+				if ingredient_resource and ingredient_resource.effect_id > 0:
+					effect_map[ingredient_resource.effect_id] = effect_map.get(ingredient_resource.effect_id, 0.0) + ingredient_resource.effect_factor
+		for effect_id in effect_map.keys():
+			var effect_data = GameInfo.effects_db.get_effect_by_id(effect_id) if GameInfo.effects_db else null
+			if effect_data:
+				lines.append(EFFECT_FORMATTER.format_with_factor(effect_data.description, float(effect_map[effect_id]), true))
+		return lines
+
+	var display_effect_id = item.effect_id
+	var display_effect_factor = item.effect_factor
+	if item.effect_overdrive > 0:
+		var overdrive_effect = GameInfo.effects_db.get_effect_by_id(item.effect_overdrive) if GameInfo.effects_db else null
+		if overdrive_effect:
+			display_effect_id = item.effect_overdrive
+			display_effect_factor = overdrive_effect.factor
+
+	if display_effect_id > 0:
+		var effect_data = GameInfo.effects_db.get_effect_by_id(display_effect_id) if GameInfo.effects_db else null
+		if effect_data and effect_data.description != "":
+			lines.append(EFFECT_FORMATTER.format_with_factor(effect_data.description, display_effect_factor, true))
+	return lines
+
+func _estimate_text_width(text: String) -> float:
+	var longest = 120.0
+	for line in text.split("\n"):
+		longest = max(longest, float(line.length()) * 7.5)
+	return min(MAX_TOOLTIP_WIDTH, longest)
+
+func _make_tooltip_style() -> StyleBoxFlat:
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.025, 0.02, 0.03, 0.98)
+	style.border_color = Color(0.72, 0.48, 0.22, 0.9)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
+	return style
+
+func show_tooltip(_item: GameInfo.Item, _slot_node: Control = null):
+	pass
 
 func hide_tooltip():
-	_item_tooltip_request_id += 1
-	if tooltip_panel:
-		tooltip_panel.visible = false
+	pass
 
-func show_perk_tooltip(tooltip_text: String, slot_node: Control = null):
-	if not perk_tooltip_panel:
-		return
-
-	_perk_tooltip_request_id += 1
-	var request_id = _perk_tooltip_request_id
-	perk_tooltip_panel.visible = false
-	perk_tooltip_panel.global_position = Vector2(-10000, -10000)
-
-	var tooltip_label := perk_tooltip_panel.get_node("MarginContainer/TooltipLabel") as Label
-	if tooltip_label:
-		tooltip_label.text = tooltip_text.strip_edges()
-		tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD
-		var viewport_width = get_viewport().get_visible_rect().size.x
-		var target_width = _get_label_wrap_width(tooltip_label, min(PERK_TOOLTIP_MAX_WIDTH, viewport_width * PERK_TOOLTIP_WIDTH_RATIO, viewport_width - TOOLTIP_MARGIN * 2.0), 24.0)
-		tooltip_label.custom_minimum_size.x = target_width
-		tooltip_label.reset_size()
-		perk_tooltip_panel.custom_minimum_size.x = target_width
-		perk_tooltip_panel.reset_size()
-
-	if slot_node:
-		call_deferred("_position_perk_tooltip", slot_node, request_id)
-	else:
-		call_deferred("_center_perk_tooltip", request_id)
+func show_perk_tooltip(_tooltip_text: String, _slot_node: Control = null):
+	pass
 
 func hide_perk_tooltip():
-	_perk_tooltip_request_id += 1
-	if perk_tooltip_panel:
-		perk_tooltip_panel.visible = false
-
-func _prepare_item_tooltip_size():
-	if not tooltip_panel:
-		return
-
-	var viewport_width = get_viewport().get_visible_rect().size.x
-	var max_width = min(ITEM_TOOLTIP_MAX_WIDTH, viewport_width * ITEM_TOOLTIP_WIDTH_RATIO, viewport_width - TOOLTIP_MARGIN * 2.0)
-	var target_width = 0.0
-
-	var measured_labels = [
-		tooltip_panel.get("name_label"),
-		tooltip_panel.get("effect"),
-		tooltip_panel.get("socket_label")
-	]
-	for measured_label in measured_labels:
-		if measured_label and measured_label is Label:
-			target_width = max(target_width, _get_label_wrap_width(measured_label, max_width - 24.0, 24.0) + 24.0)
-
-	target_width = min(target_width, max_width)
-	tooltip_panel.custom_minimum_size.x = target_width
-
-	var labels = [
-		tooltip_panel.get("name_label"),
-		tooltip_panel.get("effect"),
-		tooltip_panel.get("socket_label")
-	]
-	for label in labels:
-		if label and label is Label:
-			label.autowrap_mode = TextServer.AUTOWRAP_WORD
-			label.custom_minimum_size.x = max(0.0, target_width - 24.0)
-			label.reset_size()
-
-	tooltip_panel.reset_size()
-
-func _get_label_wrap_width(label: Label, max_width: float, padding: float = 0.0) -> float:
-	if label.text.is_empty():
-		return 0.0
-	var font = label.get_theme_font("font")
-	var font_size = label.get_theme_font_size("font_size")
-	var longest_line_width = 0.0
-	for line in label.text.split("\n"):
-		longest_line_width = max(longest_line_width, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x)
-	return min(max_width, longest_line_width + padding)
-
-func _position_tooltip(slot_node: Control, request_id: int):
-	await get_tree().process_frame
-	await get_tree().process_frame
-	if request_id != _item_tooltip_request_id:
-		return
-	if not tooltip_panel or not is_instance_valid(tooltip_panel):
-		return
-	if not slot_node or not is_instance_valid(slot_node):
-		hide_tooltip()
-		return
-	
-	var slot_global_pos = slot_node.global_position
-	var slot_size = slot_node.size
-	var tooltip_size = tooltip_panel.size
-	var viewport_size = get_viewport().get_visible_rect().size
-
-	var final_pos = _get_position_near_slot(slot_global_pos, slot_size, tooltip_size, viewport_size)
-	tooltip_panel.global_position = final_pos
-	tooltip_panel.visible = true
-
-func _center_tooltip(request_id: int):
-	await get_tree().process_frame
-	if request_id != _item_tooltip_request_id or not tooltip_panel:
-		return
-	var viewport_size = get_viewport().get_visible_rect().size
-	tooltip_panel.global_position = (viewport_size - tooltip_panel.size) / 2.0
-	tooltip_panel.visible = true
-
-func _position_perk_tooltip(slot_node: Control, request_id: int):
-	await get_tree().process_frame
-	await get_tree().process_frame
-	if request_id != _perk_tooltip_request_id:
-		return
-	if not perk_tooltip_panel or not is_instance_valid(perk_tooltip_panel):
-		return
-	if not slot_node or not is_instance_valid(slot_node):
-		hide_perk_tooltip()
-		return
-	
-	var slot_global_pos = slot_node.global_position
-	var slot_size = slot_node.size
-	var tooltip_size = perk_tooltip_panel.size
-	var viewport_size = get_viewport().get_visible_rect().size
-	var final_pos = _get_position_near_slot(slot_global_pos, slot_size, tooltip_size, viewport_size)
-	perk_tooltip_panel.global_position = final_pos
-	perk_tooltip_panel.visible = true
-
-func _center_perk_tooltip(request_id: int):
-	await get_tree().process_frame
-	if request_id != _perk_tooltip_request_id or not perk_tooltip_panel:
-		return
-	var viewport_size = get_viewport().get_visible_rect().size
-	perk_tooltip_panel.global_position = (viewport_size - perk_tooltip_panel.size) / 2.0
-	perk_tooltip_panel.visible = true
-
-func _get_position_near_slot(slot_global_pos: Vector2, slot_size: Vector2, tooltip_size: Vector2, viewport_size: Vector2) -> Vector2:
-	var final_pos = Vector2(
-		slot_global_pos.x + slot_size.x / 2.0 - tooltip_size.x / 2.0,
-		slot_global_pos.y - tooltip_size.y - TOOLTIP_MARGIN
-	)
-
-	if final_pos.y < TOOLTIP_MARGIN:
-		final_pos.y = slot_global_pos.y + slot_size.y + TOOLTIP_MARGIN
-	if final_pos.y + tooltip_size.y > viewport_size.y - TOOLTIP_MARGIN:
-		final_pos.y = viewport_size.y - tooltip_size.y - TOOLTIP_MARGIN
-	if final_pos.x < TOOLTIP_MARGIN:
-		final_pos.x = TOOLTIP_MARGIN
-	if final_pos.x + tooltip_size.x > viewport_size.x - TOOLTIP_MARGIN:
-		final_pos.x = viewport_size.x - tooltip_size.x - TOOLTIP_MARGIN
-
-	return final_pos
+	pass

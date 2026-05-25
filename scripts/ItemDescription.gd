@@ -26,6 +26,7 @@ const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
 @onready var damage_container = damage_label.get_parent() if damage_label else null
 
 func show_description(item_data: GameInfo.Item, _slot_node: Control = null):
+	_ensure_node_refs()
 	# Reset size to allow panel to resize for new content
 	reset_size()
 	
@@ -225,3 +226,39 @@ func hide_description():
 	visible = false
 	# Reset size to allow panel to resize for next show
 	reset_size()
+
+func _ensure_node_refs():
+	if not name_label:
+		name_label = get_node_or_null("MarginContainer/VBoxContainer/Name")
+	if not price_label:
+		price_label = get_node_or_null("MarginContainer/VBoxContainer/PriceContainer/Value")
+	if not price_icon:
+		price_icon = get_node_or_null("MarginContainer/VBoxContainer/PriceContainer/SilverIcon")
+	if not strength:
+		strength = get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer/Value")
+	if not stamina:
+		stamina = get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer2/Value")
+	if not agility:
+		agility = get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer3/Value")
+	if not luck:
+		luck = get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer4/Value")
+	if not armor:
+		armor = get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer5/Value")
+	if not damage_label:
+		damage_label = get_node_or_null("MarginContainer/VBoxContainer/DamageContainer/Value")
+	if not effect:
+		effect = get_node_or_null("MarginContainer/VBoxContainer/Effect")
+	if not socket_label:
+		socket_label = get_node_or_null("MarginContainer/VBoxContainer/SocketContainer/Value")
+	if not socket_icon:
+		socket_icon = get_node_or_null("MarginContainer/VBoxContainer/SocketContainer/SocketIcon")
+	if not gem_icon:
+		gem_icon = get_node_or_null("MarginContainer/VBoxContainer/SocketContainer/SocketIcon/GemIcon")
+	price_container = price_label.get_parent() if price_label else null
+	socket_container = socket_label.get_parent() if socket_label else null
+	strength_container = strength.get_parent() if strength else null
+	stamina_container = stamina.get_parent() if stamina else null
+	agility_container = agility.get_parent() if agility else null
+	luck_container = luck.get_parent() if luck else null
+	armor_container = armor.get_parent() if armor else null
+	damage_container = damage_label.get_parent() if damage_label else null

@@ -103,6 +103,9 @@ func _handle_message(message: String):
 		return
 	
 	var function_name = data.get("function", "")
+	if _looks_like_message_rejected(data):
+		_handle_message_rejected(data)
+		return
 	if function_name != "playerData" and _looks_like_player_data_message(data):
 		print("[Websocket] treating function=%s as playerData" % [function_name])
 		_handle_player_data(data)
@@ -200,6 +203,16 @@ func _looks_like_player_data_message(message: Dictionary) -> bool:
 	if not payload is Dictionary:
 		return false
 	return payload.has("character_id") and (payload.has("enchanter") or payload.has("inventory") or payload.has("stats"))
+
+func _looks_like_message_rejected(message: Dictionary) -> bool:
+	if message.get("function", "") == "messageRejected":
+		return true
+	if not message.has("data") or not message.data is Array or message.data.is_empty():
+		return false
+	var payload = message.data[0]
+	if not (payload is Dictionary):
+		return false
+	return payload.has("muted_until") and (payload.has("reason") or payload.has("mute_reason"))
 
 func _handle_new_day_response(message: Dictionary):
 	"""Handle two-phase new day payloads (start/finish)."""
@@ -543,6 +556,7 @@ func _handle_message_rejected(message: Dictionary):
 	var rejection = message.data[0]
 	if not (rejection is Dictionary):
 		return
+	print("[Websocket] messageRejected reason=%s muted_until=%s" % [str(rejection.get("reason", "")), str(rejection.get("muted_until", 0))])
 	if int(rejection.get("muted_until", 0)) > 0:
 		GameInfo.apply_chat_mute_payload(rejection)
 	if UIManager.instance and UIManager.instance.chat_panel and UIManager.instance.chat_panel.has_method("handle_chat_rejection"):

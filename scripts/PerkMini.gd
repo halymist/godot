@@ -8,10 +8,14 @@ var meta_data: Dictionary
 
 func setup(texture: Texture2D, data: Dictionary):
 	icon_texture.texture = texture
+	icon_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	meta_data = data
-	mouse_filter = Control.MOUSE_FILTER_PASS
-	mouse_entered.connect(_on_hover)
-	mouse_exited.connect(TooltipManager.hide_perk_tooltip)
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	tooltip_text = _build_tooltip_content()
+	if not mouse_entered.is_connected(_on_mouse_entered):
+		mouse_entered.connect(_on_mouse_entered)
+	if not mouse_exited.is_connected(_on_mouse_exited):
+		mouse_exited.connect(_on_mouse_exited)
 
 func _format_time_remaining(expire_until: float) -> String:
 	"""Format the remaining time until expiration in a human-readable way."""
@@ -47,7 +51,19 @@ func _append_effect_lines(content: String, effect_map: Dictionary) -> String:
 				content += "\n" + effect_line
 	return content
 
-func _on_hover():
+func _on_mouse_entered():
+	tooltip_text = _build_tooltip_content()
+
+func _make_custom_tooltip(_for_text: String) -> Object:
+	var content = _build_tooltip_content()
+	if content.strip_edges().is_empty():
+		return null
+	return TooltipManager.make_text_tooltip(content)
+
+func _on_mouse_exited():
+	pass
+
+func _build_tooltip_content() -> String:
 	var content = ""
 	
 	match meta_data.type:
@@ -117,4 +133,4 @@ func _on_hover():
 			if effect.description != "":
 				content += "\n" + _format_effect_line(effect, factor)
 	
-	TooltipManager.show_perk_tooltip(content, self)
+	return content

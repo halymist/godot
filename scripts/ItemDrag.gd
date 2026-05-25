@@ -10,19 +10,22 @@ const DOUBLE_CLICK_TIME: float = 0.3  # 300ms window for double-click
 var dragging_enabled: bool = true
 
 func _ready():
-	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
-	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
 	connect("gui_input", Callable(self, "_on_gui_input"))
-
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	_refresh_tooltip_text()
 
 func _on_mouse_entered():
-	if item_data:
-		# Get the parent slot to determine positioning
-		var parent_slot = get_parent()
-		TooltipManager.show_tooltip(item_data, parent_slot)
+	_refresh_tooltip_text()
+
+func _make_custom_tooltip(_for_text: String) -> Object:
+	if not item_data:
+		return null
+	return TooltipManager.make_item_tooltip(item_data)
 
 func _on_mouse_exited():
-	TooltipManager.hide_tooltip()
+	pass
 
 func _on_gui_input(event: InputEvent):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -47,8 +50,12 @@ func _handle_double_click():
 
 func set_item_data(data: GameInfo.Item):
 	item_data = data
+	_refresh_tooltip_text()
 	if data:
 		texture = data.texture
+
+func _refresh_tooltip_text():
+	tooltip_text = TooltipManager.get_item_tooltip_text(item_data) if item_data else ""
 
 func disable_dragging():
 	"""Disable dragging for this item (e.g., for enemy equipment)"""

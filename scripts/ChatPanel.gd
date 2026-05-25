@@ -377,6 +377,10 @@ func _ensure_mute_dialog():
 func show_mute_dialog():
 	_ensure_mute_dialog()
 	_update_mute_dialog_text()
+	visible = true
+	if UIManager.instance:
+		UIManager.instance.chat_overlay_active = true
+		z_index = 500
 	_mute_dialog_overlay.visible = true
 	_mute_dialog_overlay.mouse_filter = Control.MOUSE_FILTER_PASS
 	_mute_dialog_panel.grab_focus()

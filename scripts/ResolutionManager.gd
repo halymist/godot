@@ -1,7 +1,7 @@
 extends Node
 
-# Resolution scaling manager - Portrait only (Autoload)
-# Scales content up to 9:16 aspect ratio, then stops scaling width
+# Resolution scaling manager - Portrait phone only (Autoload)
+# Clamps the effective content aspect ratio to a reasonable phone range.
 
 var current_scale_factor = 1.0
 
@@ -11,11 +11,11 @@ var user_font_scale: float = 1.0  # 1.0 = normal, 1.2 = 20% bigger, 0.8 = 20% sm
 # Set by game scene after loading
 var base_theme: Theme = null
 
-# Aspect ratio thresholds for portrait phone mode
-# 21:9 portrait = 9/21 = 0.4286 (base, tallest)
-# 16:9 portrait = 9/16 = 0.5625 (max width ratio - don't scale beyond this)
-const ASPECT_21_9 = 0.4286  # Base aspect ratio (tallest portrait)
-const ASPECT_16_9 = 0.5625  # Maximum aspect ratio (widest portrait)
+# Aspect ratio thresholds for portrait phone mode.
+# Taller/narrower than 21:9 gets vertical letterboxing.
+# Wider than 16:9 gets side letterboxing.
+const MIN_PHONE_ASPECT = 9.0 / 21.0
+const MAX_PHONE_ASPECT = 9.0 / 16.0
 
 # Base resolution
 const PORTRAIT_BASE = Vector2i(405, 900)  # 21:9 aspect ratio base
@@ -25,6 +25,7 @@ var last_window_size: Vector2i = Vector2i.ZERO
 signal user_font_scale_changed(new_scale)
 
 func _ready():
+	get_tree().root.size_changed.connect(calculate_layout)
 	calculate_layout()
 
 func _process(_delta):
@@ -35,36 +36,19 @@ func _process(_delta):
 
 func calculate_layout():
 	var window_size = DisplayServer.window_get_size()
+	if window_size.x <= 0 or window_size.y <= 0:
+		return
 	var aspect_ratio = float(window_size.x) / float(window_size.y)
-	
-	
-	var target_base_resolution: Vector2i
-	
-	if aspect_ratio < ASPECT_21_9:
-		# Narrower than 21:9: shrink height to maintain 21:9 minimum
-		var adjusted_height = int(window_size.x / ASPECT_21_9)
-		target_base_resolution = Vector2i(PORTRAIT_BASE.x, adjusted_height)
-		update_content_scale(target_base_resolution, false)
-	elif aspect_ratio <= ASPECT_16_9:
-		# Between 21:9 and 16:9: use base 21:9 resolution, content scales to fill
-		target_base_resolution = PORTRAIT_BASE
-		update_content_scale(target_base_resolution, false)
-	else:
-		# Wider than 16:9: cap at 16:9 width, add black bars on sides
-		var max_width = int(PORTRAIT_BASE.y * ASPECT_16_9)
-		target_base_resolution = Vector2i(max_width, PORTRAIT_BASE.y)
-		update_content_scale(target_base_resolution, true)
+	var clamped_aspect = clampf(aspect_ratio, MIN_PHONE_ASPECT, MAX_PHONE_ASPECT)
+	var target_width = int(round(float(PORTRAIT_BASE.y) * clamped_aspect))
+	update_content_scale(Vector2i(target_width, PORTRAIT_BASE.y))
 
-func update_content_scale(base_resolution: Vector2i, letterbox: bool = false):
-	"""Update the window's content scale base resolution.
-	letterbox=true uses KEEP aspect to add black bars on wider screens."""
+func update_content_scale(base_resolution: Vector2i):
+	"""Update the window's content scale base resolution with letterboxing outside supported phone ratios."""
 	var window = get_tree().root
 	window.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-	if letterbox:
-		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
-	else:
-		window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP_HEIGHT
 	window.content_scale_size = base_resolution
+	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
 
 # user font scale preference - only scales Label fonts
 func set_user_font_scale(new_scale: float):
