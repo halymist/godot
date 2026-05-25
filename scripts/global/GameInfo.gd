@@ -26,6 +26,8 @@ var last_auth_response: Dictionary = {}
 var user_id: String = ""
 var last_player_data_payload: Dictionary = {}
 var last_player_enchanter_payload: Variant = []
+var chat_muted_until_unix: int = 0
+var chat_mute_reason: String = ""
 
 # Timestamp when the currently selected server was created (for day calculation)
 var server_created_at: int = 0
@@ -55,6 +57,7 @@ var talent_registry: Dictionary = {}
 # ============================================
 signal quest_completed(quest_id)
 signal enchanter_inventory_updated
+signal chat_mute_updated
 
 # ============================================
 # COMPUTED PROPERTIES
@@ -202,6 +205,73 @@ func clear_lobby_data():
 	lobby_data.clear()
 	last_auth_response.clear()
 	current_server_id = 0
+	user_id = ""
+	chat_muted_until_unix = 0
+	chat_mute_reason = ""
+	chat_mute_updated.emit()
+
+func apply_chat_mute_payload(payload: Dictionary):
+	if not (payload is Dictionary):
+		return
+	var muted_until = int(payload.get("muted_until", 0))
+	if muted_until <= 0:
+		clear_chat_mute()
+		return
+	chat_muted_until_unix = muted_until
+	chat_mute_reason = str(payload.get("mute_reason", payload.get("reason", "")))
+	_save_chat_mute_state()
+	chat_mute_updated.emit()
+
+func clear_chat_mute():
+	chat_muted_until_unix = 0
+	chat_mute_reason = ""
+	_save_chat_mute_state()
+	chat_mute_updated.emit()
+
+func is_chat_muted() -> bool:
+	if chat_muted_until_unix <= 0:
+		return false
+	if chat_muted_until_unix <= int(Time.get_unix_time_from_system()):
+		clear_chat_mute()
+		return false
+	return true
+
+func get_chat_mute_remaining_seconds() -> int:
+	if not is_chat_muted():
+		return 0
+	return max(0, chat_muted_until_unix - int(Time.get_unix_time_from_system()))
+
+func load_persisted_chat_mute():
+	if user_id.is_empty():
+		chat_muted_until_unix = 0
+		chat_mute_reason = ""
+		chat_mute_updated.emit()
+		return
+	var config = ConfigFile.new()
+	var err = config.load(_get_chat_mute_path())
+	if err != OK:
+		chat_muted_until_unix = 0
+		chat_mute_reason = ""
+		chat_mute_updated.emit()
+		return
+	chat_muted_until_unix = int(config.get_value("chat", "muted_until", 0))
+	chat_mute_reason = str(config.get_value("chat", "mute_reason", ""))
+	if chat_muted_until_unix > 0 and chat_muted_until_unix <= int(Time.get_unix_time_from_system()):
+		clear_chat_mute()
+		return
+	chat_mute_updated.emit()
+
+func _save_chat_mute_state():
+	if user_id.is_empty():
+		return
+	var config = ConfigFile.new()
+	if chat_muted_until_unix > 0:
+		config.set_value("chat", "muted_until", chat_muted_until_unix)
+		config.set_value("chat", "mute_reason", chat_mute_reason)
+	var _err = config.save(_get_chat_mute_path())
+
+func _get_chat_mute_path() -> String:
+	return "user://chat_mute_%s.cfg" % user_id
 
 func add_lobby_mushrooms(amount: int) -> int:
 	"""Add/subtract account-level mushrooms and keep all lobby auth mirrors in sync."""

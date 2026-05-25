@@ -173,6 +173,8 @@ func _handle_message(message: String):
 			_handle_load_enemy_response(data)
 		"rankingsData":
 			_handle_rankings_data(data)
+		"messageRejected":
+			_handle_message_rejected(data)
 		"error":
 			_handle_error(data)
 		_:
@@ -534,6 +536,17 @@ func _handle_error(message: Dictionary):
 
 	var error_data = message.data[0]
 	var _msg = error_data.get("message", "Unknown error")
+
+func _handle_message_rejected(message: Dictionary):
+	if not message.has("data") or not message.data is Array or message.data.is_empty():
+		return
+	var rejection = message.data[0]
+	if not (rejection is Dictionary):
+		return
+	if int(rejection.get("muted_until", 0)) > 0:
+		GameInfo.apply_chat_mute_payload(rejection)
+	if UIManager.instance and UIManager.instance.chat_panel and UIManager.instance.chat_panel.has_method("handle_chat_rejection"):
+		UIManager.instance.chat_panel.handle_chat_rejection(rejection)
 
 # ============================================
 # WEBSOCKET API - Game Actions

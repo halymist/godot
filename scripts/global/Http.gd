@@ -121,6 +121,7 @@ func _transform_auth_response(response: Dictionary) -> Dictionary:
 	"""Transform server AuthResponse to client lobby_data format"""
 	var uid = response.get("user_id", 0)
 	GameInfo.user_id = str(int(uid)) if uid else ""
+	GameInfo.load_persisted_chat_mute()
 	GameInfo.last_auth_response = response.duplicate(true)
 	var connected_methods = response.get("user_connected_methods", [])
 	var lobby_data = {
