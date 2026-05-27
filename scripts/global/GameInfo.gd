@@ -73,6 +73,16 @@ var current_player: GameCurrentPlayer:
 # INITIALIZATION
 # ============================================
 var databases_loaded: bool = false
+const MEMORY_WARNING_BYTES: int = 512 * 1024 * 1024
+const MEMORY_WARNING_INTERVAL: float = 30.0
+var memory_warning_timer: Timer
+
+func _ready():
+	memory_warning_timer = Timer.new()
+	memory_warning_timer.wait_time = MEMORY_WARNING_INTERVAL
+	memory_warning_timer.timeout.connect(_log_memory_warning_if_needed)
+	add_child(memory_warning_timer)
+	memory_warning_timer.start()
 
 func load_databases():
 	"""Call this from lobby scene to load all game databases"""
@@ -92,6 +102,58 @@ func load_databases():
 	cosmetics_db = DataManager.get_cosmetics_database()
 	
 	databases_loaded = true
+
+func load_databases_async():
+	"""Load databases with frame breaks so login/loading UI can keep animating."""
+	if databases_loaded:
+		return
+
+	effects_db = DataManager.get_effects_database()
+	await get_tree().process_frame
+	items_db = DataManager.get_items_database()
+	await get_tree().process_frame
+	perks_db = DataManager.get_perks_database()
+	await get_tree().process_frame
+	enemies_db = DataManager.get_enemies_database()
+	await get_tree().process_frame
+	expeditions_db = DataManager.get_expeditions_database()
+	await get_tree().process_frame
+	settlements_db = DataManager.get_settlements_database()
+	await get_tree().process_frame
+	talents_db = DataManager.get_talents_database()
+	await get_tree().process_frame
+	quests_db = DataManager.get_quests_database()
+	await get_tree().process_frame
+	cosmetics_db = DataManager.get_cosmetics_database()
+
+	databases_loaded = true
+	_log_memory_warning_if_needed()
+
+func _log_memory_warning_if_needed():
+	var static_memory = int(Performance.get_monitor(Performance.MEMORY_STATIC))
+	if static_memory < MEMORY_WARNING_BYTES:
+		return
+
+	var quest_count = quests_db.quests.size() if quests_db else 0
+	var quest_option_count = 0
+	if quests_db:
+		for quest_data in quests_db.quests:
+			quest_option_count += quest_data.options.size()
+
+	var message = "[memory][warning] static=%s resources=%d objects=%d nodes=%d quests=%d quest_options=%d" % [
+		_format_bytes(static_memory),
+		int(Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT)),
+		int(Performance.get_monitor(Performance.OBJECT_COUNT)),
+		int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
+		quest_count,
+		quest_option_count
+	]
+	push_warning(message)
+
+func _format_bytes(value: int) -> String:
+	if value >= 1024 * 1024 * 1024:
+		return "%.2f GB" % (float(value) / 1024.0 / 1024.0 / 1024.0)
+	return "%.1f MB" % (float(value) / 1024.0 / 1024.0)
 
 func load_lobby_data():
 	"""Load lobby data - deprecated, lobby_data is now set directly from login response"""

@@ -298,6 +298,8 @@ func show_final_message(message: String):
 	message_labels[2].text = ""
 	# Add final message to middle slot for vertical centering
 	message_labels[1].text = message
+	if UIManager.instance and UIManager.instance.top_ui and UIManager.instance.top_ui.has_method("update_health_bar"):
+		UIManager.instance.top_ui.update_health_bar()
 
 func clear_messages():
 	for label in message_labels:

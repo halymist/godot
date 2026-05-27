@@ -6,7 +6,7 @@
 
 [node name="QuestOption" type="TextureButton" unique_id=1713757557]
 self_modulate = Color(1, 1, 1, 0.556863)
-custom_minimum_size = Vector2(350, 50)
+custom_minimum_size = Vector2(350, 64)
 anchors_preset = -1
 anchor_left = 0.032
 anchor_right = 0.95600003
@@ -38,11 +38,13 @@ stretch_mode = 5
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.134
+anchor_top = 0.08
 anchor_right = 0.96000004
-anchor_bottom = 0.76000005
+anchor_bottom = 0.92
 offset_left = 0.017997742
-offset_top = 6.0
 offset_right = -0.08001709
 size_flags_horizontal = 3
 text = "Option Text"
+autowrap_mode = 3
+clip_text = true
 vertical_alignment = 1

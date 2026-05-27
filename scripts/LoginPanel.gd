@@ -408,12 +408,12 @@ func _show_lobby_after_init():
 		pass
 	else:
 		await lobby_panel.lobby_ready
-	
+
 	# Lobby is ready — switch panels
 	_stop_dot_animation()
 	visible = false
 	lobby_panel.visible = true
-	
+
 	# Reset login button for potential future use
 	is_logging_in = false
 	if email_login_button:

@@ -36,6 +36,9 @@ var pending_combat_option: QuestOption = null  # Store option for after combat
 var is_expedition_node: bool = false
 var expedition_context_id: int = 0
 var expedition_context_node_id: int = 0
+var completed_quest_from_expedition: bool = false
+var completed_quest_expedition_id: int = 0
+var completed_quest_node_id: int = 0
 
 # Reference to portrait for navigation
 @export var portrait: Control
@@ -67,6 +70,10 @@ const STAT_ICON_MAP = {
 	QuestOption.RequirementType.ARMOR: "armor_icon"
 }
 
+const POTION_REWARD_DURATION_SECONDS: float = 48.0 * 60.0 * 60.0
+const COLOR_PRICE_NORMAL: Color = Color(0.85, 0.8, 0.7, 1.0)
+const COLOR_PRICE_MISSING: Color = Color(1.0, 0.25, 0.2, 1.0)
+
 func _ready():
 	# Always connect to visibility changes
 	visibility_changed.connect(_on_visibility_changed)
@@ -86,6 +93,7 @@ func _on_visibility_changed():
 		return
 
 	_update_health_bar()
+	_update_effects_bar_visibility()
 
 	# Quest combat loss flow takes precedence over normal resume.
 	if GameInfo.pending_quest_failure_message != "":
@@ -128,8 +136,11 @@ func load_quest(quest_id: int):
 		return
 
 	current_quest = quest_data
-	if is_new_quest and quest_data.background_texture:
-		texture = quest_data.background_texture
+	var background_texture = DataManager.get_quest_background_texture(quest_data)
+	if is_new_quest and background_texture:
+		texture = background_texture
+	if reward_label:
+		reward_label.text = ""
 	
 	# Reset clicked options tracking for new quest
 	clicked_option_ids.clear()
@@ -274,7 +285,7 @@ func apply_option_reward(option: QuestOption):
 	if option.reward_stat_type > 0 and option.reward_stat_amount > 0:
 		var stat_name = _get_stat_name_from_type(option.reward_stat_type)
 		if stat_name != "":
-			var scaled_amount = int(option.reward_stat_amount * pow(1.02, server_day - 1))
+			var scaled_amount = _scale_stat_reward(option.reward_stat_amount, server_day)
 			GameInfo.current_player.set(stat_name, GameInfo.current_player.get(stat_name) + scaled_amount)
 			reward_text = "You receive " + str(scaled_amount) + " " + stat_name + "."
 			UIManager.instance.refresh_stats()
@@ -310,6 +321,8 @@ func apply_option_reward(option: QuestOption):
 	
 	if option.reward_potion > 0:
 		GameInfo.current_player.potion = option.reward_potion
+		GameInfo.current_player.potion_until = Time.get_unix_time_from_system() + POTION_REWARD_DURATION_SECONDS
+		GameInfo.current_player.potion_day = 0
 		var item_resource = GameInfo.items_db.get_item_by_id(option.reward_potion)
 		reward_text = "You receive a potion: " + item_resource.item_name + "."
 		UIManager.instance.refresh_active_effects()
@@ -349,6 +362,8 @@ func apply_option_reward(option: QuestOption):
 			
 			QuestOption.RewardType.POTION:
 				GameInfo.current_player.potion = option.reward_amount
+				GameInfo.current_player.potion_until = Time.get_unix_time_from_system() + POTION_REWARD_DURATION_SECONDS
+				GameInfo.current_player.potion_day = 0
 				var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
 				reward_text = "You receive a potion: " + item_resource.item_name + "."
 				UIManager.instance.refresh_active_effects()
@@ -362,7 +377,7 @@ func apply_option_reward(option: QuestOption):
 			_:
 				if option.reward_type in STAT_REWARD_MAP:
 					var stat_data = STAT_REWARD_MAP[option.reward_type]
-					scaled_amount = int(option.reward_amount * pow(1.02, server_day - 1))
+					scaled_amount = _scale_stat_reward(option.reward_amount, server_day)
 					GameInfo.current_player.set(stat_data.property, GameInfo.current_player.get(stat_data.property) + scaled_amount)
 					reward_text = "You receive " + str(scaled_amount) + " " + stat_data.name + "."
 					UIManager.instance.refresh_stats()
@@ -374,6 +389,7 @@ func apply_option_reward(option: QuestOption):
 		reward_label.text = ""
 
 	_update_health_bar()
+	_update_effects_bar_visibility()
 
 func _update_health_bar():
 	if not health_bar or not GameInfo.current_player:
@@ -388,6 +404,12 @@ func _update_health_bar():
 	if health_bar.has_node("HealthLabel"):
 		health_bar.get_node("HealthLabel").text = str(current_health) + " / " + str(max_health)
 
+func _update_effects_bar_visibility():
+	if not effects_container or not GameInfo.current_player:
+		return
+	var player = GameInfo.current_player
+	effects_container.visible = player.blessing > 0 or player.potion > 0 or player.elixir > 0 or player.get_active_perks().size() > 0
+
 func add_option(text: String, callback: Callable, option_data: QuestOption = null) -> Control:
 	"""Add an option to the container using quest_option.tscn"""
 	if not options_container:
@@ -398,6 +420,7 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	
 	var label_text = text
 	var meets_requirement = true
+	var has_missing_price = false
 	var scaled_requirement = 0
 	
 	# Check new server format fields first (stat_type, silver_required, faction_required, effect_id)
@@ -417,7 +440,9 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		
 		# Silver requirement
 		if option_data.silver_required > 0:
-			meets_requirement = meets_requirement and player.silver >= option_data.silver_required
+			var has_silver = player.silver >= option_data.silver_required
+			meets_requirement = meets_requirement and has_silver
+			has_missing_price = not has_silver
 			label_text = "(" + str(option_data.silver_required) + ") " + label_text
 		
 		# Faction requirement
@@ -459,7 +484,9 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 		# Check requirement based on type
 		match req_type:
 			QuestOption.RequirementType.SILVER:
-				meets_requirement = GameInfo.current_player.silver >= scaled_requirement
+				var has_silver = GameInfo.current_player.silver >= scaled_requirement
+				meets_requirement = has_silver
+				has_missing_price = not has_silver
 			QuestOption.RequirementType.ORDER:
 				meets_requirement = GameInfo.current_player.faction == 1
 			QuestOption.RequirementType.GUILD:
@@ -521,7 +548,14 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	var icon = option_button.get_node("Icon")
 	
 	label.text = label_text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.clip_text = false
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	icon.texture = icon_texture
+	if has_missing_price:
+		label.add_theme_color_override("font_color", COLOR_PRICE_MISSING)
+	else:
+		label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL)
 	
 	option_button.disabled = not meets_requirement
 	if not meets_requirement:
@@ -606,7 +640,7 @@ func _on_quest_option_pressed(option: QuestOption):
 	
 	# 5. Check if quest ends
 	if option.ends_quest:
-		_finish_quest()
+		_complete_quest_and_show_home_action()
 		return
 	
 	# 6. Refresh displayed options
@@ -649,7 +683,7 @@ func handle_combat_result():
 		
 		# Check if quest ends
 		if option.ends_quest:
-			_finish_quest()
+			_complete_quest_and_show_home_action()
 			return
 	else:
 		# Loss: remove this option from clicked so it can be retried
@@ -663,28 +697,35 @@ func handle_combat_result():
 			if quest_option and visible_option_ids.has(quest_option.option_id):
 				add_option(quest_option.option_text, _on_quest_option_pressed.bind(quest_option), quest_option)
 
-func _finish_quest():
-	"""End quest and return home"""
-	# Mark quest as completed in quest log
+func _complete_quest_and_show_home_action():
+	"""Finish quest state, keep final text/reward visible, and offer explicit navigation."""
+	completed_quest_from_expedition = is_expedition_node
+	completed_quest_expedition_id = expedition_context_id
+	completed_quest_node_id = expedition_context_node_id
 
-	var completed_expedition_id = expedition_context_id
-	var completed_node_id = expedition_context_node_id
-	var completed_from_expedition = is_expedition_node
-
-	GameInfo.complete_quest(current_quest_id, clicked_option_ids, not completed_from_expedition)
+	GameInfo.complete_quest(current_quest_id, clicked_option_ids, not completed_quest_from_expedition)
 	GameInfo.current_player.traveling_destination = null
 	GameInfo.current_player.traveling = 0
 	current_quest_id = 0
-	current_quest = null
 	clicked_option_ids.clear()
+	visible_option_ids.clear()
+	pending_combat_option = null
 	is_expedition_node = false
 	expedition_context_id = 0
 	expedition_context_node_id = 0
-	
-	if completed_from_expedition:
-		UIManager.instance.handle_expedition_node_completed(completed_expedition_id, completed_node_id)
+
+	clear_options()
+	add_option("Home", _on_completed_quest_home_pressed)
+
+func _on_completed_quest_home_pressed():
+	current_quest = null
+	if completed_quest_from_expedition:
+		UIManager.instance.handle_expedition_node_completed(completed_quest_expedition_id, completed_quest_node_id)
 	else:
 		UIManager.instance.handle_quest_completed()
+	completed_quest_from_expedition = false
+	completed_quest_expedition_id = 0
+	completed_quest_node_id = 0
 
 func _get_stat_name_from_type(stat_type: int) -> String:
 	"""Convert stat type int to property name"""
@@ -695,3 +736,6 @@ func _get_stat_name_from_type(stat_type: int) -> String:
 		4: return "luck"
 		5: return "armor"
 		_: return ""
+
+func _scale_stat_reward(base_amount: int, server_day: int) -> int:
+	return GameInfo.Item.calculate_scaled_value(base_amount, max(0, server_day - 1), 0)

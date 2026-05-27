@@ -374,6 +374,8 @@ func _handle_quest_option_response(message: Dictionary):
 	var quest_panel = UIManager.instance.quest if UIManager.instance else null
 	var combat_won = response.get("combat_won", null)
 	var quest_end = bool(response.get("quest_end", false))
+	var combat_payload = response.get("combat", null)
+	var has_combat_payload = combat_payload is Dictionary and combat_payload.size() > 0
 	
 	if success:
 		pass
@@ -382,9 +384,9 @@ func _handle_quest_option_response(message: Dictionary):
 
 	if response.has("depleted_health") and GameInfo.current_player:
 		GameInfo.current_player.depleted_health = int(response.get("depleted_health", GameInfo.current_player.depleted_health))
-		if UIManager.instance and UIManager.instance.top_ui and UIManager.instance.top_ui.has_method("update_health_bar"):
+		if not has_combat_payload and UIManager.instance and UIManager.instance.top_ui and UIManager.instance.top_ui.has_method("update_health_bar"):
 			UIManager.instance.top_ui.update_health_bar()
-		if quest_panel and quest_panel.has_method("_update_health_bar"):
+		if not has_combat_payload and quest_panel and quest_panel.has_method("_update_health_bar"):
 			quest_panel._update_health_bar()
 
 	# Server-authoritative combat loss that ends the quest.
@@ -399,8 +401,7 @@ func _handle_quest_option_response(message: Dictionary):
 		var failure_text = _resolve_current_quest_failure_text(msg)
 		GameInfo.pending_quest_failure_message = failure_text
 
-	var combat_payload = response.get("combat", null)
-	if combat_payload is Dictionary and combat_payload.size() > 0:
+	if has_combat_payload:
 		_present_combat_log(combat_payload, "questOptionResponse")
 		return
 

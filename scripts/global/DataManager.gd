@@ -120,10 +120,6 @@ func _load_local_versions():
 	# Persist migrated schema + versions once.
 	if did_migrate:
 		_save_local_versions()
-
-	# Backward compatibility guard if constant is increased in future.
-	if schema_version < LOCAL_VERSIONS_SCHEMA:
-		pass
 	
 
 func _save_local_versions():
@@ -192,15 +188,21 @@ func clear_all_cache():
 
 func needs_download(server_data_versions: Dictionary) -> bool:
 	"""Check if any data needs to be downloaded"""
+	var outdated: Array[String] = []
 	for data_type in local_versions.keys():
 		var server_key = _get_server_key(data_type)
 		var server_version = server_data_versions.get(server_key, 0)
 		var local_version = local_versions.get(data_type, 0)
 		
 		if server_version > local_version:
-			return true
-	
-	return false
+			outdated.append(data_type + "(" + str(local_version) + "->" + str(server_version) + ")")
+
+	if outdated.is_empty():
+		print("[download] cache up-to-date, no data download needed")
+		return false
+
+	print("[download] download required for: ", ", ".join(PackedStringArray(outdated)))
+	return true
 
 func _get_server_key(data_type: String) -> String:
 	"""Map local data type to server version key"""
@@ -213,6 +215,7 @@ func sync_data(server_data_versions: Dictionary):
 	"""Download all data types and assets, waits until complete"""
 	server_versions = server_data_versions
 	_queued_downloads.clear()
+	print("[download] sync started")
 	
 	# Sync each data type
 	await _sync_data_type("effects", "/download-effects")
@@ -229,6 +232,8 @@ func sync_data(server_data_versions: Dictionary):
 	# Wait for all asset downloads to complete
 	while _pending_downloads > 0:
 		await get_tree().create_timer(0.1).timeout
+
+	print("[download] sync finished")
 	
 	data_sync_completed.emit(true)
 
@@ -239,12 +244,14 @@ func _sync_data_type(data_type: String, endpoint: String):
 	var local_version = local_versions.get(data_type, 0)
 	
 	if server_version > local_version:
+		print("[download] ", data_type, " outdated (", local_version, " -> ", server_version, "), downloading")
 		await _download_data(data_type, endpoint, local_version)
 	else:
-		pass
+		print("[download] ", data_type, " up-to-date (", local_version, ")")
 
 func _download_data(data_type: String, endpoint: String, local_version: int):
 	"""Download data from server and save as JSON"""
+	print("[download] request ", data_type, " from endpoint ", endpoint, " with local version ", local_version)
 	
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
@@ -254,6 +261,7 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	var error = http_request.request(url, Http._get_headers(true), HTTPClient.METHOD_GET)
 	
 	if error != OK:
+		print("[download] request failed to start for ", data_type, " (error=", error, ")")
 		http_request.queue_free()
 		return
 	
@@ -264,12 +272,14 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	var body = result[3]
 	
 	if response_code != 200:
+		print("[download] request failed for ", data_type, " (http=", response_code, ")")
 		return
 	
 	var body_text = body.get_string_from_utf8()
 	
 	var json = JSON.new()
 	if json.parse(body_text) != OK:
+		print("[download] invalid JSON for ", data_type)
 		return
 	
 	var data = json.get_data()
@@ -302,6 +312,7 @@ func _download_data(data_type: String, endpoint: String, local_version: int):
 	
 	# Merge with existing data and save
 	_merge_and_save_json(data_type, items_data, new_version, deleted_ids, deleted_node_ids, deleted_edge_ids)
+	print("[download] saved ", data_type, " (version=", new_version, ", items=", items_data.size(), ")")
 	
 	# Download assets for types that have images
 	if data_type in ["items", "perks", "enemies"]:
@@ -811,10 +822,6 @@ func _load_quests_database() -> QuestsDatabase:
 		quest.ending = item.get("ending", false)
 		quest.failure_text = item.get("failure_text", "")
 		
-		# Load background texture from cache (uses quests folder)
-		if quest.asset_id > 0:
-			quest.background_texture = load_asset_texture("quests", quest.asset_id)
-		
 		# Default entry determines initially visible options
 		var default_entry = int(item.get("default_entry", 0))
 		if default_entry > 0:
@@ -862,8 +869,8 @@ func _load_quests_database() -> QuestsDatabase:
 			# Rewards - support nested "reward" object or flat fields
 			var reward_data = opt.get("reward", {})
 			if reward_data is Dictionary and reward_data.size() > 0:
-				option.reward_stat_type = int(reward_data.get("reward_stat_type", reward_data.get("stat_type", 0)))
-				option.reward_stat_amount = int(reward_data.get("reward_stat_amount", reward_data.get("stat_amount", 0)))
+				option.reward_stat_type = _parse_quest_stat_type(reward_data.get("reward_stat_type", reward_data.get("stat_type", reward_data.get("stat", 0))))
+				option.reward_stat_amount = int(reward_data.get("reward_stat_amount", reward_data.get("stat_amount", reward_data.get("amount", 0))))
 				option.reward_talent = int(reward_data.get("talent", 0))
 				option.reward_item = int(reward_data.get("item", 0))
 				option.reward_perk = int(reward_data.get("perk", 0))
@@ -871,8 +878,8 @@ func _load_quests_database() -> QuestsDatabase:
 				option.reward_potion = int(reward_data.get("potion", 0))
 				option.reward_silver = int(reward_data.get("silver", 0))
 			else:
-				option.reward_stat_type = int(opt.get("reward_stat_type", 0))
-				option.reward_stat_amount = int(opt.get("reward_stat_amount", 0))
+				option.reward_stat_type = _parse_quest_stat_type(opt.get("reward_stat_type", opt.get("stat_type", opt.get("stat", 0))))
+				option.reward_stat_amount = int(opt.get("reward_stat_amount", opt.get("stat_amount", opt.get("amount", 0))))
 				option.reward_talent = int(opt.get("reward_talent", 0))
 				option.reward_item = int(opt.get("reward_item", 0))
 				option.reward_perk = int(opt.get("reward_perk", 0))
@@ -1151,6 +1158,12 @@ func load_asset_texture(folder: String, asset_id: int) -> ImageTexture:
 		return null
 	
 	return ImageTexture.create_from_image(img)
+
+func get_quest_background_texture(quest: QuestData) -> Texture2D:
+	"""Load a quest background only for immediate display; do not retain all visited quest textures."""
+	if not quest or quest.asset_id <= 0:
+		return null
+	return load_asset_texture("quests", quest.asset_id)
 
 func has_asset(folder: String, asset_id: int) -> bool:
 	"""Check if an asset exists in cache"""

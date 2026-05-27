@@ -17,6 +17,7 @@ const DEFAULT_TRAVEL_DURATION: float = 10.0
 # Colors for button states
 const COLOR_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
 const COLOR_DISABLED = Color(0.5, 0.5, 0.5, 1.0)
+const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
@@ -136,8 +137,10 @@ func _ensure_travel_ui_from_player():
 			var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
 			if location_data and location_data.expedition_texture:
 				texture = location_data.expedition_texture
-		elif quest_data and quest_data.background_texture:
-			texture = quest_data.background_texture
+		elif quest_data:
+			var quest_background = DataManager.get_quest_background_texture(quest_data)
+			if quest_background:
+				texture = quest_background
 
 		if quest_data:
 			if quest_name_label:
@@ -184,8 +187,9 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	# Apply quest background texture and set quest name
 	var quest_data = GameInfo.quests_db.get_quest_by_id(quest_id) if GameInfo.quests_db else null
 	if quest_data:
-		if quest_data.background_texture:
-			texture = quest_data.background_texture
+		var quest_background = DataManager.get_quest_background_texture(quest_data)
+		if quest_background:
+			texture = quest_background
 		if quest_name_label:
 			quest_name_label.text = quest_data.quest_name
 	
@@ -373,7 +377,10 @@ func _update_button_label_colors(button: Button, disabled: bool):
 	if content:
 		for child in content.get_children():
 			if child is Label:
-				child.add_theme_color_override("font_color", color)
+				var child_color = color
+				if button == skip_button and child.name == "PriceLabel" and disabled and not _can_afford_skip():
+					child_color = COLOR_PRICE_MISSING
+				child.add_theme_color_override("font_color", child_color)
 
 func _set_enter_price_visible(price_visible: bool):
 	var price_label = enter_dungeon_button.get_node_or_null("Content/PriceLabel")

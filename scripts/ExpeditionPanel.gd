@@ -12,6 +12,8 @@ const NODE_AVAILABLE_BORDER: Color = Color(1.00, 0.90, 0.55, 1.0)
 const NODE_COMPLETED_FILL: Color = Color(0.34, 0.38, 0.42, 0.98)
 const NODE_COMPLETED_BORDER: Color = Color(0.54, 0.58, 0.62, 1.0)
 const NODE_SELECTED_BORDER: Color = Color(0.98, 0.98, 0.98, 1.0)
+const COLOR_PRICE_NORMAL: Color = Color(0.85, 0.8, 0.7, 1.0)
+const COLOR_PRICE_MISSING: Color = Color(1.0, 0.25, 0.2, 1.0)
 
 @export var health_bar: TextureProgressBar
 @export var node_overlay_panel: Control
@@ -210,8 +212,8 @@ func _on_embark_button_pressed():
 	if not GameInfo.current_player:
 		return
 
-	if GameInfo.current_player.silver < EXPEDITION_QUEST_START_COST:
-		_set_node_overlay_text("You need %d silver to embark." % EXPEDITION_QUEST_START_COST)
+	if not _can_afford_embark():
+		_update_selected_node_action_state()
 		return
 
 	if _is_low_health_warning_needed():
@@ -232,8 +234,8 @@ func _confirm_node_start(node_id: int):
 	if not Websocket.connected:
 		_set_node_overlay_text("Connection lost. Please try again.")
 		return
-	if GameInfo.current_player.silver < EXPEDITION_QUEST_START_COST:
-		_set_node_overlay_text("You need %d silver to embark." % EXPEDITION_QUEST_START_COST)
+	if not _can_afford_embark():
+		_update_selected_node_action_state()
 		return
 
 	pending_node_id = node_id
@@ -370,6 +372,7 @@ func _set_action_button_state(text_value: String, enabled: bool, show_price: boo
 			action_label.text = "%s(" % text_value if show_price else text_value
 			price_label.text = str(EXPEDITION_QUEST_START_COST)
 			price_label.visible = show_price
+			price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if _can_afford_embark() else COLOR_PRICE_MISSING)
 			currency_icon.visible = show_price
 			closing_paren.visible = show_price
 		else:
@@ -380,6 +383,12 @@ func _set_completed_node_action_state():
 	if node_action_button and is_instance_valid(node_action_button):
 		node_action_button.disabled = true
 		node_action_button.visible = false
+
+func _can_afford_embark() -> bool:
+	return GameInfo.current_player and GameInfo.current_player.silver >= EXPEDITION_QUEST_START_COST
+
+func _update_selected_node_action_state():
+	_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0 and not selected_node_completed and pending_node_id <= 0 and _can_afford_embark(), true)
 
 func _build_node_overlay_text(node: Resource, completed: bool) -> String:
 	if node.label != "":
@@ -440,7 +449,7 @@ func _apply_node_selection(node: Resource, completed: bool, center_camera: bool)
 		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 		return
 
-	_set_action_button_state(EMBARK_ACTION_TEXT, true, true)
+	_update_selected_node_action_state()
 
 func _reset_camera_to_map_center():
 	map_image_size = _get_map_image_size()
@@ -509,8 +518,20 @@ func _node_world_position(node: Resource) -> Vector2:
 
 	if node.pos_x >= 0.0 and node.pos_x <= 1.0 and node.pos_y >= 0.0 and node.pos_y <= 1.0:
 		return Vector2(map_image_size.x * node.pos_x, map_image_size.y * node.pos_y)
+	if _uses_percent_node_positions():
+		return Vector2(map_image_size.x * node.pos_x / 100.0, map_image_size.y * node.pos_y / 100.0)
 
 	return Vector2(node.pos_x, node.pos_y)
+
+func _uses_percent_node_positions() -> bool:
+	if not current_expedition:
+		return false
+	for node in current_expedition.nodes:
+		if node.pos_x < 0.0 or node.pos_y < 0.0 or node.pos_x > 100.0 or node.pos_y > 100.0:
+			return false
+		if node.pos_x > 1.0 or node.pos_y > 1.0:
+			return true
+	return false
 
 func _world_to_screen(world_pos: Vector2) -> Vector2:
 	return (world_pos - camera_center_px) * map_base_scale + size * 0.5

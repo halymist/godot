@@ -19,6 +19,8 @@ var on_action_greetings: Array[String] = []
 var working_item: GameInfo.Item = null
 
 const TEMPER_COST = 10
+const COLOR_PRICE_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
+const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 func _ready():
 	# Connect to visibility changes to handle cleanup
@@ -159,6 +161,12 @@ func update_temper_button_state():
 	var has_item = working_item != null
 	var has_silver = GameInfo.current_player.silver >= TEMPER_COST
 	temper_button.disabled = not (has_item and has_silver)
+	_set_price_label_color(temper_button, has_silver)
+
+func _set_price_label_color(button: Button, can_afford: bool):
+	var price_label = button.get_node_or_null("Content/PriceLabel") as Label
+	if price_label:
+		price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if can_afford else COLOR_PRICE_MISSING)
 
 func _on_temper_pressed():
 	if not working_item:

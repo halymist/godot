@@ -3,6 +3,8 @@ extends TextureRect
 # Training costs
 const TALENT_POINT_COST = 100
 const STAT_COST = 10
+const COLOR_PRICE_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
+const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 @export var chat_bubble: ChatBubble
 @export var talent_points_label: Label
@@ -86,6 +88,16 @@ func update_button_states():
 	stamina_button.disabled = silver < STAT_COST
 	agility_button.disabled = silver < STAT_COST
 	luck_button.disabled = silver < STAT_COST
+	_set_cost_label_color(talent_points_button, silver >= TALENT_POINT_COST)
+	_set_cost_label_color(strength_button, silver >= STAT_COST)
+	_set_cost_label_color(stamina_button, silver >= STAT_COST)
+	_set_cost_label_color(agility_button, silver >= STAT_COST)
+	_set_cost_label_color(luck_button, silver >= STAT_COST)
+
+func _set_cost_label_color(button: Button, can_afford: bool):
+	var cost_label = button.get_node_or_null("Content/Cost/CostLabel") as Label
+	if cost_label:
+		cost_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if can_afford else COLOR_PRICE_MISSING)
 
 func _on_stat_row_pressed(stat_name: String, cost: int):
 	# Check if we have enough silver

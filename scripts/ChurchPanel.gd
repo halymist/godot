@@ -3,6 +3,8 @@ extends TextureRect
 const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
 
 const BLESSING_COST = 10
+const COLOR_PRICE_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
+const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 @export var chat_bubble: ChatBubble
 @export var blessing_slot_1: TextureRect
@@ -148,6 +150,12 @@ func update_bless_button_state():
 	var is_same_blessing = selected_blessing_id == GameInfo.current_player.blessing
 	
 	bless_button.disabled = not has_selection or not has_silver or is_same_blessing
+	_set_price_label_color(bless_button, has_silver)
+
+func _set_price_label_color(button: Button, can_afford: bool):
+	var price_label = button.get_node_or_null("Content/PriceLabel") as Label
+	if price_label:
+		price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if can_afford else COLOR_PRICE_MISSING)
 
 func _on_bless_button_pressed():
 	Websocket.choose_blessing(selected_blessing_id)

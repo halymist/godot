@@ -131,6 +131,7 @@ func initialize_lobby():
 func _prepare_lobby():
 	_lobby_prepare_state = LobbyPrepareState.PREPARING
 	_ensure_game_scene_preload_started()
+	await get_tree().process_frame
 	var databases_ready = await _ensure_databases_ready()
 	if not databases_ready:
 		_lobby_prepare_state = LobbyPrepareState.FAILED
@@ -147,7 +148,8 @@ func _ensure_databases_ready() -> bool:
 	var data_versions = GameInfo.get_lobby_data().get("data_versions", {})
 
 	if data_versions.is_empty():
-		GameInfo.load_databases()
+		print("[download] no server data_versions provided, loading local databases only")
+		await GameInfo.load_databases_async()
 		if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
 			avatar_creation_panel.on_databases_loaded()
 		return GameInfo.databases_loaded
@@ -156,11 +158,13 @@ func _ensure_databases_ready() -> bool:
 	var needs_download = DataManager.needs_download(data_versions)
 
 	if needs_download:
+		print("[download] starting data sync from lobby")
 		# Download data + assets, then load databases
 		await DataManager.sync_data(data_versions)
-		GameInfo.load_databases()
+		await GameInfo.load_databases_async()
 	else:
-		GameInfo.load_databases()
+		print("[download] skipping data sync, using cached data")
+		await GameInfo.load_databases_async()
 
 	if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
 		avatar_creation_panel.on_databases_loaded()
