@@ -15,6 +15,7 @@ func _ready():
 		for child in get_children():
 			if child.has_method("update_button_appearance"):
 				talents.append(child)
+	_sort_talent_nodes_by_grid_position()
 	
 	reset_button.pressed.connect(_on_reset_button_pressed)
 	
@@ -30,6 +31,20 @@ func _setup():
 
 func _on_stats_changed(_stats: Dictionary):
 	update_title_label()
+
+func _sort_talent_nodes_by_grid_position():
+	var column_count = max(columns, 1)
+	talents.sort_custom(func(a, b):
+		var a_id = int(a.get("talentID"))
+		var b_id = int(b.get("talentID"))
+		var a_row = int((a_id - 1) / column_count)
+		var b_row = int((b_id - 1) / column_count)
+		if a_row != b_row:
+			return a_row > b_row
+		return a_id < b_id
+	)
+	for index in range(talents.size()):
+		move_child(talents[index], index)
 
 func refresh_all_talents():
 	for talent in talents:

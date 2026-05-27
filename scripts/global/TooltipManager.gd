@@ -9,7 +9,7 @@ const TEXT_COLOR := Color(0.95, 0.90, 0.82, 1.0)
 func make_item_tooltip(item: GameInfo.Item) -> Control:
 	return _make_item_tooltip_panel(item)
 
-func make_text_tooltip(tooltip_text: String) -> Control:
+func make_text_tooltip(tooltip_text: String, bulletize_body: bool = false) -> Control:
 	var panel = PanelContainer.new()
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_theme_stylebox_override("panel", _make_tooltip_style())
@@ -22,7 +22,8 @@ func make_text_tooltip(tooltip_text: String) -> Control:
 	panel.add_child(margin)
 
 	var label = Label.new()
-	label.text = _bulletize_multiline_text(tooltip_text.strip_edges())
+	var content = tooltip_text.strip_edges()
+	label.text = _bulletize_body_after_title(content) if bulletize_body else content
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
 	label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -93,7 +94,7 @@ func _make_item_tooltip_panel(item: GameInfo.Item) -> Control:
 	var body_text = _build_item_tooltip_text(item)
 	if not body_text.is_empty():
 		var body_label = Label.new()
-		body_label.text = _bulletize_multiline_text(body_text)
+		body_label.text = _bulletize_all_lines(body_text) if item.type == "Elixir" else body_text
 		body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		body_label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
 		body_label.add_theme_color_override("font_color", TEXT_COLOR)
@@ -131,7 +132,7 @@ func _make_price_row(price: int) -> Control:
 	row.add_child(icon)
 	return row
 
-func _bulletize_multiline_text(text: String) -> String:
+func _bulletize_body_after_title(text: String) -> String:
 	if text.is_empty():
 		return ""
 	var lines = text.split("\n")
@@ -140,6 +141,20 @@ func _bulletize_multiline_text(text: String) -> String:
 	var result: Array[String] = [lines[0]]
 	for i in range(1, lines.size()):
 		var line = String(lines[i]).strip_edges()
+		if line.is_empty():
+			continue
+		if line.begins_with("["):
+			result.append(line)
+		else:
+			result.append("- " + line)
+	return "\n".join(result)
+
+func _bulletize_all_lines(text: String) -> String:
+	if text.is_empty():
+		return ""
+	var result: Array[String] = []
+	for raw_line in text.split("\n"):
+		var line = String(raw_line).strip_edges()
 		if line.is_empty():
 			continue
 		result.append("- " + line)
@@ -196,12 +211,12 @@ func _estimate_text_width(text: String) -> float:
 
 func _make_tooltip_style() -> StyleBoxFlat:
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.025, 0.02, 0.03, 0.98)
-	style.border_color = Color(0.72, 0.48, 0.22, 0.9)
-	style.border_width_left = 2
-	style.border_width_top = 2
-	style.border_width_right = 2
-	style.border_width_bottom = 2
+	style.bg_color = Color(0.10, 0.08, 0.055, 0.92)
+	style.border_color = Color(0.72, 0.48, 0.22, 0.55)
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
 	style.corner_radius_top_left = 4
 	style.corner_radius_top_right = 4
 	style.corner_radius_bottom_left = 4

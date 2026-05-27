@@ -15,6 +15,7 @@ var on_sold_greetings: Array[String] = []
 var on_bought_greetings: Array[String] = []
 var vendor_items: Array[GameInfo.Item] = []
 
+var _vendor_grid_frame: CenterContainer
 var _vendor_grid: GridContainer  # Dynamically created grid inside vendor_display
 
 func _ready():
@@ -41,13 +42,19 @@ func _create_vendor_grid():
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vendor_display.add_child(bg)
 	
+	_vendor_grid_frame = CenterContainer.new()
+	_vendor_grid_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vendor_grid_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vendor_display.add_child(_vendor_grid_frame)
+
 	_vendor_grid = GridContainer.new()
 	_vendor_grid.columns = 4
-	_vendor_grid.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vendor_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_vendor_grid.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_vendor_grid.add_theme_constant_override("h_separation", 4)
 	_vendor_grid.add_theme_constant_override("v_separation", 4)
 	_vendor_grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vendor_display.add_child(_vendor_grid)
+	_vendor_grid_frame.add_child(_vendor_grid)
 
 func _on_visibility_changed():
 	if visible:
@@ -134,4 +141,9 @@ func populate_vendor_slots():
 		
 		var icon = item_scene.instantiate()
 		icon.set_item_data(item)
+		icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+		icon.offset_left = 8
+		icon.offset_top = 8
+		icon.offset_right = -8
+		icon.offset_bottom = -8
 		slot.add_child(icon)

@@ -499,9 +499,31 @@ func handle_arena_button():
 	# Block if traveling/quest/expedition active
 	if is_navigation_blocked():
 		return
+	if not _has_available_arena_opponents():
+		_show_navigation_warning("No arena opponents yet.")
+		return
 	if current_panel == arena_panel:
 		return
 	show_panel(arena_panel)
+
+func _has_available_arena_opponents() -> bool:
+	if GameInfo.arena_opponents.is_empty():
+		return false
+	for opponent_id in GameInfo.arena_opponents:
+		for player in GameInfo.enemy_players:
+			if int(player.character_id) == int(opponent_id):
+				return true
+	return false
+
+func _show_navigation_warning(message: String):
+	var dialog = AcceptDialog.new()
+	dialog.title = "Arena"
+	dialog.dialog_text = message
+	dialog.exclusive = true
+	dialog.confirmed.connect(dialog.queue_free)
+	dialog.canceled.connect(dialog.queue_free)
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(260, 110))
 
 func handle_character_button():
 	"""Open character panel - always accessible"""

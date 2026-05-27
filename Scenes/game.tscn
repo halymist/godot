@@ -1349,7 +1349,25 @@ anchor_bottom = 1.0
 offset_top = 388.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
+color = Color(0, 0, 0, 0.48)
+
+[node name="WorkArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 18.0
+offset_right = 158.0
+offset_bottom = 170.0
+mouse_filter = 2
+color = Color(0.06, 0.045, 0.03, 0.45)
+
+[node name="EffectsArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 18.0
+offset_right = 386.0
+offset_bottom = 170.0
+mouse_filter = 2
+color = Color(0.06, 0.045, 0.03, 0.45)
 
 [node name="ItemSlot" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1870472802 instance=ExtResource("6_itemslot")]
 layout_mode = 1
@@ -1358,10 +1376,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -159.5
-offset_top = -101.0
-offset_right = -84.5
-offset_bottom = -26.0
+offset_left = -154.5
+offset_top = -93.0
+offset_right = -79.5
+offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
 outline_texture = ExtResource("9_sword")
@@ -1377,9 +1395,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -181.5
-offset_top = -12.0
+offset_top = -8.0
 offset_right = -46.5
-offset_bottom = 30.0
+offset_bottom = 34.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -1417,9 +1435,9 @@ text = ")"
 [node name="EffectList" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1455234135]
 layout_mode = 0
 offset_left = 171.0
-offset_top = 47.0
-offset_right = 396.0
-offset_bottom = 99.0
+offset_top = 60.0
+offset_right = 383.0
+offset_bottom = 112.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
@@ -1427,8 +1445,8 @@ theme_override_constants/separation = 6
 custom_minimum_size = Vector2(0, 56)
 layout_mode = 0
 offset_left = 171.0
-offset_top = 102.0
-offset_right = 396.0
+offset_top = 116.0
+offset_right = 383.0
 offset_bottom = 164.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1439,8 +1457,9 @@ autowrap_mode = 3
 [node name="SlotTypeToggles" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=55755625]
 layout_mode = 0
 offset_left = 171.0
-offset_right = 396.0
-offset_bottom = 46.0
+offset_top = 24.0
+offset_right = 383.0
+offset_bottom = 52.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 4
 alignment = 1

@@ -58,7 +58,7 @@ func _make_custom_tooltip(_for_text: String) -> Object:
 	var content = _build_tooltip_content()
 	if content.strip_edges().is_empty():
 		return null
-	return TooltipManager.make_text_tooltip(content)
+	return TooltipManager.make_text_tooltip(content, meta_data.type == "perk" or meta_data.type == "elixir")
 
 func _on_mouse_exited():
 	pass
