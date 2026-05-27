@@ -83,6 +83,7 @@
 [ext_resource type="Shader" uid="uid://cclavbbw3hb88" path="res://assets/shaders/blur_background.gdshader" id="88_blur_shader"]
 [ext_resource type="Texture2D" uid="uid://b1irk00m26i55" path="res://assets/images/ui/next.svg" id="90_next"]
 [ext_resource type="Texture2D" uid="uid://chu5oqf20a3j2" path="res://assets/images/ui/plus.svg" id="91_plus"]
+[ext_resource type="Script" uid="uid://buvbm2w67dev3" path="res://scripts/HealerPanel.gd" id="92_healer"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_transparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -287,8 +288,9 @@ trainer_panel = NodePath("../Portrait/GameScene/TrainerPanel")
 church_panel = NodePath("../Portrait/GameScene/ChurchPanel")
 alchemist_panel = NodePath("../Portrait/GameScene/AlchemistPanel")
 enchanter_panel = NodePath("../Portrait/GameScene/EnchanterPanel")
+healer_panel = NodePath("../Portrait/GameScene/HealerPanel")
 chat_panel = NodePath("../Portrait/GameScene/ChatOverlay")
-bag_views = [NodePath("../Portrait/GameScene/Character/Bag"), NodePath("../Portrait/GameScene/VendorPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/BlacksmithPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/AlchemistPanel/Overlay/Bag"), NodePath("../Portrait/GameScene/EnchanterPanel/Overlay/Bag")]
+bag_views = [NodePath("../Portrait/GameScene/Character/Bag"), NodePath("../Portrait/GameScene/VendorPanel/BottomUi/Bag"), NodePath("../Portrait/GameScene/BlacksmithPanel/BottomUi/Bag"), NodePath("../Portrait/GameScene/AlchemistPanel/BottomUi/Bag"), NodePath("../Portrait/GameScene/EnchanterPanel/BottomUi/Bag")]
 character_display = NodePath("../Portrait/GameScene/Character/CharacterDisplay")
 enemy_character_display = NodePath("../Portrait/GameScene/Enemy/CharacterDisplay")
 top_ui = NodePath("../Portrait/TopUI")
@@ -480,7 +482,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_no_focus")
 
-[node name="VendorPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1329693388 node_paths=PackedStringArray("chat_bubble", "bag", "vendor_display")]
+[node name="VendorPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1329693388 node_paths=PackedStringArray("chat_bubble", "image_area", "bag", "vendor_display")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -493,9 +495,20 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("40_vendor")
 chat_bubble = NodePath("ChatBubble")
-bag = NodePath("Overlay/Bag")
-vendor_display = NodePath("Overlay/VendorDisplay")
+image_area = NodePath("ImageArea")
+bag = NodePath("BottomUi/Bag")
+vendor_display = NodePath("BottomUi/VendorDisplay")
 item_scene = ExtResource("17_aujhx")
+
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/VendorPanel" unique_id=1412087330]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.6
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ChatBubble" parent="Portrait/GameScene/VendorPanel" unique_id=1960592529 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -508,18 +521,17 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/VendorPanel" unique_id=1436873414]
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/VendorPanel" unique_id=1436873414]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
-script = ExtResource("42_umggo")
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
 
-[node name="VendorDisplay" type="Control" parent="Portrait/GameScene/VendorPanel/Overlay" unique_id=1224300029]
+[node name="VendorDisplay" type="Control" parent="Portrait/GameScene/VendorPanel/BottomUi" unique_id=1224300029]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -534,7 +546,7 @@ item_scene = ExtResource("17_aujhx")
 slot_type = "Sell"
 slot_id = 20
 
-[node name="Bag" parent="Portrait/GameScene/VendorPanel/Overlay" unique_id=1379890558 instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/VendorPanel/BottomUi" unique_id=1379890558 instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
 layout_mode = 0
 anchors_preset = 0
@@ -547,7 +559,7 @@ offset_bottom = 242.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="BlacksmithPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=334136920 node_paths=PackedStringArray("chat_bubble", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
+[node name="BlacksmithPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=334136920 node_paths=PackedStringArray("chat_bubble", "image_area", "bag", "blacksmith_slot", "improved_stats_label", "temper_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -560,10 +572,21 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("41_blacksmith")
 chat_bubble = NodePath("ChatBubble")
-bag = NodePath("Overlay/Bag")
-blacksmith_slot = NodePath("Overlay/ItemArea/ItemSlot")
-improved_stats_label = NodePath("Overlay/ItemArea/StatsContainer/ImprovedStats")
-temper_button = NodePath("Overlay/ItemArea/TemperButton")
+image_area = NodePath("ImageArea")
+bag = NodePath("BottomUi/Bag")
+blacksmith_slot = NodePath("BottomUi/ItemArea/ItemSlot")
+improved_stats_label = NodePath("BottomUi/ItemArea/StatsContainer/ImprovedStats")
+temper_button = NodePath("BottomUi/ItemArea/TemperButton")
+
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/BlacksmithPanel" unique_id=2108857940]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.6
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ChatBubble" parent="Portrait/GameScene/BlacksmithPanel" unique_id=2075752598 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -576,18 +599,18 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/BlacksmithPanel" unique_id=1215706918]
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/BlacksmithPanel" unique_id=1215706918]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
-script = ExtResource("42_umggo")
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
 
-[node name="TextContainer" type="CenterContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay" unique_id=2075594293]
+[node name="TextContainer" type="CenterContainer" parent="Portrait/GameScene/BlacksmithPanel/BottomUi" unique_id=2075594293]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -599,7 +622,8 @@ offset_bottom = -241.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BottomContainer" type="VBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay" unique_id=989050020]
+[node name="BottomContainer" type="VBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/BottomUi" unique_id=989050020]
+visible = false
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -613,30 +637,27 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 2
 
-[node name="Reward" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/BottomContainer" unique_id=161988353]
+[node name="Reward" type="Label" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/BottomContainer" unique_id=161988353]
 layout_mode = 2
 theme_override_constants/line_spacing = 10
 
-[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay/BottomContainer" unique_id=144091670]
+[node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/BottomContainer" unique_id=144091670]
 layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="ItemArea" type="NinePatchRect" parent="Portrait/GameScene/BlacksmithPanel/Overlay" unique_id=756079020]
+[node name="ItemArea" type="NinePatchRect" parent="Portrait/GameScene/BlacksmithPanel/BottomUi" unique_id=756079020]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -178.5
-offset_top = -111.0
-offset_right = 177.5
-offset_bottom = 36.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 12.0
+offset_right = -20.0
+offset_bottom = 158.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ItemSlot" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea" unique_id=1327271653 instance=ExtResource("6_itemslot")]
+[node name="ItemSlot" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea" unique_id=1327271653 instance=ExtResource("6_itemslot")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.19
@@ -651,7 +672,7 @@ outline_texture = ExtResource("9_sword")
 slot_type = "Blacksmith"
 slot_id = 16
 
-[node name="TemperButton" type="Button" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea" unique_id=2099627824]
+[node name="TemperButton" type="Button" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea" unique_id=2099627824]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 1
 anchors_preset = 7
@@ -667,39 +688,42 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton" unique_id=1214929829]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea/TemperButton" unique_id=1214929829]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content" unique_id=1297387163]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea/TemperButton/Content" unique_id=1297387163]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Temper ("
+text = "Temper"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content" unique_id=1930713231]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea/TemperButton/Content" unique_id=1930713231]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content" unique_id=1747558574]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea/TemperButton/Content" unique_id=1747558574]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea/TemperButton/Content" unique_id=2057114654]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
-[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea" unique_id=1140288948]
+[node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea" unique_id=1140288948]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -713,24 +737,28 @@ grow_horizontal = 0
 grow_vertical = 2
 size_flags_horizontal = 3
 
-[node name="StatsTitle" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/StatsContainer" unique_id=787935218]
+[node name="StatsTitle" type="Label" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea/StatsContainer" unique_id=787935218]
 layout_mode = 2
 text = "Tempering Improvement:"
 
-[node name="ImprovedStats" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/StatsContainer" unique_id=431397980]
+[node name="ImprovedStats" type="Label" parent="Portrait/GameScene/BlacksmithPanel/BottomUi/ItemArea/StatsContainer" unique_id=431397980]
 layout_mode = 2
 text = "+10% to all stats"
 
-[node name="Bag" parent="Portrait/GameScene/BlacksmithPanel/Overlay" unique_id=46168659 instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/BlacksmithPanel/BottomUi" unique_id=46168659 instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.803
-anchor_bottom = 0.924
-offset_top = -29.326
-offset_bottom = 16.392
+layout_mode = 0
+anchors_preset = 0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_top = 164.0
+offset_right = 405.0
+offset_bottom = 239.0
+grow_horizontal = 1
+grow_vertical = 1
 
-[node name="TrainerPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1764027867 node_paths=PackedStringArray("chat_bubble", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
+[node name="TrainerPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1764027867 node_paths=PackedStringArray("chat_bubble", "image_area", "talent_points_label", "strength_label", "stamina_label", "agility_label", "luck_label", "talent_points_button", "strength_button", "stamina_button", "agility_button", "luck_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -743,16 +771,27 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("28_sjh24")
 chat_bubble = NodePath("ChatBubble")
-talent_points_label = NodePath("Overlay/TalentsRow/Content/StatLabel")
-strength_label = NodePath("Overlay/Strength/Content/StatLabel")
-stamina_label = NodePath("Overlay/Stamina/Content/StatLabel")
-agility_label = NodePath("Overlay/Agility/Content/StatLabel")
-luck_label = NodePath("Overlay/Luck/Content/StatLabel")
-talent_points_button = NodePath("Overlay/TalentsRow")
-strength_button = NodePath("Overlay/Strength")
-stamina_button = NodePath("Overlay/Stamina")
-agility_button = NodePath("Overlay/Agility")
-luck_button = NodePath("Overlay/Luck")
+image_area = NodePath("ImageArea")
+talent_points_label = NodePath("BottomUi/TalentsRow/Content/StatLabel")
+strength_label = NodePath("BottomUi/Strength/Content/StatLabel")
+stamina_label = NodePath("BottomUi/Stamina/Content/StatLabel")
+agility_label = NodePath("BottomUi/Agility/Content/StatLabel")
+luck_label = NodePath("BottomUi/Luck/Content/StatLabel")
+talent_points_button = NodePath("BottomUi/TalentsRow")
+strength_button = NodePath("BottomUi/Strength")
+stamina_button = NodePath("BottomUi/Stamina")
+agility_button = NodePath("BottomUi/Agility")
+luck_button = NodePath("BottomUi/Luck")
+
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/TrainerPanel" unique_id=543853596]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ChatBubble" parent="Portrait/GameScene/TrainerPanel" unique_id=247643261 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -765,18 +804,17 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/TrainerPanel" unique_id=1105646054]
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/TrainerPanel" unique_id=1105646054]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 450.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
-script = ExtResource("42_umggo")
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
 
-[node name="TalentsRow" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=826166365]
+[node name="TalentsRow" type="Button" parent="Portrait/GameScene/TrainerPanel/BottomUi" unique_id=826166365]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -791,7 +829,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow" unique_id=624166365]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/TalentsRow" unique_id=624166365]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -805,33 +843,35 @@ grow_vertical = 2
 theme_override_constants/separation = 1
 alignment = 1
 
-[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content" unique_id=1106072954]
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/TalentsRow/Content" unique_id=1106072954]
 layout_mode = 2
-text = "Talents: 0 ("
+size_flags_horizontal = 3
+text = "Talents: 0"
 vertical_alignment = 1
 
-[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content" unique_id=264166365]
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/TalentsRow/Content" unique_id=264166365]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content/Cost" unique_id=164166365]
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/TalentsRow/Content/Cost" unique_id=164166365]
 layout_mode = 2
 text = "100"
 vertical_alignment = 1
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content/Cost" unique_id=364166365]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/BottomUi/TalentsRow/Content/Cost" unique_id=364166365]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content/Cost"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/TalentsRow/Content/Cost" unique_id=1389408378]
+visible = false
 layout_mode = 2
 text = ")"
 vertical_alignment = 1
 
-[node name="Stamina" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=119844006]
+[node name="Stamina" type="Button" parent="Portrait/GameScene/TrainerPanel/BottomUi" unique_id=119844006]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -846,7 +886,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina" unique_id=612675581]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Stamina" unique_id=612675581]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -860,33 +900,35 @@ grow_vertical = 2
 theme_override_constants/separation = 1
 alignment = 1
 
-[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content" unique_id=512675581]
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Stamina/Content" unique_id=512675581]
 layout_mode = 2
-text = "Stamina: 0 ("
+size_flags_horizontal = 3
+text = "Stamina: 0"
 vertical_alignment = 1
 
-[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content" unique_id=1794893648]
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Stamina/Content" unique_id=1794893648]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content/Cost" unique_id=-1500073648]
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Stamina/Content/Cost" unique_id=-1500073648]
 layout_mode = 2
 text = "5"
 vertical_alignment = 1
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content/Cost" unique_id=-500073648]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/BottomUi/Stamina/Content/Cost" unique_id=-500073648]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content/Cost"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Stamina/Content/Cost" unique_id=2065847247]
+visible = false
 layout_mode = 2
 text = ")"
 vertical_alignment = 1
 
-[node name="Strength" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=2040420223]
+[node name="Strength" type="Button" parent="Portrait/GameScene/TrainerPanel/BottomUi" unique_id=2040420223]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -901,7 +943,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength" unique_id=-1156672216]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Strength" unique_id=-1156672216]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -915,33 +957,35 @@ grow_vertical = 2
 theme_override_constants/separation = 1
 alignment = 1
 
-[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content" unique_id=2138295080]
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Strength/Content" unique_id=2138295080]
 layout_mode = 2
-text = "Strength: 0 ("
+size_flags_horizontal = 3
+text = "Strength: 0"
 vertical_alignment = 1
 
-[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content" unique_id=214195196]
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Strength/Content" unique_id=214195196]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content/Cost" unique_id=314195196]
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Strength/Content/Cost" unique_id=314195196]
 layout_mode = 2
 text = "5"
 vertical_alignment = 1
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content/Cost" unique_id=414195196]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/BottomUi/Strength/Content/Cost" unique_id=414195196]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content/Cost"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Strength/Content/Cost" unique_id=270661823]
+visible = false
 layout_mode = 2
 text = ")"
 vertical_alignment = 1
 
-[node name="Agility" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=203510681]
+[node name="Agility" type="Button" parent="Portrait/GameScene/TrainerPanel/BottomUi" unique_id=203510681]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -956,7 +1000,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility" unique_id=2188230]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Agility" unique_id=2188230]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -970,33 +1014,35 @@ grow_vertical = 2
 theme_override_constants/separation = 1
 alignment = 1
 
-[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content" unique_id=188230]
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Agility/Content" unique_id=188230]
 layout_mode = 2
-text = "Agility: 0 ("
+size_flags_horizontal = 3
+text = "Agility: 0"
 vertical_alignment = 1
 
-[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content" unique_id=1299448692]
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Agility/Content" unique_id=1299448692]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content/Cost" unique_id=-1995518604]
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Agility/Content/Cost" unique_id=-1995518604]
 layout_mode = 2
 text = "5"
 vertical_alignment = 1
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content/Cost" unique_id=-995518604]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/BottomUi/Agility/Content/Cost" unique_id=-995518604]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content/Cost"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Agility/Content/Cost" unique_id=1789273120]
+visible = false
 layout_mode = 2
 text = ")"
 vertical_alignment = 1
 
-[node name="Luck" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=1925057535]
+[node name="Luck" type="Button" parent="Portrait/GameScene/TrainerPanel/BottomUi" unique_id=1925057535]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1011,7 +1057,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck" unique_id=1732985266]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Luck" unique_id=1732985266]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1025,33 +1071,35 @@ grow_vertical = 2
 theme_override_constants/separation = 1
 alignment = 1
 
-[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content" unique_id=732985266]
+[node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Luck/Content" unique_id=732985266]
 layout_mode = 2
-text = "Luck: 0 ("
+size_flags_horizontal = 3
+text = "Luck: 0"
 vertical_alignment = 1
 
-[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content" unique_id=670560229]
+[node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/BottomUi/Luck/Content" unique_id=670560229]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content/Cost" unique_id=770560229]
+[node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Luck/Content/Cost" unique_id=770560229]
 layout_mode = 2
 text = "5"
 vertical_alignment = 1
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content/Cost" unique_id=870560229]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/TrainerPanel/BottomUi/Luck/Content/Cost" unique_id=870560229]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content/Cost"]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/BottomUi/Luck/Content/Cost" unique_id=1299469643]
+visible = false
 layout_mode = 2
 text = ")"
 vertical_alignment = 1
 
-[node name="ChurchPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=530690828 node_paths=PackedStringArray("chat_bubble", "blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
+[node name="ChurchPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=530690828 node_paths=PackedStringArray("chat_bubble", "image_area", "blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1064,11 +1112,22 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("29_k5jl5")
 chat_bubble = NodePath("ChatBubble")
-blessing_slot_1 = NodePath("Overlay/BlessingSlot1")
-blessing_slot_2 = NodePath("Overlay/BlessingSlot2")
-blessing_slot_3 = NodePath("Overlay/BlessingSlot3")
-effect_description_label = NodePath("Overlay/EffectDescription")
-bless_button = NodePath("Overlay/BlessButton")
+image_area = NodePath("ImageArea")
+blessing_slot_1 = NodePath("BottomUi/BlessingSlot1")
+blessing_slot_2 = NodePath("BottomUi/BlessingSlot2")
+blessing_slot_3 = NodePath("BottomUi/BlessingSlot3")
+effect_description_label = NodePath("BottomUi/EffectDescription")
+bless_button = NodePath("BottomUi/BlessButton")
+
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/ChurchPanel" unique_id=351845241]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ChatBubble" parent="Portrait/GameScene/ChurchPanel" unique_id=1133052507 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -1081,71 +1140,68 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/ChurchPanel" unique_id=1008644121]
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/ChurchPanel" unique_id=1008644121]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_top = 0.7
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
 
-[node name="BlessingSlot1" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/Overlay" unique_id=54427758]
-custom_minimum_size = Vector2(80, 80)
+[node name="BlessingSlot1" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/BottomUi" unique_id=54427758]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -134.5
-offset_top = -27.0
-offset_right = -54.5
-offset_bottom = 53.0
+offset_left = -154.5
+offset_top = -37.5
+offset_right = -71.5
+offset_bottom = 27.5
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("27_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BlessingSlot2" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/Overlay" unique_id=272820710]
-custom_minimum_size = Vector2(80, 80)
+[node name="BlessingSlot2" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/BottomUi" unique_id=272820710]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -39.5
-offset_top = -28.0
-offset_right = 40.5
-offset_bottom = 52.0
+offset_left = -38.5
+offset_top = -33.5
+offset_right = 21.5
+offset_bottom = 27.5
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("27_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BlessingSlot3" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/Overlay" unique_id=1785868489]
-custom_minimum_size = Vector2(80, 80)
+[node name="BlessingSlot3" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/BottomUi" unique_id=1785868489]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 55.5
-offset_top = -28.0
-offset_right = 135.5
-offset_bottom = 52.0
+offset_left = 71.5
+offset_top = -38.5
+offset_right = 132.5
+offset_bottom = 26.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("27_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="EffectDescription" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay" unique_id=1496402265]
+[node name="EffectDescription" type="Label" parent="Portrait/GameScene/ChurchPanel/BottomUi" unique_id=1496402265]
 custom_minimum_size = Vector2(400, 60)
 layout_mode = 1
 anchors_preset = 8
@@ -1154,9 +1210,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -199.5
-offset_top = -126.0
+offset_top = -97.5
 offset_right = 200.5
-offset_bottom = -66.0
+offset_bottom = -37.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -1165,7 +1221,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="BlessButton" type="Button" parent="Portrait/GameScene/ChurchPanel/Overlay" unique_id=1512555960]
+[node name="BlessButton" type="Button" parent="Portrait/GameScene/ChurchPanel/BottomUi" unique_id=1512555960]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 1
 anchors_preset = 7
@@ -1181,39 +1237,42 @@ grow_vertical = 0
 theme_type_variation = &"SharedActionButton"
 disabled = true
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton" unique_id=275123772]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/ChurchPanel/BottomUi/BlessButton" unique_id=275123772]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content" unique_id=1873395571]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/ChurchPanel/BottomUi/BlessButton/Content" unique_id=1873395571]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Receive Blessing ("
+text = "Receive Blessing"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content" unique_id=1578078373]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/ChurchPanel/BottomUi/BlessButton/Content" unique_id=1578078373]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content" unique_id=1541722808]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/BottomUi/BlessButton/Content" unique_id=1541722808]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content" unique_id=320153335]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/ChurchPanel/BottomUi/BlessButton/Content" unique_id=320153335]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
-[node name="AlchemistPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1693280253 node_paths=PackedStringArray("chat_bubble", "bag", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_description1", "ingredient_description2")]
+[node name="AlchemistPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1693280253 node_paths=PackedStringArray("chat_bubble", "image_area", "bag", "brew_button", "ingredient_slot1", "ingredient_slot2", "ingredient_description1", "ingredient_description2")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1226,12 +1285,23 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("30_nqk4g")
 chat_bubble = NodePath("ChatBubble")
-bag = NodePath("Overlay/Bag")
-brew_button = NodePath("Overlay/BrewButton")
-ingredient_slot1 = NodePath("Overlay/IngredientsColumn/Row1/Slot1")
-ingredient_slot2 = NodePath("Overlay/IngredientsColumn/Row2/Slot2")
-ingredient_description1 = NodePath("Overlay/IngredientsColumn/Row1/Desc1")
-ingredient_description2 = NodePath("Overlay/IngredientsColumn/Row2/Desc2")
+image_area = NodePath("ImageArea")
+bag = NodePath("BottomUi/Bag")
+brew_button = NodePath("BottomUi/BrewButton")
+ingredient_slot1 = NodePath("BottomUi/IngredientsColumn/Row1/Slot1")
+ingredient_slot2 = NodePath("BottomUi/IngredientsColumn/Row2/Slot2")
+ingredient_description1 = NodePath("BottomUi/IngredientsColumn/Row1/Desc1")
+ingredient_description2 = NodePath("BottomUi/IngredientsColumn/Row2/Desc2")
+
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/AlchemistPanel" unique_id=104619628]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ChatBubble" parent="Portrait/GameScene/AlchemistPanel" unique_id=1105123988 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -1244,67 +1314,64 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/AlchemistPanel" unique_id=1187531983]
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/AlchemistPanel" unique_id=1187531983]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
-script = ExtResource("42_umggo")
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
 
-[node name="IngredientsColumn" type="VBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=1706005716]
+[node name="IngredientsColumn" type="VBoxContainer" parent="Portrait/GameScene/AlchemistPanel/BottomUi" unique_id=1706005716]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.353
-anchor_top = 0.5
 anchor_right = 0.353
-anchor_bottom = 0.5
 offset_left = -125.965
-offset_top = -94.0
+offset_top = 16.0
 offset_right = 140.035
-offset_bottom = 54.0
+offset_bottom = 164.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Row1" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn" unique_id=1302715345]
+[node name="Row1" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/BottomUi/IngredientsColumn" unique_id=1302715345]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Slot1" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row1" unique_id=369589875 instance=ExtResource("6_itemslot")]
+[node name="Slot1" parent="Portrait/GameScene/AlchemistPanel/BottomUi/IngredientsColumn/Row1" unique_id=369589875 instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 17
 
-[node name="Desc1" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row1" unique_id=1835552525]
+[node name="Desc1" type="Label" parent="Portrait/GameScene/AlchemistPanel/BottomUi/IngredientsColumn/Row1" unique_id=1835552525]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 20
 text = "Ingredient 1"
 vertical_alignment = 1
 
-[node name="Row2" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn" unique_id=1478069806]
+[node name="Row2" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/BottomUi/IngredientsColumn" unique_id=1478069806]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Slot2" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row2" unique_id=973394186 instance=ExtResource("6_itemslot")]
+[node name="Slot2" parent="Portrait/GameScene/AlchemistPanel/BottomUi/IngredientsColumn/Row2" unique_id=973394186 instance=ExtResource("6_itemslot")]
 custom_minimum_size = Vector2(70, 70)
 outline_texture = ExtResource("35_p5qon")
 slot_type = "Ingredient"
 slot_id = 18
 
-[node name="Desc2" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/IngredientsColumn/Row2" unique_id=1501691357]
+[node name="Desc2" type="Label" parent="Portrait/GameScene/AlchemistPanel/BottomUi/IngredientsColumn/Row2" unique_id=1501691357]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
 theme_override_font_sizes/font_size = 20
 text = "Ingredient 2"
 vertical_alignment = 1
 
-[node name="BrewButton" type="Button" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=1652052982]
+[node name="BrewButton" type="Button" parent="Portrait/GameScene/AlchemistPanel/BottomUi" unique_id=1652052982]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 0
 offset_left = 248.0
@@ -1316,44 +1383,55 @@ size_flags_vertical = 4
 theme_type_variation = &"SharedActionButton"
 disabled = true
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton" unique_id=2133778209]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/BottomUi/BrewButton" unique_id=2133778209]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content" unique_id=1674635301]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/AlchemistPanel/BottomUi/BrewButton/Content" unique_id=1674635301]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Brew ("
+text = "Brew"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content" unique_id=1199923055]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/AlchemistPanel/BottomUi/BrewButton/Content" unique_id=1199923055]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content" unique_id=1299016730]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/AlchemistPanel/BottomUi/BrewButton/Content" unique_id=1299016730]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content" unique_id=2124468918]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/AlchemistPanel/BottomUi/BrewButton/Content" unique_id=2124468918]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
-[node name="Bag" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=2104157428 instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/AlchemistPanel/BottomUi" unique_id=2104157428 instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
-layout_mode = 1
-offset_top = -75.0
+layout_mode = 0
+anchors_preset = 0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_top = 164.0
+offset_right = 405.0
+offset_bottom = 239.0
+grow_horizontal = 1
+grow_vertical = 1
 
-[node name="EnchanterPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1607244945 node_paths=PackedStringArray("chat_bubble", "bag", "enchanter_slot", "enchant_button", "slot_type_button_1", "slot_type_button_2", "slot_type_button_3", "slot_type_button_4", "effect_list", "effect_description")]
+[node name="EnchanterPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1607244945 node_paths=PackedStringArray("chat_bubble", "image_area", "bag", "enchanter_slot", "enchant_button", "slot_type_button_1", "slot_type_button_2", "slot_type_button_3", "slot_type_button_4", "effect_list", "effect_description")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1366,16 +1444,27 @@ expand_mode = 5
 stretch_mode = 6
 script = ExtResource("31_enchanter")
 chat_bubble = NodePath("ChatBubble")
-bag = NodePath("Overlay/Bag")
-enchanter_slot = NodePath("Overlay/ItemSlot")
-enchant_button = NodePath("Overlay/EnchantButton")
-slot_type_button_1 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton1")
-slot_type_button_2 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton2")
-slot_type_button_3 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton3")
-slot_type_button_4 = NodePath("Overlay/SlotTypeToggles/SlotTypeButton4")
-effect_list = NodePath("Overlay/EffectList")
-effect_description = NodePath("Overlay/EffectDescription")
+image_area = NodePath("ImageArea")
+bag = NodePath("BottomUi/Bag")
+enchanter_slot = NodePath("BottomUi/ItemSlot")
+enchant_button = NodePath("BottomUi/EnchantButton")
+slot_type_button_1 = NodePath("BottomUi/SlotTypeToggles/SlotTypeButton1")
+slot_type_button_2 = NodePath("BottomUi/SlotTypeToggles/SlotTypeButton2")
+slot_type_button_3 = NodePath("BottomUi/SlotTypeToggles/SlotTypeButton3")
+slot_type_button_4 = NodePath("BottomUi/SlotTypeToggles/SlotTypeButton4")
+effect_list = NodePath("BottomUi/EffectList")
+effect_description = NodePath("BottomUi/EffectDescription")
 enchant_option_scene = ExtResource("26_lknxd")
+
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/EnchanterPanel" unique_id=1905672678]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ChatBubble" parent="Portrait/GameScene/EnchanterPanel" unique_id=894459828 instance=ExtResource("14_k8ojv")]
 layout_mode = 1
@@ -1388,17 +1477,17 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel" unique_id=1077450896]
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel" unique_id=1077450896]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 388.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.48)
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
 
-[node name="WorkArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1684133566]
+[node name="WorkArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=1684133566]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 18.0
@@ -1407,7 +1496,7 @@ offset_bottom = 170.0
 mouse_filter = 2
 color = Color(0.06, 0.045, 0.03, 0.45)
 
-[node name="EffectsArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1458862529]
+[node name="EffectsArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=1458862529]
 layout_mode = 0
 offset_left = 168.0
 offset_top = 18.0
@@ -1416,7 +1505,7 @@ offset_bottom = 170.0
 mouse_filter = 2
 color = Color(0.06, 0.045, 0.03, 0.45)
 
-[node name="ItemSlot" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1870472802 instance=ExtResource("6_itemslot")]
+[node name="ItemSlot" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=1870472802 instance=ExtResource("6_itemslot")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1433,7 +1522,7 @@ outline_texture = ExtResource("9_sword")
 slot_type = "Enchanter"
 slot_id = 15
 
-[node name="EnchantButton" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=185023961]
+[node name="EnchantButton" type="Button" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=185023961]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 1
 anchors_preset = 8
@@ -1449,39 +1538,42 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton" unique_id=50746900]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/BottomUi/EnchantButton" unique_id=50746900]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content" unique_id=1184880682]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/BottomUi/EnchantButton/Content" unique_id=1184880682]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Enchant ("
+text = "Enchant"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content" unique_id=667961399]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/BottomUi/EnchantButton/Content" unique_id=667961399]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content" unique_id=144678848]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/EnchanterPanel/BottomUi/EnchantButton/Content" unique_id=144678848]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content" unique_id=874814750]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/EnchanterPanel/BottomUi/EnchantButton/Content" unique_id=874814750]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
 
-[node name="EffectList" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1455234135]
+[node name="EffectList" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=1455234135]
 layout_mode = 0
 offset_left = 171.0
 offset_top = 60.0
@@ -1490,7 +1582,7 @@ offset_bottom = 112.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="EffectDescription" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1926135081]
+[node name="EffectDescription" type="Label" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=1926135081]
 custom_minimum_size = Vector2(0, 56)
 layout_mode = 0
 offset_left = 171.0
@@ -1503,7 +1595,7 @@ theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 12
 autowrap_mode = 3
 
-[node name="SlotTypeToggles" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=55755625]
+[node name="SlotTypeToggles" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=55755625]
 layout_mode = 0
 offset_left = 171.0
 offset_top = 24.0
@@ -1513,7 +1605,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 4
 alignment = 1
 
-[node name="SlotTypeButton1" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030001]
+[node name="SlotTypeButton1" type="Button" parent="Portrait/GameScene/EnchanterPanel/BottomUi/SlotTypeToggles" unique_id=152030001]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1522,7 +1614,7 @@ icon = ExtResource("28_k8ojv")
 flat = true
 expand_icon = true
 
-[node name="SlotTypeButton2" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030002]
+[node name="SlotTypeButton2" type="Button" parent="Portrait/GameScene/EnchanterPanel/BottomUi/SlotTypeToggles" unique_id=152030002]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1531,7 +1623,7 @@ icon = ExtResource("28_k8ojv")
 flat = true
 expand_icon = true
 
-[node name="SlotTypeButton3" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030003]
+[node name="SlotTypeButton3" type="Button" parent="Portrait/GameScene/EnchanterPanel/BottomUi/SlotTypeToggles" unique_id=152030003]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1540,7 +1632,7 @@ icon = ExtResource("28_k8ojv")
 flat = true
 expand_icon = true
 
-[node name="SlotTypeButton4" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay/SlotTypeToggles" unique_id=152030004]
+[node name="SlotTypeButton4" type="Button" parent="Portrait/GameScene/EnchanterPanel/BottomUi/SlotTypeToggles" unique_id=152030004]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1549,50 +1641,210 @@ icon = ExtResource("28_k8ojv")
 flat = true
 expand_icon = true
 
-[node name="Bag" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1280399627 instance=ExtResource("20_6xvgv")]
+[node name="Bag" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=1280399627 instance=ExtResource("20_6xvgv")]
 custom_minimum_size = Vector2(350, 70)
-layout_mode = 1
-offset_top = -75.0
+layout_mode = 0
+anchors_preset = 0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_top = 170.0
+offset_right = 405.0
+offset_bottom = 240.0
+grow_horizontal = 1
+grow_vertical = 1
 
-[node name="Home" type="TextureRect" parent="Portrait/GameScene" unique_id=434203149 node_paths=PackedStringArray("vendor_button", "vendor_icon", "vendor_label", "utility_button", "utility_icon", "utility_label", "quest_button", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_slide_panel", "map_panel", "location_label", "location_description_label")]
+[node name="HealerPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1867500857 node_paths=PackedStringArray("heal_button", "cure_button", "status_label")]
+visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("28_d5jaa")
+expand_mode = 5
+stretch_mode = 6
+script = ExtResource("92_healer")
+heal_button = NodePath("BottomUi/HealButton")
+cure_button = NodePath("BottomUi/CureButton")
+status_label = NodePath("BottomUi/StatusLabel")
+
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/HealerPanel" unique_id=68648213]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/HealerPanel" unique_id=1217189333]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
+
+[node name="StatusLabel" type="Label" parent="Portrait/GameScene/HealerPanel/BottomUi" unique_id=84678949]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = -18.0
+offset_bottom = 62.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+text = "You are already in good shape."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HealButton" type="Button" parent="Portrait/GameScene/HealerPanel/BottomUi" unique_id=1186706708]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.54
+anchor_right = 0.47
+anchor_bottom = 0.79
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/HealerPanel/BottomUi/HealButton" unique_id=363016652]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/HealerPanel/BottomUi/HealButton/Content" unique_id=601857966]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+text = "Heal"
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/HealerPanel/BottomUi/HealButton/Content" unique_id=367330342]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+text = "30"
+vertical_alignment = 1
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/HealerPanel/BottomUi/HealButton/Content" unique_id=1244983738]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CureButton" type="Button" parent="Portrait/GameScene/HealerPanel/BottomUi" unique_id=1453440760]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.53
+anchor_top = 0.54
+anchor_right = 0.9
+anchor_bottom = 0.79
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
+
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/HealerPanel/BottomUi/CureButton" unique_id=485180113]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/HealerPanel/BottomUi/CureButton/Content" unique_id=804092509]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+text = "Cure"
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/HealerPanel/BottomUi/CureButton/Content" unique_id=2018693102]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+text = "10"
+vertical_alignment = 1
+
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/HealerPanel/BottomUi/CureButton/Content" unique_id=2034764270]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("32_ccfo7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Home" type="TextureRect" parent="Portrait/GameScene" unique_id=434203149 node_paths=PackedStringArray("image_area", "vendor_button", "vendor_icon", "vendor_label", "utility_button", "utility_icon", "utility_label", "secondary_utility_button", "secondary_utility_icon", "secondary_utility_label", "healer_button", "healer_icon", "healer_label", "quest_button", "quest_name_label", "quest_progress_label", "quest_arrow", "quest_slide_panel", "map_panel", "location_label", "location_description_label")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 expand_mode = 5
 stretch_mode = 6
 script = ExtResource("20_village")
-vendor_button = NodePath("Overlay/ButtonRow/VendorButton")
-vendor_icon = NodePath("Overlay/ButtonRow/VendorButton/HBox/Icon")
-vendor_label = NodePath("Overlay/ButtonRow/VendorButton/HBox/Label")
-utility_button = NodePath("Overlay/ButtonRow/UtilityButton")
-utility_icon = NodePath("Overlay/ButtonRow/UtilityButton/HBox/Icon")
-utility_label = NodePath("Overlay/ButtonRow/UtilityButton/HBox/Label")
-quest_button = NodePath("Overlay/QuestButton")
-quest_name_label = NodePath("Overlay/QuestButton/HBox/QuestName")
-quest_progress_label = NodePath("Overlay/QuestButton/HBox/RightSide/Progress")
-quest_arrow = NodePath("Overlay/QuestButton/HBox/RightSide/Arrow")
+image_area = NodePath("ImageArea")
+vendor_button = NodePath("BottomUi/ButtonRow/VendorButton")
+vendor_icon = NodePath("BottomUi/ButtonRow/VendorButton/HBox/Icon")
+vendor_label = NodePath("BottomUi/ButtonRow/VendorButton/HBox/Label")
+utility_button = NodePath("BottomUi/ButtonRow/UtilityButton")
+utility_icon = NodePath("BottomUi/ButtonRow/UtilityButton/HBox/Icon")
+utility_label = NodePath("BottomUi/ButtonRow/UtilityButton/HBox/Label")
+secondary_utility_button = NodePath("BottomUi/ButtonRow/SecondaryUtilityButton")
+secondary_utility_icon = NodePath("BottomUi/ButtonRow/SecondaryUtilityButton/HBox/Icon")
+secondary_utility_label = NodePath("BottomUi/ButtonRow/SecondaryUtilityButton/HBox/Label")
+healer_button = NodePath("BottomUi/ButtonRow/HealerButton")
+healer_icon = NodePath("BottomUi/ButtonRow/HealerButton/HBox/Icon")
+healer_label = NodePath("BottomUi/ButtonRow/HealerButton/HBox/Label")
+quest_button = NodePath("BottomUi/QuestButton")
+quest_name_label = NodePath("BottomUi/QuestButton/HBox/QuestName")
+quest_progress_label = NodePath("BottomUi/QuestButton/HBox/RightSide/Progress")
+quest_arrow = NodePath("BottomUi/QuestButton/HBox/RightSide/Arrow")
 quest_slide_panel = NodePath("../Quest")
 map_panel = NodePath("../Map")
-location_label = NodePath("Overlay/LocationLabel")
-location_description_label = NodePath("Overlay/LocationDescription")
+location_label = NodePath("BottomUi/LocationLabel")
+location_description_label = NodePath("BottomUi/LocationDescription")
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Home" unique_id=1241192436]
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/Home" unique_id=715649681]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("28_d5jaa")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/Home" unique_id=1241192436]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.7
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -200.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0, 0, 0, 0.45)
-script = ExtResource("42_umggo")
+color = Color(0.03, 0.025, 0.018, 1)
 
-[node name="LocationLabel" type="Label" parent="Portrait/GameScene/Home/Overlay" unique_id=313789811]
+[node name="LocationLabel" type="Label" parent="Portrait/GameScene/Home/BottomUi" unique_id=313789811]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -1609,7 +1861,7 @@ text = "Krasna Ves"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LocationDescription" type="Label" parent="Portrait/GameScene/Home/Overlay" unique_id=805887968]
+[node name="LocationDescription" type="Label" parent="Portrait/GameScene/Home/BottomUi" unique_id=805887968]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -1625,7 +1877,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ButtonRow" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay" unique_id=1336968269]
+[node name="ButtonRow" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi" unique_id=1336968269]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -1634,14 +1886,14 @@ offset_top = 95.0
 offset_right = -15.0
 offset_bottom = 141.0
 grow_horizontal = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 8
 
-[node name="VendorButton" type="Button" parent="Portrait/GameScene/Home/Overlay/ButtonRow" unique_id=602900717]
+[node name="VendorButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=602900717]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton" unique_id=1212129687]
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/VendorButton" unique_id=1212129687]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1652,7 +1904,7 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/HBox" unique_id=554122923]
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/VendorButton/HBox" unique_id=554122923]
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_vertical = 4
@@ -1660,18 +1912,18 @@ texture = ExtResource("31_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/VendorButton/HBox" unique_id=38230190]
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/VendorButton/HBox" unique_id=38230190]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 14
 text = "Vendor"
 
-[node name="UtilityButton" type="Button" parent="Portrait/GameScene/Home/Overlay/ButtonRow" unique_id=657420570]
+[node name="UtilityButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=657420570]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton" unique_id=1515647916]
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/UtilityButton" unique_id=1515647916]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1682,7 +1934,7 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/HBox" unique_id=2019723696]
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/UtilityButton/HBox" unique_id=2019723696]
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_vertical = 4
@@ -1690,13 +1942,74 @@ texture = ExtResource("31_k8ojv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/Overlay/ButtonRow/UtilityButton/HBox" unique_id=391820587]
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/UtilityButton/HBox" unique_id=391820587]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 14
 text = "Blacksmith"
 
-[node name="QuestButton" type="Button" parent="Portrait/GameScene/Home/Overlay" unique_id=271981231]
+[node name="SecondaryUtilityButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=493810952]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/SecondaryUtilityButton" unique_id=769500127]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/SecondaryUtilityButton/HBox" unique_id=918801668]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("31_k8ojv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/SecondaryUtilityButton/HBox" unique_id=1565295505]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "Utility"
+
+[node name="HealerButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=1033832217]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton" unique_id=80563531]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton/HBox" unique_id=1616347036]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("31_k8ojv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton/HBox" unique_id=2137694351]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "Healer"
+
+[node name="QuestButton" type="Button" parent="Portrait/GameScene/Home/BottomUi" unique_id=271981231]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 1
 anchors_preset = 12
@@ -1710,7 +2023,7 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/QuestButton" unique_id=201717424]
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/QuestButton" unique_id=201717424]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1720,7 +2033,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox" unique_id=1394326782]
+[node name="QuestName" type="Label" parent="Portrait/GameScene/Home/BottomUi/QuestButton/HBox" unique_id=1394326782]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
@@ -1728,19 +2041,19 @@ theme_override_font_sizes/font_size = 16
 text = "Hunt for Herbs"
 vertical_alignment = 1
 
-[node name="RightSide" type="HBoxContainer" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox" unique_id=2112414070]
+[node name="RightSide" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/QuestButton/HBox" unique_id=2112414070]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 8
 
-[node name="Progress" type="Label" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/RightSide" unique_id=197425511]
+[node name="Progress" type="Label" parent="Portrait/GameScene/Home/BottomUi/QuestButton/HBox/RightSide" unique_id=197425511]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.58, 0.55, 1)
 theme_override_font_sizes/font_size = 13
 text = "1 / 8"
 vertical_alignment = 1
 
-[node name="Arrow" type="Button" parent="Portrait/GameScene/Home/Overlay/QuestButton/HBox/RightSide" unique_id=767934568]
+[node name="Arrow" type="Button" parent="Portrait/GameScene/Home/BottomUi/QuestButton/HBox/RightSide" unique_id=767934568]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
 size_flags_vertical = 4
@@ -2566,7 +2879,7 @@ theme_override_font_sizes/font_size = 16
 theme_override_styles/focus = SubResource("StyleBoxFlat_transparent")
 text = "Skip"
 
-[node name="Map" type="TextureRect" parent="Portrait/GameScene" unique_id=1422676398 node_paths=PackedStringArray("quest_name_label", "travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button")]
+[node name="Map" type="TextureRect" parent="Portrait/GameScene" unique_id=1422676398 node_paths=PackedStringArray("image_area", "quest_name_label", "travel_text_label", "travel_progress", "travel_time_label", "skip_button", "enter_dungeon_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -2577,25 +2890,35 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
 script = ExtResource("37_map_panel")
-quest_name_label = NodePath("Overlay/QuestNameLabel")
-travel_text_label = NodePath("Overlay/TravelTextLabel")
-travel_progress = NodePath("Overlay/TravelBarContainer/TravelProgress")
-travel_time_label = NodePath("Overlay/TravelBarContainer/TravelProgress/TravelTimeLabel")
-skip_button = NodePath("Overlay/TravelBarContainer/SkipButton")
-enter_dungeon_button = NodePath("Overlay/TravelBarContainer/EnterDungeonButton")
+image_area = NodePath("ImageArea")
+quest_name_label = NodePath("BottomUi/QuestNameLabel")
+travel_text_label = NodePath("BottomUi/TravelTextLabel")
+travel_progress = NodePath("BottomUi/TravelBarContainer/TravelProgress")
+travel_time_label = NodePath("BottomUi/TravelBarContainer/TravelProgress/TravelTimeLabel")
+skip_button = NodePath("BottomUi/TravelBarContainer/SkipButton")
+enter_dungeon_button = NodePath("BottomUi/TravelBarContainer/EnterDungeonButton")
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Map" unique_id=1611271847]
+[node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/Map" unique_id=1889982177]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 442.0
+anchor_bottom = 0.8
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
-script = ExtResource("42_umggo")
+expand_mode = 1
+stretch_mode = 6
 
-[node name="QuestNameLabel" type="Label" parent="Portrait/GameScene/Map/Overlay" unique_id=996405987]
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/Map" unique_id=1611271847]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.03, 0.025, 0.018, 1)
+
+[node name="QuestNameLabel" type="Label" parent="Portrait/GameScene/Map/BottomUi" unique_id=996405987]
 custom_minimum_size = Vector2(50, 30)
 layout_mode = 1
 anchors_preset = 10
@@ -2608,7 +2931,7 @@ text = "Quest name"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="TravelTextLabel" type="Label" parent="Portrait/GameScene/Map/Overlay" unique_id=815552083]
+[node name="TravelTextLabel" type="Label" parent="Portrait/GameScene/Map/BottomUi" unique_id=815552083]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -2627,7 +2950,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="TravelBarContainer" type="Control" parent="Portrait/GameScene/Map/Overlay" unique_id=1072325657]
+[node name="TravelBarContainer" type="Control" parent="Portrait/GameScene/Map/BottomUi" unique_id=1072325657]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 1
 anchors_preset = 12
@@ -2639,7 +2962,7 @@ grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="TravelProgress" type="TextureProgressBar" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer" unique_id=1461924148]
+[node name="TravelProgress" type="TextureProgressBar" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer" unique_id=1461924148]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.019000001
@@ -2654,7 +2977,7 @@ nine_patch_stretch = true
 texture_under = ExtResource("43_fykvq")
 texture_progress = ExtResource("44_ewwwr")
 
-[node name="TravelTimeLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/TravelProgress" unique_id=92519523]
+[node name="TravelTimeLabel" type="Label" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/TravelProgress" unique_id=92519523]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -2673,7 +2996,7 @@ text = "00:00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EnterDungeonButton" type="Button" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer" unique_id=1221763742]
+[node name="EnterDungeonButton" type="Button" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer" unique_id=1221763742]
 layout_mode = 1
 anchors_preset = 13
 anchor_left = 0.5
@@ -2685,42 +3008,45 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton" unique_id=558896357]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/EnterDungeonButton" unique_id=558896357]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content" unique_id=280922725]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/EnterDungeonButton/Content" unique_id=280922725]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 16
-text = "Embark ("
+text = "Embark"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content" unique_id=535703208]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/EnterDungeonButton/Content" unique_id=535703208]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 16
 text = "100"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content" unique_id=779434039]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/EnterDungeonButton/Content" unique_id=779434039]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content" unique_id=1958804185]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/EnterDungeonButton/Content" unique_id=1958804185]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 16
 text = ")"
 
-[node name="SkipButton" type="Button" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer" unique_id=1027865008]
+[node name="SkipButton" type="Button" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer" unique_id=1027865008]
 custom_minimum_size = Vector2(60, 30)
 layout_mode = 1
 anchors_preset = 13
@@ -2735,37 +3061,40 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_type_variation = &"SharedActionButton"
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton" unique_id=1083364745]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/SkipButton" unique_id=1083364745]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content" unique_id=721520162]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/SkipButton/Content" unique_id=721520162]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 14
-text = "Skip ("
+text = "Skip"
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content" unique_id=486070698]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/SkipButton/Content" unique_id=486070698]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 14
 text = "1"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content" unique_id=1248019125]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/SkipButton/Content" unique_id=1248019125]
 custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
 texture = ExtResource("9_w4j8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content" unique_id=559060855]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Map/BottomUi/TravelBarContainer/SkipButton/Content" unique_id=559060855]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 14
@@ -3150,15 +3479,17 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content" unique_id=352516980]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Reset ("
+text = "Reset"
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content" unique_id=302514996]
 layout_mode = 2
@@ -3173,6 +3504,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="ClosingParen" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content" unique_id=951335568]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"
@@ -5998,7 +6330,6 @@ alignment = 2
 
 [node name="Reward" type="RichTextLabel" parent="Portrait/GameScene/Quest/Overlay/BottomContainer" unique_id=2116159764]
 layout_mode = 2
-theme_override_constants/line_spacing = 10
 bbcode_enabled = true
 fit_content = true
 
@@ -6080,15 +6411,17 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 1
-alignment = 1
+theme_override_constants/separation = 6
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1827860520]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Embark ("
+text = "Embark"
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1330085669]
 layout_mode = 2
@@ -6103,6 +6436,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="ClosingParen" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1213253294]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"

@@ -5,7 +5,7 @@ static func format_with_factor(description: String, factor: float, append_percen
 	if description == "":
 		return ""
 
-	var value := str(int(factor))
+	var value := str(abs(int(factor)))
 	if "*%" in description:
 		return description.replace("*%", value + "%")
 	if "*" in description:
@@ -18,8 +18,8 @@ static func format_with_progress(description: String, current_factor: float, nex
 	if description == "":
 		return ""
 
-	var current_text := str(int(current_factor))
-	var next_text := str(int(next_factor))
+	var current_text := str(abs(int(current_factor)))
+	var next_text := str(abs(int(next_factor)))
 	if "*%" in description:
 		return description.replace("*%", "%s%% -> %s%%" % [current_text, next_text])
 	if "*" in description:

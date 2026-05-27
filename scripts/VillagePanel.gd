@@ -5,6 +5,7 @@ extends TextureRect
 # No scrolling, no NPCs, no interiors
 
 @export var chat_bubble: ChatBubble
+@export var image_area: TextureRect
 
 # Static buttons in scene
 @export var vendor_button: Button
@@ -13,6 +14,12 @@ extends TextureRect
 @export var utility_button: Button
 @export var utility_icon: TextureRect
 @export var utility_label: Label
+@export var secondary_utility_button: Button
+@export var secondary_utility_icon: TextureRect
+@export var secondary_utility_label: Label
+@export var healer_button: Button
+@export var healer_icon: TextureRect
+@export var healer_label: Label
 
 # Quest button
 @export var quest_button: Button
@@ -33,6 +40,7 @@ var available_quests: Array[int] = []
 var _utility_type: String = ""  # Track current utility type for callback
 
 func _ready():
+	_connect_buttons()
 	# Refresh quest display whenever village becomes visible again
 	visibility_changed.connect(_on_visibility_changed)
 	# Wait for game_ready before setup
@@ -42,24 +50,31 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _on_visibility_changed():
+	_connect_buttons()
 	if visible and GameInfo.current_player:
 		_load_village_background()
 		_setup_buttons()
 		_update_quest_display()
 
 func _setup():
+	_connect_buttons()
 	if not GameInfo.current_player:
 		return
 	
 	_load_village_background()
 	_setup_buttons()
 	_update_quest_display()
-	
+
+func _connect_buttons():
 	# Connect button signals
 	if vendor_button and not vendor_button.pressed.is_connected(_on_vendor_pressed):
 		vendor_button.pressed.connect(_on_vendor_pressed)
 	if utility_button and not utility_button.pressed.is_connected(_on_utility_pressed):
 		utility_button.pressed.connect(_on_utility_pressed)
+	if secondary_utility_button and not secondary_utility_button.pressed.is_connected(_on_secondary_utility_pressed):
+		secondary_utility_button.pressed.connect(_on_secondary_utility_pressed)
+	if healer_button and not healer_button.pressed.is_connected(_on_healer_pressed):
+		healer_button.pressed.connect(_on_healer_pressed)
 	if quest_button and not quest_button.pressed.is_connected(_on_quest_button_pressed):
 		quest_button.pressed.connect(_on_quest_button_pressed)
 	if quest_arrow and not quest_arrow.pressed.is_connected(_on_quest_arrow_pressed):
@@ -73,10 +88,12 @@ func _load_village_background():
 	var location_id = GameInfo.current_player.location
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
-	# Apply settlement texture directly to self as village background
 	var settlement_texture = settlement.get_settlement_texture() if settlement else null
 	if settlement_texture:
-		texture = settlement_texture
+		if image_area:
+			image_area.texture = settlement_texture
+		else:
+			texture = settlement_texture
 	
 	# Update location name label in overlay
 	if location_label and settlement:
@@ -100,6 +117,15 @@ func _setup_buttons():
 		utility_label.text = ""
 	if utility_icon:
 		utility_icon.texture = null
+	if secondary_utility_label:
+		secondary_utility_label.text = "Utility"
+	if secondary_utility_button:
+		secondary_utility_button.visible = true
+		secondary_utility_button.disabled = true
+	if healer_label:
+		healer_label.text = "Healer"
+	if healer_button:
+		healer_button.visible = true
 	
 	# Vendor button - always show if available
 	if vendor_button:
@@ -218,6 +244,12 @@ func _on_utility_pressed():
 			UIManager.instance.show_panel(UIManager.instance.church_panel)
 		"Trainer":
 			UIManager.instance.show_panel(UIManager.instance.trainer_panel)
+
+func _on_secondary_utility_pressed():
+	pass
+
+func _on_healer_pressed():
+	UIManager.instance.show_panel(UIManager.instance.healer_panel)
 
 func refresh_quests():
 	"""Call when quests change"""

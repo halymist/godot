@@ -656,6 +656,14 @@ func choose_blessing(blessing_slot: int):
 		"int_argument1": blessing_slot
 	})
 
+func heal():
+	"""Request healer HP restoration."""
+	send("heal", {})
+
+func cure():
+	"""Request healer effect cure."""
+	send("cure", {})
+
 func activate_perk(talent_id: int, perk_id: int):
 	"""Activate a perk with a talent"""
 	send("activate_perk", {

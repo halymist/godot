@@ -1,6 +1,6 @@
 extends TextureRect
 
-const EXPEDITION_QUEST_START_COST: int = 30
+const EXPEDITION_QUEST_START_COST: int = 0
 const LOW_HEALTH_WARNING_RATIO: float = 0.10
 const NODE_BUTTON_SIZE: Vector2 = Vector2(32, 32)
 const CAMERA_MOVE_DURATION: float = 0.28
@@ -252,7 +252,8 @@ func _confirm_node_start(node_id: int):
 	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 
 	pending_node_start_cost = EXPEDITION_QUEST_START_COST
-	UIManager.instance.update_silver(-EXPEDITION_QUEST_START_COST)
+	if EXPEDITION_QUEST_START_COST > 0:
+		UIManager.instance.update_silver(-EXPEDITION_QUEST_START_COST)
 
 	Websocket.start_expedition_node(pending_node_id)
 
@@ -378,15 +379,15 @@ func _set_action_button_state(text_value: String, enabled: bool, show_price: boo
 		if action_label and price_label and currency_icon and closing_paren:
 			node_action_button.text = ""
 			node_action_button.icon = null
-			action_label.text = "%s (" % text_value if show_price else text_value
+			action_label.text = text_value
 			price_label.text = str(EXPEDITION_QUEST_START_COST)
-			price_label.visible = show_price
+			price_label.visible = show_price and EXPEDITION_QUEST_START_COST > 0
 			price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if _can_afford_embark() else COLOR_PRICE_MISSING)
-			currency_icon.visible = show_price
-			closing_paren.visible = show_price
+			currency_icon.visible = show_price and EXPEDITION_QUEST_START_COST > 0
+			closing_paren.visible = false
 		else:
-			node_action_button.text = "%s (%d)" % [text_value, EXPEDITION_QUEST_START_COST] if show_price else text_value
-			node_action_button.icon = currency_check_icon if show_price else null
+			node_action_button.text = text_value
+			node_action_button.icon = currency_check_icon if show_price and EXPEDITION_QUEST_START_COST > 0 else null
 
 func _set_completed_node_action_state():
 	if node_action_button and is_instance_valid(node_action_button):
@@ -394,7 +395,7 @@ func _set_completed_node_action_state():
 		node_action_button.visible = false
 
 func _can_afford_embark() -> bool:
-	return GameInfo.current_player and GameInfo.current_player.silver >= EXPEDITION_QUEST_START_COST
+	return GameInfo.current_player != null
 
 func _update_selected_node_action_state():
 	_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0 and not selected_node_completed and pending_node_id <= 0 and _can_afford_embark(), true)

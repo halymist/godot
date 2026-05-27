@@ -394,7 +394,7 @@ func _set_reward_text(reward_text: String):
 	if not reward_label:
 		return
 	reward_label.bbcode_enabled = true
-	reward_label.text = _highlight_reward_segment(reward_text)
+	reward_label.text = _highlight_reward_segment(_trim_sentence_end(reward_text))
 
 func _highlight_reward_segment(reward_text: String) -> String:
 	var highlighted_text = _extract_reward_highlight(reward_text)

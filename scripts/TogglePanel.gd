@@ -65,6 +65,7 @@ signal game_ready
 @export var church_panel: Control
 @export var alchemist_panel: Control
 @export var enchanter_panel: Control
+@export var healer_panel: Control
 
 # ============================================================================
 # SPECIAL CONTROLS
@@ -393,13 +394,17 @@ func finish_new_day_transition():
 
 func show_panel(panel: Control):
 	"""Show main panel - hides chat, all overlays, and current panel"""
+	if not panel:
+		return
 	if is_new_day_transitioning and panel != home_panel:
 		return
 	_close_chat_if_open()
 	
 	# Hide sub-overlays (these sit outside the main stack)
-	upgrade_talent.visible = false
-	perk_screen.visible = false
+	if upgrade_talent:
+		upgrade_talent.visible = false
+	if perk_screen:
+		perk_screen.visible = false
 	
 	# Hide current panel
 	var old_panel = current_panel
@@ -424,6 +429,9 @@ func show_panel(panel: Control):
 			enchanter_panel._setup()
 		elif enchanter_panel.has_method("populate_effect_list"):
 			enchanter_panel.populate_effect_list()
+
+	if healer_panel and panel == healer_panel and healer_panel.has_method("_update_button_states"):
+		healer_panel._update_button_states()
 
 # ============================================================================
 # BUTTON HANDLERS
@@ -646,11 +654,11 @@ func go_back():
 
 func _close_sub_overlays() -> bool:
 	"""Close sub-overlays that sit outside the main stack. Returns true if something was closed."""
-	if upgrade_talent.visible:
+	if upgrade_talent and upgrade_talent.visible:
 		upgrade_talent.visible = false
 		return true
 	
-	if perk_screen.visible:
+	if perk_screen and perk_screen.visible:
 		perk_screen.visible = false
 		return true
 	

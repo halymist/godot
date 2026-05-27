@@ -3,6 +3,7 @@ extends TextureRect
 const VENDOR_SLOT = 20
 
 @export var chat_bubble: ChatBubble
+@export var image_area: TextureRect
 @export var bag: Control
 @export var vendor_display: Control
 @export var item_scene: PackedScene
@@ -71,10 +72,13 @@ func _load_location_content():
 	if not settlement:
 		return
 	
-	# Apply vendor texture directly to self
 	var vendor_texture = settlement.get_vendor_texture()
 	if vendor_texture:
-		texture = vendor_texture
+		if image_area:
+			image_area.texture = vendor_texture
+			texture = null
+		else:
+			texture = vendor_texture
 	
 	# Load vendor greetings from settlement
 	on_entered_greetings = settlement.get_vendor_on_entered_lines()

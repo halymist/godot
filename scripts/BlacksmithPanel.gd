@@ -8,6 +8,7 @@ const BAG_MIN = 10
 const BAG_MAX = 14
 
 @export var chat_bubble: ChatBubble
+@export var image_area: TextureRect
 @export var bag: Control
 @export var blacksmith_slot: Control
 @export var improved_stats_label: Label
@@ -68,10 +69,13 @@ func _load_location_content():
 	if not settlement:
 		return
 	
-	# Apply utility texture directly to self
 	var utility_texture = settlement.get_utility_texture()
 	if utility_texture:
-		texture = utility_texture
+		if image_area:
+			image_area.texture = utility_texture
+			texture = null
+		else:
+			texture = utility_texture
 	
 	# Load utility greetings from settlement
 	on_entered_greetings = settlement.get_utility_on_entered_lines()

@@ -7,6 +7,7 @@ const COLOR_PRICE_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
 const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 @export var chat_bubble: ChatBubble
+@export var image_area: TextureRect
 @export var blessing_slot_1: TextureRect
 @export var blessing_slot_2: TextureRect
 @export var blessing_slot_3: TextureRect
@@ -52,10 +53,13 @@ func _load_location_content():
 	if not settlement:
 		return
 	
-	# Apply utility texture directly to self
 	var utility_texture = settlement.get_utility_texture()
 	if utility_texture:
-		texture = utility_texture
+		if image_area:
+			image_area.texture = utility_texture
+			texture = null
+		else:
+			texture = utility_texture
 	
 	# Load utility greetings from settlement
 	on_entered_greetings = settlement.get_utility_on_entered_lines()

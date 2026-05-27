@@ -7,6 +7,7 @@ const COLOR_PRICE_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
 const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 @export var chat_bubble: ChatBubble
+@export var image_area: TextureRect
 @export var talent_points_label: Label
 @export var strength_label : Label
 @export var stamina_label: Label
@@ -52,10 +53,13 @@ func _load_location_content():
 	if not settlement:
 		return
 	
-	# Apply utility texture directly to self
 	var utility_texture = settlement.get_utility_texture()
 	if utility_texture:
-		texture = utility_texture
+		if image_area:
+			image_area.texture = utility_texture
+			texture = null
+		else:
+			texture = utility_texture
 	
 	# Load utility greetings from settlement
 	on_entered_greetings = settlement.get_utility_on_entered_lines()
@@ -75,11 +79,11 @@ func _show_greeting(greetings: Array[String]):
 	chat_bubble.show_with_text(greeting, 4.0)
 
 func update_stats_display():
-	talent_points_label.text = "Talents: " + str(GameInfo.current_player.talent_points) + " ("
-	strength_label.text = "Strength: " + str(GameInfo.current_player.strength) + " ("
-	stamina_label.text = "Stamina: " + str(GameInfo.current_player.stamina) + " ("
-	agility_label.text = "Agility: " + str(GameInfo.current_player.agility) + " ("
-	luck_label.text = "Luck: " + str(GameInfo.current_player.luck) + " ("
+	talent_points_label.text = "Talents: " + str(GameInfo.current_player.talent_points)
+	strength_label.text = "Strength: " + str(GameInfo.current_player.strength)
+	stamina_label.text = "Stamina: " + str(GameInfo.current_player.stamina)
+	agility_label.text = "Agility: " + str(GameInfo.current_player.agility)
+	luck_label.text = "Luck: " + str(GameInfo.current_player.luck)
 
 func update_button_states():
 	var silver = GameInfo.current_player.silver

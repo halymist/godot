@@ -3,6 +3,7 @@ extends TextureRect
 const SKIP_COST: int = 1  # Mushroom cost to skip travel
 const DEFAULT_TRAVEL_DURATION: float = 10.0
 
+@export var image_area: TextureRect
 @export var quest_name_label: Label
 @export var travel_text_label: Label
 @export var travel_progress: TextureProgressBar
@@ -137,11 +138,11 @@ func _ensure_travel_ui_from_player():
 			var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
 			var expedition_texture = location_data.get_expedition_texture() if location_data else null
 			if expedition_texture:
-				texture = expedition_texture
+				_set_panel_texture(expedition_texture)
 		elif quest_data:
 			var quest_background = DataManager.get_quest_background_texture(quest_data)
 			if quest_background:
-				texture = quest_background
+				_set_panel_texture(quest_background)
 
 		if quest_data:
 			if quest_name_label:
@@ -190,7 +191,7 @@ func start_travel(quest_travel_text: String, duration_seconds: int, quest_id: in
 	if quest_data:
 		var quest_background = DataManager.get_quest_background_texture(quest_data)
 		if quest_background:
-			texture = quest_background
+			_set_panel_texture(quest_background)
 		if quest_name_label:
 			quest_name_label.text = quest_data.quest_name
 	
@@ -215,7 +216,7 @@ func refresh_travel_state():
 		skip_button.disabled = skip_disabled
 		_update_button_label_colors(skip_button, skip_disabled)
 		if skip_action_label:
-			skip_action_label.text = "Skipping..." if is_skipping else "Skip ("
+			skip_action_label.text = "Skipping..." if is_skipping else "Skip"
 		enter_dungeon_button.visible = false
 		_update_travel_progress(expedition_travel_end)
 		return
@@ -229,7 +230,7 @@ func refresh_travel_state():
 		skip_button.disabled = false
 		_update_button_label_colors(skip_button, false)
 		if skip_action_label:
-			skip_action_label.text = "Skip ("
+			skip_action_label.text = "Skip"
 		enter_dungeon_button.visible = false
 		if travel_text_label:
 			travel_text_label.text = travel_text
@@ -392,7 +393,13 @@ func _set_enter_price_visible(price_visible: bool):
 	if currency_icon:
 		currency_icon.visible = price_visible
 	if closing_paren:
-		closing_paren.visible = price_visible
+		closing_paren.visible = false
+
+func _set_panel_texture(panel_texture: Texture2D):
+	if image_area:
+		image_area.texture = panel_texture
+	else:
+		texture = panel_texture
 
 func _on_skip_button_pressed():
 	var current_player = GameInfo.current_player
@@ -551,7 +558,7 @@ func receive_expedition_start(expedition_id: int, _arrival_timestamp: String):
 	skip_button.visible = true
 	skip_button.disabled = not _can_afford_skip()
 	if skip_action_label:
-		skip_action_label.text = "Skip ("
+		skip_action_label.text = "Skip"
 	enter_dungeon_button.visible = false
 	
 	set_process(true)  # Enable frame updates
