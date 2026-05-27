@@ -450,6 +450,7 @@ func _load_json_file(path: String) -> Array:
 	"""Load JSON array from file, returns empty array if not found"""
 	if not FileAccess.file_exists(path):
 		return []
+	var read_start_ms = Time.get_ticks_msec()
 	
 	var file = FileAccess.open(path, FileAccess.READ)
 	if not file:
@@ -457,12 +458,18 @@ func _load_json_file(path: String) -> Array:
 	
 	var content = file.get_as_text()
 	file.close()
+	var read_elapsed_ms = Time.get_ticks_msec() - read_start_ms
 	
+	var parse_start_ms = Time.get_ticks_msec()
 	var json = JSON.new()
 	if json.parse(content) != OK:
+		print("[load] json ", path, " parse failed after ", Time.get_ticks_msec() - parse_start_ms, "ms")
 		return []
 	
 	var data = json.get_data()
+	var parse_elapsed_ms = Time.get_ticks_msec() - parse_start_ms
+	var item_count = data.size() if data is Array else 0
+	print("[load] json ", path, " read=", read_elapsed_ms, "ms parse=", parse_elapsed_ms, "ms items=", item_count)
 	return data if data is Array else []
 
 func _save_json_file(path: String, data: Array):

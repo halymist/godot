@@ -129,14 +129,18 @@ func initialize_lobby():
 	_prepare_lobby()
 
 func _prepare_lobby():
+	var start_ms = Time.get_ticks_msec()
+	print("[load] lobby prepare start")
 	_lobby_prepare_state = LobbyPrepareState.PREPARING
 	_ensure_game_scene_preload_started()
 	await get_tree().process_frame
 	var databases_ready = await _ensure_databases_ready()
 	if not databases_ready:
 		_lobby_prepare_state = LobbyPrepareState.FAILED
+		print("[load] lobby prepare failed ", Time.get_ticks_msec() - start_ms, "ms")
 		return
 	_finalize_lobby_ready()
+	print("[load] lobby prepare ready ", Time.get_ticks_msec() - start_ms, "ms")
 
 func _ensure_databases_ready() -> bool:
 	"""Download data if needed, then initialize databases."""
@@ -149,7 +153,9 @@ func _ensure_databases_ready() -> bool:
 
 	if data_versions.is_empty():
 		print("[download] no server data_versions provided, loading local databases only")
+		var load_start_ms = Time.get_ticks_msec()
 		await GameInfo.load_databases_async()
+		print("[load] local database path finished ", Time.get_ticks_msec() - load_start_ms, "ms")
 		if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
 			avatar_creation_panel.on_databases_loaded()
 		return GameInfo.databases_loaded
@@ -160,11 +166,17 @@ func _ensure_databases_ready() -> bool:
 	if needs_download:
 		print("[download] starting data sync from lobby")
 		# Download data + assets, then load databases
+		var sync_start_ms = Time.get_ticks_msec()
 		await DataManager.sync_data(data_versions)
+		print("[load] data sync await finished ", Time.get_ticks_msec() - sync_start_ms, "ms")
+		var load_start_ms = Time.get_ticks_msec()
 		await GameInfo.load_databases_async()
+		print("[load] post-sync database load finished ", Time.get_ticks_msec() - load_start_ms, "ms")
 	else:
 		print("[download] skipping data sync, using cached data")
+		var load_start_ms = Time.get_ticks_msec()
 		await GameInfo.load_databases_async()
+		print("[load] cached database load finished ", Time.get_ticks_msec() - load_start_ms, "ms")
 
 	if avatar_creation_panel and avatar_creation_panel.has_method("on_databases_loaded"):
 		avatar_creation_panel.on_databases_loaded()
@@ -187,6 +199,8 @@ func _ensure_game_scene_preload_started():
 
 func _load_game_scene_async():
 	"""Load game scene in background"""
+	var start_ms = Time.get_ticks_msec()
+	print("[load] game scene threaded request start")
 	ResourceLoader.load_threaded_request("res://Scenes/game.tscn")
 	while true:
 		# Stop if node was removed from tree (e.g., during logout)
@@ -195,11 +209,14 @@ func _load_game_scene_async():
 		
 		var status = ResourceLoader.load_threaded_get_status("res://Scenes/game.tscn")
 		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			var get_start_ms = Time.get_ticks_msec()
 			game_scene = ResourceLoader.load_threaded_get("res://Scenes/game.tscn")
+			print("[load] game scene threaded get ", Time.get_ticks_msec() - get_start_ms, "ms total=", Time.get_ticks_msec() - start_ms, "ms")
 			game_scene_loaded = true
 			break
 		elif status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE or status == ResourceLoader.THREAD_LOAD_FAILED:
 			game_scene_preload_started = false
+			print("[load] game scene threaded load failed after ", Time.get_ticks_msec() - start_ms, "ms status=", status)
 			break
 		await get_tree().process_frame
 
@@ -407,6 +424,8 @@ func _ensure_ready_for_character_entry() -> bool:
 
 func _on_player_data_received(character_data: Dictionary):
 	"""Handle playerData response from WebSocket"""
+	var start_ms = Time.get_ticks_msec()
+	print("[load] player data received, preparing scene transition")
 	
 	# Disconnect signal to avoid multiple calls
 	if Websocket.player_data_received.is_connected(_on_player_data_received):
@@ -419,6 +438,7 @@ func _on_player_data_received(character_data: Dictionary):
 	
 	# Load character data into GameInfo (replaces mock data)
 	GameInfo.load_character_from_server(character_data)
+	print("[load] character payload loaded ", Time.get_ticks_msec() - start_ms, "ms")
 	if GameInfo.current_player and _selected_server_day > 0:
 		GameInfo.current_player.server_day = _selected_server_day
 	GameInfo.sync_current_player_to_lobby(GameInfo.current_server_id)

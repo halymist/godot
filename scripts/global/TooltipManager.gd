@@ -24,15 +24,35 @@ func make_text_tooltip(tooltip_text: String, bulletize_body: bool = false) -> Co
 	margin.add_theme_constant_override("margin_bottom", 6)
 	panel.add_child(margin)
 
-	var label = Label.new()
 	var content = tooltip_text.strip_edges()
-	label.text = _bulletize_body_after_title(content) if bulletize_body else content
+	var lines = content.split("\n", false)
+	if lines.is_empty():
+		return panel
+
+	var layout = VBoxContainer.new()
+	layout.add_theme_constant_override("separation", 3)
+	margin.add_child(layout)
+
+	var name_label = _make_tooltip_label(String(lines[0]), NAME_COLOR)
+	layout.add_child(name_label)
+
+	if lines.size() > 1:
+		var body_lines: Array[String] = []
+		for i in range(1, lines.size()):
+			body_lines.append(String(lines[i]))
+		var body_text = "\n".join(body_lines)
+		var body_label = _make_tooltip_label(_bulletize_all_lines(body_text) if bulletize_body else body_text, TEXT_COLOR)
+		layout.add_child(body_label)
+	return panel
+
+func _make_tooltip_label(text_value: String, color: Color) -> Label:
+	var label = Label.new()
+	label.text = text_value
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.custom_minimum_size.x = MAX_TOOLTIP_WIDTH
 	label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	label.add_theme_color_override("font_color", TEXT_COLOR)
-	margin.add_child(label)
-	return panel
+	label.add_theme_color_override("font_color", color)
+	return label
 
 func get_item_tooltip_text(item: GameInfo.Item) -> String:
 	if not item:

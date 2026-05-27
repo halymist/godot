@@ -16,20 +16,28 @@ func _ready():
 	control.add_child(color_rect)
 
 func change_scene_to_file(path: String) -> void:
+	print("[load] scene transition file fade_out start ", path)
 	await fade_out()
+	var start_ms = Time.get_ticks_msec()
 	get_tree().change_scene_to_file(path)
+	print("[load] scene transition file swap ", Time.get_ticks_msec() - start_ms, "ms path=", path)
 	await get_tree().process_frame
 	await fade_in()
 
 func change_scene_to_packed(scene: PackedScene) -> void:
+	print("[load] scene transition packed fade_out start")
 	await fade_out()
+	var start_ms = Time.get_ticks_msec()
 	get_tree().change_scene_to_packed(scene)
+	print("[load] scene transition packed swap ", Time.get_ticks_msec() - start_ms, "ms")
 	await get_tree().process_frame
 	await fade_in()
 
 func change_scene_to_packed_after_dark(scene: PackedScene) -> void:
 	"""Switch scene assuming the screen is already faded to black."""
+	var start_ms = Time.get_ticks_msec()
 	get_tree().change_scene_to_packed(scene)
+	print("[load] scene transition packed swap after dark ", Time.get_ticks_msec() - start_ms, "ms")
 	await get_tree().process_frame
 	await fade_in()
 

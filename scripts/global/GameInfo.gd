@@ -108,26 +108,50 @@ func load_databases_async():
 	if databases_loaded:
 		return
 
+	var total_start_ms = Time.get_ticks_msec()
+	var step_start_ms = Time.get_ticks_msec()
 	effects_db = DataManager.get_effects_database()
+	_log_database_step("effects", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	items_db = DataManager.get_items_database()
+	_log_database_step("items", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	perks_db = DataManager.get_perks_database()
+	_log_database_step("perks", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	enemies_db = DataManager.get_enemies_database()
+	_log_database_step("enemies", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	expeditions_db = DataManager.get_expeditions_database()
+	_log_database_step("expeditions", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	settlements_db = DataManager.get_settlements_database()
+	_log_database_step("settlements", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	talents_db = DataManager.get_talents_database()
+	_log_database_step("talents", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	quests_db = DataManager.get_quests_database()
+	_log_database_step("quests", step_start_ms)
 	await get_tree().process_frame
+	step_start_ms = Time.get_ticks_msec()
 	cosmetics_db = DataManager.get_cosmetics_database()
+	_log_database_step("cosmetics", step_start_ms)
 
 	databases_loaded = true
+	print("[load] databases total ", Time.get_ticks_msec() - total_start_ms, "ms")
 	_log_memory_warning_if_needed()
+
+func _log_database_step(label: String, start_ms: int):
+	var elapsed_ms = Time.get_ticks_msec() - start_ms
+	print("[load] database ", label, " ", elapsed_ms, "ms")
 
 func _log_memory_warning_if_needed():
 	var static_memory = int(Performance.get_monitor(Performance.MEMORY_STATIC))

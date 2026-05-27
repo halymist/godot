@@ -664,6 +664,7 @@ offset_right = -46.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton" unique_id=1214929829]
 layout_mode = 1
@@ -781,6 +782,7 @@ offset_right = 90.0
 offset_bottom = -31.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow" unique_id=624166365]
 layout_mode = 1
@@ -829,6 +831,7 @@ offset_right = -5.0
 offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina" unique_id=612675581]
 layout_mode = 1
@@ -877,6 +880,7 @@ offset_right = 185.0
 offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength" unique_id=-1156672216]
 layout_mode = 1
@@ -925,6 +929,7 @@ offset_right = -5.0
 offset_bottom = 84.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility" unique_id=2188230]
 layout_mode = 1
@@ -973,6 +978,7 @@ offset_right = 185.0
 offset_bottom = 85.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck" unique_id=1732985266]
 layout_mode = 1
@@ -1135,6 +1141,7 @@ offset_top = -50.0
 offset_right = 202.5
 grow_horizontal = 2
 grow_vertical = 0
+theme_type_variation = &"SharedActionButton"
 disabled = true
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton" unique_id=275123772]
@@ -1268,6 +1275,7 @@ offset_right = 398.0
 offset_bottom = 140.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
+theme_type_variation = &"SharedActionButton"
 disabled = true
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton" unique_id=2133778209]
@@ -1400,6 +1408,7 @@ offset_right = -46.5
 offset_bottom = 34.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton" unique_id=50746900]
 layout_mode = 1
@@ -2634,6 +2643,7 @@ offset_left = -131.0
 offset_right = 70.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton" unique_id=558896357]
 layout_mode = 1
@@ -2682,6 +2692,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton" unique_id=1083364745]
 layout_mode = 1
@@ -3090,6 +3101,7 @@ layout_mode = 0
 offset_left = 216.0
 offset_right = 356.0
 offset_bottom = 53.0
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton" unique_id=2042987121]
 layout_mode = 1
@@ -6016,6 +6028,7 @@ offset_right = 128.04
 offset_bottom = 55.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"SharedActionButton"
 
 [node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton" unique_id=1556665808]
 layout_mode = 1
