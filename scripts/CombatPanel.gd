@@ -356,8 +356,8 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 	"""Animate sword moving in a straight line from attacker to defender, then shake + damage popup."""
 	if not is_instance_valid(attacker_icon) or not is_instance_valid(defender_icon):
 		return
-	var start_pos := _icon_global_center(attacker_icon)
-	var end_pos := _icon_global_center(defender_icon)
+	var start_pos := _get_icon_local_center(attacker_icon)
+	var end_pos := _get_icon_local_center(defender_icon)
 	# Force a strictly horizontal path so left->right and right->left look identical.
 	var mid_y := (start_pos.y + end_pos.y) * 0.5
 	start_pos.y = mid_y
@@ -373,7 +373,7 @@ func _play_swing_and_hit(attacker_icon: Control, defender_icon: Control, _defend
 
 	# Straight line tween from attacker to defender (global coords).
 	var tween := create_tween()
-	tween.tween_property(sword, "global_position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
 
 	await tween.finished
 
@@ -394,8 +394,8 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	"""Animate sword flying at defender, but defender slides back to dodge."""
 	if not is_instance_valid(attacker_icon) or not is_instance_valid(defender_icon) or not is_instance_valid(defender_container):
 		return
-	var start_pos := _icon_global_center(attacker_icon)
-	var end_pos := _icon_global_center(defender_icon)
+	var start_pos := _get_icon_local_center(attacker_icon)
+	var end_pos := _get_icon_local_center(defender_icon)
 	# Force a strictly horizontal path so direction is consistent.
 	var mid_y := (start_pos.y + end_pos.y) * 0.5
 	start_pos.y = mid_y
@@ -418,7 +418,7 @@ func _play_swing_and_dodge(attacker_icon: Control, defender_icon: Control, defen
 	dodge_tween.tween_property(defender_container, "position", original_pos + dodge_offset, dodge_slide_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
 
 	var tween := create_tween()
-	tween.tween_property(sword, "global_position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
+	tween.tween_property(sword, "position", end_pos - sword_size / 2, sword_travel_duration).set_ease(sword_travel_ease).set_trans(sword_travel_transition)
 
 	await tween.finished
 
@@ -488,11 +488,9 @@ func _icon_global_center(icon: Control) -> Vector2:
 	return icon.global_position + icon.size / 2
 
 func _create_sword_sprite(sword_size: Vector2, start_pos: Vector2) -> TextureRect:
-	"""Create a sword TextureRect rendered as a top-level sprite at global position.
-	Top-level avoids parent layout/anchors resizing the sword to the screen."""
+	"""Create a sword TextureRect in this panel's local space."""
 	var sword := TextureRect.new()
 	add_child(sword)
-	sword.top_level = true
 	sword.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_KEEP_SIZE)
 	sword.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sword.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -502,7 +500,7 @@ func _create_sword_sprite(sword_size: Vector2, start_pos: Vector2) -> TextureRec
 	sword.size = sword_size
 	sword.pivot_offset = sword_size / 2
 	sword.z_index = 100
-	sword.global_position = start_pos - sword_size / 2
+	sword.position = start_pos - sword_size / 2
 	return sword
 
 func apply_action_health_changes(action: GameInfo.CombatLogEntry):

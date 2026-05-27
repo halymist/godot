@@ -330,6 +330,15 @@ func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, 
 	"""Merge new data with existing JSON and save"""
 	var json_path = _get_json_path(data_type)
 	var id_field = _get_id_field(data_type)
+
+	if data_type == "talents":
+		var ordered_talents: Array = []
+		for item in new_data:
+			if item is Dictionary:
+				ordered_talents.append(item)
+		_save_json_file(json_path, ordered_talents)
+		set_local_version(data_type, new_version)
+		return
 	
 	# Load existing data
 	var existing_data = _load_json_file(json_path)
@@ -784,9 +793,24 @@ func _load_talents_database() -> TalentsDatabase:
 		talent.perk_slot = item.get("perk_slot", false)
 		talent.effect_id = item.get("effect_id", 0)
 		talent.factor = item.get("factor", 0.0)
+		talent.row = int(item.get("row", 0))
+		talent.col = int(item.get("col", 0))
 		db.talents.append(talent)
+
+	if _talents_have_grid_positions(db.talents):
+		db.talents.sort_custom(func(a: TalentResource, b: TalentResource):
+			if a.row != b.row:
+				return a.row < b.row
+			return a.col < b.col
+		)
 	
 	return db
+
+func _talents_have_grid_positions(talents_data: Array[TalentResource]) -> bool:
+	for talent in talents_data:
+		if talent.row != 0 or talent.col != 0:
+			return true
+	return false
 
 func _parse_quest_stat_type(value) -> int:
 	if value is int or value is float:

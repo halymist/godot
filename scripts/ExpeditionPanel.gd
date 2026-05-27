@@ -2,20 +2,22 @@ extends TextureRect
 
 const EXPEDITION_QUEST_START_COST: int = 30
 const LOW_HEALTH_WARNING_RATIO: float = 0.10
-const NODE_BUTTON_SIZE: Vector2 = Vector2(42, 42)
+const NODE_BUTTON_SIZE: Vector2 = Vector2(32, 32)
 const CAMERA_MOVE_DURATION: float = 0.28
 const MAP_PAN_ZOOM: float = 1.12
 const EMBARK_ACTION_TEXT: String = "Embark"
-const NODE_BORDER_WIDTH: int = 2
-const NODE_AVAILABLE_FILL: Color = Color(0.89, 0.70, 0.28, 0.98)
-const NODE_AVAILABLE_BORDER: Color = Color(1.00, 0.90, 0.55, 1.0)
-const NODE_COMPLETED_FILL: Color = Color(0.34, 0.38, 0.42, 0.98)
-const NODE_COMPLETED_BORDER: Color = Color(0.54, 0.58, 0.62, 1.0)
-const NODE_SELECTED_BORDER: Color = Color(0.98, 0.98, 0.98, 1.0)
+const NODE_BORDER_WIDTH: int = 1
+const NODE_AVAILABLE_FILL: Color = Color(0.42, 0.30, 0.14, 0.96)
+const NODE_AVAILABLE_BORDER: Color = Color(0.95, 0.75, 0.38, 1.0)
+const NODE_COMPLETED_FILL: Color = Color(0.18, 0.22, 0.24, 0.94)
+const NODE_COMPLETED_BORDER: Color = Color(0.55, 0.58, 0.54, 0.9)
+const NODE_SELECTED_BORDER: Color = Color(1.0, 0.92, 0.62, 1.0)
+const BOTTOM_UI_MARGIN: float = 104.0
 const COLOR_PRICE_NORMAL: Color = Color(0.85, 0.8, 0.7, 1.0)
 const COLOR_PRICE_MISSING: Color = Color(1.0, 0.25, 0.2, 1.0)
 
 @export var health_bar: TextureProgressBar
+@export var map_area: Control
 @export var node_overlay_panel: Control
 @export var node_description_label: Label
 @export var node_action_button: Button
@@ -133,8 +135,8 @@ func _draw():
 		var node_b = current_expedition.get_node(edge.node_b)
 		if not node_a or not node_b:
 			continue
-		var color = Color(0.88, 0.78, 0.48, 0.9) if edge.node_a in completed_ids and edge.node_b in completed_ids else Color(0.75, 0.75, 0.75, 0.55)
-		draw_line(_node_position(node_a), _node_position(node_b), color, 3.0, true)
+		var color = Color(0.74, 0.58, 0.32, 0.78) if edge.node_a in completed_ids and edge.node_b in completed_ids else Color(0.63, 0.58, 0.50, 0.42)
+		draw_line(_node_position_on_panel(node_a), _node_position_on_panel(node_b), color, 2.0, true)
 
 func _add_node_button(node: Resource, completed: bool):
 	var button = Button.new()
@@ -146,12 +148,12 @@ func _add_node_button(node: Resource, completed: bool):
 	button.set_meta("completed", completed)
 	_apply_node_visual(button, completed, false)
 	button.pressed.connect(_on_node_pressed.bind(node, completed))
-	add_child(button)
+	_get_map_parent().add_child(button)
 	node_buttons[node.node_id] = button
 	_position_node_button(button, node)
 
 func _position_node_button(button: Button, node: Resource):
-	var center = _node_position(node)
+	var center = _node_position_in_map(node)
 	button.position = center - button.size * 0.5
 
 func _make_node_style(fill_color: Color, border_color: Color) -> StyleBoxFlat:
@@ -166,6 +168,8 @@ func _make_node_style(fill_color: Color, border_color: Color) -> StyleBoxFlat:
 	style.corner_radius_top_right = int(NODE_BUTTON_SIZE.x / 2.0)
 	style.corner_radius_bottom_left = int(NODE_BUTTON_SIZE.x / 2.0)
 	style.corner_radius_bottom_right = int(NODE_BUTTON_SIZE.x / 2.0)
+	style.shadow_color = Color(0, 0, 0, 0.35)
+	style.shadow_size = 3
 	return style
 
 func _apply_node_visual(button: Button, completed: bool, selected: bool):
@@ -190,8 +194,11 @@ func _refresh_node_visual_states():
 		var is_selected = int(node_id) == selected_node_id
 		_apply_node_visual(button, completed, is_selected)
 
-func _node_position(node: Resource) -> Vector2:
+func _node_position_in_map(node: Resource) -> Vector2:
 	return _world_to_screen(_node_world_position(node))
+
+func _node_position_on_panel(node: Resource) -> Vector2:
+	return _map_origin() + _node_position_in_map(node)
 
 func _notification(what):
 	if what == NOTIFICATION_RESIZED and current_expedition:
@@ -337,14 +344,16 @@ func _ensure_map_view():
 	if map_view and is_instance_valid(map_view):
 		return
 
+	var parent = _get_map_parent()
+	parent.clip_contents = true
+
 	map_view = TextureRect.new()
 	map_view.name = "MapView"
 	map_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	map_view.stretch_mode = TextureRect.STRETCH_SCALE
 	map_view.z_index = 0
-	add_child(map_view)
-	move_child(map_view, 0)
-	clip_contents = true
+	parent.add_child(map_view)
+	parent.move_child(map_view, 0)
 
 func _setup_node_overlay():
 	if node_action_button and not node_action_button.pressed.is_connected(_on_embark_button_pressed):
@@ -454,7 +463,7 @@ func _apply_node_selection(node: Resource, completed: bool, center_camera: bool)
 func _reset_camera_to_map_center():
 	map_image_size = _get_map_image_size()
 	if map_image_size.x <= 0.0 or map_image_size.y <= 0.0:
-		camera_center_px = size * 0.5
+		camera_center_px = _map_viewport_size() * 0.5
 		return
 	camera_center_px = map_image_size * 0.5
 
@@ -463,7 +472,21 @@ func _get_map_image_size() -> Vector2:
 		return current_expedition.map_texture.get_size()
 	if map_view and map_view.texture:
 		return map_view.texture.get_size()
-	return Vector2(max(size.x, 1.0), max(size.y, 1.0))
+	return Vector2(max(_map_viewport_size().x, 1.0), max(_map_viewport_size().y, 1.0))
+
+func _map_viewport_size() -> Vector2:
+	if map_area and is_instance_valid(map_area):
+		return Vector2(max(1.0, map_area.size.x), max(1.0, map_area.size.y))
+	var bottom_height = BOTTOM_UI_MARGIN
+	if node_overlay_panel and is_instance_valid(node_overlay_panel):
+		bottom_height = max(bottom_height, size.y - node_overlay_panel.position.y)
+	return Vector2(size.x, max(1.0, size.y - bottom_height))
+
+func _get_map_parent() -> Control:
+	return map_area if map_area and is_instance_valid(map_area) else self
+
+func _map_origin() -> Vector2:
+	return map_area.position if map_area and is_instance_valid(map_area) else Vector2.ZERO
 
 func _update_map_view_transform():
 	if not map_view:
@@ -476,7 +499,7 @@ func _update_map_view_transform():
 	if map_image_size.x <= 0.0 or map_image_size.y <= 0.0:
 		return
 
-	var viewport_size = size
+	var viewport_size = _map_viewport_size()
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return
 
@@ -492,7 +515,7 @@ func _update_map_view_transform():
 	map_view.size = map_image_size * map_base_scale
 
 func _clamp_camera_center(center_px: Vector2) -> Vector2:
-	var viewport_size = size
+	var viewport_size = _map_viewport_size()
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return center_px
 
@@ -534,7 +557,7 @@ func _uses_percent_node_positions() -> bool:
 	return false
 
 func _world_to_screen(world_pos: Vector2) -> Vector2:
-	return (world_pos - camera_center_px) * map_base_scale + size * 0.5
+	return (world_pos - camera_center_px) * map_base_scale + _map_viewport_size() * 0.5
 
 func _center_camera_on_node(node: Resource):
 	var target_center = _clamp_camera_center(_node_world_position(node))

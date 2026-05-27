@@ -91,6 +91,7 @@ var current_panel: Control = null
 var current_panel_overlay: Control = null
 var chat_overlay_active: bool = false
 var overlay_stack: Array[Control] = []
+var navigation_warning: Control = null
 var is_new_day_transitioning: bool = false
 var _new_day_transition_started_at_ms: int = 0
 const NEW_DAY_MIN_TRANSITION_SECONDS: float = 1.5
@@ -100,6 +101,23 @@ const Z_INDEX_INCREMENT: int = 10
 # Inactivity timeout (returns to lobby after 5 minutes of no input)
 const INACTIVITY_TIMEOUT: float = 300.0
 var inactivity_timer: Timer
+const SHARED_ACTION_BUTTON_NAMES := {
+	"TemperButton": true,
+	"EnchantButton": true,
+	"BlessButton": true,
+	"BrewButton": true,
+	"TalentsRow": true,
+	"Strength": true,
+	"Stamina": true,
+	"Agility": true,
+	"Luck": true,
+	"EnterDungeonButton": true,
+	"SkipButton": true,
+	"embarkbutton": true,
+	"ResetButton": true
+}
+const SHARED_BUTTON_TEXT_COLOR := Color(0.92, 0.84, 0.68, 1.0)
+const SHARED_BUTTON_DISABLED_TEXT_COLOR := Color(0.55, 0.50, 0.42, 1.0)
 
 # ============================================================================
 # INITIALIZATION
@@ -110,6 +128,7 @@ func _enter_tree():
 
 func _ready():
 	_connect_buttons()
+	call_deferred("_apply_shared_button_styles")
 	update_display()
 	_initialize_starter_panel()
 	if GameInfo.current_player:
@@ -156,6 +175,64 @@ func _connect_buttons():
 		btn.button_up.connect(func(): btn.modulate = default_color)
 	
 	# Fight button is handled by Arena.gd - it sends request to server, waits for response, then shows combat panel
+
+func _apply_shared_button_styles():
+	var root_node = get_tree().current_scene if get_tree().current_scene else get_tree().root
+	_apply_shared_button_styles_recursive(root_node)
+
+func _apply_shared_button_styles_recursive(node: Node):
+	if node is Button and _should_use_shared_action_style(node):
+		_apply_shared_action_button_style(node as Button)
+	for child in node.get_children():
+		_apply_shared_button_styles_recursive(child)
+
+func _should_use_shared_action_style(node: Node) -> bool:
+	if SHARED_ACTION_BUTTON_NAMES.has(node.name):
+		return true
+	return node is Button and node.has_node("Content") and (node.get_node("Content").get_node_or_null("ActionLabel") or node.get_node("Content").get_node_or_null("PriceLabel"))
+
+func _apply_shared_action_button_style(button: Button):
+	button.custom_minimum_size.y = max(button.custom_minimum_size.y, 42.0)
+	button.flat = false
+	button.add_theme_stylebox_override("normal", _make_shared_button_style(Color(0.16, 0.105, 0.055, 0.96), Color(0.70, 0.48, 0.24, 0.95), 1))
+	button.add_theme_stylebox_override("hover", _make_shared_button_style(Color(0.22, 0.145, 0.07, 0.98), Color(0.92, 0.68, 0.34, 1.0), 1))
+	button.add_theme_stylebox_override("pressed", _make_shared_button_style(Color(0.10, 0.07, 0.04, 1.0), Color(0.92, 0.68, 0.34, 1.0), 1))
+	button.add_theme_stylebox_override("disabled", _make_shared_button_style(Color(0.075, 0.065, 0.055, 0.82), Color(0.36, 0.31, 0.24, 0.9), 1))
+	button.add_theme_color_override("font_color", SHARED_BUTTON_TEXT_COLOR)
+	button.add_theme_color_override("font_hover_color", SHARED_BUTTON_TEXT_COLOR.lightened(0.08))
+	button.add_theme_color_override("font_pressed_color", SHARED_BUTTON_TEXT_COLOR.darkened(0.08))
+	button.add_theme_color_override("font_disabled_color", SHARED_BUTTON_DISABLED_TEXT_COLOR)
+	_apply_shared_button_child_text_colors(button)
+
+func _make_shared_button_style(bg_color: Color, border_color: Color, border_width: int) -> StyleBoxFlat:
+	var style = StyleBoxFlat.new()
+	style.bg_color = bg_color
+	style.border_color = border_color
+	style.border_width_left = border_width
+	style.border_width_top = border_width
+	style.border_width_right = border_width
+	style.border_width_bottom = border_width
+	style.corner_radius_top_left = 5
+	style.corner_radius_top_right = 5
+	style.corner_radius_bottom_left = 5
+	style.corner_radius_bottom_right = 5
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	style.content_margin_top = 5
+	style.content_margin_bottom = 5
+	return style
+
+func _apply_shared_button_child_text_colors(button: Button):
+	var content = button.get_node_or_null("Content")
+	if not content:
+		return
+	for child in content.get_children():
+		if child is Label:
+			(child as Label).add_theme_color_override("font_color", SHARED_BUTTON_TEXT_COLOR)
+		elif child is Container:
+			for nested_child in child.get_children():
+				if nested_child is Label:
+					(nested_child as Label).add_theme_color_override("font_color", SHARED_BUTTON_TEXT_COLOR)
 
 func _initialize_starter_panel():
 	"""Determine and show the initial panel based on player state"""
@@ -516,14 +593,34 @@ func _has_available_arena_opponents() -> bool:
 	return false
 
 func _show_navigation_warning(message: String):
-	var dialog = AcceptDialog.new()
-	dialog.title = "Arena"
-	dialog.dialog_text = message
-	dialog.exclusive = true
-	dialog.confirmed.connect(dialog.queue_free)
-	dialog.canceled.connect(dialog.queue_free)
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(260, 110))
+	if navigation_warning and is_instance_valid(navigation_warning):
+		navigation_warning.queue_free()
+
+	var panel = PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.z_index = BASE_Z_INDEX + 200
+	panel.modulate.a = 0.0
+	panel.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	panel.offset_left = 42.0
+	panel.offset_top = 86.0
+	panel.offset_right = -42.0
+	panel.offset_bottom = 128.0
+
+	var label = Label.new()
+	label.text = message
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.56, 1.0))
+	panel.add_child(label)
+
+	add_child(panel)
+	navigation_warning = panel
+
+	var tween = create_tween()
+	tween.tween_property(panel, "modulate:a", 1.0, 0.16)
+	tween.tween_interval(1.35)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.25)
+	tween.tween_callback(panel.queue_free)
 
 func handle_character_button():
 	"""Open character panel - always accessible"""

@@ -15,7 +15,6 @@ func _ready():
 		for child in get_children():
 			if child.has_method("update_button_appearance"):
 				talents.append(child)
-	_sort_talent_nodes_by_grid_position()
 	
 	reset_button.pressed.connect(_on_reset_button_pressed)
 	
@@ -25,6 +24,7 @@ func _ready():
 		UIManager.instance.game_ready.connect(_setup, CONNECT_ONE_SHOT)
 
 func _setup():
+	_apply_downloaded_talent_order()
 	display_player()
 	if not is_read_only:
 		UIManager.instance.refresh_stats()
@@ -32,19 +32,22 @@ func _setup():
 func _on_stats_changed(_stats: Dictionary):
 	update_title_label()
 
-func _sort_talent_nodes_by_grid_position():
+func _apply_downloaded_talent_order():
+	if not GameInfo.talents_db or GameInfo.talents_db.talents.is_empty():
+		return
+	var ordered_talents: Array = GameInfo.talents_db.talents
 	var column_count = max(columns, 1)
-	talents.sort_custom(func(a, b):
-		var a_id = int(a.get("talentID"))
-		var b_id = int(b.get("talentID"))
-		var a_row = int((a_id - 1) / column_count)
-		var b_row = int((b_id - 1) / column_count)
-		if a_row != b_row:
-			return a_row > b_row
-		return a_id < b_id
-	)
-	for index in range(talents.size()):
-		move_child(talents[index], index)
+	var row_count = int(ceil(float(ordered_talents.size()) / float(column_count)))
+	for visual_index in range(min(talents.size(), ordered_talents.size())):
+		var visual_row = int(visual_index / column_count)
+		var col = visual_index % column_count
+		var source_row = row_count - 1 - visual_row
+		var source_index = source_row * column_count + col
+		if source_index < 0 or source_index >= ordered_talents.size():
+			continue
+		var talent_node = talents[visual_index]
+		if talent_node.has_method("configure_from_talent_resource"):
+			talent_node.configure_from_talent_resource(ordered_talents[source_index])
 
 func refresh_all_talents():
 	for talent in talents:

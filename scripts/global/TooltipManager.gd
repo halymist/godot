@@ -6,6 +6,9 @@ const MAX_TOOLTIP_WIDTH := 260.0
 const NAME_COLOR := Color(0.90, 0.70, 0.40, 1.0)
 const TEXT_COLOR := Color(0.95, 0.90, 0.82, 1.0)
 
+func _ready():
+	_install_tooltip_popup_style()
+
 func make_item_tooltip(item: GameInfo.Item) -> Control:
 	return _make_item_tooltip_panel(item)
 
@@ -211,8 +214,8 @@ func _estimate_text_width(text: String) -> float:
 
 func _make_tooltip_style() -> StyleBoxFlat:
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.10, 0.08, 0.055, 0.92)
-	style.border_color = Color(0.72, 0.48, 0.22, 0.55)
+	style.bg_color = Color(0.08, 0.058, 0.038, 1.0)
+	style.border_color = Color(0.62, 0.42, 0.22, 1.0)
 	style.border_width_left = 1
 	style.border_width_top = 1
 	style.border_width_right = 1
@@ -221,7 +224,15 @@ func _make_tooltip_style() -> StyleBoxFlat:
 	style.corner_radius_top_right = 4
 	style.corner_radius_bottom_left = 4
 	style.corner_radius_bottom_right = 4
+	style.shadow_size = 0
 	return style
+
+func _install_tooltip_popup_style():
+	var empty_style = StyleBoxEmpty.new()
+	var theme = ThemeDB.get_default_theme()
+	if theme:
+		theme.set_stylebox("panel", "TooltipPanel", empty_style)
+		theme.set_stylebox("panel", "PopupPanel", empty_style)
 
 func show_tooltip(_item: GameInfo.Item, _slot_node: Control = null):
 	pass

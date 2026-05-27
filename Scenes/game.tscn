@@ -1351,7 +1351,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.48)
 
-[node name="WorkArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay"]
+[node name="WorkArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1684133566]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 18.0
@@ -1360,7 +1360,7 @@ offset_bottom = 170.0
 mouse_filter = 2
 color = Color(0.06, 0.045, 0.03, 0.45)
 
-[node name="EffectsArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay"]
+[node name="EffectsArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=1458862529]
 layout_mode = 0
 offset_left = 168.0
 offset_top = 18.0
@@ -5950,7 +5950,7 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="Expedition" type="TextureRect" parent="Portrait/GameScene" unique_id=1756063950 node_paths=PackedStringArray("health_bar", "node_overlay_panel", "node_description_label", "node_action_button")]
+[node name="Expedition" type="TextureRect" parent="Portrait/GameScene" unique_id=1756063950 node_paths=PackedStringArray("health_bar", "map_area", "node_overlay_panel", "node_description_label", "node_action_button")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -5962,52 +5962,62 @@ expand_mode = 1
 stretch_mode = 6
 script = ExtResource("76_expedition")
 health_bar = NodePath("../../TopUI/HealthBar")
-node_overlay_panel = NodePath("Overlay")
-node_description_label = NodePath("Overlay/NodeText")
-node_action_button = NodePath("Overlay/embarkbutton")
+map_area = NodePath("MapArea")
+node_overlay_panel = NodePath("BottomUi")
+node_description_label = NodePath("BottomUi/NodeText")
+node_action_button = NodePath("BottomUi/embarkbutton")
 currency_check_icon = ExtResource("32_ccfo7")
 
-[node name="Overlay" type="ColorRect" parent="Portrait/GameScene/Expedition" unique_id=741179801]
+[node name="MapArea" type="Control" parent="Portrait/GameScene/Expedition" unique_id=1674732615]
+clip_contents = true
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/Expedition" unique_id=741179801]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -99.0
 grow_horizontal = 2
-grow_vertical = 0
-color = Color(0, 0, 0, 0.45)
-script = ExtResource("42_umggo")
+grow_vertical = 2
+color = Color(0.03, 0.025, 0.018, 0.92)
 
-[node name="NodeText" type="Label" parent="Portrait/GameScene/Expedition/Overlay" unique_id=198877445]
+[node name="NodeText" type="Label" parent="Portrait/GameScene/Expedition/BottomUi" unique_id=198877445]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_left = 0.035
 anchor_right = 1.0
-offset_left = 14.0
-offset_top = 12.0
-offset_right = -162.0
-offset_bottom = 50.0
+anchor_bottom = 1.0
+offset_left = -0.17500019
+offset_top = 3.0
+offset_right = -12.0
+offset_bottom = -54.0
 grow_horizontal = 2
 text = "Select a node to inspect it."
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="embarkbutton" type="Button" parent="Portrait/GameScene/Expedition/Overlay" unique_id=1357070796]
+[node name="embarkbutton" type="Button" parent="Portrait/GameScene/Expedition/BottomUi" unique_id=1357070796]
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.632
-anchor_top = 0.75500005
+anchor_top = 0.5
 anchor_right = 0.632
-anchor_bottom = 0.75500005
-offset_left = 0.039993286
-offset_top = -26.74501
-offset_right = 138.04
-offset_bottom = 12.25499
+anchor_bottom = 0.5
+offset_left = 1.0399933
+offset_top = 9.0
+offset_right = 128.04
+offset_bottom = 55.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton" unique_id=1556665808]
+[node name="Content" type="HBoxContainer" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton" unique_id=1556665808]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -6016,24 +6026,24 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=1827860520]
+[node name="ActionLabel" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1827860520]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "Embark("
 
-[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=1330085669]
+[node name="PriceLabel" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1330085669]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = "10"
 
-[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=857057769]
+[node name="CurrencyIcon" type="TextureRect" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=857057769]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Expedition/Overlay/embarkbutton/Content" unique_id=1213253294]
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1213253294]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 text = ")"

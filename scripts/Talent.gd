@@ -50,6 +50,17 @@ func _load_from_database():
 	else:
 		pass
 
+func configure_from_talent_resource(talent_data: TalentResource):
+	if not talent_data:
+		return
+	talentID = talent_data.talent_id
+	talentName = talent_data.name
+	maxPoints = talent_data.max_points
+	effect_id = talent_data.effect_id
+	factor = talent_data.factor
+	perk_slot = talent_data.perk_slot
+	GameInfo.register_talent(talentID, effect_id, factor, maxPoints, perk_slot)
+
 func _setup():
 	if GameInfo.current_player != null:
 		update_from_character(GameInfo.current_player, false)
@@ -250,6 +261,8 @@ func upgrade_talent():
 		# Update UI
 		pointsLabel.text = "%d/%d" % [points, maxPoints]
 		get_parent().refresh_all_talents()
+		if get_parent().has_method("update_reset_button_state"):
+			get_parent().update_reset_button_state()
 		
 		# Refresh stats to recalculate effects
 		if UIManager.instance:
