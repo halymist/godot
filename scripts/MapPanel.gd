@@ -135,8 +135,9 @@ func _ensure_travel_ui_from_player():
 		# Expedition-node quests should keep the expedition settlement image while traveling.
 		if is_expedition_node_quest:
 			var location_data = GameInfo.settlements_db.get_location_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
-			if location_data and location_data.expedition_texture:
-				texture = location_data.expedition_texture
+			var expedition_texture = location_data.get_expedition_texture() if location_data else null
+			if expedition_texture:
+				texture = expedition_texture
 		elif quest_data:
 			var quest_background = DataManager.get_quest_background_texture(quest_data)
 			if quest_background:

@@ -72,8 +72,9 @@ func _load_location_content():
 		return
 	
 	# Apply vendor texture directly to self
-	if settlement.vendor_texture:
-		texture = settlement.vendor_texture
+	var vendor_texture = settlement.get_vendor_texture()
+	if vendor_texture:
+		texture = vendor_texture
 	
 	# Load vendor greetings from settlement
 	on_entered_greetings = settlement.get_vendor_on_entered_lines()

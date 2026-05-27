@@ -74,8 +74,9 @@ func _load_village_background():
 	var settlement = GameInfo.settlements_db.get_settlement_by_id(location_id)
 	
 	# Apply settlement texture directly to self as village background
-	if settlement and settlement.settlement_texture:
-		texture = settlement.settlement_texture
+	var settlement_texture = settlement.get_settlement_texture() if settlement else null
+	if settlement_texture:
+		texture = settlement_texture
 	
 	# Update location name label in overlay
 	if location_label and settlement:

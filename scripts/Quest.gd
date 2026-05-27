@@ -3,7 +3,7 @@ extends TextureRect
 # Eldrum-style scrolling quest display
 @export var text_container: Node  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
-@export var reward_label: Label  # Label to display quest rewards
+@export var reward_label: RichTextLabel  # Label to display quest rewards
 @export var quest_text: Label
 @export var health_bar: TextureProgressBar
 @export var effects_container: Control
@@ -73,6 +73,7 @@ const STAT_ICON_MAP = {
 const POTION_REWARD_DURATION_SECONDS: float = 48.0 * 60.0 * 60.0
 const COLOR_PRICE_NORMAL: Color = Color(0.85, 0.8, 0.7, 1.0)
 const COLOR_PRICE_MISSING: Color = Color(1.0, 0.25, 0.2, 1.0)
+const REWARD_HIGHLIGHT_COLOR := "#e6b366"
 
 func _ready():
 	# Always connect to visibility changes
@@ -279,7 +280,6 @@ func apply_option_reward(option: QuestOption):
 	# New server format: individual reward fields
 	if option.reward_silver > 0:
 		UIManager.instance.update_silver(option.reward_silver)
-		GameInfo.current_player.silver += option.reward_silver
 		reward_text = "You receive " + str(option.reward_silver) + " silver."
 	
 	if option.reward_stat_type > 0 and option.reward_stat_amount > 0:
@@ -334,7 +334,6 @@ func apply_option_reward(option: QuestOption):
 		match option.reward_type:
 			QuestOption.RewardType.SILVER:
 				UIManager.instance.update_silver(option.reward_amount)
-				GameInfo.current_player.silver += option.reward_amount
 				reward_text = "You receive " + str(option.reward_amount) + " silver."
 			
 			QuestOption.RewardType.ITEM:
@@ -384,12 +383,46 @@ func apply_option_reward(option: QuestOption):
 	
 	# Display reward text
 	if reward_text != "":
-		reward_label.text = reward_text
+		_set_reward_text(reward_text)
 	else:
 		reward_label.text = ""
 
 	_update_health_bar()
 	_update_effects_bar_visibility()
+
+func _set_reward_text(reward_text: String):
+	if not reward_label:
+		return
+	reward_label.bbcode_enabled = true
+	reward_label.text = _highlight_reward_segment(reward_text)
+
+func _highlight_reward_segment(reward_text: String) -> String:
+	var highlighted_text = _extract_reward_highlight(reward_text)
+	var escaped_text = _escape_bbcode(reward_text)
+	if highlighted_text == "":
+		return escaped_text
+	var escaped_highlight = _escape_bbcode(highlighted_text)
+	return escaped_text.replace(escaped_highlight, "[color=%s]%s[/color]" % [REWARD_HIGHLIGHT_COLOR, escaped_highlight])
+
+func _extract_reward_highlight(reward_text: String) -> String:
+	var text_value = reward_text.strip_edges()
+	if text_value.begins_with("You receive the perk: "):
+		return _trim_sentence_end(text_value.trim_prefix("You receive the perk: "))
+	if text_value.begins_with("You receive a blessing: "):
+		return _trim_sentence_end(text_value.trim_prefix("You receive a blessing: "))
+	if text_value.begins_with("You receive a potion: "):
+		return _trim_sentence_end(text_value.trim_prefix("You receive a potion: "))
+	if text_value.begins_with("You receive "):
+		return _trim_sentence_end(text_value.trim_prefix("You receive "))
+	if text_value.begins_with("You already have this perk (") and text_value.ends_with(")."):
+		return text_value.substr(28, text_value.length() - 31)
+	return ""
+
+func _trim_sentence_end(text_value: String) -> String:
+	return text_value.left(text_value.length() - 1) if text_value.ends_with(".") else text_value
+
+func _escape_bbcode(text_value: String) -> String:
+	return text_value.replace("[", "[lb]").replace("]", "[rb]")
 
 func _update_health_bar():
 	if not health_bar or not GameInfo.current_player:

@@ -10,6 +10,11 @@ extends Resource
 
 var map_texture: Texture2D = null
 
+func get_map_texture() -> Texture2D:
+	if not map_texture and map_asset_id > 0:
+		map_texture = DataManager.load_asset_texture("expedition-maps", map_asset_id)
+	return map_texture
+
 func get_node(node_id: int) -> Resource:
 	for node in nodes:
 		if node.node_id == node_id:

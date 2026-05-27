@@ -86,8 +86,9 @@ func _load_arena_background():
 	var settlement_id = GameInfo.current_player.location
 	var settlement = GameInfo.settlements_db.get_location_by_id(settlement_id)
 	
-	if settlement and settlement.arena_background:
-		texture = settlement.arena_background
+	var arena_background = settlement.get_arena_background() if settlement else null
+	if arena_background:
+		texture = arena_background
 	else:
 		pass
 

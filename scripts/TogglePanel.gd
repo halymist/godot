@@ -501,7 +501,7 @@ func handle_arena_button():
 	if is_navigation_blocked():
 		return
 	if not _has_available_arena_opponents():
-		_show_navigation_warning("No arena opponents yet.")
+		_show_button_warning(arena_button, "No arena opponents yet.")
 		return
 	if current_panel == arena_panel:
 		return
@@ -545,6 +545,42 @@ func _show_navigation_warning(message: String):
 	tween.tween_interval(1.35)
 	tween.tween_property(panel, "modulate:a", 0.0, 0.25)
 	tween.tween_callback(panel.queue_free)
+
+func _show_button_warning(anchor: Control, message: String):
+	if navigation_warning and is_instance_valid(navigation_warning):
+		navigation_warning.queue_free()
+	if not anchor or not is_instance_valid(anchor):
+		_show_navigation_warning(message)
+		return
+
+	var parent = anchor.get_parent() as Control
+	if not parent:
+		_show_navigation_warning(message)
+		return
+
+	var label = Label.new()
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = BASE_Z_INDEX + 200
+	label.text = message
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.56, 1.0))
+	label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
+	label.add_theme_constant_override("shadow_offset_x", 1)
+	label.add_theme_constant_override("shadow_offset_y", 1)
+	label.custom_minimum_size = Vector2(190.0, 24.0)
+	parent.add_child(label)
+
+	var start_position = anchor.position + Vector2((anchor.size.x - label.custom_minimum_size.x) * 0.5, -26.0)
+	label.position = start_position
+	label.modulate.a = 0.0
+	navigation_warning = label
+
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "position:y", start_position.y - 24.0, 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 1.0, 0.12)
+	tween.chain().tween_property(label, "modulate:a", 0.0, 0.28)
+	tween.tween_callback(label.queue_free)
 
 func handle_character_button():
 	"""Open character panel - always accessible"""
@@ -736,6 +772,8 @@ func update_silver(amount: int):
 	GameInfo.current_player.silver += amount
 	update_display()
 	top_ui.update_display()
+	if top_ui and top_ui.has_method("show_silver_delta"):
+		top_ui.show_silver_delta(amount)
 
 func update_mushrooms(amount: int):
 	"""Add or subtract mushrooms and update all displays (account-level)"""

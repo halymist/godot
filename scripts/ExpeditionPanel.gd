@@ -378,7 +378,7 @@ func _set_action_button_state(text_value: String, enabled: bool, show_price: boo
 		if action_label and price_label and currency_icon and closing_paren:
 			node_action_button.text = ""
 			node_action_button.icon = null
-			action_label.text = "%s(" % text_value if show_price else text_value
+			action_label.text = "%s (" % text_value if show_price else text_value
 			price_label.text = str(EXPEDITION_QUEST_START_COST)
 			price_label.visible = show_price
 			price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if _can_afford_embark() else COLOR_PRICE_MISSING)
@@ -468,8 +468,9 @@ func _reset_camera_to_map_center():
 	camera_center_px = map_image_size * 0.5
 
 func _get_map_image_size() -> Vector2:
-	if current_expedition and current_expedition.map_texture:
-		return current_expedition.map_texture.get_size()
+	var expedition_map_texture = current_expedition.get_map_texture() if current_expedition else null
+	if expedition_map_texture:
+		return expedition_map_texture.get_size()
 	if map_view and map_view.texture:
 		return map_view.texture.get_size()
 	return Vector2(max(_map_viewport_size().x, 1.0), max(_map_viewport_size().y, 1.0))
@@ -492,8 +493,9 @@ func _update_map_view_transform():
 	if not map_view:
 		return
 
-	if current_expedition and current_expedition.map_texture:
-		map_view.texture = current_expedition.map_texture
+	var expedition_map_texture = current_expedition.get_map_texture() if current_expedition else null
+	if expedition_map_texture:
+		map_view.texture = expedition_map_texture
 
 	map_image_size = _get_map_image_size()
 	if map_image_size.x <= 0.0 or map_image_size.y <= 0.0:

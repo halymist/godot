@@ -634,9 +634,6 @@ func _load_expeditions_database() -> ExpeditionsDatabase:
 		expedition.version = int(item.get("version", 0))
 		db.version = max(db.version, expedition.version)
 
-		if expedition.map_asset_id > 0:
-			expedition.map_texture = load_asset_texture("expedition-maps", expedition.map_asset_id)
-
 		var nodes_data = item.get("nodes", [])
 		for node_data in nodes_data:
 			var node = load("res://scripts/resources/ExpeditionNode.gd").new()
@@ -726,18 +723,6 @@ func _load_settlements_database() -> SettlementsDatabase:
 			settlement.blessing1 = utility_data.get("blessing1", 0)
 			settlement.blessing2 = utility_data.get("blessing2", 0)
 			settlement.blessing3 = utility_data.get("blessing3", 0)
-		
-		# Load textures from cache
-		if settlement.settlement_asset_id > 0:
-			settlement.settlement_texture = load_asset_texture("settlements", settlement.settlement_asset_id)
-		if settlement.expedition_asset_id > 0:
-			settlement.expedition_texture = load_asset_texture("settlements", settlement.expedition_asset_id)
-		if settlement.vendor_asset_id > 0:
-			settlement.vendor_texture = load_asset_texture("settlements", settlement.vendor_asset_id)
-		if settlement.utility_asset_id > 0:
-			settlement.utility_texture = load_asset_texture("settlements", settlement.utility_asset_id)
-		if settlement.arena_asset_id > 0:
-			settlement.arena_background = load_asset_texture("settlements", settlement.arena_asset_id)
 		
 		db.settlements.append(settlement)
 	

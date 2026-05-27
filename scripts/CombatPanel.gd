@@ -654,8 +654,9 @@ func set_combat_background():
 	
 	# Get location data from settlements database
 	var location_data = GameInfo.settlements_db.get_location_by_id(location) if GameInfo.settlements_db else null
-	if location_data and location_data.arena_background:
-		texture = location_data.arena_background
+	var arena_background = location_data.get_arena_background() if location_data else null
+	if arena_background:
+		texture = arena_background
 
 func _on_visibility_changed():
 	if visible and is_prepared:

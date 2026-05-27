@@ -72,8 +72,9 @@ func _load_location_content():
 		return
 	
 	# Apply utility texture directly to self
-	if settlement.utility_texture:
-		texture = settlement.utility_texture
+	var utility_texture = settlement.get_utility_texture()
+	if utility_texture:
+		texture = utility_texture
 	
 	# Load utility greetings from settlement
 	on_entered_greetings = settlement.get_utility_on_entered_lines()

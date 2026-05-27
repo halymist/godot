@@ -49,6 +49,31 @@ var utility_texture: Texture2D = null
 var arena_background: Texture2D = null
 var settlement_texture: Texture2D = null  # Map icon/thumbnail
 
+func get_expedition_texture() -> Texture2D:
+	if not expedition_texture and expedition_asset_id > 0:
+		expedition_texture = DataManager.load_asset_texture("settlements", expedition_asset_id)
+	return expedition_texture
+
+func get_vendor_texture() -> Texture2D:
+	if not vendor_texture and vendor_asset_id > 0:
+		vendor_texture = DataManager.load_asset_texture("settlements", vendor_asset_id)
+	return vendor_texture
+
+func get_utility_texture() -> Texture2D:
+	if not utility_texture and utility_asset_id > 0:
+		utility_texture = DataManager.load_asset_texture("settlements", utility_asset_id)
+	return utility_texture
+
+func get_arena_background() -> Texture2D:
+	if not arena_background and arena_asset_id > 0:
+		arena_background = DataManager.load_asset_texture("settlements", arena_asset_id)
+	return arena_background
+
+func get_settlement_texture() -> Texture2D:
+	if not settlement_texture and settlement_asset_id > 0:
+		settlement_texture = DataManager.load_asset_texture("settlements", settlement_asset_id)
+	return settlement_texture
+
 # Backwards compatibility aliases
 var location_id: int:
 	get: return settlement_id

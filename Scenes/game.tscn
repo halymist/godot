@@ -652,6 +652,7 @@ slot_type = "Blacksmith"
 slot_id = 16
 
 [node name="TemperButton" type="Button" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea" unique_id=2099627824]
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -660,7 +661,7 @@ anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -162.0
 offset_top = -47.0
-offset_right = -46.0
+offset_right = -12.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -673,12 +674,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content" unique_id=1297387163]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Temper:"
+text = "Temper ("
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content" unique_id=1930713231]
 layout_mode = 2
@@ -691,6 +693,11 @@ layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea/TemperButton/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+text = ")"
 
 [node name="StatsContainer" type="VBoxContainer" parent="Portrait/GameScene/BlacksmithPanel/Overlay/ItemArea" unique_id=1140288948]
 layout_mode = 1
@@ -795,16 +802,17 @@ offset_right = -12.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
+alignment = 1
 
 [node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content" unique_id=1106072954]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Talents: 0"
+text = "Talents: 0 ("
 vertical_alignment = 1
 
 [node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content" unique_id=264166365]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 1
 
 [node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content/Cost" unique_id=164166365]
 layout_mode = 2
@@ -817,6 +825,11 @@ layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/TalentsRow/Content/Cost"]
+layout_mode = 2
+text = ")"
+vertical_alignment = 1
 
 [node name="Stamina" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=119844006]
 layout_mode = 1
@@ -844,16 +857,17 @@ offset_right = -12.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
+alignment = 1
 
 [node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content" unique_id=512675581]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Stamina: 0"
+text = "Stamina: 0 ("
 vertical_alignment = 1
 
 [node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content" unique_id=1794893648]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 1
 
 [node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content/Cost" unique_id=-1500073648]
 layout_mode = 2
@@ -866,6 +880,11 @@ layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Stamina/Content/Cost"]
+layout_mode = 2
+text = ")"
+vertical_alignment = 1
 
 [node name="Strength" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=2040420223]
 layout_mode = 1
@@ -893,16 +912,17 @@ offset_right = -12.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
+alignment = 1
 
 [node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content" unique_id=2138295080]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Strength: 0"
+text = "Strength: 0 ("
 vertical_alignment = 1
 
 [node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content" unique_id=214195196]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 1
 
 [node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content/Cost" unique_id=314195196]
 layout_mode = 2
@@ -915,6 +935,11 @@ layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Strength/Content/Cost"]
+layout_mode = 2
+text = ")"
+vertical_alignment = 1
 
 [node name="Agility" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=203510681]
 layout_mode = 1
@@ -942,16 +967,17 @@ offset_right = -12.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
+alignment = 1
 
 [node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content" unique_id=188230]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Agility: 0"
+text = "Agility: 0 ("
 vertical_alignment = 1
 
 [node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content" unique_id=1299448692]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 1
 
 [node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content/Cost" unique_id=-1995518604]
 layout_mode = 2
@@ -964,6 +990,11 @@ layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Agility/Content/Cost"]
+layout_mode = 2
+text = ")"
+vertical_alignment = 1
 
 [node name="Luck" type="Button" parent="Portrait/GameScene/TrainerPanel/Overlay" unique_id=1925057535]
 layout_mode = 1
@@ -991,16 +1022,17 @@ offset_right = -12.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
+alignment = 1
 
 [node name="StatLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content" unique_id=732985266]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Luck: 0"
+text = "Luck: 0 ("
 vertical_alignment = 1
 
 [node name="Cost" type="HBoxContainer" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content" unique_id=670560229]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 1
 
 [node name="CostLabel" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content/Cost" unique_id=770560229]
 layout_mode = 2
@@ -1013,6 +1045,11 @@ layout_mode = 2
 texture = ExtResource("32_ccfo7")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ClosingParen" type="Label" parent="Portrait/GameScene/TrainerPanel/Overlay/Luck/Content/Cost"]
+layout_mode = 2
+text = ")"
+vertical_alignment = 1
 
 [node name="ChurchPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=530690828 node_paths=PackedStringArray("chat_bubble", "blessing_slot_1", "blessing_slot_2", "blessing_slot_3", "effect_description_label", "bless_button")]
 visible = false
@@ -1151,6 +1188,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/ChurchPanel/Overlay/BlessButton/Content" unique_id=1873395571]
@@ -1267,9 +1305,9 @@ text = "Ingredient 2"
 vertical_alignment = 1
 
 [node name="BrewButton" type="Button" parent="Portrait/GameScene/AlchemistPanel/Overlay" unique_id=1652052982]
-custom_minimum_size = Vector2(100, 50)
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 0
-offset_left = 286.0
+offset_left = 248.0
 offset_top = 77.0
 offset_right = 398.0
 offset_bottom = 140.0
@@ -1285,6 +1323,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/AlchemistPanel/Overlay/BrewButton/Content" unique_id=1674635301]
@@ -1395,7 +1434,7 @@ slot_type = "Enchanter"
 slot_id = 15
 
 [node name="EnchantButton" type="Button" parent="Portrait/GameScene/EnchanterPanel/Overlay" unique_id=185023961]
-custom_minimum_size = Vector2(100, 30)
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1404,8 +1443,8 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -181.5
 offset_top = -8.0
-offset_right = -46.5
-offset_bottom = 34.0
+offset_right = -31.5
+offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
@@ -1417,6 +1456,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/EnchanterPanel/Overlay/EnchantButton/Content" unique_id=1184880682]
@@ -2652,6 +2692,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/EnterDungeonButton/Content" unique_id=280922725]
@@ -2702,6 +2743,7 @@ anchor_bottom = 1.0
 offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/Map/Overlay/TravelBarContainer/SkipButton/Content" unique_id=721520162]
@@ -3110,6 +3152,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/TalentsPanel/Title/ResetButton/Content" unique_id=352516980]
@@ -5953,9 +5996,11 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 2
 
-[node name="Reward" type="Label" parent="Portrait/GameScene/Quest/Overlay/BottomContainer" unique_id=2116159764]
+[node name="Reward" type="RichTextLabel" parent="Portrait/GameScene/Quest/Overlay/BottomContainer" unique_id=2116159764]
 layout_mode = 2
 theme_override_constants/line_spacing = 10
+bbcode_enabled = true
+fit_content = true
 
 [node name="OptionsContainer" type="VBoxContainer" parent="Portrait/GameScene/Quest/Overlay/BottomContainer" unique_id=59936774]
 layout_mode = 2
@@ -6037,12 +6082,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 1
 alignment = 1
 
 [node name="ActionLabel" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1827860520]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-text = "Embark("
+text = "Embark ("
 
 [node name="PriceLabel" type="Label" parent="Portrait/GameScene/Expedition/BottomUi/embarkbutton/Content" unique_id=1330085669]
 layout_mode = 2

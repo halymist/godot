@@ -14,6 +14,9 @@ extends Control
 
 var update_timer: Timer
 
+const SILVER_GAIN_COLOR := Color(0.35, 1.0, 0.45, 1.0)
+const SILVER_LOSS_COLOR := Color(1.0, 0.24, 0.18, 1.0)
+
 func _ready():
 	
 	# Hide info panel initially
@@ -88,6 +91,29 @@ func update_display():
 
 	# Update health bar
 	update_health_bar()
+
+func show_silver_delta(amount: int):
+	if amount == 0 or not gold_label or not is_instance_valid(gold_label):
+		return
+
+	var delta_label = Label.new()
+	delta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	delta_label.z_index = 100
+	delta_label.text = "%+d" % amount
+	delta_label.add_theme_color_override("font_color", SILVER_GAIN_COLOR if amount > 0 else SILVER_LOSS_COLOR)
+	delta_label.add_theme_font_size_override("font_size", 18)
+	add_child(delta_label)
+
+	var local_start = gold_label.global_position - global_position + Vector2(gold_label.size.x + 8.0, -2.0)
+	delta_label.position = local_start
+	delta_label.modulate.a = 0.0
+
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(delta_label, "position:y", local_start.y - 28.0, 0.75).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(delta_label, "modulate:a", 1.0, 0.12)
+	tween.chain().tween_property(delta_label, "modulate:a", 0.0, 0.28)
+	tween.tween_callback(delta_label.queue_free)
 
 func update_health_bar():
 	"""Update the shared health bar from current player stats."""
