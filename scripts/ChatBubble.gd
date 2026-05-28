@@ -3,8 +3,7 @@ class_name ChatBubble
 
 var timer_id: int = 0
 var _has_custom_bounds: bool = false
-# Two opposite corners of the msg_rect in source texture pixel space
-# (server sends bottom-left + top-right).
+# Two opposite corners of the backend msg_rect, stored as top-left percentage corners.
 var _bounds_corner_a: Vector2 = Vector2.ZERO
 var _bounds_corner_b: Vector2 = Vector2.ZERO
 
@@ -22,47 +21,30 @@ func clear_message_bounds():
 func show_with_text(bubble_text: String, duration: float = 4.0):
 	show_dialogue(bubble_text, duration)
 
-# Convert a Rect2 from source-texture pixel coords to parent (panel) local
-# coords, accounting for the parent TextureRect's stretch mode. Returns the
-# input rect unchanged when no conversion is possible.
-func _texture_rect_to_panel_local(rect_in_tex: Rect2) -> Rect2:
-	var parent = get_parent()
-	if not (parent is TextureRect) or parent.texture == null:
-		return rect_in_tex
+func _percent_bounds_to_parent_local() -> Rect2:
+	var parent_control = get_parent() as Control
+	if not parent_control:
+		return Rect2()
 
-	var tex_size: Vector2 = parent.texture.get_size()
-	if tex_size.x <= 0 or tex_size.y <= 0:
-		return rect_in_tex
+	var bounds_control: Control = parent_control
+	if parent_control.has_node("ImageArea"):
+		var image_area = parent_control.get_node("ImageArea") as Control
+		if image_area:
+			bounds_control = image_area
 
-	var panel_size: Vector2 = parent.size
-	if panel_size.x <= 0 or panel_size.y <= 0:
-		return rect_in_tex
+	var bounds_size := bounds_control.size
+	if bounds_size.x <= 0.0 or bounds_size.y <= 0.0:
+		return Rect2()
 
-	var sx := panel_size.x / tex_size.x
-	var sy := panel_size.y / tex_size.y
-	var scale_factor := 1.0
-	var offset := Vector2.ZERO
+	var left: float = min(_bounds_corner_a.x, _bounds_corner_b.x) / 100.0 * bounds_size.x
+	var top: float = min(_bounds_corner_a.y, _bounds_corner_b.y) / 100.0 * bounds_size.y
+	var width: float = abs(_bounds_corner_b.x - _bounds_corner_a.x) / 100.0 * bounds_size.x
+	var height: float = abs(_bounds_corner_b.y - _bounds_corner_a.y) / 100.0 * bounds_size.y
+	var rect_position := Vector2(left, top)
+	if bounds_control != parent_control:
+		rect_position += bounds_control.position
 
-	# StretchMode values used in the panels (see Scenes/game.tscn): stretch_mode = 6
-	# corresponds to STRETCH_KEEP_ASPECT_COVERED. Treat anything covered/centered
-	# uniformly; for KEEP we'd use 1.0 but that's not used here.
-	match int(parent.stretch_mode):
-		6: # KEEP_ASPECT_COVERED
-			scale_factor = max(sx, sy)
-		5: # KEEP_ASPECT_CENTERED
-			scale_factor = min(sx, sy)
-		4: # KEEP_ASPECT
-			scale_factor = min(sx, sy)
-		_:
-			# STRETCH (default) and others: independent x/y scaling
-			return Rect2(
-				rect_in_tex.position * Vector2(sx, sy),
-				rect_in_tex.size * Vector2(sx, sy)
-			)
-
-	var displayed := tex_size * scale_factor
-	offset = (panel_size - displayed) * 0.5
-	return Rect2(rect_in_tex.position * scale_factor + offset, rect_in_tex.size * scale_factor)
+	return Rect2(rect_position, Vector2(width, height))
 
 func show_dialogue(dialogue_text: String, duration: float = 4.0, skip_animation: bool = false):
 	text = dialogue_text
@@ -71,10 +53,7 @@ func show_dialogue(dialogue_text: String, duration: float = 4.0, skip_animation:
 	var bound_rect: Rect2 = Rect2()
 	var has_rect := false
 	if _has_custom_bounds:
-		var min_pt := Vector2(min(_bounds_corner_a.x, _bounds_corner_b.x), min(_bounds_corner_a.y, _bounds_corner_b.y))
-		var max_pt := Vector2(max(_bounds_corner_a.x, _bounds_corner_b.x), max(_bounds_corner_a.y, _bounds_corner_b.y))
-		var tex_rect := Rect2(min_pt, max_pt - min_pt)
-		bound_rect = _texture_rect_to_panel_local(tex_rect)
+		bound_rect = _percent_bounds_to_parent_local()
 		has_rect = bound_rect.size.x > 1 and bound_rect.size.y > 1
 
 	# Resolve max width for text wrapping.
@@ -92,25 +71,24 @@ func show_dialogue(dialogue_text: String, duration: float = 4.0, skip_animation:
 	var natural_width = font.get_string_size(dialogue_text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 
 	if has_rect:
-		# Always clamp to the rect width so the bubble never grows past it.
 		autowrap_mode = TextServer.AUTOWRAP_WORD
-		custom_minimum_size = Vector2(max_width, 0)
-		size = Vector2(max_width, size.y)
+		custom_minimum_size = bound_rect.size
+		size = bound_rect.size
 	elif natural_width > max_width:
 		autowrap_mode = TextServer.AUTOWRAP_WORD
-		custom_minimum_size.x = max_width
+		custom_minimum_size = Vector2(max_width, 0)
 	else:
 		autowrap_mode = TextServer.AUTOWRAP_OFF
-		custom_minimum_size.x = 0
+		custom_minimum_size = Vector2.ZERO
 
 	# Wait for layout to recalculate size.
 	await get_tree().process_frame
 
-	# Place bubble bottom-aligned within the rect (in panel-local coords).
+	# Place bubble in the exact backend-designed percent rect.
 	if has_rect:
-		var bubble_h: float = min(size.y, bound_rect.size.y)
 		set_anchors_preset(Control.PRESET_TOP_LEFT, false)
-		position = Vector2(bound_rect.position.x, bound_rect.position.y + bound_rect.size.y - bubble_h)
+		position = bound_rect.position
+		size = bound_rect.size
 	
 	# Show with animation if not already visible
 	if not skip_animation:

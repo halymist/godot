@@ -44,6 +44,7 @@ func _setup():
 
 func _on_visibility_changed():
 	if visible:
+		_load_location_content()
 		update_stats_display()
 		update_button_states()
 		_show_greeting(on_entered_greetings)

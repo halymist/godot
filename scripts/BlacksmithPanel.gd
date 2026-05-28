@@ -61,6 +61,7 @@ func _on_visibility_changed():
 	if not visible:
 		return_blacksmith_item_to_bag()
 	else:
+		_load_location_content()
 		update_stats_display()
 		_show_greeting(on_entered_greetings)
 

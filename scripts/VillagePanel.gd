@@ -38,6 +38,7 @@ extends TextureRect
 var current_quest_index: int = 0
 var available_quests: Array[int] = []
 var _utility_type: String = ""  # Track current utility type for callback
+var _secondary_utility_type: String = ""
 
 func _ready():
 	_connect_buttons()
@@ -113,47 +114,72 @@ func _setup_buttons():
 
 	# Reset utility state before selecting the active one for this settlement.
 	_utility_type = ""
+	_secondary_utility_type = ""
 	if utility_label:
 		utility_label.text = ""
 	if utility_icon:
 		utility_icon.texture = null
 	if secondary_utility_label:
-		secondary_utility_label.text = "Utility"
+		secondary_utility_label.text = ""
+	if secondary_utility_icon:
+		secondary_utility_icon.texture = null
 	if secondary_utility_button:
-		secondary_utility_button.visible = true
+		secondary_utility_button.visible = false
 		secondary_utility_button.disabled = true
 	if healer_label:
 		healer_label.text = "Healer"
 	if healer_button:
-		healer_button.visible = true
+		healer_button.visible = settlement.has_healer()
 	
 	# Vendor button - always show if available
 	if vendor_button:
 		vendor_button.visible = settlement.has_vendor()
 	
-	# Utility button - configure based on what's available
-	if utility_button:
-		if settlement.has_blacksmith():
-			_configure_utility("Blacksmith", "res://assets/images/ui/blacksmith_icon.png")
-		elif settlement.has_enchanter():
-			_configure_utility("Enchanter", "res://assets/images/ui/enchanter_icon.png")
-		elif settlement.has_alchemist():
-			_configure_utility("Alchemist", "res://assets/images/ui/alchemist_icon.png")
-		elif settlement.has_church():
-			_configure_utility("Church", "res://assets/images/ui/church_icon.png")
-		elif settlement.has_trainer():
-			_configure_utility("Trainer", "res://assets/images/ui/trainer_icon.png")
-		else:
-			utility_button.visible = false
+	_configure_utility_button(settlement.get_utility_slot(1), utility_button, utility_icon, utility_label, false)
+	_configure_utility_button(settlement.get_utility_slot(2), secondary_utility_button, secondary_utility_icon, secondary_utility_label, true)
 
-func _configure_utility(type_name: String, icon_path: String):
+func _configure_utility_button(utility_data: Dictionary, button: Button, icon: TextureRect, label: Label, is_secondary: bool):
+	if not button:
+		return
+	if utility_data.is_empty():
+		button.visible = false
+		button.disabled = true
+		return
+
+	var type_name = _utility_display_name(str(utility_data.get("type", "")))
+	var icon_path = _utility_icon_path(type_name)
+	if is_secondary:
+		_secondary_utility_type = type_name
+	else:
+		_utility_type = type_name
+	_configure_utility(button, icon, label, type_name, icon_path)
+
+func _configure_utility(button: Button, icon: TextureRect, label: Label, type_name: String, icon_path: String):
 	"""Configure the utility button appearance"""
-	_utility_type = type_name
-	if utility_label:
-		utility_label.text = type_name
-	if utility_icon and ResourceLoader.exists(icon_path):
-		utility_icon.texture = load(icon_path)
-	utility_button.visible = true
+	if label:
+		label.text = type_name
+	if icon and ResourceLoader.exists(icon_path):
+		icon.texture = load(icon_path)
+	button.visible = true
+	button.disabled = false
+
+func _utility_display_name(raw_type: String) -> String:
+	match raw_type.to_lower():
+		"blacksmith": return "Blacksmith"
+		"enchanter": return "Enchanter"
+		"alchemist": return "Alchemist"
+		"church": return "Church"
+		"trainer": return "Trainer"
+		_: return raw_type.capitalize()
+
+func _utility_icon_path(type_name: String) -> String:
+	match type_name:
+		"Blacksmith": return "res://assets/images/ui/blacksmith_icon.png"
+		"Enchanter": return "res://assets/images/ui/enchanter_icon.png"
+		"Alchemist": return "res://assets/images/ui/alchemist_icon.png"
+		"Church": return "res://assets/images/ui/church_icon.png"
+		"Trainer": return "res://assets/images/ui/trainer_icon.png"
+		_: return ""
 
 func _update_quest_display():
 	"""Update quest button to show current quest info"""
@@ -233,7 +259,16 @@ func _on_vendor_pressed():
 
 func _on_utility_pressed():
 	"""Handle utility button press based on configured type"""
-	match _utility_type:
+	_open_utility_slot(1, _utility_type)
+
+func _on_secondary_utility_pressed():
+	_open_utility_slot(2, _secondary_utility_type)
+
+func _open_utility_slot(slot: int, type_name: String):
+	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location) if GameInfo.settlements_db and GameInfo.current_player else null
+	if not settlement or not settlement.select_utility_slot(slot):
+		return
+	match type_name:
 		"Blacksmith":
 			UIManager.instance.show_panel(UIManager.instance.blacksmith_panel)
 		"Enchanter":
@@ -244,9 +279,6 @@ func _on_utility_pressed():
 			UIManager.instance.show_panel(UIManager.instance.church_panel)
 		"Trainer":
 			UIManager.instance.show_panel(UIManager.instance.trainer_panel)
-
-func _on_secondary_utility_pressed():
-	pass
 
 func _on_healer_pressed():
 	UIManager.instance.show_panel(UIManager.instance.healer_panel)

@@ -27,6 +27,14 @@ extends Resource
 @export var vendor_on_sold: Array[String] = []
 @export var vendor_on_bought: Array[String] = []
 
+# Healer
+@export var healer_asset_id: int = 0
+@export var healer_msg_bottom_left: Vector2 = Vector2.ZERO
+@export var healer_msg_bottom_right: Vector2 = Vector2.ZERO
+@export var healer_on_entered: Array[String] = []
+@export var healer_on_healed: Array[String] = []
+@export var healer_on_cured: Array[String] = []
+
 
 # Utility (one per settlement: blacksmith/alchemist/enchanter/trainer/church)
 @export var utility_type: String = ""  # "blacksmith", "alchemist", "enchanter", "trainer", "church"
@@ -36,6 +44,8 @@ extends Resource
 @export var utility_on_entered: Array[String] = []
 @export var utility_on_placed: Array[String] = []
 @export var utility_on_action: Array[String] = []
+var utilities: Array[Dictionary] = []
+var active_utility_slot: int = 1
 
 # Church-only blessings (perk IDs)
 @export var blessing1: int = 0
@@ -45,7 +55,9 @@ extends Resource
 # Runtime textures (not saved to .res)
 var expedition_texture: Texture2D = null
 var vendor_texture: Texture2D = null
+var healer_texture: Texture2D = null
 var utility_texture: Texture2D = null
+var utility_texture_asset_id: int = 0
 var arena_background: Texture2D = null
 var settlement_texture: Texture2D = null  # Map icon/thumbnail
 
@@ -59,7 +71,15 @@ func get_vendor_texture() -> Texture2D:
 		vendor_texture = DataManager.load_asset_texture("settlements", vendor_asset_id)
 	return vendor_texture
 
+func get_healer_texture() -> Texture2D:
+	if not healer_texture and healer_asset_id > 0:
+		healer_texture = DataManager.load_asset_texture("settlements", healer_asset_id)
+	return healer_texture
+
 func get_utility_texture() -> Texture2D:
+	if utility_texture_asset_id != utility_asset_id:
+		utility_texture = null
+		utility_texture_asset_id = utility_asset_id
 	if not utility_texture and utility_asset_id > 0:
 		utility_texture = DataManager.load_asset_texture("settlements", utility_asset_id)
 	return utility_texture
@@ -86,8 +106,14 @@ var expedition_text: String:
 func has_vendor() -> bool:
 	return vendor_asset_id > 0
 
+func has_healer() -> bool:
+	return healer_asset_id > 0
+
 func has_vendor_msg_rect() -> bool:
 	return vendor_msg_bottom_left != vendor_msg_bottom_right
+
+func has_healer_msg_rect() -> bool:
+	return healer_msg_bottom_left != healer_msg_bottom_right
 
 func has_utility() -> bool:
 	return utility_type != "" and utility_asset_id > 0
@@ -121,6 +147,37 @@ func has_trainer() -> bool:
 func has_church() -> bool:
 	return utility_type == "church"
 
+func get_utility_slot(slot: int) -> Dictionary:
+	for utility_data in utilities:
+		if int(utility_data.get("slot", 0)) == slot:
+			return utility_data
+	return {}
+
+func select_utility_slot(slot: int) -> bool:
+	var utility_data = get_utility_slot(slot)
+	if utility_data.is_empty():
+		return false
+	active_utility_slot = slot
+	utility_type = str(utility_data.get("type", ""))
+	utility_asset_id = int(utility_data.get("utility_asset_id", 0))
+	utility_msg_bottom_left = utility_data.get("msg_bottom_left", Vector2.ZERO)
+	utility_msg_bottom_right = utility_data.get("msg_bottom_right", Vector2.ZERO)
+	utility_on_entered = _entry_lines(utility_data, "on_entered")
+	utility_on_placed = _entry_lines(utility_data, "on_placed")
+	utility_on_action = _entry_lines(utility_data, "on_action")
+	blessing1 = int(utility_data.get("blessing1", 0))
+	blessing2 = int(utility_data.get("blessing2", 0))
+	blessing3 = int(utility_data.get("blessing3", 0))
+	return has_utility()
+
+func _entry_lines(utility_data: Dictionary, key: String) -> Array[String]:
+	var result: Array[String] = []
+	var raw_lines = utility_data.get(key, [])
+	if raw_lines is Array:
+		for line in raw_lines:
+			result.append(str(line))
+	return result
+
 # Get vendor greeting arrays (split by newlines)
 func get_vendor_on_entered_lines() -> Array[String]:
 	return _split_lines(vendor_on_entered)
@@ -130,6 +187,15 @@ func get_vendor_on_sold_lines() -> Array[String]:
 
 func get_vendor_on_bought_lines() -> Array[String]:
 	return _split_lines(vendor_on_bought)
+
+func get_healer_on_entered_lines() -> Array[String]:
+	return _split_lines(healer_on_entered)
+
+func get_healer_on_healed_lines() -> Array[String]:
+	return _split_lines(healer_on_healed)
+
+func get_healer_on_cured_lines() -> Array[String]:
+	return _split_lines(healer_on_cured)
 
 # Get utility greeting arrays (split by newlines)
 func get_utility_on_entered_lines() -> Array[String]:

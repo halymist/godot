@@ -64,6 +64,7 @@ func _on_visibility_changed():
 		return_ingredients_to_bag()
 		working_items.clear()
 	else:
+		_load_location_content()
 		_update_ingredient_descriptions()
 		_show_greeting(on_entered_greetings)
 

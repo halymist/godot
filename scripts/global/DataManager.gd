@@ -8,7 +8,7 @@ extends Node
 # Assets are downloaded and stored in user:// then applied as textures
 
 const VERSIONS_FILE = "user://data_versions.cfg"
-const LOCAL_VERSIONS_SCHEMA = 4
+const LOCAL_VERSIONS_SCHEMA = 5
 const IMAGES_DIR = "user://images/"
 const DATA_DIR = "user://data/"
 
@@ -115,6 +115,11 @@ func _load_local_versions():
 	# Migration v4: force quest redownload to include expedition-node quest additions.
 	if schema_version < 4:
 		local_versions["quests"] = 0
+		did_migrate = true
+
+	# Migration v5: world payload now includes healer and two utility slots.
+	if schema_version < 5:
+		local_versions["settlements"] = 0
 		did_migrate = true
 
 	# Persist migrated schema + versions once.
@@ -699,34 +704,77 @@ func _load_settlements_database() -> SettlementsDatabase:
 			if vendor_data.has("on_bought") and vendor_data.on_bought is Array:
 				for line in vendor_data.on_bought:
 					settlement.vendor_on_bought.append(str(line))
+
+		# Healer data
+		var healer_data = item.get("healer", {})
+		if healer_data is Dictionary:
+			settlement.healer_asset_id = int(healer_data.get("healer_asset_id", 0))
+			var healer_msg_points = _extract_msg_rect_points(healer_data.get("msg_rect", null))
+			if healer_msg_points.size() == 2:
+				settlement.healer_msg_bottom_left = healer_msg_points[0]
+				settlement.healer_msg_bottom_right = healer_msg_points[1]
+			settlement.healer_on_entered = _extract_string_array(healer_data.get("on_entered", []))
+			settlement.healer_on_healed = _extract_string_array(healer_data.get("on_healed", []))
+			settlement.healer_on_cured = _extract_string_array(healer_data.get("on_cured", []))
 		
-		# Utility data
-		var utility_data = item.get("utility", {})
-		if utility_data is Dictionary:
-			settlement.utility_type = utility_data.get("type", "")
-			settlement.utility_asset_id = int(utility_data.get("utility_asset_id", 0))
-			var utility_msg_points = _extract_msg_rect_points(utility_data.get("msg_rect", null))
-			if utility_msg_points.size() == 2:
-				settlement.utility_msg_bottom_left = utility_msg_points[0]
-				settlement.utility_msg_bottom_right = utility_msg_points[1]
-			# Utility on_entered, on_placed, on_action arrays
-			if utility_data.has("on_entered") and utility_data.on_entered is Array:
-				for line in utility_data.on_entered:
-					settlement.utility_on_entered.append(str(line))
-			if utility_data.has("on_placed") and utility_data.on_placed is Array:
-				for line in utility_data.on_placed:
-					settlement.utility_on_placed.append(str(line))
-			if utility_data.has("on_action") and utility_data.on_action is Array:
-				for line in utility_data.on_action:
-					settlement.utility_on_action.append(str(line))
-			# Church blessings
-			settlement.blessing1 = utility_data.get("blessing1", 0)
-			settlement.blessing2 = utility_data.get("blessing2", 0)
-			settlement.blessing3 = utility_data.get("blessing3", 0)
+		# Utility data. Prefer the new array, but keep utility/utility2 fallback support.
+		var utilities_data = item.get("utilities", [])
+		if utilities_data is Array:
+			for utility_data in utilities_data:
+				var utility_entry = _extract_utility_entry(utility_data, int(settlement.utilities.size()) + 1)
+				if not utility_entry.is_empty():
+					settlement.utilities.append(utility_entry)
+
+		if settlement.utilities.is_empty():
+			var primary_utility = _extract_utility_entry(item.get("utility", {}), 1)
+			if not primary_utility.is_empty():
+				settlement.utilities.append(primary_utility)
+			var secondary_utility = _extract_utility_entry(item.get("utility2", {}), 2)
+			if not secondary_utility.is_empty():
+				settlement.utilities.append(secondary_utility)
+
+		settlement.select_utility_slot(1)
 		
 		db.settlements.append(settlement)
 	
 	return db
+
+func _extract_utility_entry(raw_data: Variant, fallback_slot: int) -> Dictionary:
+	if not raw_data is Dictionary:
+		return {}
+
+	var utility_type = str(raw_data.get("type", "")).strip_edges()
+	var utility_asset_id = int(raw_data.get("utility_asset_id", 0))
+	if utility_type.is_empty() or utility_asset_id <= 0:
+		return {}
+
+	var utility_entry: Dictionary = {
+		"slot": int(raw_data.get("slot", fallback_slot)),
+		"type": utility_type,
+		"utility_asset_id": utility_asset_id,
+		"msg_bottom_left": Vector2.ZERO,
+		"msg_bottom_right": Vector2.ZERO,
+		"on_entered": _extract_string_array(raw_data.get("on_entered", [])),
+		"on_placed": _extract_string_array(raw_data.get("on_placed", [])),
+		"on_action": _extract_string_array(raw_data.get("on_action", [])),
+		"blessing1": int(raw_data.get("blessing1", 0)),
+		"blessing2": int(raw_data.get("blessing2", 0)),
+		"blessing3": int(raw_data.get("blessing3", 0))
+	}
+
+	var utility_msg_points = _extract_msg_rect_points(raw_data.get("msg_rect", null))
+	if utility_msg_points.size() == 2:
+		utility_entry["msg_bottom_left"] = utility_msg_points[0]
+		utility_entry["msg_bottom_right"] = utility_msg_points[1]
+
+	return utility_entry
+
+func _extract_string_array(raw_lines: Variant) -> Array[String]:
+	var result: Array[String] = []
+	if raw_lines is Array:
+		for line in raw_lines:
+			result.append(str(line))
+	return result
 
 func _extract_msg_rect_points(raw_msg_rect: Variant) -> Array[Vector2]:
 	"""Parse msg_rect payload into [bottom_left, bottom_right] local points.
@@ -1025,12 +1073,32 @@ func _verify_and_repair_assets():
 			if asset_id > 0 and not has_asset("settlements", asset_id):
 				_download_asset("settlements", asset_id)
 				missing_count += 1
+		var healer_data = item.get("healer", {})
+		if healer_data is Dictionary:
+			var asset_id = int(healer_data.get("healer_asset_id", 0))
+			if asset_id > 0 and not has_asset("settlements", asset_id):
+				_download_asset("settlements", asset_id)
+				missing_count += 1
 		var utility_data = item.get("utility", {})
 		if utility_data is Dictionary:
 			var asset_id = int(utility_data.get("utility_asset_id", 0))
 			if asset_id > 0 and not has_asset("settlements", asset_id):
 				_download_asset("settlements", asset_id)
 				missing_count += 1
+		var utility2_data = item.get("utility2", {})
+		if utility2_data is Dictionary:
+			var asset_id = int(utility2_data.get("utility_asset_id", 0))
+			if asset_id > 0 and not has_asset("settlements", asset_id):
+				_download_asset("settlements", asset_id)
+				missing_count += 1
+		var utilities_data = item.get("utilities", [])
+		if utilities_data is Array:
+			for utility_item in utilities_data:
+				if utility_item is Dictionary:
+					var asset_id = int(utility_item.get("utility_asset_id", 0))
+					if asset_id > 0 and not has_asset("settlements", asset_id):
+						_download_asset("settlements", asset_id)
+						missing_count += 1
 	
 	# Cosmetics (cosmetic ID is the asset ID)
 	var cosmetics_data = _load_json_file(COSMETICS_JSON)
@@ -1098,6 +1166,14 @@ func _download_settlement_assets(settlements_data: Array):
 			if asset_id > 0 and not downloaded_ids.has(asset_id):
 				downloaded_ids[asset_id] = true
 				_download_asset("settlements", asset_id)
+
+		# Healer asset
+		var healer_data = item.get("healer", {})
+		if healer_data is Dictionary:
+			var asset_id = int(healer_data.get("healer_asset_id", 0))
+			if asset_id > 0 and not downloaded_ids.has(asset_id):
+				downloaded_ids[asset_id] = true
+				_download_asset("settlements", asset_id)
 		
 		# Utility asset
 		var utility_data = item.get("utility", {})
@@ -1106,6 +1182,22 @@ func _download_settlement_assets(settlements_data: Array):
 			if asset_id > 0 and not downloaded_ids.has(asset_id):
 				downloaded_ids[asset_id] = true
 				_download_asset("settlements", asset_id)
+
+		var utility2_data = item.get("utility2", {})
+		if utility2_data is Dictionary:
+			var asset_id = int(utility2_data.get("utility_asset_id", 0))
+			if asset_id > 0 and not downloaded_ids.has(asset_id):
+				downloaded_ids[asset_id] = true
+				_download_asset("settlements", asset_id)
+
+		var utilities_data = item.get("utilities", [])
+		if utilities_data is Array:
+			for utility_item in utilities_data:
+				if utility_item is Dictionary:
+					var asset_id = int(utility_item.get("utility_asset_id", 0))
+					if asset_id > 0 and not downloaded_ids.has(asset_id):
+						downloaded_ids[asset_id] = true
+						_download_asset("settlements", asset_id)
 
 func _get_asset_extension(folder: String) -> String:
 	"""Get file extension for asset type"""

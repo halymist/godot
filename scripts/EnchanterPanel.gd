@@ -120,6 +120,7 @@ func _on_visibility_changed():
 	if not visible:
 		return_enchanter_item_to_bag()
 	else:
+		_load_location_content()
 		update_enchant_button_state()
 		populate_effect_list()
 		_show_greeting(on_entered_greetings)

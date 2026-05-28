@@ -154,7 +154,8 @@ func _add_node_button(node: Resource, completed: bool):
 
 func _position_node_button(button: Button, node: Resource):
 	var center = _node_position_in_map(node)
-	button.position = center - button.size * 0.5
+	var button_size = button.size if button.size.x > 0.0 and button.size.y > 0.0 else NODE_BUTTON_SIZE
+	button.position = center - button_size * 0.5
 
 func _make_node_style(fill_color: Color, border_color: Color) -> StyleBoxFlat:
 	var style = StyleBoxFlat.new()
@@ -542,22 +543,7 @@ func _node_world_position(node: Resource) -> Vector2:
 	if map_image_size.x <= 0.0 or map_image_size.y <= 0.0:
 		map_image_size = _get_map_image_size()
 
-	if node.pos_x >= 0.0 and node.pos_x <= 1.0 and node.pos_y >= 0.0 and node.pos_y <= 1.0:
-		return Vector2(map_image_size.x * node.pos_x, map_image_size.y * node.pos_y)
-	if _uses_percent_node_positions():
-		return Vector2(map_image_size.x * node.pos_x / 100.0, map_image_size.y * node.pos_y / 100.0)
-
-	return Vector2(node.pos_x, node.pos_y)
-
-func _uses_percent_node_positions() -> bool:
-	if not current_expedition:
-		return false
-	for node in current_expedition.nodes:
-		if node.pos_x < 0.0 or node.pos_y < 0.0 or node.pos_x > 100.0 or node.pos_y > 100.0:
-			return false
-		if node.pos_x > 1.0 or node.pos_y > 1.0:
-			return true
-	return false
+	return Vector2(map_image_size.x * node.pos_x, map_image_size.y * node.pos_y)
 
 func _world_to_screen(world_pos: Vector2) -> Vector2:
 	return (world_pos - camera_center_px) * map_base_scale + _map_viewport_size() * 0.5

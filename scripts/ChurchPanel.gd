@@ -39,6 +39,8 @@ func _setup():
 
 func _on_visibility_changed():
 	if visible:
+		_load_location_content()
+		load_blessings()
 		# Pre-select current active blessing if exists
 		if GameInfo.current_player.blessing != 0:
 			for i in range(blessing_data.size()):

@@ -246,7 +246,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_nb51f")
 
-[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "avatar_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "chat_panel", "bag_views", "character_display", "enemy_character_display", "top_ui")]
+[node name="Background" type="Panel" parent="." unique_id=1839648710 node_paths=PackedStringArray("home_panel", "arena_panel", "character_panel", "quest", "expedition_panel", "rankings_panel", "map_panel", "combat_panel", "home_button", "arena_button", "character_button", "map_button", "rankings_button", "settings_button", "chat_button", "payment_button", "back_button", "fight_button", "settings_panel", "payment", "talents_panel", "upgrade_talent", "perk_screen", "cancel_quest", "enemy_panel", "logout_panel", "avatar_panel", "vendor_panel", "blacksmith_panel", "trainer_panel", "church_panel", "alchemist_panel", "enchanter_panel", "healer_panel", "chat_panel", "bag_views", "character_display", "enemy_character_display", "top_ui")]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -822,9 +822,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -90.0
-offset_top = -76.0
+offset_top = -78.0
 offset_right = 90.0
-offset_bottom = -31.5
+offset_bottom = -30.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SharedActionButton"
@@ -1654,7 +1654,7 @@ offset_bottom = 240.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="HealerPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1867500857 node_paths=PackedStringArray("heal_button", "cure_button", "status_label")]
+[node name="HealerPanel" type="TextureRect" parent="Portrait/GameScene" unique_id=1867500857 node_paths=PackedStringArray("heal_button", "cure_button", "status_label", "image_area", "chat_bubble")]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -1669,6 +1669,8 @@ script = ExtResource("92_healer")
 heal_button = NodePath("BottomUi/HealButton")
 cure_button = NodePath("BottomUi/CureButton")
 status_label = NodePath("BottomUi/StatusLabel")
+image_area = NodePath("ImageArea")
+chat_bubble = NodePath("ChatBubble")
 
 [node name="ImageArea" type="TextureRect" parent="Portrait/GameScene/HealerPanel" unique_id=68648213]
 layout_mode = 1
@@ -1679,6 +1681,8 @@ grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
+
+[node name="ChatBubble" parent="Portrait/GameScene/HealerPanel" unique_id=1781829337 instance=ExtResource("14_k8ojv")]
 
 [node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/HealerPanel" unique_id=1217189333]
 layout_mode = 1
