@@ -45,6 +45,9 @@ var game_scene_loaded = false
 var game_scene_preload_started = false
 var game_scene: PackedScene = null
 var _selected_server_day: int = 0  # Server day for selected character's server
+var _new_character_server_id: int = 0
+var _new_character_server_name: String = ""
+var _new_character_server_day: int = 0
 var _lobby_prepare_state: LobbyPrepareState = LobbyPrepareState.IDLE
 var _character_flow_state: CharacterFlowState = CharacterFlowState.IDLE
 var _countdown_timer: Timer = null
@@ -114,6 +117,7 @@ func initialize_lobby():
 	# Populate UI with lobby data
 	populate_account_info()
 	setup_login_methods()
+	_refresh_new_character_server_target()
 	start_new_server_countdown()
 	# Hide character cards until data/cosmetics are fully initialized
 	if characters_container:
@@ -325,6 +329,7 @@ func setup_character_creation():
 	avatar_creation_panel.create_character_pressed.connect(_on_create_character_complete)
 	avatar_creation_panel.back_pressed.connect(_on_avatar_back)
 	avatar_creation_panel.set_creation_mode(true)
+	_apply_new_character_server_target()
 
 
 
@@ -475,6 +480,8 @@ func _on_create_new_character():
 	"""Show character info panel to start creation flow"""
 	if _character_flow_state != CharacterFlowState.IDLE:
 		return
+	_refresh_new_character_server_target()
+	_apply_new_character_server_target()
 	visible = false
 	character_info_panel.visible = true
 
@@ -547,6 +554,29 @@ func _on_character_created(success: bool, character_id: int, _error: String):
 		return
 
 	await _begin_character_entry(character_id, server_id, CharacterFlowState.ENTERING_CREATED)
+
+func _refresh_new_character_server_target():
+	var newest_server := _get_newest_server()
+	_new_character_server_id = int(newest_server.get("id", 0))
+	_new_character_server_name = str(newest_server.get("name", ""))
+	_new_character_server_day = int(newest_server.get("current_day", 0))
+
+func _apply_new_character_server_target():
+	if character_info_panel and character_info_panel.has_method("set_target_server"):
+		character_info_panel.set_target_server(_new_character_server_name, _new_character_server_day)
+
+func _get_newest_server() -> Dictionary:
+	var newest_server: Dictionary = {}
+	var newest_created_at: int = -1
+	for server_variant in GameInfo.get_server_list():
+		if not (server_variant is Dictionary):
+			continue
+		var server := server_variant as Dictionary
+		var created_at := int(server.get("created_at", 0))
+		if newest_server.is_empty() or created_at > newest_created_at:
+			newest_server = server
+			newest_created_at = created_at
+	return newest_server
 
 func _abort_character_flow():
 	"""Reset lobby UI after a failed or canceled character flow."""

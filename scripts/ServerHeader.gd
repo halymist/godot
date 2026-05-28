@@ -9,10 +9,9 @@ func _ready():
 		title_label.text = _pending_title_text
 		_pending_title_text = ""
 
-func setup(server_name: String, server_created_at: int = 0, server_day: int = 0, character_count: int = 0):
+func setup(server_name: String, server_created_at: int = 0, server_day: int = 0, _character_count: int = 0):
 	var day = server_day if server_day > 0 else _calculate_server_age_days(server_created_at)
-	var count_text = "1 character" if character_count == 1 else str(character_count) + " characters"
-	_apply_title_text(server_name + "  |  Day " + str(day) + "  |  " + count_text)
+	_apply_title_text(server_name + "  |  Day " + str(day))
 
 func _apply_title_text(text_value: String):
 	var resolved_label = title_label

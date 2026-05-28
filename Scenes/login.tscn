@@ -1214,7 +1214,7 @@ texture_normal = ExtResource("12_yly4b")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="CharacterInfo" type="Control" parent="ContentContainer" unique_id=243258155 node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "faction_desc_label", "vip_desc_label", "name_error_label")]
+[node name="CharacterInfo" type="Control" parent="ContentContainer" unique_id=243258155 node_paths=PackedStringArray("name_input", "order_button", "guild_button", "companions_button", "vip_yes_button", "vip_no_button", "next_button", "back_button", "faction_desc_label", "vip_desc_label", "name_error_label", "server_info_label")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1234,6 +1234,7 @@ back_button = NodePath("ButtonsContainer/BackButton")
 faction_desc_label = NodePath("FactionDesc")
 vip_desc_label = NodePath("VIPDesc")
 name_error_label = NodePath("NameSection/NameError")
+server_info_label = NodePath("ServerInfoLabel")
 patron_description = "• No timers
 • Free premium cosmetics
 • Can share combat links in chat
@@ -1257,15 +1258,32 @@ theme_override_font_sizes/font_size = 32
 text = "Create Character"
 horizontal_alignment = 1
 
+[node name="ServerInfoLabel" type="Label" parent="ContentContainer/CharacterInfo" unique_id=873115124]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 64.0
+offset_right = 180.0
+offset_bottom = 98.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "New characters are created on the newest server"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
 [node name="NameSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo" unique_id=1765654920]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -150.0
-offset_top = 80.0
+offset_top = 108.0
 offset_right = 150.0
-offset_bottom = 155.0
+offset_bottom = 183.0
 grow_horizontal = 2
 
 [node name="NameLabel" type="Label" parent="ContentContainer/CharacterInfo/NameSection" unique_id=702845843]
@@ -1290,9 +1308,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -200.0
-offset_top = 169.0
+offset_top = 197.0
 offset_right = 200.0
-offset_bottom = 178.0
+offset_bottom = 206.0
 grow_horizontal = 2
 
 [node name="FactionSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo" unique_id=160526936]
@@ -1301,9 +1319,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -199.5
-offset_top = 180.0
+offset_top = 208.0
 offset_right = 200.5
-offset_bottom = 266.0
+offset_bottom = 294.0
 grow_horizontal = 2
 
 [node name="FactionLabel" type="Label" parent="ContentContainer/CharacterInfo/FactionSection" unique_id=138442140]
@@ -1365,9 +1383,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -189.5
-offset_top = 273.0
+offset_top = 301.0
 offset_right = 185.5
-offset_bottom = 412.0
+offset_bottom = 440.0
 grow_horizontal = 2
 horizontal_alignment = 1
 autowrap_mode = 2
@@ -1378,9 +1396,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -199.5
-offset_top = 400.0
+offset_top = 428.0
 offset_right = 200.5
-offset_bottom = 418.0
+offset_bottom = 446.0
 grow_horizontal = 2
 
 [node name="VIPSection" type="VBoxContainer" parent="ContentContainer/CharacterInfo" unique_id=1807445984]
@@ -1389,9 +1407,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -188.5
-offset_top = 440.0
+offset_top = 468.0
 offset_right = 189.5
-offset_bottom = 521.0
+offset_bottom = 549.0
 grow_horizontal = 2
 
 [node name="VIPLabel" type="Label" parent="ContentContainer/CharacterInfo/VIPSection" unique_id=874223807]

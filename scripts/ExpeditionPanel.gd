@@ -220,10 +220,6 @@ func _on_embark_button_pressed():
 	if not GameInfo.current_player:
 		return
 
-	if not _can_afford_embark():
-		_update_selected_node_action_state()
-		return
-
 	if _is_low_health_warning_needed():
 		if UIManager.instance.cancel_quest and UIManager.instance.cancel_quest.has_method("show_custom_dialog"):
 			UIManager.instance.cancel_quest.show_custom_dialog(
@@ -241,9 +237,6 @@ func _confirm_node_start(node_id: int):
 		return
 	if not Websocket.connected:
 		_set_node_overlay_text("Connection lost. Please try again.")
-		return
-	if not _can_afford_embark():
-		_update_selected_node_action_state()
 		return
 
 	pending_node_id = node_id
@@ -383,7 +376,7 @@ func _set_action_button_state(text_value: String, enabled: bool, show_price: boo
 			action_label.text = text_value
 			price_label.text = str(EXPEDITION_QUEST_START_COST)
 			price_label.visible = show_price and EXPEDITION_QUEST_START_COST > 0
-			price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if _can_afford_embark() else COLOR_PRICE_MISSING)
+			price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL)
 			currency_icon.visible = show_price and EXPEDITION_QUEST_START_COST > 0
 			closing_paren.visible = false
 		else:
@@ -395,11 +388,8 @@ func _set_completed_node_action_state():
 		node_action_button.disabled = true
 		node_action_button.visible = false
 
-func _can_afford_embark() -> bool:
-	return GameInfo.current_player != null
-
 func _update_selected_node_action_state():
-	_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0 and not selected_node_completed and pending_node_id <= 0 and _can_afford_embark(), true)
+	_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0 and not selected_node_completed and pending_node_id <= 0, true)
 
 func _build_node_overlay_text(node: Resource, completed: bool) -> String:
 	if node.label != "":

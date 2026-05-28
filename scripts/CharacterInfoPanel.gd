@@ -9,6 +9,7 @@ extends Control
 @export var vip_no_button: Button
 @export var next_button: Button
 @export var back_button: Button
+@export var server_info_label: Label
 
 # Description labels
 @export var faction_desc_label: Label
@@ -29,6 +30,8 @@ extends Control
 var character_name: String = ""
 var faction: int = 1  # 1=Order, 2=Guild, 3=Companions (Order pre-selected)
 var is_vip: bool = false
+var _server_name: String = ""
+var _server_day: int = 0
 
 signal next_pressed
 signal back_pressed
@@ -44,6 +47,7 @@ func _ready():
 	vip_no_button.pressed.connect(_on_vip_selected.bind(false))
 	
 	_update_descriptions()
+	_update_server_info()
 
 func _on_faction_selected(faction_id: int):
 	faction = faction_id
@@ -72,6 +76,22 @@ func _update_descriptions():
 			vip_desc_label.text = patron_description
 		else:
 			vip_desc_label.text = commoner_description
+
+func set_target_server(server_name: String, server_day: int):
+	_server_name = server_name
+	_server_day = max(0, server_day)
+	_update_server_info()
+
+func _update_server_info():
+	if not server_info_label:
+		return
+	if _server_name == "":
+		server_info_label.text = ""
+		return
+	var day_suffix := ""
+	if _server_day > 0:
+		day_suffix = " | Day " + str(_server_day)
+	server_info_label.text = "New characters are created on " + _server_name + day_suffix
 
 func _on_next_pressed():
 	character_name = name_input.text.strip_edges()
