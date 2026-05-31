@@ -104,6 +104,15 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottom_ui_panel"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.08, 0.058, 0.038, 1)
+border_width_top = 2
+border_color = Color(0.62, 0.42, 0.22, 1)
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lknxd"]
 texture = ExtResource("31_lknxd")
 
@@ -521,7 +530,7 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/VendorPanel" unique_id=1436873414]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/VendorPanel" unique_id=1436873414]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.6
@@ -529,7 +538,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="VendorDisplay" type="Control" parent="Portrait/GameScene/VendorPanel/BottomUi" unique_id=1224300029]
 layout_mode = 1
@@ -599,7 +608,7 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/BlacksmithPanel" unique_id=1215706918]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/BlacksmithPanel" unique_id=1215706918]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.6
@@ -607,7 +616,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="TextContainer" type="CenterContainer" parent="Portrait/GameScene/BlacksmithPanel/BottomUi" unique_id=2075594293]
 visible = false
@@ -787,7 +796,7 @@ luck_button = NodePath("BottomUi/Luck")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.8
+anchor_bottom = 0.6
 grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
@@ -804,15 +813,15 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/TrainerPanel" unique_id=1105646054]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/TrainerPanel" unique_id=1105646054]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.8
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="TalentsRow" type="Button" parent="Portrait/GameScene/TrainerPanel/BottomUi" unique_id=826166365]
 layout_mode = 1
@@ -1123,7 +1132,7 @@ bless_button = NodePath("BottomUi/BlessButton")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.8
+anchor_bottom = 0.6
 grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
@@ -1140,15 +1149,15 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/ChurchPanel" unique_id=1008644121]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/ChurchPanel" unique_id=1008644121]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.7
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="BlessingSlot1" type="TextureRect" parent="Portrait/GameScene/ChurchPanel/BottomUi" unique_id=54427758]
 layout_mode = 1
@@ -1297,7 +1306,7 @@ ingredient_description2 = NodePath("BottomUi/IngredientsColumn/Row2/Desc2")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.8
+anchor_bottom = 0.6
 grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
@@ -1314,15 +1323,15 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/AlchemistPanel" unique_id=1187531983]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/AlchemistPanel" unique_id=1187531983]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.8
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="IngredientsColumn" type="VBoxContainer" parent="Portrait/GameScene/AlchemistPanel/BottomUi" unique_id=1706005716]
 layout_mode = 1
@@ -1460,7 +1469,7 @@ enchant_option_scene = ExtResource("26_lknxd")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.8
+anchor_bottom = 0.6
 grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
@@ -1477,15 +1486,15 @@ offset_right = 100.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel" unique_id=1077450896]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/EnchanterPanel" unique_id=1077450896]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.8
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="WorkArea" type="ColorRect" parent="Portrait/GameScene/EnchanterPanel/BottomUi" unique_id=1684133566]
 layout_mode = 0
@@ -1676,7 +1685,7 @@ chat_bubble = NodePath("ChatBubble")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.8
+anchor_bottom = 0.6
 grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
@@ -1685,15 +1694,15 @@ stretch_mode = 6
 [node name="ChatBubble" parent="Portrait/GameScene/HealerPanel" unique_id=1781829337 instance=ExtResource("14_k8ojv")]
 layout_mode = 0
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/HealerPanel" unique_id=1217189333]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/HealerPanel" unique_id=1217189333]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.8
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="StatusLabel" type="Label" parent="Portrait/GameScene/HealerPanel/BottomUi" unique_id=84678949]
 layout_mode = 1
@@ -1832,22 +1841,22 @@ location_description_label = NodePath("BottomUi/LocationDescription")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.7
+anchor_bottom = 0.6
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("28_d5jaa")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/Home" unique_id=1241192436]
+[node name="BottomUi" type="Panel" parent="Portrait/GameScene/Home" unique_id=1241192436]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.7
+anchor_top = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.03, 0.025, 0.018, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_ui_panel")
 
 [node name="LocationLabel" type="Label" parent="Portrait/GameScene/Home/BottomUi" unique_id=313789811]
 layout_mode = 1
@@ -1882,19 +1891,21 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ButtonRow" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi" unique_id=1336968269]
+[node name="ButtonRow" type="GridContainer" parent="Portrait/GameScene/Home/BottomUi" unique_id=1336968269]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 15.0
-offset_top = 95.0
+offset_top = 96.0
 offset_right = -15.0
-offset_bottom = 141.0
+offset_bottom = 196.0
 grow_horizontal = 2
-theme_override_constants/separation = 8
+columns = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
 
 [node name="VendorButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=602900717]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -1923,8 +1934,38 @@ theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 14
 text = "Vendor"
 
+[node name="HealerButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=1033832217]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton" unique_id=80563531]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton/HBox" unique_id=1616347036]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("31_k8ojv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton/HBox" unique_id=2137694351]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "Healer"
+
 [node name="UtilityButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=657420570]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -1954,7 +1995,7 @@ theme_override_font_sizes/font_size = 14
 text = "Blacksmith"
 
 [node name="SecondaryUtilityButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=493810952]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true
@@ -1983,36 +2024,6 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
 theme_override_font_sizes/font_size = 14
 text = "Utility"
-
-[node name="HealerButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=1033832217]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HBox" type="HBoxContainer" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton" unique_id=80563531]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Icon" type="TextureRect" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton/HBox" unique_id=1616347036]
-custom_minimum_size = Vector2(28, 28)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("31_k8ojv")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="Portrait/GameScene/Home/BottomUi/ButtonRow/HealerButton/HBox" unique_id=2137694351]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "Healer"
 
 [node name="QuestButton" type="Button" parent="Portrait/GameScene/Home/BottomUi" unique_id=271981231]
 custom_minimum_size = Vector2(0, 48)

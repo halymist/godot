@@ -680,6 +680,12 @@ func _handle_panel_back() -> bool:
 	if panel == expedition_panel:
 		show_panel(home_panel)
 		return true
+
+	# Home interior panels should always collapse back to home instead of
+	# reopening quest/expedition default routing.
+	if panel in [vendor_panel, blacksmith_panel, trainer_panel, church_panel, alchemist_panel, enchanter_panel, healer_panel]:
+		show_panel(home_panel)
+		return true
 	
 	# Home panel -> interior navigation or logout
 	if panel == home_panel:
@@ -748,7 +754,7 @@ func handle_expedition_node_completed(expedition_id: int, _node_id: int):
 	"""Called when an expedition node quest is finished - return to graph"""
 	quest.visible = false
 	GameInfo.current_player.expedition = [expedition_id]
-	expedition_panel.start_expedition(expedition_id)
+	expedition_panel.start_expedition(expedition_id, true)
 	show_panel(expedition_panel)
 
 func handle_quest_arrived():
