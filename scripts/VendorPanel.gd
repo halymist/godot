@@ -1,5 +1,7 @@
 extends TextureRect
 
+const SETTLEMENT_UTILS = preload("res://scripts/utils/SettlementPanelUtils.gd")
+
 const VENDOR_SLOT = 20
 
 @export var chat_bubble: ChatBubble
@@ -67,29 +69,12 @@ func _load_location_content():
 		return
 	
 	_load_vendor_items()
-		
-	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location)
-	if not settlement:
+	var content = SETTLEMENT_UTILS.load_vendor_content(self, image_area, chat_bubble)
+	if content.is_empty():
 		return
-	
-	var vendor_texture = settlement.get_vendor_texture()
-	if vendor_texture:
-		if image_area:
-			image_area.texture = vendor_texture
-			texture = null
-		else:
-			texture = vendor_texture
-	
-	# Load vendor greetings from settlement
-	on_entered_greetings = settlement.get_vendor_on_entered_lines()
-	on_sold_greetings = settlement.get_vendor_on_sold_lines()
-	on_bought_greetings = settlement.get_vendor_on_bought_lines()
-
-	if chat_bubble:
-		if settlement.has_vendor_msg_rect():
-			chat_bubble.set_message_bounds(settlement.vendor_msg_bottom_left, settlement.vendor_msg_bottom_right)
-		else:
-			chat_bubble.clear_message_bounds()
+	on_entered_greetings = content.get("entered", [])
+	on_sold_greetings = content.get("sold", [])
+	on_bought_greetings = content.get("bought", [])
 
 func _load_vendor_items():
 	vendor_items.clear()
@@ -113,10 +98,7 @@ func trigger_purchase_greeting():
 	_show_greeting(on_bought_greetings)
 
 func _show_greeting(greetings: Array[String]):
-	if not chat_bubble or greetings.is_empty():
-		return
-	var greeting = greetings[randi() % greetings.size()]
-	chat_bubble.show_with_text(greeting, 4.0)
+	SETTLEMENT_UTILS.show_greeting(chat_bubble, greetings)
 
 func trigger_sell_greeting():
 	populate_vendor_slots()

@@ -155,23 +155,6 @@ func _make_price_row(price: int) -> Control:
 	row.add_child(icon)
 	return row
 
-func _bulletize_body_after_title(text: String) -> String:
-	if text.is_empty():
-		return ""
-	var lines = text.split("\n")
-	if lines.size() <= 1:
-		return text
-	var result: Array[String] = [lines[0]]
-	for i in range(1, lines.size()):
-		var line = String(lines[i]).strip_edges()
-		if line.is_empty():
-			continue
-		if line.begins_with("["):
-			result.append(line)
-		else:
-			result.append("- " + line)
-	return "\n".join(result)
-
 func _bulletize_all_lines(text: String) -> String:
 	if text.is_empty():
 		return ""
@@ -226,12 +209,6 @@ func _get_item_effect_lines(item: GameInfo.Item) -> Array[String]:
 			lines.append(EFFECT_FORMATTER.format_with_factor(effect_data.description, display_effect_factor, true))
 	return lines
 
-func _estimate_text_width(text: String) -> float:
-	var longest = 120.0
-	for line in text.split("\n"):
-		longest = max(longest, float(line.length()) * 7.5)
-	return min(MAX_TOOLTIP_WIDTH, longest)
-
 func _make_tooltip_style() -> StyleBoxFlat:
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.058, 0.038, 1.0)
@@ -253,15 +230,3 @@ func _install_tooltip_popup_style():
 	if theme:
 		theme.set_stylebox("panel", "TooltipPanel", empty_style)
 		theme.set_stylebox("panel", "PopupPanel", empty_style)
-
-func show_tooltip(_item: GameInfo.Item, _slot_node: Control = null):
-	pass
-
-func hide_tooltip():
-	pass
-
-func show_perk_tooltip(_tooltip_text: String, _slot_node: Control = null):
-	pass
-
-func hide_perk_tooltip():
-	pass

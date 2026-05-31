@@ -1,10 +1,10 @@
 extends TextureRect
 
 const EFFECT_FORMATTER = preload("res://scripts/utils/EffectFormatter.gd")
+const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
+const SETTLEMENT_UTILS = preload("res://scripts/utils/SettlementPanelUtils.gd")
 
 const BREW_COST = 10
-const COLOR_PRICE_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
-const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 # Ingredient slot IDs
 const SLOT_1 = 17
@@ -69,34 +69,15 @@ func _on_visibility_changed():
 		_show_greeting(on_entered_greetings)
 
 func _load_location_content():
-	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location) if GameInfo.settlements_db else null
-	if not settlement:
+	var content = SETTLEMENT_UTILS.load_utility_content(self, image_area, chat_bubble)
+	if content.is_empty():
 		return
-	
-	var utility_texture = settlement.get_utility_texture()
-	if utility_texture:
-		if image_area:
-			image_area.texture = utility_texture
-			texture = null
-		else:
-			texture = utility_texture
-	
-	# Load utility greetings from settlement
-	on_entered_greetings = settlement.get_utility_on_entered_lines()
-	on_placed_greetings = settlement.get_utility_on_placed_lines()
-	on_action_greetings = settlement.get_utility_on_action_lines()
-
-	if chat_bubble:
-		if settlement.has_utility_msg_rect():
-			chat_bubble.set_message_bounds(settlement.utility_msg_bottom_left, settlement.utility_msg_bottom_right)
-		else:
-			chat_bubble.clear_message_bounds()
+	on_entered_greetings = content.get("entered", [])
+	on_placed_greetings = content.get("placed", [])
+	on_action_greetings = content.get("action", [])
 
 func _show_greeting(greetings: Array[String]):
-	if not chat_bubble or greetings.is_empty():
-		return
-	var greeting = greetings[randi() % greetings.size()]
-	chat_bubble.show_with_text(greeting, 4.0)
+	SETTLEMENT_UTILS.show_greeting(chat_bubble, greetings)
 
 func return_ingredients_to_bag():
 	# Just clear the visual slots - items never actually moved
@@ -154,12 +135,7 @@ func update_brew_button_state():
 	
 	# Enable button only if both conditions are met
 	brew_button.disabled = not (has_ingredients and has_silver)
-	_set_price_label_color(brew_button, has_silver)
-
-func _set_price_label_color(button: Button, can_afford: bool):
-	var price_label = button.get_node_or_null("Content/PriceLabel") as Label
-	if price_label:
-		price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if can_afford else COLOR_PRICE_MISSING)
+	UI_UTILS.set_button_price_color(brew_button, has_silver)
 
 func get_working_items() -> Array[GameInfo.Item]:
 	"""Return all items currently in the alchemy slots (for excluding from bag refresh)"""

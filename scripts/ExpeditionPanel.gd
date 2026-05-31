@@ -1,5 +1,7 @@
 extends TextureRect
 
+const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
+
 const EXPEDITION_QUEST_START_COST: int = 0
 const LOW_HEALTH_WARNING_RATIO: float = 0.10
 const NODE_BUTTON_SIZE: Vector2 = Vector2(32, 32)
@@ -12,8 +14,6 @@ const NODE_COMPLETED_FILL: Color = Color(0.18, 0.22, 0.24, 0.94)
 const NODE_COMPLETED_BORDER: Color = Color(0.55, 0.58, 0.54, 0.9)
 const NODE_SELECTED_BORDER: Color = Color(1.0, 0.92, 0.62, 1.0)
 const BOTTOM_UI_MARGIN: float = 104.0
-const COLOR_PRICE_NORMAL: Color = Color(0.85, 0.8, 0.7, 1.0)
-const COLOR_PRICE_MISSING: Color = Color(1.0, 0.25, 0.2, 1.0)
 
 @export var health_bar: TextureProgressBar
 @export var map_area: Control
@@ -401,7 +401,7 @@ func _set_action_button_state(text_value: String, enabled: bool, show_price: boo
 			action_label.text = text_value
 			price_label.text = str(EXPEDITION_QUEST_START_COST)
 			price_label.visible = show_price and EXPEDITION_QUEST_START_COST > 0
-			price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL)
+			price_label.add_theme_color_override("font_color", UI_UTILS.PRICE_NORMAL)
 			currency_icon.visible = show_price and EXPEDITION_QUEST_START_COST > 0
 			closing_paren.visible = false
 		else:

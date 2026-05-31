@@ -1,6 +1,8 @@
 extends Control
 class_name UIManager
 
+const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
+
 static var instance: UIManager
 
 # ============================================================================
@@ -148,14 +150,8 @@ func _connect_buttons():
 	chat_panel.pressed.connect(toggle_chat)
 	back_button.pressed.connect(go_back)
 	
-	# Back button hover/click feedback (golden tint like arena buttons)
-	var golden = Color(0.9, 0.7, 0.4, 1)
-	var default_color = Color(1, 1, 1, 1)
 	for btn in [back_button, chat_button, arena_button, rankings_button, map_button, home_button, settings_button, payment_button]:
-		btn.mouse_entered.connect(func(): btn.modulate = golden)
-		btn.mouse_exited.connect(func(): btn.modulate = default_color)
-		btn.button_down.connect(func(): btn.modulate = golden)
-		btn.button_up.connect(func(): btn.modulate = default_color)
+		UI_UTILS.apply_golden_button_feedback(btn)
 	
 	# Fight button is handled by Arena.gd - it sends request to server, waits for response, then shows combat panel
 

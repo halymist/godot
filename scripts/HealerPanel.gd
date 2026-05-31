@@ -1,9 +1,10 @@
 extends TextureRect
 
+const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
+const SETTLEMENT_UTILS = preload("res://scripts/utils/SettlementPanelUtils.gd")
+
 const HEAL_COST: int = 30
 const CURE_COST: int = 10
-const COLOR_PRICE_NORMAL := Color(0.85, 0.8, 0.7, 1.0)
-const COLOR_PRICE_MISSING := Color(1.0, 0.25, 0.2, 1.0)
 
 @export var heal_button: Button
 @export var cure_button: Button
@@ -30,33 +31,15 @@ func _on_visibility_changed():
 		_show_greeting(on_entered_greetings)
 
 func _load_location_content():
-	var settlement = GameInfo.settlements_db.get_settlement_by_id(GameInfo.current_player.location) if GameInfo.settlements_db and GameInfo.current_player else null
-	if not settlement:
+	var content = SETTLEMENT_UTILS.load_healer_content(self, image_area, chat_bubble)
+	if content.is_empty():
 		return
-
-	var healer_texture = settlement.get_healer_texture()
-	if healer_texture:
-		if image_area:
-			image_area.texture = healer_texture
-			texture = null
-		else:
-			texture = healer_texture
-
-	on_entered_greetings = settlement.get_healer_on_entered_lines()
-	on_healed_greetings = settlement.get_healer_on_healed_lines()
-	on_cured_greetings = settlement.get_healer_on_cured_lines()
-
-	if chat_bubble:
-		if settlement.has_healer_msg_rect():
-			chat_bubble.set_message_bounds(settlement.healer_msg_bottom_left, settlement.healer_msg_bottom_right)
-		else:
-			chat_bubble.clear_message_bounds()
+	on_entered_greetings = content.get("entered", [])
+	on_healed_greetings = content.get("healed", [])
+	on_cured_greetings = content.get("cured", [])
 
 func _show_greeting(greetings: Array[String]):
-	if not chat_bubble or greetings.is_empty():
-		return
-	var greeting = greetings[randi() % greetings.size()]
-	chat_bubble.show_with_text(greeting, 4.0)
+	SETTLEMENT_UTILS.show_greeting(chat_bubble, greetings)
 
 func _update_button_states():
 	if not GameInfo.current_player:
@@ -65,16 +48,11 @@ func _update_button_states():
 	var has_cure_silver = GameInfo.current_player.silver >= CURE_COST
 	if heal_button:
 		heal_button.disabled = GameInfo.current_player.depleted_health <= 0 or not has_heal_silver
-		_set_price_label_color(heal_button, has_heal_silver)
+		UI_UTILS.set_button_price_color(heal_button, has_heal_silver)
 	if cure_button:
 		cure_button.disabled = not _has_curable_effects() or not has_cure_silver
-		_set_price_label_color(cure_button, has_cure_silver)
+		UI_UTILS.set_button_price_color(cure_button, has_cure_silver)
 	_update_status()
-
-func _set_price_label_color(button: Button, can_afford: bool):
-	var price_label = button.get_node_or_null("Content/PriceLabel") as Label
-	if price_label:
-		price_label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL if can_afford else COLOR_PRICE_MISSING)
 
 func _update_status():
 	if not status_label or not GameInfo.current_player:

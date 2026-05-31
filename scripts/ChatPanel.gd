@@ -1,5 +1,7 @@
 extends Button
 
+const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
+
 @export var chat_panel: Panel
 @export var chat_container: VBoxContainer
 @export var scroll_container: ScrollContainer
@@ -25,12 +27,7 @@ func _ready():
 	chat_input.text_submitted.connect(_on_chat_input_submitted)
 	chat_input.focus_exited.connect(_on_chat_input_focus_exited)
 	
-	# Send button hover/click feedback
-	var golden = Color(0.9, 0.7, 0.4, 1)
-	send_button.mouse_entered.connect(func(): send_button.modulate = golden)
-	send_button.mouse_exited.connect(func(): send_button.modulate = Color(1, 1, 1, 1))
-	send_button.button_down.connect(func(): send_button.modulate = golden)
-	send_button.button_up.connect(func(): send_button.modulate = Color(1, 1, 1, 1))
+	UI_UTILS.apply_golden_button_feedback(send_button)
 	
 	visibility_changed.connect(_on_visibility_changed)
 	if not GameInfo.chat_mute_updated.is_connected(_on_chat_mute_updated):
@@ -164,75 +161,60 @@ func handle_chat_rejection(rejection: Dictionary):
 
 func add_chat_message(chat_message: GameInfo.ChatMessage):
 	var message_time = _message_timestamp_to_unix(chat_message.timestamp)
-	var should_show_separator = (last_message_time == "")
-
-	if last_message_time != "" and not should_show_separator:
+	var should_show_separator = last_message_time == ""
+	if last_message_time != "":
 		var last_time = _message_timestamp_to_unix(last_message_time)
-		if message_time - last_time >= TIME_SEPARATOR_GAP_SECONDS:
-			should_show_separator = true
+		should_show_separator = message_time - last_time >= TIME_SEPARATOR_GAP_SECONDS
 	
 	if should_show_separator:
-		last_message_sender = ""  # Reset grouping after time separator
-		var time_display = _format_separator_timestamp(message_time)
-		
-		# Create separator row: ── 20:14 ──
-		var sep_row = HBoxContainer.new()
-		sep_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		sep_row.alignment = BoxContainer.ALIGNMENT_CENTER
-		sep_row.add_theme_constant_override("separation", 8)
-		
-		var left_sep = HSeparator.new()
-		left_sep.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		sep_row.add_child(left_sep)
-		
-		var time_label = Label.new()
-		time_label.text = time_display
-		time_label.add_theme_font_size_override("font_size", 12)
-		time_label.add_theme_color_override("font_color", Color(0.9, 0.7, 0.4, 1))
-		time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sep_row.add_child(time_label)
-		
-		var right_sep = HSeparator.new()
-		right_sep.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		sep_row.add_child(right_sep)
-		
-		chat_container.add_child(sep_row)
-		
-		var spacer = Control.new()
-		spacer.custom_minimum_size.y = 4
-		chat_container.add_child(spacer)
+		_add_time_separator(message_time)
 	
 	last_message_time = chat_message.timestamp
-	
-	# Show sender name only if different from last message sender
-	var same_sender = (chat_message.sender == last_message_sender)
-	
-	if not same_sender:
-		# Add small spacing between different sender groups (except first message)
-		if last_message_sender != "":
-			var group_spacer = Control.new()
-			group_spacer.custom_minimum_size.y = 6
-			chat_container.add_child(group_spacer)
-		
-		# Create first line as "Name: message"
-		var sender_color = "#E6B366"  # Golden like settings subheaders
-		if chat_message.status == "lord":
-			sender_color = "#FFD700"  # Brighter gold for lords
-		
-		var first_line_label = RichTextLabel.new()
-		first_line_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		first_line_label.fit_content = true
-		first_line_label.scroll_active = false
-		first_line_label.bbcode_enabled = true
-		first_line_label.mouse_filter = Control.MOUSE_FILTER_PASS
-		first_line_label.add_theme_font_size_override("normal_font_size", 12)
-		first_line_label.add_theme_font_size_override("bold_font_size", 12)
-		first_line_label.text = "[color=%s][b]%s:[/b][/color] %s" % [sender_color, _escape_bbcode(chat_message.sender), _escape_bbcode(chat_message.message)]
-		chat_container.add_child(first_line_label)
+	if chat_message.sender != last_message_sender:
+		_add_sender_message(chat_message)
 		last_message_sender = chat_message.sender
 		return
+	_add_continuation_message(chat_message.message)
 
-	# Follow-up lines from the same sender stay below without repeating the name.
+func _add_time_separator(message_time: int):
+	last_message_sender = ""
+	var sep_row = HBoxContainer.new()
+	sep_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sep_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	sep_row.add_theme_constant_override("separation", 8)
+	sep_row.add_child(_make_separator_line())
+
+	var time_label = Label.new()
+	time_label.text = _format_separator_timestamp(message_time)
+	time_label.add_theme_font_size_override("font_size", 12)
+	time_label.add_theme_color_override("font_color", Color(0.9, 0.7, 0.4, 1))
+	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sep_row.add_child(time_label)
+	sep_row.add_child(_make_separator_line())
+	chat_container.add_child(sep_row)
+
+	var spacer = Control.new()
+	spacer.custom_minimum_size.y = 4
+	chat_container.add_child(spacer)
+
+func _make_separator_line() -> HSeparator:
+	var separator = HSeparator.new()
+	separator.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return separator
+
+func _add_sender_message(chat_message: GameInfo.ChatMessage):
+	if last_message_sender != "":
+		var group_spacer = Control.new()
+		group_spacer.custom_minimum_size.y = 6
+		chat_container.add_child(group_spacer)
+	var sender_color = "#FFD700" if chat_message.status == "lord" else "#E6B366"
+	var message_text = "[color=%s][b]%s:[/b][/color] %s" % [sender_color, _escape_bbcode(chat_message.sender), _escape_bbcode(chat_message.message)]
+	chat_container.add_child(_make_message_label(message_text))
+
+func _add_continuation_message(message_text: String):
+	chat_container.add_child(_make_message_label(_escape_bbcode(message_text)))
+
+func _make_message_label(message_text: String) -> RichTextLabel:
 	var message_label = RichTextLabel.new()
 	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	message_label.fit_content = true
@@ -241,8 +223,8 @@ func add_chat_message(chat_message: GameInfo.ChatMessage):
 	message_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	message_label.add_theme_font_size_override("normal_font_size", 12)
 	message_label.add_theme_font_size_override("bold_font_size", 12)
-	message_label.text = _escape_bbcode(chat_message.message)
-	chat_container.add_child(message_label)
+	message_label.text = message_text
+	return message_label
 
 func _format_separator_timestamp(message_time_unix: int) -> String:
 	if message_time_unix <= 0:

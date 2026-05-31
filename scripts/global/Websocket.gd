@@ -13,6 +13,32 @@ var connected: bool = false
 # Signals
 signal player_data_received(character_data: Dictionary)
 
+const CHAT_RESPONSE_TYPES := {
+	"localChat": "local",
+	"globalChat": "global"
+}
+
+const SIMPLE_RESPONSE_ACTIONS := {
+	"expeditionCancelResponse": "expeditionCancel",
+	"temperItemResponse": "temperItem",
+	"resetTalentsResponse": "resetTalents",
+	"trainStatResponse": "trainStat",
+	"addTalentResponse": "addTalent",
+	"buyItemResponse": "buyItem",
+	"buyItemVendorResponse": "buyItemVendor",
+	"enchantItemResponse": "enchantItem",
+	"chooseBlessingResponse": "chooseBlessing",
+	"activatePerkResponse": "activatePerk",
+	"brewElixirResponse": "brewElixir",
+	"useElixirResponse": "useElixir",
+	"usePotionResponse": "usePotion",
+	"useHammerResponse": "useHammer",
+	"useScrollResponse": "useScroll",
+	"moveItemResponse": "moveItem",
+	"socketItemResponse": "socketItem",
+	"skipTravelResponse": "skipTravel"
+}
+
 func _ready():
 	set_process(false)  # Only process when connected
 
@@ -107,8 +133,13 @@ func _handle_message(message: String):
 		_handle_message_rejected(data)
 		return
 	if function_name != "playerData" and _looks_like_player_data_message(data):
-		print("[Websocket] treating function=%s as playerData" % [function_name])
 		_handle_player_data(data)
+		return
+	if CHAT_RESPONSE_TYPES.has(function_name):
+		_handle_chat_message(data, CHAT_RESPONSE_TYPES[function_name])
+		return
+	if SIMPLE_RESPONSE_ACTIONS.has(function_name):
+		_handle_simple_response(data, SIMPLE_RESPONSE_ACTIONS[function_name])
 		return
 	
 	match function_name:
@@ -122,56 +153,16 @@ func _handle_message(message: String):
 			_handle_start_expedition_node_response(data)
 		"expeditionOptionResponse":
 			_handle_expedition_option_response(data)
-		"expeditionCancelResponse":
-			_handle_simple_response(data, "expeditionCancel")
 		"questOptionResponse":
 			_handle_quest_option_response(data)
 		"questCancelResponse":
 			_handle_quest_cancel_response(data)
 		"acceptQuestResponse":
 			_handle_accept_quest_response(data)
-		"localChat":
-			_handle_chat_message(data, "local")
-		"globalChat":
-			_handle_chat_message(data, "global")
 		"combatLog":
 			_handle_combat_log(data)
 		"sellItemResponse", "sellItemsResponse":
 			_handle_sell_item_response(data)
-		"temperItemResponse":
-			_handle_simple_response(data, "temperItem")
-		"resetTalentsResponse":
-			_handle_simple_response(data, "resetTalents")
-		"trainStatResponse":
-			_handle_simple_response(data, "trainStat")
-		"addTalentResponse":
-			_handle_simple_response(data, "addTalent")
-		"buyItemResponse":
-			_handle_simple_response(data, "buyItem")
-		"buyItemVendorResponse":
-			_handle_simple_response(data, "buyItemVendor")
-		"enchantItemResponse":
-			_handle_simple_response(data, "enchantItem")
-		"chooseBlessingResponse":
-			_handle_simple_response(data, "chooseBlessing")
-		"activatePerkResponse":
-			_handle_simple_response(data, "activatePerk")
-		"brewElixirResponse":
-			_handle_simple_response(data, "brewElixir")
-		"useElixirResponse":
-			_handle_simple_response(data, "useElixir")
-		"usePotionResponse":
-			_handle_simple_response(data, "usePotion")
-		"useHammerResponse":
-			_handle_simple_response(data, "useHammer")
-		"useScrollResponse":
-			_handle_simple_response(data, "useScroll")
-		"moveItemResponse":
-			_handle_simple_response(data, "moveItem")
-		"socketItemResponse":
-			_handle_simple_response(data, "socketItem")
-		"skipTravelResponse":
-			_handle_simple_response(data, "skipTravel")
 		"loadEnemyResponse":
 			_handle_load_enemy_response(data)
 		"rankingsData":
@@ -190,11 +181,7 @@ func _handle_player_data(message: Dictionary):
 	
 	var character_data = message.data[0]
 	if character_data is Dictionary:
-		var enchanter_payload = character_data.get("enchanter", [])
-		print("[Websocket] playerData enchanter=%s" % [str(enchanter_payload)])
-	
-	# Emit signal with character data
-	player_data_received.emit(character_data)
+		player_data_received.emit(character_data)
 
 func _looks_like_player_data_message(message: Dictionary) -> bool:
 	if not message.has("data") or not message.data is Array or message.data.is_empty():
@@ -302,28 +289,6 @@ func _handle_chat_message(message: Dictionary, chat_type: String):
 	# Notify ChatPanel (ChatOverlay) to refresh display
 	if UIManager.instance and UIManager.instance.chat_panel:
 		UIManager.instance.chat_panel.display_chat_messages()
-
-func _get_player_name(player_id: String) -> String:
-	"""Get player name from ID, checking current player and enemy players"""
-	if GameInfo.current_player and str(GameInfo.current_player.character_id) == player_id:
-		return GameInfo.current_player.name
-	
-	for player in GameInfo.enemy_players:
-		if str(player.character_id) == player_id:
-			return player.name
-	
-	return "Player " + player_id
-
-func _get_player_status(player_id: String) -> String:
-	"""Get player status (lord/peasant) from ID"""
-	if GameInfo.current_player and str(GameInfo.current_player.character_id) == player_id:
-		return "lord" if GameInfo.current_player.premium else "peasant"
-	
-	for player in GameInfo.enemy_players:
-		if str(player.character_id) == player_id:
-			return "lord" if player.premium else "peasant"
-	
-	return "peasant"
 
 func _unix_to_iso(unix_timestamp: int) -> String:
 	"""Convert Unix timestamp to ISO 8601 format"""
@@ -557,7 +522,6 @@ func _handle_message_rejected(message: Dictionary):
 	var rejection = message.data[0]
 	if not (rejection is Dictionary):
 		return
-	print("[Websocket] messageRejected reason=%s muted_until=%s" % [str(rejection.get("reason", "")), str(rejection.get("muted_until", 0))])
 	if int(rejection.get("muted_until", 0)) > 0:
 		GameInfo.apply_chat_mute_payload(rejection)
 	if UIManager.instance and UIManager.instance.chat_panel and UIManager.instance.chat_panel.has_method("handle_chat_rejection"):

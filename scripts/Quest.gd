@@ -1,5 +1,7 @@
 extends TextureRect
 
+const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
+
 # Eldrum-style scrolling quest display
 @export var text_container: Node  # Center container for quest text
 @export var options_container: VBoxContainer  # Buttons below text
@@ -71,8 +73,6 @@ const STAT_ICON_MAP = {
 }
 
 const POTION_REWARD_DURATION_SECONDS: float = 48.0 * 60.0 * 60.0
-const COLOR_PRICE_NORMAL: Color = Color(0.85, 0.8, 0.7, 1.0)
-const COLOR_PRICE_MISSING: Color = Color(1.0, 0.25, 0.2, 1.0)
 const REWARD_HIGHLIGHT_COLOR := "#e6b366"
 
 func _ready():
@@ -291,41 +291,19 @@ func apply_option_reward(option: QuestOption):
 			UIManager.instance.refresh_stats()
 	
 	if option.reward_talent > 0:
-		GameInfo.current_player.talent_points += option.reward_talent
-		reward_text = "You receive " + str(option.reward_talent) + " talent point" + ("s" if option.reward_talent > 1 else "") + "."
-		UIManager.instance.refresh_stats()
+			reward_text = _apply_talent_reward(option.reward_talent)
 	
 	if option.reward_item > 0:
-		var added = GameInfo.current_player.add_item_to_bag(option.reward_item)
-		if added:
-			var item_resource = GameInfo.items_db.get_item_by_id(option.reward_item)
-			reward_text = "You receive " + item_resource.item_name + "."
-			UIManager.instance.refresh_bags()
-		else:
-			reward_text = "Your bag is full!"
+			reward_text = _apply_item_reward(option.reward_item)
 	
 	if option.reward_perk > 0:
-		var added = GameInfo.current_player.add_perk_if_new(option.reward_perk)
-		var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_perk) if GameInfo.perks_db else null
-		if added:
-			reward_text = "You receive the perk: " + perk_resource.perk_name + "."
-			UIManager.instance.refresh_perks()
-		else:
-			reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
+			reward_text = _apply_perk_reward(option.reward_perk)
 	
 	if option.reward_blessing > 0:
-		GameInfo.current_player.blessing = option.reward_blessing
-		var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_blessing) if GameInfo.perks_db else null
-		reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
-		UIManager.instance.refresh_active_effects()
+			reward_text = _apply_blessing_reward(option.reward_blessing)
 	
 	if option.reward_potion > 0:
-		GameInfo.current_player.potion = option.reward_potion
-		GameInfo.current_player.potion_until = Time.get_unix_time_from_system() + POTION_REWARD_DURATION_SECONDS
-		GameInfo.current_player.potion_day = 0
-		var item_resource = GameInfo.items_db.get_item_by_id(option.reward_potion)
-		reward_text = "You receive a potion: " + item_resource.item_name + "."
-		UIManager.instance.refresh_active_effects()
+			reward_text = _apply_potion_reward(option.reward_potion)
 	
 	# Fallback: Legacy enum-based reward system
 	if reward_text == "" and option.reward_type != QuestOption.RewardType.NONE and option.reward_amount != 0:
@@ -337,41 +315,19 @@ func apply_option_reward(option: QuestOption):
 				reward_text = "You receive " + str(option.reward_amount) + " silver."
 			
 			QuestOption.RewardType.ITEM:
-				var added = GameInfo.current_player.add_item_to_bag(option.reward_amount)
-				if added:
-					var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
-					reward_text = "You receive " + item_resource.item_name + "."
-					UIManager.instance.refresh_bags()
-				else:
-					reward_text = "Your bag is full!"
+				reward_text = _apply_item_reward(option.reward_amount)
 			
 			QuestOption.RewardType.PERK:
-				var added = GameInfo.current_player.add_perk_if_new(option.reward_amount)
-				var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
-				if added:
-					reward_text = "You receive the perk: " + perk_resource.perk_name + "."
-					UIManager.instance.refresh_perks()
-				else:
-					reward_text = "You already have this perk (" + perk_resource.perk_name + ")."
+				reward_text = _apply_perk_reward(option.reward_amount)
 			
 			QuestOption.RewardType.TALENT_POINT:
-				GameInfo.current_player.talent_points += option.reward_amount
-				reward_text = "You receive " + str(option.reward_amount) + " talent point" + ("s" if option.reward_amount > 1 else "") + "."
-				UIManager.instance.refresh_stats()
+				reward_text = _apply_talent_reward(option.reward_amount)
 			
 			QuestOption.RewardType.POTION:
-				GameInfo.current_player.potion = option.reward_amount
-				GameInfo.current_player.potion_until = Time.get_unix_time_from_system() + POTION_REWARD_DURATION_SECONDS
-				GameInfo.current_player.potion_day = 0
-				var item_resource = GameInfo.items_db.get_item_by_id(option.reward_amount)
-				reward_text = "You receive a potion: " + item_resource.item_name + "."
-				UIManager.instance.refresh_active_effects()
+				reward_text = _apply_potion_reward(option.reward_amount)
 			
 			QuestOption.RewardType.BLESSING:
-				GameInfo.current_player.blessing = option.reward_amount
-				var perk_resource = GameInfo.perks_db.get_perk_by_id(option.reward_amount) if GameInfo.perks_db else null
-				reward_text = "You receive a blessing: " + perk_resource.perk_name + "."
-				UIManager.instance.refresh_active_effects()
+				reward_text = _apply_blessing_reward(option.reward_amount)
 			
 			_:
 				if option.reward_type in STAT_REWARD_MAP:
@@ -389,6 +345,42 @@ func apply_option_reward(option: QuestOption):
 
 	_update_health_bar()
 	_update_effects_bar_visibility()
+
+func _apply_talent_reward(amount: int) -> String:
+	GameInfo.current_player.talent_points += amount
+	UIManager.instance.refresh_stats()
+	return "You receive " + str(amount) + " talent point" + ("s" if amount > 1 else "") + "."
+
+func _apply_item_reward(item_id: int) -> String:
+	var added = GameInfo.current_player.add_item_to_bag(item_id)
+	if not added:
+		return "Your bag is full!"
+	var item_resource = GameInfo.items_db.get_item_by_id(item_id) if GameInfo.items_db else null
+	UIManager.instance.refresh_bags()
+	return "You receive " + (item_resource.item_name if item_resource else "an item") + "."
+
+func _apply_perk_reward(perk_id: int) -> String:
+	var added = GameInfo.current_player.add_perk_if_new(perk_id)
+	var perk_resource = GameInfo.perks_db.get_perk_by_id(perk_id) if GameInfo.perks_db else null
+	var perk_name = perk_resource.perk_name if perk_resource else "a perk"
+	if added:
+		UIManager.instance.refresh_perks()
+		return "You receive the perk: " + perk_name + "."
+	return "You already have this perk (" + perk_name + ")."
+
+func _apply_blessing_reward(perk_id: int) -> String:
+	GameInfo.current_player.blessing = perk_id
+	var perk_resource = GameInfo.perks_db.get_perk_by_id(perk_id) if GameInfo.perks_db else null
+	UIManager.instance.refresh_active_effects()
+	return "You receive a blessing: " + (perk_resource.perk_name if perk_resource else "a blessing") + "."
+
+func _apply_potion_reward(item_id: int) -> String:
+	GameInfo.current_player.potion = item_id
+	GameInfo.current_player.potion_until = Time.get_unix_time_from_system() + POTION_REWARD_DURATION_SECONDS
+	GameInfo.current_player.potion_day = 0
+	var item_resource = GameInfo.items_db.get_item_by_id(item_id) if GameInfo.items_db else null
+	UIManager.instance.refresh_active_effects()
+	return "You receive a potion: " + (item_resource.item_name if item_resource else "a potion") + "."
 
 func _set_reward_text(reward_text: String):
 	if not reward_label:
@@ -586,9 +578,9 @@ func add_option(text: String, callback: Callable, option_data: QuestOption = nul
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	icon.texture = icon_texture
 	if has_missing_price:
-		label.add_theme_color_override("font_color", COLOR_PRICE_MISSING)
+		label.add_theme_color_override("font_color", UI_UTILS.PRICE_MISSING)
 	else:
-		label.add_theme_color_override("font_color", COLOR_PRICE_NORMAL)
+		label.add_theme_color_override("font_color", UI_UTILS.PRICE_NORMAL)
 	
 	option_button.disabled = not meets_requirement
 	if not meets_requirement:

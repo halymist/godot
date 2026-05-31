@@ -1,5 +1,7 @@
 extends TextureRect
 
+const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
+
 const SKIP_COST: int = 1  # Mushroom cost to skip travel
 const DEFAULT_TRAVEL_DURATION: float = 10.0
 
@@ -18,7 +20,6 @@ const DEFAULT_TRAVEL_DURATION: float = 10.0
 # Colors for button states
 const COLOR_NORMAL = Color(0.85, 0.8, 0.7, 1.0)
 const COLOR_DISABLED = Color(0.5, 0.5, 0.5, 1.0)
-const COLOR_PRICE_MISSING = Color(1.0, 0.25, 0.2, 1.0)
 
 var is_skipping: bool = false
 var skip_start_time: float = 0.0
@@ -381,7 +382,7 @@ func _update_button_label_colors(button: Button, disabled: bool):
 			if child is Label:
 				var child_color = color
 				if button == skip_button and child.name == "PriceLabel" and disabled and not _can_afford_skip():
-					child_color = COLOR_PRICE_MISSING
+					child_color = UI_UTILS.PRICE_MISSING
 				child.add_theme_color_override("font_color", child_color)
 
 func _set_enter_price_visible(price_visible: bool):

@@ -34,6 +34,21 @@ func _ready():
 func _is_item_child(child: Node) -> bool:
 	return child != item_outline and child.has_method("get_item_data")
 
+func _is_equipment_slot(candidate_slot_id: int) -> bool:
+	return candidate_slot_id >= EQUIPMENT_MIN and candidate_slot_id <= EQUIPMENT_MAX
+
+func _is_bag_slot(candidate_slot_id: int) -> bool:
+	return candidate_slot_id >= BAG_MIN and candidate_slot_id <= BAG_MAX
+
+func _is_utility_slot(candidate_slot_id: int) -> bool:
+	return candidate_slot_id >= ENCHANTER_SLOT and candidate_slot_id <= LAST_UTILITY_SLOT
+
+func _is_player_inventory_slot(candidate_slot_id: int) -> bool:
+	return _is_equipment_slot(candidate_slot_id) or _is_bag_slot(candidate_slot_id)
+
+func _is_consumable_type(item_type: String) -> bool:
+	return item_type == "Potion" or item_type == "Elixir"
+
 func _normalize_equipment_type(raw_type: String) -> String:
 	var t = raw_type.to_lower()
 	match t:
@@ -113,8 +128,8 @@ func _can_drop_data(_pos, data):
 	var item_type = item.type
 	var source_container = data.get("source_container")
 	var source_slot_id = source_container.slot_id if source_container else -1
-	var source_is_utility = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= LAST_UTILITY_SLOT
-	var target_is_utility = slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT
+	var source_is_utility = _is_utility_slot(source_slot_id)
+	var target_is_utility = _is_utility_slot(slot_id)
 	
 
 	# Utility source safety: when dragging out of utility slots, target must be empty.
@@ -127,10 +142,10 @@ func _can_drop_data(_pos, data):
 		# Don't accept drops from other vendor items
 		if source_slot_id == VENDOR_SLOT:
 			return false
-		return (source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX) or (source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX)
+		return _is_player_inventory_slot(source_slot_id)
 	
 	# Special case: Allow gems to be dropped on equipment slots (1-9) if item has a socket
-	if item_type == "Gem" and slot_id >= EQUIPMENT_MIN and slot_id <= EQUIPMENT_MAX:
+	if item_type == "Gem" and _is_equipment_slot(slot_id):
 		if not is_slot_empty():
 			var target_item = get_item_data()
 			if target_item and target_item.has_socket and target_item.socket_id == -1:
@@ -141,15 +156,15 @@ func _can_drop_data(_pos, data):
 	
 	# Allow gems to be dropped on vendor slot for selling
 	if item_type == "Gem" and slot_id == VENDOR_SLOT:
-		return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
+		return _is_bag_slot(source_slot_id)
 	
 	# Special case: Allow hammers to be dropped on any slot with a temperable item OR empty bag slots
 	if item_type == "Hammer":
 		# Allow selling hammers to vendor
 		if slot_id == VENDOR_SLOT:
-			return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
+			return _is_bag_slot(source_slot_id)
 		# Allow movement to empty bag slots (10-14)
-		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
+		if is_slot_empty() and _is_bag_slot(slot_id):
 			return true
 		if not is_slot_empty():
 			var target_item = get_item_data()
@@ -163,9 +178,9 @@ func _can_drop_data(_pos, data):
 	if item_type == "Scroll":
 		# Allow selling scrolls to vendor
 		if slot_id == VENDOR_SLOT:
-			return source_slot_id >= BAG_MIN and source_slot_id <= BAG_MAX
+			return _is_bag_slot(source_slot_id)
 		# Allow movement to empty bag slots (10-14)
-		if is_slot_empty() and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
+		if is_slot_empty() and _is_bag_slot(slot_id):
 			return true
 		if not is_slot_empty():
 			var target_item = get_item_data()
@@ -206,14 +221,14 @@ func _can_drop_data(_pos, data):
 	
 	# Special case: Don't allow swapping equipment items of different types
 	# Equipment slots are 1-9, and each has a specific type requirement
-	if slot_id >= EQUIPMENT_MIN and slot_id <= EQUIPMENT_MAX and source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX:
+	if _is_equipment_slot(slot_id) and _is_equipment_slot(source_slot_id):
 		# Both are equipment slots - only allow swap if same type
 		if item_type != existing_item_type:
 			return false
 	
 	# Also check when swapping between equipment and bag
 	# If source is equipment (1-9) and target has an item, types must match
-	if source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX:
+	if _is_equipment_slot(source_slot_id):
 		# Source is equipment slot - the item types must match for a swap
 		
 		# Get the required type for the source equipment slot
@@ -289,8 +304,8 @@ func _drop_data(_pos, data):
 	
 	# Update GameInfo directly based on the operation
 	# SPECIAL: For utility slots (15-18), DON'T change bag_slot_id - they're visual only
-	var is_utility_target = slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT
-	var is_utility_source = source_slot_id >= ENCHANTER_SLOT and source_slot_id <= LAST_UTILITY_SLOT
+	var is_utility_target = _is_utility_slot(slot_id)
+	var is_utility_source = _is_utility_slot(source_slot_id)
 	
 	if is_utility_target:
 		# Moving TO a utility slot - just update visuals, don't change bag_slot_id
@@ -346,8 +361,7 @@ func _drop_data(_pos, data):
 	if UIManager.instance:
 		UIManager.instance.refresh_bags()
 		# Refresh stats if equipment slots (1-9) are involved
-		if (slot_id >= EQUIPMENT_MIN and slot_id <= EQUIPMENT_MAX) or (source_slot_id >= EQUIPMENT_MIN and source_slot_id <= EQUIPMENT_MAX):
-			UIManager.instance.refresh_stats()
+		if _is_equipment_slot(slot_id) or _is_equipment_slot(source_slot_id):
 			UIManager.instance.refresh_stats()
 
 func handle_vendor_purchase(vendor_item: GameInfo.Item, _vendor_slot_id: int):
@@ -616,7 +630,7 @@ func place_item_in_slot(item_data: GameInfo.Item):
 	update_slot_appearance()
 	
 	# Notify UIManager if this is a utility slot (15-18)
-	if slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT:
+	if _is_utility_slot(slot_id):
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func clear_slot():
@@ -632,7 +646,7 @@ func clear_slot():
 	call_deferred("update_slot_appearance")
 	
 	# Notify UIManager if this is a utility slot (15-18)
-	if slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT:
+	if _is_utility_slot(slot_id):
 		UIManager.instance.notify_slot_changed(slot_id)
 
 func update_slot_appearance():
@@ -683,14 +697,14 @@ func handle_double_click(item: GameInfo.Item):
 	
 	# Check if item is a consumable (Potion or Elixir) in bag - consume it
 	# Only consume on Character panel (not utility panels like Vendor, Blacksmith, etc.)
-	if (item.type == "Potion" or item.type == "Elixir") and item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+	if _is_consumable_type(item.type) and _is_bag_slot(item.bag_slot_id):
 		if current_utility == null or (current_utility and current_utility.name == "Character"):
 			_consume_item(item)
 		return
 
 	# If double-clicked from a utility slot, return the item to its original bag slot.
 	# Utility items keep their original bag_slot_id, so source slot_id must drive this branch.
-	if slot_id >= ENCHANTER_SLOT and slot_id <= LAST_UTILITY_SLOT:
+	if _is_utility_slot(slot_id):
 		var first_empty_bag_slot_id = _find_first_empty_bag_slot_id()
 		if first_empty_bag_slot_id != -1:
 			var return_slot = _find_slot_by_id(first_empty_bag_slot_id)
@@ -705,96 +719,29 @@ func handle_double_click(item: GameInfo.Item):
 	# If item is in a regular slot while on utility panel, double-click can move it into utility slots.
 	# Keep this path only for actual bag source slots.
 	if current_utility and current_utility.name == "AlchemistPanel":
-		if item.type == "Ingredient" and slot_id >= BAG_MIN and slot_id <= BAG_MAX:
+		if item.type == "Ingredient" and _is_bag_slot(slot_id):
 			for target_slot_id in [ALCHEMIST_SLOT_1, ALCHEMIST_SLOT_2]:
-				var target_slot = _find_slot_by_id(target_slot_id)
-				if target_slot and target_slot.is_slot_empty():
-					var source_slot_id = item.bag_slot_id  # Save original before placing
-					# DON'T change bag_slot_id - this is a visual-only move
-					target_slot.place_item_in_slot(item)
-					# Notify panel about the item placement
-					if UIManager.instance:
-						UIManager.instance.notify_utility_slot_item_placed(target_slot_id, item, source_slot_id)
-						UIManager.instance.refresh_bags()  # Will exclude item from bag display
+				if _place_item_in_utility_slot(item, target_slot_id):
 					break
 		return
 
 	# Blacksmith: Move temperable items to slot 16 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "BlacksmithPanel":
 		if item.type not in ["Gem", "Scroll", "Hammer", "Ingredient", "Potion", "Ration", "Elixir"]:
-			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
-				var target_slot = _find_slot_by_id(BLACKSMITH_SLOT)
-				if target_slot and target_slot.is_slot_empty():
-					var source_slot_id = item.bag_slot_id  # Save original before placing
-					# DON'T change bag_slot_id - this is a visual-only move
-					target_slot.place_item_in_slot(item)
-					# Notify panel about the item placement
-					UIManager.instance.notify_utility_slot_item_placed(BLACKSMITH_SLOT, item, source_slot_id)
-					UIManager.instance.refresh_bags()  # Will exclude item from bag display
+			if _is_bag_slot(slot_id):
+				_place_item_in_utility_slot(item, BLACKSMITH_SLOT)
 		return
 
 	# Enchanter: Move equippable items to slot 15 (visually only, don't change bag_slot_id)
 	if current_utility and current_utility.name == "EnchanterPanel":
 		if current_utility.has_method("can_accept_item") and current_utility.can_accept_item(item):
-			if slot_id >= BAG_MIN and slot_id <= BAG_MAX:
-				var target_slot = _find_slot_by_id(ENCHANTER_SLOT)
-				if target_slot and target_slot.is_slot_empty():
-					var source_slot_id = item.bag_slot_id  # Save original before placing
-					# DON'T change bag_slot_id - this is a visual-only move
-					target_slot.place_item_in_slot(item)
-					# Notify panel about the item placement
-					if UIManager.instance:
-						UIManager.instance.notify_utility_slot_item_placed(ENCHANTER_SLOT, item, source_slot_id)
-						UIManager.instance.refresh_bags()  # Will exclude item from bag display
+			if _is_bag_slot(slot_id):
+				_place_item_in_utility_slot(item, ENCHANTER_SLOT)
 		return
 	
 	# Vendor: Sell if in bag/equipment, buy if in vendor slot
 	if current_utility and current_utility.name == "VendorPanel":
-		# Selling: item in equipment (0-8) or bag (10-14)
-		if (item.bag_slot_id >= EQUIPMENT_MIN and item.bag_slot_id <= EQUIPMENT_MAX) or (item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX):
-			if item.price > 0:
-				Websocket.sell_item(item.bag_slot_id)
-				UIManager.instance.update_silver(item.price)
-				GameInfo.current_player.bag_slots.erase(item)
-				clear_slot()
-				if UIManager.instance:
-					UIManager.instance.refresh_bags()
-		# Buying: item in vendor slot (20)
-		elif item.bag_slot_id == VENDOR_SLOT:
-			var buy_price = item.price * 2
-			if GameInfo.current_player.silver >= buy_price:
-				# Find first empty bag slot
-				for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
-					var target_slot = _find_slot_by_id(bag_slot_id)
-					if target_slot and target_slot.is_slot_empty():
-						UIManager.instance.update_silver(-buy_price)
-						
-						Websocket.buy_item(item.id, bag_slot_id)
-						
-						# Remove item from vendor panel's local inventory by id
-						var vendor_panel = UIManager.instance.vendor_panel if UIManager.instance else null
-						if vendor_panel:
-							for vi in range(vendor_panel.vendor_items.size()):
-								if vendor_panel.vendor_items[vi].id == item.id:
-									vendor_panel.vendor_items.remove_at(vi)
-									break
-						
-						# Create simplified item (only id, bag_slot_id, and day)
-						var new_item = GameInfo.Item.new({
-							"id": item.id,
-							"bag_slot_id": bag_slot_id,
-							"day": GameInfo.current_player.server_day
-						})
-						
-						GameInfo.current_player.bag_slots.append(new_item)
-						target_slot.place_item_in_slot(new_item)
-						
-						UIManager.instance.refresh_bags()
-						
-						# Trigger purchase greeting and refresh vendor display
-						if vendor_panel and vendor_panel.has_method("trigger_purchase_greeting"):
-							vendor_panel.trigger_purchase_greeting()
-						break
+		_handle_vendor_double_click(item)
 		return
 	
 	# Character panel equip/unequip (fallback - only if no utility panel is active)
@@ -804,14 +751,68 @@ func handle_double_click(item: GameInfo.Item):
 	
 	if on_character_panel:
 		# If item is equipped (0-8), move it to bag
-		if item.bag_slot_id >= EQUIPMENT_MIN and item.bag_slot_id <= EQUIPMENT_MAX:
+		if _is_equipment_slot(item.bag_slot_id):
 			_unequip_item_to_bag(item)
 			return
 		# If item is in bag (10-14), equip it
-		elif item.bag_slot_id >= BAG_MIN and item.bag_slot_id <= BAG_MAX:
+		elif _is_bag_slot(item.bag_slot_id):
 			if _can_equip_to_character(item):
 				_equip_item_to_character(item)
 				return
+
+func _place_item_in_utility_slot(item: GameInfo.Item, target_slot_id: int) -> bool:
+	var target_slot = _find_slot_by_id(target_slot_id)
+	if not target_slot or not target_slot.is_slot_empty():
+		return false
+	var source_slot_id = item.bag_slot_id
+	target_slot.place_item_in_slot(item)
+	if UIManager.instance:
+		UIManager.instance.notify_utility_slot_item_placed(target_slot_id, item, source_slot_id)
+		UIManager.instance.refresh_bags()
+	return true
+
+func _handle_vendor_double_click(item: GameInfo.Item):
+	if _is_player_inventory_slot(item.bag_slot_id):
+		if item.price <= 0:
+			return
+		Websocket.sell_item(item.bag_slot_id)
+		UIManager.instance.update_silver(item.price)
+		GameInfo.current_player.bag_slots.erase(item)
+		clear_slot()
+		if UIManager.instance:
+			UIManager.instance.refresh_bags()
+		return
+
+	if item.bag_slot_id != VENDOR_SLOT:
+		return
+	var buy_price = item.price * 2
+	if GameInfo.current_player.silver < buy_price:
+		return
+	for bag_slot_id in range(BAG_MIN, BAG_MAX + 1):
+		var target_slot = _find_slot_by_id(bag_slot_id)
+		if target_slot and target_slot.is_slot_empty():
+			_buy_vendor_item_into_slot(item, bag_slot_id, target_slot)
+			return
+
+func _buy_vendor_item_into_slot(item: GameInfo.Item, bag_slot_id: int, target_slot):
+	UIManager.instance.update_silver(-(item.price * 2))
+	Websocket.buy_item(item.id, bag_slot_id)
+	var vendor_panel = UIManager.instance.vendor_panel if UIManager.instance else null
+	if vendor_panel:
+		for vi in range(vendor_panel.vendor_items.size()):
+			if vendor_panel.vendor_items[vi].id == item.id:
+				vendor_panel.vendor_items.remove_at(vi)
+				break
+	var new_item = GameInfo.Item.new({
+		"id": item.id,
+		"bag_slot_id": bag_slot_id,
+		"day": GameInfo.current_player.server_day
+	})
+	GameInfo.current_player.bag_slots.append(new_item)
+	target_slot.place_item_in_slot(new_item)
+	UIManager.instance.refresh_bags()
+	if vendor_panel and vendor_panel.has_method("trigger_purchase_greeting"):
+		vendor_panel.trigger_purchase_greeting()
 
 func _consume_item(item: GameInfo.Item):
 	if item.type == "Potion":

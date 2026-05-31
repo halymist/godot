@@ -102,10 +102,7 @@ func populate_rankings():
 			table_content.add_child(row)
 	
 	for player in GameInfo.rankings_players:
-		var row = ranking_row_scene.instantiate()
-		row.set_data(player.rank, player.name, player.faction, player.honor)
-		row.row_clicked.connect(_on_row_clicked)
-		row.row_double_clicked.connect(_on_row_double_clicked)
+		var row = _create_player_row(player)
 		table_content.add_child(row)
 	
 	# Only add bottom loading rows if initial set is a full page (likely more data)
@@ -138,14 +135,7 @@ func append_rankings_up(new_players: Array):
 	
 	var insert_index = top_loading_rows.size()
 	
-	for player in new_players:
-		var row = ranking_row_scene.instantiate()
-		row.set_data(player.rank, player.name, player.faction, player.honor)
-		row.row_clicked.connect(_on_row_clicked)
-		row.row_double_clicked.connect(_on_row_double_clicked)
-		table_content.add_child(row)
-		table_content.move_child(row, insert_index)
-		insert_index += 1
+	_insert_player_rows(new_players, insert_index)
 	
 	loaded_min_rank = new_players[0].rank
 	
@@ -163,14 +153,7 @@ func append_rankings_down(new_players: Array):
 	
 	var bottom_index = table_content.get_child_count() - bottom_loading_rows.size()
 	
-	for player in new_players:
-		var row = ranking_row_scene.instantiate()
-		row.set_data(player.rank, player.name, player.faction, player.honor)
-		row.row_clicked.connect(_on_row_clicked)
-		row.row_double_clicked.connect(_on_row_double_clicked)
-		table_content.add_child(row)
-		table_content.move_child(row, bottom_index)
-		bottom_index += 1
+	_insert_player_rows(new_players, bottom_index)
 	
 	loaded_max_rank = new_players[-1].rank
 	
@@ -179,6 +162,20 @@ func append_rankings_down(new_players: Array):
 		_clear_loading_rows(bottom_loading_rows)
 	
 	is_loading_down = false
+
+func _create_player_row(player: GameInfo.GamePlayer):
+	var row = ranking_row_scene.instantiate()
+	row.set_data(player.rank, player.name, player.faction, player.honor)
+	row.row_clicked.connect(_on_row_clicked)
+	row.row_double_clicked.connect(_on_row_double_clicked)
+	return row
+
+func _insert_player_rows(players: Array, insert_index: int):
+	for player in players:
+		var row = _create_player_row(player)
+		table_content.add_child(row)
+		table_content.move_child(row, insert_index)
+		insert_index += 1
 
 func _on_row_clicked(rank: int, player_name: String, _faction: int, _honor: int):
 	selected_player = null
