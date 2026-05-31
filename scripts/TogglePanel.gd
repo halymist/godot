@@ -680,9 +680,9 @@ func _handle_panel_back() -> bool:
 		cancel_quest.show_dialog()
 		return true
 	
-	# Expedition panel -> show cancel dialog
+	# Expedition panel -> close the panel without ending the expedition
 	if panel == expedition_panel:
-		_cancel_expedition_without_confirmation()
+		show_panel(home_panel)
 		return true
 	
 	# Home panel -> interior navigation or logout

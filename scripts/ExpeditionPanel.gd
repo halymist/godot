@@ -34,15 +34,11 @@ var map_image_size: Vector2 = Vector2.ZERO
 var map_base_scale: float = 1.0
 var map_view_offset: Vector2 = Vector2.ZERO
 var map_tween: Tween = null
-var is_map_panning: bool = false
-var map_pan_last_position: Vector2 = Vector2.ZERO
 var selected_node_id: int = 0
 var selected_node_completed: bool = false
-var rng := RandomNumberGenerator.new()
 
 func _ready():
 	visible = false
-	rng.randomize()
 	visibility_changed.connect(_on_visibility_changed)
 	if UIManager.instance.game_is_ready:
 		_setup()
@@ -63,9 +59,9 @@ func _on_visibility_changed():
 		if current_expedition_id != expedition_id:
 			start_expedition(expedition_id)
 		else:
-			refresh_graph()
+			_preserve_current_graph_state()
 
-func start_expedition(expedition_id: int):
+func start_expedition(expedition_id: int, force_refresh: bool = false):
 	var is_same_expedition = current_expedition != null and current_expedition_id == expedition_id
 	current_expedition_id = expedition_id
 	current_expedition = GameInfo.expeditions_db.get_expedition(expedition_id) if GameInfo.expeditions_db else null
@@ -78,16 +74,32 @@ func start_expedition(expedition_id: int):
 	_ensure_map_view()
 	_setup_node_overlay()
 	texture = null
+	if is_same_expedition and not force_refresh:
+		visible = true
+		_preserve_current_graph_state()
+		return
+
 	if not is_same_expedition:
 		_reset_map_view_offset()
 	_update_map_view_transform()
 	if not is_same_expedition:
 		selected_node_id = 0
 		selected_node_completed = false
-	_set_node_overlay_text("Loading...")
+	_set_node_overlay_text("Select a node to inspect it.")
 	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 	visible = true
 	refresh_graph()
+
+func _preserve_current_graph_state():
+	_update_health_bar()
+	_update_map_view_transform()
+	_refresh_node_positions()
+	if selected_node_id <= 0:
+		return
+
+	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
+	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log) if current_expedition else []
+	_show_current_selection(completed_ids)
 
 func refresh_graph():
 	if not current_expedition:
@@ -110,7 +122,11 @@ func refresh_graph():
 			_add_node_button(node, node.node_id in completed_ids)
 
 	_refresh_node_positions()
-	_restore_or_pick_selection(available_ids, completed_ids)
+	if selected_node_id > 0:
+		_show_current_selection(completed_ids)
+	else:
+		_set_node_overlay_text("Select a node to inspect it." if available_ids.size() > 0 else "No nodes available.")
+		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 
 func _clear_graph():
 	for button in node_buttons.values():
@@ -343,9 +359,7 @@ func _ensure_map_view():
 
 	var parent = _get_map_parent()
 	parent.clip_contents = true
-	parent.mouse_filter = Control.MOUSE_FILTER_PASS
-	if not parent.gui_input.is_connected(_on_map_area_gui_input):
-		parent.gui_input.connect(_on_map_area_gui_input)
+	parent.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	map_content = Control.new()
 	map_content.name = "MapContent"
@@ -409,41 +423,13 @@ func _build_node_overlay_text(node: Resource, completed: bool) -> String:
 		return "Completed node"
 	return "Unknown node"
 
-func _restore_or_pick_selection(available_ids: Array, completed_ids: Array):
+func _show_current_selection(completed_ids: Array):
 	if not current_expedition:
 		return
 
-	if selected_node_id > 0 and selected_node_id in available_ids:
-		var selected_node = current_expedition.get_node(selected_node_id)
-		if selected_node:
-			_apply_node_selection(selected_node, selected_node_id in completed_ids, false)
-			return
-
-	var embarkable_ids: Array[int] = []
-	for node_id in available_ids:
-		if node_id not in completed_ids:
-			embarkable_ids.append(int(node_id))
-
-	var pick_id: int = 0
-	var pick_completed: bool = false
-	if embarkable_ids.size() > 0:
-		pick_id = int(embarkable_ids[rng.randi() % embarkable_ids.size()])
-	elif completed_ids.size() > 0:
-		pick_id = int(completed_ids[rng.randi() % completed_ids.size()])
-		pick_completed = true
-	elif available_ids.size() > 0:
-		pick_id = int(available_ids[rng.randi() % available_ids.size()])
-
-	if pick_id <= 0:
-		selected_node_id = 0
-		selected_node_completed = false
-		_set_node_overlay_text("No nodes available.")
-		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
-		return
-
-	var pick_node = current_expedition.get_node(pick_id)
-	if pick_node:
-		_apply_node_selection(pick_node, pick_completed, true)
+	var selected_node = current_expedition.get_node(selected_node_id)
+	if selected_node:
+		_apply_node_selection(selected_node, selected_node_id in completed_ids, false)
 
 func _apply_node_selection(node: Resource, completed: bool, center_camera: bool):
 	if center_camera:
@@ -556,25 +542,6 @@ func _set_map_view_offset_interpolated(value: Vector2):
 	_update_map_view_transform()
 	_refresh_node_positions()
 	queue_redraw()
-
-func _on_map_area_gui_input(event: InputEvent):
-	if not current_expedition:
-		return
-
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed and map_tween:
-			map_tween.kill()
-		is_map_panning = event.pressed
-		map_pan_last_position = event.position
-		return
-
-	if event is InputEventMouseMotion and is_map_panning:
-		var delta = event.position - map_pan_last_position
-		map_pan_last_position = event.position
-		map_view_offset = _clamp_map_view_offset(map_view_offset + delta, map_view.size, _map_viewport_size())
-		_update_map_view_transform()
-		_refresh_node_positions()
-		queue_redraw()
 
 func _refresh_node_positions():
 	if not current_expedition:
