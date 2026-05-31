@@ -8,6 +8,7 @@ var _bounds_corner_a: Vector2 = Vector2.ZERO
 var _bounds_corner_b: Vector2 = Vector2.ZERO
 
 func _ready():
+	z_index = 20
 	visible = false
 
 func set_message_bounds(corner_a: Vector2, corner_b: Vector2):

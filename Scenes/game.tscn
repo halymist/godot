@@ -1683,6 +1683,7 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="ChatBubble" parent="Portrait/GameScene/HealerPanel" unique_id=1781829337 instance=ExtResource("14_k8ojv")]
+layout_mode = 0
 
 [node name="BottomUi" type="ColorRect" parent="Portrait/GameScene/HealerPanel" unique_id=1217189333]
 layout_mode = 1

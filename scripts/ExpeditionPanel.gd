@@ -4,7 +4,6 @@ const EXPEDITION_QUEST_START_COST: int = 0
 const LOW_HEALTH_WARNING_RATIO: float = 0.10
 const NODE_BUTTON_SIZE: Vector2 = Vector2(32, 32)
 const CAMERA_MOVE_DURATION: float = 0.28
-const MAP_PAN_ZOOM: float = 1.12
 const EMBARK_ACTION_TEXT: String = "Embark"
 const NODE_BORDER_WIDTH: int = 1
 const NODE_AVAILABLE_FILL: Color = Color(0.42, 0.30, 0.14, 0.96)
@@ -29,11 +28,14 @@ var current_expedition: ExpeditionData = null
 var node_buttons: Dictionary = {}
 var pending_node_id: int = 0
 var pending_node_start_cost: int = 0
+var map_content: Control = null
 var map_view: TextureRect = null
 var map_image_size: Vector2 = Vector2.ZERO
 var map_base_scale: float = 1.0
-var camera_center_px: Vector2 = Vector2.ZERO
-var camera_tween: Tween = null
+var map_view_offset: Vector2 = Vector2.ZERO
+var map_tween: Tween = null
+var is_map_panning: bool = false
+var map_pan_last_position: Vector2 = Vector2.ZERO
 var selected_node_id: int = 0
 var selected_node_completed: bool = false
 var rng := RandomNumberGenerator.new()
@@ -77,7 +79,7 @@ func start_expedition(expedition_id: int):
 	_setup_node_overlay()
 	texture = null
 	if not is_same_expedition:
-		_reset_camera_to_map_center()
+		_reset_map_view_offset()
 	_update_map_view_transform()
 	if not is_same_expedition:
 		selected_node_id = 0
@@ -148,7 +150,7 @@ func _add_node_button(node: Resource, completed: bool):
 	button.set_meta("completed", completed)
 	_apply_node_visual(button, completed, false)
 	button.pressed.connect(_on_node_pressed.bind(node, completed))
-	_get_map_parent().add_child(button)
+	_get_map_content().add_child(button)
 	node_buttons[node.node_id] = button
 	_position_node_button(button, node)
 
@@ -196,10 +198,10 @@ func _refresh_node_visual_states():
 		_apply_node_visual(button, completed, is_selected)
 
 func _node_position_in_map(node: Resource) -> Vector2:
-	return _world_to_screen(_node_world_position(node))
+	return _node_rendered_position(node)
 
 func _node_position_on_panel(node: Resource) -> Vector2:
-	return _map_origin() + _node_position_in_map(node)
+	return _map_origin() + map_view_offset + _node_position_in_map(node)
 
 func _notification(what):
 	if what == NOTIFICATION_RESIZED and current_expedition:
@@ -341,14 +343,23 @@ func _ensure_map_view():
 
 	var parent = _get_map_parent()
 	parent.clip_contents = true
+	parent.mouse_filter = Control.MOUSE_FILTER_PASS
+	if not parent.gui_input.is_connected(_on_map_area_gui_input):
+		parent.gui_input.connect(_on_map_area_gui_input)
+
+	map_content = Control.new()
+	map_content.name = "MapContent"
+	map_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	map_content.z_index = 0
+	parent.add_child(map_content)
 
 	map_view = TextureRect.new()
 	map_view.name = "MapView"
 	map_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	map_view.stretch_mode = TextureRect.STRETCH_SCALE
 	map_view.z_index = 0
-	parent.add_child(map_view)
-	parent.move_child(map_view, 0)
+	map_content.add_child(map_view)
+	parent.move_child(map_content, 0)
 
 func _setup_node_overlay():
 	if node_action_button and not node_action_button.pressed.is_connected(_on_embark_button_pressed):
@@ -436,7 +447,7 @@ func _restore_or_pick_selection(available_ids: Array, completed_ids: Array):
 
 func _apply_node_selection(node: Resource, completed: bool, center_camera: bool):
 	if center_camera:
-		_center_camera_on_node(node)
+		_center_map_on_node(node)
 	selected_node_id = int(node.node_id)
 	selected_node_completed = completed
 	_set_node_overlay_text(_build_node_overlay_text(node, completed))
@@ -452,12 +463,8 @@ func _apply_node_selection(node: Resource, completed: bool, center_camera: bool)
 
 	_update_selected_node_action_state()
 
-func _reset_camera_to_map_center():
-	map_image_size = _get_map_image_size()
-	if map_image_size.x <= 0.0 or map_image_size.y <= 0.0:
-		camera_center_px = _map_viewport_size() * 0.5
-		return
-	camera_center_px = map_image_size * 0.5
+func _reset_map_view_offset():
+	map_view_offset = Vector2.ZERO
 
 func _get_map_image_size() -> Vector2:
 	var expedition_map_texture = current_expedition.get_map_texture() if current_expedition else null
@@ -478,6 +485,11 @@ func _map_viewport_size() -> Vector2:
 func _get_map_parent() -> Control:
 	return map_area if map_area and is_instance_valid(map_area) else self
 
+func _get_map_content() -> Control:
+	if map_content and is_instance_valid(map_content):
+		return map_content
+	return _get_map_parent()
+
 func _map_origin() -> Vector2:
 	return map_area.position if map_area and is_instance_valid(map_area) else Vector2.ZERO
 
@@ -497,61 +509,72 @@ func _update_map_view_transform():
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return
 
-	map_base_scale = max(viewport_size.x / map_image_size.x, viewport_size.y / map_image_size.y)
+	map_base_scale = max(1.0, viewport_size.y / map_image_size.y)
 	if map_base_scale <= 0.0:
 		map_base_scale = 1.0
-	map_base_scale *= MAP_PAN_ZOOM
 
-	camera_center_px = _clamp_camera_center(camera_center_px)
-	var top_left = viewport_size * 0.5 - camera_center_px * map_base_scale
+	var rendered_size = map_image_size * map_base_scale
+	map_view_offset = _clamp_map_view_offset(map_view_offset, rendered_size, viewport_size)
 
-	map_view.position = top_left
-	map_view.size = map_image_size * map_base_scale
+	_get_map_content().position = map_view_offset
+	_get_map_content().size = rendered_size
+	map_view.position = Vector2.ZERO
+	map_view.size = rendered_size
 
-func _clamp_camera_center(center_px: Vector2) -> Vector2:
-	var viewport_size = _map_viewport_size()
-	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
-		return center_px
-
-	var safe_scale = max(map_base_scale, 0.0001)
-	var half_view_world = viewport_size * 0.5 / safe_scale
-	var clamped = center_px
-
-	if map_image_size.x <= half_view_world.x * 2.0:
-		clamped.x = map_image_size.x * 0.5
+func _clamp_map_view_offset(offset: Vector2, rendered_size: Vector2, viewport_size: Vector2) -> Vector2:
+	var clamped = offset
+	if rendered_size.x > viewport_size.x:
+		clamped.x = clamp(clamped.x, viewport_size.x - rendered_size.x, 0.0)
 	else:
-		clamped.x = clamp(clamped.x, half_view_world.x, map_image_size.x - half_view_world.x)
+		clamped.x = (viewport_size.x - rendered_size.x) * 0.5
 
-	if map_image_size.y <= half_view_world.y * 2.0:
-		clamped.y = map_image_size.y * 0.5
+	if rendered_size.y > viewport_size.y:
+		clamped.y = clamp(clamped.y, viewport_size.y - rendered_size.y, 0.0)
 	else:
-		clamped.y = clamp(clamped.y, half_view_world.y, map_image_size.y - half_view_world.y)
+		clamped.y = (viewport_size.y - rendered_size.y) * 0.5
 
 	return clamped
 
-func _node_world_position(node: Resource) -> Vector2:
-	if map_image_size.x <= 0.0 or map_image_size.y <= 0.0:
-		map_image_size = _get_map_image_size()
+func _node_rendered_position(node: Resource) -> Vector2:
+	var rendered_size = map_view.size if map_view and is_instance_valid(map_view) else map_image_size * map_base_scale
+	return Vector2(rendered_size.x * node.pos_x, rendered_size.y * node.pos_y)
 
-	return Vector2(map_image_size.x * node.pos_x, map_image_size.y * node.pos_y)
+func _center_map_on_node(node: Resource):
+	var viewport_size = _map_viewport_size()
+	var target_offset = viewport_size * 0.5 - _node_rendered_position(node)
+	target_offset = _clamp_map_view_offset(target_offset, map_view.size, viewport_size)
 
-func _world_to_screen(world_pos: Vector2) -> Vector2:
-	return (world_pos - camera_center_px) * map_base_scale + _map_viewport_size() * 0.5
+	if map_tween:
+		map_tween.kill()
+	map_tween = create_tween()
+	map_tween.set_trans(Tween.TRANS_CUBIC)
+	map_tween.set_ease(Tween.EASE_OUT)
+	map_tween.tween_method(Callable(self, "_set_map_view_offset_interpolated"), map_view_offset, target_offset, CAMERA_MOVE_DURATION)
 
-func _center_camera_on_node(node: Resource):
-	var target_center = _clamp_camera_center(_node_world_position(node))
-	if camera_tween:
-		camera_tween.kill()
-	camera_tween = create_tween()
-	camera_tween.set_trans(Tween.TRANS_CUBIC)
-	camera_tween.set_ease(Tween.EASE_OUT)
-	camera_tween.tween_method(Callable(self, "_set_camera_center_interpolated"), camera_center_px, target_center, CAMERA_MOVE_DURATION)
-
-func _set_camera_center_interpolated(value: Vector2):
-	camera_center_px = value
+func _set_map_view_offset_interpolated(value: Vector2):
+	map_view_offset = _clamp_map_view_offset(value, map_view.size, _map_viewport_size())
 	_update_map_view_transform()
 	_refresh_node_positions()
 	queue_redraw()
+
+func _on_map_area_gui_input(event: InputEvent):
+	if not current_expedition:
+		return
+
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed and map_tween:
+			map_tween.kill()
+		is_map_panning = event.pressed
+		map_pan_last_position = event.position
+		return
+
+	if event is InputEventMouseMotion and is_map_panning:
+		var delta = event.position - map_pan_last_position
+		map_pan_last_position = event.position
+		map_view_offset = _clamp_map_view_offset(map_view_offset + delta, map_view.size, _map_viewport_size())
+		_update_map_view_transform()
+		_refresh_node_positions()
+		queue_redraw()
 
 func _refresh_node_positions():
 	if not current_expedition:
