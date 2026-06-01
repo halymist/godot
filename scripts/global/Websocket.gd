@@ -161,6 +161,8 @@ func _handle_message(message: String):
 			_handle_accept_quest_response(data)
 		"combatLog":
 			_handle_combat_log(data)
+		"combatReplayResponse":
+			_handle_combat_replay_response(data)
 		"sellItemResponse", "sellItemsResponse":
 			_handle_sell_item_response(data)
 		"loadEnemyResponse":
@@ -279,7 +281,9 @@ func _handle_chat_message(message: Dictionary, chat_type: String):
 			"message": chat_data.get("message", ""),
 			"timestamp": _unix_to_iso(chat_data.get("timestamp", 0)),
 			"type": chat_type,
-			"status": "peasant"  # TODO: Get from server if available
+			"status": "peasant",  # TODO: Get from server if available
+			"kind": chat_data.get("kind", "text"),
+			"combat_log_id": int(chat_data.get("combat_log_id", 0))
 		}
 		
 		# Add to GameInfo chat messages
@@ -311,12 +315,23 @@ func _handle_combat_log(message: Dictionary):
 	var combat_data = message.data[0]
 	_present_combat_log(combat_data, "combatLog")
 
-func _present_combat_log(combat_data: Dictionary, _source: String):
+func _handle_combat_replay_response(message: Dictionary):
+	"""Handle a stored combat replay loaded from a chat link."""
+	if not message.has("data") or not message.data is Array or message.data.size() == 0:
+		return
+	var combat_data = message.data[0]
+	if combat_data.get("success", true) == false:
+		return
+	_present_combat_log(combat_data, "combatReplayResponse")
+
+func _present_combat_log(combat_data: Dictionary, source: String):
 	"""Load combat payload into GameInfo and show the combat panel."""
 
 	# Create CombatResponse from server data
 	GameInfo.current_combat_log = GameInfo.CombatResponse.new(combat_data)
-	GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
+	GameInfo.current_combat_is_replay = source == "combatReplayResponse"
+	if not GameInfo.current_combat_is_replay:
+		GameInfo.apply_combat_header_updates(GameInfo.current_combat_log)
 
 	# Reset the arena fight button
 	if UIManager.instance and UIManager.instance.arena_panel:
@@ -726,6 +741,23 @@ func send_chat(chat_type: int, message: String):
 	send("chat", {
 		"int_argument1": chat_type,
 		"string_argument": message
+	})
+
+func share_combat(chat_type: int, combat_log_id: int = 0):
+	"""Share a stored combat result to chat (0=local, 1=global)."""
+	var payload = {
+		"int_argument1": chat_type
+	}
+	if combat_log_id > 0:
+		payload["int_argument2"] = combat_log_id
+	send("share_combat", payload)
+
+func load_combat_log(combat_log_id: int):
+	"""Load a stored combat replay by ID."""
+	if combat_log_id <= 0:
+		return
+	send("load_combat_log", {
+		"int_argument1": combat_log_id
 	})
 
 func start_expedition():

@@ -53,6 +53,8 @@ var tracked_player_hp: int = 0  # Actual player HP (not tween-animated)
 var tracked_enemy_hp: int = 0   # Actual enemy HP (not tween-animated)
 var player_hp_tween: Tween
 var enemy_hp_tween: Tween
+var share_button: Button
+var share_options: HBoxContainer
 
 func _ready():
 	# Create timer for displaying actions
@@ -73,6 +75,7 @@ func _ready():
 	
 	# Connect button signal
 	skip_replay_button.pressed.connect(_on_skip_replay_pressed)
+	_create_share_controls()
 	
 	# Add hover effects to button (not label)
 	skip_replay_button.mouse_entered.connect(_on_button_hover)
@@ -176,6 +179,7 @@ func prepare_combat():
 	current_action_index = 0
 	is_combat_finished = false
 	skip_replay_button.text = "Skip"
+	_set_share_controls_visible(false)
 	clear_messages()
 	
 	# Mark as prepared
@@ -298,6 +302,7 @@ func show_final_message(message: String):
 	message_labels[2].text = ""
 	# Add final message to middle slot for vertical centering
 	message_labels[1].text = message
+	_update_share_controls_for_result()
 	if UIManager.instance and UIManager.instance.top_ui and UIManager.instance.top_ui.has_method("update_health_bar"):
 		UIManager.instance.top_ui.update_health_bar()
 
@@ -680,6 +685,74 @@ func _on_skip_replay_pressed():
 	else:
 		# Skip to the end
 		_skip_to_end()
+
+func _create_share_controls():
+	share_button = Button.new()
+	share_button.text = "Share"
+	share_button.visible = false
+	share_button.anchor_left = 1.0
+	share_button.anchor_top = 1.0
+	share_button.anchor_right = 1.0
+	share_button.anchor_bottom = 1.0
+	share_button.offset_left = -230.0
+	share_button.offset_top = -70.0
+	share_button.offset_right = -130.0
+	share_button.offset_bottom = -20.0
+	share_button.add_theme_font_size_override("font_size", 16)
+	share_button.pressed.connect(_on_share_pressed)
+	add_child(share_button)
+
+	share_options = HBoxContainer.new()
+	share_options.visible = false
+	share_options.anchor_left = 1.0
+	share_options.anchor_top = 1.0
+	share_options.anchor_right = 1.0
+	share_options.anchor_bottom = 1.0
+	share_options.offset_left = -230.0
+	share_options.offset_top = -118.0
+	share_options.offset_right = -20.0
+	share_options.offset_bottom = -78.0
+	share_options.add_theme_constant_override("separation", 8)
+	add_child(share_options)
+
+	var local_button = Button.new()
+	local_button.text = "Local"
+	local_button.pressed.connect(func(): _share_combat_to_chat(0))
+	share_options.add_child(local_button)
+
+	var global_button = Button.new()
+	global_button.text = "Global"
+	global_button.pressed.connect(func(): _share_combat_to_chat(1))
+	share_options.add_child(global_button)
+
+func _on_share_pressed():
+	if not share_options:
+		return
+	share_options.visible = not share_options.visible
+
+func _share_combat_to_chat(chat_type: int):
+	var combat = GameInfo.current_combat_log
+	if not combat or combat.combat_log_id <= 0:
+		return
+	Websocket.share_combat(chat_type, combat.combat_log_id)
+	if share_options:
+		share_options.visible = false
+	if share_button:
+		share_button.disabled = true
+		share_button.text = "Shared"
+
+func _update_share_controls_for_result():
+	var combat = GameInfo.current_combat_log
+	var can_share = combat != null and combat.combat_log_id > 0 and not GameInfo.current_combat_is_replay
+	_set_share_controls_visible(can_share)
+
+func _set_share_controls_visible(visible_state: bool):
+	if share_button:
+		share_button.visible = visible_state
+		share_button.disabled = false
+		share_button.text = "Share"
+	if share_options:
+		share_options.visible = false
 
 func _navigate_after_combat():
 	# If expedition failed after combat, show placeholder

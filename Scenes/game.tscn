@@ -93,6 +93,15 @@ Button/styles/focus = SubResource("StyleBoxFlat_transparent")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ifeo7"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottom_ui_panel"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.08, 0.058, 0.038, 1)
+border_width_top = 2
+border_color = Color(0.62, 0.42, 0.22, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog_panel"]
 bg_color = Color(0.2, 0.2, 0.2, 0.9)
 border_width_left = 3
@@ -103,15 +112,6 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottom_ui_panel"]
-content_margin_left = 12.0
-content_margin_top = 10.0
-content_margin_right = 12.0
-content_margin_bottom = 10.0
-bg_color = Color(0.08, 0.058, 0.038, 1)
-border_width_top = 2
-border_color = Color(0.62, 0.42, 0.22, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lknxd"]
 texture = ExtResource("31_lknxd")
@@ -1900,9 +1900,9 @@ offset_top = 96.0
 offset_right = -15.0
 offset_bottom = 196.0
 grow_horizontal = 2
-columns = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
+columns = 2
 
 [node name="VendorButton" type="Button" parent="Portrait/GameScene/Home/BottomUi/ButtonRow" unique_id=602900717]
 custom_minimum_size = Vector2(0, 44)

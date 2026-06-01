@@ -174,7 +174,7 @@ func add_chat_message(chat_message: GameInfo.ChatMessage):
 		_add_sender_message(chat_message)
 		last_message_sender = chat_message.sender
 		return
-	_add_continuation_message(chat_message.message)
+	_add_continuation_message(chat_message)
 
 func _add_time_separator(message_time: int):
 	last_message_sender = ""
@@ -208,11 +208,17 @@ func _add_sender_message(chat_message: GameInfo.ChatMessage):
 		group_spacer.custom_minimum_size.y = 6
 		chat_container.add_child(group_spacer)
 	var sender_color = "#FFD700" if chat_message.status == "lord" else "#E6B366"
-	var message_text = "[color=%s][b]%s:[/b][/color] %s" % [sender_color, _escape_bbcode(chat_message.sender), _escape_bbcode(chat_message.message)]
+	var message_text = "[color=%s][b]%s:[/b][/color] %s" % [sender_color, _escape_bbcode(chat_message.sender), _format_message_body(chat_message)]
 	chat_container.add_child(_make_message_label(message_text))
 
-func _add_continuation_message(message_text: String):
-	chat_container.add_child(_make_message_label(_escape_bbcode(message_text)))
+func _add_continuation_message(chat_message: GameInfo.ChatMessage):
+	chat_container.add_child(_make_message_label(_format_message_body(chat_message)))
+
+func _format_message_body(chat_message: GameInfo.ChatMessage) -> String:
+	var text = _escape_bbcode(chat_message.message)
+	if chat_message.kind == "combat" and chat_message.combat_log_id > 0:
+		return "[url=combat:%d][u]%s[/u][/url]" % [chat_message.combat_log_id, text]
+	return text
 
 func _make_message_label(message_text: String) -> RichTextLabel:
 	var message_label = RichTextLabel.new()
@@ -223,8 +229,17 @@ func _make_message_label(message_text: String) -> RichTextLabel:
 	message_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	message_label.add_theme_font_size_override("normal_font_size", 12)
 	message_label.add_theme_font_size_override("bold_font_size", 12)
+	message_label.meta_clicked.connect(_on_message_meta_clicked)
 	message_label.text = message_text
 	return message_label
+
+func _on_message_meta_clicked(meta: Variant):
+	var value = str(meta)
+	if not value.begins_with("combat:"):
+		return
+	var combat_log_id = int(value.substr("combat:".length()))
+	if combat_log_id > 0:
+		Websocket.load_combat_log(combat_log_id)
 
 func _format_separator_timestamp(message_time_unix: int) -> String:
 	if message_time_unix <= 0:

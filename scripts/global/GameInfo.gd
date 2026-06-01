@@ -47,6 +47,7 @@ var rankings_players: Array[GamePlayer] = []  # Unified list: enemy_players + cu
 var arena_opponents: Array[int] = []
 var chat_messages: Array[ChatMessage] = []
 var current_combat_log: CombatResponse = null
+var current_combat_is_replay: bool = false
 var pending_expedition_failure_message: String = ""
 var pending_quest_failure_message: String = ""
 
@@ -760,6 +761,8 @@ class ChatMessage:
 	var status: String = "peasant"  # "peasant" or "lord"
 	var message: String = ""
 	var type: String = "global"  # "global" or "local"
+	var kind: String = "text"
+	var combat_log_id: int = 0
 	
 	func _init(data: Dictionary = {}):
 		# Simple direct assignment
@@ -814,6 +817,7 @@ class CombatResponse:
 	var enemy_honor: int = -1
 	var player_hp_end: int = -1
 	var enemy_hp_end: int = -1
+	var combat_log_id: int = 0
 	var combat_log: Array[CombatLogEntry] = []
 	
 	func _init(data: Dictionary = {}):
@@ -844,6 +848,7 @@ class CombatResponse:
 		# Parse winner
 		winner_id = int(header.get("winner", 0))
 		combat_type = str(header.get("type", ""))
+		combat_log_id = int(header.get("combat_log_id", 0))
 
 		# Parse optional end-of-combat HP values
 		if header.has("player_hp_end"):
@@ -1612,7 +1617,9 @@ func _load_chat_array(messages_data: Array, chat_type: String):
 			"message": message_data.get("message", ""),
 			"timestamp": _unix_to_iso(message_data.get("timestamp", 0)),
 			"type": chat_type,
-			"status": "peasant"  # TODO: Get from server if available
+			"status": "peasant",  # TODO: Get from server if available
+			"kind": message_data.get("kind", "text"),
+			"combat_log_id": int(message_data.get("combat_log_id", 0))
 		}
 		chat_messages.append(ChatMessage.new(chat_data))
 
