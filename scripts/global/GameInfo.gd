@@ -1165,6 +1165,10 @@ class GameCurrentPlayer:
 	var quest_log: Array = []  # Ordered action log: {quest_id: int, option_id: int, finished: bool}
 	var daily_quests: Array[int] = []  # Array of quest IDs available today
 	var expedition: Array = []  # Array: [current_slide] when active, empty when not on expedition
+	var expedition_progress_id: int = 0
+	var expedition_completed_node_ids: Array[int] = []
+	var expedition_unlocked_node_ids: Array[int] = []
+	var expedition_active_node_id: int = 0
 	var server_timezone: String = "UTC"  # Server's timezone (e.g., "Europe/Stockholm")
 	var server_day: int = 1  # Current day on the server (starts at 1)
 	var weather: int = 1  # Weather condition (1=sunny, 2=rainy)
@@ -1189,7 +1193,7 @@ class GameCurrentPlayer:
 		
 		# Load current player specific fields (excluding special cases)
 		for key in data:
-			if key in self and key not in ["daily_quests", "quest_log", "avatar", "stats", "bag_slots", "perks", "talents", "vendor_items", "enchanter_effects"]:
+			if key in self and key not in ["daily_quests", "quest_log", "avatar", "stats", "bag_slots", "perks", "talents", "vendor_items", "enchanter_effects", "expedition_completed_node_ids", "expedition_unlocked_node_ids"]:
 				set(key, data[key])
 		
 		
@@ -1215,6 +1219,7 @@ class GameCurrentPlayer:
 		if data.has("expedition"):
 			if data.expedition is Array:
 				expedition = data.expedition.duplicate()
+		_load_expedition_progress(data)
 		
 		# Convert null traveling to 0
 		if traveling == null:
@@ -1228,6 +1233,16 @@ class GameCurrentPlayer:
 		elif payload is Dictionary:
 			for slot_type_name in payload.keys():
 				enchanter_effects.append({"slot_type": str(slot_type_name), "effects": payload[slot_type_name]})
+
+	func _load_expedition_progress(payload: Dictionary):
+		expedition_completed_node_ids.clear()
+		expedition_unlocked_node_ids.clear()
+		expedition_progress_id = int(payload.get("expedition_progress_id", 0))
+		for node_id in payload.get("expedition_completed_node_ids", []):
+			expedition_completed_node_ids.append(int(node_id))
+		for node_id in payload.get("expedition_unlocked_node_ids", []):
+			expedition_unlocked_node_ids.append(int(node_id))
+		expedition_active_node_id = int(payload.get("expedition_active_node_id", 0))
 		
 	
 	func get_player_stats() -> Dictionary:
@@ -1319,6 +1334,14 @@ class GameCurrentPlayer:
 
 func _transform_server_player_data(server_data: Dictionary) -> Dictionary:
 	return PLAYER_DATA_TRANSFORMER.transform(server_data)
+
+func apply_expedition_progress(expedition_payload: Variant):
+	if not current_player or not (expedition_payload is Dictionary):
+		return
+	var transformed = PLAYER_DATA_TRANSFORMER.transform({"expedition": expedition_payload})
+	if transformed.has("expedition"):
+		current_player.expedition = transformed.expedition.duplicate()
+	current_player._load_expedition_progress(transformed)
 
 func load_all_characters(characters_data: Array):
 	all_characters.clear()
@@ -1454,6 +1477,10 @@ func apply_new_day_character_data(character_data: Dictionary) -> bool:
 	player.traveling = 0.0
 	player.traveling_destination = null
 	player.expedition.clear()
+	player.expedition_progress_id = 0
+	player.expedition_completed_node_ids.clear()
+	player.expedition_unlocked_node_ids.clear()
+	player.expedition_active_node_id = 0
 
 	pending_expedition_failure_message = ""
 	pending_quest_failure_message = ""

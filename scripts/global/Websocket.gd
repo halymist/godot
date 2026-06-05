@@ -242,6 +242,9 @@ func _handle_start_expedition_response(message: Dictionary):
 		if expedition:
 			expedition_id = expedition.expedition_id
 	var arrival = data.get("arrival", "")
+
+	if data.has("expedition"):
+		GameInfo.apply_expedition_progress(data.expedition)
 	
 	
 	# Pass to MapPanel to handle the travel timer with server-provided arrival time
@@ -260,6 +263,8 @@ func _handle_start_expedition_node_response(message: Dictionary):
 	var arrival = str(data.get("arrival", ""))
 	var msg = str(data.get("message", ""))
 
+	if data.has("expedition"):
+		GameInfo.apply_expedition_progress(data.expedition)
 
 	if UIManager.instance and UIManager.instance.expedition_panel and UIManager.instance.expedition_panel.has_method("handle_node_start_response"):
 		UIManager.instance.expedition_panel.handle_node_start_response(success, node_id, quest_id, arrival, msg)
@@ -356,6 +361,11 @@ func _handle_quest_option_response(message: Dictionary):
 	var quest_end = bool(response.get("quest_end", false))
 	var combat_payload = response.get("combat", null)
 	var has_combat_payload = combat_payload is Dictionary and combat_payload.size() > 0
+
+	if response.has("expedition"):
+		GameInfo.apply_expedition_progress(response.expedition)
+		if UIManager.instance and UIManager.instance.expedition_panel and UIManager.instance.expedition_panel.visible:
+			UIManager.instance.expedition_panel.refresh_graph()
 	
 	if success:
 		pass

@@ -103,7 +103,16 @@ static func transform(server_data: Dictionary) -> Dictionary:
 	else:
 		client_data["traveling"] = 0.0
 
-	if server_data.has("expedition_id") and server_data.expedition_id != null:
+	if server_data.has("expedition") and server_data.expedition is Dictionary:
+		var expedition_payload = server_data.expedition
+		var expedition_id = int(expedition_payload.get("expedition_id", 0))
+		var active_node_id = int(expedition_payload.get("active_node_id", 0))
+		client_data["expedition"] = [expedition_id] if expedition_id > 0 and active_node_id > 0 else []
+		client_data["expedition_progress_id"] = expedition_id
+		client_data["expedition_completed_node_ids"] = _int_array(expedition_payload.get("completed_node_ids", []))
+		client_data["expedition_unlocked_node_ids"] = _int_array(expedition_payload.get("unlocked_node_ids", []))
+		client_data["expedition_active_node_id"] = active_node_id
+	elif server_data.has("expedition_id") and server_data.expedition_id != null:
 		client_data["expedition"] = [int(server_data.expedition_id)]
 	elif server_data.has("active_expedition_id") and server_data.active_expedition_id != null:
 		client_data["expedition"] = [int(server_data.active_expedition_id)]
@@ -154,6 +163,13 @@ static func _append_elixir_effect(effects_payload: Array[Dictionary], elixir_eff
 	var factor = float(elixir_effect.get(factor_key, 0.0))
 	if effect_id > 0:
 		effects_payload.append({"effect_id": effect_id, "factor": factor})
+
+static func _int_array(value: Variant) -> Array[int]:
+	var result: Array[int] = []
+	if value is Array:
+		for item in value:
+			result.append(int(item))
+	return result
 
 static func _normalize_quest_log_entries(raw_entries: Variant) -> Array:
 	var result: Array = []

@@ -8,7 +8,7 @@ extends Node
 # Assets are downloaded and stored in user:// then applied as textures
 
 const VERSIONS_FILE = "user://data_versions.cfg"
-const LOCAL_VERSIONS_SCHEMA = 5
+const LOCAL_VERSIONS_SCHEMA = 6
 const IMAGES_DIR = "user://images/"
 const DATA_DIR = "user://data/"
 
@@ -120,6 +120,11 @@ func _load_local_versions():
 	# Migration v5: world payload now includes healer and two utility slots.
 	if schema_version < 5:
 		local_versions["settlements"] = 0
+		did_migrate = true
+
+	# Migration v6: expeditions no longer carry stable quest IDs client-side.
+	if schema_version < 6:
+		local_versions["expeditions"] = 0
 		did_migrate = true
 
 	# Persist migrated schema + versions once.
@@ -386,6 +391,11 @@ func _merge_and_save_json(data_type: String, new_data: Array, new_version: int, 
 
 	# Save merged data
 	_save_json_file(json_path, merged_data)
+
+	if data_type == "expeditions":
+		expeditions_db = null
+		if GameInfo:
+			GameInfo.expeditions_db = get_expeditions_database()
 	
 	# Update version
 	set_local_version(data_type, new_version)
@@ -630,6 +640,8 @@ func _load_expeditions_database() -> ExpeditionsDatabase:
 	"""Create graph ExpeditionsDatabase from JSON"""
 	var db = ExpeditionsDatabase.new()
 	var data = _load_json_file(EXPEDITIONS_JSON)
+	var total_nodes := 0
+	var total_edges := 0
 	
 	for item in data:
 		var expedition = ExpeditionData.new()
@@ -650,6 +662,7 @@ func _load_expeditions_database() -> ExpeditionsDatabase:
 			node.label = str(node_data.get("label", ""))
 			node.version = int(node_data.get("version", 0))
 			expedition.nodes.append(node)
+			total_nodes += 1
 
 		var edges_data = item.get("edges", [])
 		for edge_data in edges_data:
@@ -659,8 +672,11 @@ func _load_expeditions_database() -> ExpeditionsDatabase:
 			edge.node_b = int(edge_data.get("node_b", 0))
 			edge.version = int(edge_data.get("version", 0))
 			expedition.edges.append(edge)
+			total_edges += 1
 
 		db.expeditions.append(expedition)
+
+	print("[expedition:data] loaded expeditions=", db.expeditions.size(), " nodes=", total_nodes, " edges=", total_edges, " version=", db.version)
 	
 	return db
 

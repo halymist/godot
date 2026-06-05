@@ -14,6 +14,7 @@ const NODE_COMPLETED_FILL: Color = Color(0.18, 0.22, 0.24, 0.94)
 const NODE_COMPLETED_BORDER: Color = Color(0.55, 0.58, 0.54, 0.9)
 const NODE_SELECTED_BORDER: Color = Color(1.0, 0.92, 0.62, 1.0)
 const BOTTOM_UI_MARGIN: float = 104.0
+const MAP_WHEEL_PAN_STEP: float = 64.0
 
 @export var health_bar: TextureProgressBar
 @export var map_area: Control
@@ -34,6 +35,7 @@ var map_image_size: Vector2 = Vector2.ZERO
 var map_base_scale: float = 1.0
 var map_view_offset: Vector2 = Vector2.ZERO
 var map_tween: Tween = null
+var map_dragging: bool = false
 var selected_node_id: int = 0
 var selected_node_completed: bool = false
 
@@ -66,7 +68,10 @@ func start_expedition(expedition_id: int, force_refresh: bool = false):
 	current_expedition_id = expedition_id
 	current_expedition = GameInfo.expeditions_db.get_expedition(expedition_id) if GameInfo.expeditions_db else null
 	if not current_expedition:
+		var db_count = GameInfo.expeditions_db.expeditions.size() if GameInfo.expeditions_db else 0
+		print("[expedition:panel] missing expedition id=", expedition_id, " db_count=", db_count)
 		return
+	print("[expedition:panel] open id=", expedition_id, " settlement=", current_expedition.settlement_id, " nodes=", current_expedition.nodes.size(), " edges=", current_expedition.edges.size())
 
 	if GameInfo.current_player:
 		GameInfo.current_player.expedition = [expedition_id]
@@ -97,8 +102,7 @@ func _preserve_current_graph_state():
 	if selected_node_id <= 0:
 		return
 
-	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
-	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log) if current_expedition else []
+	var completed_ids = _get_completed_node_ids()
 	_show_current_selection(completed_ids)
 
 func refresh_graph():
@@ -111,11 +115,11 @@ func refresh_graph():
 	_set_node_overlay_text("Loading...")
 	_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
 
-	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
-	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log)
-	var available_ids = current_expedition.get_available_node_ids(quest_log)
+	var completed_ids = _get_completed_node_ids()
+	var available_ids = _get_available_node_ids(completed_ids)
 
 	_update_map_view_transform()
+	_log_graph_state(available_ids, completed_ids)
 	_draw_edges(available_ids, completed_ids)
 	for node in current_expedition.nodes:
 		if node.node_id in available_ids:
@@ -124,6 +128,8 @@ func refresh_graph():
 	_refresh_node_positions()
 	if selected_node_id > 0:
 		_show_current_selection(completed_ids)
+	elif available_ids.size() > 0:
+		_select_initial_node(available_ids, completed_ids)
 	else:
 		_set_node_overlay_text("Select a node to inspect it." if available_ids.size() > 0 else "No nodes available.")
 		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
@@ -139,13 +145,79 @@ func _clear_graph():
 func _draw_edges(_available_ids: Array, _completed_ids: Array):
 	queue_redraw()
 
+func _has_server_progress() -> bool:
+	if not GameInfo.current_player:
+		return false
+	if int(GameInfo.current_player.expedition_progress_id) != current_expedition_id:
+		return false
+	var has_completed = GameInfo.current_player.expedition_completed_node_ids.size() > 0
+	var has_unlocked = GameInfo.current_player.expedition_unlocked_node_ids.size() > 0
+	var has_active = GameInfo.current_player.expedition_active_node_id > 0
+	return has_completed or has_unlocked or has_active
+
+func _get_completed_node_ids() -> Array[int]:
+	if _has_server_progress():
+		return GameInfo.current_player.expedition_completed_node_ids.duplicate()
+	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
+	return current_expedition.get_completed_node_ids_from_quest_log(quest_log) if current_expedition else []
+
+func _get_available_node_ids(completed_ids: Array) -> Array[int]:
+	if _has_server_progress():
+		var available_ids: Array[int] = []
+		for node_id in completed_ids:
+			if node_id not in available_ids:
+				available_ids.append(int(node_id))
+		for node_id in GameInfo.current_player.expedition_unlocked_node_ids:
+			if node_id not in available_ids:
+				available_ids.append(int(node_id))
+		var active_node_id = int(GameInfo.current_player.expedition_active_node_id)
+		if active_node_id > 0 and active_node_id not in available_ids:
+			available_ids.append(active_node_id)
+		return available_ids
+	var quest_log = GameInfo.current_player.quest_log if GameInfo.current_player else []
+	var available_ids: Array[int] = []
+	if current_expedition:
+		available_ids = current_expedition.get_available_node_ids(quest_log)
+	if available_ids.is_empty() and current_expedition:
+		for node in current_expedition.get_start_nodes():
+			if node.node_id not in available_ids:
+				available_ids.append(int(node.node_id))
+	return available_ids
+
+func _log_graph_state(available_ids: Array, completed_ids: Array):
+	if not current_expedition:
+		return
+	var start_ids: Array[int] = []
+	for node in current_expedition.get_start_nodes():
+		start_ids.append(int(node.node_id))
+	var progress_id := 0
+	var unlocked_count := 0
+	var active_node_id := 0
+	if GameInfo.current_player:
+		progress_id = int(GameInfo.current_player.expedition_progress_id)
+		unlocked_count = GameInfo.current_player.expedition_unlocked_node_ids.size()
+		active_node_id = int(GameInfo.current_player.expedition_active_node_id)
+	print(
+		"[expedition:graph] id=", current_expedition_id,
+		" nodes=", current_expedition.nodes.size(),
+		" starts=", start_ids,
+		" available=", available_ids,
+		" completed=", completed_ids,
+		" progress_id=", progress_id,
+		" unlocked_count=", unlocked_count,
+		" active=", active_node_id,
+		" viewport=", _map_viewport_size(),
+		" image=", map_image_size,
+		" scale=", map_base_scale,
+		" offset=", map_view_offset
+	)
+
 func _draw():
 	if not current_expedition or not GameInfo.current_player:
 		return
 
-	var quest_log = GameInfo.current_player.quest_log
-	var completed_ids = current_expedition.get_completed_node_ids_from_quest_log(quest_log)
-	var available_ids = current_expedition.get_available_node_ids(quest_log)
+	var completed_ids = _get_completed_node_ids()
+	var available_ids = _get_available_node_ids(completed_ids)
 	for edge in current_expedition.edges:
 		if edge.node_a not in available_ids or edge.node_b not in available_ids:
 			continue
@@ -223,6 +295,7 @@ func _notification(what):
 	if what == NOTIFICATION_RESIZED and current_expedition:
 		_update_map_view_transform()
 		_refresh_node_positions()
+		_recenter_selected_node_immediate()
 		queue_redraw()
 
 func _on_node_pressed(node: Resource, completed: bool = false):
@@ -359,7 +432,9 @@ func _ensure_map_view():
 
 	var parent = _get_map_parent()
 	parent.clip_contents = true
-	parent.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.mouse_filter = Control.MOUSE_FILTER_PASS
+	if not parent.gui_input.is_connected(_on_map_area_gui_input):
+		parent.gui_input.connect(_on_map_area_gui_input)
 
 	map_content = Control.new()
 	map_content.name = "MapContent"
@@ -449,6 +524,36 @@ func _apply_node_selection(node: Resource, completed: bool, center_camera: bool)
 
 	_update_selected_node_action_state()
 
+func _select_initial_node(available_ids: Array, completed_ids: Array):
+	var node_id := 0
+	if GameInfo.current_player and GameInfo.current_player.expedition_active_node_id > 0:
+		var active_node_id = int(GameInfo.current_player.expedition_active_node_id)
+		if active_node_id in available_ids:
+			node_id = active_node_id
+	if node_id <= 0:
+		for available_id in available_ids:
+			if not completed_ids.has(int(available_id)):
+				node_id = int(available_id)
+				break
+	if node_id <= 0 and available_ids.size() > 0:
+		node_id = int(available_ids[0])
+
+	var node = current_expedition.get_node(node_id) if current_expedition else null
+	if not node:
+		_set_node_overlay_text("No visible expedition nodes matched server progress.")
+		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
+		return
+
+	_apply_node_selection(node, completed_ids.has(node_id), false)
+	_set_map_center_on_node_immediate(node)
+
+func _recenter_selected_node_immediate():
+	if not current_expedition or selected_node_id <= 0:
+		return
+	var node = current_expedition.get_node(selected_node_id)
+	if node:
+		_set_map_center_on_node_immediate(node)
+
 func _reset_map_view_offset():
 	map_view_offset = Vector2.ZERO
 
@@ -537,8 +642,45 @@ func _center_map_on_node(node: Resource):
 	map_tween.set_ease(Tween.EASE_OUT)
 	map_tween.tween_method(Callable(self, "_set_map_view_offset_interpolated"), map_view_offset, target_offset, CAMERA_MOVE_DURATION)
 
+func _set_map_center_on_node_immediate(node: Resource):
+	if not map_view or not is_instance_valid(map_view):
+		return
+	var viewport_size = _map_viewport_size()
+	map_view_offset = _clamp_map_view_offset(viewport_size * 0.5 - _node_rendered_position(node), map_view.size, viewport_size)
+	_update_map_view_transform()
+	_refresh_node_positions()
+	queue_redraw()
+
 func _set_map_view_offset_interpolated(value: Vector2):
 	map_view_offset = _clamp_map_view_offset(value, map_view.size, _map_viewport_size())
+	_update_map_view_transform()
+	_refresh_node_positions()
+	queue_redraw()
+
+func _on_map_area_gui_input(event: InputEvent):
+	if not current_expedition or not map_view or not is_instance_valid(map_view):
+		return
+
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			map_dragging = event.pressed
+		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_pan_map(Vector2(0.0, MAP_WHEEL_PAN_STEP))
+		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_pan_map(Vector2(0.0, -MAP_WHEEL_PAN_STEP))
+		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_LEFT:
+			_pan_map(Vector2(MAP_WHEEL_PAN_STEP, 0.0))
+		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_RIGHT:
+			_pan_map(Vector2(-MAP_WHEEL_PAN_STEP, 0.0))
+	elif event is InputEventMouseMotion and map_dragging:
+		_pan_map(event.relative)
+	elif event is InputEventScreenDrag:
+		_pan_map(event.relative)
+
+func _pan_map(delta: Vector2):
+	if not map_view or not is_instance_valid(map_view):
+		return
+	map_view_offset = _clamp_map_view_offset(map_view_offset + delta, map_view.size, _map_viewport_size())
 	_update_map_view_transform()
 	_refresh_node_positions()
 	queue_redraw()
