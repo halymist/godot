@@ -3,7 +3,8 @@ extends TextureRect
 const UI_UTILS = preload("res://scripts/utils/UIUtils.gd")
 
 const EXPEDITION_QUEST_START_COST: int = 0
-const LOW_HEALTH_WARNING_RATIO: float = 0.10
+const EXPEDITION_MIN_HEALTH_RATIO: float = 0.20
+const EXPEDITION_LOW_HEALTH_MESSAGE: String = "You need at least 20% health to start an expedition quest."
 const NODE_BUTTON_SIZE: Vector2 = Vector2(32, 32)
 const CAMERA_MOVE_DURATION: float = 0.28
 const EMBARK_ACTION_TEXT: String = "Embark"
@@ -226,7 +227,11 @@ func _draw():
 		if not node_a or not node_b:
 			continue
 		var color = Color(0.74, 0.58, 0.32, 0.78) if edge.node_a in completed_ids and edge.node_b in completed_ids else Color(0.63, 0.58, 0.50, 0.42)
-		draw_line(_node_position_on_panel(node_a), _node_position_on_panel(node_b), color, 2.0, true)
+		var from_point = _node_position_on_panel(node_a)
+		var to_point = _node_position_on_panel(node_b)
+		if not _is_point_inside_map_viewport(from_point) or not _is_point_inside_map_viewport(to_point):
+			continue
+		draw_line(from_point, to_point, color, 2.0, true)
 
 func _add_node_button(node: Resource, completed: bool):
 	var button = Button.new()
@@ -291,6 +296,10 @@ func _node_position_in_map(node: Resource) -> Vector2:
 func _node_position_on_panel(node: Resource) -> Vector2:
 	return _map_origin() + map_view_offset + _node_position_in_map(node)
 
+func _is_point_inside_map_viewport(point: Vector2) -> bool:
+	var map_rect = Rect2(_map_origin(), _map_viewport_size())
+	return map_rect.has_point(point)
+
 func _notification(what):
 	if what == NOTIFICATION_RESIZED and current_expedition:
 		_update_map_view_transform()
@@ -311,13 +320,10 @@ func _on_embark_button_pressed():
 	if not GameInfo.current_player:
 		return
 
-	if _is_low_health_warning_needed():
-		if UIManager.instance.cancel_quest and UIManager.instance.cancel_quest.has_method("show_custom_dialog"):
-			UIManager.instance.cancel_quest.show_custom_dialog(
-				"You are below 10% health. Proceed anyway?",
-				Callable(self, "_confirm_node_start").bind(selected_node_id)
-			)
-			return
+	if _is_health_blocked():
+		_set_node_overlay_text(EXPEDITION_LOW_HEALTH_MESSAGE)
+		_set_action_button_state(EMBARK_ACTION_TEXT, false, true)
+		return
 
 	_confirm_node_start(selected_node_id)
 
@@ -349,13 +355,13 @@ func _refund_pending_node_start_cost():
 		UIManager.instance.update_silver(pending_node_start_cost)
 	pending_node_start_cost = 0
 
-func _is_low_health_warning_needed() -> bool:
+func _is_health_blocked() -> bool:
 	if not GameInfo.current_player:
 		return false
 	var total_stats = GameInfo.current_player.get_total_stats()
 	var max_health = max(1, int(total_stats.stamina) * 10)
 	var current_health = max(0, max_health - int(GameInfo.current_player.depleted_health))
-	return float(current_health) / float(max_health) < LOW_HEALTH_WARNING_RATIO
+	return float(current_health) / float(max_health) < EXPEDITION_MIN_HEALTH_RATIO
 
 func handle_node_start_response(success: bool, node_id: int, quest_id: int, arrival_timestamp: String = "", message: String = ""):
 
@@ -489,7 +495,8 @@ func _set_completed_node_action_state():
 		node_action_button.visible = false
 
 func _update_selected_node_action_state():
-	_set_action_button_state(EMBARK_ACTION_TEXT, selected_node_id > 0 and not selected_node_completed and pending_node_id <= 0, true)
+	var can_embark = selected_node_id > 0 and not selected_node_completed and pending_node_id <= 0 and not _is_health_blocked()
+	_set_action_button_state(EMBARK_ACTION_TEXT, can_embark, true)
 
 func _build_node_overlay_text(node: Resource, completed: bool) -> String:
 	if node.label != "":
@@ -511,7 +518,10 @@ func _apply_node_selection(node: Resource, completed: bool, center_camera: bool)
 		_center_map_on_node(node)
 	selected_node_id = int(node.node_id)
 	selected_node_completed = completed
-	_set_node_overlay_text(_build_node_overlay_text(node, completed))
+	if not completed and _is_health_blocked():
+		_set_node_overlay_text(EXPEDITION_LOW_HEALTH_MESSAGE)
+	else:
+		_set_node_overlay_text(_build_node_overlay_text(node, completed))
 	_refresh_node_visual_states()
 
 	if completed:
