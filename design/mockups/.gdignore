@@ -1,0 +1,2 @@
+# Design references are not runtime Godot resources.
+# Keep this directory in version control, but do not import its large embedded HTML assets.
