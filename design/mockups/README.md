@@ -28,6 +28,8 @@ The tabs across the top are review shortcuts. Most screens also support in-phone
 
 This is a behavioral and visual target, not runtime game code. HTML pixels should not be translated mechanically into Godot. Reuse the project's existing scenes, theme resources, data flow, and overlay lifecycle. See `CODEX_HANDOFF.md` before implementing a screen.
 
+Note that the mockup is ahead of the Godot client on several **game mechanics**, not just visuals — the Armor stat has been replaced by Resolve, combat status effects now last a single turn, stun skips a turn, and quest options grant an applied effect *or* a reward but never both. `PANEL_SPEC.md` documents every panel and lists these deltas with a staged refactor checklist.
+
 The mockup uses a 390 × 800 phone frame. The Godot project currently targets a 405 × 900 portrait viewport, so implementations should use anchors and containers and be checked at both proportions rather than hardcoding the HTML coordinates.
 
 ## Maintenance

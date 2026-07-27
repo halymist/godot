@@ -8,8 +8,11 @@ Use `panel_mockups.html` as the visual and interaction reference while increment
 
 1. `COPILOT_GUIDELINES.md` — the project's UI and overlay rules.
 2. The relevant section of `PROJECT_ARCHITECTURE.md`.
-3. `panel_mockups.html` — use the top review tabs to isolate the target screen.
-4. The corresponding existing scene and script.
+3. `PANEL_SPEC.md` — what each panel shows and does, the **mechanics changes** the mockup
+   introduces (Armor → Resolve, one-turn combat effects, stun, quest effect-XOR-reward), and
+   the staged refactor checklist. Read the cross-cutting sections before any panel work.
+4. `panel_mockups.html` — use the top review tabs to isolate the target screen.
+5. The corresponding existing scene and script.
 
 Check `git status` before every task. Existing changes are user work and must not be discarded or reformatted incidentally.
 
